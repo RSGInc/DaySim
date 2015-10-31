@@ -15,4 +15,7 @@ Documentation Starting Points:
 2. DaySim Standard Technical Documentation.docx  
 3. DaySim Developer's Guide.docx  
 
+License:  
+1.  [license.txt](license.txt)  
+
 *Visual Studio Express 2013 or later supports the [Visual Studio Remote Debugging Monitor](https://msdn.microsoft.com/en-us/library/y7f5zaaa.aspx)
