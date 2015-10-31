@@ -844,17 +844,23 @@ namespace Daysim.DomainModels.Default.Wrappers {
 						.Get(Tour.ParkAndRideNodeId)
 						.ZoneId;
 
+                var origin = IsHalfTourFromOrigin ? parkAndRideZoneId : OriginParcel.ZoneId;
+                var destination = IsHalfTourFromOrigin ? OriginParcel.ZoneId : parkAndRideZoneId;
+
 				IEnumerable<dynamic> pathTypeModels =
 					PathTypeModelFactory.Model
-						.Run(Household.RandomUtility, OriginParcel.ZoneId, parkAndRideZoneId, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Mode);
+                        .Run(Household.RandomUtility, origin, destination, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Mode);
                 pathType =  pathTypeModels.First();
 			}
 			else {
 				var useMode = Mode == Global.Settings.Modes.SchoolBus ? Global.Settings.Modes.Hov3 : Mode;
 
+                var origin = IsHalfTourFromOrigin ? DestinationParcel : OriginParcel;
+                var destination = IsHalfTourFromOrigin ? OriginParcel : DestinationParcel;
+
                 IEnumerable<dynamic> pathTypeModels =
 					PathTypeModelFactory.Model
-						.Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
+                        .Run(Household.RandomUtility, origin, destination, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
                 pathType = pathTypeModels.First();
 			}
 
