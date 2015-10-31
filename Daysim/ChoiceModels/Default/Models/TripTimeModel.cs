@@ -11,6 +11,7 @@ using Daysim.Framework.ChoiceModels;
 using Daysim.Framework.Coefficients;
 using Daysim.Framework.Core;
 using Daysim.Framework.DomainModels.Wrappers;
+using Daysim.Framework.Roster;
 
 namespace Daysim.ChoiceModels.Default.Models {
 	public class TripTimeModel : ChoiceModel {
@@ -102,7 +103,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 			var originMealFlag = trip.IsMealOriginPurpose().ToFlag();
 			var originSocialFlag = trip.IsSocialOriginPurpose().ToFlag();
 			var sovOrHovTripFlag = trip.UsesSovOrHovModes().ToFlag();
-			var transitTripFlag = trip.IsTransitMode().ToFlag();
+            var transitTripFlag = trip.IsTransitMode().ToFlag();
 			var halfTourFromOriginFlag = trip.IsHalfTourFromOrigin.ToFlag();
 			var halfTourFromDestinationFlag = (!trip.IsHalfTourFromOrigin).ToFlag();
 
@@ -157,7 +158,13 @@ namespace Daysim.ChoiceModels.Default.Models {
 					var departurePeriodFraction = timeWindow.TotalAvailableMinutes(departurePeriod.Start, departurePeriod.End) / (departurePeriod.End - departurePeriod.Start + 1D);
 					var duration = Math.Abs(departurePeriod.Middle - arrivalPeriod.Middle);
 
-					available = available && departurePeriodFraction > 0;
+                    available = available && departurePeriodFraction > 0;
+
+                    //ensure transit path type is available in alternative
+                    if (trip.Mode == Global.Settings.Modes.Transit) {
+                        var transitPathTypeInVehicleTime = ImpedanceRoster.GetValue("ivtime", trip.Mode, trip.PathType, trip.ValueOfTime, time.DeparturePeriod.Middle, trip.OriginZoneKey, trip.DestinationZoneKey).Variable;
+                        available = available && (transitPathTypeInVehicleTime > 0);
+                    }
 
 					var alternative = choiceProbabilityCalculator.GetAlternative(time.Index, available, choice != null && choice.Equals(time));
 
