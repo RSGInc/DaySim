@@ -677,6 +677,10 @@ namespace Daysim {
 				.Importer
 				.Import();
 
+            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum"))
+            {
+                return;
+            }
 
 			var parkAndRideNodeReader =
 				Global
