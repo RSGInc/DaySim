@@ -554,20 +554,20 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 		public double EmploymentDifference { get; set; }
 
-		public double EmploymentPrediction { get; set; }
+        public double EmploymentPrediction { get; set; }
 
 		public double ExternalStudentsK12 { get; set; }
 
 		public double StudentsK12Difference { get; set; }
 
-		public double StudentsK12Prediction { get; set; }
+        public double StudentsK12Prediction { get; set; }
 
 		public double ExternalStudentsUniversity { get; set; }
 
 		public double StudentsUniversityDifference { get; set; }
 
-		public double StudentsUniversityPrediction { get; set; }
-
+        public double StudentsUniversityPrediction { get; set; }
+       
 		public int District { get; set; }
 
 		public bool StopAreaDistanceArrayPositionsSet { get; set; }
@@ -881,29 +881,60 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			return (TotalEmploymentDensity1() + HouseholdDensity1() < Global.Configuration.UrbanThreshold).ToFlag();
 		}
 
-		public virtual void SetShadowPricing(Dictionary<int, IZone> zones, Dictionary<int, IShadowPriceParcel> shadowPrices) {
+        public virtual void SetShadowPricing(Dictionary<int, IZone> zones, Dictionary<int, IShadowPriceParcel> shadowPrices) {
 			if (!Global.Configuration.ShouldUseShadowPricing || (!Global.Configuration.ShouldRunWorkLocationModel && !Global.Configuration.ShouldRunSchoolLocationModel)) {
 				return;
 			}
 
-			IShadowPriceParcel shadowPriceParcel;
+			    IShadowPriceParcel shadowPriceParcel;
 
-			if (shadowPrices.TryGetValue(Id, out shadowPriceParcel)) {
-				ShadowPriceForEmployment = shadowPrices[Id].ShadowPriceForEmployment;
-				ShadowPriceForStudentsK12 = shadowPrices[Id].ShadowPriceForStudentsK12;
-				ShadowPriceForStudentsUniversity = shadowPrices[Id].ShadowPriceForStudentsUniversity;
-			}
+			    if (shadowPrices.TryGetValue(Id, out shadowPriceParcel)) {
+				    ShadowPriceForEmployment = shadowPrices[Id].ShadowPriceForEmployment;
+				    ShadowPriceForStudentsK12 = shadowPrices[Id].ShadowPriceForStudentsK12;
+				    ShadowPriceForStudentsUniversity = shadowPrices[Id].ShadowPriceForStudentsUniversity;
+			    }
 
-			IZone zone;
+			    IZone zone;
 
-			if (zones.TryGetValue(ZoneId, out zone)) {
-				ExternalEmploymentTotal = EmploymentTotal * (1 - zone.FractionJobsFilledByWorkersFromOutsideRegion);
+			    if (zones.TryGetValue(ZoneId, out zone)) {
+				    ExternalEmploymentTotal = EmploymentTotal * (1 - zone.FractionJobsFilledByWorkersFromOutsideRegion);
 
-				// TODO: Missing information about external students. Zero is the placeholder for university student fraction.
-				ExternalStudentsK12 = 0;
-				ExternalStudentsUniversity = StudentsUniversity * (1 - 0);
-			}
+				    // TODO: Missing information about external students. Zero is the placeholder for university student fraction.
+				    ExternalStudentsK12 = 0;
+				    ExternalStudentsUniversity = StudentsUniversity * (1 - 0);
+			    }
+
 		}
+
+        private readonly object _getEmploymentPredictionLock = new object();
+
+        public virtual void AddEmploymentPrediction(double employmentPrediction)
+        {
+            lock (_getEmploymentPredictionLock)
+            {
+                EmploymentPrediction = EmploymentPrediction + employmentPrediction;
+            }
+        }
+
+        private readonly object _getStudentsUniversityPredictionLock = new object();
+
+        public virtual void AddStudentsUniversityPrediction(double studentsUniversityPrediction)
+        {
+            lock (_getStudentsUniversityPredictionLock)
+            {
+                StudentsUniversityPrediction = StudentsUniversityPrediction + studentsUniversityPrediction;
+            }
+        }
+
+        private readonly object _getStudentsK12PredictionLock = new object();
+
+        public virtual void AddStudentsK12Prediction(double studentsK12Prediction)
+        {
+            lock (_getStudentsK12PredictionLock)
+            {
+                StudentsK12Prediction = StudentsK12Prediction + studentsK12Prediction;
+            }
+        }
 
 		public virtual double NodeToNodeDistance(IParcelWrapper destination, int batch) {
 			if (Id == Global.NodeNodePreviousOriginParcelId[batch] && destination.Id == Global.NodeNodePreviousDestinationParcelId[batch]) {

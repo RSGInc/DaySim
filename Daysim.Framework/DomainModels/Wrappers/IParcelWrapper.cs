@@ -147,6 +147,12 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		void SetShadowPricing(Dictionary<int, IZone> zones, Dictionary<int, IShadowPriceParcel> shadowPrices);
 
+        void AddEmploymentPrediction(double employmentPrediction);
+
+        void AddStudentsUniversityPrediction(double studentsUniversityPrediction);
+
+        void AddStudentsK12Prediction(double studentsK12Prediction);
+
 		double NodeToNodeDistance(IParcelWrapper destination, int batch);
 
 		double CircuityDistance(IParcelWrapper destination);

@@ -381,7 +381,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 		public virtual void SetWorkParcelPredictions() {
 			if (UsualWorkParcelId != Constants.DEFAULT_VALUE && UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
-				UsualWorkParcel.EmploymentPrediction += Household.ExpansionFactor;
+                UsualWorkParcel.AddEmploymentPrediction(Household.ExpansionFactor);
 			}
 		}
 
@@ -391,10 +391,10 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			}
 
 			if (IsAdult) {
-				UsualSchoolParcel.StudentsUniversityPrediction += Household.ExpansionFactor;
+				UsualSchoolParcel.AddStudentsUniversityPrediction(Household.ExpansionFactor);
 			}
 			else {
-				UsualSchoolParcel.StudentsK12Prediction += Household.ExpansionFactor;
+				UsualSchoolParcel.AddStudentsK12Prediction(Household.ExpansionFactor);
 			}
 		}
 
