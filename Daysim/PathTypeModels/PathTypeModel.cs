@@ -999,7 +999,13 @@ namespace Daysim.PathTypeModels {
 													 : pathType == Global.Settings.PathTypes.Ferry
 															  ? Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight
 															  : 0D;
-            if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime && Global.Configuration.PSRC == false) {
+                    
+                    //toggle region specific transit impedance calculation
+                    if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime && 
+                        Global.Configuration.PSRC == false && 
+                        Global.Configuration.Nashville == false)
+                    {
+
 				if (Math.Abs(pathTypeSpecificTimeWeight) > Constants.EPSILON) {
 						pathTypeSpecificTime =
 							 pathType == Global.Settings.PathTypes.LightRail
@@ -1030,6 +1036,75 @@ namespace Daysim.PathTypeModels {
                     + Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight * ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, outboundTime, destinationZoneId, originZoneId).Variable
                     + Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight * ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, outboundTime, destinationZoneId, originZoneId).Variable
                     + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight * ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, outboundTime, destinationZoneId, originZoneId).Variable; 
+            }
+
+            else if (Global.Configuration.Nashville == true)
+            {
+                //Nashville BRT coded in Ferry
+                //Nashville Commuter Rail coded in Commuter rail
+                //Nashville Express Bus coded in Premium bus
+                
+                //ASC based on IVT share by sub-mode
+                pathTypeSpecificTimeWeight = 1.0;
+
+                pathTypeSpecificTime =
+                      Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable / outboundInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable / outboundInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable / outboundInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable / outboundInVehicleTime;
+
+                if (returnTime > 0)
+                {
+
+                    pathTypeSpecificTime = pathTypeSpecificTime 
+
+                    + Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable / returnInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable / returnInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable / returnInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable / returnInVehicleTime;
+                }
+
+                //IVT discounted by sub-mode
+                double outboundLightRailInVehicleTime = ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                double outboundFerryInVehicleTime = ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                double outboundCommuterRailInVehicleTime = ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                double outboundPremiumBusInVehicleTime = ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                double outboundLocalBusInVehicleTime = outboundInVehicleTime - (outboundLightRailInVehicleTime + outboundFerryInVehicleTime +
+                       outboundCommuterRailInVehicleTime + outboundPremiumBusInVehicleTime);
+
+                outboundInVehicleTime = 
+                      Global.Configuration.PathImpedance_TransitLightRailInVehicleTimeWeight * outboundLightRailInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitFerryInVehicleTimeWeight * outboundFerryInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitCommuterRailInVehicleTimeWeight * outboundCommuterRailInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitPremiumBusInVehicleTimeWeight * outboundPremiumBusInVehicleTime
+                    + 1 * outboundLocalBusInVehicleTime;
+
+                if (returnTime > 0)
+                {
+                    double returnLightRailInVehicleTime = ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                    double returnFerryInVehicleTime = ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                    double returnCommuterRailInVehicleTime = ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                    double returnPremiumBusInVehicleTime = ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                    double returnLocalBusInVehicleTime = returnInVehicleTime - (returnLightRailInVehicleTime + returnFerryInVehicleTime +
+                           returnCommuterRailInVehicleTime + returnPremiumBusInVehicleTime); 
+                    
+                    returnInVehicleTime =
+                      Global.Configuration.PathImpedance_TransitLightRailInVehicleTimeWeight * returnLightRailInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitFerryInVehicleTimeWeight * returnFerryInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitCommuterRailInVehicleTimeWeight * returnCommuterRailInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitPremiumBusInVehicleTimeWeight * returnPremiumBusInVehicleTime
+                    + 1 * returnLocalBusInVehicleTime;
+
+                }
+
             }
 
 			var totalInVehicleTime = outboundInVehicleTime + returnInVehicleTime;

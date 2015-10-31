@@ -107,6 +107,11 @@ namespace Daysim.Framework.Core {
 			get { return Configuration.PSRC; }
 		}
 
+        public static bool Nashville
+        {
+            get { return Configuration.Nashville; }
+        }
+
 		public static bool ParkAndRideNodeIsEnabled {
 			get { return !string.IsNullOrEmpty(Configuration.RawParkAndRideNodePath) && !string.IsNullOrEmpty(Configuration.InputParkAndRideNodePath); }
 		}
