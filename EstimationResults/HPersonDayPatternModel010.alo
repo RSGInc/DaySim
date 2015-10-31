@@ -1,0 +1,8 @@
+$TITLE                            HouseholdPersonDayPattern                           
+
+$ESTIMATE model=HPersonDayPatternModel
+INCL.FILE coeffs HPersonDayPatternModel010_input.F12
+$GEN.STATS utilities
+$ALGOR maxit = 35
+$ALGOR Zeta  = 0.15
+

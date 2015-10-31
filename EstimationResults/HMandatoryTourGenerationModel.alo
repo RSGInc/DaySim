@@ -1,0 +1,125 @@
+$TITLE Mandatory TourGeneration                                                       
+$ESTIMATE
+$GEN.STATS utilities
+$ALGOR maxit = 20
+$ALGOR Zeta  = 0.15
+
+  2  Beta00002 F 0.6638
+ 21  Beta00021 F -4.1918
+ 23  Beta00023 F 0.1768
+ 25  Beta00025 F -0.1386
+ 26  Beta00026 F 1.2145
+ 27  Beta00027 F -0.2040
+ 28  Beta00028 F -0.1993
+ 30  Beta00030 F -0.5450
+ 31  Beta00031 F -1.2530
+ 33  Beta00033 F -0.9481
+ 41  Beta00041 F -8.0243
+ 42  Beta00042 F 0.4188
+ 43  Beta00043 F 1.5934
+ 47  Beta00047 F -0.5748
+ 48  Beta00048 F 1.9154
+ 49  Beta00049 F -1.4545
+ 50  Beta00050 F 0.1712
+ 51  Beta00051 F 0.1770
+ 52  Beta00052 F 1.8985
+ 53  Beta00053 F -0.3662
+ 61  Beta00061 F -4.7233
+ 62  Beta00062 F 0.2224
+ 63  Beta00063 F -0.1866
+ 65  Beta00065 F -1.1173
+ 66  Beta00066 F 2.2395
+ 67  Beta00067 F 2.3247
+ 68  Beta00068 F 0.0747
+ 70  Beta00070 F -0.8885
+
+$ARRAY DD(34)
+FILE (name=HMandatoryTourGenerationModel.dat) DD
+ID = DD(1)
+
+choice = DD(5)
+
+- rejected observations: 0
+
+- choice and availability summary -
+
+- alt   1 -      alt_1 / Chosen    11096 Available    11553
+- alt   2 -      alt_2 / Chosen     7021 Available    14325
+- alt   3 -      alt_3 / Chosen     1191 Available    16291
+- alt   4 -      alt_4 / Chosen     3341 Available     7178
+
+- utility summary -
+
+- alt   1 -      alt_1 /   2 -  Beta00002 % Non-0   2.02 Mean     1.00
+
+- alt   2 -      alt_2 /  21 -  Beta00021 % Non-0 100.00 Mean     1.00
+- alt   2 -      alt_2 /  23 -  Beta00023 % Non-0  65.96 Mean     1.19
+- alt   2 -      alt_2 /  25 -  Beta00025 % Non-0   9.43 Mean     1.00
+- alt   2 -      alt_2 /  26 -  Beta00026 % Non-0   2.81 Mean     1.00
+- alt   2 -      alt_2 /  27 -  Beta00027 % Non-0   2.62 Mean     1.00
+- alt   2 -      alt_2 /  28 -  Beta00028 % Non-0  27.49 Mean     1.00
+- alt   2 -      alt_2 /  30 -  Beta00030 % Non-0  34.73 Mean     1.00
+- alt   2 -      alt_2 /  31 -  Beta00031 % Non-0  14.14 Mean     1.00
+- alt   2 -      alt_2 /  33 -  Beta00033 % Non-0 100.00 Mean    -0.32
+
+- alt   3 -      alt_3 /  41 -  Beta00041 % Non-0 100.00 Mean     1.00
+- alt   3 -      alt_3 /  42 -  Beta00042 % Non-0   9.43 Mean     1.00
+- alt   3 -      alt_3 /  43 -  Beta00043 % Non-0   2.81 Mean     1.00
+- alt   3 -      alt_3 /  47 -  Beta00047 % Non-0  34.73 Mean     1.00
+- alt   3 -      alt_3 /  48 -  Beta00048 % Non-0  34.04 Mean     1.00
+- alt   3 -      alt_3 /  49 -  Beta00049 % Non-0  14.14 Mean     1.00
+- alt   3 -      alt_3 /  50 -  Beta00050 % Non-0 100.00 Mean    11.07
+- alt   3 -      alt_3 /  51 -  Beta00051 % Non-0  33.06 Mean     1.35
+- alt   3 -      alt_3 /  52 -  Beta00052 % Non-0   5.34 Mean     1.00
+- alt   3 -      alt_3 /  53 -  Beta00053 % Non-0  36.71 Mean     1.00
+
+- alt   4 -      alt_4 /  61 -  Beta00061 % Non-0 100.00 Mean     1.00
+- alt   4 -      alt_4 /  62 -  Beta00062 % Non-0  27.00 Mean     0.19
+- alt   4 -      alt_4 /  63 -  Beta00063 % Non-0  18.58 Mean     1.00
+- alt   4 -      alt_4 /  65 -  Beta00065 % Non-0   2.02 Mean     1.00
+- alt   4 -      alt_4 /  66 -  Beta00066 % Non-0   2.81 Mean     1.00
+- alt   4 -      alt_4 /  67 -  Beta00067 % Non-0   4.96 Mean     1.00
+- alt   4 -      alt_4 /  68 -  Beta00068 % Non-0  13.34 Mean     4.11
+- alt   4 -      alt_4 /  70 -  Beta00070 % Non-0  14.14 Mean     1.00
+
+avail(1)=DD(2)
+avail(2)=DD(4)
+avail(3)=DD(15)
+avail(4)=DD(26)
+
+util(1)=0
+  + p2*DD(3)
+
+util(2)=0
+  + p21*DD(6)
+  + p23*DD(7)
+  + p25*DD(8)
+  + p26*DD(9)
+  + p27*DD(10)
+  + p28*DD(11)
+  + p30*DD(12)
+  + p31*DD(13)
+  + p33*DD(14)
+
+util(3)=0
+  + p41*DD(16)
+  + p42*DD(17)
+  + p43*DD(18)
+  + p47*DD(19)
+  + p48*DD(20)
+  + p49*DD(21)
+  + p50*DD(22)
+  + p51*DD(23)
+  + p52*DD(24)
+  + p53*DD(25)
+
+util(4)=0
+  + p61*DD(27)
+  + p62*DD(28)
+  + p63*DD(29)
+  + p65*DD(30)
+  + p66*DD(31)
+  + p67*DD(32)
+  + p68*DD(33)
+  + p70*DD(34)
+

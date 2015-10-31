@@ -1,0 +1,182 @@
+$TITLE PersonDayPatternTypeModel                        
+$ESTIMATE
+$GEN.STATS utilities
+$ALGOR maxit = 20
+$ALGOR Zeta  = 0.15
+
+  1  Beta00001 F 0.0000
+  2  Beta00002 F 0.0000
+  3  Beta00003 F 0.0000
+  4  Beta00004 F 0.0000
+  5  Beta00005 F 0.0000
+  6  Beta00006 F 0.0000
+  7  Beta00007 F 0.0000
+  8  Beta00008 F 0.0000
+  9  Beta00009 F 0.0000
+ 10  Beta00010 F 0.0000
+ 11  Beta00011 F 0.0000
+ 12  Beta00012 F 0.0000
+ 13  Beta00013 F 0.0000
+ 14  Beta00014 F 0.0000
+ 15  Beta00015 F 0.0000
+ 16  Beta00016 F 0.0000
+ 17  Beta00017 F 0.0000
+ 18  Beta00018 F 0.0000
+ 19  Beta00019 F 0.0000
+ 20  Beta00020 F 0.0000
+ 21  Beta00021 F 0.0000
+ 22  Beta00022 F 0.0000
+ 23  Beta00023 F 0.0000
+ 24  Beta00024 F 0.0000
+ 25  Beta00025 F 0.0000
+ 26  Beta00026 F 0.0000
+ 27  Beta00027 F 0.0000
+ 28  Beta00028 F 0.0000
+ 29  Beta00029 F 0.0000
+ 30  Beta00030 F 0.0000
+ 31  Beta00031 F 0.0000
+ 32  Beta00032 F 0.0000
+ 33  Beta00033 F 0.0000
+ 34  Beta00034 F 0.0000
+ 35  Beta00035 F 0.0000
+ 36  Beta00036 F 0.0000
+ 37  Beta00037 F 0.0000
+ 38  Beta00038 F 0.0000
+ 39  Beta00039 F 0.0000
+ 40  Beta00040 F 0.0000
+ 41  Beta00041 F 0.0000
+ 42  Beta00042 F 0.0000
+ 43  Beta00043 F 0.0000
+ 44  Beta00044 F 0.0000
+ 45  Beta00045 F 0.0000
+ 46  Beta00046 F 0.0000
+ 47  Beta00047 F 0.0000
+ 48  Beta00048 F 0.0000
+ 49  Beta00049 F 0.0000
+ 50  Beta00050 F 0.0000
+ 51  Beta00051 F 0.0000
+ 52  Beta00052 F 0.0000
+ 53  Beta00053 F 0.0000
+ 54  Beta00054 F 0.0000
+ 55  Beta00055 F 0.0000
+ 56  Beta00056 F 0.0000
+ 57  Beta00057 F 0.0000
+ 58  Beta00058 F 0.0000
+ 59  Beta00059 F 0.0000
+ 60  Beta00060 F 0.0000
+ 61  Beta00061 F 0.0000
+ 62  Beta00062 F 0.0000
+ 63  Beta00063 F 0.0000
+ 64  Beta00064 F 0.0000
+ 65  Beta00065 F 0.0000
+ 66  Beta00066 F 0.0000
+ 67  Beta00067 F 0.0000
+ 68  Beta00068 F 0.0000
+ 69  Beta00069 F 0.0000
+ 70  Beta00070 F 0.0000
+ 71  Beta00071 F 0.0000
+ 72  Beta00072 F 0.0000
+ 73  Beta00073 F 0.0000
+ 74  Beta00074 F 0.0000
+ 75  Beta00075 F 0.0000
+ 76  Beta00076 F 0.0000
+ 77  Beta00077 F 0.0000
+ 78  Beta00078 F 0.0000
+ 79  Beta00079 F 0.0000
+ 80  Beta00080 F 0.0000
+ 81  Beta00081 F 0.0000
+ 82  Beta00082 F 0.0000
+ 83  Beta00083 F 0.0000
+ 84  Beta00084 F 0.0000
+ 85  Beta00085 F 0.0000
+ 86  Beta00086 F 0.0000
+ 87  Beta00087 F 0.0000
+ 88  Beta00088 F 0.0000
+ 89  Beta00089 F 0.0000
+ 90  Beta00090 F 0.0000
+ 91  Beta00091 F 0.0000
+ 92  Beta00092 F 0.0000
+ 93  Beta00093 F 0.0000
+ 94  Beta00094 F 0.0000
+ 95  Beta00095 F 0.0000
+ 96  Beta00096 F 0.0000
+ 97  Beta00097 F 0.0000
+ 98  Beta00098 F 0.0000
+ 99  Beta00099 F 0.0000
+100  Beta00100 F 0.0000
+
+$ARRAY DD(28)
+FILE (name=HPersonDayPatternTypeModel.dat) DD
+ID = DD(1)
+
+choice = DD(19)
+
+- rejected observations: 0
+
+- choice and availability summary -
+
+- alt   1 -      alt_1 / Chosen      389 Available      498
+- alt   2 -      alt_2 / Chosen      117 Available      582
+- alt   3 -      alt_3 / Chosen       76 Available      582
+
+- utility summary -
+
+- alt   1 -      alt_1 /   6 -  Beta00006 % Non-0  20.96 Mean     1.32
+- alt   1 -      alt_1 /  11 -  Beta00011 % Non-0  53.95 Mean     1.25
+- alt   1 -      alt_1 /  12 -  Beta00012 % Non-0  69.76 Mean     1.17
+- alt   1 -      alt_1 /  15 -  Beta00015 % Non-0  26.80 Mean     1.29
+
+- alt   2 -      alt_2 /  21 -  Beta00021 % Non-0 100.00 Mean     1.27
+- alt   2 -      alt_2 /  23 -  Beta00023 % Non-0   4.12 Mean     1.08
+- alt   2 -      alt_2 /  24 -  Beta00024 % Non-0  16.84 Mean     1.36
+- alt   2 -      alt_2 /  25 -  Beta00025 % Non-0   7.90 Mean     1.39
+- alt   2 -      alt_2 /  26 -  Beta00026 % Non-0   9.97 Mean     1.03
+- alt   2 -      alt_2 /  29 -  Beta00029 % Non-0  38.49 Mean     1.17
+- alt   2 -      alt_2 /  31 -  Beta00031 % Non-0  23.71 Mean     1.09
+- alt   2 -      alt_2 /  32 -  Beta00032 % Non-0   7.04 Mean     1.05
+- alt   2 -      alt_2 /  34 -  Beta00034 % Non-0 100.00 Mean    13.69
+- alt   2 -      alt_2 /  35 -  Beta00035 % Non-0  31.96 Mean     1.19
+
+- alt   3 -      alt_3 /  41 -  Beta00041 % Non-0 100.00 Mean     1.27
+- alt   3 -      alt_3 /  42 -  Beta00042 % Non-0   4.12 Mean     1.08
+- alt   3 -      alt_3 /  45 -  Beta00045 % Non-0  16.84 Mean     1.36
+- alt   3 -      alt_3 /  48 -  Beta00048 % Non-0   7.90 Mean     1.39
+- alt   3 -      alt_3 /  52 -  Beta00052 % Non-0   1.72 Mean     1.30
+- alt   3 -      alt_3 /  53 -  Beta00053 % Non-0  68.73 Mean     1.25
+- alt   3 -      alt_3 /  57 -  Beta00057 % Non-0  14.60 Mean     1.06
+- alt   3 -      alt_3 /  62 -  Beta00062 % Non-0 100.00 Mean     0.49
+- alt   3 -      alt_3 /  64 -  Beta00064 % Non-0  69.76 Mean     1.17
+
+avail(1)=DD(2)
+avail(2)=DD(7)
+avail(3)=DD(18)
+
+util(1)=0
+  + p6*DD(3)
+  + p11*DD(4)
+  + p12*DD(5)
+  + p15*DD(6)
+
+util(2)=0
+  + p21*DD(8)
+  + p23*DD(9)
+  + p24*DD(10)
+  + p25*DD(11)
+  + p26*DD(12)
+  + p29*DD(13)
+  + p31*DD(14)
+  + p32*DD(15)
+  + p34*DD(16)
+  + p35*DD(17)
+
+util(3)=0
+  + p41*DD(20)
+  + p42*DD(21)
+  + p45*DD(22)
+  + p48*DD(23)
+  + p52*DD(24)
+  + p53*DD(25)
+  + p57*DD(26)
+  + p62*DD(27)
+  + p64*DD(28)
+

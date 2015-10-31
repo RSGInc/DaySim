@@ -1,0 +1,997 @@
+ALOGIT S & A (C) ALOGIT 4.3 serial 4393
+Licensed to: Pudget Sound Regional Council                               
+ 
+Joint Half Tour Generation                                                     
+
+C:.. (x86)\HCG Software\ALOGIT 4\Alo4nec.exe 551424 b. Date:  4 Jan 13 at 16:23 
+ 
+INFORMATION 246:   FILE  1 : first main file
+C:..tion\HJointHalfTourGenerationModel.dat    4.297 Mb Date:  8 Apr 13 at 11:52
+ 
+INFORMATION 163: control file completed:   410 lines
+C:..mation\HJointHalfTourGenerationModel.alo  13786 b. Date:  8 Apr 13 at 11:52
+ 
+Function defined in control file: PREP & ESTIM
+ 
+WARNING 152: coefficient Beta00007  not used in model
+ 
+WARNING 152: coefficient Beta00008  not used in model
+ 
+WARNING 152: coefficient Beta00009  not used in model
+ 
+WARNING 152: coefficient Beta00010  not used in model
+ 
+WARNING 152: coefficient Beta00019  not used in model
+ 
+WARNING 152: coefficient Beta00022  not used in model
+ 
+WARNING 152: coefficient Beta00023  not used in model
+ 
+WARNING 152: coefficient Beta00024  not used in model
+ 
+WARNING 152: coefficient Beta00026  not used in model
+ 
+WARNING 152: coefficient Beta00027  not used in model
+ 
+WARNING 152: coefficient Beta00028  not used in model
+ 
+WARNING 152: coefficient Beta00033  not used in model
+ 
+WARNING 152: coefficient Beta00034  not used in model
+ 
+WARNING 152: coefficient Beta00035  not used in model
+ 
+WARNING 152: coefficient Beta00036  not used in model
+ 
+WARNING 152: coefficient Beta00037  not used in model
+ 
+WARNING 152: coefficient Beta00038  not used in model
+ 
+WARNING 152: coefficient Beta00050  not used in model
+ 
+WARNING 152: coefficient Beta00052  not used in model
+ 
+WARNING 152: coefficient Beta00055  not used in model
+ 
+WARNING 152: coefficient Beta00056  not used in model
+ 
+WARNING 152: coefficient Beta00057  not used in model
+ 
+WARNING 152: coefficient Beta00058  not used in model
+ 
+WARNING 152: coefficient Beta00063  not used in model
+ 
+WARNING 152: coefficient Beta00064  not used in model
+ 
+WARNING 152: coefficient Beta00065  not used in model
+ 
+WARNING 152: coefficient Beta00066  not used in model
+ 
+WARNING 152: coefficient Beta00067  not used in model
+ 
+WARNING 152: coefficient Beta00068  not used in model
+ 
+WARNING 152: coefficient Beta00071  not used in model
+ 
+WARNING 152: coefficient Beta00076  not used in model
+ 
+WARNING 152: coefficient Beta00077  not used in model
+ 
+WARNING 152: coefficient Beta00079  not used in model
+ 
+WARNING 152: coefficient Beta00080  not used in model
+ 
+WARNING 152: coefficient Beta00081  not used in model
+ 
+WARNING 152: coefficient Beta00083  not used in model
+ 
+WARNING 152: coefficient Beta00088  not used in model
+ 
+WARNING 152: coefficient Beta00089  not used in model
+ 
+WARNING 152: coefficient Beta00090  not used in model
+ 
+WARNING 152: coefficient Beta00093  not used in model
+ 
+WARNING 152: coefficient Beta00094  not used in model
+ 
+WARNING 152: coefficient Beta00095  not used in model
+ 
+WARNING 152: coefficient Beta00096  not used in model
+ 
+WARNING 152: coefficient Beta00097  not used in model
+ 
+WARNING 152: coefficient Beta00100  not used in model
+ 
+WARNING 152: coefficient Beta00106  not used in model
+ 
+WARNING 152: coefficient Beta00107  not used in model
+ 
+WARNING 152: coefficient Beta00110  not used in model
+ 
+WARNING 152: coefficient Beta00111  not used in model
+ 
+WARNING 152: coefficient Beta00112  not used in model
+ 
+WARNING 152: coefficient Beta00113  not used in model
+ 
+WARNING 152: coefficient Beta00116  not used in model
+ 
+WARNING 152: coefficient Beta00119  not used in model
+ 
+WARNING 152: coefficient Beta00121  not used in model
+ 
+WARNING 152: coefficient Beta00122  not used in model
+ 
+WARNING 152: coefficient Beta00123  not used in model
+ 
+WARNING 152: coefficient Beta00124  not used in model
+ 
+WARNING 152: coefficient Beta00125  not used in model
+ 
+WARNING 152: coefficient Beta00126  not used in model
+ 
+WARNING 152: coefficient Beta00127  not used in model
+ 
+WARNING 152: coefficient Beta00128  not used in model
+ 
+WARNING 152: coefficient Beta00129  not used in model
+ 
+WARNING 152: coefficient Beta00130  not used in model
+ 
+WARNING 152: coefficient Beta00131  not used in model
+ 
+WARNING 152: coefficient Beta00132  not used in model
+ 
+WARNING 152: coefficient Beta00133  not used in model
+ 
+WARNING 152: coefficient Beta00134  not used in model
+ 
+WARNING 152: coefficient Beta00135  not used in model
+ 
+WARNING 152: coefficient Beta00136  not used in model
+ 
+WARNING 152: coefficient Beta00137  not used in model
+ 
+WARNING 152: coefficient Beta00138  not used in model
+ 
+WARNING 152: coefficient Beta00139  not used in model
+ 
+WARNING 152: coefficient Beta00140  not used in model
+ 
+WARNING 152: coefficient Beta00141  not used in model
+ 
+WARNING 152: coefficient Beta00142  not used in model
+ 
+WARNING 152: coefficient Beta00143  not used in model
+ 
+WARNING 152: coefficient Beta00144  not used in model
+ 
+WARNING 152: coefficient Beta00145  not used in model
+ 
+WARNING 152: coefficient Beta00146  not used in model
+ 
+WARNING 152: coefficient Beta00147  not used in model
+ 
+WARNING 152: coefficient Beta00148  not used in model
+ 
+WARNING 152: coefficient Beta00149  not used in model
+ 
+WARNING 152: coefficient Beta00150  not used in model
+ 
+WARNING 152: coefficient Beta00151  not used in model
+ 
+WARNING 152: coefficient Beta00152  not used in model
+ 
+WARNING 152: coefficient Beta00153  not used in model
+ 
+WARNING 152: coefficient Beta00154  not used in model
+ 
+WARNING 152: coefficient Beta00155  not used in model
+ 
+WARNING 152: coefficient Beta00156  not used in model
+ 
+WARNING 152: coefficient Beta00157  not used in model
+ 
+WARNING 152: coefficient Beta00158  not used in model
+ 
+WARNING 152: coefficient Beta00159  not used in model
+ 
+WARNING 152: coefficient Beta00160  not used in model
+ 
+WARNING 152: coefficient Beta00161  not used in model
+ 
+WARNING 152: coefficient Beta00162  not used in model
+ 
+WARNING 152: coefficient Beta00163  not used in model
+ 
+WARNING 152: coefficient Beta00164  not used in model
+ 
+WARNING 152: coefficient Beta00165  not used in model
+ 
+WARNING 152: coefficient Beta00166  not used in model
+ 
+WARNING 152: coefficient Beta00167  not used in model
+ 
+WARNING 152: coefficient Beta00168  not used in model
+ 
+WARNING 152: coefficient Beta00169  not used in model
+ 
+WARNING 152: coefficient Beta00170  not used in model
+ 
+WARNING 152: coefficient Beta00171  not used in model
+ 
+WARNING 152: coefficient Beta00172  not used in model
+ 
+WARNING 152: coefficient Beta00173  not used in model
+ 
+WARNING 152: coefficient Beta00174  not used in model
+ 
+WARNING 152: coefficient Beta00175  not used in model
+ 
+WARNING 152: coefficient Beta00176  not used in model
+ 
+WARNING 152: coefficient Beta00177  not used in model
+ 
+WARNING 152: coefficient Beta00178  not used in model
+ 
+WARNING 152: coefficient Beta00179  not used in model
+ 
+WARNING 152: coefficient Beta00180  not used in model
+ 
+WARNING 152: coefficient Beta00181  not used in model
+ 
+$GEN.STATS controls
+ Utility components selected
+   101 total items selected
+ 
+$ESTIMATE controls
+ Control present = T
+ Estimation done = F
+ Linear first    = T
+ Estimate later  = F
+ Accept error    = F
+ 
+ 
+$ALGOR controls
+ Maximum iterations          =  20
+ Convergence level           =   .100000E-01
+ 1st derivative perp. test   =   .100000E-05
+ Function rate of increase   =  -999.900
+ Matrix inversion tolerance  =   .100000E-02
+ Step reduction factor       =   .150000
+ Convergence option          =   3
+ Maximum step-reducing loops =   4
+ 
+ 
+REPORT OF COEFFICIENTS
+ 
+Label      Con   Value      Type
+-------    ---   -----      -----
+Beta00001   F    .0000      Utility
+Beta00002   F    .0000      Utility
+Beta00003   F    .0000      Utility
+Beta00004   F    .0000      Utility
+Beta00005   F    .0000      Utility
+Beta00006   F    .0000      Utility
+Beta00011   F    .0000      Utility
+Beta00012   F    .0000      Utility
+Beta00013   F    .0000      Utility
+Beta00014   F    .0000      Utility
+Beta00015   F    .0000      Utility
+Beta00016   F    .0000      Utility
+Beta00017   F    .0000      Utility
+Beta00018   F    .0000      Utility
+Beta00020   F    .0000      Utility
+Beta00021   F    .0000      Utility
+Beta00025   F    .0000      Utility
+Beta00029   F    .0000      Utility
+Beta00030   F    .0000      Utility
+Beta00031   F    .0000      Utility
+Beta00032   F    .0000      Utility
+Beta00039   F    .0000      Utility
+Beta00040   F    .0000      Utility
+Beta00041   F    .0000      Utility
+Beta00042   F    .0000      Utility
+Beta00043   F    .0000      Utility
+Beta00044   F    .0000      Utility
+Beta00045   F    .0000      Utility
+Beta00046   F    .0000      Utility
+Beta00047   F    .0000      Utility
+Beta00048   F    .0000      Utility
+Beta00049   F    .0000      Utility
+Beta00051   F    .0000      Utility
+Beta00053   F    .0000      Utility
+Beta00054   F    .0000      Utility
+Beta00059   F    .0000      Utility
+Theta0060   F    .0000      Utility
+Beta00061   F    .0000      Utility
+Beta00062   F    .0000      Utility
+Beta00069   F    .0000      Utility
+Beta00070   F    .0000      Utility
+Beta00072   F    .0000      Utility
+Beta00073   F    .0000      Utility
+Beta00074   F    .0000      Utility
+Beta00075   F    .0000      Utility
+Beta00078   F    .0000      Utility
+Beta00082   F    .0000      Utility
+Beta00084   F    .0000      Utility
+Beta00085   F    .0000      Utility
+Beta00086   F    .0000      Utility
+Beta00087   F    .0000      Utility
+Beta00091   F    .0000      Utility
+Beta00092   F    .0000      Utility
+Beta00098   F    .0000      Utility
+Beta00099   F    .0000      Utility
+Beta00101   F    .0000      Utility
+Beta00102   F    .0000      Utility
+Beta00103   F    .0000      Utility
+Beta00104   F    .0000      Utility
+Beta00105   F    .0000      Utility
+Beta00108   F    .0000      Utility
+Beta00109   F    .0000      Utility
+Beta00114   F    .0000      Utility
+Beta00115   F    .0000      Utility
+Beta00117   F    .0000      Utility
+Beta00118   F    .0000      Utility
+Beta00120   F    .0000      Utility
+ 
+INFORMATION 001: control file processing      .27 secs.
+ 
+OBSERVATION REJECTED 519:          1:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:          2:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:          3:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:          4:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:          5:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:          6:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:          7:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:          8:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         13:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         14:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         18:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         19:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         31:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         32:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         37:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         38:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         39:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         40:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         41:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         42:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         43:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         44:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         45:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         46:   1.0 chosen and    .0 unchosen alts.
+ 
+OBSERVATION REJECTED 519:         47:   1.0 chosen and    .0 unchosen alts.
+ 
+INFORMATION 534: reached end of file   1 after    11231 records
+ 
+Data input completed after 11231 records
+ 
+Rejected  5430 observations with unacceptable choices
+ 
+ 
+FREQUENCY DISTRIBUTION OF ALTERNATIVE AVAILABILITY
+(Total weight is    5801.00 )
+ 
+Alternative    Chosen    Unchosen    Avail.    Unavail.
+-----------  ---------  ---------  ---------  ---------
+Alt.00001     4078.00    1723.00    5801.00        .00
+Alt.00002      412.00    4082.00    4494.00    1307.00
+Alt.00003      440.00    4763.00    5203.00     598.00
+Alt.00004      273.00    4930.00    5203.00     598.00
+Alt.00005      134.00    3447.00    3581.00    2220.00
+Alt.00006      303.00    3742.00    4045.00    1756.00
+Alt.00007      161.00    3884.00    4045.00    1756.00
+ 
+ 
+RANGES OF INDEPENDENT VARIABLES
+ 
+Coefficient   Chsn Min   Chsn Max   Diff Min   Diff Max
+-----------  ---------  ---------  ---------  ---------
+Beta00001         .00       1.00      -1.00       1.00
+Beta00002         .00       1.00      -1.00       1.00
+Beta00003         .00       1.00      -1.00       1.00
+Beta00004         .00       2.00      -2.00       2.00
+Beta00005         .00       2.00      -2.00       2.00
+Beta00006         .00       2.00      -2.00       1.00
+Beta00011         .00       2.00      -2.00       2.00
+Beta00012         .00       1.00      -1.00       2.00
+Beta00013         .00       1.00      -1.00       2.00
+Beta00014         .00       1.00      -1.00       2.00
+Beta00015         .00       1.00      -1.00       2.00
+Beta00016         .00       1.00      -1.00       2.00
+Beta00017         .00       2.00      -2.00       2.00
+Beta00018         .00       2.00      -2.00       2.00
+Beta00020         .00      14.00     -14.00      12.00
+Beta00021         .00       7.57      -7.57      13.82
+Beta00025         .00       1.00      -1.00       2.00
+Beta00029       -2.07       7.37      -7.37       6.94
+Beta00030       -4.63       3.62     -14.87      12.38
+Beta00031         .00       2.00      -2.00       2.00
+Beta00032         .00       1.00      -1.00       2.00
+Beta00039         .00       2.00      -2.00       2.00
+Beta00040         .00       2.00      -2.00       2.00
+Beta00041         .00       1.00      -1.00       2.00
+Beta00042         .00       2.00      -2.00       2.00
+Beta00043         .00       2.00      -2.00       2.00
+Beta00044         .00       2.00      -2.00       2.00
+Beta00045         .00       1.00      -1.00       2.00
+Beta00046         .00       2.00      -2.00       2.00
+Beta00047         .00       5.89      -5.89       5.89
+Beta00048         .00       8.00      -8.00      14.00
+Beta00049         .00      27.21     -27.21      28.27
+Beta00051         .00       2.00      -2.00       2.00
+Beta00053         .00       2.00      -2.00       2.00
+Beta00054         .00       3.00      -3.00       4.00
+Beta00059       -4.52       5.13      -5.13       7.37
+Theta0060       -8.28       7.50     -14.87      12.38
+Beta00061         .00       2.00      -2.00       2.00
+Beta00062         .00       1.00      -1.00       2.00
+Beta00069         .00       1.00      -1.00       2.00
+Beta00070         .00       1.00      -1.00       2.00
+Beta00072         .00       1.00      -1.00       2.00
+Beta00073         .00       1.00      -1.00       2.00
+Beta00074         .00       1.00      -1.00       2.00
+Beta00075         .00       8.09      -8.09      13.82
+Beta00078         .00       2.00      -2.00       2.00
+Beta00082         .00       6.00      -6.00      14.00
+Beta00084       -2.61      12.38     -14.87      12.38
+Beta00085        -.95       4.41      -4.58       7.37
+Beta00086         .00       2.00      -2.00       2.00
+Beta00087         .00       1.00      -1.00       2.00
+Beta00091         .00       2.00      -2.00       2.00
+Beta00092         .00       1.00      -1.00       2.00
+Beta00098         .00       2.00      -2.00       2.00
+Beta00099         .00       2.00      -2.00       2.00
+Beta00101         .00       2.00      -2.00       2.00
+Beta00102         .00       1.00      -1.00       2.00
+Beta00103         .00       2.00      -2.00       2.00
+Beta00104         .00       1.00      -1.00       2.00
+Beta00105         .00       1.00      -1.00       2.00
+Beta00108         .00       7.94      -7.94      13.82
+Beta00109         .00       5.67      -5.67       5.89
+Beta00114         .00       1.00      -1.00       2.00
+Beta00115         .00       2.00      -2.00       2.00
+Beta00117         .00       2.00      -2.00       2.00
+Beta00118         .00       2.00      -2.00       2.00
+Beta00120         .00       2.00      -2.00       2.00
+ 
+ 
+SELECTED STATISTICS
+ 
+ 
+Alternative Alt.00001  avail. for      5801.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00001    Temp 0001       22.70      .00     1.00     1.00        .00
+Beta00002    Temp 0003        6.14      .00     1.00     1.00        .00
+Beta00003    Temp 0004         .79      .00     1.00     1.00        .00
+Beta00004    Temp 0005         .72      .00     2.00     1.38        .49
+Beta00005    Temp 0006       21.53      .00     2.00     1.24        .43
+Beta00006    Temp 0007        3.72      .00     2.00     1.12        .32
+             0                 .00
+ 
+ 
+Alternative Alt.00002  avail. for      4494.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00011    Temp 0020      100.00     1.00     2.00     1.30        .46
+Beta00012    Temp 0021        8.88      .00     2.00     1.13        .34
+Beta00013    Temp 0022        2.40      .00     2.00     1.23        .42
+Beta00014    Temp 0023        7.37      .00     2.00     1.06        .24
+Beta00015    Temp 0024        4.52      .00     2.00     1.02        .15
+Beta00016    Temp 0014       26.90      .00     2.00     1.26        .44
+Beta00017    Temp 0025       12.73      .00     2.00     1.13        .34
+Beta00018    Temp 0026        9.19      .00     2.00     1.02        .15
+Beta00020    Temp 0027       77.77      .00    14.00     2.63       1.56
+Beta00021    Temp 0028       99.27      .00    13.82     3.67       2.14
+Beta00025    Temp 0029        4.85      .00     2.00     1.22        .42
+Beta00029    Temp 0030       93.19    -4.58     7.37      .87       1.01
+Beta00030    Temp 0031       53.00   -14.87    12.38      .39       1.40
+             0                 .00
+ 
+ 
+Alternative Alt.00003  avail. for      5203.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00031    Temp 0058      100.00     1.00     2.00     1.26        .44
+Beta00032    Temp 0059        4.46      .00     2.00     1.21        .41
+Beta00039    Temp 0060        8.92      .00     2.00     1.11        .32
+Beta00040    Temp 0061        8.11      .00     2.00     1.05        .21
+Beta00041    Temp 0062        5.61      .00     2.00     1.02        .13
+Beta00042    Temp 0063       24.27      .00     2.00     1.25        .43
+Beta00043    Temp 0064       13.38      .00     2.00     1.11        .31
+Beta00044    Temp 0065       12.09      .00     2.00     1.01        .12
+Beta00046    Temp 0066       14.86      .00     2.00     1.18        .39
+Beta00047    Temp 0067       63.69      .00     5.89     2.72       1.08
+Beta00048    Temp 0068       80.42      .00    14.00     2.67       1.51
+Beta00049    Temp 0069      100.00     4.25    28.27    13.86       5.03
+Beta00053    Temp 0045        4.23      .00     2.00     1.22        .42
+Beta00054    Temp 0070        8.23      .00     4.00     1.23        .52
+Beta00059    Temp 0071       91.95    -4.58     7.37      .85        .98
+Theta0060    Temp 0072       56.99   -14.87    12.38      .36       1.33
+             0                 .00
+ 
+ 
+Alternative Alt.00004  avail. for      5203.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00032    Temp 0105        4.46      .00     2.00     1.21        .41
+Beta00039    Temp 0106        8.92      .00     2.00     1.11        .32
+Beta00040    Temp 0107        9.98      .00     2.00     1.04        .20
+Beta00042    Temp 0108       24.27      .00     2.00     1.25        .43
+Beta00043    Temp 0109       13.38      .00     2.00     1.11        .31
+Beta00044    Temp 0110       12.09      .00     2.00     1.01        .12
+Beta00045    Temp 0111        5.61      .00     2.00     1.02        .13
+Beta00046    Temp 0112       14.86      .00     2.00     1.18        .39
+Beta00048    Temp 0113       80.42      .00    14.00     2.67       1.51
+Beta00049    Temp 0114      100.00     4.25    28.27    13.86       5.03
+Beta00051    Temp 0115      100.00     1.00     2.00     1.26        .44
+Beta00053    Temp 0116        4.23      .00     2.00     1.22        .42
+Beta00054    Temp 0117        8.23      .00     4.00     1.23        .52
+Beta00059    Temp 0118       91.95    -4.58     7.37      .85        .98
+Theta0060    Temp 0119       56.99   -14.87    12.38      .36       1.33
+             0                 .00
+ 
+ 
+Alternative Alt.00005  avail. for      3581.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00061    Temp 0149      100.00     1.00     2.00     1.21        .41
+Beta00062    Temp 0150        6.34      .00     2.00     1.21        .41
+Beta00069    Temp 0151       13.18      .00     2.00     1.11        .31
+Beta00070    Temp 0152       12.23      .00     2.00     1.04        .20
+Beta00072    Temp 0153        7.79      .00     2.00     1.12        .32
+Beta00073    Temp 0154       13.68      .00     2.00     1.10        .29
+Beta00074    Temp 0155       12.68      .00     2.00     1.02        .12
+Beta00075    Temp 0156       99.39      .00    13.82     3.19       1.86
+Beta00078    Temp 0157       62.16      .00     2.00     1.20        .40
+Beta00082    Temp 0158       75.96      .00    14.00     2.60       1.37
+Beta00084    Temp 0159       66.63   -14.87    12.38      .40       1.33
+Beta00085    Temp 0160       98.02    -4.58     7.37      .87        .97
+Beta00086    Temp 0161       19.27      .00     2.00     1.17        .37
+Beta00087    Temp 0162        5.53      .00     2.00     1.02        .12
+             0                 .00
+ 
+ 
+Alternative Alt.00006  avail. for      4045.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00091    Temp 0190      100.00     1.00     2.00     1.18        .39
+Beta00092    Temp 0191        6.01      .00     2.00     1.20        .40
+Beta00098    Temp 0192       14.46      .00     2.00     1.09        .28
+Beta00099    Temp 0193       14.19      .00     2.00     1.03        .18
+Beta00102    Temp 0194        7.19      .00     2.00     1.11        .32
+Beta00103    Temp 0195       12.86      .00     2.00     1.09        .29
+Beta00104    Temp 0196       12.41      .00     2.00     1.01        .12
+Beta00105    Temp 0197        6.11      .00     2.00     1.01        .11
+Beta00108    Temp 0198       99.18      .00    13.82     3.06       1.81
+Beta00109    Temp 0199       74.83      .00     5.89     2.68       1.02
+Beta00114    Temp 0200        2.00      .00     2.00     1.19        .39
+Beta00115    Temp 0201       32.93      .00     2.00     1.17        .37
+Beta00117    Temp 0202       28.95      .00     2.00     1.06        .23
+Beta00118    Temp 0176       26.50      .00     2.00     1.18        .38
+Beta00120    Temp 0203       22.22      .00     2.00     1.21        .41
+             0                 .00
+ 
+ 
+Alternative Alt.00007  avail. for      4045.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00092    Temp 0234        6.01      .00     2.00     1.20        .40
+Beta00098    Temp 0235       14.46      .00     2.00     1.09        .28
+Beta00099    Temp 0236       14.19      .00     2.00     1.03        .18
+Beta00101    Temp 0237      100.00     1.00     2.00     1.18        .39
+Beta00102    Temp 0238        7.19      .00     2.00     1.11        .32
+Beta00103    Temp 0239       12.86      .00     2.00     1.09        .29
+Beta00104    Temp 0240       12.41      .00     2.00     1.01        .12
+Beta00105    Temp 0241        6.11      .00     2.00     1.01        .11
+Beta00108    Temp 0242       99.18      .00    13.82     3.06       1.81
+Beta00109    Temp 0243       74.83      .00     5.89     2.68       1.02
+Beta00114    Temp 0244        2.00      .00     2.00     1.19        .39
+Beta00115    Temp 0245       32.93      .00     2.00     1.17        .37
+Beta00117    Temp 0246       28.95      .00     2.00     1.06        .23
+Beta00118    Temp 0247       26.50      .00     2.00     1.18        .38
+Beta00120    Temp 0219       22.22      .00     2.00     1.21        .41
+             0                 .00
+ 
+INFORMATION 002: data processing time      .46 secs.
+ 
+C:..tion\HJointHalfTourGenerationModel.F11    1.251 Mb Date:  8 Apr 13 at 12:04
+ 
+INFORMATION 603: linear ("Quick") algorithm being used
+Iteration  1  Function =  -9705.9457   Conv.(3) = 63.0
+Iteration  2  Function =  -5115.0258   Conv.(3) = 22.1
+Iteration  3  Function =  -4932.0143   Conv.(3) = 7.89
+Iteration  4  Function =  -4850.7545   Conv.(3) = 2.66
+Iteration  5  Function =  -4845.2885   Conv.(3) = .612
+Iteration  6  Function =  -4845.0424   Conv.(3) = .418E-01
+Iteration  7  Function =  -4845.0413   Conv.(3) = .215E-03
+ 
+ 
+Convergence achieved after   7 iterations
+ 
+Analysis is based on   5801 observations
+ 
+ 
+Likelihood with Zero Coefficients =  -9705.9457
+ 
+Likelihood with Constants only    =  -6057.7425
+ 
+Initial Likelihood                =  -9705.9457
+ 
+ 
+Final value of Likelihood         =  -4845.0413
+ 
+ 
+   "Rho-Squared" w.r.t. Zero      =  .5008
+ 
+   "Rho-Squared" w.r.t. Constants =  .2002
+ 
+ 
+ 
+ESTIMATES OBTAINED AT ITERATION  7
+ 
+ 
+Likelihood =  -4845.0413
+ 
+ 
+          Beta00001  Beta00002  Beta00003  Beta00004  Beta00005  Beta00006
+ 
+ Estimate   1.528      2.812      3.382      1.214      .1623      .7833
+Std. Error   .890E-01   .189       .548       .449       .791E-01   .194
+"T" Ratio   17.2       14.8        6.2        2.7        2.1        4.0
+ 
+ 
+          Beta00011  Beta00012  Beta00013  Beta00014  Beta00015  Beta00016
+ 
+ Estimate  -2.374      .5635      .7244      1.595      2.824     -.6348
+Std. Error   .313       .243       .261       .230       .301       .223
+"T" Ratio   -7.6        2.3        2.8        6.9        9.4       -2.8
+ 
+ 
+          Beta00017  Beta00018  Beta00020  Beta00021  Beta00025  Beta00029
+ 
+ Estimate   .8882      2.318      .2247     -.1342      .6028      .1966
+Std. Error   .213       .233       .619E-01   .758E-01   .246       .793E-01
+"T" Ratio    4.2        9.9        3.6       -1.8        2.4        2.5
+ 
+ 
+          Beta00030  Beta00031  Beta00032  Beta00039  Beta00040  Beta00041
+ 
+ Estimate   .1136     -4.598     -.2285      1.011      1.597      2.332
+Std. Error   .598E-01   .485       .278       .173       .171       .271
+"T" Ratio    1.9       -9.5        -.8        5.8        9.3        8.6
+ 
+ 
+          Beta00042  Beta00043  Beta00044  Beta00045  Beta00046  Beta00047
+ 
+ Estimate  -.3464      .8885      2.293      1.865      .5897      .1337
+Std. Error   .168       .164       .187       .257       .119       .698E-01
+"T" Ratio   -2.1        5.4       12.3        7.2        5.0        1.9
+ 
+ 
+          Beta00048  Beta00049  Beta00051  Beta00053  Beta00054  Beta00059
+ 
+ Estimate   .3083      .1119     -4.752     -.1407      .3194      .2459
+Std. Error   .482E-01   .412E-01   .480       .194       .118       .651E-01
+"T" Ratio    6.4        2.7       -9.9        -.7        2.7        3.8
+ 
+ 
+          Theta0060  Beta00061  Beta00062  Beta00069  Beta00070  Beta00072
+ 
+ Estimate   .8930E-01  .8591     -.7345      .1448      1.299     -.7094
+Std. Error   .492E-01   .419       .515       .264       .313       .549
+"T" Ratio    1.8        2.0       -1.4         .5        4.2       -1.3
+ 
+ 
+          Beta00073  Beta00074  Beta00075  Beta00078  Beta00082  Beta00084
+ 
+ Estimate  -2.382     -.4001     -.9311      .3062     -.5130      .6024E-01
+Std. Error   .755       .609       .106       .183       .148       .753E-01
+"T" Ratio   -3.2        -.7       -8.8        1.7       -3.5         .8
+ 
+ 
+          Beta00085  Beta00086  Beta00087  Beta00091  Beta00092  Beta00098
+ 
+ Estimate  -.8127E-01 -.4946      1.129     -1.269     -.9095E-01  .9014
+Std. Error   .120       .361       .666       .259       .277       .169
+"T" Ratio    -.7       -1.4        1.7       -4.9        -.3        5.3
+ 
+ 
+          Beta00099  Beta00101  Beta00102  Beta00103  Beta00104  Beta00105
+ 
+ Estimate   1.728     -1.828     -.7074     -.5222      1.098      2.299
+Std. Error   .220       .264       .325       .235       .263       .293
+"T" Ratio    7.9       -6.9       -2.2       -2.2        4.2        7.8
+ 
+ 
+          Beta00108  Beta00109  Beta00114  Beta00115  Beta00117  Beta00118
+ 
+ Estimate  -.5167      .3931     -1.425      .2873     -.5893     -.2746
+Std. Error   .768E-01   .701E-01   .718       .103       .165       .117
+"T" Ratio   -6.7        5.6       -2.0        2.8       -3.6       -2.3
+ 
+ 
+          Beta00120
+ 
+ Estimate  -.2493
+Std. Error   .125
+"T" Ratio   -2.0
+ 
+ 
+Correlation of Estimates (multiplied by 1000)
+ 
+            0001 0002 0003 0004 0005 0006 0011 0012 0013 0014 0015 0016 0017
+Beta00002    253
+Beta00003    100   85
+Beta00004     30   34   13
+Beta00005     34   24   16   35
+Beta00006     52   42   27  -36  -19
+Beta00011     18   15    9  -24   53   75
+Beta00012     31    7    1   22   26  -64 -379
+Beta00013      3   12   -4  172  -48   15  -57  -69
+Beta00014    107   52   16   27   40 -107 -345  392    0
+Beta00015    165  137   64   52   57 -113 -129  334  -40  525
+Beta00016    -15  -10   -4   -4   -8  -68 -251  340  -14  422  395
+Beta00017     14   -5   -3    0   24 -120 -395  436  -34  597  621  484
+Beta00018    166   80   27    8   27 -124 -269  401   29  578  652  460  677
+Beta00020      5    5    1   14  -22  133 -522  -40   18 -269 -550 -189 -373
+Beta00021    -14  -17   -9   13   13  -95 -862  237    4  220   79   59  269
+Beta00025      1    0    0   -3    2  -22  -67   99   12  209  205  177  229
+Beta00029     17    9    3   74  -47   36 -321  -12  104  -56  -71  -12    1
+Beta00030     19    7    0  -12  -27  -18 -139    4   99   67   41   -2   20
+Beta00031     -7  -20  -12   64   59    4   16   -6   13   -3  -10  -11   -7
+Beta00032     -4   -2   -1  -10   -8  -13   -9   18   -2   16   19   16   24
+Beta00039     49   15    3   32   24  -29   -8  127    0   28   49   32   42
+Beta00040    142   71   23    8   31  -86   -1   42   -7  208  109   43   78
+Beta00041    177  164   78   40   39  -93   15   44   -7   78  342   43   94
+Beta00042    -33  -23   -9   -2  -16  -59  -12   33    0   31   52   84   60
+Beta00043     30    1   -2   -2    8  -88   -2   42   -1   57  108   55  166
+Beta00044    219  125   42   -1   16 -106    8   50    1   83  157   53  101
+Beta00045    131  143   71   41   32  -66   27   29   -6    9  321   33   74
+Beta00046     31   24   17  -31  -49  -65  -22    8   -3    7   24    5   15
+Beta00047    -11  -13   -6    0   17   -2   -4    6    2   21   20   11   18
+Beta00048     37   33   12   24  -24  192  -72  -30   -2  -78 -159  -57 -125
+Beta00049     16   23   14  -75  -22  -13    9   -1  -17    2   18    3    4
+Beta00051     -9  -23  -14   65   65    4   15   -4   15    3   -4   -7   -2
+Beta00053     -4    4   -1  -17  -11   41   99  -34   28  -35  -23   -9  -31
+Beta00054     20   12    5   -1  -23   -2    0    1    0    2    4    3    1
+Beta00059     25   17    2   92  -41   68  -52   -7   21  -13  -20   -5   -7
+Theta0060     21    6   -6  -13  -23   -7  -24    6    3   14   11    1    3
+Beta00061     43   21   12    6   25  109   68  -26    5  -27   -9  -18  -29
+Beta00062     -3    0   -1    2   -4  -13   -1    5    0    8    9    6    9
+Beta00069     37   10    1   27   34 -109  -27   88   -5   43   45   27   41
+Beta00070     93   45   11   15   36 -133  -12   30   -4  131   69   30   52
+Beta00072    -18   -8   -4    0    0  -46  -15   10   -1   14   13   24   19
+Beta00073      6   -1   -2    1    8  -52   -5   11   -3   20   25   14   38
+Beta00074     66   38   10    4   12  -72   -2   18   -2   34   48   19   33
+Beta00075    -41  -22  -12    3   27 -116  -61   23   -5   27   13   12   28
+Beta00078      4    2   -1  -27   20  -13   -1    1  -16    1    3    2    3
+Beta00082      0    1    2   -1   -9   64  -18   -6    3  -18  -32  -15  -26
+Beta00084     18    6    0  -14  -11  -27   -5    8    3    9    9    1    2
+Beta00085      8    2    0   11  -48   29  -15   -4    7   -7   -9   -4   -6
+Beta00086      8    3    2   -3  -12  -25   -2    1    0    4    5    2    3
+Beta00087     71   74   31   19   22  -80    6   19   -6   42  130   21   40
+Beta00091     83   52   48   -1   35  196   99  -49    2  -63  -48  -45  -76
+Beta00092      1    3    1   -4   -5    6  -11   18    0   16   11   11   15
+Beta00098     62   19  -11   30   64 -113  -39  127   -9   65   70   41   63
+Beta00099    142  108    6   15   52 -157  -24   43   -5  169   97   40   69
+Beta00101     87   54   48   -1   34  192   98  -47    2  -62  -47  -44  -74
+Beta00102    -10  -11   -9    0  -15  -52  -21   18    0   21   18   41   25
+Beta00103     14   -8  -20    1   23  -93  -33   34  -10   49   52   34  101
+Beta00104    155  117   18    7   29 -131  -16   38   -1   64   94   35   61
+Beta00105    163  205  100   35   50 -127  -10   39  -13   75  250   35   68
+Beta00108    -55  -47  -62    6   38 -204  -76   36   -7   58   55   30   68
+Beta00109     -1    5   23   -4  -14   40  -23   -4    0  -11  -23   -9  -16
+Beta00114      1   -1   -5   52  -17    7   -4    0   74    0   -1   -3   -5
+Beta00115     17   17   -6  -10    3   28   -8   -1    0   -3    2   -1   -1
+Beta00117    -17  -48    9    6   -6   95  -18   -2   -3   -5  -28  -11  -20
+Beta00118     -8  -10  -10   13  -18   -3    0    3    3    7    3    2    2
+Beta00120     -9  -11   -9   17  -37    1   -2   -1    6    1    1    0    1
+ 
+ 
+Correlation of Estimates (multiplied by 1000)
+            (continued)
+ 
+            0018 0020 0021 0025 0029 0030 0031 0032 0039 0040 0041 0042 0043
+Beta00020   -463
+Beta00021    151  383
+Beta00025    239 -108  -58
+Beta00029     -8  279   94  -80
+Beta00030     66    8  142 -113  -65
+Beta00031     -5   -8   -1   -7  -19   -1
+Beta00032     22  -11   -1  135   -8  -20  -63
+Beta00039     51  -31   -3   14   -7    0  -62   86
+Beta00040    103  -87    1   24   -6    8  -53  133  399
+Beta00041    135 -132   -2   25   -9   11   -6  111  320  456
+Beta00042     57  -57   -1   22    0   -4 -118  116  384  380  326
+Beta00043    104 -117   -2   29    6   -3  -43  160  448  530  542  484
+Beta00044    288 -134   -6   30    3   23   -6  149  428  551  609  436  650
+Beta00045    111 -122  -13   19   -7    3    0   64  161   70  544  201  335
+Beta00046     17  -12   27   -1    2    1 -116   12   66  252  287   -5  190
+Beta00047     23  -26   12    3   -6    0 -200  -25 -204 -212 -145   48 -152
+Beta00048   -144  260   27  -26   58  -10 -138  -38  -59 -260 -498 -179 -410
+Beta00049      5  -17   -8    4  -10   -1 -936   31   -9   11   -3  -11  -27
+Beta00051      2  -16    3   -6  -21   -1  937  -72 -125 -119  -35 -105  -89
+Beta00053    -23  -39 -118    4   -2  -12  -20   27   -4    9    7  -16   11
+Beta00054      8   -6    0   -1    1    0   47    7   32   41   81  -15    9
+Beta00059    -10   61    1  -17  216  -21  135  -64  -40  -71  -54    2    7
+Theta0060     32   -2   24  -29  -18  242  103  -80   -9    4   12  -14  -25
+Beta00061    -17  -20  -66   -6  -14   -5   11   -4  -11  -14    2  -15   -7
+Beta00062      9   -8   -2   56   -3   -6   -2   50    4    7    6    6    9
+Beta00069     47  -22   25    8   -5    1   -4    4   99   39   37   26   34
+Beta00070     68  -49   11   14   -8    6   -3    6   23  132   55   20   39
+Beta00072     16   -9   11    3   -1    2   -2    2    7   11   11   30   17
+Beta00073     25  -24    5    6   -3    1   -2    4   11   19   21   14   40
+Beta00074     87  -38    2    9    0    6   -4    5   18   36   48   18   35
+Beta00075     16   12   73    1   -2    4    2    0    5   10   -1    7    2
+Beta00078      3   -1    2    1   -1   -3   -7    1    1    4    2    1    2
+Beta00082    -31   52   15   -6   11   -3   -2   -4  -10  -22  -35  -17  -35
+Beta00084     13   -8    6  -12  -11  104    3   -8    4    7    7   -1    0
+Beta00085     -6   18    0   -6   64   -6  -14   -4   -3   -4   -9   -5   -6
+Beta00086      5   -5    3    1   -1   -1    0   -1   -1    7   11   -2    2
+Beta00087     57  -54   -3   11   -7    4   -3    8   25   56  135   24   49
+Beta00091    -55   15 -103  -19   -3    5   14  -17  -35  -45  -37  -44  -52
+Beta00092     15    1   -2  119    0   -6   -8  129   12   15   10   13   17
+Beta00098     72  -31   34   18  -10    4   -5   15  164   66   63   48   63
+Beta00099     93  -55   22   23   -6    7   -7   16   42  176   84   33   60
+Beta00101    -53   15 -101  -19   -3    5   14  -16  -33  -43  -35  -43  -51
+Beta00102     23   -8   12    6   -1    5   -4    4   19   22   17   64   27
+Beta00103     54  -31   29   18   -3   -1   -6   17   36   50   47   40  115
+Beta00104    177  -55   13   21    1    7  -10   17   47   72   98   38   71
+Beta00105    102  -67   12   21   -3    5  -15   19   54   97  264   41   83
+Beta00108     54  -34  100    8   -9   -2    4    4   16   38   41   25   41
+Beta00109    -20   41   19   -4   12  -11   -8   -4   -7  -16  -19  -15  -25
+Beta00114     -2    4    1    0    6    1    7    0    1   -4   -1   -1   -2
+Beta00115      0    9    2   -1   28   -6  -24   -4    7    0    4   -3    0
+Beta00117    -27   46   17   -5    1   -9    4   -3  -14   -9  -38  -12  -34
+Beta00118      2   -7   -1   -1    6    5    4    0    1    9    1   -1    1
+Beta00120     -1   -3   -3   -5   18   10   -4   -4    2    1    1    3    2
+ 
+ 
+Correlation of Estimates (multiplied by 1000)
+            (continued)
+ 
+            0044 0045 0046 0047 0048 0049 0051 0053 0054 0059 0060 0061 0062
+Beta00045    395
+Beta00046    290  152
+Beta00047   -168   11 -381
+Beta00048   -482 -408 -158 -193
+Beta00049    -39    7  177   -2   60
+Beta00051    -59  -26 -235  117 -198 -947
+Beta00053     48   -3   77  104 -197   17   12
+Beta00054     73   63   26   -2 -108  -73   47   50
+Beta00059    -12  -38 -113  -25  258 -276  129  -77   85
+Theta0060     43   17 -100   25  -33 -123  112 -108   33  -36
+Beta00061      2    8   -5  -10    0   -1    8   39   -1  -10   -1
+Beta00062      8    4    1   -1   -4    1   -3    1    0   -4   -6  -32
+Beta00069     43   24    1   -2  -28    2   -4  -18    2   -9    1 -388   61
+Beta00070     62    9   16    2  -49    4   -2    4    0  -11    1  -56   85
+Beta00072     14    7    2    3  -14   -2   -2   -5    2   -1    1  -93  -60
+Beta00073     24   15    6   -1  -27    2   -2   -1    1   -4   -1  -46   37
+Beta00074     98   37   14    0  -45    4   -4    5    4   -3    6   86   47
+Beta00075     -5   -5    0   12  -12   -4    6  -45   -1   -7    0 -849  -28
+Beta00078      4    1    4   -1   -2    8   -8    1    1   -1   -4 -329  -13
+Beta00082    -39  -28  -16    7   56   -3    0  -18   -2   14   -1 -577  -12
+Beta00084     12    5   -5   -3   -9   -3    2   -4    2  -11  108 -148  -42
+Beta00085     -7   -8   -6    0   21    6  -14   -1    3   68   -6 -226  -33
+Beta00086     10    9   44    3  -19    1    1    7    1   -6   -4  113    7
+Beta00087     72  131   25   -3  -63    6   -4   15    8  -11    1  119   43
+Beta00091    -37  -21  -47  -17   60   -2    9   53   -3    8   17  137  -12
+Beta00092     16    5   -9   -3    5    2   -9    1   -1   -1   -5   -7   61
+Beta00098     74   40   -5  -12  -34    1   -9  -23    3  -12    3  -46   11
+Beta00099     92   22   16   -5  -55    8   -8    4    1  -10    0  -29   13
+Beta00101    -35  -20  -45  -17   59   -2    9   52   -3    8   17  134  -11
+Beta00102     25    9    5    3  -12   -5   -4   -6    4    0    7  -17    3
+Beta00103     54   29    5   -7  -38    1   -8  -15    0   -5   -4  -47   11
+Beta00104    206   74   27   -8  -66   10  -12   12    7   -4    4  -24   11
+Beta00105    132  253   40  -10  -81   17  -18   20   13   -8   -3  -25   10
+Beta00108     34   28   32   14  -79   -2    9  -55    0  -22  -12 -108    6
+Beta00109    -22  -12   45   24   25   -1   -1   -5   -3   10  -15  -39   -3
+Beta00114     -3   -1   -2   -1    4   -8    6    1   -1    4   -5    2    0
+Beta00115      2    1    8   -4   15   21  -26   -6   10   34   -9  -19   -4
+Beta00117    -44  -36  -42    4   61   -9    6  -53   -3    6   -2  -18   -2
+Beta00118      1   -5    8    1   -8   -6    5   10    6    7    5   -2   -2
+Beta00120     -2    2   -9    2   -3    1   -4   -2    3   21   13  -12   -2
+ 
+ 
+Correlation of Estimates (multiplied by 1000)
+            (continued)
+ 
+            0069 0070 0072 0073 0074 0075 0078 0082 0084 0085 0086 0087 0091
+Beta00070    477
+Beta00072    158  187
+Beta00073    199  282   79
+Beta00074    258  451  116  178
+Beta00075    313   56   66   44  -68
+Beta00078     32  -10  -50  -16  -51   53
+Beta00082   -131 -589  -91 -224 -466  467   47
+Beta00084    -85   -9   17  -41  -10  151   50   68
+Beta00085      8 -114   16  -11  -57   26 -103  153  -80
+Beta00086     73  218 -117   73  147 -181   14 -254  -68  -73
+Beta00087    268  502  118  197  346  -90  -23 -549  -19  -66  170
+Beta00091    -54  -67  -31  -35  -33 -141   -3   -5    3   -4  -18  -34
+Beta00092     10   11    2    5    7    1    0   -3   -1   -1   -5    7  -71
+Beta00098    147   72   24   28   42   47    3  -26    6  -13  -12   46 -424
+Beta00099     57  180   23   33   60   31    1  -48   11  -14    7   73 -552
+Beta00101    -52  -65  -30  -34  -32 -138   -4   -5    3   -4  -17  -32  939
+Beta00102     28   26   50   11   15   12    0  -13    4   -5   -5   16 -157
+Beta00103     48   54   23   46   31   50   -1  -18    4   -6   -8   34 -411
+Beta00104     48   92   20   28   91   25   -3  -40   11   -9    6   66 -460
+Beta00105     50   97   19   28   57   27    4  -40   10   -8    7  145 -464
+Beta00108     46   61   24   31   32  132   -4   -8    2   -5   10   35 -727
+Beta00109    -25  -14   -9   -5  -13   33   -2   40  -13    9   31  -17 -328
+Beta00114     -1   -3   -1   -1   -2    0  -10    4   -4    0   -1   -4  -14
+Beta00115      4   -1   -1   -1   -2   -2   59    3   -4   17   -2   -2  -85
+Beta00117      6  -60   -4  -12  -31   22   -3   45   -8    7  -27  -42  296
+Beta00118    -10   -4    3   -1   -3   -5    7    4    1   13    1    2  -55
+Beta00120      3   -1   -1    1    0    6    4    4    2   15    1   -1  -62
+ 
+ 
+Correlation of Estimates (multiplied by 1000)
+            (continued)
+ 
+            0092 0098 0099 0101 0102 0103 0104 0105 0108 0109 0114 0115 0117
+Beta00098    139
+Beta00099    126  548
+Beta00101    -71 -415 -544
+Beta00102     27  310  242 -154
+Beta00103    129  485  463 -404  226
+Beta00104    111  461  679 -454  203  384
+Beta00105     99  439  666 -457  184  374  603
+Beta00108    -37  306  511 -714   84  345  432  452
+Beta00109    -46 -278 -157 -318 -160 -206 -127 -140 -170
+Beta00114     14   -8   -3  -14    1   -7    4   -9   -8   -1
+Beta00115     24  -41  -64  -83  -24  -25 -104    7  -69   27   48
+Beta00117     30  -10 -517  290   21  -60 -515 -500 -304 -198    7   37
+Beta00118    -75  -47  -90  -55  -35  -29  -79  -77  -26   16   -8  -10   39
+Beta00120     -3   -8  -45  -61    7  -31  -22   -8  -43    4    7  -57   74
+ 
+ 
+Correlation of Estimates (multiplied by 1000)
+            (continued)
+ 
+            0118
+Beta00120      5
+ 
+ 
+Convergence (option 3) value is    .2153E-03
+ 
+INFORMATION 004: main estimation time      .20 secs.
+ 
+INFORMATION 005: total run time is     2.14 secs.  Run at 12:04:03 on  8 Apr 13
+ 
+INFORMATION 006: run time (hours:min:sec) is  0:00:02

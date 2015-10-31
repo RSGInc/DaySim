@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{33842B3A-A2CB-4B61-933B-811CED8CF74B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Daysim.Framework</RootNamespace>
+    <AssemblyName>Daysim.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RegisterForComInterop>false</RegisterForComInterop>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Parallel Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Parallel Debug\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Daysim.Framework.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CaliperMTXNet64, Version=6.0.0.0, Culture=neutral, PublicKeyToken=f4267c1cea718a61, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Desktop\GISDK\CaliperMTXNet64.dll</HintPath>
+    </Reference>
+    <Reference Include="HDF5DotNet">
+      <HintPath>..\HDF5DotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject-2.2.0.0\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChoiceModels\ChoiceModel.cs" />
+    <Compile Include="ChoiceModels\IChoiceModel.cs" />
+    <Compile Include="Coefficients\ICoefficient.cs" />
+    <Compile Include="Coefficients\ICoefficientsReader.cs" />
+    <Compile Include="Core\alglibinternal.cs" />
+    <Compile Include="Core\ap.cs" />
+    <Compile Include="Core\AsciiTable.cs" />
+    <Compile Include="ChoiceModels\ChoiceModelSession.cs" />
+    <Compile Include="ChoiceModels\ChoiceModelHelper.cs" />
+    <Compile Include="ChoiceModels\ChoiceProbabilityCalculator.cs" />
+    <Compile Include="ChoiceModels\ChoiceProbabilityFactory.cs" />
+    <Compile Include="Core\ChosenAlternative.cs" />
+    <Compile Include="Coefficients\Coefficient.cs" />
+    <Compile Include="Coefficients\CoefficientsReader.cs" />
+    <Compile Include="Core\Configuration.cs" />
+    <Compile Include="Core\ConfigurationManager.cs" />
+    <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\IMinuteSpan.cs" />
+    <Compile Include="Core\ITimeWindow.cs" />
+    <Compile Include="Core\ITourModeImpedance.cs" />
+    <Compile Include="Core\ITripModeImpedance.cs" />
+    <Compile Include="Core\UsedImplicitlyAttribute.cs" />
+    <Compile Include="DomainModels\Creators\ICreator.cs" />
+    <Compile Include="DomainModels\Creators\IFullHalfTourCreator.cs" />
+    <Compile Include="DomainModels\Creators\IHouseholdCreator.cs" />
+    <Compile Include="DomainModels\Creators\IHouseholdDayCreator.cs" />
+    <Compile Include="DomainModels\Creators\IJointTourCreator.cs" />
+    <Compile Include="DomainModels\Creators\IParcelCreator.cs" />
+    <Compile Include="DomainModels\Creators\IParcelNodeCreator.cs" />
+    <Compile Include="DomainModels\Creators\IParkAndRideNodeCreator.cs" />
+    <Compile Include="DomainModels\Creators\IPartialHalfTourCreator.cs" />
+    <Compile Include="DomainModels\Creators\IPersonCreator.cs" />
+    <Compile Include="DomainModels\Creators\IPersonDayCreator.cs" />
+    <Compile Include="DomainModels\Creators\ITourCreator.cs" />
+    <Compile Include="DomainModels\Creators\ITransitStopAreaCreator.cs" />
+    <Compile Include="DomainModels\Creators\ITripCreator.cs" />
+    <Compile Include="DomainModels\Creators\IZoneCreator.cs" />
+    <Compile Include="Exceptions\MissingInstallationException.cs" />
+    <Compile Include="Factories\Category.cs" />
+    <Compile Include="Factories\ChoiceModelRunner.cs" />
+    <Compile Include="Factories\ChoiceModelRunnerTypeLocator.cs" />
+    <Compile Include="Factories\SettingsTypeLocator.cs" />
+    <Compile Include="Factories\DataType.cs" />
+    <Compile Include="Factories\Factory.cs" />
+    <Compile Include="Factories\FactoryAttribute.cs" />
+    <Compile Include="Factories\FactoryHelper.cs" />
+    <Compile Include="Factories\ISettings.cs" />
+    <Compile Include="Factories\IPersistenceFactory.cs" />
+    <Compile Include="Factories\IWrapperFactory.cs" />
+    <Compile Include="Factories\ModuleTypeLocator.cs" />
+    <Compile Include="Factories\PersistenceTypeLocator.cs" />
+    <Compile Include="Factories\SubzoneTypeLocator.cs" />
+    <Compile Include="Factories\TypeLocator.cs" />
+    <Compile Include="Factories\WrapperTypeLocator.cs" />
+    <Compile Include="DomainModels\Models\IParcelNode.cs" />
+    <Compile Include="DomainModels\Models\IParkAndRideNode.cs" />
+    <Compile Include="DomainModels\Models\ISubzone.cs" />
+    <Compile Include="DomainModels\Models\ITransitStopArea.cs" />
+    <Compile Include="DomainModels\Models\IZone.cs" />
+    <Compile Include="DomainModels\Models\IZoneTotals.cs" />
+    <Compile Include="DomainModels\Wrappers\IParcelNodeWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\IParcelWrapper.cs" />
+    <Compile Include="DomainModels\Models\IFullHalfTour.cs" />
+    <Compile Include="DomainModels\Models\IHalfTour.cs" />
+    <Compile Include="DomainModels\Models\IHousehold.cs" />
+    <Compile Include="DomainModels\Models\IHouseholdDay.cs" />
+    <Compile Include="DomainModels\Models\IHouseholdTotals.cs" />
+    <Compile Include="DomainModels\Models\IJointTour.cs" />
+    <Compile Include="DomainModels\Models\IModel.cs" />
+    <Compile Include="DomainModels\Models\IParcel.cs" />
+    <Compile Include="DomainModels\Models\IPartialHalfTour.cs" />
+    <Compile Include="DomainModels\Models\IPerson.cs" />
+    <Compile Include="DomainModels\Models\IPersonDay.cs" />
+    <Compile Include="DomainModels\Models\IPoint.cs" />
+    <Compile Include="DomainModels\Models\ITour.cs" />
+    <Compile Include="DomainModels\Models\ITrip.cs" />
+    <Compile Include="DomainModels\Models\IZoneItem.cs" />
+    <Compile Include="DomainModels\Persisters\IPersisterExporter.cs" />
+    <Compile Include="DomainModels\Persisters\IPersisterImporter.cs" />
+    <Compile Include="DomainModels\Persisters\IPersisterReader.cs" />
+    <Compile Include="DomainModels\Wrappers\IParkAndRideNodeWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\ITransitStopAreaWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\IZoneWrapper.cs" />
+    <Compile Include="Persistence\Hdf5Exporter.cs" />
+    <Compile Include="DomainModels\Wrappers\IFullHalfTourWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\IHouseholdDayWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\IHouseholdWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\IJointTourWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\IPartialHalfTourWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\IPersonDayWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\IPersonWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\ITourWrapper.cs" />
+    <Compile Include="DomainModels\Wrappers\ITripWrapper.cs" />
+    <Compile Include="Exceptions\ChosenParcelNotSetInEstimationModeException.cs" />
+    <Compile Include="Exceptions\ChoiceModelRunnerException.cs" />
+    <Compile Include="Core\ErrorFile.cs" />
+    <Compile Include="Exceptions\HouseholdDayModelException.cs" />
+    <Compile Include="Core\EngineExtensions.cs" />
+    <Compile Include="ChoiceModels\IChoiceModelRunner.cs" />
+    <Compile Include="Exceptions\MissingShortDistanceCircuityMeasuresException.cs" />
+    <Compile Include="Exceptions\InvalidTimeCoefficientException.cs" />
+    <Compile Include="Core\IRandomUniform01.cs" />
+    <Compile Include="Core\IRandomUtility.cs" />
+    <Compile Include="Core\RandomUniform01.cs" />
+    <Compile Include="Core\specialfunctions.cs" />
+    <Compile Include="Exceptions\SubtourModelException.cs" />
+    <Compile Include="Exceptions\TripModelException.cs" />
+    <Compile Include="Exceptions\TourModelException.cs" />
+    <Compile Include="Exceptions\PersonDayModelException.cs" />
+    <Compile Include="Exceptions\PersonModelException.cs" />
+    <Compile Include="Exceptions\HouseholdModelException.cs" />
+    <Compile Include="Core\FileSizeFormatProvider.cs" />
+    <Compile Include="Exceptions\InvalidParkAndRideZoneIdException.cs" />
+    <Compile Include="Exceptions\InvalidSkimRowException.cs" />
+    <Compile Include="Exceptions\InvalidDepartureTimeException.cs" />
+    <Compile Include="Core\MetadataAttribute.cs" />
+    <Compile Include="Core\MinuteSpan.cs" />
+    <Compile Include="Core\PrintFile.cs" />
+    <Compile Include="Core\TimeWindow.cs" />
+    <Compile Include="Exceptions\UndefinedInputPathException.cs" />
+    <Compile Include="Exceptions\MissingHeaderException.cs" />
+    <Compile Include="Exceptions\VotGroupNotFoundException.cs" />
+    <Compile Include="Exceptions\InvalidCombinationException.cs" />
+    <Compile Include="Exceptions\InvalidPathTypeException.cs" />
+    <Compile Include="Exceptions\InvalidTourDirectionException.cs" />
+    <Compile Include="Core\IObservationItem.cs" />
+    <Compile Include="Core\TourModeImpedance.cs" />
+    <Compile Include="Core\TripModeImpedance.cs" />
+    <Compile Include="Core\Logger.cs" />
+    <Compile Include="Exceptions\ValueIsInfinityException.cs" />
+    <Compile Include="Exceptions\ValueIsNaNException.cs" />
+    <Compile Include="Core\Extensions.cs" />
+    <Compile Include="Core\Global.cs" />
+    <Compile Include="Core\RandomUtility.cs" />
+    <Compile Include="Exceptions\SkimMatrixNotFoundException.cs" />
+    <Compile Include="Exceptions\RosterEntryNotFoundException.cs" />
+    <Compile Include="Core\Timer.cs" />
+    <Compile Include="Core\Utility.cs" />
+    <Compile Include="Exceptions\VariableNotFoundException.cs" />
+    <Compile Include="Exceptions\ErrorReadingSkimFileException.cs" />
+    <Compile Include="Core\InfinitePartitioner.cs" />
+    <Compile Include="Core\ParallelUtility.cs" />
+    <Compile Include="Exceptions\SegmentRemainsUnassignedException.cs" />
+    <Compile Include="Exceptions\SkimFileTypeNotSupportedException.cs" />
+    <Compile Include="Persistence\ColumnNameAttribute.cs" />
+    <Compile Include="Persistence\Exporter.cs" />
+    <Compile Include="Persistence\ExporterFactory.cs" />
+    <Compile Include="Persistence\IExporter.cs" />
+    <Compile Include="Persistence\IImporter.cs" />
+    <Compile Include="Persistence\Importer.cs" />
+    <Compile Include="Persistence\ImporterExtensions.cs" />
+    <Compile Include="Persistence\ImporterFactory.cs" />
+    <Compile Include="Persistence\Element.cs" />
+    <Compile Include="Persistence\ISavable.cs" />
+    <Compile Include="Persistence\ModelUtility.cs" />
+    <Compile Include="Persistence\Reader.cs" />
+    <Compile Include="Persistence\ThreadQueue.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Roster\BinarySkimFileReader.cs" />
+    <Compile Include="Roster\BinarySkimFileReaderCreator.cs" />
+    <Compile Include="Roster\CubeReaderCreator.cs" />
+    <Compile Include="Roster\CubeSkimFileReader.cs" />
+    <Compile Include="Roster\EMMEReaderCreator.cs" />
+    <Compile Include="Roster\EMMESkimFileReader.cs" />
+    <Compile Include="Roster\HDF5ReaderCreator.cs" />
+    <Compile Include="Roster\HDF5SkimFileReader.cs" />
+    <Compile Include="Roster\IFileReaderCreator.cs" />
+    <Compile Include="Roster\ImpedanceRoster.cs" />
+    <Compile Include="Roster\ImpedanceRosterLoader.cs" />
+    <Compile Include="Roster\ISkimFileReader.cs" />
+    <Compile Include="Roster\RosterEntry.cs" />
+    <Compile Include="Roster\SkimFileReaderFactory.cs" />
+    <Compile Include="Roster\SkimMatrix.cs" />
+    <Compile Include="Roster\SkimValue.cs" />
+    <Compile Include="Roster\TextIJSkimFileReader.cs" />
+    <Compile Include="Roster\TextIJSkimFileReaderCreator.cs" />
+    <Compile Include="Roster\TranscadReaderCreator.cs" />
+    <Compile Include="Roster\TranscadSkimFileReader.cs" />
+    <Compile Include="Roster\VisumSkimReader.cs" />
+    <Compile Include="Roster\VisumSkimReaderCreator.cs" />
+    <Compile Include="Sampling\ISamplingTour.cs" />
+    <Compile Include="Sampling\ISamplingTrip.cs" />
+    <Compile Include="Sampling\WeightSegmentItem.cs" />
+    <Compile Include="Sampling\SizeSegmentItem.cs" />
+    <Compile Include="Sampling\DestinationSampler.cs" />
+    <Compile Include="Sampling\ISampleItem.cs" />
+    <Compile Include="Sampling\ISamplingUtilities.cs" />
+    <Compile Include="Sampling\SegmentZone.cs" />
+    <Compile Include="Sampling\SegmentZoneFormatter.cs" />
+    <Compile Include="Settings\IAddressTypes.cs" />
+    <Compile Include="Settings\ICarOwnerships.cs" />
+    <Compile Include="Settings\IDestinationScales.cs" />
+    <Compile Include="Settings\IDriverTypes.cs" />
+    <Compile Include="Settings\IHouseholdTypes.cs" />
+    <Compile Include="Settings\IMaxInputs.cs" />
+    <Compile Include="Settings\IModels.cs" />
+    <Compile Include="Settings\IModes.cs" />
+    <Compile Include="Settings\IPathTypes.cs" />
+    <Compile Include="Settings\IPatternTypes.cs" />
+    <Compile Include="Settings\IPersonGenders.cs" />
+    <Compile Include="Settings\IPersonTypes.cs" />
+    <Compile Include="Settings\IPurposes.cs" />
+    <Compile Include="Settings\ITimeDirections.cs" />
+    <Compile Include="Settings\ITimes.cs" />
+    <Compile Include="Settings\ITourCategories.cs" />
+    <Compile Include="Settings\ITourDirections.cs" />
+    <Compile Include="Settings\ITourPriorities.cs" />
+    <Compile Include="Settings\ITransitAccesses.cs" />
+    <Compile Include="Settings\IValueOfTimes.cs" />
+    <Compile Include="Settings\IVotALSegments.cs" />
+    <Compile Include="Settings\IVotGroups.cs" />
+    <Compile Include="ShadowPricing\IParkAndRideShadowPriceNode.cs" />
+    <Compile Include="ShadowPricing\IShadowPriceParcel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CaliperMTXNet64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CaliperMtxS.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="hdf5dll.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="hdf5_hldll.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="szip.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="zlib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="hdf5dll.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="hdf5_hldll.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="szip.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="zlib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

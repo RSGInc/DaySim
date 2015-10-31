@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daysim", "Daysim\Daysim.csproj", "{C89E2003-E353-43B8-BF0A-9A821945933A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daysim.Framework", "Daysim.Framework\Daysim.Framework.csproj", "{33842B3A-A2CB-4B61-933B-811CED8CF74B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaysimController", "DaysimController\DaysimController.csproj", "{FB158352-2310-4E0F-84E2-50EFFF669C55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daysim.VisumExport", "Daysim.VisumExport\Daysim.VisumExport.csproj", "{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9C172028-C7C2-40B7-AE9B-413C4F84EC6D}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Parallel Debug|Any CPU = Parallel Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Trace|Any CPU = Trace|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Parallel Debug|Any CPU.ActiveCfg = Parallel Debug|Any CPU
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Parallel Debug|Any CPU.Build.0 = Parallel Debug|Any CPU
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Trace|Any CPU.Build.0 = Release|Any CPU
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Parallel Debug|Any CPU.ActiveCfg = Parallel Debug|Any CPU
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Parallel Debug|Any CPU.Build.0 = Parallel Debug|Any CPU
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Trace|Any CPU.Build.0 = Release|Any CPU
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Parallel Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Parallel Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Trace|Any CPU.Build.0 = Release|Any CPU
+		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Parallel Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Parallel Debug|Any CPU.Build.0 = Debug|Any CPU
+		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Trace|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

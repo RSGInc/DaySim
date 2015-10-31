@@ -1,0 +1,413 @@
+ALOGIT S & A (C) ALOGIT 4.3 serial 4393
+Licensed to: Pudget Sound Regional Council                               
+ 
+Mandatory Stop Generation Repo version 2088
+C:.. (x86)\HCG Software\ALOGIT 4\Alo4nec.exe 551424 b. Date:  4 Jan 13 at 16:23 
+ 
+INFORMATION 246:   FILE  1 : first main file
+C:..timation\HMandatoryStopPresenceModel.dat 871953 b. Date: 12 Apr 13 at 11:30
+ 
+INFORMATION 163: control file completed:   161 lines
+C:..timation\HMandatoryStopPresenceModel.alo   4544 b. Date: 12 Apr 13 at 11:30
+ 
+Function defined in control file: PREP & ESTIM
+ 
+WARNING 152: coefficient Beta00001  not used in model
+ 
+WARNING 152: coefficient Beta00002  not used in model
+ 
+WARNING 152: coefficient Beta00003  not used in model
+ 
+WARNING 152: coefficient Beta00004  not used in model
+ 
+WARNING 152: coefficient Beta00005  not used in model
+ 
+WARNING 152: coefficient Beta00006  not used in model
+ 
+WARNING 152: coefficient Beta00007  not used in model
+ 
+WARNING 152: coefficient Beta00008  not used in model
+ 
+WARNING 152: coefficient Beta00009  not used in model
+ 
+WARNING 152: coefficient Beta00010  not used in model
+ 
+WARNING 152: coefficient Beta00011  not used in model
+ 
+WARNING 152: coefficient Beta00012  not used in model
+ 
+WARNING 152: coefficient Beta00013  not used in model
+ 
+WARNING 152: coefficient Beta00014  not used in model
+ 
+WARNING 152: coefficient Beta00015  not used in model
+ 
+WARNING 152: coefficient Beta00016  not used in model
+ 
+WARNING 152: coefficient Beta00017  not used in model
+ 
+WARNING 152: coefficient Beta00018  not used in model
+ 
+WARNING 152: coefficient Beta00019  not used in model
+ 
+WARNING 152: coefficient Beta00020  not used in model
+ 
+WARNING 152: coefficient Beta00024  not used in model
+ 
+WARNING 152: coefficient Beta00026  not used in model
+ 
+WARNING 152: coefficient Beta00027  not used in model
+ 
+WARNING 152: coefficient Beta00032  not used in model
+ 
+WARNING 152: coefficient Beta00034  not used in model
+ 
+WARNING 152: coefficient Beta00038  not used in model
+ 
+WARNING 152: coefficient Beta00039  not used in model
+ 
+WARNING 152: coefficient Beta00040  not used in model
+ 
+WARNING 152: coefficient Beta00043  not used in model
+ 
+WARNING 152: coefficient Beta00044  not used in model
+ 
+WARNING 152: coefficient Beta00048  not used in model
+ 
+WARNING 152: coefficient Beta00050  not used in model
+ 
+WARNING 152: coefficient Beta00052  not used in model
+ 
+WARNING 152: coefficient Beta00054  not used in model
+ 
+WARNING 152: coefficient Beta00055  not used in model
+ 
+WARNING 152: coefficient Beta00056  not used in model
+ 
+WARNING 152: coefficient Beta00057  not used in model
+ 
+WARNING 152: coefficient Beta00058  not used in model
+ 
+WARNING 152: coefficient Beta00059  not used in model
+ 
+WARNING 152: coefficient Beta00060  not used in model
+ 
+WARNING 152: coefficient Beta00062  not used in model
+ 
+WARNING 152: coefficient Beta00063  not used in model
+ 
+WARNING 152: coefficient Beta00064  not used in model
+ 
+WARNING 152: coefficient Beta00065  not used in model
+ 
+WARNING 152: coefficient Beta00066  not used in model
+ 
+WARNING 152: coefficient Beta00067  not used in model
+ 
+WARNING 152: coefficient Beta00068  not used in model
+ 
+WARNING 152: coefficient Beta00069  not used in model
+ 
+WARNING 152: coefficient Beta00070  not used in model
+ 
+WARNING 152: coefficient Beta00071  not used in model
+ 
+WARNING 152: coefficient Beta00072  not used in model
+ 
+WARNING 152: coefficient Beta00073  not used in model
+ 
+WARNING 152: coefficient Beta00074  not used in model
+ 
+WARNING 152: coefficient Beta00075  not used in model
+ 
+WARNING 152: coefficient Beta00076  not used in model
+ 
+WARNING 152: coefficient Beta00077  not used in model
+ 
+WARNING 152: coefficient Beta00078  not used in model
+ 
+WARNING 152: coefficient Beta00079  not used in model
+ 
+$GEN.STATS controls
+ Utility components selected
+    25 total items selected
+ 
+$ESTIMATE controls
+ Control present = T
+ Estimation done = F
+ Linear first    = T
+ Estimate later  = F
+ Accept error    = F
+ 
+ 
+$ALGOR controls
+ Maximum iterations          =  20
+ Convergence level           =   .100000E-01
+ 1st derivative perp. test   =   .100000E-05
+ Function rate of increase   =  -999.900
+ Matrix inversion tolerance  =   .100000E-02
+ Step reduction factor       =   .150000
+ Convergence option          =   3
+ Maximum step-reducing loops =   4
+ 
+ 
+REPORT OF COEFFICIENTS
+ 
+Label      Con   Value      Type
+-------    ---   -----      -----
+Beta00021   F    .0000      Utility
+Beta00022   F    .0000      Utility
+Beta00023   F    .0000      Utility
+Beta00025   F    .0000      Utility
+Beta00028   F    .0000      Utility
+Beta00029   F    .0000      Utility
+Beta00030   F    .0000      Utility
+Beta00031   F    .0000      Utility
+Beta00033   F    .0000      Utility
+Beta00035   F    .0000      Utility
+Beta00036   F    .0000      Utility
+Beta00037   F    .0000      Utility
+Beta00041   F    .0000      Utility
+Beta00042   F    .0000      Utility
+Beta00045   F    .0000      Utility
+Beta00046   F    .0000      Utility
+Beta00047   F    .0000      Utility
+Beta00049   F    .0000      Utility
+Beta00051   F    .0000      Utility
+Beta00053   F    .0000      Utility
+Beta00061   F    .0000      Utility
+ 
+INFORMATION 001: control file processing      .16 secs.
+ 
+OBSERVATION REJECTED 518:        715: choice Alt.00003  unavailable
+ 
+OBSERVATION REJECTED 518:       1657: choice Alt.00003  unavailable
+ 
+OBSERVATION REJECTED 518:       1931: choice Alt.00003  unavailable
+ 
+OBSERVATION REJECTED 518:       3246: choice Alt.00003  unavailable
+ 
+OBSERVATION REJECTED 518:       3389: choice Alt.00002  unavailable
+ 
+OBSERVATION REJECTED 518:       3437: choice Alt.00002  unavailable
+ 
+OBSERVATION REJECTED 518:       3927: choice Alt.00002  unavailable
+ 
+OBSERVATION REJECTED 518:       6054: choice Alt.00004  unavailable
+ 
+OBSERVATION REJECTED 518:       7193: choice Alt.00002  unavailable
+ 
+OBSERVATION REJECTED 518:       8896: choice Alt.00002  unavailable
+ 
+OBSERVATION REJECTED 518:      10644: choice Alt.00002  unavailable
+ 
+INFORMATION 534: reached end of file   1 after    11096 records
+ 
+Data input completed after 11096 records
+ 
+Rejected    11 observations with unacceptable choices
+ 
+ 
+FREQUENCY DISTRIBUTION OF ALTERNATIVE AVAILABILITY
+(Total weight is   11085.00 )
+ 
+Alternative    Chosen    Unchosen    Avail.    Unavail.
+-----------  ---------  ---------  ---------  ---------
+Alt.00001     9875.00    1210.00   11085.00        .00
+Alt.00002     1046.00    7050.00    8096.00    2989.00
+Alt.00003      160.00    3352.00    3512.00    7573.00
+Alt.00004        4.00     519.00     523.00   10562.00
+ 
+ 
+RANGES OF INDEPENDENT VARIABLES
+ 
+Coefficient   Chsn Min   Chsn Max   Diff Min   Diff Max
+-----------  ---------  ---------  ---------  ---------
+Beta00021         .00       2.00      -2.00       2.00
+Beta00022         .00       2.00      -2.00       2.00
+Beta00023         .00       2.00      -2.00       2.00
+Beta00025         .00       2.00      -2.00       2.00
+Beta00028         .00       2.00      -2.00       2.00
+Beta00029         .00       2.00      -2.00       2.00
+Beta00030         .00      28.57     -28.57      27.94
+Beta00031         .00       2.00      -2.00       2.00
+Beta00033         .00       2.00      -2.00       2.00
+Beta00035       -2.00       2.00      -2.00       2.00
+Beta00036         .00       2.00      -2.00       2.00
+Beta00037         .00       1.00      -1.00       2.00
+Beta00041         .00       2.00      -2.00       2.00
+Beta00042         .00       2.00      -2.00       2.00
+Beta00045         .00       1.00      -1.00       2.00
+Beta00046         .00       1.00      -1.00       2.00
+Beta00047         .00      22.14     -22.14      22.91
+Beta00049         .00       2.00      -2.00       2.00
+Beta00051         .00       2.00      -2.00       2.00
+Beta00053         .00       2.00      -2.00       2.00
+Beta00061         .00       1.00      -1.00       2.00
+ 
+ 
+SELECTED STATISTICS
+ 
+ 
+Alternative Alt.00001  avail. for     11085.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+             0                 .00
+ 
+ 
+Alternative Alt.00002  avail. for      8096.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00021    Temp 0001      100.00     1.00     2.00     1.16        .37
+Beta00022    Temp 0003       93.61      .00     2.00     1.16        .37
+Beta00023    Temp 0004        4.17      .00     2.00     1.07        .26
+Beta00025    Temp 0005       24.12      .00     2.00     1.02        .15
+Beta00028    Temp 0006        3.73      .00     2.00     1.06        .23
+Beta00029    Temp 0007       18.08      .00     2.00     1.19        .39
+Beta00030    Temp 0008      100.00     4.25    28.57    12.91       4.40
+Beta00031    Temp 0009       12.76      .00     2.00     1.13        .34
+Beta00033    Temp 0010       26.52      .00     2.00     1.10        .30
+Beta00035    Temp 0011      100.00    -2.00     2.00     -.93        .78
+Beta00036    Temp 0012       52.09      .00     2.00     1.06        .23
+Beta00037    Temp 0013       11.68      .00     2.00     1.01        .10
+             0                 .00
+ 
+ 
+Alternative Alt.00003  avail. for      3512.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00041    Temp 0038      100.00     1.00     2.00     1.04        .19
+Beta00042    Temp 0039        7.18      .00     2.00     1.11        .31
+Beta00045    Temp 0040        6.49      .00     2.00     1.02        .13
+Beta00046    Temp 0041        8.34      .00     2.00     1.10        .30
+Beta00047    Temp 0042       85.02      .00    22.91     8.15       2.12
+Beta00049    Temp 0043       58.74      .00     2.00     1.01        .12
+Beta00051    Temp 0044        6.89      .00     2.00     1.10        .30
+Beta00053    Temp 0045       17.28      .00     2.00     1.00        .06
+             0                 .00
+ 
+ 
+Alternative Alt.00004  avail. for       523.00 obs.
+ 
+Coefficient  Data Item  % Non-Zero  Minimum  Maximum  Average  Std. Dev.
+-----------  ---------  ----------  -------  -------  -------  ---------
+Beta00061    Temp 0061      100.00     1.00     2.00     1.10        .30
+             0                 .00
+ 
+INFORMATION 002: data processing time      .18 secs.
+ 
+C:..timation\HMandatoryStopPresenceModel.F11 768369 b. Date: 12 Apr 13 at 11:31
+ 
+INFORMATION 603: linear ("Quick") algorithm being used
+Iteration  1  Function =  -8046.0525   Conv.(3) = 34.0
+Iteration  2  Function =  -4106.4352   Conv.(3) = 12.2
+Iteration  3  Function =  -3802.1259   Conv.(3) = 5.53
+Iteration  4  Function =  -3768.1089   Conv.(3) = 2.03
+Iteration  5  Function =  -3765.2098   Conv.(3) = .410
+Iteration  6  Function =  -3765.1125   Conv.(3) = .223E-01
+Iteration  7  Function =  -3765.1122   Conv.(3) = .715E-04
+ 
+ 
+Convergence achieved after   7 iterations
+ 
+Analysis is based on  11085 observations
+ 
+ 
+Likelihood with Zero Coefficients =  -8046.0525
+ 
+Likelihood with Constants only    =  -3795.6439
+ 
+Initial Likelihood                =  -8046.0525
+ 
+ 
+Final value of Likelihood         =  -3765.1122
+ 
+ 
+   "Rho-Squared" w.r.t. Zero      =  .5321
+ 
+   "Rho-Squared" w.r.t. Constants =  .0080
+ 
+ 
+ 
+ESTIMATES OBTAINED AT ITERATION  7
+ 
+ 
+Likelihood =  -3765.1122
+ 
+ 
+          Beta00021  Beta00022  Beta00023  Beta00025  Beta00028  Beta00029
+ 
+ Estimate   .8373     -2.581     -2.065     -.4601     -2.348     -.3346
+Std. Error   1.07       1.02       1.03       .789E-01   1.01       .849E-01
+"T" Ratio     .8       -2.5       -2.0       -5.8       -2.3       -3.9
+ 
+ 
+          Beta00030  Beta00031  Beta00033  Beta00035  Beta00036  Beta00037
+ 
+ Estimate   .6580E-01 -.4554      .2044      .3516     -.3437     -.6820
+Std. Error   .264E-01   .102       .681E-01   .405E-01   .630E-01   .116
+"T" Ratio    2.5       -4.5        3.0        8.7       -5.5       -5.9
+ 
+ 
+          Beta00041  Beta00042  Beta00045  Beta00046  Beta00047  Beta00049
+ 
+ Estimate  -3.489      1.274     -.6551     -.4527      .4433E-01  .4089
+Std. Error   .244       .219       .425       .308       .259E-01   .176
+"T" Ratio  -14.3        5.8       -1.5       -1.5        1.7        2.3
+ 
+ 
+          Beta00051  Beta00053  Beta00061
+ 
+ Estimate   .5140     -1.204     -4.523
+Std. Error   .257       .350       .502
+"T" Ratio    2.0       -3.4       -9.0
+ 
+ 
+Correlation of Estimates (multiplied by 1000)
+ 
+            0021 0022 0023 0025 0028 0029 0030 0031 0033 0035 0036 0037 0041
+Beta00022   -959
+Beta00023   -952  992
+Beta00025    -22    1    1
+Beta00028   -944  983  976   -1
+Beta00029    -11   10   18   43    7
+Beta00030   -272   -5   -8   42   -4  -34
+Beta00031    -32   14    8   -6   10   32   28
+Beta00033     22   -4    0  -83    3   -8 -103   50
+Beta00035      9    6   -2   11   -6   66   35 -110   50
+Beta00036    -34   -4   -6 -120   -7    2   52  -43 -182   19
+Beta00037    -38    5    4   16  -37   43   70  -31 -129   15  279
+Beta00041      1   -1    0    0    0    1   -1    0    2    0   -4   -3
+Beta00042     -1    1    1    2   -3    1    2    2   -6    0    6   11 -152
+Beta00045      0    0    0    0   -1    1    0    0    0    0    0   -1  -39
+Beta00046     -2    1    1   -1    4   -1    1   -4   -2    2    2    4 -148
+Beta00047     -1    1    1   -1    1   -3    2    1   -2   -1    1    1 -763
+Beta00049      0    0    0    0    1    0    0   -1   -1    0    7    7 -498
+Beta00051      2   -1   -1    0    0   19   -2    1    1   -1   -1   -4 -111
+Beta00053      0    0    0    1    0    0    0    0    0    0    0    0 -190
+Beta00061      0    0    0    1    4    1    0    0   -1   -1    2    3   -1
+ 
+ 
+Correlation of Estimates (multiplied by 1000)
+            (continued)
+ 
+            0042 0045 0046 0047 0049 0051 0053
+Beta00045     69
+Beta00046    -46   31
+Beta00047     91  -46  116
+Beta00049    -88  -22  -14  -16
+Beta00051   -318   37 -196  -12   98
+Beta00053     56   18   49   56   92   47
+Beta00061     15   -1    3    1    4    2    0
+ 
+ 
+Convergence (option 3) value is    .7146E-04
+ 
+INFORMATION 004: main estimation time      .10 secs.
+ 
+INFORMATION 005: total run time is     1.82 secs.  Run at 11:31:21 on 12 Apr 13
+ 
+INFORMATION 006: run time (hours:min:sec) is  0:00:02

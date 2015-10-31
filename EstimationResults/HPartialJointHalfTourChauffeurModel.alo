@@ -1,0 +1,226 @@
+$TITLE PartialJointHalfTourChauffeurModel  PSRC svn v2033   ALO4.2     
+$ESTIMATE
+$GEN.STATS utilities
+$ALGOR maxit = 20
+$ALGOR Zeta  = 0.15
+
+  1  FTW-Half1 T 0.0000
+  2  PTW-Half1 F 0.0000
+  3  Beta00003 F 0.0000
+  4  Beta00004 F 0.0000
+  5  Uni-Half1 F 0.0000
+  6  HS--Half1 F 0.0000
+  7  Beta00007 F 0.0000
+  8  Beta00008 F 0.0000
+  9  Beta00009 F 0.0000
+ 10  Beta00010 F 0.0000
+ 11  FTW-Half2 T 0.0000
+ 12  PTW-Half2 F 0.0000
+ 13  Beta00013 F 0.0000
+ 14  Beta00014 F 0.0000
+ 15  Uni-Half2 F 0.0000
+ 16  HS--Half2 F 0.0000
+ 17  Beta00017 F 0.0000
+ 18  Beta00018 F 0.0000
+ 19  Beta00019 F 0.0000
+ 20  Beta00020 F 0.0000
+ 21  FTWPaired T 0.0000
+ 22  PTWPaired T -6.0000
+ 23  Beta00023 F 0.0000
+ 24  Beta00024 F 0.0000
+ 25  UniPaired T -6.0000
+ 26  HS-Paired T -6.0000
+ 27  Beta00027 F 0.0000
+ 28  Beta00028 F 0.0000
+ 29  Beta00029 F 0.0000
+ 30  Beta00030 F 0.0000
+ 31  Beta00031 T 0.0000
+ 32  Beta00032 F 0.0000
+ 33  Beta00033 F 0.0000
+ 34  Beta00034 F 0.0000
+ 35  Beta00035 F 0.0000
+ 36  Beta00036 F 0.0000
+ 37  Beta00037 F 0.0000
+ 38  Beta00038 F 0.0000
+ 39  Beta00039 F 0.0000
+ 40  Beta00040 F 0.0000
+ 41  Beta00041 F 0.0000
+ 42  Beta00042 F 0.0000
+ 43  Beta00043 F 0.0000
+ 44  Beta00044 F 0.0000
+ 45  Beta00045 F 0.0000
+ 46  Beta00046 F 0.0000
+ 47  Beta00047 F 0.0000
+ 48  Beta00048 F 0.0000
+ 49  Beta00049 F 0.0000
+ 50  Beta00050 F 0.0000
+ 51  Beta00051 F 0.0000
+ 52  Beta00052 F 0.0000
+ 53  Beta00053 F 0.0000
+ 54  Beta00054 F 0.0000
+ 55  Beta00055 F 0.0000
+ 56  Beta00056 F 0.0000
+ 57  Beta00057 F 0.0000
+ 58  Beta00058 F 0.0000
+ 59  Beta00059 F 0.0000
+ 60  Beta00060 F 0.0000
+
+$ARRAY DD(67)
+FILE (name=HPartialJointHalfTourChauffeurModel.dat) DD
+ID = DD(1)
+
+choice = DD(29)
+
+- rejected observations: 0
+
+- choice and availability summary -
+
+- alt   1 -      alt_1 / Chosen       62 Available       98
+- alt   2 -      alt_2 / Chosen      179 Available      213
+- alt   3 -      alt_3 / Chosen      216 Available      231
+- alt   4 -      alt_4 / Chosen      113 Available      119
+- alt   5 -      alt_5 / Chosen       29 Available       29
+
+- utility summary -
+
+- alt   1 -      alt_1 /   1 -  FTW-Half1 % Non-0   2.34 Mean     1.21
+- alt   1 -      alt_1 /   2 -  PTW-Half1 % Non-0   0.17 Mean     1.00
+- alt   1 -      alt_1 /   5 -  Uni-Half1 % Non-0   1.00 Mean     1.17
+- alt   1 -      alt_1 /   6 -  HS--Half1 % Non-0   4.34 Mean     1.27
+- alt   1 -      alt_1 /  11 -  FTW-Half2 % Non-0   1.67 Mean     1.00
+- alt   1 -      alt_1 /  12 -  PTW-Half2 % Non-0   0.00 Mean     0.00
+- alt   1 -      alt_1 /  15 -  Uni-Half2 % Non-0   0.33 Mean     1.00
+- alt   1 -      alt_1 /  16 -  HS--Half2 % Non-0   1.67 Mean     1.30
+- alt   1 -      alt_1 /  21 -  FTWPaired % Non-0   5.18 Mean     1.35
+- alt   1 -      alt_1 /  22 -  PTWPaired % Non-0   0.17 Mean     1.00
+- alt   1 -      alt_1 /  25 -  UniPaired % Non-0   0.33 Mean     1.50
+- alt   1 -      alt_1 /  26 -  HS-Paired % Non-0   0.83 Mean     1.00
+
+- alt   2 -      alt_2 /   1 -  FTW-Half1 % Non-0  20.37 Mean     1.18
+- alt   2 -      alt_2 /   2 -  PTW-Half1 % Non-0   1.00 Mean     1.17
+- alt   2 -      alt_2 /   5 -  Uni-Half1 % Non-0   1.84 Mean     1.00
+- alt   2 -      alt_2 /   6 -  HS--Half1 % Non-0   3.84 Mean     1.17
+- alt   2 -      alt_2 /  11 -  FTW-Half2 % Non-0   8.51 Mean     1.06
+- alt   2 -      alt_2 /  12 -  PTW-Half2 % Non-0   0.17 Mean     1.00
+- alt   2 -      alt_2 /  15 -  Uni-Half2 % Non-0   1.00 Mean     1.17
+- alt   2 -      alt_2 /  16 -  HS--Half2 % Non-0   1.67 Mean     1.10
+- alt   2 -      alt_2 /  21 -  FTWPaired % Non-0  11.52 Mean     1.29
+- alt   2 -      alt_2 /  22 -  PTWPaired % Non-0   1.50 Mean     1.11
+- alt   2 -      alt_2 /  25 -  UniPaired % Non-0   0.33 Mean     1.00
+- alt   2 -      alt_2 /  26 -  HS-Paired % Non-0   1.00 Mean     1.17
+
+- alt   3 -      alt_3 /   1 -  FTW-Half1 % Non-0  33.56 Mean     1.13
+- alt   3 -      alt_3 /   2 -  PTW-Half1 % Non-0   3.34 Mean     1.10
+- alt   3 -      alt_3 /   5 -  Uni-Half1 % Non-0   1.50 Mean     1.11
+- alt   3 -      alt_3 /   6 -  HS--Half1 % Non-0   1.84 Mean     1.18
+- alt   3 -      alt_3 /  11 -  FTW-Half2 % Non-0  19.03 Mean     1.09
+- alt   3 -      alt_3 /  12 -  PTW-Half2 % Non-0   0.67 Mean     1.00
+- alt   3 -      alt_3 /  15 -  Uni-Half2 % Non-0   0.67 Mean     1.00
+- alt   3 -      alt_3 /  16 -  HS--Half2 % Non-0   1.17 Mean     1.29
+- alt   3 -      alt_3 /  21 -  FTWPaired % Non-0  15.36 Mean     1.24
+- alt   3 -      alt_3 /  22 -  PTWPaired % Non-0   1.00 Mean     1.00
+- alt   3 -      alt_3 /  25 -  UniPaired % Non-0   0.67 Mean     1.25
+- alt   3 -      alt_3 /  26 -  HS-Paired % Non-0   0.00 Mean     0.00
+
+- alt   4 -      alt_4 /   1 -  FTW-Half1 % Non-0  18.86 Mean     1.10
+- alt   4 -      alt_4 /   2 -  PTW-Half1 % Non-0   6.68 Mean     1.08
+- alt   4 -      alt_4 /   5 -  Uni-Half1 % Non-0   0.67 Mean     1.00
+- alt   4 -      alt_4 /   6 -  HS--Half1 % Non-0   0.00 Mean     0.00
+- alt   4 -      alt_4 /  11 -  FTW-Half2 % Non-0  11.35 Mean     1.01
+- alt   4 -      alt_4 /  12 -  PTW-Half2 % Non-0   4.67 Mean     1.14
+- alt   4 -      alt_4 /  15 -  Uni-Half2 % Non-0   0.17 Mean     1.00
+- alt   4 -      alt_4 /  16 -  HS--Half2 % Non-0   0.17 Mean     1.00
+- alt   4 -      alt_4 /  21 -  FTWPaired % Non-0   6.68 Mean     1.28
+- alt   4 -      alt_4 /  22 -  PTWPaired % Non-0   2.67 Mean     1.13
+- alt   4 -      alt_4 /  25 -  UniPaired % Non-0   0.00 Mean     0.00
+- alt   4 -      alt_4 /  26 -  HS-Paired % Non-0   0.00 Mean     0.00
+
+- alt   5 -      alt_5 /   1 -  FTW-Half1 % Non-0   3.84 Mean     1.13
+- alt   5 -      alt_5 /   2 -  PTW-Half1 % Non-0   1.84 Mean     1.09
+- alt   5 -      alt_5 /   5 -  Uni-Half1 % Non-0   0.00 Mean     0.00
+- alt   5 -      alt_5 /   6 -  HS--Half1 % Non-0   0.33 Mean     1.00
+- alt   5 -      alt_5 /  11 -  FTW-Half2 % Non-0   2.50 Mean     1.13
+- alt   5 -      alt_5 /  12 -  PTW-Half2 % Non-0   0.67 Mean     1.00
+- alt   5 -      alt_5 /  15 -  Uni-Half2 % Non-0   0.00 Mean     0.00
+- alt   5 -      alt_5 /  16 -  HS--Half2 % Non-0   0.33 Mean     1.00
+- alt   5 -      alt_5 /  21 -  FTWPaired % Non-0   0.33 Mean     1.50
+- alt   5 -      alt_5 /  22 -  PTWPaired % Non-0   0.33 Mean     1.50
+- alt   5 -      alt_5 /  25 -  UniPaired % Non-0   0.00 Mean     0.00
+- alt   5 -      alt_5 /  26 -  HS-Paired % Non-0   0.00 Mean     0.00
+
+avail(1)=DD(2)
+avail(2)=DD(15)
+avail(3)=DD(28)
+avail(4)=DD(42)
+avail(5)=DD(55)
+
+util(1)=0
+  + p1*DD(3)
+  + p2*DD(4)
+  + p5*DD(5)
+  + p6*DD(6)
+  + p11*DD(7)
+  + p12*DD(8)
+  + p15*DD(9)
+  + p16*DD(10)
+  + p21*DD(11)
+  + p22*DD(12)
+  + p25*DD(13)
+  + p26*DD(14)
+
+util(2)=0
+  + p1*DD(16)
+  + p2*DD(17)
+  + p5*DD(18)
+  + p6*DD(19)
+  + p11*DD(20)
+  + p12*DD(21)
+  + p15*DD(22)
+  + p16*DD(23)
+  + p21*DD(24)
+  + p22*DD(25)
+  + p25*DD(26)
+  + p26*DD(27)
+
+util(3)=0
+  + p1*DD(30)
+  + p2*DD(31)
+  + p5*DD(32)
+  + p6*DD(33)
+  + p11*DD(34)
+  + p12*DD(35)
+  + p15*DD(36)
+  + p16*DD(37)
+  + p21*DD(38)
+  + p22*DD(39)
+  + p25*DD(40)
+  + p26*DD(41)
+
+util(4)=0
+  + p1*DD(43)
+  + p2*DD(44)
+  + p5*DD(45)
+  + p6*DD(46)
+  + p11*DD(47)
+  + p12*DD(48)
+  + p15*DD(49)
+  + p16*DD(50)
+  + p21*DD(51)
+  + p22*DD(52)
+  + p25*DD(53)
+  + p26*DD(54)
+
+util(5)=0
+  + p1*DD(56)
+  + p2*DD(57)
+  + p5*DD(58)
+  + p6*DD(59)
+  + p11*DD(60)
+  + p12*DD(61)
+  + p15*DD(62)
+  + p16*DD(63)
+  + p21*DD(64)
+  + p22*DD(65)
+  + p25*DD(66)
+  + p26*DD(67)
+

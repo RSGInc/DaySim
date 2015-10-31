@@ -1,0 +1,336 @@
+$TITLE PSRCHWorkBasedSubtourGeneration    repo version 2043                
+$ESTIMATE
+$GEN.STATS utilities
+$ALGOR maxit = 20
+$ALGOR Zeta  = 0.15
+
+  1  Beta00001 F 0.0000
+  2  Beta00002 F 0.0000
+  3  Beta00003 F 0.0000
+  4  Beta00004 F 0.0000
+  5  Beta00005 F 0.0000
+  6  Beta00006 F 0.0000
+  7  Beta00007 F 0.0000
+  8  Beta00008 F 0.0000
+  9  Beta00009 F 0.0000
+ 10  Beta00010 F 0.0000
+ 11  Beta00011 F 0.0000
+ 12  Beta00012 F 0.0000
+ 13  Beta00013 F 0.0000
+ 14  Beta00014 F 0.0000
+ 15  Beta00015 F 0.0000
+ 16  Beta00016 F 0.0000
+ 17  Beta00017 F 0.0000
+ 18  Beta00018 F 0.0000
+ 19  Beta00019 F 0.0000
+ 20  Beta00020 F 0.0000
+ 21  Beta00021 F 0.0000
+ 22  Beta00022 F 0.0000
+ 23  Beta00023 F 0.0000
+ 24  Beta00024 F 0.0000
+ 25  Beta00025 F 0.0000
+ 26  Beta00026 F 0.0000
+ 27  Beta00027 F 0.0000
+ 28  Beta00028 F 0.0000
+ 29  Beta00029 F 0.0000
+ 30  Beta00030 F 0.0000
+ 31  Beta00031 F 0.0000
+ 32  Beta00032 F 0.0000
+ 33  Beta00033 F 0.0000
+ 34  Beta00034 F 0.0000
+ 35  Beta00035 F 0.0000
+ 36  Beta00036 F 0.0000
+ 37  Beta00037 F 0.0000
+ 38  Beta00038 F 0.0000
+ 39  Beta00039 F 0.0000
+ 40  Beta00040 F 0.0000
+ 41  Beta00041 F 0.0000
+ 42  Beta00042 F 0.0000
+ 43  Beta00043 F 0.0000
+ 44  Beta00044 F 0.0000
+ 45  Beta00045 F 0.0000
+ 46  Beta00046 F 0.0000
+ 47  Beta00047 F 0.0000
+ 48  Beta00048 F 0.0000
+ 49  Beta00049 F 0.0000
+ 50  Beta00050 F 0.0000
+ 51  Beta00051 F 0.0000
+ 52  Beta00052 F 0.0000
+ 53  Beta00053 F 0.0000
+ 54  Beta00054 F 0.0000
+ 55  Beta00055 F 0.0000
+ 56  Beta00056 F 0.0000
+ 57  Beta00057 F 0.0000
+ 58  Beta00058 F 0.0000
+ 59  Beta00059 F 0.0000
+ 60  Theta0060 F 0.0000
+ 61  Beta00061 F 0.0000
+ 62  Beta00062 F 0.0000
+ 63  Beta00063 F 0.0000
+ 64  Beta00064 F 0.0000
+ 65  Beta00065 F 0.0000
+ 66  Beta00066 F 0.0000
+ 67  Beta00067 F 0.0000
+ 68  Beta00068 F 0.0000
+ 69  Beta00069 F 0.0000
+ 70  Beta00070 F 0.0000
+ 71  Beta00071 F 0.0000
+ 72  Beta00072 F 0.0000
+ 73  Beta00073 F 0.0000
+ 74  Beta00074 F 0.0000
+ 75  Beta00075 F 0.0000
+ 76  Beta00076 F 0.0000
+ 77  Beta00077 F 0.0000
+ 78  Beta00078 F 0.0000
+ 79  Beta00079 F 0.0000
+ 80  Beta00080 F 0.0000
+ 81  Beta00081 F 0.0000
+ 82  Beta00082 F 0.0000
+ 83  Beta00083 F 0.0000
+ 84  Beta00084 F 0.0000
+ 85  Beta00085 F 0.0000
+ 86  Beta00086 F 0.0000
+ 87  Beta00087 F 0.0000
+ 88  Beta00088 F 0.0000
+ 89  Beta00089 F 0.0000
+ 90  Beta00090 F 0.0000
+ 91  Beta00091 F 0.0000
+ 92  Beta00092 F 0.0000
+ 93  Beta00093 F 0.0000
+ 94  Beta00094 F 0.0000
+ 95  Beta00095 F 0.0000
+ 96  Beta00096 F 0.0000
+ 97  Beta00097 F 0.0000
+ 98  Beta00098 F 0.0000
+ 99  Beta00099 F 0.0000
+100  Beta00100 F 0.0000
+101  Beta00101 F 0.0000
+102  Beta00102 F 0.0000
+103  Beta00103 F 0.0000
+104  Beta00104 F 0.0000
+105  Beta00105 F 0.0000
+106  Beta00106 F 0.0000
+107  Beta00107 F 0.0000
+108  Beta00108 F 0.0000
+109  Beta00109 F 0.0000
+110  Beta00110 F 0.0000
+111  Beta00111 F 0.0000
+112  Beta00112 F 0.0000
+113  Beta00113 F 0.0000
+114  Beta00114 F 0.0000
+115  Beta00115 F 0.0000
+116  Beta00116 F 0.0000
+117  Beta00117 F 0.0000
+118  Beta00118 F 0.0000
+119  Beta00119 F 0.0000
+120  Beta00120 F 0.0000
+121  Beta00121 F 0.0000
+122  Beta00122 F 0.0000
+123  Beta00123 F 0.0000
+124  Beta00124 F 0.0000
+125  Beta00125 F 0.0000
+126  Beta00126 F 0.0000
+127  Beta00127 F 0.0000
+128  Beta00128 F 0.0000
+129  Beta00129 F 0.0000
+130  Beta00130 F 0.0000
+131  Beta00131 F 0.0000
+132  Beta00132 F 0.0000
+133  Beta00133 F 0.0000
+134  Beta00134 F 0.0000
+135  Beta00135 F 0.0000
+136  Beta00136 F 0.0000
+137  Beta00137 F 0.0000
+138  Beta00138 F 0.0000
+139  Beta00139 F 0.0000
+140  Beta00140 F 0.0000
+141  Beta00141 F 0.0000
+142  Beta00142 F 0.0000
+143  Beta00143 F 0.0000
+144  Beta00144 F 0.0000
+145  Beta00145 F 0.0000
+146  Beta00146 F 0.0000
+147  Beta00147 F 0.0000
+148  Beta00148 F 0.0000
+149  Beta00149 F 0.0000
+150  Beta00150 F 0.0000
+151  Beta00151 F 0.0000
+152  Beta00152 F 0.0000
+153  Beta00153 F 0.0000
+154  Beta00154 F 0.0000
+155  Beta00155 F 0.0000
+156  Beta00156 F 0.0000
+157  Beta00157 F 0.0000
+158  Beta00158 F 0.0000
+159  Beta00159 F 0.0000
+160  Beta00160 F 0.0000
+161  Beta00161 F 0.0000
+162  Beta00162 F 0.0000
+163  Beta00163 F 0.0000
+164  Beta00164 F 0.0000
+165  Beta00165 F 0.0000
+166  Beta00166 F 0.0000
+167  Beta00167 F 0.0000
+168  Beta00168 F 0.0000
+169  Beta00169 F 0.0000
+170  Beta00170 F 0.0000
+171  Beta00171 F 0.0000
+172  Beta00172 F 0.0000
+173  Beta00173 F 0.0000
+174  Beta00174 F 0.0000
+175  Beta00175 F 0.0000
+176  Beta00176 F 0.0000
+177  Beta00177 F 0.0000
+178  Beta00178 F 0.0000
+179  Beta00179 F 0.0000
+180  Beta00180 F 0.0000
+181  Beta00181 F 0.0000
+
+$ARRAY DD(54)
+FILE (name=HWorkBasedSubtourGenerationModel.dat) DD
+ID = DD(1)
+
+choice = DD(3)
+
+- rejected observations: 0
+
+- choice and availability summary -
+
+- alt   1 -      alt_1 / Chosen     3562 Available     4206
+- alt   2 -      alt_2 / Chosen      160 Available      954
+- alt   3 -      alt_3 / Chosen        0 Available        0
+- alt   4 -      alt_4 / Chosen       19 Available     1156
+- alt   5 -      alt_5 / Chosen       71 Available     1280
+- alt   6 -      alt_6 / Chosen       68 Available     1563
+- alt   7 -      alt_7 / Chosen      270 Available     1439
+- alt   8 -      alt_8 / Chosen       18 Available      382
+- alt   9 -      alt_9 / Chosen       26 Available      425
+- alt  10 -     alt_10 / Chosen       12 Available      232
+
+- utility summary -
+
+- alt   1 -      alt_1 /   1 -  Beta00001 % Non-0  15.31 Mean     1.00
+- alt   1 -      alt_1 /   3 -  Beta00003 % Non-0   6.63 Mean     1.00
+- alt   1 -      alt_1 /   4 -  Beta00004 % Non-0   1.64 Mean     1.00
+- alt   1 -      alt_1 /   6 -  Beta00006 % Non-0  10.94 Mean     1.00
+- alt   1 -      alt_1 /  10 -  Beta00010 % Non-0  15.95 Mean     1.00
+- alt   1 -      alt_1 /  17 -  Beta00017 % Non-0   0.45 Mean     1.05
+- alt   1 -      alt_1 /  18 -  Beta00018 % Non-0 100.00 Mean     0.86
+
+- alt   2 -      alt_2 /  21 -  Beta00021 % Non-0 100.00 Mean     1.00
+- alt   2 -      alt_2 /  22 -  Beta00022 % Non-0  99.50 Mean     9.25
+- alt   2 -      alt_2 /  24 -  Beta00024 % Non-0  30.12 Mean     1.00
+- alt   2 -      alt_2 /  25 -  Beta00025 % Non-0 100.00 Mean     1.48
+
+
+- alt   4 -      alt_4 /  31 -  Beta00031 % Non-0 100.00 Mean     1.00
+- alt   4 -      alt_4 /  36 -  Beta00036 % Non-0   4.87 Mean     1.26
+- alt   4 -      alt_4 /  37 -  Beta00037 % Non-0  50.88 Mean     1.00
+- alt   4 -      alt_4 /  39 -  Beta00039 % Non-0 100.00 Mean     1.48
+
+- alt   5 -      alt_5 /  41 -  Beta00041 % Non-0 100.00 Mean     1.00
+- alt   5 -      alt_5 /  45 -  Beta00045 % Non-0  99.50 Mean     9.25
+- alt   5 -      alt_5 /  49 -  Beta00049 % Non-0  35.54 Mean     1.66
+
+- alt   6 -      alt_6 /  51 -  Beta00051 % Non-0 100.00 Mean     1.00
+- alt   6 -      alt_6 /  55 -  Beta00055 % Non-0  30.12 Mean     1.00
+- alt   6 -      alt_6 /  57 -  Beta00057 % Non-0  35.54 Mean     1.66
+- alt   6 -      alt_6 /  58 -  Beta00058 % Non-0 100.00 Mean    10.47
+
+- alt   7 -      alt_7 /  71 -  Beta00071 % Non-0 100.00 Mean     1.00
+- alt   7 -      alt_7 /  73 -  Beta00073 % Non-0  99.19 Mean     6.33
+- alt   7 -      alt_7 /  74 -  Beta00074 % Non-0  99.50 Mean     0.75
+- alt   7 -      alt_7 /  75 -  Beta00075 % Non-0 100.00 Mean   180.31
+
+- alt   8 -      alt_8 /  91 -  Beta00091 % Non-0 100.00 Mean     1.00
+- alt   8 -      alt_8 /  93 -  Beta00093 % Non-0  35.54 Mean     1.66
+- alt   8 -      alt_8 /  94 -  Beta00094 % Non-0  13.86 Mean     1.00
+- alt   8 -      alt_8 /  96 -  Beta00096 % Non-0  99.50 Mean     9.67
+- alt   8 -      alt_8 /  97 -  Beta00097 % Non-0  14.79 Mean     1.00
+
+- alt   9 -      alt_9 / 111 -  Beta00111 % Non-0 100.00 Mean     1.00
+- alt   9 -      alt_9 / 113 -  Beta00113 % Non-0  35.54 Mean     1.66
+- alt   9 -      alt_9 / 114 -  Beta00114 % Non-0  13.86 Mean     1.00
+- alt   9 -      alt_9 / 116 -  Beta00116 % Non-0  99.50 Mean     9.67
+- alt   9 -      alt_9 / 117 -  Beta00117 % Non-0  14.79 Mean     1.00
+- alt   9 -      alt_9 / 118 -  Beta00118 % Non-0  30.12 Mean     1.00
+- alt   9 -      alt_9 / 119 -  Beta00119 % Non-0  98.83 Mean     1.75
+
+- alt  10 -     alt_10 / 121 -  Beta00121 % Non-0 100.00 Mean     1.00
+- alt  10 -     alt_10 / 123 -  Beta00123 % Non-0  50.88 Mean     1.00
+- alt  10 -     alt_10 / 124 -  Beta00124 % Non-0   3.30 Mean     1.00
+- alt  10 -     alt_10 / 125 -  Beta00125 % Non-0  99.38 Mean     6.63
+
+avail(1)=DD(2)
+avail(2)=DD(11)
+avail(3)=DD(16)
+avail(4)=DD(17)
+avail(5)=DD(22)
+avail(6)=DD(26)
+avail(7)=DD(31)
+avail(8)=DD(36)
+avail(9)=DD(42)
+avail(10)=DD(50)
+
+util(1)=0
+  + p1*DD(4)
+  + p3*DD(5)
+  + p4*DD(6)
+  + p6*DD(7)
+  + p10*DD(8)
+  + p17*DD(9)
+  + p18*DD(10)
+
+util(2)=0
+  + p21*DD(12)
+  + p22*DD(13)
+  + p24*DD(14)
+  + p25*DD(15)
+
+util(3)=0
+
+util(4)=0
+  + p31*DD(18)
+  + p36*DD(19)
+  + p37*DD(20)
+  + p39*DD(21)
+
+util(5)=0
+  + p41*DD(23)
+  + p45*DD(24)
+  + p49*DD(25)
+
+util(6)=0
+  + p51*DD(27)
+  + p55*DD(28)
+  + p57*DD(29)
+  + p58*DD(30)
+
+util(7)=0
+  + p71*DD(32)
+  + p73*DD(33)
+  + p74*DD(34)
+  + p75*DD(35)
+
+util(8)=0
+  + p91*DD(37)
+  + p93*DD(38)
+  + p94*DD(39)
+  + p96*DD(40)
+  + p97*DD(41)
+
+util(9)=0
+  + p111*DD(43)
+  + p113*DD(44)
+  + p114*DD(45)
+  + p116*DD(46)
+  + p117*DD(47)
+  + p118*DD(48)
+  + p119*DD(49)
+
+util(10)=0
+  + p121*DD(51)
+  + p123*DD(52)
+  + p124*DD(53)
+  + p125*DD(54)
+
