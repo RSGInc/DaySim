@@ -161,7 +161,7 @@ namespace Daysim.ChoiceModels.Default.Models {
                     available = available && departurePeriodFraction > 0;
 
                     //ensure transit path type is available in alternative
-                    if (trip.Mode == Global.Settings.Modes.Transit) {
+                    if (trip.Mode == Global.Settings.Modes.Transit && !Global.Configuration.ImportTransitStopAreas) {
                         var transitPathTypeInVehicleTime = ImpedanceRoster.GetValue("ivtime", trip.Mode, trip.PathType, trip.ValueOfTime, time.DeparturePeriod.Middle, trip.OriginZoneKey, trip.DestinationZoneKey).Variable;
                         available = available && (transitPathTypeInVehicleTime > 0);
                     }
