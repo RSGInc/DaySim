@@ -92,8 +92,39 @@ namespace Daysim.Framework.Roster {
 		public static SkimValue GetValue(string variable, int mode, int pathType, double vot, int minute, int origin, int destination) {
 			var votGroup = GetVotGroup(vot);
 			var entry = GetEntry(variable, mode, pathType, votGroup, minute);
+            var skimValue = GetValue(origin, destination, entry, minute);
 
-			return GetValue(origin, destination, entry, minute);
+            //mb fix for 0 intrazonals
+            if (origin == destination && skimValue.Variable < Constants.EPSILON) {
+                if (variable == "distance") {
+                    skimValue.Variable = 0.25 * Global.Settings.DistanceUnitsPerMile;
+                }
+                else if (variable == "ivtime" || variable == "time" || variable == "ivtfree") {
+                    skimValue.Variable =
+                         (mode == Global.Settings.Modes.Walk) ? 5 :
+                         (mode == Global.Settings.Modes.Bike) ? 2 :
+                         (mode > Global.Settings.Modes.Bike && mode < Global.Settings.Modes.Transit) ? 1 : 0;
+                }
+            }
+
+            if (string.IsNullOrEmpty(entry.BlendVariable)) {
+                return skimValue;
+            }
+
+            var blendEntry =
+                entry.BlendPathType == Global.Settings.PathTypes.None
+                    ? GetEntry(entry.BlendVariable, entry.Mode, entry.PathType, votGroup, minute)
+                    : GetEntry(entry.BlendVariable, entry.Mode, entry.BlendPathType, votGroup, minute);
+            var blendSkimValue = GetValue(origin, destination, blendEntry, minute);
+
+            skimValue.BlendVariable = blendSkimValue.Variable;  
+
+            //mb fix for 0 intrazonals. Assumes blend variable is distance
+            if (origin == destination && skimValue.BlendVariable < Constants.EPSILON)  {
+                    skimValue.BlendVariable = 0.25 * Global.Settings.DistanceUnitsPerMile;
+            }
+            
+            return skimValue;
 		}
 
 		public static SkimValue GetValue(string variable, int mode, int pathType, double vot, int minute, IPoint origin, IPoint destination, double circuityDistance = Constants.DEFAULT_VALUE) {
