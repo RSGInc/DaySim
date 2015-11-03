@@ -594,7 +594,16 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public double PathImpedance_TransitCommuterRailTimeAdditiveWeight { get; set; }
 
-		[XmlAttribute]
+        [XmlAttribute]
+        public double PathImpedance_TransitSubwayTimeAdditiveWeight { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitPATTimeAdditiveWeight { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitTrolleyTimeAdditiveWeight { get; set; }
+
+        [XmlAttribute]
 		public double PathImpedance_TransitFerryTimeAdditiveWeight { get; set; }
 
         [XmlAttribute]
@@ -1321,6 +1330,9 @@ namespace Daysim.Framework.Core {
 		//new since 203
 		[XmlAttribute]
 		public bool PSRC { get; set; }
+
+        [XmlAttribute]
+        public bool DVRPC { get; set; }
 
         [XmlAttribute]
         public bool Nashville { get; set; }

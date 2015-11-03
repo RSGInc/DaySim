@@ -16,9 +16,14 @@ namespace Daysim.PathTypeModels {
 
 		double PathCost { get;}
 
-		int PathType { get; }
+        int PathType { get; }
 
 		int PathParkAndRideNodeId { get; }
+
+        double PathParkAndRideTransitTime { get; }
+        double PathParkAndRideTransitDistance { get; }
+        double PathParkAndRideTransitCost { get; }
+        double PathParkAndRideTransitGeneralizedTime { get; }
 
 		bool Available { get; }
 

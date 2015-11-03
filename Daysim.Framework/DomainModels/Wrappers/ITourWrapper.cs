@@ -61,7 +61,17 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		int ParkAndRideDestinationStopAreaKey { get; set; }
 
-		bool DestinationModeAndTimeHaveBeenSimulated { get; set; }
+        int ParkAndRidePathType { get; set; }
+
+        double ParkAndRideTransitTime { get; set; }
+
+        double ParkAndRideTransitDistance { get; set; }
+
+        double ParkAndRideTransitCost { get; set; }
+
+        double ParkAndRideTransitGeneralizedTime { get; set; }
+        
+ 		bool DestinationModeAndTimeHaveBeenSimulated { get; set; }
 
 		bool HalfTour1HasBeenSimulated { get; set; }
 

@@ -49,10 +49,10 @@ namespace Daysim.PathTypeModels {
 					ModelType = typeof (PathTypeModel);
 					Create<PathTypeModel>();
 					break;
-				case "PathTypeModel_Actum":
-					ModelType = typeof (PathTypeModel_Actum);
-					Create<PathTypeModel_Actum>();
-					break;
+//				case "PathTypeModel_Actum":
+//					ModelType = typeof (PathTypeModel_Actum);
+//					Create<PathTypeModel_Actum>();
+//					break;
 //				case "PathTypeModel_alternate":
 //					ModelType = typeof (PathTypeModel_alternate);
 //					Create<PathTypeModel_alternate>();

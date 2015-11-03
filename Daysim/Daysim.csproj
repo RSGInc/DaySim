@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>false</MapFileExtensions>
-    <ApplicationRevision>140</ApplicationRevision>
+    <ApplicationRevision>141</ApplicationRevision>
     <ApplicationVersion>2.0.3.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -205,7 +205,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ITransitStopArea.cs" />
-    <Compile Include="PathTypeModels\PathTypeModel_Actum.cs" />
     <Compile Include="PathTypeModels\PathTypeModel_override.cs" />
     <Compile Include="PathTypeModels\IPathTypeModel.cs" />
     <Compile Include="PathTypeModels\PathTypeModel.cs" />
@@ -483,8 +482,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>SubWCRev  "$(SolutionDir)."  "$(SolutionDir)svn_stamp.txt" "$(TargetDir)svn_stamp_out.txt"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

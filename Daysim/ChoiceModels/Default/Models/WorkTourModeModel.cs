@@ -122,7 +122,12 @@ namespace Daysim.ChoiceModels.Default.Models {
 				if (Global.StopAreaIsEnabled && choice == Global.Settings.Modes.ParkAndRide) {
 					tour.ParkAndRideOriginStopAreaKey =  chosenPathType.PathOriginStopAreaKey ;
 					tour.ParkAndRideDestinationStopAreaKey = chosenPathType.PathDestinationStopAreaKey ;
-				}
+                    tour.ParkAndRidePathType = chosenPathType.PathType;
+                    tour.ParkAndRideTransitTime = chosenPathType.PathParkAndRideTransitTime;
+                    tour.ParkAndRideTransitDistance = chosenPathType.PathParkAndRideTransitDistance;
+                    tour.ParkAndRideTransitCost = chosenPathType.PathParkAndRideTransitCost;
+                    tour.ParkAndRideTransitGeneralizedTime = chosenPathType.PathParkAndRideTransitGeneralizedTime;
+                }
 			}
 		}
 
@@ -244,14 +249,16 @@ namespace Daysim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(11, noCarsInHouseholdFlag);
 					alternative.AddUtilityTerm(13, carsLessThanWorkersFlag);
 //						alternative.AddUtility(129, destinationParcel.MixedUse2Index1());
-					alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
+                    alternative.AddUtilityTerm(130, Math.Log(destinationParcel.TotalEmploymentDensity1()+1)* 2553.0 / Math.Log(2553.0));
+                    alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
 					alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
 //						alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
 				}
 				else if (mode == Global.Settings.Modes.Transit) {
 					alternative.AddUtilityTerm(20, 1);
 //						alternative.AddUtility(129, destinationParcel.MixedUse2Index1());
-					alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
+                    alternative.AddUtilityTerm(130, Math.Log(destinationParcel.TotalEmploymentDensity1() + 1) * 2553.0 / Math.Log(2553.0));
+                    alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
 					alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
 //						alternative.AddUtility(126, originParcel.NetIntersectionDensity1());
 //						alternative.AddUtility(125, originParcel.HouseholdDensity1());
