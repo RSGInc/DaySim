@@ -720,7 +720,7 @@ namespace Daysim.PathTypeModels {
 
 				var driveTime = skimValue.Variable;
 				var driveDistance = skimValue.BlendVariable;
-				var parkMinute = (int) (_outboundTime - (transitPath.Time / 2.0) - 3); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
+				var parkMinute = (int) Math.Max(1,(_outboundTime - (transitPath.Time / 2.0) - 3)); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
 
 				var transitDistance =
 					useZones
@@ -888,7 +888,7 @@ namespace Daysim.PathTypeModels {
 						continue;
 					}
 
-					var parkMinute = (int) (_outboundTime - (transitPath.Time / 2.0) - 3); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
+					var parkMinute = (int) Math.Max(1,(_outboundTime - (transitPath.Time / 2.0) - 3)); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
 
 					// set utility
 					var nodePathTime = transitPath.Time + driveTime + destinationWalkTime;
