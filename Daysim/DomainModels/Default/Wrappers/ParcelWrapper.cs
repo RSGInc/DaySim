@@ -1128,6 +1128,40 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			}
 		}
 
+// begin section added per RSG Git version 20151117
+
+        private readonly object _getEmploymentPredictionLock = new object();
+
+        public virtual void AddEmploymentPrediction(double employmentPrediction)
+        {
+            lock (_getEmploymentPredictionLock)
+            {
+                EmploymentPrediction = EmploymentPrediction + employmentPrediction;
+            }
+        }
+
+        private readonly object _getStudentsUniversityPredictionLock = new object();
+
+        public virtual void AddStudentsUniversityPrediction(double studentsUniversityPrediction)
+        {
+            lock (_getStudentsUniversityPredictionLock)
+            {
+                StudentsUniversityPrediction = StudentsUniversityPrediction + studentsUniversityPrediction;
+            }
+        }
+
+        private readonly object _getStudentsK12PredictionLock = new object();
+
+        public virtual void AddStudentsK12Prediction(double studentsK12Prediction)
+        {
+            lock (_getStudentsK12PredictionLock)
+            {
+                StudentsK12Prediction = StudentsK12Prediction + studentsK12Prediction;
+            }
+        }
+
+// end section added per RSG Git version 20151117
+
 		public virtual double NodeToNodeDistance(IParcelWrapper destination, int batch) {
 			if (Id == Global.NodeNodePreviousOriginParcelId[batch] && destination.Id == Global.NodeNodePreviousDestinationParcelId[batch]) {
 				return Global.NodeNodePreviousDistance[batch];

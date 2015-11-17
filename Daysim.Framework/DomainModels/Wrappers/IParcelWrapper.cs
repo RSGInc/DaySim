@@ -151,6 +151,12 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		void SetShadowPricing(Dictionary<int, IZone> zones, Dictionary<int, IShadowPriceParcel> shadowPrices);
 
+//  Next three lines are from 
+//  RSG Git version when I was synching with it while settign up JLB Actum git version.  
+		void AddEmploymentPrediction(double employmentPrediction);
+		void AddStudentsUniversityPrediction(double studentsUniversityPrediction);
+		void AddStudentsK12Prediction(double studentsK12Prediction);
+				
 		double NodeToNodeDistance(IParcelWrapper destination, int batch);
 
 		double CircuityDistance(IParcelWrapper destination);
