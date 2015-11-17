@@ -677,10 +677,10 @@ namespace Daysim {
 				.Importer
 				.Import();
 
-            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum"))
-            {
-                return;
-            }
+//            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum"))
+//            {
+//                return;
+//            }
 
 			var parkAndRideNodeReader =
 				Global
@@ -988,7 +988,7 @@ namespace Daysim {
 			//var parcelIds = new List<int>();  
 			var stopAreaKeys = new List<int>();
 			var stopAreaIds = new List<int>();
-			var distances = new List<float>();
+			var lengths = new List<float>();
 
 			// read header
 			reader.ReadLine();
@@ -1001,7 +1001,7 @@ namespace Daysim {
 			//parcelIds.Add(0);
 			stopAreaIds.Add(0);
 			stopAreaKeys.Add(0);
-			distances.Add(0F);
+			lengths.Add(0F);
 
 			while ((line = reader.ReadLine()) != null) {
 				var tokens = line.Split(new[] { ' ' });
@@ -1022,14 +1022,13 @@ namespace Daysim {
 				//mb changed this array to use mapping of stop area ids 
 				int stopAreaIndex = Global.TransitStopAreaMapping[stopAreaId];
 				stopAreaIds.Add(stopAreaIndex);
-				double distance = double.Parse(tokens[2]) / Global.Settings.LengthUnitsPerFoot;
-				distances.Add((float) distance);
+				lengths.Add(float.Parse(tokens[2]));
 			}
 
 			//Global.ParcelStopAreaParcelIds = parcelIds.ToArray();
 			Global.ParcelStopAreaStopAreaKeys = stopAreaKeys.ToArray();
 			Global.ParcelStopAreaStopAreaIds = stopAreaIds.ToArray();
-			Global.ParcelStopAreaDistances = distances.ToArray();
+			Global.ParcelStopAreaLengths = lengths.ToArray();
 
 		}
 
@@ -1078,10 +1077,10 @@ namespace Daysim {
 				if (parcelId != lastParcelId) {
 					//Console.WriteLine(parcelId);
 					parcel = ChoiceModelFactory.Parcels[parcelId];
-					parcel.FirstPositionInStopAreaDistanceArray = arrayIndex;
+					parcel.FirstPositionInParkAndRideNodeDistanceArray = arrayIndex;
 					lastParcelId = parcelId;
 				}
-				parcel.LastPositionInStopAreaDistanceArray = arrayIndex;
+				parcel.LastPositionInParkAndRideNodeDistanceArray = arrayIndex;
 
 				//parcelIds.Add(int.Parse(tokens[0]));
 				int parkAndRideNodeId = int.Parse(tokens[1]);
@@ -1089,13 +1088,13 @@ namespace Daysim {
 				//mb changed this array to use mapping of stop area ids 
 				int nodeSequentialIndex = Global.ParkAndRideNodeMapping[parkAndRideNodeId];
 				nodeSequentialIds.Add(nodeSequentialIndex);
-				double distance = double.Parse(tokens[2]) / Global.Settings.LengthUnitsPerFoot;
+				double distance = double.Parse(tokens[2]);
 				distances.Add((float) distance);
 			}
 
 			Global.ParcelParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
 			Global.ParcelParkAndRideNodeSequentialIds = nodeSequentialIds.ToArray();
-			Global.ParcelToBikeCarParkAndRideNodeDistance = distances.ToArray();
+			Global.ParcelToBikeCarParkAndRideNodeLength = distances.ToArray();
 
 		}
 

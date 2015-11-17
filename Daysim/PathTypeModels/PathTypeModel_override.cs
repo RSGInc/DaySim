@@ -16,7 +16,7 @@ using Daysim.Framework.Exceptions;
 using Daysim.Framework.Roster;
 
 namespace Daysim.PathTypeModels {
-	public class PathTypeModel_override : PathTypeModel {
+	public class PathTypeModel_override : PathTypeModel_Actum {
 	}
 
 }
