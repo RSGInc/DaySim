@@ -43,6 +43,10 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		int LastPositionInStopAreaDistanceArray { get; set; }
 
+		int FirstPositionInParkAndRideNodeDistanceArray { get; set; }
+
+		int LastPositionInParkAndRideNodeDistanceArray { get; set; }
+
 		bool StopAreaDistanceArrayPositionsSet { get; set; }
 
 		#endregion
@@ -147,15 +151,57 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		void SetShadowPricing(Dictionary<int, IZone> zones, Dictionary<int, IShadowPriceParcel> shadowPrices);
 
-        void AddEmploymentPrediction(double employmentPrediction);
-
-        void AddStudentsUniversityPrediction(double studentsUniversityPrediction);
-
-        void AddStudentsK12Prediction(double studentsK12Prediction);
-
 		double NodeToNodeDistance(IParcelWrapper destination, int batch);
 
 		double CircuityDistance(IParcelWrapper destination);
+
+		// for actum
+			double ParkingCostPerHour8_18 {get ;	set;}
+			double ParkingCostPerHour18_23 {get ;	set;}
+			double ParkingCostPerHour23_08 {get ;	set;}
+			double ResidentAnnualParkingCost {get ;	set;}
+			double ParkingSearchTime21_05 {get ;	set;}
+			double ParkingSearchTime05_06 {get ;	set;}
+			double ParkingSearchTime06_07 {get ;	set;}
+			double ParkingSearchTime07_08 {get ;	set;}
+			double ParkingSearchTime08_09 {get ;	set;}
+			double ParkingSearchTime09_15 {get ;	set;}
+			double ParkingSearchTime15_16 {get ;	set;}
+			double ParkingSearchTime16_17 {get ;	set;}
+			double ParkingSearchTime17_18 {get ;	set;}
+			double ParkingSearchTime18_21 {get ;	set;}
+
+			double ParkingCostPerHour8_18Buffer1 {get ;	set;}
+			double ParkingCostPerHour18_23Buffer1 {get ;	set;}
+			double ParkingCostPerHour23_08Buffer1 {get ;	set;}
+			double ResidentAnnualParkingCostBuffer1 {get ;	set;}
+			double ParkingSearchTime21_05Buffer1 {get ;	set;}
+			double ParkingSearchTime05_06Buffer1 {get ;	set;}
+			double ParkingSearchTime06_07Buffer1 {get ;	set;}
+			double ParkingSearchTime07_08Buffer1 {get ;	set;}
+			double ParkingSearchTime08_09Buffer1 {get ;	set;}
+			double ParkingSearchTime09_15Buffer1 {get ;	set;}
+			double ParkingSearchTime15_16Buffer1 {get ;	set;}
+			double ParkingSearchTime16_17Buffer1 {get ;	set;}
+			double ParkingSearchTime17_18Buffer1 {get ;	set;}
+			double ParkingSearchTime18_21Buffer1 {get ;	set;}
+
+			double ParkingCostPerHour8_18Buffer2 {get ;	set;}
+			double ParkingCostPerHour18_23Buffer2 {get ;	set;}
+			double ParkingCostPerHour23_08Buffer2 {get ;	set;}
+			double ResidentAnnualParkingCostBuffer2 {get ;	set;}
+			double ParkingSearchTime21_05Buffer2 {get ;	set;}
+			double ParkingSearchTime05_06Buffer2 {get ;	set;}
+			double ParkingSearchTime06_07Buffer2 {get ;	set;}
+			double ParkingSearchTime07_08Buffer2 {get ;	set;}
+			double ParkingSearchTime08_09Buffer2 {get ;	set;}
+			double ParkingSearchTime09_15Buffer2 {get ;	set;}
+			double ParkingSearchTime15_16Buffer2 {get ;	set;}
+			double ParkingSearchTime16_17Buffer2 {get ;	set;}
+			double ParkingSearchTime17_18Buffer2 {get ;	set;}
+			double ParkingSearchTime18_21Buffer2 {get ;	set;}
+
+
 
 //		void SetFirstAndLastStopAreaDistanceIndexes();
 

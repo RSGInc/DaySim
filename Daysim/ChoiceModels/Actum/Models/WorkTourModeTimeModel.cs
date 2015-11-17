@@ -62,7 +62,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				if (tour.DestinationModeAndTimeHaveBeenSimulated) {
 					return;
 				}
-				if (tour.DestinationParcel == null || tour.OriginParcel == null || tour.Mode < Global.Settings.Modes.Walk || tour.Mode > Global.Settings.Modes.SchoolBus) {
+				if (tour.DestinationParcel == null || tour.OriginParcel == null || tour.Mode < Global.Settings.Modes.Walk || tour.Mode > Global.Settings.Modes.WalkRideBike) {
 					return;
 				}
 			}
@@ -393,24 +393,67 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			}
 			}
 
-			for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.SchoolBus; mode++) {
+			for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.WalkRideBike; mode++) {
 				componentIndex = 2 * bigPeriodCount + nPeriodCombs + mode - 1;
 				choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
 				var modeComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
 
-				if (mode == Global.Settings.Modes.SchoolBus) {
-					//		modeComponent.AddUtilityTerm(10, 1);
-					//		modeComponent.AddUtilityTerm(11, childUnder5Flag);
-					//		modeComponent.AddUtilityTerm(12, adultFlag);
+				if (mode == Global.Settings.Modes.Walk) {
+					modeComponent.AddUtilityTerm(70, 1.0);
+					modeComponent.AddUtilityTerm(71, maleFlag);
+					//		modeComponent.AddUtilityTerm(72, ageUnder30Flag);
+					//		modeComponent.AddUtilityTerm(73, ageBetween51And98Flag);
+					//		modeComponent.AddUtilityTerm(74, income0To25KFlag);
+					modeComponent.AddUtilityTerm(75, income100KPlusFlag);
+					//		modeComponent.AddUtilityTerm(76, noCarsInHouseholdFlag);
+					modeComponent.AddUtilityTerm(77, carsLessThanDriversFlag);
+					modeComponent.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
+					modeComponent.AddUtilityTerm(179, destinationParcel.TotalEmploymentDensity1() / 5000.0);
+					modeComponent.AddUtilityTerm(179, destinationParcel.NetIntersectionDensity1() / 50.0);
+					modeComponent.AddUtilityTerm(179, originParcel.NetIntersectionDensity1() / 50.0);
+					modeComponent.AddUtilityTerm(179, originParcel.HouseholdDensity1() / 1000.0);
+					modeComponent.AddUtilityTerm(179, originParcel.MixedUse4Index1());
 				}
-				else if (mode == Global.Settings.Modes.ParkAndRide) {
-					modeComponent.AddUtilityTerm(10, 1);
-					modeComponent.AddUtilityTerm(16, noCarsInHouseholdFlag);
-					modeComponent.AddUtilityTerm(17, carsLessThanWorkersFlag);
-					modeComponent.AddUtilityTerm(129, destinationParcel.MixedUse2Index1());
-					modeComponent.AddUtilityTerm(129, destinationParcel.TotalEmploymentDensity1() / 5000.0);
-					modeComponent.AddUtilityTerm(129, destinationParcel.NetIntersectionDensity1() / 50.0);
-					modeComponent.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1 + 1));
+				else if (mode == Global.Settings.Modes.Bike) {
+					modeComponent.AddUtilityTerm(60, 1);
+					modeComponent.AddUtilityTerm(61, maleFlag);
+					modeComponent.AddUtilityTerm(62, ageUnder30Flag);
+					modeComponent.AddUtilityTerm(63, ageBetween51And98Flag);
+					modeComponent.AddUtilityTerm(64, income0To25KFlag);
+					//  	modeComponent.AddUtilityTerm(65, income100KPlusFlag);
+					//		modeComponent.AddUtilityTerm(66, noCarsInHouseholdFlag);
+					modeComponent.AddUtilityTerm(67, carsLessThanDriversFlag);
+					modeComponent.AddUtilityTerm(169, destinationParcel.MixedUse4Index2());
+					modeComponent.AddUtilityTerm(169, destinationParcel.TotalEmploymentDensity2() / 20000.0);
+					modeComponent.AddUtilityTerm(169, destinationParcel.NetIntersectionDensity2() / 200.0);
+					modeComponent.AddUtilityTerm(164, originParcel.NetIntersectionDensity2() / 200.0);
+					modeComponent.AddUtilityTerm(164, originParcel.HouseholdDensity2() / 4000.0);
+					modeComponent.AddUtilityTerm(164, originParcel.MixedUse4Index2());
+				}
+				else if (mode == Global.Settings.Modes.Sov) {
+					//	modeComponent.AddUtilityTerm(50, 1);
+					modeComponent.AddUtilityTerm(54, income0To25KFlag);
+					//	modeComponent.AddUtilityTerm(55, income100KPlusFlag);
+					modeComponent.AddUtilityTerm(57, carsLessThanWorkersFlag);
+				}
+				else if (mode == Global.Settings.Modes.HovDriver) {
+					modeComponent.AddUtilityTerm(31, childrenUnder5);
+					modeComponent.AddUtilityTerm(32, childrenAge5Through15);
+					modeComponent.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
+					modeComponent.AddUtilityTerm(36, noCarsInHouseholdFlag);
+					modeComponent.AddUtilityTerm(37, carsLessThanDriversFlag);
+					modeComponent.AddUtilityTerm(40, 1);
+					modeComponent.AddUtilityTerm(41, onePersonHouseholdFlag);
+				}
+				else if (mode == Global.Settings.Modes.HovPassenger) {
+					modeComponent.AddUtilityTerm(30, 1);
+					modeComponent.AddUtilityTerm(31, childrenUnder5);
+					modeComponent.AddUtilityTerm(32, childrenAge5Through15);
+					modeComponent.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
+					modeComponent.AddUtilityTerm(38, onePersonHouseholdFlag);
+					modeComponent.AddUtilityTerm(39, twoPersonHouseholdFlag);
+					modeComponent.AddUtilityTerm(36, noCarsInHouseholdFlag);
+					modeComponent.AddUtilityTerm(37, carsLessThanDriversFlag);
 				}
 				else if (mode == Global.Settings.Modes.Transit) {
 					modeComponent.AddUtilityTerm(20, 1);
@@ -430,64 +473,37 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					modeComponent.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1 + 1));
 					modeComponent.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1 + 1));
 				}
-				else if (mode == Global.Settings.Modes.Hov3) {
-					modeComponent.AddUtilityTerm(30, 1);
-					modeComponent.AddUtilityTerm(31, childrenUnder5);
-					modeComponent.AddUtilityTerm(32, childrenAge5Through15);
-					modeComponent.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
-					modeComponent.AddUtilityTerm(38, onePersonHouseholdFlag);
-					modeComponent.AddUtilityTerm(39, twoPersonHouseholdFlag);
-					modeComponent.AddUtilityTerm(36, noCarsInHouseholdFlag);
-					modeComponent.AddUtilityTerm(37, carsLessThanDriversFlag);
-				}
-				else if (mode == Global.Settings.Modes.Hov2) {
-					modeComponent.AddUtilityTerm(31, childrenUnder5);
-					modeComponent.AddUtilityTerm(32, childrenAge5Through15);
-					modeComponent.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
-					modeComponent.AddUtilityTerm(36, noCarsInHouseholdFlag);
-					modeComponent.AddUtilityTerm(37, carsLessThanDriversFlag);
-					modeComponent.AddUtilityTerm(40, 1);
-					modeComponent.AddUtilityTerm(41, onePersonHouseholdFlag);
-				}
-				else if (mode == Global.Settings.Modes.Sov) {
-					//	modeComponent.AddUtilityTerm(50, 1);
-					modeComponent.AddUtilityTerm(54, income0To25KFlag);
-					//	modeComponent.AddUtilityTerm(55, income100KPlusFlag);
-					modeComponent.AddUtilityTerm(57, carsLessThanWorkersFlag);
-				}
-				else if (mode == Global.Settings.Modes.Bike) {
-					modeComponent.AddUtilityTerm(60, 1);
-					modeComponent.AddUtilityTerm(61, maleFlag);
-					modeComponent.AddUtilityTerm(62, ageUnder30Flag);
-					modeComponent.AddUtilityTerm(63, ageBetween51And98Flag);
-					modeComponent.AddUtilityTerm(64, income0To25KFlag);
-					//  	modeComponent.AddUtilityTerm(65, income100KPlusFlag);
-					//		modeComponent.AddUtilityTerm(66, noCarsInHouseholdFlag);
-					modeComponent.AddUtilityTerm(67, carsLessThanDriversFlag);
-					modeComponent.AddUtilityTerm(169, destinationParcel.MixedUse4Index2());
-					modeComponent.AddUtilityTerm(169, destinationParcel.TotalEmploymentDensity2() / 20000.0);
-					modeComponent.AddUtilityTerm(169, destinationParcel.NetIntersectionDensity2() / 200.0);
-					modeComponent.AddUtilityTerm(164, originParcel.NetIntersectionDensity2() / 200.0);
-					modeComponent.AddUtilityTerm(164, originParcel.HouseholdDensity2() / 4000.0);
-					modeComponent.AddUtilityTerm(164, originParcel.MixedUse4Index2());
-				}
-				else if (mode == Global.Settings.Modes.Walk) {
-					modeComponent.AddUtilityTerm(70, 1.0);
-					modeComponent.AddUtilityTerm(71, maleFlag);
-					//		modeComponent.AddUtilityTerm(72, ageUnder30Flag);
-					//		modeComponent.AddUtilityTerm(73, ageBetween51And98Flag);
-					//		modeComponent.AddUtilityTerm(74, income0To25KFlag);
-					modeComponent.AddUtilityTerm(75, income100KPlusFlag);
-					//		modeComponent.AddUtilityTerm(76, noCarsInHouseholdFlag);
-					modeComponent.AddUtilityTerm(77, carsLessThanDriversFlag);
-					modeComponent.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
-					modeComponent.AddUtilityTerm(179, destinationParcel.TotalEmploymentDensity1() / 5000.0);
-					modeComponent.AddUtilityTerm(179, destinationParcel.NetIntersectionDensity1() / 50.0);
-					modeComponent.AddUtilityTerm(179, originParcel.NetIntersectionDensity1() / 50.0);
-					modeComponent.AddUtilityTerm(179, originParcel.HouseholdDensity1() / 1000.0);
-					modeComponent.AddUtilityTerm(179, originParcel.MixedUse4Index1());
+				else if (mode == Global.Settings.Modes.CarParkRideWalk) {
+					modeComponent.AddUtilityTerm(10, 1);
+					modeComponent.AddUtilityTerm(16, noCarsInHouseholdFlag);
+					modeComponent.AddUtilityTerm(17, carsLessThanWorkersFlag);
+					modeComponent.AddUtilityTerm(129, destinationParcel.MixedUse2Index1());
+					modeComponent.AddUtilityTerm(129, destinationParcel.TotalEmploymentDensity1() / 5000.0);
+					modeComponent.AddUtilityTerm(129, destinationParcel.NetIntersectionDensity1() / 50.0);
+					modeComponent.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1 + 1));
 				}
 
+				// JLB 201508 Need to provide mode-specific constants and add any other needed mode-specific terms
+				else if (mode == Global.Settings.Modes.CarKissRideWalk) {
+					modeComponent.AddUtilityTerm(10, 1);
+				}
+				else if (mode == Global.Settings.Modes.BikeParkRideWalk) {
+					modeComponent.AddUtilityTerm(10, 1);
+				}
+				else if (mode == Global.Settings.Modes.BikeParkRideBike) {
+					modeComponent.AddUtilityTerm(10, 1);
+				}
+				else if (mode == Global.Settings.Modes.BikeOnTransit) {
+					modeComponent.AddUtilityTerm(10, 1);
+				}
+				else if (mode == Global.Settings.Modes.CarParkRideBike) {
+					modeComponent.AddUtilityTerm(10, 1);
+				}
+				else if (mode == Global.Settings.Modes.WalkRideBike) {
+					modeComponent.AddUtilityTerm(10, 1);
+				}
+
+				// JLB 201508 may need to enhance next block to accommodate new transit modes
 				if (mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.Hov2
 					 || mode == Global.Settings.Modes.Hov3 || mode == Global.Settings.Modes.Transit) {
 					var firstCoef = 200 + 10 * mode;
@@ -527,8 +543,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 					//set availabillity based on time window variables and any constrained choices
 					bool available = (modeTimes.LongestFeasibleWindow != null) && (mode > 0)
-					&& (mode <= Global.Settings.Modes.Transit)
+					//&& (mode <= Global.Settings.Modes.Transit)   //JLB 201508 commented out to make transit combo modes available
 					&& (person.Age >= 18 || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
+					//TODO JLB 201508 may need to adjust the followign line to allow transit combo or other modes modes on partial half tour mode choice:  line currently prohibits them as well as SOV and HOVPassenger 
 					&& (constrainedMode > 0 || mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.HovDriver || mode == Global.Settings.Modes.Transit || !partialHalfTour) 
 						&& (constrainedMode <= 0 || constrainedMode == mode)
 						&& (constrainedArrivalTime <= 0 || (constrainedArrivalTime >= arrivalPeriod.Start && constrainedArrivalTime <= arrivalPeriod.End))
@@ -597,6 +614,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 						                       : departurePeriod.Middle - arrivalPeriod.Middle)/60.0;
 
 					// parking at work is free if no paid parking at work and tour goes to usual workplace
+					//TODO JLB 20150827 Check to see if parkign cost is included in HTourModeTime impedance.  If so, drop it here.  otherwise fix this to use TOD-based parking cost.
 					var destinationParkingCost = (!Global.Configuration.IsInEstimationMode
 					                              && Global.Configuration.ShouldRunPayToParkAtWorkplaceModel
 					                              && tour.Person.UsualWorkParcel != null

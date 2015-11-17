@@ -16,6 +16,7 @@ using Daysim.DomainModels.Factories;
 using Daysim.Framework.Core;
 using Daysim.Framework.DomainModels.Creators;
 using Daysim.Framework.DomainModels.Models;
+using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.Framework.Factories;
 using Daysim.Framework.Roster;
 using Daysim.PathTypeModels;
@@ -288,6 +289,7 @@ namespace Daysim.AggregateLogsums {
 				Global
 					.Kernel
 					.Get<IPersistenceFactory<IZone>>()
+//					.Get<IPersistenceFactory<IZone>>()
 					.Reader;
 
 			_eligibleZones = zoneReader.Where(z => z.DestinationEligible).ToDictionary(z => z.Id, z => z);
@@ -310,6 +312,9 @@ namespace Daysim.AggregateLogsums {
 			Parallel.For(0, _zoneCount, new ParallelOptions {MaxDegreeOfParallelism = ParallelUtility.LargeDegreeOfParallelism}, id => CalculateZone(randomUtility, id));
 
 			for (var id = 0; id < _zoneCount; id++) {
+				
+				//CalculateZone(randomUtility, id);    //instead of parallel for above; used in testing
+				
 				var purposes = Global.AggregateLogsums[id];
 
 				for (var purpose = Global.Settings.Purposes.HomeBasedComposite; purpose <= Global.Settings.Purposes.Social; purpose++) {
@@ -472,14 +477,14 @@ namespace Daysim.AggregateLogsums {
                     IEnumerable<dynamic> pathTypeModels;
 										                                        
 										pathTypeModels = PathTypeModelFactory.Model.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                                            costCoefficient, timeCoefficient, true, 1, 0.0, false, Global.Settings.Modes.Walk);
+                                            costCoefficient, timeCoefficient, true, 1, 0, 0.0, false, Global.Settings.Modes.Walk);
                     var walkPath = pathTypeModels.First();
 
 										walkGenTime = walkPath.GeneralizedTimeLogsum;
 
                                         
 										pathTypeModels = PathTypeModelFactory.Model.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                                            costCoefficient, timeCoefficient, true, 1, 0.0, false, Global.Settings.Modes.Sov);
+                                            costCoefficient, timeCoefficient, true, 1, 0, 0.0, false, Global.Settings.Modes.Sov);
                     var sovPath = pathTypeModels.First();
 
 										var sovDistanceFromOrigin = (sovPath.PathDistance/ Global.Settings.DistanceUnitsPerMile) / 2D;
@@ -488,7 +493,7 @@ namespace Daysim.AggregateLogsums {
 										sovGenTime = sovPath.GeneralizedTimeLogsum;
 
                     pathTypeModels = PathTypeModelFactory.Model.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                                            costCoefficient, timeCoefficient, true, 1, 0.0, false, Global.Settings.Modes.Hov2);
+                                            costCoefficient, timeCoefficient, true, 1, 0, 0.0, false, Global.Settings.Modes.Hov2);
                     var hov2Path = pathTypeModels.First();
 
 										hov2GenTime = hov2Path.GeneralizedTimeLogsum;
@@ -502,7 +507,7 @@ namespace Daysim.AggregateLogsums {
 											: id;
 										
 										pathTypeModels = PathTypeModelFactory.Model.Run(randomUtility, transitOid, transitDid, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                                            costCoefficient, timeCoefficient, true, 1, Global.Configuration.Policy_UniversalTransitFareDiscountFraction, false, Global.Settings.Modes.Transit);
+                                            costCoefficient, timeCoefficient, true, 1, 0, Global.Configuration.Policy_UniversalTransitFareDiscountFraction, false, Global.Settings.Modes.Transit);
                     var transitPath = pathTypeModels.First();
 
 										transitGenTime = transitPath.GeneralizedTimeLogsum;
@@ -652,7 +657,7 @@ namespace Daysim.AggregateLogsums {
 				zoneSubzones[id] = subzones;
 
 				for (var subzone = 0; subzone < TOTAL_SUBZONES; subzone++) {
-					subzones[subzone] = subzoneFactory.Create(subzone);
+					subzones[subzone] = (ISubzone) subzoneFactory.Create(subzone);
 				}
 			}
 
@@ -669,7 +674,7 @@ namespace Daysim.AggregateLogsums {
 					.Creator;
 
 			foreach (var parcel in parcelReader) {
-				var parcelWrapper = parcelCreator.CreateWrapper(parcel);
+				var parcelWrapper = (IParcelWrapper) parcelCreator.CreateWrapper(parcel);
 
 				var subzones = zoneSubzones[parcelWrapper.ZoneId];
 				// var subzone = (parcel.GetDistanceToTransit() > 0 && parcel.GetDistanceToTransit() <= .5) ? 0 : 1;  
@@ -689,8 +694,9 @@ namespace Daysim.AggregateLogsums {
 				subzones[subzone].EmploymentRetail += parcelWrapper.EmploymentRetail;
 				subzones[subzone].EmploymentService += parcelWrapper.EmploymentService;
 				subzones[subzone].EmploymentTotal += parcelWrapper.EmploymentTotal;
-				subzones[subzone].ParkingOffStreetPaidDailySpaces += parcelWrapper.ParkingOffStreetPaidDailySpaces;
-				subzones[subzone].ParkingOffStreetPaidHourlySpaces += parcelWrapper.ParkingOffStreetPaidHourlySpaces;
+				//Removed following that are not defined the same way in actum.  Need to accommodate parking soem other way
+				//subzones[subzone].ParkingOffStreetPaidDailySpaces += parcelWrapper.ParkingOffStreetPaidDailySpaces;
+				//subzones[subzone].ParkingOffStreetPaidHourlySpaces += parcelWrapper.ParkingOffStreetPaidHourlySpaces;
 			}
 
 			foreach (var subzones in _eligibleZones.Values.Select(zone => zoneSubzones[zone.Id])) {
@@ -711,7 +717,10 @@ namespace Daysim.AggregateLogsums {
 
 					var subtotal = foo + ret + ser + med;
 
-					subzones[subzone].MixedUseMeasure = Math.Log(1 + subtotal * (subzones[subzone]).ParkingOffStreetPaidHourlySpaces * 100 / Math.Max(subtotal + (subzones[subzone]).ParkingOffStreetPaidHourlySpaces * 100, Constants.EPSILON));
+
+					//subzones[subzone].MixedUseMeasure = Math.Log(1 + subtotal * (subzones[subzone]).ParkingOffStreetPaidHourlySpaces * 100 / Math.Max(subtotal + (subzones[subzone]).ParkingOffStreetPaidHourlySpaces * 100, Constants.EPSILON));
+					//zeroed out above MixedUseMeasure because it relies on parking variable not available for actum
+					subzones[subzone].MixedUseMeasure = 0; 
 
 					subzones[subzone].SetSize(Global.Settings.Purposes.HomeBasedComposite, ComputeSize(Math.Exp(HBG019) * edu + Math.Exp(HBG020) * foo + Math.Exp(HBG021) * gov + Math.Exp(HBG022) * off + Math.Exp(HBG023) * oth + Math.Exp(HBG024) * ret + Math.Exp(HBG025) * ser + Math.Exp(HBG026) * med + Math.Exp(HBG027) * ind + Math.Exp(HBG029) * hou + Math.Exp(HBG030) * uni + Math.Exp(HBG031) * k12));
 					subzones[subzone].SetSize(Global.Settings.Purposes.WorkBased, ComputeSize(Math.Exp(WBG019) * edu + Math.Exp(WBG020) * foo + Math.Exp(WBG021) * gov + Math.Exp(WBG022) * off + Math.Exp(WBG023) * oth + Math.Exp(WBG024) * ret + Math.Exp(WBG025) * ser + Math.Exp(WBG026) * med + Math.Exp(WBG027) * ind + Math.Exp(WBG029) * hou + Math.Exp(WBG030) * uni));

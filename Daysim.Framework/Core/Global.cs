@@ -61,11 +61,11 @@ namespace Daysim.Framework.Core {
 		public static int[] ParcelStopAreaParcelIds { get; set; }
 		public static int[] ParcelStopAreaStopAreaKeys { get; set; }
 		public static int[] ParcelStopAreaStopAreaIds { get; set; }
-		public static float[] ParcelStopAreaDistances { get; set; }
+		public static float[] ParcelStopAreaLengths { get; set; }
 
 		public static int[] ParcelParkAndRideNodeIds { get; set; }
 		public static int[] ParcelParkAndRideNodeSequentialIds { get; set; }
-		public static float[] ParcelToBikeCarParkAndRideNodeDistance { get; set; }
+		public static float[] ParcelToBikeCarParkAndRideNodeLength { get; set; }
 
 		public static double Coefficients_CostCoefficientIncomeMultipleMinimum {
 			get {
@@ -106,11 +106,6 @@ namespace Daysim.Framework.Core {
 		public static bool PSRC {
 			get { return Configuration.PSRC; }
 		}
-
-        public static bool Nashville
-        {
-            get { return Configuration.Nashville; }
-        }
 
 		public static bool ParkAndRideNodeIsEnabled {
 			get { return !string.IsNullOrEmpty(Configuration.RawParkAndRideNodePath) && !string.IsNullOrEmpty(Configuration.InputParkAndRideNodePath); }

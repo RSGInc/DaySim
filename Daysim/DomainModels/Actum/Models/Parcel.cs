@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Runtime.InteropServices;
-using Daysim.DomainModels.Actum.Models.Interfaces;
+using Daysim.Framework.DomainModels.Models;
 using Daysim.Framework.Factories;
 using Daysim.Framework.Persistence;
 
@@ -14,7 +14,7 @@ using Daysim.Framework.Persistence;
 namespace Daysim.DomainModels.Actum.Models {
 	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
 	[Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
-	public sealed class Parcel : IActumParcel {
+	public sealed class Parcel : IParcel {
 		[ColumnName("id")]
 		public int Id { get; set; }
 

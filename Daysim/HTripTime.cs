@@ -123,6 +123,7 @@ namespace Daysim {
 									tour.TimeCoefficient,
 									tour.Person.IsDrivingAge,
 									tour.Household.VehiclesAvailable,
+									tour.Person.TransitPassOwnership,
 									tour.Person.GetTransitFareDiscountFraction(),
 									true,
 									pathMode);

@@ -635,7 +635,15 @@ namespace Daysim.Framework.ChoiceModels {
 		}
 
 		public Component GetUtilityComponent(int index) {
+//			if (index < 0 || index >= _utilityComponents.Capacity) {
+//			}
+//			try {
 			return _utilityComponents[index];
+//				}
+//				catch (Exception e) {
+//					bool testbreak = true;
+//					throw new HouseholdModelException();
+//				}
 		}
 
 		public void CreateSizeComponent(int index) {

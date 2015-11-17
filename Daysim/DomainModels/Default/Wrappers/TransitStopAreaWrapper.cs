@@ -52,6 +52,16 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			set { _transitStopArea.YCoordinate = value; }
 		}
 
+		public int Microzone {
+			get { return _transitStopArea.Microzone; }
+			set { _transitStopArea.Microzone = value; }
+		}
+
+		public int BikeOnBoardTerminal {
+			get { return _transitStopArea.BikeOnBoardTerminal; }
+			set { _transitStopArea.BikeOnBoardTerminal = value; }
+		}
+
 		#endregion
 	}
 }

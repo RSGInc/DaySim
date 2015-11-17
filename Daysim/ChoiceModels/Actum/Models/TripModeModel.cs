@@ -139,6 +139,7 @@ namespace Daysim.ChoiceModels.Actum.Models
 						trip.Tour.TimeCoefficient,
 						trip.Person.IsDrivingAge,
 						trip.Household.VehiclesAvailable,
+						trip.Person.TransitPassOwnership,
 						trip.Person.GetTransitFareDiscountFraction(),
 						false);
 
@@ -171,6 +172,7 @@ namespace Daysim.ChoiceModels.Actum.Models
 						trip.Tour.TimeCoefficient,
 						trip.Person.IsDrivingAge,
 						trip.Household.VehiclesAvailable,
+						trip.Person.TransitPassOwnership,
 						trip.Person.GetTransitFareDiscountFraction(),
 						false);
 

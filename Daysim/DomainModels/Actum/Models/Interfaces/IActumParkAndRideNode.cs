@@ -11,24 +11,6 @@ namespace Daysim.DomainModels.Actum.Models.Interfaces {
 	public interface IActumParkAndRideNode : IParkAndRideNode {
 	//public interface IActumParkAndRideNode : IModel {
 
-		//string TerminalName { get; set; }
-
-		int ParkingTypeId { get; set; }
-
-		double CostPerHour08_18 { get; set; }
-
-		double CostPerHour18_23 { get; set; }
-
-		double CostPerHour23_08 { get; set; }
-
-		double CostAnnual { get; set; }
-
-		int PRFacility { get; set; }
-
-		int LengthToStopArea { get; set; }
-
-		int Auto { get; set; }
-
 	}
 
 }

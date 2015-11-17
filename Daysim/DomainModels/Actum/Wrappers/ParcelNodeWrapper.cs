@@ -10,15 +10,16 @@ using Daysim.DomainModels.Actum.Wrappers.Interfaces;
 using Daysim.Framework.Core;
 using Daysim.Framework.DomainModels.Models;
 using Daysim.Framework.Factories;
+using Daysim.Framework.DomainModels.Wrappers;
 
 namespace Daysim.DomainModels.Actum.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-	public class ParcelNodeWrapper : Default.Wrappers.ParcelNodeWrapper, IActumParcelNodeWrapper {
-		private readonly IActumParcelNode _parcelNode;
+	public class ParcelNodeWrapper : Default.Wrappers.ParcelNodeWrapper, IParcelNodeWrapper {
+		private readonly IParcelNode _parcelNode;
 
 		[UsedImplicitly]
 		public ParcelNodeWrapper(IParcelNode parcelNode) : base(parcelNode) {
-			_parcelNode = (IActumParcelNode) parcelNode;
+			_parcelNode = (IParcelNode) parcelNode;
 		}
 	}
 }

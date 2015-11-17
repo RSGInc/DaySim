@@ -526,6 +526,9 @@ namespace Daysim.Framework.Core {
 		public double PathImpedance_WalkMinutesPerDistanceUnit { get; set; }
 
 		[XmlAttribute]
+		public double PathImpedance_BikeMinutesPerDistanceUnit { get; set; }
+
+		[XmlAttribute]
 		public double PathImpedance_WalkMinutesPerMile { get; set; }
 		// replaced by PathImpedance_WalkMinutesPerDistanceUnit.  Retained for backward comatibility.
 
@@ -594,29 +597,8 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public double PathImpedance_TransitCommuterRailTimeAdditiveWeight { get; set; }
 
-        [XmlAttribute]
-        public double PathImpedance_TransitSubwayTimeAdditiveWeight { get; set; }
-
-        [XmlAttribute]
-        public double PathImpedance_TransitPATTimeAdditiveWeight { get; set; }
-
-        [XmlAttribute]
-        public double PathImpedance_TransitTrolleyTimeAdditiveWeight { get; set; }
-
-        [XmlAttribute]
+		[XmlAttribute]
 		public double PathImpedance_TransitFerryTimeAdditiveWeight { get; set; }
-
-        [XmlAttribute]
-        public double PathImpedance_TransitLightRailInVehicleTimeWeight { get; set; }
-
-        [XmlAttribute]
-        public double PathImpedance_TransitPremiumBusInVehicleTimeWeight { get; set; }
-
-        [XmlAttribute]
-        public double PathImpedance_TransitCommuterRailInVehicleTimeWeight { get; set; }
-
-        [XmlAttribute]
-        public double PathImpedance_TransitFerryInVehicleTimeWeight { get; set; }
 
 		[XmlAttribute]
 		public bool PathImpedance_BikeUseTypeSpecificDistanceFractions { get; set; }
@@ -1331,12 +1313,6 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public bool PSRC { get; set; }
 
-        [XmlAttribute]
-        public bool DVRPC { get; set; }
-
-        [XmlAttribute]
-        public bool Nashville { get; set; }
-
 		//new since 203
 		[XmlAttribute]
 		public bool AvoidDisaggregateModeChoiceLogsums { get; set; }
@@ -1352,16 +1328,16 @@ namespace Daysim.Framework.Core {
 
 		//new since 203
 		[XmlAttribute]
-		public int MaximumParcelToStopAreaDistance { get; set; }
+		public int MaximumParcelToStopAreaLengthUnits { get; set; }
 		[XmlAttribute]
 		public int MaximumStopAreasToSearch { get; set; }
 		[XmlAttribute]
-		public int MaximumParcelToStopAreaDistanceParkAndRide { get; set; }
+		public int MaximumParcelToStopAreaLengthUnitsParkAndRide { get; set; }
 		[XmlAttribute]
 		public int MaximumStopAreasToSearchParkAndRide { get; set; }
 
 		[XmlAttribute]
-		public double MaximumMilesToDriveToParkAndRide { get; set; }
+		public double MaximumDistanceUnitsToDriveToParkAndRide { get; set; }
 		[XmlAttribute]
 		public double MaximumRatioDriveToParkAndRideVersusDriveToDestination { get; set; }
 
@@ -1377,6 +1353,11 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public char MicrozoneToParkAndRideNodeIndexDelimiter { get; set; }
 
+		[XmlAttribute]
+		public int MaximumParcelToStopAreaLengthUnitsToBike { get; set; }
+
+		[XmlAttribute]
+		public int MinimumParcelToStopAreaLengthUnitsToBike { get; set; }
 
 
 	}

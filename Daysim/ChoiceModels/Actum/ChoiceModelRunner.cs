@@ -2908,8 +2908,9 @@ namespace Daysim.ChoiceModels.Actum {
 				var choice = new HTourModeTime(tour.Mode, tour.DestinationArrivalTime, tour.DestinationDepartureTime);
 				var timeWindow = (constrainedArrivalTime <= 0 && constrainedDepartureTime <= 0 && constrainedMode <= 0) ?
 					tour.GetRelevantTimeWindow(householdDay) : new TimeWindow();
+				if (tour.Mode > 0) {   // JLB 20150828 prevents exception caused by mode == 0 in estimation data set
 				HTourModeTime.SetImpedanceAndWindow(timeWindow, tour, choice, -1, -1.0);
-
+				}
 				if (choice != null && choice.LongestFeasibleWindow != null) {
 					tour.DestinationArrivalBigPeriod = choice.ArrivalPeriod;
 					tour.DestinationDepartureBigPeriod = choice.DeparturePeriod;

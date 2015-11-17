@@ -65,6 +65,46 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			set { _parkAndRideNode.NearestStopAreaId = value; }
 		}
 
+		public int ParkingTypeId {
+			get { return _parkAndRideNode.ParkingTypeId; }
+			set { _parkAndRideNode.ParkingTypeId = value; }
+		}
+
+		public double CostPerHour08_18 {
+			get { return _parkAndRideNode.CostPerHour08_18; }
+			set { _parkAndRideNode.CostPerHour08_18 = value; }
+		}
+
+		public double CostPerHour18_23 {
+			get { return _parkAndRideNode.CostPerHour18_23; }
+			set { _parkAndRideNode.CostPerHour18_23 = value; }
+		}
+
+		public double CostPerHour23_08 {
+			get { return _parkAndRideNode.CostPerHour23_08; }
+			set { _parkAndRideNode.CostPerHour23_08 = value; }
+		}
+
+		public double CostAnnual {
+			get { return _parkAndRideNode.CostAnnual; }
+			set { _parkAndRideNode.CostAnnual = value; }
+		}
+
+		public int PRFacility {
+			get { return _parkAndRideNode.PRFacility; }
+			set { _parkAndRideNode.PRFacility = value; }
+		}
+
+		public int LengthToStopArea {
+			get { return _parkAndRideNode.LengthToStopArea; }
+			set { _parkAndRideNode.LengthToStopArea = value; }
+		}
+
+		public int Auto {
+			get { return _parkAndRideNode.Auto; }
+			set { _parkAndRideNode.Auto = value; }
+		}
+
 		#endregion
 
 		#region flags/choice model/etc. properties

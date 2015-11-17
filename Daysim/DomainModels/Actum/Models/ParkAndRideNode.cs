@@ -6,14 +6,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Runtime.InteropServices;
-using Daysim.DomainModels.Actum.Models.Interfaces;
+//using Daysim.DomainModels.Actum.Models.Interfaces;
 using Daysim.Framework.Factories;
 using Daysim.Framework.Persistence;
+using Daysim.Framework.DomainModels.Models;
 
 namespace Daysim.DomainModels.Actum.Models {
 	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
 	[Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
-	public sealed class ParkAndRideNode : IActumParkAndRideNode {
+	public sealed class ParkAndRideNode : IParkAndRideNode {
 //	public sealed class ParkAndRideNode {     //JLB 201505 Removed interface requirement so I could eliminate zoneID, and x and y coordinates
 
 		[ColumnName("id")]               //sequential ID of parking node not in raw input, added by RawConverter

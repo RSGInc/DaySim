@@ -350,16 +350,6 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 		public int ParkAndRideDestinationStopAreaKey { get; set; }
 
-        public int ParkAndRidePathType { get; set; }
-
-        public double ParkAndRideTransitTime { get; set; }
-
-        public double ParkAndRideTransitDistance { get; set; }
-
-        public double ParkAndRideTransitCost { get; set; }
-
-        public double ParkAndRideTransitGeneralizedTime { get; set; }
-        
 		public bool DestinationModeAndTimeHaveBeenSimulated { get; set; }
 
 		public bool HalfTour1HasBeenSimulated { get; set; }
@@ -667,7 +657,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 			IEnumerable<dynamic> pathTypeModels =
 			PathTypeModelFactory.Model
-				.Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
+				.Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
 			
 			var autoPathRoundTrip =		pathTypeModels.First();
 
@@ -984,12 +974,12 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
             IEnumerable<dynamic> pathTypeModels =
                 PathTypeModelFactory.Model
-                    .Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
+                    .Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, useMode);
             var pathTypeFromOrigin = pathTypeModels.First();
 
             pathTypeModels = 
 				PathTypeModelFactory.Model
-					.Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
+					.Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, useMode);
             var pathTypeFromDestination = pathTypeModels.First();
 
 			modeImpedance.GeneralizedTimeFromOrigin = pathTypeFromOrigin.GeneralizedTimeLogsum;

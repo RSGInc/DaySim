@@ -82,11 +82,11 @@ namespace Daysim.Settings {
 			get { return 6; }
 		}
 
-		public virtual int CarParkRideWalk {
+		public override int CarParkRideWalk {
 			get { return 7; }
 		}
 
-		public virtual int CarKissRideWalk {
+		public override int CarKissRideWalk {
 			get { return 8; }
 		}
 
@@ -102,11 +102,11 @@ namespace Daysim.Settings {
 			get { return 11; }
 		}
 
-		public virtual int CarParkRideBike {
+		public override int CarParkRideBike {
 			get { return 12; }
 		}
 
-		public virtual int WalkRideBike {
+		public override int WalkRideBike {
 			get { return 13; }
 		}
 

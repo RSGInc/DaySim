@@ -15,6 +15,8 @@ using Daysim.Framework.Persistence;
 using Daysim.Framework.Roster;
 using Daysim.Sampling;
 using Ninject.Modules;
+using Daysim.DomainModels.Actum.Models.Interfaces;
+//using Daysim.DomainModels.Actum.Wrappers.Interfaces;
 
 namespace Daysim {
 	public sealed class DaysimModule : NinjectModule {
@@ -46,6 +48,10 @@ namespace Daysim {
 			Bind<IPersistenceFactory<IZone>>()
 				.To<PersistenceFactory<IZone>>()
 				.InSingletonScope();
+
+//			Bind<IPersistenceFactory<IActumZone>>()
+//				.To<PersistenceFactory<IActumZone>>()
+//				.InSingletonScope();
 
 			Bind<IPersistenceFactory<IHousehold>>()
 				.To<PersistenceFactory<IHousehold>>()

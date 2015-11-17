@@ -17,5 +17,9 @@ namespace Daysim.Framework.DomainModels.Models {
 
 		int YCoordinate { get; set; }
 
+		int Microzone { get; set; }
+
+		int BikeOnBoardTerminal { get; set; }
+
 	}
 }

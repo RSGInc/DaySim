@@ -5,20 +5,21 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.DomainModels.Actum.Models.Interfaces;
-using Daysim.DomainModels.Actum.Wrappers.Interfaces;
+using Daysim.Framework.DomainModels;
 using Daysim.Framework.Core;
 using Daysim.Framework.DomainModels.Models;
+using Daysim.Framework.DomainModels.Wrappers;
+
 using Daysim.Framework.Factories;
 
 namespace Daysim.DomainModels.Actum.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-	public class ParcelWrapper : Default.Wrappers.ParcelWrapper, IActumParcelWrapper {
-		private readonly IActumParcel _parcel;
+	public class ParcelWrapper : Default.Wrappers.ParcelWrapper, IParcelWrapper {
+		private readonly IParcel _parcel;
 
 		[UsedImplicitly]
 		public ParcelWrapper(IParcel parcel) : base(parcel) {
-			_parcel = (IActumParcel) parcel;
+			_parcel = (IParcel) parcel;
 		}
 
 		//See RawConverter, where the Actum input names are renamed to the Default names, which are then used in the Actum Parcel class. 
