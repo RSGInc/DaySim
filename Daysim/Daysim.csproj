@@ -482,7 +482,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>SubWCRev  "$(SolutionDir)."  "$(SolutionDir)svn_stamp.txt" "$(TargetDir)svn_stamp_out.txt"</PostBuildEvent>
+    <PostBuildEvent>
+        </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
