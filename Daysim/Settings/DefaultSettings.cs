@@ -55,10 +55,6 @@ namespace Daysim.Settings {
 			get { return true; }
 		}
 
-		public virtual int DestinationScale {
-			get { return 0; }
-		}
-
 		public virtual int OutOfRegionParcelId {
 			get { return -999; }
 		}

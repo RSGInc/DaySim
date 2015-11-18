@@ -289,13 +289,13 @@ namespace Daysim.ChoiceModels.H.Models {
 						var circuityDistance =
 							(zzDist > Global.Configuration.MaximumBlendingDistance)
 								? Constants.DEFAULT_VALUE
-								: (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
+								: (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
 									? pUsualLocationParcel[t1].NodeToNodeDistance(pUsualLocationParcel[t2], batchNumber)
-									: (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceCircuityMeasures)
+									: (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceCircuityMeasures)
 										? pUsualLocationParcel[t1].CircuityDistance(pUsualLocationParcel[t2])
 										: Constants.DEFAULT_VALUE;
 						var skimValue =
-							Global.Settings.DestinationScale != Global.Settings.DestinationScales.Parcel
+							Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Parcel
 								? ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, Global.Settings.Times.EightAM, pUsualLocationZoneId[t1], pUsualLocationZoneId[t2])
 								: ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, Global.Settings.Times.EightAM, pUsualLocationParcel[t1], pUsualLocationParcel[t2], circuityDistance);
 						distanceInMiles = skimValue.BlendVariable;

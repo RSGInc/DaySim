@@ -1377,6 +1377,9 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public char MicrozoneToParkAndRideNodeIndexDelimiter { get; set; }
 
+        [XmlAttribute]
+        public int DestinationScale { get; set; }
+
 
 
 	}

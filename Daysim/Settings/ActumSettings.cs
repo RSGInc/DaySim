@@ -34,11 +34,6 @@ namespace Daysim.Settings {
             get { return 5.75; }
         }
 
-        public override int DestinationScale
-        {
-            get { return 2; }
-        }
-
     }
 
 	public class ActumModes : DefaultModes {

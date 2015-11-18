@@ -133,7 +133,7 @@ namespace Daysim.Framework.Roster {
 			var skimValue = GetValue(origin.ZoneId, destination.ZoneId, entry, minute);
 
 			//mb fix for 0 intrazonals
-			if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Zone && origin.ZoneId == destination.ZoneId && skimValue.Variable < Constants.EPSILON) {
+			if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone && origin.ZoneId == destination.ZoneId && skimValue.Variable < Constants.EPSILON) {
 				if (variable == "distance") {
 					skimValue.Variable = 0.25 * Global.Settings.DistanceUnitsPerMile;
 				}
@@ -157,7 +157,7 @@ namespace Daysim.Framework.Roster {
 					: GetEntry(entry.BlendVariable, entry.Mode, entry.BlendPathType, votGroup, minute);
 			var blendSkimValue = GetValue(origin.ZoneId, destination.ZoneId, blendEntry, minute);
 
-			if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Zone) {
+			if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone) {
 				//skimValue.BlendVariable = blendSkimValue.BlendVariable;
 				skimValue.BlendVariable = blendSkimValue.Variable;  //JLB replaced above line 20130628
 
