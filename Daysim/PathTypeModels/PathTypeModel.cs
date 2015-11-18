@@ -44,6 +44,10 @@ namespace Daysim.PathTypeModels {
 		private readonly int[] _pathParkAndRideNodeId = new int[Global.Settings.PathTypes.TotalPathTypes];
 		private readonly int[] _pathOriginStopAreaKey = new int[Global.Settings.PathTypes.TotalPathTypes];
 		private readonly int[] _pathDestinationStopAreaKey = new int[Global.Settings.PathTypes.TotalPathTypes];
+        private readonly double[] _pathParkAndRideTransitTime = new double[Global.Settings.PathTypes.TotalPathTypes];
+        private readonly double[] _pathParkAndRideTransitDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
+        private readonly double[] _pathParkAndRideTransitCost = new double[Global.Settings.PathTypes.TotalPathTypes];
+        private readonly double[] _pathParkAndRideTransitUtility = new double[Global.Settings.PathTypes.TotalPathTypes];
 
 		public PathTypeModel() {
 			GeneralizedTimeLogsum = Global.Settings.GeneralizedTimeUnavailable;
@@ -69,6 +73,11 @@ namespace Daysim.PathTypeModels {
 		public virtual int PathOriginStopAreaKey { get; protected set; }
 
 		public virtual int PathDestinationStopAreaKey { get; protected set; }
+
+        public virtual double PathParkAndRideTransitTime { get; protected set; }
+        public virtual double PathParkAndRideTransitDistance { get; protected set; }
+        public virtual double PathParkAndRideTransitCost { get; protected set; }
+        public virtual double PathParkAndRideTransitGeneralizedTime { get; protected set; }
 
 		public virtual bool Available { get; protected set; }
 
@@ -239,9 +248,17 @@ namespace Daysim.PathTypeModels {
 			PathCost = _pathCost[_choice];
 			GeneralizedTimeChosen = _utility[_choice] / tourTimeCoefficient;
 			PathParkAndRideNodeId = _pathParkAndRideNodeId[_choice];
-			PathOriginStopAreaKey = _pathOriginStopAreaKey[_choice];
-			PathDestinationStopAreaKey = _pathDestinationStopAreaKey[_choice];
-		}
+            if (Global.StopAreaIsEnabled) {
+                PathOriginStopAreaKey = _pathOriginStopAreaKey[_choice];
+                PathDestinationStopAreaKey = _pathDestinationStopAreaKey[_choice];
+                if (Mode == Global.Settings.Modes.ParkAndRide) {
+                    PathParkAndRideTransitTime = _pathParkAndRideTransitTime[_choice];
+                    PathParkAndRideTransitDistance = _pathParkAndRideTransitDistance[_choice];
+                    PathParkAndRideTransitCost = _pathParkAndRideTransitCost[_choice];
+                    PathParkAndRideTransitGeneralizedTime = _pathParkAndRideTransitUtility[_choice] / tourTimeCoefficient;
+                }
+            }
+        }
 
 
 		private void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones, int batch) {
@@ -530,9 +547,9 @@ namespace Daysim.PathTypeModels {
 			_expUtility[pathType] = _utility[pathType] > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : _utility[pathType] < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(_utility[pathType]);
 
 			//for transit, use auto distance
-			var distance = ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Hov2, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
+			var distance = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Hov2, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
 			if (_returnTime > 0) {
-				distance += ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Hov2, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, _destinationZoneId, _originZoneId).Variable;
+				distance += ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Hov2, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, _destinationZoneId, _originZoneId).Variable;
 			}
 			_pathDistance[pathType] = distance;
 		}
@@ -616,9 +633,9 @@ namespace Daysim.PathTypeModels {
 			}
 
 			//for transit, use auto distance
-			var distance = ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Hov2, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originParcel , _destinationParcel).Variable;
+			var distance = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Hov2, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originParcel , _destinationParcel).Variable;
 			if (_returnTime > 0) {
-				distance += ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Hov2, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, _destinationParcel, _originParcel).Variable;
+				distance += ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Hov2, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, _destinationParcel, _originParcel).Variable;
 			}
 			_pathDistance[pathType] = distance;
 		}
@@ -655,6 +672,8 @@ namespace Daysim.PathTypeModels {
 			double maxMilesToDrive = (Global.Configuration.MaximumDistanceUnitsToDriveToParkAndRide > 0) ? Global.Configuration.MaximumDistanceUnitsToDriveToParkAndRide : 999D;
 			double maxDistanceRatio = (Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination > 0) ? Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination : 99D;
 
+			double zzDistOD= ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId ).Variable;
+
 			foreach (var node in parkAndRideNodes) {
 				// only look at nodes with positive capacity
 				if (node.Capacity < Constants.EPSILON) {
@@ -667,17 +686,19 @@ namespace Daysim.PathTypeModels {
 				var parkAndRideParkingCost = node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
 				//test distance to park and ride against user-set limits
-				var zzDist = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
+				double zzDistPR = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
 
-				if (zzDist > maxMilesToDrive ) {
+				if (zzDistPR > maxMilesToDrive || zzDistPR/Math.Max(zzDistOD,1.0) > maxDistanceRatio ) {
 					continue;
 				}
 
 				var zzDist2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId ).Variable;
 
-				if (zzDist/Math.Max(zzDist,1.0) > maxDistanceRatio ) {
+				if (zzDist2/Math.Max(zzDist2,1.0) > maxDistanceRatio ) {
 					continue;
 				}
+            var parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];
+				var parkAndRideParkingCost = node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 								
 				var transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideZoneId, destinationZoneId);
 				if (!transitPath.Available) {
@@ -691,7 +712,7 @@ namespace Daysim.PathTypeModels {
 				}
 
 				var circuityDistance =
-					(zzDist > Global.Configuration.MaximumBlendingDistance)
+					(zzDistPR > Global.Configuration.MaximumBlendingDistance)
 						? Constants.DEFAULT_VALUE
 						: (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
 							? _originParcel.NodeToNodeDistance(parkAndRideParcel, batchNumber)
@@ -706,7 +727,7 @@ namespace Daysim.PathTypeModels {
 
 				var driveTime = skimValue.Variable;
 				var driveDistance = skimValue.BlendVariable;
-				var parkMinute = (int) (_outboundTime - (transitPath.Time / 2.0) - 3); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
+				var parkMinute = (int) Math.Max(1,(_outboundTime - (transitPath.Time / 2.0) - 3)); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
 
 				var transitDistance =
 					useZones
@@ -801,34 +822,39 @@ namespace Daysim.PathTypeModels {
 			if (dFirst <=0 ) {
 				return;
 			}
+
+         double zzDistOD= ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId ).Variable;
+
 			foreach (var node in parkAndRideNodes) {
 				// only look at nodes with positive capacity
 				if (node.Capacity < Constants.EPSILON) {
 					continue;
 				}
 
+				var parkAndRideZoneId = node.ZoneId;
+
+				//test distance to park and ride against user-set limits
+				var zzDistPR = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
+
+				if (zzDistPR > maxMilesToDrive || zzDistPR/Math.Max(zzDistOD,1.0) > maxDistanceRatio ) {
+					continue;
+				}
+
 				// use the nearest stop area for transit LOS  
 				var parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];
-				var parkAndRideZoneId = node.ZoneId;
 				var parkAndRideStopAreaKey = node.NearestStopAreaId;
 				var parkAndRideStopArea = Global.TransitStopAreaMapping[node.NearestStopAreaId];
 				var parkAndRideParkingCost = node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 					
-				//test distance to park and ride against user-set limits
-				var zzDist = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
-
-				if (zzDist > maxMilesToDrive ) {
-					continue;
-				}
 
 				var zzDist2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId ).Variable;
 
-				if (zzDist/Math.Max(zzDist,1.0) > maxDistanceRatio ) {
+				if (zzDist2/Math.Max(zzDist2,1.0) > maxDistanceRatio ) {
 					continue;
 				}
 								
 				var circuityDistance =
-						(zzDist > Global.Configuration.MaximumBlendingDistance)
+						(zzDistPR > Global.Configuration.MaximumBlendingDistance)
 						? Constants.DEFAULT_VALUE
 						: (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
 							? _originParcel.NodeToNodeDistance(parkAndRideParcel, batchNumber)
@@ -876,7 +902,7 @@ namespace Daysim.PathTypeModels {
 						continue;
 					}
 
-					var parkMinute = (int) (_outboundTime - (transitPath.Time / 2.0) - 3); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
+					var parkMinute = (int) Math.Max(1,(_outboundTime - (transitPath.Time / 2.0) - 3)); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
 
 					// set utility
 					var nodePathTime = transitPath.Time + driveTime + destinationWalkTime;
@@ -911,6 +937,10 @@ namespace Daysim.PathTypeModels {
 					_pathTime[pathType] = nodePathTime;
 					_pathDistance[pathType] = nodePathDistance;
 					_pathCost[pathType] = nodePathCost;
+                    _pathParkAndRideTransitTime[pathType] = transitPath.Time;
+                    _pathParkAndRideTransitDistance[pathType] = transitDistance;
+                    _pathParkAndRideTransitCost[pathType] = transitPath.Cost;
+                    _pathParkAndRideTransitUtility[pathType] = transitPath.Utility; 
 					_utility[pathType] = nodeUtility;
 					_expUtility[pathType] = nodeUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : nodeUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(nodeUtility);
 				}
@@ -999,7 +1029,13 @@ namespace Daysim.PathTypeModels {
 													 : pathType == Global.Settings.PathTypes.Ferry
 															  ? Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight
 															  : 0D;
-            if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime && Global.Configuration.PSRC == false) {
+            //toggle region specific transit impedance calculation
+            if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime && 
+                Global.Configuration.PSRC == false &&
+                Global.Configuration.DVRPC == false &&
+                Global.Configuration.Nashville == false)
+            {
+
 				if (Math.Abs(pathTypeSpecificTimeWeight) > Constants.EPSILON) {
 						pathTypeSpecificTime =
 							 pathType == Global.Settings.PathTypes.LightRail
@@ -1018,6 +1054,29 @@ namespace Daysim.PathTypeModels {
 					}
 				}
 			}
+            else if (Global.Configuration.DVRPC == true)
+            {
+                //this is the outer weight on the sum of all the path specific terms
+                pathTypeSpecificTimeWeight = 1.0;
+                pathTypeSpecificTime =
+                      Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight * ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitSubwayTimeAdditiveWeight * ImpedanceRoster.GetValue("subtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight * ImpedanceRoster.GetValue("comrtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight * ImpedanceRoster.GetValue("brttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitPATTimeAdditiveWeight * ImpedanceRoster.GetValue("pattime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitTrolleyTimeAdditiveWeight * ImpedanceRoster.GetValue("troltime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                if (returnTime > 0)
+                {    
+                    pathTypeSpecificTime +=
+                    + Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight * ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitSubwayTimeAdditiveWeight * ImpedanceRoster.GetValue("subtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight * ImpedanceRoster.GetValue("comrtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight * ImpedanceRoster.GetValue("brttime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitPATTimeAdditiveWeight * ImpedanceRoster.GetValue("pattime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable
+                    + Global.Configuration.PathImpedance_TransitTrolleyTimeAdditiveWeight * ImpedanceRoster.GetValue("troltime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                }
+            }
+
             else if (Global.Configuration.PSRC == true)
             {
                 //this is the outer weight on the sum of all the path specific terms
@@ -1031,6 +1090,77 @@ namespace Daysim.PathTypeModels {
                     + Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight * ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, outboundTime, destinationZoneId, originZoneId).Variable
                     + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight * ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, outboundTime, destinationZoneId, originZoneId).Variable; 
             }
+
+            else if (Global.Configuration.Nashville == true)
+            {
+                //Nashville BRT coded in Ferry
+                //Nashville Commuter Rail coded in Commuter rail
+                //Nashville Express Bus coded in Premium bus
+                
+                //ASC based on IVT share by sub-mode
+                pathTypeSpecificTimeWeight = 1.0;
+
+                pathTypeSpecificTime =
+                      Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable / outboundInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable / outboundInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable / outboundInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable / outboundInVehicleTime;
+
+                if (returnTime > 0)
+                {
+
+                    pathTypeSpecificTime = pathTypeSpecificTime 
+
+                    + Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable / returnInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable / returnInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable / returnInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight *
+                        ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable / returnInVehicleTime;
+                }
+
+                //IVT discounted by sub-mode
+                double outboundLightRailInVehicleTime = ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                double outboundFerryInVehicleTime = ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                double outboundCommuterRailInVehicleTime = ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                double outboundPremiumBusInVehicleTime = ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+                double outboundLocalBusInVehicleTime = outboundInVehicleTime - (outboundLightRailInVehicleTime + outboundFerryInVehicleTime +
+                       outboundCommuterRailInVehicleTime + outboundPremiumBusInVehicleTime);
+
+                outboundInVehicleTime = 
+                      Global.Configuration.PathImpedance_TransitLightRailInVehicleTimeWeight * outboundLightRailInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitFerryInVehicleTimeWeight * outboundFerryInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitCommuterRailInVehicleTimeWeight * outboundCommuterRailInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitPremiumBusInVehicleTimeWeight * outboundPremiumBusInVehicleTime
+                    + 1 * outboundLocalBusInVehicleTime;
+
+                if (returnTime > 0)
+                {
+                    double returnLightRailInVehicleTime = ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                    double returnFerryInVehicleTime = ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                    double returnCommuterRailInVehicleTime = ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                    double returnPremiumBusInVehicleTime = ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
+                    double returnLocalBusInVehicleTime = returnInVehicleTime - (returnLightRailInVehicleTime + returnFerryInVehicleTime +
+                           returnCommuterRailInVehicleTime + returnPremiumBusInVehicleTime); 
+                    
+                    returnInVehicleTime =
+                      Global.Configuration.PathImpedance_TransitLightRailInVehicleTimeWeight * returnLightRailInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitFerryInVehicleTimeWeight * returnFerryInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitCommuterRailInVehicleTimeWeight * returnCommuterRailInVehicleTime
+                    + Global.Configuration.PathImpedance_TransitPremiumBusInVehicleTimeWeight * returnPremiumBusInVehicleTime
+                    + 1 * returnLocalBusInVehicleTime;
+
+                }
+
+            }
+
+
 
 			var totalInVehicleTime = outboundInVehicleTime + returnInVehicleTime;
 			path.Utility =

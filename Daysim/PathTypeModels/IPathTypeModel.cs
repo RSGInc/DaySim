@@ -20,6 +20,11 @@ namespace Daysim.PathTypeModels {
 
 		int PathParkAndRideNodeId { get; }
 
+		double PathParkAndRideTransitTime { get; }
+		double PathParkAndRideTransitDistance { get; }
+		double PathParkAndRideTransitCost { get; }
+		double PathParkAndRideTransitGeneralizedTime { get; }
+
 		bool Available { get; }
 
 //		List<IPathTypeModel> RunAllPlusParkAndRide (IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, double transitDiscountFraction, bool randomChoice);
