@@ -191,10 +191,10 @@ namespace Daysim.Framework.Roster {
 				//Global.PrintFile.WriteLine("Distances: Network {0} Circuity {1} Orthogonal {2}", networkDistance, circuityDistance,
 				//	(Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate)) / 5280D);
 				xyDistance = circuityDistance;
-			}
-			else {
-				// default is orthogonal distance
-				xyDistance = (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate)) / 5280D;
+			} 
+            else {
+				// default is orthogonal distance, with a miniumum of 300 feet for intra-microzone
+				xyDistance = Math.Max(300D, (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate))) / 5280D;
 			}
 
 			if (networkDistance >= Constants.EPSILON && xyDistance >= Constants.EPSILON) {

@@ -937,7 +937,11 @@ namespace Daysim.DomainModels.Default.Wrappers {
         }
 
 		public virtual double NodeToNodeDistance(IParcelWrapper destination, int batch) {
-			if (Id == Global.NodeNodePreviousOriginParcelId[batch] && destination.Id == Global.NodeNodePreviousDestinationParcelId[batch]) {
+            //added for intra-microzone distance, square root of area over 2
+            if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
+                return Math.Sqrt(ThousandsSquareLengthUnits) / 2.0;
+            }
+            if (Id == Global.NodeNodePreviousOriginParcelId[batch] && destination.Id == Global.NodeNodePreviousDestinationParcelId[batch]) {
 				return Global.NodeNodePreviousDistance[batch];
 			}
 
@@ -1014,7 +1018,11 @@ namespace Daysim.DomainModels.Default.Wrappers {
 		}
 
 		public virtual double CircuityDistance(IParcelWrapper destination) {
-			// JLBscale:  change so calculations work in length units instead of ft.
+            //added for intra-microzone distance, square root of area over 2
+            if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
+                return Math.Sqrt(ThousandsSquareLengthUnits) / 2.0;
+            }
+            // JLBscale:  change so calculations work in length units instead of ft.
 			var maxCircLength = 10560.0 * Global.Settings.LengthUnitsPerFoot; // only apply circuity multiplier out to 2 miles = 10560 feet
 			var lengthLimit1 = 2640.0 * Global.Settings.LengthUnitsPerFoot; // circuity distance 1 = 1/2 mile
 			var lengthLimit2 = 5280.0 * Global.Settings.LengthUnitsPerFoot; // circuity distance 2 = 1 mile

@@ -168,7 +168,7 @@ namespace Daysim.PathTypeModels {
 				}
 				else if (Mode == Global.Settings.Modes.Hov3 || Mode == Global.Settings.Modes.Hov2 || Mode == Global.Settings.Modes.Sov) {
 					if (Mode != Global.Settings.Modes.Sov || (_isDrivingAge && _householdCars > 0)) {
-						RunAutoModel(skimMode, pathType, votValue, useZones);
+						RunAutoModel(skimMode, pathType, votValue, useZones, batchNumber);
 					}
 				}
 				else if (Mode == Global.Settings.Modes.Transit) {
@@ -263,18 +263,8 @@ namespace Daysim.PathTypeModels {
 
 
 		private void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones, int batch) {
-			var zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
-			var circuityDistance =
-				(zzDist > Global.Configuration.MaximumBlendingDistance)
-					? Constants.DEFAULT_VALUE
-					: (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-						? _originParcel.NodeToNodeDistance(_destinationParcel, batch)
-						: (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-							? _originParcel.CircuityDistance(_destinationParcel)
-							: Constants.DEFAULT_VALUE;
-			//test output
-			//var orth=(Math.Abs(_originParcel.XCoordinate - _destinationParcel.XCoordinate) + Math.Abs(_originParcel.YCoordinate - _destinationParcel.YCoordinate)) / 5280.0;
-			//Global.PrintFile.WriteLine("Circuity distance for parcels {0} to {1} is {2} vs {3}",_originParcel.Id, _destinationParcel.Id, circuityDistance, orth);
+            
+            var circuityDistance = useZones ? Constants.DEFAULT_VALUE : GetCircuityDistance(skimMode, pathType, votValue, _outboundTime, batch, _originParcel, _destinationParcel);
 
 			var skimValue =
 				useZones
@@ -397,7 +387,7 @@ namespace Daysim.PathTypeModels {
 			_expUtility[pathType] = _utility[pathType] > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : _utility[pathType] < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(_utility[pathType]);
 		}
 
-		private void RunAutoModel(int skimMode, int pathType, double votValue, bool useZones) {
+		private void RunAutoModel(int skimMode, int pathType, double votValue, bool useZones, int batch) {
 			_pathCost[pathType] =
 				useZones
 					? ImpedanceRoster.GetValue("toll", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
@@ -432,17 +422,8 @@ namespace Daysim.PathTypeModels {
 				tollConstant = Global.Configuration.PathImpedance_AutoTolledPathConstant;
 			}
 
-			var zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
-			int batchNumber = ParallelUtility.GetBatchFromThreadId();
-			var circuityDistance =
-				(zzDist > Global.Configuration.MaximumBlendingDistance)
-					? Constants.DEFAULT_VALUE
-					: (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-						? _originParcel.NodeToNodeDistance(_destinationParcel, batchNumber)
-						: (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-							? _originParcel.CircuityDistance(_destinationParcel)
-							: Constants.DEFAULT_VALUE;
-
+            var circuityDistance = useZones ? Constants.DEFAULT_VALUE : GetCircuityDistance(skimMode, pathType, votValue, _outboundTime, batch, _originParcel, _destinationParcel);
+ 
 			var skimValue =
 				useZones
 					? ImpedanceRoster.GetValue("ivtime", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId)
@@ -684,7 +665,9 @@ namespace Daysim.PathTypeModels {
 				// use the node rather than the nearest parcel for transit LOS, becuase more accurate, and distance blending is not relevant 
 				var parkAndRideZoneId = node.ZoneId;
 				//test distance to park and ride against user-set limits
-				double zzDistPR = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
+                
+             
+                double zzDistPR = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
 
 				if (zzDistPR > maxMilesToDrive || zzDistPR/Math.Max(zzDistOD,1.0) > maxDistanceRatio ) {
 					continue;
@@ -934,6 +917,25 @@ namespace Daysim.PathTypeModels {
 			}
 		}
 
+        private static double GetCircuityDistance(int skimMode, int pathType, double votValue, int outboundTime, int batch, IParcelWrapper oParcel, IParcelWrapper dParcel)
+        {
+            var zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, outboundTime, oParcel.ZoneId, dParcel.ZoneId).Variable;
+            if (oParcel.ZoneId == dParcel.ZoneId)
+            {
+                zzDist += 0;
+            }
+            var circuityDistance =
+                (zzDist > Global.Configuration.MaximumBlendingDistance)
+                    ? Constants.DEFAULT_VALUE
+                    : (Global.Configuration.UseShortDistanceNodeToNodeMeasures)
+                        ? oParcel.NodeToNodeDistance(dParcel, batch)
+                        : (Global.Configuration.UseShortDistanceCircuityMeasures)
+                            ? oParcel.CircuityDistance(dParcel)
+                            : Constants.DEFAULT_VALUE;
+            return circuityDistance;
+        }
+
+
 		public class TransitPath {
 			public bool Available { get; set; }
 			public double Time { get; set; }
@@ -943,7 +945,7 @@ namespace Daysim.PathTypeModels {
 			public double Utility { get; set; }
 		}
 
-		private PathTypeModel.TransitPath GetTransitPath(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId) {
+        private PathTypeModel.TransitPath GetTransitPath(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId) {
 
 			var path = new PathTypeModel.TransitPath();
 			path.Available = true;
@@ -1194,11 +1196,6 @@ namespace Daysim.PathTypeModels {
 					: Constants.DEFAULT_VALUE; // -1 is "missing" value
 		}
 
-		double GammaFunction(double x, double gamma) {
-			double xGamma;
-			xGamma = gamma * x + (1 - gamma) * Math.Log(Math.Max(x, 1.0));
-			return xGamma;
-		}
 	}
 
 }
