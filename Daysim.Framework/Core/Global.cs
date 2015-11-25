@@ -30,6 +30,8 @@ namespace Daysim.Framework.Core {
 
 		public static bool TraceResults { get; set; }
 
+        public static int LastNodeDistanceRecord { get; set; }
+
 		public static int[] ANodeId { get; set; }
 
 		public static int[] ANodeFirstRecord { get; set; }

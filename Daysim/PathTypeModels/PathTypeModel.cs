@@ -249,16 +249,16 @@ namespace Daysim.PathTypeModels {
 			PathCost = _pathCost[_choice];
             GeneralizedTimeChosen = _utility[_choice] / tourTimeCoefficient;
 			PathParkAndRideNodeId = _pathParkAndRideNodeId[_choice];
+            if (Mode == Global.Settings.Modes.ParkAndRide) {
+                PathParkAndRideTransitTime = _pathParkAndRideTransitTime[_choice];
+                PathParkAndRideTransitDistance = _pathParkAndRideTransitDistance[_choice];
+                PathParkAndRideTransitCost = _pathParkAndRideTransitCost[_choice];
+                PathParkAndRideTransitGeneralizedTime = _pathParkAndRideTransitUtility[_choice] / tourTimeCoefficient;
+            }
             if (Global.StopAreaIsEnabled) {
                 PathOriginStopAreaKey = _pathOriginStopAreaKey[_choice];
                 PathDestinationStopAreaKey = _pathDestinationStopAreaKey[_choice];
-                if (Mode == Global.Settings.Modes.ParkAndRide) {
-                    PathParkAndRideTransitTime = _pathParkAndRideTransitTime[_choice];
-                    PathParkAndRideTransitDistance = _pathParkAndRideTransitDistance[_choice];
-                    PathParkAndRideTransitCost = _pathParkAndRideTransitCost[_choice];
-                    PathParkAndRideTransitGeneralizedTime = _pathParkAndRideTransitUtility[_choice] / tourTimeCoefficient;
-                }
-            }
+           }
         }
 
 
@@ -753,7 +753,11 @@ namespace Daysim.PathTypeModels {
 				_pathTime[pathType] = nodePathTime;
 				_pathDistance[pathType] = nodePathDistance;
 				_pathCost[pathType] = nodePathCost;
-				_utility[pathType] = nodeUtility;
+                _pathParkAndRideTransitTime[pathType] = transitPath.Time;
+                _pathParkAndRideTransitDistance[pathType] = transitDistance;
+                _pathParkAndRideTransitCost[pathType] = transitPath.Cost;
+                _pathParkAndRideTransitUtility[pathType] = transitPath.Utility;
+                _utility[pathType] = nodeUtility;
 				_expUtility[pathType] = nodeUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : nodeUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(nodeUtility);
 			}
 
@@ -925,7 +929,7 @@ namespace Daysim.PathTypeModels {
                 zzDist += 0;
             }
             var circuityDistance =
-                (zzDist > Global.Configuration.MaximumBlendingDistance)
+                (zzDist<Constants.EPSILON || zzDist > Global.Configuration.MaximumBlendingDistance)
                     ? Constants.DEFAULT_VALUE
                     : (Global.Configuration.UseShortDistanceNodeToNodeMeasures)
                         ? oParcel.NodeToNodeDistance(dParcel, batch)

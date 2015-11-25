@@ -966,19 +966,16 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				return Constants.DEFAULT_VALUE;
 			}
 
-			// symmetry assumed - used smaller node # as aNode
-			var aNodeId = Math.Min(oNodeId, dNodeId);
-			var bNodeId = Math.Max(oNodeId, dNodeId);
+            var aNodeId = oNodeId;
+            var bNodeId = dNodeId;
 
-			// no longer necessary - nodeIds are already indexed
-			//int index = -1;
-			//do {
-			//	index++;
-			//} while (Global.ANodeId[index] != aNode_Id && index < Global.ANodeId.Length-1);
-			//
-			//if (Global.ANodeId[index] != aNode_Id) { 
-			//	return Constants.DEFAULT_VALUE; //a node not in file
-			//}
+			// if symmetry assumed - use smaller node # as aNode
+            if (!Global.Configuration.AllowNodeDistanceAsymmetry)
+            {
+
+                aNodeId = Math.Min(oNodeId, dNodeId);
+                bNodeId = Math.Max(oNodeId, dNodeId);
+            }
 
 			var firstRecord = Global.ANodeFirstRecord[aNodeId - 1];
 			var lastRecord = Global.ANodeLastRecord[aNodeId - 1];
