@@ -937,7 +937,11 @@ namespace Daysim.DomainModels.Default.Wrappers {
         }
 
 		public virtual double NodeToNodeDistance(IParcelWrapper destination, int batch) {
-			if (Id == Global.NodeNodePreviousOriginParcelId[batch] && destination.Id == Global.NodeNodePreviousDestinationParcelId[batch]) {
+            //added for intra-microzone distance, square root of area over 2
+            if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
+                return Math.Sqrt(ThousandsSquareLengthUnits) / 2.0;
+            }
+            if (Id == Global.NodeNodePreviousOriginParcelId[batch] && destination.Id == Global.NodeNodePreviousDestinationParcelId[batch]) {
 				return Global.NodeNodePreviousDistance[batch];
 			}
 
@@ -962,19 +966,16 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				return Constants.DEFAULT_VALUE;
 			}
 
-			// symmetry assumed - used smaller node # as aNode
-			var aNodeId = Math.Min(oNodeId, dNodeId);
-			var bNodeId = Math.Max(oNodeId, dNodeId);
+            var aNodeId = oNodeId;
+            var bNodeId = dNodeId;
 
-			// no longer necessary - nodeIds are already indexed
-			//int index = -1;
-			//do {
-			//	index++;
-			//} while (Global.ANodeId[index] != aNode_Id && index < Global.ANodeId.Length-1);
-			//
-			//if (Global.ANodeId[index] != aNode_Id) { 
-			//	return Constants.DEFAULT_VALUE; //a node not in file
-			//}
+			// if symmetry assumed - use smaller node # as aNode
+            if (!Global.Configuration.AllowNodeDistanceAsymmetry)
+            {
+
+                aNodeId = Math.Min(oNodeId, dNodeId);
+                bNodeId = Math.Max(oNodeId, dNodeId);
+            }
 
 			var firstRecord = Global.ANodeFirstRecord[aNodeId - 1];
 			var lastRecord = Global.ANodeLastRecord[aNodeId - 1];
@@ -1014,7 +1015,11 @@ namespace Daysim.DomainModels.Default.Wrappers {
 		}
 
 		public virtual double CircuityDistance(IParcelWrapper destination) {
-			// JLBscale:  change so calculations work in length units instead of ft.
+            //added for intra-microzone distance, square root of area over 2
+            if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
+                return Math.Sqrt(ThousandsSquareLengthUnits) / 2.0;
+            }
+            // JLBscale:  change so calculations work in length units instead of ft.
 			var maxCircLength = 10560.0 * Global.Settings.LengthUnitsPerFoot; // only apply circuity multiplier out to 2 miles = 10560 feet
 			var lengthLimit1 = 2640.0 * Global.Settings.LengthUnitsPerFoot; // circuity distance 1 = 1/2 mile
 			var lengthLimit2 = 5280.0 * Global.Settings.LengthUnitsPerFoot; // circuity distance 2 = 1 mile

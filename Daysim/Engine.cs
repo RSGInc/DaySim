@@ -935,7 +935,11 @@ namespace Daysim {
 
 					aNodeId.Add(int.Parse(tokens[0]));
 					aNodeFirstRecord.Add(int.Parse(tokens[1]));
-					aNodeLastRecord.Add(int.Parse(tokens[2]));
+			        int lastRecord = int.Parse(tokens[2]);
+                    aNodeLastRecord.Add(lastRecord);
+                    if (lastRecord > Global.LastNodeDistanceRecord) {
+                        Global.LastNodeDistanceRecord = lastRecord;
+                    }
 				}
 			}
 
@@ -953,11 +957,14 @@ namespace Daysim {
 
 			var timer = new Timer("Loading node distances...");
 
-			if (Global.Configuration.NodeDistancesPath.Contains(".dat")) {
+			if (Global.Configuration.PSRC) {
+				LoadNodeDistancesFromHDF5();
+			}
+			else if (Global.Configuration.NodeDistancesDelimiter == (char)0) {
 				LoadNodeDistancesFromBinary();
 			}
 			else {
-				LoadNodeDistancesFromHDF5();
+				LoadNodeDistancesFromText();
 			}
 
 			timer.Stop();
@@ -1099,6 +1106,32 @@ namespace Daysim {
 
 		}
 
+
+        private static void LoadNodeDistancesFromText()
+        {
+            var file = new FileInfo(Global.GetInputPath(Global.Configuration.NodeDistancesPath));
+
+            using (var reader = new StreamReader(file.OpenRead())) {
+                Global.NodePairBNodeId = new int[Global.LastNodeDistanceRecord];
+                Global.NodePairDistance = new ushort[Global.LastNodeDistanceRecord];
+
+                reader.ReadLine();
+                
+                string line;
+
+                int i = 0;
+                while ((line = reader.ReadLine()) != null) {
+                	var tokens = line.Split(Global.Configuration.NodeDistancesDelimiter);
+
+                    int aNodeId = int.Parse(tokens[0]);
+                    Global.NodePairBNodeId[i] = int.Parse(tokens[1]);
+                    int distance = int.Parse(tokens[2]);
+                    Global.NodePairDistance[i] = (ushort)Math.Min(distance, ushort.MaxValue);
+
+                    i++;
+                }
+            }
+        }
 
 
 		private static void LoadNodeDistancesFromBinary() {

@@ -265,7 +265,7 @@ namespace Daysim.ChoiceModels {
 			// e.g. 30 minutes between each minute span
 			SmallPeriodDuration = DayPeriod.SmallDayPeriods.First().Duration;
 
-			if (Global.Configuration.ShouldOutputTDMTripList) {
+			if (Global.Configuration.ShouldOutputTDMTripList & loadData) {
 				TDMTripListExporter = new TDMTripListExporter(Global.GetOutputPath(Global.Configuration.OutputTDMTripListPath), Global.Configuration.TDMTripListDelimiter);
 			}
 

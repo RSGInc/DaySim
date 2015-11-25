@@ -292,7 +292,10 @@ namespace Daysim.ChoiceModels.Default.Models {
 				// set shadow price depending on persontype and add it to utility
 				// we are using the sampling adjustment factor assuming that it is 1
 
-				alternative.AddUtilityTerm(1, _person.IsAdult ? destinationParcel.ShadowPriceForStudentsUniversity : destinationParcel.ShadowPriceForStudentsK12);
+                if (Global.Configuration.ShouldUseShadowPricing)
+                {
+                    alternative.AddUtilityTerm(1, _person.IsAdult ? destinationParcel.ShadowPriceForStudentsUniversity : destinationParcel.ShadowPriceForStudentsK12);
+                }
 
 				//remove nesting for estimation of conditional MNL 
 				alternative.AddNestedAlternative(_sampleSize + 2, 0, 99);

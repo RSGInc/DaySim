@@ -838,7 +838,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			dynamic pathType;
 
             if (Mode == Global.Settings.Modes.Transit && DestinationPurpose == Global.Settings.Purposes.ChangeMode)  {
-                if (Global.StopAreaIsEnabled)  {
+                //if (Global.StopAreaIsEnabled)  {
                     modeImpedance.TravelTime = Tour.ParkAndRideTransitTime / 2.0;
                     modeImpedance.GeneralizedTime = Tour.ParkAndRideTransitGeneralizedTime / 2.0;
                     modeImpedance.PathType = Tour.ParkAndRidePathType;
@@ -848,33 +848,33 @@ namespace Daysim.DomainModels.Default.Wrappers {
                     }
                     modeImpedance.TravelDistance = Tour.ParkAndRideTransitDistance / 2.0;
                     modeImpedance.TravelCost = Tour.ParkAndRideTransitCost / 2.0;
-                }
-                else {
-                    var parkAndRideZoneId =
-                        ChoiceModelFactory
-                        .ParkAndRideNodeDao
-                        .Get(Tour.ParkAndRideNodeId)
-                        .ZoneId;
+                //}
+                //else {
+                //    var parkAndRideZoneId =
+                //        ChoiceModelFactory
+                //        .ParkAndRideNodeDao
+                //        .Get(Tour.ParkAndRideNodeId)
+                //       .ZoneId;
 
-                    var origin = IsHalfTourFromOrigin ? parkAndRideZoneId : OriginParcel.ZoneId;
-                    var destination = IsHalfTourFromOrigin ? OriginParcel.ZoneId : parkAndRideZoneId;
+                //    var origin = IsHalfTourFromOrigin ? parkAndRideZoneId : OriginParcel.ZoneId;
+                //    var destination = IsHalfTourFromOrigin ? OriginParcel.ZoneId : parkAndRideZoneId;
 
-                    IEnumerable<dynamic> pathTypeModels =
-                        PathTypeModelFactory.Model
-                        .Run(Household.RandomUtility, origin, destination, Tour.DestinationArrivalTime, Tour.DestinationDepartureTime, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.ParkAndRide);
-                    pathType = pathTypeModels.First();
+                //    IEnumerable<dynamic> pathTypeModels =
+                //        PathTypeModelFactory.Model
+                //        .Run(Household.RandomUtility, origin, destination, minute, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Transit);
+                //    pathType = pathTypeModels.First();
 
-                    modeImpedance.TravelTime = pathType.PathParkAndRideTransitTime;
-                    modeImpedance.GeneralizedTime = pathType.GeneralizedTimeLogsum;
-                    modeImpedance.PathType = pathType.PathType;
+                //    modeImpedance.TravelTime = pathType.PathTime;
+                //    modeImpedance.GeneralizedTime = pathType.GeneralizedTimeLogsum;
+                //    modeImpedance.PathType = pathType.PathType;
 
-                    if (!includeCostAndDistance) {
-                        return modeImpedance;
-                    }
+                //    if (!includeCostAndDistance) {
+                //        return modeImpedance;
+                //    }
 
-                    modeImpedance.TravelCost = pathType.PathParkAndRideTransitCost;
-                    modeImpedance.TravelDistance = pathType.PathParkAndRideTransitDistance;
-                }
+                //    modeImpedance.TravelCost = pathType.PathCost;
+                //    modeImpedance.TravelDistance = pathType.PathDistance;
+                //}
             }
             else  {
                 var useMode = Mode == Global.Settings.Modes.SchoolBus ? Global.Settings.Modes.Hov3 : Mode;

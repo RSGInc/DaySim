@@ -32,7 +32,13 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public string NodeDistancesPath { get; set; }
 
-		//new since 203
+        [XmlAttribute]
+        public char NodeDistancesDelimiter { get; set; }
+
+        [XmlAttribute]
+        public bool AllowNodeDistanceAsymmetry { get; set; }
+
+        //new since 203
 		[XmlAttribute]
 		public string NodeStopAreaIndexPath { get; set; }
 
@@ -1376,6 +1382,9 @@ namespace Daysim.Framework.Core {
 
 		[XmlAttribute]
 		public char MicrozoneToParkAndRideNodeIndexDelimiter { get; set; }
+
+        [XmlAttribute]
+        public int DestinationScale { get; set; }
 
 
 

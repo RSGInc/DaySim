@@ -373,7 +373,7 @@ namespace Daysim.Framework.Sampling {
 
 			var excludedSize = 0D;
 
-			if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Parcel) {
+			if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel) {
 				if (destinationZoneId == originParcel.ZoneId) {
 					excludedSize += originSegmentZone.GetSize(originParcel.Sequence);
 				}
@@ -382,7 +382,7 @@ namespace Daysim.Framework.Sampling {
 					excludedSize += excludedSegmentZone.GetSize(excludedParcel.Sequence);
 				}
 			}
-			if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Zone) {
+			if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone) {
 				if (destinationSegmentZone.Key == 0) {
 
 				}
@@ -408,7 +408,7 @@ namespace Daysim.Framework.Sampling {
 
 					// draw the parcel within zone
 					foreach (var size in destinationSegmentZone.RankedSizes) {
-						if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.MicroZone ||
+						if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.MicroZone ||
 							 (originParcel.Id != size.Id && (excludedParcel == null || excludedParcel.Id != size.Id))) {
 							total += size.Value;
 						}
@@ -429,7 +429,8 @@ namespace Daysim.Framework.Sampling {
 				}
 			}
 
-			if (Global.Settings.DestinationScale != Global.Settings.DestinationScales.Zone && !destinationParcelIsValid) {
+            if (Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone && !destinationParcelIsValid)
+            {
 				return default(TSampleItem);
 			}
 
@@ -477,7 +478,8 @@ namespace Daysim.Framework.Sampling {
 				//				var setAvailability = destinationSampler._choiceProbabilityCalculator.ModelIsInEstimationMode && ParcelId == destinationSampler._chosenParcel.Id;
 				var setAvailability = destinationSampler._choiceProbabilityCalculator.ModelIsInEstimationMode && destinationSampler._chosenParcel != null && ParcelId == destinationSampler._chosenParcel.Id;
 
-				if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Zone) {
+                if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone)
+                {
 					Probability = zoneProbability;
 
 					// set chosen alternative availability if model is in estimation mode and the sample item is the chosen alternative
@@ -538,7 +540,8 @@ namespace Daysim.Framework.Sampling {
 				// set chosen alternative availability if model is in estimation mode and the sample item is the chosen alternative
 				var setAvailability = destinationSampler._choiceProbabilityCalculator.ModelIsInEstimationMode && ParcelId == destinationSampler._chosenParcel.Id;
 
-				if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Zone) {
+                if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone)
+                {
 					Probability1 = zoneProbability1;
 					Probability2 = zoneProbability2;
 

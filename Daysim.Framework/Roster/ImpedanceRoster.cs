@@ -133,7 +133,7 @@ namespace Daysim.Framework.Roster {
 			var skimValue = GetValue(origin.ZoneId, destination.ZoneId, entry, minute);
 
 			//mb fix for 0 intrazonals
-			if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Zone && origin.ZoneId == destination.ZoneId && skimValue.Variable < Constants.EPSILON) {
+			if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone && origin.ZoneId == destination.ZoneId && skimValue.Variable < Constants.EPSILON) {
 				if (variable == "distance") {
 					skimValue.Variable = 0.25 * Global.Settings.DistanceUnitsPerMile;
 				}
@@ -157,7 +157,7 @@ namespace Daysim.Framework.Roster {
 					: GetEntry(entry.BlendVariable, entry.Mode, entry.BlendPathType, votGroup, minute);
 			var blendSkimValue = GetValue(origin.ZoneId, destination.ZoneId, blendEntry, minute);
 
-			if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Zone) {
+			if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone) {
 				//skimValue.BlendVariable = blendSkimValue.BlendVariable;
 				skimValue.BlendVariable = blendSkimValue.Variable;  //JLB replaced above line 20130628
 
@@ -191,10 +191,10 @@ namespace Daysim.Framework.Roster {
 				//Global.PrintFile.WriteLine("Distances: Network {0} Circuity {1} Orthogonal {2}", networkDistance, circuityDistance,
 				//	(Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate)) / 5280D);
 				xyDistance = circuityDistance;
-			}
-			else {
-				// default is orthogonal distance
-				xyDistance = (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate)) / 5280D;
+			} 
+            else {
+				// default is orthogonal distance, with a miniumum of 300 feet for intra-microzone
+				xyDistance = Math.Max(300D, (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate))) / 5280D;
 			}
 
 			if (networkDistance >= Constants.EPSILON && xyDistance >= Constants.EPSILON) {

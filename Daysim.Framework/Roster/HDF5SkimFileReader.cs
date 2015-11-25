@@ -43,12 +43,12 @@ namespace Daysim.Framework.Roster
             var dataSet = H5D.open(dataFile, filename);
             var space = H5D.getSpace(dataSet);
             var size2 = H5S.getSimpleExtentDims(space);
-            long count = size2[0];
-            long count2 = size2[1];
+            long nRows = size2[0];
+            long nCols = size2[1];
             long numZones = _mapping.Count();
 
-            var dataArray = new UInt16[count, count2];
-            var wrapArray = new H5Array<UInt16>(dataArray);
+            var dataArray = new double[nRows, nCols];
+            var wrapArray = new H5Array<double>(dataArray);
             H5DataTypeId tid1 = H5D.getType(dataSet);
 
             H5D.read(dataSet, tid1, wrapArray);
@@ -62,13 +62,44 @@ namespace Daysim.Framework.Roster
                 _matrix[i] = new ushort[numZones];
             }
 
-            for (var i = 0; i < numZones; i++)
+            //leave as is for PSRC. Values are already scaled integers and matrices already condensed
+            if (Global.Configuration.PSRC)
             {
-                for (var j = 0; j < numZones; j++)
+                for (var i = 0; i < numZones; i++)
                 {
-                    _matrix[i][j] = dataArray[i, j];
+                    for (var j = 0; j < numZones; j++)
+                    {
+                        _matrix[i][j] = (ushort)dataArray[i, j];
+                    }
                 }
             }
+            else
+            {
+                for (var row = 0; row < nRows; row++)
+                {
+                    if (_mapping.ContainsKey(row + 1))
+                    {
+                        for (var col = 0; col < nCols; col++)
+                        {
+                            if (_mapping.ContainsKey(col + 1))
+                            {
+                                var value = dataArray[row, col] * scale;
+
+                                if (value > 0)
+                                {
+                                    if (value > short.MaxValue)
+                                    {
+                                        value = short.MaxValue;
+                                    }
+
+                                    _matrix[_mapping[row + 1]][_mapping[col + 1]] = (ushort)value;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
 
             var skimMatrix = new SkimMatrix(_matrix);
             return skimMatrix;
