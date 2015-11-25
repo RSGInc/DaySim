@@ -937,7 +937,9 @@ namespace Daysim {
 					aNodeFirstRecord.Add(int.Parse(tokens[1]));
 			        int lastRecord = int.Parse(tokens[2]);
                     aNodeLastRecord.Add(lastRecord);
-                    Global.LastNodeDistanceRecord=lastRecord;
+                    if (lastRecord > Global.LastNodeDistanceRecord) {
+                        Global.LastNodeDistanceRecord = lastRecord;
+                    }
 				}
 			}
 
