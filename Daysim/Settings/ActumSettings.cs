@@ -36,7 +36,7 @@ namespace Daysim.Settings {
 
         public override int DestinationScale
         {
-            get { return 2; }
+            get { return 1; }
         }
 
     }

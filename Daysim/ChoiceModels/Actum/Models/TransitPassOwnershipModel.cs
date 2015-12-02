@@ -244,7 +244,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			int model = 3;
 			if (usualParcel != null) {
 				//parkingSearchTime = usualParcel.PSearchTime07_08; //uncomment when the new parcel attributes have been defined
-				commuteDistance = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, 1.0, Global.Settings.Times.EightAM, Global.Settings.Times.ThreePM, usualParcel.Id).Variable;
+				commuteDistance = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, 1.0, Global.Settings.Times.EightAM, household.ResidenceParcel, usualParcel).Variable;
 				//parkingCost = usualParcel.ParkingCostPerHour8_18;  //uncomment when the new parcel attributes have been defined
 				if (person.IsFulltimeWorker && usualParcel == person.UsualWorkParcel) {
 					parkingCost = parkingCost * 8;
