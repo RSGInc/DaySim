@@ -317,7 +317,8 @@ namespace Daysim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(163, (worstDist > 0).ToFlag());
 				}
 				else if (mode == Global.Settings.Modes.Walk) {
-					alternative.AddUtilityTerm(79, adultFlag);
+                    alternative.AddUtilityTerm(70, 1);
+                    alternative.AddUtilityTerm(79, adultFlag);
 					alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
 //						alternative.AddUtility(178, destinationParcel.TotalEmploymentDensity1());
 //						alternative.AddUtility(177, destinationParcel.NetIntersectionDensity1());

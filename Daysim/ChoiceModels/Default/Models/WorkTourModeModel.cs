@@ -334,7 +334,8 @@ namespace Daysim.ChoiceModels.Default.Models {
 //						alternative.AddUtility(163, (worstDist > 0).ToFlag());
 				}
 				else if (mode == Global.Settings.Modes.Walk) {
-					alternative.AddUtilityTerm(71, maleFlag);
+                    alternative.AddUtilityTerm(70, 1);
+                    alternative.AddUtilityTerm(71, maleFlag);
 //						alternative.AddUtility(73, ageBetween51And98Flag);
 					alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
 //						alternative.AddUtility(178, destinationParcel.TotalEmploymentDensity1());

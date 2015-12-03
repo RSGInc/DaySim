@@ -189,7 +189,8 @@ namespace Daysim.ChoiceModels.Default.Models {
 				}
 				else if (mode == Global.Settings.Modes.Walk) {
 					alternative.AddUtilityTerm(2, generalizedTimeLogsum * tour.TimeCoefficient);
-					alternative.AddUtilityTerm(73, ageBetween51And98Flag);
+                    alternative.AddUtilityTerm(70, 1);
+                    alternative.AddUtilityTerm(73, ageBetween51And98Flag);
 					alternative.AddUtilityTerm(76, destinationParcel.NetIntersectionDensity1());
 					alternative.AddUtilityTerm(81, childrenUnder5);
 					alternative.AddUtilityTerm(82, childrenAge5Through15);

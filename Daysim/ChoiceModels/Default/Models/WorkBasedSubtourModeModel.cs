@@ -230,7 +230,8 @@ namespace Daysim.ChoiceModels.Default.Models {
 //						alternative.AddUtility(164, originParcel.MixedUse4Index1());
 				}
 				else if (mode == Global.Settings.Modes.Walk) {
-					alternative.AddUtilityTerm(79, walkTourFlag);
+                    alternative.AddUtilityTerm(70, 1);
+                    alternative.AddUtilityTerm(79, walkTourFlag);
 //						alternative.AddUtility(179, destinationParcel.MixedUse4Index1());
 //						alternative.AddUtility(178, destinationParcel.TotalEmploymentDensity1());
 //						alternative.AddUtility(177, destinationParcel.NetIntersectionDensity1());
