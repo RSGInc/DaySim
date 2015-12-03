@@ -118,15 +118,17 @@ namespace Daysim.ChoiceModels.Default.Models {
 				tour.Mode = choice;
 				var chosenPathType = pathTypeModels.First(x => x.Mode == choice);
 				tour.PathType = chosenPathType.PathType;
-				tour.ParkAndRideNodeId = choice == Global.Settings.Modes.ParkAndRide ? chosenPathType.PathParkAndRideNodeId : 0;
-				if (Global.StopAreaIsEnabled && choice == Global.Settings.Modes.ParkAndRide) {
-					tour.ParkAndRideOriginStopAreaKey =  chosenPathType.PathOriginStopAreaKey ;
-					tour.ParkAndRideDestinationStopAreaKey = chosenPathType.PathDestinationStopAreaKey ;
+				if (choice == Global.Settings.Modes.ParkAndRide) {
+                    tour.ParkAndRideNodeId = chosenPathType.PathParkAndRideNodeId;
                     tour.ParkAndRidePathType = chosenPathType.PathType;
                     tour.ParkAndRideTransitTime = chosenPathType.PathParkAndRideTransitTime;
                     tour.ParkAndRideTransitDistance = chosenPathType.PathParkAndRideTransitDistance;
                     tour.ParkAndRideTransitCost = chosenPathType.PathParkAndRideTransitCost;
                     tour.ParkAndRideTransitGeneralizedTime = chosenPathType.PathParkAndRideTransitGeneralizedTime;
+                    if (Global.StopAreaIsEnabled) {
+                        tour.ParkAndRideOriginStopAreaKey = chosenPathType.PathOriginStopAreaKey;
+                        tour.ParkAndRideDestinationStopAreaKey = chosenPathType.PathDestinationStopAreaKey;
+                    }
                 }
 			}
 		}
