@@ -276,7 +276,8 @@ namespace Daysim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(163, (worstDist > 0).ToFlag());
 				}
 				else if (mode == Global.Settings.Modes.Walk) {
-					alternative.AddUtilityTerm(73, ageBetween51And98Flag);
+                    alternative.AddUtilityTerm(70, 1);
+                    alternative.AddUtilityTerm(73, ageBetween51And98Flag);
 					alternative.AddUtilityTerm(171, mealTourFlag);
 					alternative.AddUtilityTerm(172, socialOrRecreationTourFlag);
 //						alternative.AddUtility(179, destinationParcel.MixedUse4Index1());

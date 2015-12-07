@@ -166,7 +166,10 @@ namespace Daysim.ChoiceModels.Default.Models {
 				var distance1 = Math.Min(distanceFromOrigin, .35);
 				var distance2 = Math.Max(0, Math.Min(distanceFromOrigin - .35, 1 - .35));
 				var distance3 = Math.Max(0, distanceFromOrigin - 1);
-				var distanceLog = Math.Log(1 + distanceFromOrigin);
+                var distance20 = Math.Max(0, distanceFromOrigin - 2);
+                var distance30 = Math.Max(0, distanceFromOrigin - 3);
+                var distance40 = Math.Max(0, distanceFromOrigin - 4);
+                var distanceLog = Math.Log(1 + distanceFromOrigin);
 				var distanceFromSchool = _person.IsFullOrPartTimeWorker ? 0 : _person.UsualSchoolParcel.DistanceFromSchoolLog(destinationParcel, 1);
 
 				// parcel buffers
@@ -215,6 +218,10 @@ namespace Daysim.ChoiceModels.Default.Models {
 				alternative.AddUtilityTerm(18, _person.IsNotFullOrPartTimeWorker.ToFlag() * aggregateLogsum);
 				alternative.AddUtilityTerm(19, parcelParkingDensity);
 				alternative.AddUtilityTerm(20, c34Ratio);
+//extra additive distance terms for calibrating longer distances
+                alternative.AddUtilityTerm(46, distance20);
+                alternative.AddUtilityTerm(47, distance30);
+                alternative.AddUtilityTerm(48, distance40);
 
 				//Neighborhood
 				alternative.AddUtilityTerm(21, _person.Household.HasValidIncome.ToFlag() * serviceBuffer);
