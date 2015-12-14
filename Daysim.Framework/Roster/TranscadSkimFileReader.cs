@@ -45,18 +45,20 @@ namespace Daysim.Framework.Roster {
 				for (var col = 0; col < ncols; col++) {
 					var value = mrow[col];
 
-					if (_mapping.ContainsKey(row+1) && _mapping.ContainsKey(col+1)) {
-						if (value > short.MaxValue / scale) {
-							value = (short) (short.MaxValue / scale);
-						}
-						else if (value < 0) {
-							value = 0;
-						}
-
-						value = Convert.ToUInt16(value * scale);
-
-						_matrix[_mapping[row+1]][_mapping[col+1]] = (ushort) value;
+					//mapping doesn't seem to be needed for TransCAD matrices?
+                    //if (_mapping.ContainsKey(row+1) && _mapping.ContainsKey(col+1)) {
+					if (value > short.MaxValue / scale) {
+						value = (short) (short.MaxValue / scale);
 					}
+					else if (value < 0) {
+						value = 0;
+					}
+
+					value = Convert.ToUInt16(value * scale);
+
+                    _matrix[row][col] = (ushort) value;
+                    //_matrix[_mapping[row+1]][_mapping[col+1]] = (ushort) value;
+                    //}
 				}
 			}
 		}
