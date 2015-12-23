@@ -161,6 +161,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 			// person inputs
 			var maleFlag = person.IsMale.ToFlag();
 			var ageBetween51And98Flag = person.AgeIsBetween51And98.ToFlag();
+            var univStudentFlag = person.IsUniversityStudent.ToFlag();
 
 			// tour inputs
 			var shoppingTourFlag = (tour.DestinationPurpose == Global.Settings.Purposes.Shopping).ToFlag();
@@ -208,6 +209,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
 //						alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
 //						alternative.AddUtility(122, Math.Log(originParcel.StopsTransitBuffer1+1));
+                    alternative.AddUtilityTerm(180, univStudentFlag);
 				}
 				else if (mode == Global.Settings.Modes.Hov3) {
 					alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT3));
