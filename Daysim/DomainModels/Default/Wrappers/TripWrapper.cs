@@ -420,7 +420,12 @@ namespace Daysim.DomainModels.Default.Wrappers {
 		}
 
 		public virtual void SetDriverOrPassenger(List<ITripWrapper> trips) {
-			if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Transit || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
+            if (Mode == Global.Settings.Modes.Transit) {
+                if (Tour.Mode == Global.Settings.Modes.ParkAndRide) {
+                    DriverType = (int) (Tour.ParkAndRideWalkAccessEgressTime / 2.0);
+                }
+            }
+			else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
 				DriverType = Global.Settings.DriverTypes.NotApplicable;
 			}
 			else if (Mode == Global.Settings.Modes.Sov) {
@@ -463,6 +468,10 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			TravelCost = modeImpedance.TravelCost;
 			TravelDistance = modeImpedance.TravelDistance;
 			PathType = modeImpedance.PathType;
+            // new - for transit use DriverType for walk time
+            if (Mode == Global.Settings.Modes.Transit) {
+                DriverType = (int) modeImpedance.WalkAccessEgressTime;
+            }
 
 			var duration = (int) TravelTime;
 
@@ -842,6 +851,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
                     modeImpedance.TravelTime = Tour.ParkAndRideTransitTime / 2.0;
                     modeImpedance.GeneralizedTime = Tour.ParkAndRideTransitGeneralizedTime / 2.0;
                     modeImpedance.PathType = Tour.ParkAndRidePathType;
+                    modeImpedance.WalkAccessEgressTime = Tour.ParkAndRideWalkAccessEgressTime / 2.0; 
 
                     if (!includeCostAndDistance) {
                         return modeImpedance;
@@ -890,6 +900,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
                 modeImpedance.TravelTime = pathType.PathTime;
                 modeImpedance.GeneralizedTime = pathType.GeneralizedTimeLogsum;
                 modeImpedance.PathType = pathType.PathType;
+                modeImpedance.WalkAccessEgressTime = pathType.PathTransitWalkAccessEgressTime;
 
                 if (!includeCostAndDistance)
                 {

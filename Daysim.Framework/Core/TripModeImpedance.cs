@@ -32,6 +32,8 @@ namespace Daysim.Framework.Core {
 
 		public double TravelDistance { get; set; }
 
-		public int PathType { get; set; }
+        public double WalkAccessEgressTime { get; set; }
+        
+        public int PathType { get; set; }
 	}
 }

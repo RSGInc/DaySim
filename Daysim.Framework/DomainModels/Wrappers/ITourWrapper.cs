@@ -69,6 +69,8 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
         double ParkAndRideTransitCost { get; set; }
 
+        double ParkAndRideWalkAccessEgressTime { get; set; }
+
         double ParkAndRideTransitGeneralizedTime { get; set; }
         
  		bool DestinationModeAndTimeHaveBeenSimulated { get; set; }

@@ -48,6 +48,8 @@ namespace Daysim.PathTypeModels {
         private readonly double[] _pathParkAndRideTransitDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
         private readonly double[] _pathParkAndRideTransitCost = new double[Global.Settings.PathTypes.TotalPathTypes];
         private readonly double[] _pathParkAndRideTransitUtility = new double[Global.Settings.PathTypes.TotalPathTypes];
+        private readonly double[] _pathParkAndRideWalkAccessEgressTime = new double[Global.Settings.PathTypes.TotalPathTypes];
+        private readonly double[] _pathTransitWalkAccessEgressTime = new double[Global.Settings.PathTypes.TotalPathTypes];
 
 		public PathTypeModel() {
 			GeneralizedTimeLogsum = Global.Settings.GeneralizedTimeUnavailable;
@@ -78,6 +80,8 @@ namespace Daysim.PathTypeModels {
         public virtual double PathParkAndRideTransitDistance { get; protected set; }
         public virtual double PathParkAndRideTransitCost { get; protected set; }
         public virtual double PathParkAndRideTransitGeneralizedTime { get; protected set; }
+        public virtual double PathParkAndRideWalkAccessEgressTime { get; protected set; }
+        public virtual double PathTransitWalkAccessEgressTime { get; protected set; }
 
 
 		public virtual bool Available { get; protected set; }
@@ -249,11 +253,15 @@ namespace Daysim.PathTypeModels {
 			PathCost = _pathCost[_choice];
             GeneralizedTimeChosen = _utility[_choice] / tourTimeCoefficient;
 			PathParkAndRideNodeId = _pathParkAndRideNodeId[_choice];
-            if (Mode == Global.Settings.Modes.ParkAndRide) {
+            if (Mode == Global.Settings.Modes.Transit)  {
+                 PathTransitWalkAccessEgressTime = _pathTransitWalkAccessEgressTime[_choice];
+            }
+            if (Mode == Global.Settings.Modes.ParkAndRide)  {
                 PathParkAndRideTransitTime = _pathParkAndRideTransitTime[_choice];
                 PathParkAndRideTransitDistance = _pathParkAndRideTransitDistance[_choice];
                 PathParkAndRideTransitCost = _pathParkAndRideTransitCost[_choice];
                 PathParkAndRideTransitGeneralizedTime = _pathParkAndRideTransitUtility[_choice] / tourTimeCoefficient;
+                PathParkAndRideWalkAccessEgressTime = _pathParkAndRideWalkAccessEgressTime[_choice];
             }
             if (Global.StopAreaIsEnabled) {
                 PathOriginStopAreaKey = _pathOriginStopAreaKey[_choice];
@@ -482,7 +490,6 @@ namespace Daysim.PathTypeModels {
 			if (_pathTime[pathType] > pathTimeLimit || _pathTime[pathType] < Constants.EPSILON) {
 				return;
 			}
-
 			_pathCost[pathType] += _pathDistance[pathType] * Global.PathImpedance_AutoOperatingCostPerDistanceUnit;
 
 			_utility[pathType] = Global.Configuration.PathImpedance_PathChoiceScaleFactor *
@@ -522,7 +529,8 @@ namespace Daysim.PathTypeModels {
 			_pathParkAndRideNodeId[pathType] = 0;
 			_pathTime[pathType] = transitPath.Time + originWalkTime + destinationWalkTime;
 			_pathCost[pathType] = transitPath.Cost;
-			_utility[pathType] = transitPath.Utility +
+            _pathTransitWalkAccessEgressTime[pathType] = originWalkTime + destinationWalkTime;
+            _utility[pathType] = transitPath.Utility +
 				 Global.Configuration.PathImpedance_PathChoiceScaleFactor * _tourTimeCoefficient *
 				 Global.Configuration.PathImpedance_TransitWalkAccessTimeWeight * (originWalkTime + destinationWalkTime);
 
@@ -577,6 +585,9 @@ namespace Daysim.PathTypeModels {
 					}
 			
 					var walkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * (oWalkDistance + dWalkDistance)*Global.Settings.LengthUnitsPerFoot/5280.0 * Global.Settings.DistanceUnitsPerMile;
+                    if (_returnTime > 0) {
+                        walkTime *= 2;
+                    }
 
 					var transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dStopArea);
 					if (!transitPath.Available) {
@@ -609,6 +620,7 @@ namespace Daysim.PathTypeModels {
 					_pathDestinationStopAreaKey[pathType] = dStopAreaKey;
 					_pathTime[pathType] = fullPathTime;
 					_pathCost[pathType] = fullPathCost;
+                    _pathTransitWalkAccessEgressTime[pathType] = walkTime;
 					_utility[pathType] = fullPathUtility;
 					_expUtility[pathType] = fullPathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : fullPathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(fullPathUtility);
 				}
@@ -757,6 +769,7 @@ namespace Daysim.PathTypeModels {
                 _pathParkAndRideTransitDistance[pathType] = transitDistance;
                 _pathParkAndRideTransitCost[pathType] = transitPath.Cost;
                 _pathParkAndRideTransitUtility[pathType] = transitPath.Utility;
+                _pathParkAndRideWalkAccessEgressTime[pathType] = destinationWalkTime;
                 _utility[pathType] = nodeUtility;
 				_expUtility[pathType] = nodeUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : nodeUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(nodeUtility);
 			}
@@ -913,7 +926,8 @@ namespace Daysim.PathTypeModels {
                     _pathParkAndRideTransitTime[pathType] = transitPath.Time;
                     _pathParkAndRideTransitDistance[pathType] = transitDistance;
                     _pathParkAndRideTransitCost[pathType] = transitPath.Cost;
-                    _pathParkAndRideTransitUtility[pathType] = transitPath.Utility; 
+                    _pathParkAndRideTransitUtility[pathType] = transitPath.Utility;
+                    _pathParkAndRideWalkAccessEgressTime[pathType] = destinationWalkTime;
 
 					_utility[pathType] = nodeUtility;
 					_expUtility[pathType] = nodeUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : nodeUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(nodeUtility);

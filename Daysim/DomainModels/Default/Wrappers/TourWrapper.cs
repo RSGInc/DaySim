@@ -358,6 +358,8 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
         public double ParkAndRideTransitCost { get; set; }
 
+        public double ParkAndRideWalkAccessEgressTime { get; set; }
+
         public double ParkAndRideTransitGeneralizedTime { get; set; }
         
 		public bool DestinationModeAndTimeHaveBeenSimulated { get; set; }

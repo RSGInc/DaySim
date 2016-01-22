@@ -124,6 +124,7 @@ namespace Daysim.ChoiceModels.Default.Models {
                     tour.ParkAndRideTransitTime = chosenPathType.PathParkAndRideTransitTime;
                     tour.ParkAndRideTransitDistance = chosenPathType.PathParkAndRideTransitDistance;
                     tour.ParkAndRideTransitCost = chosenPathType.PathParkAndRideTransitCost;
+                    tour.ParkAndRideWalkAccessEgressTime = chosenPathType.PathParkAndRideWalkAccessEgressTime;
                     tour.ParkAndRideTransitGeneralizedTime = chosenPathType.PathParkAndRideTransitGeneralizedTime;
                     if (Global.StopAreaIsEnabled) {
                         tour.ParkAndRideOriginStopAreaKey = chosenPathType.PathOriginStopAreaKey;
