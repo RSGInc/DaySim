@@ -747,7 +747,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
 		}
 
 		public virtual void SetActivityEndTime(int activityEndTime) {
-			ActivityEndTime = activityEndTime.ToMinutesAfterMidnight();
+			ActivityEndTime = activityEndTime;  //.ToMinutesAfterMidnight(); redundant- done on output
 		}
 
 		public virtual void SetOriginAddressType(int originAddressType) {
