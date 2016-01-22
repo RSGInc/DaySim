@@ -193,6 +193,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 			var carsLessThanDriversFlag = household.GetFlagForCarsLessThanDrivers(householdCars);
 			var carsLessThanWorkersFlag = household.GetFlagForCarsLessThanWorkers(householdCars);
 			var income0To25KFlag = household.Has0To25KIncome.ToFlag();
+            var income75kPlusFlag = household.Has75KPlusIncome.ToFlag();
 
 			// person inputs
 			var maleFlag = person.IsMale.ToFlag();
@@ -269,6 +270,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 //						alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
 //						alternative.AddUtility(122, Math.Log(originParcel.StopsTransitBuffer1+1));
                     alternative.AddUtilityTerm(180, univStudentFlag);
+                    alternative.AddUtilityTerm(100, income75kPlusFlag);
 				}
 				else if (mode == Global.Settings.Modes.Hov3) {
 					alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / Global.Configuration.Coefficients_HOV3CostDivisor_Work));
