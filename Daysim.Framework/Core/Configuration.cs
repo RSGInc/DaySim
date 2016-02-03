@@ -32,13 +32,13 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public string NodeDistancesPath { get; set; }
 
-        [XmlAttribute]
-        public char NodeDistancesDelimiter { get; set; }
+		[XmlAttribute]
+		public char NodeDistancesDelimiter { get; set; }
 
-        [XmlAttribute]
-        public bool AllowNodeDistanceAsymmetry { get; set; }
+		[XmlAttribute]
+		public bool AllowNodeDistanceAsymmetry { get; set; }
 
-        //new since 203
+		//new since 203
 		[XmlAttribute]
 		public string NodeStopAreaIndexPath { get; set; }
 
@@ -600,29 +600,29 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public double PathImpedance_TransitCommuterRailTimeAdditiveWeight { get; set; }
 
-        [XmlAttribute]
-        public double PathImpedance_TransitSubwayTimeAdditiveWeight { get; set; }
+		[XmlAttribute]
+		public double PathImpedance_TransitSubwayTimeAdditiveWeight { get; set; }
 
-        [XmlAttribute]
-        public double PathImpedance_TransitPATTimeAdditiveWeight { get; set; }
+		[XmlAttribute]
+		public double PathImpedance_TransitPATTimeAdditiveWeight { get; set; }
 
-        [XmlAttribute]
-        public double PathImpedance_TransitTrolleyTimeAdditiveWeight { get; set; }
+		[XmlAttribute]
+		public double PathImpedance_TransitTrolleyTimeAdditiveWeight { get; set; }
 
-        [XmlAttribute]
+		[XmlAttribute]
 		public double PathImpedance_TransitFerryTimeAdditiveWeight { get; set; }
 
-        [XmlAttribute]
-        public double PathImpedance_TransitLightRailInVehicleTimeWeight { get; set; }
+		[XmlAttribute]
+		public double PathImpedance_TransitLightRailInVehicleTimeWeight { get; set; }
 
-        [XmlAttribute]
-        public double PathImpedance_TransitPremiumBusInVehicleTimeWeight { get; set; }
+		[XmlAttribute]
+		public double PathImpedance_TransitPremiumBusInVehicleTimeWeight { get; set; }
 
-        [XmlAttribute]
-        public double PathImpedance_TransitCommuterRailInVehicleTimeWeight { get; set; }
+		[XmlAttribute]
+		public double PathImpedance_TransitCommuterRailInVehicleTimeWeight { get; set; }
 
-        [XmlAttribute]
-        public double PathImpedance_TransitFerryInVehicleTimeWeight { get; set; }
+		[XmlAttribute]
+		public double PathImpedance_TransitFerryInVehicleTimeWeight { get; set; }
 
 		[XmlAttribute]
 		public bool PathImpedance_BikeUseTypeSpecificDistanceFractions { get; set; }
@@ -1337,11 +1337,11 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public bool PSRC { get; set; }
 
-        [XmlAttribute]
-        public bool DVRPC { get; set; }
+		[XmlAttribute]
+		public bool DVRPC { get; set; }
 
-        [XmlAttribute]
-        public bool Nashville { get; set; }
+		[XmlAttribute]
+		public bool Nashville { get; set; }
 
 		//new since 203
 		[XmlAttribute]
@@ -1383,8 +1383,41 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public char MicrozoneToParkAndRideNodeIndexDelimiter { get; set; }
 
-        [XmlAttribute]
-        public int DestinationScale { get; set; }
+		[XmlAttribute]
+		public int DestinationScale { get; set; }
+
+		[XmlAttribute]
+		public int NumberOfODShadowPricingDistricts { get; set; }
+
+		[XmlAttribute]
+		public bool ShouldUseODShadowPricing { get; set; }
+
+		[XmlAttribute]
+		public double WorkLocationODShadowPriceCoefficient { get; set; }
+
+		[XmlAttribute]
+		public double WorkLocationOOShadowPriceCoefficient { get; set; }
+
+		[XmlAttribute]
+		public double WorkTourDestinationODShadowPriceCoefficient { get; set; }
+
+		[XmlAttribute]
+		public double WorkTourDestinationOOShadowPriceCoefficient { get; set; }
+
+		[XmlAttribute]
+		public double OtherTourDestinationODShadowPriceCoefficient { get; set; }
+
+		[XmlAttribute]
+		public double OtherTourDestinationOOShadowPriceCoefficient { get; set; }
+
+		[XmlAttribute]
+		public double IntermediateStopLocationODShadowPriceCoefficient { get; set; }
+
+		[XmlAttribute]
+		public double IntermediateStopLocationOOShadowPriceCoefficient { get; set; }
+
+		[XmlAttribute]
+		public double IntermediateStopLocationODShadowPriceStopOriginFraction { get; set; }
 
 
 

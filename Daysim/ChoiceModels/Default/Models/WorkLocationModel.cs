@@ -21,16 +21,21 @@ using Daysim.Framework.Roster;
 using Daysim.Framework.Sampling;
 using Daysim.Sampling;
 using Ninject;
+//using Daysim.Framework.Factories;
+//using System.Linq;
+
 
 namespace Daysim.ChoiceModels.Default.Models {
 	public class WorkLocationModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "WorkLocationModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 2;
 		private const int TOTAL_LEVELS = 2;
-		private const int MAX_PARAMETER = 99;
+		// regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
+		private const int MAX_REGULAR_PARAMETER = 100;
+		private const int MaxDistrictNumber = 100;
+		private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
-		public override void RunInitialize(ICoefficientsReader reader = null)
-		{
+		public override void RunInitialize(ICoefficientsReader reader = null) {
 			int sampleSize = Global.Configuration.WorkLocationModelSampleSize;
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.WorkLocationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
 		}
@@ -39,13 +44,13 @@ namespace Daysim.ChoiceModels.Default.Models {
 			if (person == null) {
 				throw new ArgumentNullException("person");
 			}
-			
+
 			person.ResetRandom(0);
 
 			if (Global.Configuration.IsInEstimationMode) {
-			//	if (!_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
-			//		return;
-			//	}
+				//	if (!_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+				//		return;
+				//	}
 				if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
 					return;
 				}
@@ -112,7 +117,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 			alternative.AddUtilityTerm(90, 100);  //old dummy size variable for oddball alt
 
 			//make oddball alt unavailable and remove nesting for estimation of conditional MNL 
-//			alternative.Available = false;
+			//			alternative.Available = false;
 			alternative.AddNestedAlternative(sampleSize + 3, 1, 98);
 		}
 
@@ -150,11 +155,11 @@ namespace Daysim.ChoiceModels.Default.Models {
 				}
 
 				var destinationParcel = ChoiceModelFactory.Parcels[sampleItem.ParcelId];
-//				var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
+				//				var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
 
 				alternative.Choice = destinationParcel;
 
-                
+
 
 				var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(_person, _person.Household.ResidenceParcel, destinationParcel, _destinationArrivalTime, _destinationDepartureTime, _person.Household.HouseholdTotals.DrivingAgeMembers);
 				var workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
@@ -166,10 +171,10 @@ namespace Daysim.ChoiceModels.Default.Models {
 				var distance1 = Math.Min(distanceFromOrigin, .35);
 				var distance2 = Math.Max(0, Math.Min(distanceFromOrigin - .35, 1 - .35));
 				var distance3 = Math.Max(0, distanceFromOrigin - 1);
-                var distance20 = Math.Max(0, distanceFromOrigin - 2);
-                var distance30 = Math.Max(0, distanceFromOrigin - 3);
-                var distance40 = Math.Max(0, distanceFromOrigin - 4);
-                var distanceLog = Math.Log(1 + distanceFromOrigin);
+				var distance20 = Math.Max(0, distanceFromOrigin - 2);
+				var distance30 = Math.Max(0, distanceFromOrigin - 3);
+				var distance40 = Math.Max(0, distanceFromOrigin - 4);
+				var distanceLog = Math.Log(1 + distanceFromOrigin);
 				var distanceFromSchool = _person.IsFullOrPartTimeWorker ? 0 : _person.UsualSchoolParcel.DistanceFromSchoolLog(destinationParcel, 1);
 
 				// parcel buffers
@@ -179,7 +184,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 				var serviceBuffer = Math.Log(destinationParcel.EmploymentServiceBuffer2 + 1);
 				var householdsBuffer = Math.Log(destinationParcel.HouseholdsBuffer2 + 1);
 
-//				var retailBuffer = Math.Log(destinationParcel.EmploymentRetailBuffer2 + 1);
+				//				var retailBuffer = Math.Log(destinationParcel.EmploymentRetailBuffer2 + 1);
 				var industrialAgricultureConstructionBuffer = Math.Log(destinationParcel.EmploymentIndustrialBuffer2 + destinationParcel.EmploymentAgricultureConstructionBuffer2 + 1);
 				var foodBuffer = Math.Log(destinationParcel.EmploymentFoodBuffer2 + 1);
 				var medicalBuffer = Math.Log(destinationParcel.EmploymentMedicalBuffer2 + 1);
@@ -187,7 +192,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 				var studentsUniversityBuffer = Math.Log(destinationParcel.StudentsUniversityBuffer2 + 1);
 				var studentsK12Buffer = Math.Log(destinationParcel.StudentsK8Buffer2 + destinationParcel.StudentsHighSchoolBuffer2 + 1);
 
-//				var mixedUse4Index = destinationParcel.MixedUse4Index2();
+				//				var mixedUse4Index = destinationParcel.MixedUse4Index2();
 
 				//size attributes (derived)
 				var employmentIndustrialAgricultureConstruction = destinationParcel.EmploymentIndustrial + destinationParcel.EmploymentAgricultureConstruction;
@@ -197,6 +202,7 @@ namespace Daysim.ChoiceModels.Default.Models {
 
 				// connectivity attributes
 				var c34Ratio = destinationParcel.C34RatioBuffer1();
+
 
 				alternative.AddUtilityTerm(1, sampleItem.AdjustmentFactor);
 				alternative.AddUtilityTerm(2, _person.IsFulltimeWorker.ToFlag() * workTourLogsum);
@@ -218,10 +224,10 @@ namespace Daysim.ChoiceModels.Default.Models {
 				alternative.AddUtilityTerm(18, _person.IsNotFullOrPartTimeWorker.ToFlag() * aggregateLogsum);
 				alternative.AddUtilityTerm(19, parcelParkingDensity);
 				alternative.AddUtilityTerm(20, c34Ratio);
-//extra additive distance terms for calibrating longer distances
-                alternative.AddUtilityTerm(46, distance20);
-                alternative.AddUtilityTerm(47, distance30);
-                alternative.AddUtilityTerm(48, distance40);
+				//extra additive distance terms for calibrating longer distances
+				alternative.AddUtilityTerm(46, distance20);
+				alternative.AddUtilityTerm(47, distance30);
+				alternative.AddUtilityTerm(48, distance40);
 
 				//Neighborhood
 				alternative.AddUtilityTerm(21, _person.Household.HasValidIncome.ToFlag() * serviceBuffer);
@@ -243,33 +249,32 @@ namespace Daysim.ChoiceModels.Default.Models {
 				alternative.AddUtilityTerm(35, _person.IsNotFullOrPartTimeWorker.ToFlag() * _person.Household.HasIncomeUnder50K.ToFlag() * governmentBuffer);
 				alternative.AddUtilityTerm(36, _person.IsNotFullOrPartTimeWorker.ToFlag() * _person.Household.HasIncomeUnder50K.ToFlag() * employmentTotalBuffer);
 
-            //PSRC specific district constants for model calibration ssc
-            if (Global.Configuration.PSRC == true)
-                {
-                    var homedist = _person.Household.ResidenceParcel.District;
-                    var zonedist = destinationParcel.District;
-                    var homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
-                    var homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
-                    var homeEastWorkCBD = homedist == 6 && zonedist == 4 ? 1 : 0;
-                    var homeKitWorkCBD = (homedist == 9 ||homedist == 11 )&& (zonedist == 4) ? 1 : 0;
-                    var homeTacWorkKit = homedist == 8 && (zonedist == 9 || zonedist== 11) ? 1 : 0;
-                    var homeEvWorkEv = homedist == 2 && zonedist == 2 ? 1 : 0;
-                    var homeWSWorkEast = homedist == 5 && zonedist == 6 ? 1 : 0;
-                    var homeEastWorkEast = homedist == 6 && zonedist == 6 ? 1 : 0;
-                    var homeKitWorkNotKit = (homedist == 9 ||homedist ==11) && zonedist != 9 && zonedist != 11? 1 : 0;
-                    var homeSTacWorkCBD = (homedist == 5 || homedist ==8) &&zonedist == 9 ? 1 : 0;
+				//PSRC specific district constants for model calibration ssc
+				if (Global.Configuration.PSRC == true) {
+					var homedist = _person.Household.ResidenceParcel.District;
+					var zonedist = destinationParcel.District;
+					var homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
+					var homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
+					var homeEastWorkCBD = homedist == 6 && zonedist == 4 ? 1 : 0;
+					var homeKitWorkCBD = (homedist == 9 || homedist == 11) && (zonedist == 4) ? 1 : 0;
+					var homeTacWorkKit = homedist == 8 && (zonedist == 9 || zonedist == 11) ? 1 : 0;
+					var homeEvWorkEv = homedist == 2 && zonedist == 2 ? 1 : 0;
+					var homeWSWorkEast = homedist == 5 && zonedist == 6 ? 1 : 0;
+					var homeEastWorkEast = homedist == 6 && zonedist == 6 ? 1 : 0;
+					var homeKitWorkNotKit = (homedist == 9 || homedist == 11) && zonedist != 9 && zonedist != 11 ? 1 : 0;
+					var homeSTacWorkCBD = (homedist == 5 || homedist == 8) && zonedist == 9 ? 1 : 0;
 
-                    alternative.AddUtilityTerm(37, homeTacWorkKit);
-                    alternative.AddUtilityTerm(38, homeEvWorkEv);
-                    alternative.AddUtilityTerm(39, homeWSWorkEast);
-                    alternative.AddUtilityTerm(40, homeSKitWorkTRP);
-                    alternative.AddUtilityTerm(91, homeEastWorkEast);
-                    alternative.AddUtilityTerm(45, homeKitWorkTRP);
-                    alternative.AddUtilityTerm(47, homeKitWorkNotKit);
-                    alternative.AddUtilityTerm(48, homeEastWorkCBD);
-                    alternative.AddUtilityTerm(49, homeKitWorkCBD);
-                    alternative.AddUtilityTerm(44, homeSTacWorkCBD);
-                }
+					alternative.AddUtilityTerm(37, homeTacWorkKit);
+					alternative.AddUtilityTerm(38, homeEvWorkEv);
+					alternative.AddUtilityTerm(39, homeWSWorkEast);
+					alternative.AddUtilityTerm(40, homeSKitWorkTRP);
+					alternative.AddUtilityTerm(91, homeEastWorkEast);
+					alternative.AddUtilityTerm(45, homeKitWorkTRP);
+					alternative.AddUtilityTerm(47, homeKitWorkNotKit);
+					alternative.AddUtilityTerm(48, homeEastWorkCBD);
+					alternative.AddUtilityTerm(49, homeKitWorkCBD);
+					alternative.AddUtilityTerm(44, homeSTacWorkCBD);
+				}
 
 
 				//Size
@@ -308,12 +313,26 @@ namespace Daysim.ChoiceModels.Default.Models {
 				alternative.AddUtilityTerm(79, _person.Household.HasMissingIncome.ToFlag() * destinationParcel.EmploymentTotal);
 				alternative.AddUtilityTerm(80, _person.Household.HasMissingIncome.ToFlag() * destinationParcel.StudentsUniversity);
 
+
+
+
+				// OD shadow pricing
+				if (Global.Configuration.ShouldUseODShadowPricing) {
+					var res = _person.Household.ResidenceParcel.District;
+					var des = destinationParcel.District;
+					//var first = res <= des? res : des;
+					//var second = res <= des? des : res;
+					var shadowPriceConfigurationParameter = res == des? Global.Configuration.WorkLocationOOShadowPriceCoefficient : Global.Configuration.WorkLocationODShadowPriceCoefficient;
+					var odShadowPriceF12Value = MAX_REGULAR_PARAMETER + Global.Configuration.NumberOfODShadowPricingDistricts * (res - 1) + des;
+					alternative.AddUtilityTerm(odShadowPriceF12Value, shadowPriceConfigurationParameter);
+				}
+
+
 				// set shadow price depending on persontype and add it to utility
 				// we are using the sampling adjustment factor assuming that it is 1
-                if (Global.Configuration.ShouldUseShadowPricing)
-                {
-                    alternative.AddUtilityTerm(1, destinationParcel.ShadowPriceForEmployment);
-                }
+				if (Global.Configuration.ShouldUseShadowPricing) {
+					alternative.AddUtilityTerm(1, destinationParcel.ShadowPriceForEmployment);
+				}
 
 			}
 		}

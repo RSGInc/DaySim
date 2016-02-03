@@ -27,7 +27,10 @@ namespace Daysim.ChoiceModels.Default.Models {
 		private const string CHOICE_MODEL_NAME = "WorkTourDestinationModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 102;
 		private const int TOTAL_LEVELS = 2;
-		private const int MAX_PARAMETER = 100;
+		// regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
+		private const int MAX_REGULAR_PARAMETER = 120;
+		private const int MaxDistrictNumber = 100;
+		private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
 		public override void RunInitialize(ICoefficientsReader reader = null)
 		{
@@ -300,6 +303,23 @@ namespace Daysim.ChoiceModels.Default.Models {
 				alternative.AddUtilityTerm(47, (!usualWorkParcel).ToFlag() * destinationParcel.EmploymentIndustrial + destinationParcel.EmploymentAgricultureConstruction);
 				alternative.AddUtilityTerm(48, (!usualWorkParcel).ToFlag() * destinationParcel.Households);
 				alternative.AddUtilityTerm(49, (!usualWorkParcel).ToFlag() * destinationParcel.StudentsUniversity);
+
+
+				// OD shadow pricing
+				if (!usualWorkParcel && Global.Configuration.ShouldUseODShadowPricing) {
+					var ori = _tour.OriginParcel.District;
+					var des = destinationParcel.District;
+					//var first = res <= des? res : des;
+					//var second = res <= des? des : res;
+					var shadowPriceConfigurationParameter = ori == des? Global.Configuration.WorkTourDestinationOOShadowPriceCoefficient : Global.Configuration.WorkTourDestinationODShadowPriceCoefficient;
+					var odShadowPriceF12Value = MAX_REGULAR_PARAMETER + Global.Configuration.NumberOfODShadowPricingDistricts * (ori - 1) + des;
+					alternative.AddUtilityTerm(odShadowPriceF12Value, shadowPriceConfigurationParameter);
+				}
+
+
+
+
+
 
 		//		// usual location size term
 		//		alternative.AddUtilityTerm(50, usualWorkParcelFlag * 1);
