@@ -264,7 +264,6 @@ namespace Daysim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(21, distanceFromOrigin4);
 					alternative.AddUtilityTerm(22, distanceFromOrigin8);
 					alternative.AddUtilityTerm(23, distanceFromOrigin9);
-				    alternative.AddUtilityTerm(24, distanceFromOrigin3);
 
 					// Neighborhood
 					alternative.AddUtilityTerm(24, householdHasChildren.ToFlag() * studK12Buffer);
