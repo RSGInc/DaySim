@@ -20,10 +20,18 @@ namespace Daysim.PathTypeModels {
 
 		int PathParkAndRideNodeId { get; }
 
-		double PathParkAndRideTransitTime { get; }
-		double PathParkAndRideTransitDistance { get; }
-		double PathParkAndRideTransitCost { get; }
-		double PathParkAndRideTransitGeneralizedTime { get; }
+		double PathTransitTime { get; }
+		double PathTransitDistance { get; }
+		double PathTransitCost { get; }
+		double PathTransitGeneralizedTime { get; }
+
+		int PathOriginStopAreaKey { get; }
+		int PathDestinationStopAreaKey { get; }
+		double PathWalkTime { get; }
+		double PathWalkDistance { get; }
+		double PathBikeTime { get; }
+		double PathBikeDistance { get; }
+		double PathBikeCost { get; }
 
 		bool Available { get; }
 
