@@ -87,9 +87,9 @@ namespace Daysim.Framework.Roster
 
                                 if (value > 0)
                                 {
-                                    if (value > short.MaxValue)
+                                    if (value > ushort.MaxValue - 1)
                                     {
-                                        value = short.MaxValue;
+                                        value = ushort.MaxValue -1;
                                     }
 
                                     _matrix[_mapping[row + 1]][_mapping[col + 1]] = (ushort)value;

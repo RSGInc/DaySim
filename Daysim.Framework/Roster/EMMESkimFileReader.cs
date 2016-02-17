@@ -64,12 +64,12 @@ namespace Daysim.Framework.Roster {
 			for (int i = 1; i <= _mcent; i++)
 				for (int j = 1; j <= _mcent; j++)
 				{
-					float value = _reader.ReadSingle();
+					float value = _reader.ReadSingle() * scale;
 					if (_mapping.ContainsKey(i) && _mapping.ContainsKey(j))
 					{
-						if (value >= short.MaxValue/scale)
+						if (value >= ushort.MaxValue -1)
 						{
-							value = short.MaxValue / scale;
+							value = ushort.MaxValue -1;
 						}
 						else if (value < 0)
 						{
@@ -77,7 +77,7 @@ namespace Daysim.Framework.Roster {
 						}
 						else
 						{
-							value = (float) Math.Round(value * scale);
+							value = (float) Math.Round(value);
 						}
 						_matrix[_mapping[i]][_mapping[j]] = ((ushort) Convert.ChangeType(value, typeof (ushort)));
 					}

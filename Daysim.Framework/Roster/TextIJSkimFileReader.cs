@@ -91,16 +91,16 @@ namespace Daysim.Framework.Roster {
 					var destination = _mapping[index];
 					//var destination = _mapping[Convert.ToInt32(row[1])];
 
-					var rawValue = Convert.ToSingle(row[field + FIELD_OFFSET]);
+					var rawValue = Convert.ToSingle(row[field + FIELD_OFFSET]) * scale;
 
-					if (rawValue > short.MaxValue / scale) {
-						rawValue = short.MaxValue / (float)scale;
+					if (rawValue > ushort.MaxValue - 1) {
+						rawValue = ushort.MaxValue - 1;
 					}
 					else if (rawValue < 0) {
 						rawValue = 0;
 					}
 
-					var value = Convert.ToUInt16(rawValue * scale);
+					var value = Convert.ToUInt16(rawValue);
 
 					matrix[origin][destination] = value;
 				}

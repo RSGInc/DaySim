@@ -177,18 +177,18 @@ namespace Daysim.Framework.Roster {
 							Marshal.Copy(buffer, zones, 0, zonesLength);
 
 							for (var j = 1; j <= zonesLength; j++) {
-								var rawValue = Convert.ToSingle(zones[j-1]);
+								var rawValue = Convert.ToSingle(zones[j-1]) * scale;
 
 								if (_mapping.ContainsKey(i) && _mapping.ContainsKey(j))
 								{
-									if (rawValue > short.MaxValue / scale) {
-										rawValue = short.MaxValue / scale;
+									if (rawValue > ushort.MaxValue -1) {
+										rawValue = ushort.MaxValue -1;
 									}
 									else if (rawValue < 0) {
 										rawValue = 0;
 									}
 
-									var value = Convert.ToUInt16(rawValue * scale);
+									var value = Convert.ToUInt16(rawValue);
 
 									_matrix[_mapping[i]][_mapping[j]] = value;
 								}

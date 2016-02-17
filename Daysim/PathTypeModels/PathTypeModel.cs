@@ -271,7 +271,7 @@ namespace Daysim.PathTypeModels {
 
 
 		private void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones, int batch) {
-            
+ 
             var circuityDistance = useZones ? Constants.DEFAULT_VALUE : GetCircuityDistance(skimMode, pathType, votValue, _outboundTime, batch, _originParcel, _destinationParcel);
 
 			var skimValue =

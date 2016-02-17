@@ -169,17 +169,17 @@ namespace Daysim.Framework.Roster
                             //Console.Write("Matrix values for row " + vl.ToString() + " >> ");
                             for (int vi = 0; vi < rows; vi++)
                             {
-                                double rawValue = sr.ReadDouble();
-                                if (rawValue > short.MaxValue / scale)
+                                double rawValue = sr.ReadDouble() * scale;
+                                if (rawValue > ushort.MaxValue -1)
                                 {
-                                    rawValue = short.MaxValue / scale;
+                                    rawValue = ushort.MaxValue -1;
                                 }
                                 else if (rawValue < 0)
                                 {
                                     rawValue = 0;
                                 }
 
-                                var value = Convert.ToUInt16(rawValue * scale);
+                                var value = Convert.ToUInt16(rawValue);
 
                                 matrix[_mapping[zonenums[vl]]][_mapping[zonenums[vi]]] = value;
                                 //matrix[vl][vi] = value;
