@@ -211,14 +211,26 @@ namespace Daysim.Framework.Roster {
 			}
 
 			if (!skimValue.BlendVariable.AlmostEquals(Constants.DEFAULT_VALUE)) {
-				if (networkDistance >= Constants.EPSILON) {
-					skimValue.Variable = skimValue.Variable * skimValue.BlendVariable / networkDistance;
-				}
+                //new code for intrazonals allows overriding use of speed from skims
+                if (origin.ZoneId == destination.ZoneId) {
+                    double minutesPerMile =
+                        (mode == Global.Settings.Modes.Walk && Global.Configuration.IntrazonalWalkMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalWalkMinutesPerMile_OverrideSkims
+                      : (mode == Global.Settings.Modes.Bike && Global.Configuration.IntrazonalBikeMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalBikeMinutesPerMile_OverrideSkims
+                      : (mode >= Global.Settings.Modes.Sov && mode <= Global.Settings.Modes.Hov3 && Global.Configuration.IntrazonalAutoMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalAutoMinutesPerMile_OverrideSkims
+                      : skimValue.Variable / networkDistance;
+
+                    skimValue.Variable = skimValue.BlendVariable * minutesPerMile;
+                }
+                else if (networkDistance >= Constants.EPSILON) {
+                    double minutesPerMile = skimValue.Variable / networkDistance;
+                    skimValue.Variable = skimValue.BlendVariable * minutesPerMile;
+
+                }
 				// if networkDistance is 0 or tiny, cannot use pivot method, multiply blend distance by default speed depending on mode
 				else {
 					// TODO: Make these constants for minutesPerMile configurable.
 					var minutesPerMile = entry.Mode == Global.Settings.Modes.Walk ? 20.0 :
-																										entry.Mode == Global.Settings.Modes.Bike ? 6.0 : 3.0;
+										 entry.Mode == Global.Settings.Modes.Bike ? 6.0 : 3.0;
 					skimValue.Variable = skimValue.BlendVariable * minutesPerMile;
 				}
 			}

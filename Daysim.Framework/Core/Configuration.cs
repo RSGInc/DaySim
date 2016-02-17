@@ -1419,7 +1419,14 @@ namespace Daysim.Framework.Core {
 		[XmlAttribute]
 		public double IntermediateStopLocationODShadowPriceStopOriginFraction { get; set; }
 
+        [XmlAttribute]
+        public double IntrazonalWalkMinutesPerMile_OverrideSkims { get; set; }
 
+        [XmlAttribute]
+        public double IntrazonalBikeMinutesPerMile_OverrideSkims { get; set; }
+
+        [XmlAttribute]
+        public double IntrazonalAutoMinutesPerMile_OverrideSkims { get; set; }
 
 	}
 }
