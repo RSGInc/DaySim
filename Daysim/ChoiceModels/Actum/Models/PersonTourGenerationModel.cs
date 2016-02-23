@@ -155,7 +155,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
 					//JLB 201406
 					//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(pDay, residenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
-					var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(pDay, residenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
+				//JLB 201602
+					//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(pDay, residenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
+					var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(pDay, residenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, Global.Settings.Purposes.Work);
 
 					workLogsum[count - 1] = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 				}
@@ -168,7 +170,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.SchoolTourModeModel);
 				//JLB 201406
 					//var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeModel>().RunNested(pDay, residenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
-					var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeTimeModel>().RunNested(pDay, residenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
+							//JLB 201602
+					//var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeTimeModel>().RunNested(pDay, residenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
+					var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(pDay, residenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, Global.Settings.Purposes.School);
 
 					schoolLogsum[count - 1] = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 				}

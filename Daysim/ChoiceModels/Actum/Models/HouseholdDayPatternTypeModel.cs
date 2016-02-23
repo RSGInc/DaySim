@@ -586,13 +586,17 @@ namespace Daysim.ChoiceModels.Actum.Models {
 							if (person.UsualDeparturePeriodFromWork != Constants.DEFAULT_VALUE && person.UsualArrivalPeriodToWork != Constants.DEFAULT_VALUE) {
 								//JLB 201406
 								//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(person, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
-								var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
+				//JLB 201602
+								//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
+								var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
 								mandatoryLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 							}
 							else {
 								//JLB 201406
 								//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(person, person.Household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, person.Household.HouseholdTotals.DrivingAgeMembers);
-								var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, person.Household.HouseholdTotals.DrivingAgeMembers);
+				//JLB 201602
+								//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, person.Household.HouseholdTotals.DrivingAgeMembers);
+								var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
 								mandatoryLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 							}
 						}
@@ -604,7 +608,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 						if (person.UsualSchoolParcelId != 0 && person.UsualSchoolParcelId != -1 && person.UsualSchoolParcelId != Global.Settings.OutOfRegionParcelId) {
 							//JLB 201406
 							//var schoolNestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeModel>().RunNested(person, person.Household.ResidenceParcel, person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.TwoPM, person.Household.HouseholdTotals.DrivingAgeMembers);
-							var schoolNestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.TwoPM, person.Household.HouseholdTotals.DrivingAgeMembers);
+							//JLB 201602
+							//var schoolNestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.TwoPM, person.Household.HouseholdTotals.DrivingAgeMembers);
+							var schoolNestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.TwoPM, person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.School);
 							mandatoryLogsum = schoolNestedAlternative == null ? 0 : schoolNestedAlternative.ComputeLogsum();
 						}
 						else {

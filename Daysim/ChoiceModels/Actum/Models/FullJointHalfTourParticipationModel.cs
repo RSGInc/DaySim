@@ -138,7 +138,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 			IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointHalfTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
 
-			IPersonDayWrapper pPersonDay = null;
+			PersonDayWrapper pPersonDay = null;
 
 			// set household characteristics here that don't depend on person characteristics
 
@@ -489,7 +489,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				//var nestedAlternative = (Global.ChoiceModelDictionary.Get("ActumWorkTourModeModel") as ActumWorkTourModeModel).RunNested(personDay, residenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
 				//JLB 201406
 				//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(pPersonDay, pPersonDay.Household.ResidenceParcel, sameUsualLocation, destinationArrivalTime, destinationDepartureTime, pPersonDay.Household.VehiclesAvailable);
-				var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(pPersonDay, pPersonDay.Household.ResidenceParcel, sameUsualLocation, destinationArrivalTime, destinationDepartureTime, pPersonDay.Household.VehiclesAvailable);
+				//JLB 201602
+				//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(pPersonDay, pPersonDay.Household.ResidenceParcel, sameUsualLocation, destinationArrivalTime, destinationDepartureTime, pPersonDay.Household.VehiclesAvailable);
+				var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(pPersonDay, pPersonDay.Household.ResidenceParcel, sameUsualLocation, destinationArrivalTime, destinationDepartureTime, pPersonDay.Household.VehiclesAvailable, Global.Settings.Purposes.Work);
 				tourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 
 

@@ -224,7 +224,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					if (tour.DestinationPurpose == Global.Settings.Purposes.Work) {
 						//JLB 201406
 						//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(tour, destinationParcel);
-						var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
+						// JLB 201602
+						//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
+						var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
 						tourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 					}
 
@@ -236,14 +238,18 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					else {
 						// JLB201406
 						//var nestedAlternative = Global.ChoiceModelSession.Get<OtherHomeBasedTourModeModel>().RunNested(tour, destinationParcel);
-						var nestedAlternative = Global.ChoiceModelSession.Get<OtherHomeBasedTourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
+						// JLB 201602
+						//var nestedAlternative = Global.ChoiceModelSession.Get<OtherHomeBasedTourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
+						var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
 						tourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 					}
 				}
 				else {
 					// JLB201406
 					//var nestedAlternative = Global.ChoiceModelSession.Get<WorkBasedSubtourModeModel>().RunNested(tour, destinationParcel);
-					var nestedAlternative = Global.ChoiceModelSession.Get<WorkBasedSubtourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
+						// JLB 201602
+					//var nestedAlternative = Global.ChoiceModelSession.Get<WorkBasedSubtourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
+					var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(tour, destinationParcel, tour.Household.VehiclesAvailable, tour.Person.GetTransitFareDiscountFraction());
 					tourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 				}
 

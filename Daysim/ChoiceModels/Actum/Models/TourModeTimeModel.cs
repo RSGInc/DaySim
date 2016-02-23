@@ -11,31 +11,47 @@ using Daysim.DomainModels;
 using Daysim.DomainModels.Actum;
 using Daysim.DomainModels.Actum.Wrappers;
 using Daysim.DomainModels.Default.Wrappers;
+using Daysim.DomainModels.Extensions;
 using Daysim.Framework.ChoiceModels;
 using Daysim.Framework.Coefficients;
 using Daysim.Framework.Core;
+using Daysim.Framework.DomainModels.Creators;
+using Daysim.Framework.DomainModels.Models;
+using Daysim.Framework.DomainModels.Wrappers;
+using Daysim.Framework.Factories;
+using Ninject;
 using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = Daysim.DomainModels.Default.Wrappers.HouseholdWrapper;
+using HouseholdWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdWrapper;
+using PersonDayWrapper = Daysim.DomainModels.Actum.Wrappers.PersonDayWrapper;
+using PersonWrapper = Daysim.DomainModels.Actum.Wrappers.PersonWrapper;
 using TourWrapper = Daysim.DomainModels.Actum.Wrappers.TourWrapper;
 
 namespace Daysim.ChoiceModels.Actum.Models {
 	public class TourModeTimeModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "ActumTourModeTimeModel";
-		private const int TOTAL_NESTED_ALTERNATIVES = 8;
+		private const int TOTAL_NESTED_ALTERNATIVES = 21;
 		private const int TOTAL_LEVELS = 2;
 		private const int MAX_PARAMETER = 999;
 		private const int THETA_PARAMETER = 900;
 
-		public override void RunInitialize(ICoefficientsReader reader = null) {
+		private readonly ITourCreator _creator = 
+			Global
+			.Kernel
+			.Get<IWrapperFactory<ITourCreator>>()
+			.Creator;
+
+		public override void RunInitialize(ICoefficientsReader reader = null) 
+		{
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.TourModeTimeModelCoefficients, HTourModeTime.TotalTourModeTimes, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
 		}
+
 
 		public void Run(HouseholdDayWrapper householdDay, TourWrapper tour,
 			int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime) {
 			if (tour == null) {
 				throw new ArgumentNullException("tour");
 			}
-
+			
 			//HTourModeTime.InitializeTourModeTimes();
 
 			tour.PersonDay.ResetRandom(50 + tour.Sequence - 1);
@@ -57,14 +73,14 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 			HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, -1, -1.0);
 
-
 			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(tour.Id);
 
 			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
 
 				var observedChoice = new HTourModeTime(tour.Mode, tour.DestinationArrivalTime, tour.DestinationDepartureTime);
 
-				RunModel(choiceProbabilityCalculator, householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime,
+				RunModel(choiceProbabilityCalculator, householdDay, tour, tour.DestinationParcel, tour.Household.VehiclesAvailable,
+					constrainedMode, constrainedArrivalTime, constrainedDepartureTime,
 					observedChoice);
 
 				choiceProbabilityCalculator.WriteObservation();
@@ -73,7 +89,8 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			else if (Global.Configuration.TestEstimationModelInApplicationMode) {
 				Global.Configuration.IsInEstimationMode = false;
 
-				RunModel(choiceProbabilityCalculator, householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
+				RunModel(choiceProbabilityCalculator, householdDay, tour, tour.DestinationParcel, tour.Household.VehiclesAvailable,
+					constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
 
 				var observedChoice = new HTourModeTime(tour.Mode, tour.DestinationArrivalTime, tour.DestinationDepartureTime);
 
@@ -88,7 +105,8 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					choice = new HTourModeTime(constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
 				}
 				else {
-					RunModel(choiceProbabilityCalculator, householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
+					RunModel(choiceProbabilityCalculator, householdDay, tour, tour.DestinationParcel, tour.Household.VehiclesAvailable,
+						constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
 					var simulatedChoice = choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
 
 					if (simulatedChoice == null) {
@@ -139,8 +157,56 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			}
 		}
 
+		//MBADD runnested
+		public ChoiceProbabilityCalculator.Alternative RunNested(PersonWrapper person, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int destinationArrivalTime, int destinationDepartureTime, int householdCars, double transitDiscountFraction, int purpose) {
+			if (person == null) {
+				throw new ArgumentNullException("person");
+			}
+
+			var tour = (TourWrapper) _creator.CreateWrapper(person, null, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, purpose);
+
+			return RunNested(tour, destinationParcel, householdCars, transitDiscountFraction);
+		}
+
+		public ChoiceProbabilityCalculator.Alternative RunNested(PersonDayWrapper personDay, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int destinationArrivalTime, int destinationDepartureTime, int householdCars, int purpose) {
+			if (personDay == null) {
+				throw new ArgumentNullException("personDay");
+			}
+
+			//var tour = (TourWrapper)_creator.CreateWrapper(personDay.Person, personDay, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, Global.Settings.Purposes.Work);
+			var tour = (TourWrapper)_creator.CreateWrapper(personDay.Person, personDay, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, purpose);
+
+			return RunNested(tour, destinationParcel, householdCars, personDay.Person.GetTransitFareDiscountFraction());
+		}
+
+		public ChoiceProbabilityCalculator.Alternative RunNested(TourWrapper tour, IParcelWrapper destinationParcel, int householdCars, double transitDiscountFraction) {
+			if (Global.Configuration.AvoidDisaggregateModeChoiceLogsums) {
+				return null;
+			}
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetNestedChoiceProbabilityCalculator();
+
+			HouseholdDayWrapper householdDay = (tour.PersonDay == null) ? null : (HouseholdDayWrapper)tour.PersonDay.HouseholdDay;
+
+			int constrainedMode = 0;
+			int constrainedArrivalTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationArrivalTime : 0;
+			int constrainedDepartureTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationDepartureTime : 0;
+
+			tour.DestinationParcel = destinationParcel;
+			HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, householdCars, transitDiscountFraction);
+			
+			RunModel(choiceProbabilityCalculator, householdDay, tour, destinationParcel, householdCars, constrainedMode, constrainedArrivalTime, constrainedDepartureTime  );
+
+			return choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
+		}
+
+
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, TourWrapper tour,
-					int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, HTourModeTime choice = null) {
+					IParcelWrapper destinationParcel, int householdCars,
+			    int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, HTourModeTime choice = null) {
+
+
+		//private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, TourWrapper tour,
+		//			int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, HTourModeTime choice = null) {
 
 			var household = tour.Household;
 			var person = tour.Person;
@@ -156,7 +222,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			var onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
 			var twoPersonHouseholdFlag = household.IsTwoPersonHousehold.ToFlag();
 
-			var householdCars = household.VehiclesAvailable;
+			//var householdCars = household.VehiclesAvailable;
 			var noCarsInHouseholdFlag = household.GetFlagForNoCarsInHousehold(householdCars);
 			var carsLessThanDriversFlag = household.GetFlagForCarsLessThanDrivers(householdCars);
 			var carsLessThanWorkersFlag = household.GetFlagForCarsLessThanWorkers(householdCars);
@@ -206,7 +272,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			var businessTourFlag = tour.IsBusinessPurpose().ToFlag();
 
 			var originParcel = tour.OriginParcel;
-			var destinationParcel = tour.DestinationParcel;
+			//var destinationParcel = tour.DestinationParcel;
 			var jointTourFlag = (tour.JointTourSequence > 0) ? 1 : 0;
 			var partialHalfTour1Flag = (tour.PartialHalfTour1Sequence > 0) ? 1 : 0;
 			var partialHalfTour2Flag = (tour.PartialHalfTour2Sequence > 0) ? 1 : 0;
@@ -228,7 +294,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			// Lower priority tour of 2+ tours for different purposes
 			var lowPriorityDifferentFlag = (personDay.IsLaterSimulatedHomeBasedTour() && personDay.HomeBasedToursExist()).ToFlag() * (1 - lowPrioritySameFlag);
 
-			var timeWindow = tour.GetRelevantTimeWindow(householdDay);
+		var timeWindow = (householdDay == null) ? new TimeWindow() : tour.GetRelevantTimeWindow(householdDay);
 			var totalMinutesAvailableInDay = timeWindow.TotalAvailableMinutes(1, 1440);
 			if (totalMinutesAvailableInDay < 0) {
 				if (!Global.Configuration.IsInEstimationMode) {
@@ -485,12 +551,15 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 
 				//set availabillity based on time window variables and any constrained choices
-				bool available = modeTimes.LongestFeasibleWindow != null
-					&& (mode > 0)
+					bool available = (modeTimes.LongestFeasibleWindow != null) && (mode > 0)
 					&& (mode <= Global.Settings.Modes.Transit)
 					&& (person.Age >= 18 || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
 					&& (constrainedMode > 0 || mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.HovDriver || mode == Global.Settings.Modes.Transit || !partialHalfTour) 
-					;
+						&& (constrainedMode <= 0 || constrainedMode == mode)
+						&& (constrainedArrivalTime <= 0 || (constrainedArrivalTime >= arrivalPeriod.Start && constrainedArrivalTime <= arrivalPeriod.End))
+						&& (constrainedDepartureTime <= 0 || (constrainedDepartureTime >= departurePeriod.Start && constrainedDepartureTime <= departurePeriod.End));
+
+
 
 					var alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available,
 					                                                             choice != null && choice.Index == altIndex);
@@ -555,9 +624,19 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 					alternative.AddUtilityTerm(1, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
 
+					//alternative.AddUtilityTerm(3,
+					//                           Math.Log(modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start -
+					//                                    minimumTimeNeeded + 1.0));
+
+					// JLB 20140204 replaced coeff 3 with a different time window formulation:  time pressure
+					//    instead of having positive utility for increasing time window, have negative utility for decreasing time window
 					alternative.AddUtilityTerm(3,
-					                           Math.Log(modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start -
-					                                    minimumTimeNeeded + 1.0));
+                     Math.Log(Math.Max(Constants.EPSILON, 1 - 
+							Math.Pow(minimumTimeNeeded/(Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)),0.8)
+							)));
+		
+					
+					
 					alternative.AddUtilityTerm(4, Math.Log((totalMinutesAvailableInDay + 1.0)/(minimumTimeNeeded + 1.0)));
 
 					alternative.AddUtilityTerm(5,

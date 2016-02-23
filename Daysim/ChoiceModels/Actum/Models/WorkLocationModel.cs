@@ -120,7 +120,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				alternative.Choice = destinationParcel;
 
 				var workTourLogsum = 0D;
-				var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(person, person.Household.ResidenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, person.Household.HouseholdTotals.DrivingAgeMembers, 0.0);
+				//JLB 201602
+				//var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(person, person.Household.ResidenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, person.Household.HouseholdTotals.DrivingAgeMembers, 0.0);
+				var nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, person.Household.ResidenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, person.Household.HouseholdTotals.DrivingAgeMembers, 0.0, Global.Settings.Purposes.Work);
 				workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 				
 				var votSegment = person.Household.GetVotALSegment();
