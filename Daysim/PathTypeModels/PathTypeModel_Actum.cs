@@ -930,7 +930,7 @@ namespace Daysim.PathTypeModels {
 
 					var fullPathUtility = transitPath.Utility +
 					Global.Configuration.PathImpedance_PathChoiceScaleFactor *
-					 _tourTimeCoefficient * Global.Configuration.PathImpedance_TransitAccessEgressTimeWeight * walkTime;
+					 _tourTimeCoefficient * Global.Configuration.PathImpedance_WalkAccessTimeWeight * walkTime;
 
 
 					// if the best path so far, reset pathType properties
@@ -1213,7 +1213,7 @@ namespace Daysim.PathTypeModels {
 					var nodeUtility = transitPath.Utility + autoPath.Utility +
 						Global.Configuration.PathImpedance_PathChoiceScaleFactor *
 						(_tourCostCoefficient * parkAndRideParkingCost +
-						_tourTimeCoefficient * Global.Configuration.PathImpedance_TransitAccessEgressTimeWeight * (destinationWalkTime + oStationWalkTime));
+						_tourTimeCoefficient * Global.Configuration.PathImpedance_WalkAccessTimeWeight * (destinationWalkTime + oStationWalkTime));
 
 					if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !Global.Configuration.IsInEstimationMode) {
 						nodeUtility += node.ShadowPrice[parkMinute];
@@ -1417,7 +1417,7 @@ namespace Daysim.PathTypeModels {
 						(_tourCostCoefficient * parkAndRideParkingCost +
 						_tourTimeCoefficient *
 						(Global.Configuration.PathImpedance_TransitDriveAccessTimeWeight * driveTime +
-						 Global.Configuration.PathImpedance_TransitAccessEgressTimeWeight * (destinationWalkTime + stationWalkTime)));
+						 Global.Configuration.PathImpedance_WalkAccessTimeWeight * (destinationWalkTime + stationWalkTime)));
 
 					if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !Global.Configuration.IsInEstimationMode) {
 						nodeUtility += node.ShadowPrice[parkMinute];
@@ -1572,7 +1572,7 @@ namespace Daysim.PathTypeModels {
 				 (Global.Configuration.PathImpedance_TransitInVehicleTimeWeight * GammaFunction(weightedInVehicleTime, Global.Configuration.PathImpedance_Gamma_InVehicleTime)
 				 + Global.Configuration.PathImpedance_TransitFirstWaitTimeWeight * firstAndHiddenWaitTime
 				 + Global.Configuration.PathImpedance_TransitTransferWaitTimeWeight * waitTime
-				 + Global.Configuration.PathImpedance_TransitAccessEgressTimeWeight * transferWalkTime
+				 + Global.Configuration.PathImpedance_WalkAccessTimeWeight * transferWalkTime
 			  ));
 			return path;
 		}
@@ -1998,8 +1998,8 @@ namespace Daysim.PathTypeModels {
 							(_tourCostCoefficient *
 								(carParkAndRideParkingCost + dParkAndRideParkingCost) +
 							_tourTimeCoefficient *
-								(Global.Configuration.PathImpedance_WalkTimeWeight * (oStationWalkTime + dStationWalkTime)
-								+ Global.Configuration.PathImpedance_BikeTimeWeight * dBikeTime
+								(Global.Configuration.PathImpedance_WalkAccessTimeWeight * (oStationWalkTime + dStationWalkTime)
+								+ Global.Configuration.PathImpedance_BikeAccessTimeWeight * dBikeTime
 								)
 							);
 
@@ -2128,8 +2128,8 @@ namespace Daysim.PathTypeModels {
 							(_tourCostCoefficient *
 								(oParkAndRideParkingCost) +
 							_tourTimeCoefficient *
-								(Global.Configuration.PathImpedance_WalkTimeWeight * (oStationWalkTime + destinationWalkTime)
-								+ Global.Configuration.PathImpedance_BikeTimeWeight * (oBikeTime)
+								(Global.Configuration.PathImpedance_WalkAccessTimeWeight * (oStationWalkTime + destinationWalkTime)
+								+ Global.Configuration.PathImpedance_BikeAccessTimeWeight * (oBikeTime)
 								)
 							);
 
@@ -2276,8 +2276,8 @@ namespace Daysim.PathTypeModels {
 								(_tourCostCoefficient *
 									(oParkAndRideParkingCost + dParkAndRideParkingCost) +
 								_tourTimeCoefficient *
-									(Global.Configuration.PathImpedance_WalkTimeWeight * (oStationWalkTime + dStationWalkTime)
-									+ Global.Configuration.PathImpedance_BikeTimeWeight * (oBikeTime + dBikeTime)
+									(Global.Configuration.PathImpedance_WalkAccessTimeWeight * (oStationWalkTime + dStationWalkTime)
+									+ Global.Configuration.PathImpedance_BikeAccessTimeWeight * (oBikeTime + dBikeTime)
 									)
 								);
 
@@ -2410,8 +2410,8 @@ namespace Daysim.PathTypeModels {
 							(_tourCostCoefficient *
 								(dParkAndRideParkingCost) +
 							_tourTimeCoefficient *
-								(Global.Configuration.PathImpedance_WalkTimeWeight * (oWalkTime + dStationWalkTime)
-								+ Global.Configuration.PathImpedance_BikeTimeWeight * (dBikeTime)
+								(Global.Configuration.PathImpedance_WalkAccessTimeWeight * (oWalkTime + dStationWalkTime)
+								+ Global.Configuration.PathImpedance_BikeAccessTimeWeight * (dBikeTime)
 								)
 							);
 
@@ -2561,7 +2561,7 @@ namespace Daysim.PathTypeModels {
 
 							var pathUtility = transitPath.Utility +
 								_tourTimeCoefficient *
-									(Global.Configuration.PathImpedance_BikeTimeWeight * (oBikeTime + dBikeTime)
+									(Global.Configuration.PathImpedance_BikeAccessTimeWeight * (oBikeTime + dBikeTime)
 									);
 
 							//if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !Global.Configuration.IsInEstimationMode) {

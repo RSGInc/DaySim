@@ -514,7 +514,11 @@ namespace Daysim.Framework.Core {
 
 		//new since 203
 		[XmlAttribute]
-		public double PathImpedance_TransitAccessEgressTimeWeight { get; set; }
+		public double PathImpedance_WalkAccessTimeWeight { get; set; }
+
+		//new 20160223 JLB
+		[XmlAttribute]
+		public double PathImpedance_BikeAccessTimeWeight { get; set; }
 
 		[XmlAttribute]
 		public double PathImpedance_WalkTimeWeight { get; set; }
