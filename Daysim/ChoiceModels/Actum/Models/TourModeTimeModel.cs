@@ -34,14 +34,13 @@ namespace Daysim.ChoiceModels.Actum.Models {
 		private const int MAX_PARAMETER = 999;
 		private const int THETA_PARAMETER = 900;
 
-		private readonly ITourCreator _creator = 
+		private readonly ITourCreator _creator =
 			Global
 			.Kernel
 			.Get<IWrapperFactory<ITourCreator>>()
 			.Creator;
 
-		public override void RunInitialize(ICoefficientsReader reader = null) 
-		{
+		public override void RunInitialize(ICoefficientsReader reader = null) {
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.TourModeTimeModelCoefficients, HTourModeTime.TotalTourModeTimes, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
 		}
 
@@ -51,7 +50,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			if (tour == null) {
 				throw new ArgumentNullException("tour");
 			}
-			
+
 			//HTourModeTime.InitializeTourModeTimes();
 
 			tour.PersonDay.ResetRandom(50 + tour.Sequence - 1);
@@ -174,7 +173,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			}
 
 			//var tour = (TourWrapper)_creator.CreateWrapper(personDay.Person, personDay, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, Global.Settings.Purposes.Work);
-			var tour = (TourWrapper)_creator.CreateWrapper(personDay.Person, personDay, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, purpose);
+			var tour = (TourWrapper) _creator.CreateWrapper(personDay.Person, personDay, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, purpose);
 
 			return RunNested(tour, destinationParcel, householdCars, personDay.Person.GetTransitFareDiscountFraction());
 		}
@@ -185,7 +184,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			}
 			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetNestedChoiceProbabilityCalculator();
 
-			HouseholdDayWrapper householdDay = (tour.PersonDay == null) ? null : (HouseholdDayWrapper)tour.PersonDay.HouseholdDay;
+			HouseholdDayWrapper householdDay = (tour.PersonDay == null) ? null : (HouseholdDayWrapper) tour.PersonDay.HouseholdDay;
 
 			int constrainedMode = 0;
 			int constrainedArrivalTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationArrivalTime : 0;
@@ -193,8 +192,8 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 			tour.DestinationParcel = destinationParcel;
 			HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, householdCars, transitDiscountFraction);
-			
-			RunModel(choiceProbabilityCalculator, householdDay, tour, destinationParcel, householdCars, constrainedMode, constrainedArrivalTime, constrainedDepartureTime  );
+
+			RunModel(choiceProbabilityCalculator, householdDay, tour, destinationParcel, householdCars, constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
 
 			return choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
 		}
@@ -202,11 +201,11 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, TourWrapper tour,
 					IParcelWrapper destinationParcel, int householdCars,
-			    int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, HTourModeTime choice = null) {
+				 int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, HTourModeTime choice = null) {
 
 
-		//private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, TourWrapper tour,
-		//			int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, HTourModeTime choice = null) {
+			//private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, TourWrapper tour,
+			//			int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, HTourModeTime choice = null) {
 
 			var household = tour.Household;
 			var person = tour.Person;
@@ -294,7 +293,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			// Lower priority tour of 2+ tours for different purposes
 			var lowPriorityDifferentFlag = (personDay.IsLaterSimulatedHomeBasedTour() && personDay.HomeBasedToursExist()).ToFlag() * (1 - lowPrioritySameFlag);
 
-		var timeWindow = (householdDay == null) ? new TimeWindow() : tour.GetRelevantTimeWindow(householdDay);
+			var timeWindow = (householdDay == null) ? new TimeWindow() : tour.GetRelevantTimeWindow(householdDay);
 			var totalMinutesAvailableInDay = timeWindow.TotalAvailableMinutes(1, 1440);
 			if (totalMinutesAvailableInDay < 0) {
 				if (!Global.Configuration.IsInEstimationMode) {
@@ -306,117 +305,117 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			int bigPeriodCount = DayPeriod.H_BIG_DAY_PERIOD_TOTAL_TOUR_TIMES;
 			int nPeriodCombs = bigPeriodCount * (bigPeriodCount + 1) / 2;
 
-			bool useTimeComponents = Global.Configuration.IsInEstimationMode || constrainedArrivalTime==0 || constrainedDepartureTime==0;
+			bool useTimeComponents = Global.Configuration.IsInEstimationMode || constrainedArrivalTime == 0 || constrainedDepartureTime == 0;
 			int componentIndex = 0;
 			int periodComb = -1;
 			//set components
 			if (useTimeComponents) {
-			for (var arrivalPeriodIndex = 0; arrivalPeriodIndex < bigPeriodCount; arrivalPeriodIndex++) {
-				var arrivalPeriod = DayPeriod.HBigDayPeriods[arrivalPeriodIndex];
-				var arrivalPeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(arrivalPeriod.Start, arrivalPeriod.End);
+				for (var arrivalPeriodIndex = 0; arrivalPeriodIndex < bigPeriodCount; arrivalPeriodIndex++) {
+					var arrivalPeriod = DayPeriod.HBigDayPeriods[arrivalPeriodIndex];
+					var arrivalPeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(arrivalPeriod.Start, arrivalPeriod.End);
 
-				for (var departurePeriodIndex = arrivalPeriodIndex; departurePeriodIndex < bigPeriodCount; departurePeriodIndex++) {
-					var departurePeriod = DayPeriod.HBigDayPeriods[departurePeriodIndex];
-					var departurePeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(departurePeriod.Start, departurePeriod.End);
+					for (var departurePeriodIndex = arrivalPeriodIndex; departurePeriodIndex < bigPeriodCount; departurePeriodIndex++) {
+						var departurePeriod = DayPeriod.HBigDayPeriods[departurePeriodIndex];
+						var departurePeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(departurePeriod.Start, departurePeriod.End);
 
-					if (arrivalPeriod == departurePeriod) {
+						if (arrivalPeriod == departurePeriod) {
 
-						componentIndex = arrivalPeriodIndex;
-						choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
-						var arrivalComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
+							componentIndex = arrivalPeriodIndex;
+							choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
+							var arrivalComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
 
-						if (arrivalPeriodAvailableMinutes > 0) {
-							var hoursArrival = arrivalPeriod.Middle / 60.0;
-							var firstCoef = 300;
-							arrivalComponent.AddUtilityTerm(300, Math.Log(arrivalPeriodAvailableMinutes));
-							//arrival shift variables
-							arrivalComponent.AddUtilityTerm(firstCoef + 2, partTimeWorkerFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 3, nonworkingAdultFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 4, universityStudentFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 5, retiredAdultFlag * hoursArrival);
+							if (arrivalPeriodAvailableMinutes > 0) {
+								var hoursArrival = arrivalPeriod.Middle / 60.0;
+								var firstCoef = 300;
+								arrivalComponent.AddUtilityTerm(300, Math.Log(arrivalPeriodAvailableMinutes));
+								//arrival shift variables
+								arrivalComponent.AddUtilityTerm(firstCoef + 2, partTimeWorkerFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 3, nonworkingAdultFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 4, universityStudentFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 5, retiredAdultFlag * hoursArrival);
 
-							arrivalComponent.AddUtilityTerm(firstCoef + 6, childAge5Through15Flag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 7, childUnder5Flag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 6, childAge5Through15Flag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 7, childUnder5Flag * hoursArrival);
 
-							arrivalComponent.AddUtilityTerm(firstCoef + 8, educationTourFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 9, escortTourFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 10, shoppingTourFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 11, businessTourFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 12, personalBusinessTourFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 13, socialTourFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 14, workTourFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 8, educationTourFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 9, escortTourFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 10, shoppingTourFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 11, businessTourFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 12, personalBusinessTourFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 13, socialTourFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 14, workTourFlag * hoursArrival);
 
-							arrivalComponent.AddUtilityTerm(firstCoef + 15, primaryFamilyTimeFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 15, primaryFamilyTimeFlag * hoursArrival);
 
-							arrivalComponent.AddUtilityTerm(firstCoef + 16, HHwithLowIncomeFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 17, HHwithMidleIncomeFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 18, HHwithHighIncomeFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 16, HHwithLowIncomeFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 17, HHwithMidleIncomeFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 18, HHwithHighIncomeFlag * hoursArrival);
 
-							arrivalComponent.AddUtilityTerm(firstCoef + 19, highPrioritySameFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 20, lowPrioritySameFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 21, highPriorityDifferentFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 22, lowPriorityDifferentFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 23, jointTourFlag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 24, partialHalfTour1Flag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 25, fullHalfTour1Flag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 26, partialHalfTour2Flag * hoursArrival);
-							arrivalComponent.AddUtilityTerm(firstCoef + 27, fullHalfTour2Flag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 19, highPrioritySameFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 20, lowPrioritySameFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 21, highPriorityDifferentFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 22, lowPriorityDifferentFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 23, jointTourFlag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 24, partialHalfTour1Flag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 25, fullHalfTour1Flag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 26, partialHalfTour2Flag * hoursArrival);
+								arrivalComponent.AddUtilityTerm(firstCoef + 27, fullHalfTour2Flag * hoursArrival);
 
+							}
+
+							componentIndex = bigPeriodCount + departurePeriodIndex;
+							choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
+							var departureComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
+
+
+							if (departurePeriodAvailableMinutes > 0) {
+
+								departureComponent.AddUtilityTerm(300, Math.Log(departurePeriodAvailableMinutes));
+							}
 						}
-
-						componentIndex = bigPeriodCount + departurePeriodIndex;
+						// set period combination component
+						periodComb++;
+						componentIndex = 2 * bigPeriodCount + periodComb;
 						choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
-						var departureComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
+						var combinationComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
 
+						if (arrivalPeriodAvailableMinutes > 0 && departurePeriodAvailableMinutes > 0) {
+							var hoursDuration = (departurePeriod.Middle - arrivalPeriod.Middle) / 60.0;
 
-						if (departurePeriodAvailableMinutes > 0) {
+							var firstCoef = 700;
+							//combination constants
+							combinationComponent.AddUtilityTerm(firstCoef + periodComb, 1.0);
+							// duration shift variables
+							combinationComponent.AddUtilityTerm(firstCoef + 30, primaryFamilyTimeFlag * hoursDuration);
 
-							departureComponent.AddUtilityTerm(300, Math.Log(departurePeriodAvailableMinutes));
-						}
-					}
-					// set period combination component
-					periodComb++;
-					componentIndex = 2 * bigPeriodCount + periodComb;
-					choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
-					var combinationComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
+							combinationComponent.AddUtilityTerm(firstCoef + 31, escortTourFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 32, shoppingTourFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 33, educationTourFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 34, socialTourFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 35, personalBusinessTourFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 36, businessTourFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 37, workTourFlag * hoursDuration);
 
-					if (arrivalPeriodAvailableMinutes > 0 && departurePeriodAvailableMinutes > 0) {
-						var hoursDuration = (departurePeriod.Middle - arrivalPeriod.Middle) / 60.0;
+							combinationComponent.AddUtilityTerm(firstCoef + 38, highPrioritySameFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 39, lowPrioritySameFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 40, highPriorityDifferentFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 41, lowPriorityDifferentFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 42, partTimeWorkerFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 43, jointTourFlag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 44, partialHalfTour1Flag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 45, fullHalfTour1Flag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 46, partialHalfTour2Flag * hoursDuration);
+							combinationComponent.AddUtilityTerm(firstCoef + 47, fullHalfTour2Flag * hoursDuration);
 
-						var firstCoef = 700;
-						//combination constants
-						combinationComponent.AddUtilityTerm(firstCoef + periodComb, 1.0);
-						// duration shift variables
-						combinationComponent.AddUtilityTerm(firstCoef + 30, primaryFamilyTimeFlag * hoursDuration);
-
-						combinationComponent.AddUtilityTerm(firstCoef + 31, escortTourFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 32, shoppingTourFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 33, educationTourFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 34, socialTourFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 35, personalBusinessTourFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 36, businessTourFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 37, workTourFlag * hoursDuration);
-
-						combinationComponent.AddUtilityTerm(firstCoef + 38, highPrioritySameFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 39, lowPrioritySameFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 40, highPriorityDifferentFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 41, lowPriorityDifferentFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 42, partTimeWorkerFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 43, jointTourFlag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 44, partialHalfTour1Flag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 45, fullHalfTour1Flag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 46, partialHalfTour2Flag * hoursDuration);
-						combinationComponent.AddUtilityTerm(firstCoef + 47, fullHalfTour2Flag * hoursDuration);
-
-						// peak-to-peak variables 
-						if (arrivalPeriod.Index == DayPeriod.AM_PEAK && departurePeriod.Index == DayPeriod.PM_PEAK) {
-							combinationComponent.AddUtilityTerm(firstCoef + 48, fullTimeWorkerFlag);
-							combinationComponent.AddUtilityTerm(firstCoef + 49, partTimeWorkerFlag);
-							combinationComponent.AddUtilityTerm(firstCoef + 50, maleFlag);
+							// peak-to-peak variables 
+							if (arrivalPeriod.Index == DayPeriod.AM_PEAK && departurePeriod.Index == DayPeriod.PM_PEAK) {
+								combinationComponent.AddUtilityTerm(firstCoef + 48, fullTimeWorkerFlag);
+								combinationComponent.AddUtilityTerm(firstCoef + 49, partTimeWorkerFlag);
+								combinationComponent.AddUtilityTerm(firstCoef + 50, maleFlag);
+							}
 						}
 					}
 				}
-			}
 			}
 			for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.SchoolBus; mode++) {
 				componentIndex = 2 * bigPeriodCount + nPeriodCombs + mode - 1;
@@ -424,9 +423,6 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				var modeComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
 
 				if (mode == Global.Settings.Modes.SchoolBus) {
-					modeComponent.AddUtilityTerm(10, 1);
-				}
-				else if (mode == Global.Settings.Modes.ParkAndRide) {
 					modeComponent.AddUtilityTerm(10, 1);
 				}
 				else if (mode == Global.Settings.Modes.Transit) {
@@ -511,6 +507,27 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					modeComponent.AddUtilityTerm(76, noCarsInHouseholdFlag);
 					modeComponent.AddUtilityTerm(77, carsLessThanDriversFlag);
 				}
+				else if (mode == Global.Settings.Modes.ParkAndRide) {
+					modeComponent.AddUtilityTerm(80, 1.0);
+				}
+				else if (mode == Global.Settings.Modes.CarKissRideWalk) {
+					modeComponent.AddUtilityTerm(90, 1.0);
+				}
+				else if (mode == Global.Settings.Modes.BikeParkRideWalk) {
+					modeComponent.AddUtilityTerm(100, 1.0);
+				}
+				else if (mode == Global.Settings.Modes.BikeParkRideBike) {
+					modeComponent.AddUtilityTerm(110, 1.0);
+				}
+				else if (mode == Global.Settings.Modes.BikeOnTransit) {
+					modeComponent.AddUtilityTerm(120, 1.0);
+				}
+				else if (mode == Global.Settings.Modes.CarParkRideBike) {
+					modeComponent.AddUtilityTerm(130, 1.0);
+				}
+				else if (mode == Global.Settings.Modes.WalkRideBike) {
+					modeComponent.AddUtilityTerm(140, 1.0);
+				}
 
 				//GV: Estimation of importance of "purpose" per mode - SOV is zero-alt and Work is zero-alt 
 				if (mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.Hov2
@@ -536,8 +553,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 			//loop on all alternatives, using modeTimes objects
 			{
-				foreach (var modeTimes in HTourModeTime.ModeTimes[ParallelUtility.GetBatchFromThreadId()])
-				{
+				foreach (var modeTimes in HTourModeTime.ModeTimes[ParallelUtility.GetBatchFromThreadId()]) {
 					var arrivalPeriod = modeTimes.ArrivalPeriod;
 					var arrivalPeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(arrivalPeriod.Start, arrivalPeriod.End);
 
@@ -549,41 +565,43 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 					var altIndex = modeTimes.Index;
 
+					//limit availability based on mode and tour purpose
+					bool available = (mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.CarParkRideBike || mode == Global.Settings.Modes.WalkRideBike)
+						&& (!(tour.IsWorkPurpose() || tour.IsSchoolPurpose())) ? false : true;
 
-				//set availabillity based on time window variables and any constrained choices
-					bool available = (modeTimes.LongestFeasibleWindow != null) && (mode > 0)
-					&& (mode <= Global.Settings.Modes.Transit)
-					&& (person.Age >= 18 || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
-					&& (constrainedMode > 0 || mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.HovDriver || mode == Global.Settings.Modes.Transit || !partialHalfTour) 
+
+					//further limit availabillity based on time window variables and any constrained choices
+					available = (available == true)
+						&& (modeTimes.LongestFeasibleWindow != null) && (mode > 0)
+						//&& (mode <= Global.Settings.Modes.Transit)
+						&& (person.Age >= 18 || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
+						&& (constrainedMode > 0 || mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.HovDriver || mode == Global.Settings.Modes.Transit || !partialHalfTour)
 						&& (constrainedMode <= 0 || constrainedMode == mode)
 						&& (constrainedArrivalTime <= 0 || (constrainedArrivalTime >= arrivalPeriod.Start && constrainedArrivalTime <= arrivalPeriod.End))
 						&& (constrainedDepartureTime <= 0 || (constrainedDepartureTime >= departurePeriod.Start && constrainedDepartureTime <= departurePeriod.End));
 
-
-
 					var alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available,
-					                                                             choice != null && choice.Index == altIndex);
+																									 choice != null && choice.Index == altIndex);
 
 					alternative.Choice = modeTimes; // JLB added 20130420
 
 					//alternative.AddNestedAlternative(HTourModeTime.TOTAL_TOUR_MODE_TIMES + periodComb + 1, periodComb, THETA_PARAMETER);
 					alternative.AddNestedAlternative(HTourModeTime.TotalTourModeTimes + mode, mode - 1, THETA_PARAMETER);
 
-					if (Global.Configuration.IsInEstimationMode && altIndex == choice.Index)
-					{
+					if (Global.Configuration.IsInEstimationMode && altIndex == choice.Index) {
 						Global.PrintFile.WriteLine("Aper Dper Mode {0} {1} {2} Travel Times {3} {4} Window {5} {6}",
-						                           arrivalPeriod.Index, departurePeriod.Index, mode,
-						                           modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
-						                           modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
-						                           modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.Start : -1,
-						                           modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
+															arrivalPeriod.Index, departurePeriod.Index, mode,
+															modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
+															modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
+															modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.Start : -1,
+															modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
 
 					}
 					//Following code was used to test handling of partially joint half tours (JLB 20140603)
 					//if (partialHalfTour) {
 					//	Global.PrintFile.WriteLine("HH pers {0} {1} avail {2} Aper Dper Mode {3} {4} {5} Travel Times {6} {7} Window {8} {9}",
 					//	   household.Id, person.Sequence,  
-               //    available,  
+					//    available,  
 					//		arrivalPeriod.Index, departurePeriod.Index, mode, 
 					//	                           modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
 					//	                           modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
@@ -592,35 +610,33 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					//}
 
 					//if in application mode and combination is not available, can skip the rest
-					if (!Global.Configuration.IsInEstimationMode && !alternative.Available)
-					{
+					if (!Global.Configuration.IsInEstimationMode && !alternative.Available) {
 						continue;
 					}
 					if (useTimeComponents) {
-					// arrival period utility component
-					alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(arrivalPeriod.Index));
+						// arrival period utility component
+						alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(arrivalPeriod.Index));
 
-					// departure period utility component
-					alternative.AddUtilityComponent(
-						choiceProbabilityCalculator.GetUtilityComponent(bigPeriodCount + departurePeriod.Index));
+						// departure period utility component
+						alternative.AddUtilityComponent(
+							choiceProbabilityCalculator.GetUtilityComponent(bigPeriodCount + departurePeriod.Index));
 
-					// period combination utility component
-					alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(2*bigPeriodCount + periodComb));
+						// period combination utility component
+						alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(2 * bigPeriodCount + periodComb));
 					}
 
 					// mode utility component
 					alternative.AddUtilityComponent(
-						choiceProbabilityCalculator.GetUtilityComponent(2*bigPeriodCount + nPeriodCombs + mode - 1));
+						choiceProbabilityCalculator.GetUtilityComponent(2 * bigPeriodCount + nPeriodCombs + mode - 1));
 
 					//even in estimation mode, do not need the rest of the code if not available
-					if (!alternative.Available)
-					{
+					if (!alternative.Available) {
 						continue;
 					}
 
-				//GV and JB: the parking cost are handled as part of genaralised time
+					//GV and JB: the parking cost are handled as part of genaralised time
 
-				var minimumTimeNeeded = modeTimes.TravelTimeToDestination + modeTimes.TravelTimeFromDestination + Global.Settings.Times.MinimumActivityDuration;
+					var minimumTimeNeeded = modeTimes.TravelTimeToDestination + modeTimes.TravelTimeFromDestination + Global.Settings.Times.MinimumActivityDuration;
 
 					alternative.AddUtilityTerm(1, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
 
@@ -631,22 +647,21 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					// JLB 20140204 replaced coeff 3 with a different time window formulation:  time pressure
 					//    instead of having positive utility for increasing time window, have negative utility for decreasing time window
 					alternative.AddUtilityTerm(3,
-                     Math.Log(Math.Max(Constants.EPSILON, 1 - 
-							Math.Pow(minimumTimeNeeded/(Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)),0.8)
+							Math.Log(Math.Max(Constants.EPSILON, 1 -
+							Math.Pow(minimumTimeNeeded / (Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)), 0.8)
 							)));
-		
-					
-					
-					alternative.AddUtilityTerm(4, Math.Log((totalMinutesAvailableInDay + 1.0)/(minimumTimeNeeded + 1.0)));
+
+
+
+					alternative.AddUtilityTerm(4, Math.Log((totalMinutesAvailableInDay + 1.0) / (minimumTimeNeeded + 1.0)));
 
 					alternative.AddUtilityTerm(5,
-					                           (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&
-					                            arrivalPeriod.Index >= DayPeriod.EVENING)
-						                           ? 1
-						                           : 0);
+														(maleFlag == 0 && mode == Global.Settings.Modes.Walk &&
+														 arrivalPeriod.Index >= DayPeriod.EVENING)
+															? 1
+															: 0);
 
-					if (altIndex == 0)
-					{
+					if (altIndex == 0) {
 						alternative.AddUtilityTerm(998, tour.DestinationPurpose);
 						alternative.AddUtilityTerm(999, (tour.ParentTour == null) ? 0 : 1);
 					}
