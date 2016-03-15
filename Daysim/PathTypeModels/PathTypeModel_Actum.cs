@@ -64,6 +64,14 @@ namespace Daysim.PathTypeModels {
 		private readonly double[] _pathBikeTime = new double[Global.Settings.PathTypes.TotalPathTypes];
 		private readonly double[] _pathBikeDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
 		private readonly double[] _pathBikeCost = new double[Global.Settings.PathTypes.TotalPathTypes];
+		private readonly int[] _pathAccessMode = new int[Global.Settings.PathTypes.TotalPathTypes];
+		private readonly double[] _pathAccessTime = new double[Global.Settings.PathTypes.TotalPathTypes];
+		private readonly double[] _pathAccessDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
+		private readonly double[] _pathAccessCost = new double[Global.Settings.PathTypes.TotalPathTypes];
+		private readonly int[] _pathEgressMode = new int[Global.Settings.PathTypes.TotalPathTypes];
+		private readonly double[] _pathEgressTime = new double[Global.Settings.PathTypes.TotalPathTypes];
+		private readonly double[] _pathEgressDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
+		private readonly double[] _pathEgressCost = new double[Global.Settings.PathTypes.TotalPathTypes];
 
 
 		public PathTypeModel_Actum() {
@@ -91,6 +99,14 @@ namespace Daysim.PathTypeModels {
 		public virtual double PathBikeTime { get; protected set; }
 		public virtual double PathBikeDistance { get; protected set; }
 		public virtual double PathBikeCost { get; protected set; }
+		public virtual int PathAccessMode { get; protected set; }
+		public virtual double PathAccessTime { get; protected set; }
+		public virtual double PathAccessDistance { get; protected set; }
+		public virtual double PathAccessCost { get; protected set; }
+		public virtual int PathEgressMode { get; protected set; }
+		public virtual double PathEgressTime { get; protected set; }
+		public virtual double PathEgressDistance { get; protected set; }
+		public virtual double PathEgressCost { get; protected set; }
 
 		public virtual bool Available { get; protected set; }
 
@@ -333,6 +349,14 @@ namespace Daysim.PathTypeModels {
 			PathBikeTime = _pathBikeTime[_choice];
 			PathBikeDistance = _pathBikeDistance[_choice];
 			PathBikeCost = _pathBikeCost[_choice];
+			PathAccessMode = _pathAccessMode[_choice];
+			PathAccessTime = _pathAccessTime[_choice];
+			PathAccessDistance = _pathAccessDistance[_choice];
+			PathAccessCost = _pathAccessCost[_choice];
+			PathEgressMode = _pathEgressMode[_choice];
+			PathEgressTime = _pathEgressTime[_choice];
+			PathEgressDistance = _pathEgressDistance[_choice];
+			PathEgressCost = _pathEgressCost[_choice];
 		}
 
 
@@ -489,6 +513,14 @@ namespace Daysim.PathTypeModels {
 				_pathBikeTime[pathType] = 0;
 				_pathBikeDistance[pathType] = 0;
 			}
+			_pathAccessMode[pathType] = Global.Settings.Modes.None;
+			_pathAccessTime[pathType] = 0.0;
+			_pathAccessDistance[pathType] = 0.0;
+			_pathAccessCost[pathType] = 0.0;
+			_pathEgressMode[pathType] = Global.Settings.Modes.None;
+			_pathEgressTime[pathType] = 0.0;
+			_pathEgressDistance[pathType] = 0.0;
+			_pathEgressCost[pathType] = 0.0;
 		}
 
 		private void RunAutoModel(int skimMode, int pathType, double votValue, bool useZones) {
@@ -788,6 +820,15 @@ namespace Daysim.PathTypeModels {
 			_pathWalkDistance[pathType] = 0;
 			_pathBikeTime[pathType] = 0;
 			_pathBikeDistance[pathType] = 0;
+			_pathAccessMode[pathType] = Global.Settings.Modes.None;
+			_pathAccessTime[pathType] = 0.0;
+			_pathAccessDistance[pathType] = 0.0;
+			_pathAccessCost[pathType] = 0.0;
+			_pathEgressMode[pathType] = Global.Settings.Modes.None;
+			_pathEgressTime[pathType] = 0.0;
+			_pathEgressDistance[pathType] = 0.0;
+			_pathEgressCost[pathType] = 0.0;
+
 		}
 
 		private void RunAutoModelNew(int skimMode, int pathType, double votValue, bool useZones) {
@@ -838,6 +879,14 @@ namespace Daysim.PathTypeModels {
 			_pathWalkDistance[pathType] = 0;
 			_pathBikeTime[pathType] = 0;
 			_pathBikeDistance[pathType] = 0;
+			_pathAccessMode[pathType] = Global.Settings.Modes.None;
+			_pathAccessTime[pathType] = 0.0;
+			_pathAccessDistance[pathType] = 0.0;
+			_pathAccessCost[pathType] = 0.0;
+			_pathEgressMode[pathType] = Global.Settings.Modes.None;
+			_pathEgressTime[pathType] = 0.0;
+			_pathEgressDistance[pathType] = 0.0;
+			_pathEgressCost[pathType] = 0.0;
 		}
 
 		private void RunSimpleWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
@@ -909,10 +958,12 @@ namespace Daysim.PathTypeModels {
 						continue;
 					}
 
-					var walkDistance = (oWalkLength + dWalkLength) / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile;
-					var walkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * walkDistance;
-					walkDistance = walkDistance * (_returnTime > 0 ? 2 : 1);
-					walkTime = walkTime * (_returnTime > 0 ? 2 : 1);
+					var oWalkDistance = (oWalkLength) / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile * (_returnTime > 0 ? 2 : 1);
+					var dWalkDistance = (dWalkLength) / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile * (_returnTime > 0 ? 2 : 1);
+					var oWalkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * oWalkDistance;
+					var dWalkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * dWalkDistance;
+					var walkDistance = (oWalkDistance + dWalkDistance);
+					var walkTime = (oWalkTime + dWalkTime);
 
 					var transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dStopArea, _transitPassOwnership);
 					if (!transitPath.Available) {
@@ -953,12 +1004,25 @@ namespace Daysim.PathTypeModels {
 					_pathTransitDistance[pathType] = transitPath.Distance;
 					_pathTransitCost[pathType] = transitPath.Cost;
 					_pathTransitUtility[pathType] = transitPath.Utility;
+					_pathAccessMode[pathType] = Global.Settings.Modes.Walk;
+					_pathAccessTime[pathType] = oWalkTime;
+					_pathAccessDistance[pathType] = oWalkDistance;
+					_pathAccessCost[pathType] = 0.0;
+					_pathEgressMode[pathType] = Global.Settings.Modes.Walk;
+					_pathEgressTime[pathType] = dWalkTime;
+					_pathEgressDistance[pathType] = dWalkDistance;
+					_pathEgressCost[pathType] = 0.0;
 				}
 			}
 			_pathParkAndRideNodeId[pathType] = 0;
 			_pathBikeCost[pathType] = 0;
 			_pathBikeTime[pathType] = 0;
 			_pathBikeDistance[pathType] = 0;
+
+
+
+
+
 		}
 
 
@@ -1240,6 +1304,14 @@ namespace Daysim.PathTypeModels {
 					_pathWalkDistance[pathType] = oStationWalkDistance + destinationWalkDistance;
 					_utility[pathType] = nodeUtility;
 					_expUtility[pathType] = nodeUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : nodeUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(nodeUtility);
+					_pathAccessMode[pathType] = Global.Settings.Modes.Sov;
+					_pathAccessTime[pathType] = autoPath.Time;
+					_pathAccessDistance[pathType] = autoPath.Distance;
+					_pathAccessCost[pathType] = autoPath.Cost;
+					_pathEgressMode[pathType] = Global.Settings.Modes.Walk;
+					_pathEgressTime[pathType] = destinationWalkTime;
+					_pathEgressDistance[pathType] = destinationWalkDistance;
+					_pathEgressCost[pathType] = 0.0;
 				}
 			}
 			_pathBikeCost[pathType] = 0;
@@ -2029,6 +2101,15 @@ namespace Daysim.PathTypeModels {
 						_pathBikeCost[pathType] = dParkAndRideParkingCost;
 						_utility[pathType] = pathUtility;
 						_expUtility[pathType] = pathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : pathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(pathUtility);
+						_pathAccessMode[pathType] = Global.Settings.Modes.Sov;
+						_pathAccessTime[pathType] = autoPath.Time;
+						_pathAccessDistance[pathType] = autoPath.Distance;
+						_pathAccessCost[pathType] = autoPath.Cost;
+						_pathEgressMode[pathType] = Global.Settings.Modes.Bike;
+						_pathEgressTime[pathType] = dBikeTime;
+						_pathEgressDistance[pathType] = dBikeDistance;
+						_pathEgressCost[pathType] = 0.0;
+
 						//}
 					}
 				}
@@ -2161,6 +2242,14 @@ namespace Daysim.PathTypeModels {
 						_pathBikeCost[pathType] = oParkAndRideParkingCost;
 						_utility[pathType] = pathUtility;
 						_expUtility[pathType] = pathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : pathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(pathUtility);
+						_pathAccessMode[pathType] = Global.Settings.Modes.Bike;
+						_pathAccessTime[pathType] = oBikeTime;
+						_pathAccessDistance[pathType] = oBikeDistance;
+						_pathAccessCost[pathType] = 0.0;
+						_pathEgressMode[pathType] = Global.Settings.Modes.Walk;
+						_pathEgressTime[pathType] = destinationWalkTime;
+						_pathEgressDistance[pathType] = destinationWalkDistance;
+						_pathEgressCost[pathType] = 0.0;
 					}
 				}
 			}
@@ -2309,6 +2398,15 @@ namespace Daysim.PathTypeModels {
 							_pathBikeCost[pathType] = oParkAndRideParkingCost + dParkAndRideParkingCost;
 							_utility[pathType] = pathUtility;
 							_expUtility[pathType] = pathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : pathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(pathUtility);
+							_pathAccessMode[pathType] = Global.Settings.Modes.Bike;
+							_pathAccessTime[pathType] = oBikeTime;
+							_pathAccessDistance[pathType] = oBikeDistance;
+							_pathAccessCost[pathType] = 0.0;
+							_pathEgressMode[pathType] = Global.Settings.Modes.Bike;
+							_pathEgressTime[pathType] = dBikeTime;
+							_pathEgressDistance[pathType] = dBikeDistance;
+							_pathEgressCost[pathType] = 0.0;
+
 						}
 					}
 				}
@@ -2443,6 +2541,14 @@ namespace Daysim.PathTypeModels {
 						_pathBikeCost[pathType] = dParkAndRideParkingCost;
 						_utility[pathType] = pathUtility;
 						_expUtility[pathType] = pathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : pathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(pathUtility);
+						_pathAccessMode[pathType] = Global.Settings.Modes.Walk;
+						_pathAccessTime[pathType] = oWalkTime;
+						_pathAccessDistance[pathType] = oWalkDistance;
+						_pathAccessCost[pathType] = 0.0;
+						_pathEgressMode[pathType] = Global.Settings.Modes.Bike;
+						_pathEgressTime[pathType] = dBikeTime;
+						_pathEgressDistance[pathType] = dBikeDistance;
+						_pathEgressCost[pathType] = 0.0;
 					}
 				}
 			}
@@ -2589,6 +2695,14 @@ namespace Daysim.PathTypeModels {
 							_pathBikeDistance[pathType] = oBikeDistance + dBikeDistance;
 							_utility[pathType] = pathUtility;
 							_expUtility[pathType] = pathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : pathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(pathUtility);
+							_pathAccessMode[pathType] = Global.Settings.Modes.Bike;
+							_pathAccessTime[pathType] = oBikeTime;
+							_pathAccessDistance[pathType] = oBikeDistance;
+							_pathAccessCost[pathType] = 0.0;
+							_pathEgressMode[pathType] = Global.Settings.Modes.Bike;
+							_pathEgressTime[pathType] = dBikeTime;
+							_pathEgressDistance[pathType] = dBikeDistance;
+							_pathEgressCost[pathType] = 0.0;
 						}
 					}
 				}
