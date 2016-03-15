@@ -120,6 +120,27 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				}
 
 				tour.Mode = choice.Mode;
+				tour.HalfTour1AccessCost = choice.OriginAccessCost/2.0;
+				tour.HalfTour1AccessDistance = choice.OriginAccessDistance/2.0;
+				tour.HalfTour1AccessMode  = choice.OriginAccessMode;
+				tour.HalfTour1AccessStopArea = choice.ParkAndRideOriginStopAreaKey;
+				tour.HalfTour1AccessTime = choice.OriginAccessTime/2.0;
+				tour.HalfTour1EgressCost = choice.DestinationAccessCost/2.0;
+				tour.HalfTour1EgressDistance = choice.DestinationAccessDistance/2.0;
+				tour.HalfTour1EgressMode = choice.DestinationAccessMode;
+				tour.HalfTour1EgressStopAreaKey = choice.ParkAndRideDestinationStopAreaKey;
+				tour.HalfTour1EgressTime = choice.DestinationAccessTime/2.0;
+				tour.HalfTour2AccessCost = choice.DestinationAccessCost/2.0;
+				tour.HalfTour2AccessDistance = choice.DestinationAccessDistance/2.0;
+				tour.HalfTour2AccessMode  = choice.DestinationAccessMode;
+				tour.HalfTour2AccessStopArea = choice.ParkAndRideDestinationStopAreaKey;
+				tour.HalfTour2AccessTime = choice.DestinationAccessTime/2.0;
+				tour.HalfTour2EgressCost = choice.OriginAccessCost/2.0;
+				tour.HalfTour2EgressDistance = choice.OriginAccessDistance/2.0;
+				tour.HalfTour2EgressMode = choice.OriginAccessMode;
+				tour.HalfTour2EgressStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
+				tour.HalfTour2EgressTime = choice.OriginAccessTime/2.0;
+
 				var arrivalPeriod = choice.ArrivalPeriod;
 				var departurePeriod = choice.DeparturePeriod;
 				//use constrained times to set temporary arrival and departure times with minimum duration of stay for time window calculations

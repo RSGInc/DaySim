@@ -36,7 +36,7 @@ namespace Daysim.DomainModels.Actum.Wrappers.Interfaces {
 
 		double HalfTour1EgressDistance { get; set; }
 
-		int HalfTour1EgressStopArea { get; set; }
+		int HalfTour1EgressStopAreaKey { get; set; }
 	
 		int HalfTour2AccessMode { get; set; }
 
@@ -60,7 +60,7 @@ namespace Daysim.DomainModels.Actum.Wrappers.Interfaces {
 
 		double HalfTour2EgressDistance { get; set; }
 
-		int HalfTour2EgressStopArea { get; set; }
+		int HalfTour2EgressStopAreaKey { get; set; }
 
 		#endregion
 

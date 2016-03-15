@@ -58,20 +58,39 @@ namespace Daysim {
 
 		public IMinuteSpan LongestFeasibleWindow { get; private set; }
 
+		public double TransitTime { get; private set; }
+		public double TransitDistance { get; private set; }
+		public double TransitCost { get; private set; }
+		public double TransitGeneralizedTime { get; private set; }
+		public double WalkTime { get; private set; }
+		public double WalkDistance { get; private set; }
+		public double BikeTime { get; private set; }
+		public double BikeDistance { get; private set; }
+		public double BikeCost { get; private set; }
+		public int OriginAccessMode { get; private set; }
+		public double OriginAccessTime { get; private set; }
+		public double OriginAccessDistance { get; private set; }
+		public double OriginAccessCost { get; private set; }
+		public int DestinationAccessMode { get; private set; }
+		public double DestinationAccessTime { get; private set; }
+		public double DestinationAccessDistance { get; private set; }
+		public double DestinationAccessCost { get; private set; }
+
+
+
+
+
+
 
 		public static HTourModeTime[][] ModeTimes { get; private set; }
 
-		private void FindIndexForModeAndPeriods(int mode, int arrivalTime, int departureTime)
-		{
-			foreach (var period in DayPeriod.HBigDayPeriods)
-			{
-				if (arrivalTime.IsBetween(period.Start, period.End))
-				{
+		private void FindIndexForModeAndPeriods(int mode, int arrivalTime, int departureTime) {
+			foreach (var period in DayPeriod.HBigDayPeriods) {
+				if (arrivalTime.IsBetween(period.Start, period.End)) {
 					ArrivalPeriod = period;
 				}
 
-				if (departureTime.IsBetween(period.Start, period.End))
-				{
+				if (departureTime.IsBetween(period.Start, period.End)) {
 					DeparturePeriod = period;
 				}
 
@@ -84,8 +103,7 @@ namespace Daysim {
 					var modeTime in
 						ModeTimes[ParallelUtility.GetBatchFromThreadId()].Where(
 							modeTime =>
-							modeTime.ArrivalPeriod == ArrivalPeriod && modeTime.DeparturePeriod == DeparturePeriod && modeTime.Mode == Mode))
-				{
+							modeTime.ArrivalPeriod == ArrivalPeriod && modeTime.DeparturePeriod == DeparturePeriod && modeTime.Mode == Mode)) {
 					Index = modeTime.Index;
 
 					/*
@@ -138,33 +156,28 @@ namespace Daysim {
 
 		public static void InitializeTourModeTimes() {
 			{
-				if (ModeTimes != null)
-				{
+				if (ModeTimes != null) {
 					return;
 				}
 
 				ModeTimes = new HTourModeTime[ParallelUtility.NBatches][];
-				for (int i = 0; i < ParallelUtility.NBatches; i++)
-				{
+				for (int i = 0; i < ParallelUtility.NBatches; i++) {
 					ModeTimes[i] = new HTourModeTime[TotalTourModeTimes];
 
 					var alternativeIndex = 0;
 					var periodCombinationIndex = -1;
 
 					for (var arrivalPeriodIndex = 0;
-					     arrivalPeriodIndex < DayPeriod.H_BIG_DAY_PERIOD_TOTAL_TOUR_TIMES;
-					     arrivalPeriodIndex++)
-					{
+						  arrivalPeriodIndex < DayPeriod.H_BIG_DAY_PERIOD_TOTAL_TOUR_TIMES;
+						  arrivalPeriodIndex++) {
 						var arrivalPeriod = DayPeriod.HBigDayPeriods[arrivalPeriodIndex];
 						for (var departurePeriodIndex = arrivalPeriodIndex;
-						     departurePeriodIndex < DayPeriod.H_BIG_DAY_PERIOD_TOTAL_TOUR_TIMES;
-						     departurePeriodIndex++)
-						{
+							  departurePeriodIndex < DayPeriod.H_BIG_DAY_PERIOD_TOTAL_TOUR_TIMES;
+							  departurePeriodIndex++) {
 							var departurePeriod = DayPeriod.HBigDayPeriods[departurePeriodIndex];
 							periodCombinationIndex++;
 
-							for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.MaxMode; mode++)
-							{
+							for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.MaxMode; mode++) {
 								var modeTimes = new HTourModeTime(alternativeIndex, mode, arrivalPeriod, departurePeriod, periodCombinationIndex);
 
 								ModeTimes[i][alternativeIndex++] = modeTimes;
@@ -176,28 +189,26 @@ namespace Daysim {
 		}
 
 		public static void SetModeTimeImpedances(IHouseholdDayWrapper householdDay, ITourWrapper tour,
-			int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, IParcelWrapper alternativeDestination = null ) {
+			int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, IParcelWrapper alternativeDestination = null) {
 
-/*			if (householdDay.Household.Id == 80059 && tour.Person.Sequence == 2 && tour.Sequence == 2
-				&& constrainedMode == 5 && constrainedArrivalTime == 354 && constrainedDepartureTime == 361) {
-				bool testBreak = true;
-			}
-*/
+			/*			if (householdDay.Household.Id == 80059 && tour.Person.Sequence == 2 && tour.Sequence == 2
+							&& constrainedMode == 5 && constrainedArrivalTime == 354 && constrainedDepartureTime == 361) {
+							bool testBreak = true;
+						}
+			*/
 
 			var timeWindow = (householdDay != null && tour != null) ? tour.GetRelevantTimeWindow(householdDay) : new TimeWindow();
-			
+
 			{
-				foreach (var modeTimes in ModeTimes[ParallelUtility.GetBatchFromThreadId()])
-				{
+				foreach (var modeTimes in ModeTimes[ParallelUtility.GetBatchFromThreadId()]) {
 					modeTimes.LongestFeasibleWindow = null;
 					if ((constrainedMode <= 0 || constrainedMode == modeTimes.Mode)
-					    &&
-					    (constrainedArrivalTime <= 0 ||
-					     constrainedArrivalTime.IsBetween(modeTimes.ArrivalPeriod.Start, modeTimes.ArrivalPeriod.End))
-					    &&
-					    (constrainedDepartureTime <= 0 ||
-					     constrainedDepartureTime.IsBetween(modeTimes.DeparturePeriod.Start, modeTimes.DeparturePeriod.End)))
-					{
+						 &&
+						 (constrainedArrivalTime <= 0 ||
+						  constrainedArrivalTime.IsBetween(modeTimes.ArrivalPeriod.Start, modeTimes.ArrivalPeriod.End))
+						 &&
+						 (constrainedDepartureTime <= 0 ||
+						  constrainedDepartureTime.IsBetween(modeTimes.DeparturePeriod.Start, modeTimes.DeparturePeriod.End))) {
 
 						SetImpedanceAndWindow(timeWindow, tour, modeTimes, constrainedHouseholdCars, constrainedTransitDiscountFraction, alternativeDestination);
 					}
@@ -216,24 +227,22 @@ namespace Daysim {
 
 				var arrivalPeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(arrivalPeriod.Start, arrivalPeriod.End);
 				var departurePeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(departurePeriod.Start, departurePeriod.End);
-				var householdCars = constrainedHouseholdCars >= 0? constrainedHouseholdCars : tour.Household.VehiclesAvailable;
-				var transitDiscountFraction = constrainedTransitDiscountFraction >= 0? constrainedTransitDiscountFraction : tour.Person.GetTransitFareDiscountFraction();
+				var householdCars = constrainedHouseholdCars >= 0 ? constrainedHouseholdCars : tour.Household.VehiclesAvailable;
+				var transitDiscountFraction = constrainedTransitDiscountFraction >= 0 ? constrainedTransitDiscountFraction : tour.Person.GetTransitFareDiscountFraction();
 
 
 				// set round trip mode LOS and mode availability
 				if (arrivalPeriodAvailableMinutes <= 0 || departurePeriodAvailableMinutes <= 0
-				    || (mode == Global.Settings.Modes.ParkAndRide && tour.DestinationPurpose != Global.Settings.Purposes.Work)
-				    || (mode == Global.Settings.Modes.SchoolBus && tour.DestinationPurpose != Global.Settings.Purposes.School)
-						|| (Global.Configuration.IsInEstimationMode && destinationParcel == null) )
-				{
+					 || (mode == Global.Settings.Modes.ParkAndRide && tour.DestinationPurpose != Global.Settings.Purposes.Work)
+					 || (mode == Global.Settings.Modes.SchoolBus && tour.DestinationPurpose != Global.Settings.Purposes.School)
+						|| (Global.Configuration.IsInEstimationMode && destinationParcel == null)) {
 					modeTimes.ModeAvailableToDestination = false;
 					modeTimes.ModeAvailableFromDestination = false;
 				}
-					//ACTUM must also use round trip path type to preserve the tour-based nonlinear gamma utility functions
-					//else if (mode == Global.Settings.Modes.ParkAndRide) {
+				//ACTUM must also use round trip path type to preserve the tour-based nonlinear gamma utility functions
+				//else if (mode == Global.Settings.Modes.ParkAndRide) {
 				else if (mode == Global.Settings.Modes.ParkAndRide || Global.Configuration.PathImpedance_UtilityForm_Auto == 1 ||
-				         Global.Configuration.PathImpedance_UtilityForm_Transit == 1)
-				{
+							Global.Configuration.PathImpedance_UtilityForm_Transit == 1) {
 					// park and ride has to use round-trip path type, approximate each half 
 					IEnumerable<dynamic> pathTypeModels =
 						PathTypeModelFactory.Model.Run(
@@ -257,24 +266,39 @@ namespace Daysim {
 					modeTimes.ModeAvailableToDestination = pathTypeModel.Available;
 					modeTimes.ModeAvailableFromDestination = pathTypeModel.Available;
 
-					if (pathTypeModel.Available)
-					{
-						modeTimes.TravelTimeToDestination = pathTypeModel.PathTime/2.0;
-						modeTimes.GeneralizedTimeToDestination = pathTypeModel.GeneralizedTimeLogsum/2.0;
-						modeTimes.TravelTimeFromDestination = pathTypeModel.PathTime/2.0;
-						modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum/2.0;
+					if (pathTypeModel.Available) {
+						modeTimes.TravelTimeToDestination = pathTypeModel.PathTime / 2.0;
+						modeTimes.GeneralizedTimeToDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
+						modeTimes.TravelTimeFromDestination = pathTypeModel.PathTime / 2.0;
+						modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
 						modeTimes.ParkAndRideOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
 						modeTimes.ParkAndRideDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
+						modeTimes.TransitTime =	pathTypeModel.PathTransitTime;
+						modeTimes.TransitDistance = pathTypeModel.PathTransitDistance;
+ 						modeTimes.TransitCost = pathTypeModel.PathTransitCost;
+						modeTimes.TransitGeneralizedTime = pathTypeModel.PathTransitGeneralizedTime;
+						modeTimes.WalkTime = pathTypeModel.PathWalkTime;
+						modeTimes.WalkDistance = pathTypeModel.PathWalkDistance;
+						modeTimes.BikeTime = pathTypeModel.PathBikeTime;
+						modeTimes.BikeDistance = pathTypeModel.PathBikeDistance;
+						modeTimes.BikeCost = pathTypeModel.PathBikeCost;
+						modeTimes.OriginAccessMode = pathTypeModel.PathOriginAccessMode;
+						modeTimes.OriginAccessTime = pathTypeModel.PathOriginAccessTime;
+						modeTimes.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance;
+						modeTimes.OriginAccessCost = pathTypeModel.PathOriginAccessCost;
+						modeTimes.DestinationAccessMode = pathTypeModel.PathDestinationAccessMode;
+						modeTimes.DestinationAccessTime = pathTypeModel.PathDestinationAccessTime;
+						modeTimes.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance;
+						modeTimes.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost;
+
 					}
 				}
-				else
-				{
+				else {
 					// get times for each half tour separately, using HOV3 for school bus
 					var pathMode = (mode == Global.Settings.Modes.SchoolBus) ? Global.Settings.Modes.Hov3 : mode;
 
 					//if (tour.Household.Id == 80205 && tour.PersonDay.HouseholdDay.AttemptedSimulations == 9 && (pathMode == 1 || pathMode == 5)) {
-					if (tour.Person.IsDrivingAge == true && tour.Household.VehiclesAvailable > 0 && pathMode == 3)
-					{
+					if (tour.Person.IsDrivingAge == true && tour.Household.VehiclesAvailable > 0 && pathMode == 3) {
 						bool testbreak = true;
 					}
 					IEnumerable<dynamic> pathTypeModels =
@@ -298,8 +322,7 @@ namespace Daysim {
 
 					modeTimes.ModeAvailableToDestination = pathTypeModel.Available;
 
-					if (pathTypeModel.Available)
-					{
+					if (pathTypeModel.Available) {
 						modeTimes.TravelTimeToDestination = pathTypeModel.PathTime;
 						modeTimes.GeneralizedTimeToDestination = pathTypeModel.GeneralizedTimeLogsum;
 					}
@@ -325,34 +348,29 @@ namespace Daysim {
 
 					modeTimes.ModeAvailableFromDestination = pathTypeModel.Available;
 
-					if (pathTypeModel.Available)
-					{
+					if (pathTypeModel.Available) {
 						modeTimes.TravelTimeFromDestination = pathTypeModel.PathTime;
 						modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum;
 					}
 				}
-				if (tour.Household.Id == 2138 && tour.Person.Sequence == 1 && tour.Sequence == 1)
-				{
+				if (tour.Household.Id == 2138 && tour.Person.Sequence == 1 && tour.Sequence == 1) {
 					bool testbreak = true;
 				}
-				
-				if (modeTimes.ModeAvailableToDestination == false)
-				{
-					
+
+				if (modeTimes.ModeAvailableToDestination == false) {
+
 				}
-				if (modeTimes.ModeAvailableFromDestination == false)
-				{
-					
+				if (modeTimes.ModeAvailableFromDestination == false) {
+
 				}
 
-				
-				if (modeTimes.ModeAvailableToDestination && modeTimes.ModeAvailableFromDestination)
-				{
+
+				if (modeTimes.ModeAvailableToDestination && modeTimes.ModeAvailableFromDestination) {
 					modeTimes.LongestFeasibleWindow = timeWindow.LongestAvailableFeasibleWindow(arrivalPeriod.End,
-					                                                                            departurePeriod.Start,
-					                                                                            modeTimes.TravelTimeToDestination,
-					                                                                            modeTimes.TravelTimeFromDestination,
-					                                                                            Global.Settings.Times.MinimumActivityDuration);
+																														 departurePeriod.Start,
+																														 modeTimes.TravelTimeToDestination,
+																														 modeTimes.TravelTimeFromDestination,
+																														 Global.Settings.Times.MinimumActivityDuration);
 				}
 			}
 		}
