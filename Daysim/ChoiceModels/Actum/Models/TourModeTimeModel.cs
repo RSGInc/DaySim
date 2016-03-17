@@ -63,7 +63,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				if (tour.DestinationModeAndTimeHaveBeenSimulated) {
 					return;
 				}
-				if (tour.DestinationParcel == null || tour.OriginParcel == null || tour.Mode < Global.Settings.Modes.Walk || tour.Mode > Global.Settings.Modes.SchoolBus) {
+				if (tour.DestinationParcel == null || tour.OriginParcel == null || tour.Mode < Global.Settings.Modes.Walk || tour.Mode > Global.Settings.Modes.WalkRideBike) {
 					return;
 				}
 			}
@@ -438,15 +438,15 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					}
 				}
 			}
-			for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.SchoolBus; mode++) {
+			for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.WalkRideBike; mode++) {
 				componentIndex = 2 * bigPeriodCount + nPeriodCombs + mode - 1;
 				choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
 				var modeComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
 
-				if (mode == Global.Settings.Modes.SchoolBus) {
-					modeComponent.AddUtilityTerm(10, 1);
-				}
-				else if (mode == Global.Settings.Modes.Transit) {
+				//if (mode == Global.Settings.Modes.SchoolBus) {
+				//	modeComponent.AddUtilityTerm(10, 1);
+				//}
+				if (mode == Global.Settings.Modes.Transit) {
 					modeComponent.AddUtilityTerm(20, 1);
 					modeComponent.AddUtilityTerm(21, femaleFlag);
 					//modeComponent.AddUtilityTerm(22, retiredAdultFlag);
