@@ -41,7 +41,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(trip.Id);
 
 			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
-				if (trip.DestinationParcel == null || trip.OriginParcel == null || trip.Mode <= Global.Settings.Modes.None || trip.Mode == Global.Settings.Modes.Other) {
+				if (trip.DestinationParcel == null || trip.OriginParcel == null || trip.Mode <= Global.Settings.Modes.None || trip.Mode > Global.Settings.Modes.WalkRideBike) {
 					return;
 				}
 

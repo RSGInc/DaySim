@@ -123,7 +123,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				tour.HalfTour1AccessCost = choice.OriginAccessCost/2.0;
 				tour.HalfTour1AccessDistance = choice.OriginAccessDistance/2.0;
 				tour.HalfTour1AccessMode  = choice.OriginAccessMode;
-				tour.HalfTour1AccessStopArea = choice.ParkAndRideOriginStopAreaKey;
+				tour.HalfTour1AccessStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
 				tour.HalfTour1AccessTime = choice.OriginAccessTime/2.0;
 				tour.HalfTour1EgressCost = choice.DestinationAccessCost/2.0;
 				tour.HalfTour1EgressDistance = choice.DestinationAccessDistance/2.0;
@@ -133,13 +133,18 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				tour.HalfTour2AccessCost = choice.DestinationAccessCost/2.0;
 				tour.HalfTour2AccessDistance = choice.DestinationAccessDistance/2.0;
 				tour.HalfTour2AccessMode  = choice.DestinationAccessMode;
-				tour.HalfTour2AccessStopArea = choice.ParkAndRideDestinationStopAreaKey;
+				tour.HalfTour2AccessStopAreaKey = choice.ParkAndRideDestinationStopAreaKey;
 				tour.HalfTour2AccessTime = choice.DestinationAccessTime/2.0;
 				tour.HalfTour2EgressCost = choice.OriginAccessCost/2.0;
 				tour.HalfTour2EgressDistance = choice.OriginAccessDistance/2.0;
 				tour.HalfTour2EgressMode = choice.OriginAccessMode;
 				tour.HalfTour2EgressStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
 				tour.HalfTour2EgressTime = choice.OriginAccessTime/2.0;
+				tour.HalfTour1TravelTime = choice.TravelTimeToDestination;
+				tour.HalfTour2TravelTime = choice.TravelTimeFromDestination;
+				tour.TravelCostForPTBikeTour  = choice.PathCost;
+				tour.TravelDistanceForPTBikeTour  = choice.PathDistance;
+
 
 				var arrivalPeriod = choice.ArrivalPeriod;
 				var departurePeriod = choice.DeparturePeriod;

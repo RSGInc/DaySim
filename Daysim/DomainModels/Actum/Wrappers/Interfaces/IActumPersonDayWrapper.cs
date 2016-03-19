@@ -7,9 +7,25 @@
 
 using Daysim.DomainModels.Actum.Models.Interfaces;
 using Daysim.Framework.DomainModels.Wrappers;
+using System.Collections.Generic;
 
 namespace Daysim.DomainModels.Actum.Wrappers.Interfaces {
 	public interface IActumPersonDayWrapper : IPersonDayWrapper, IActumPersonDay {
+
+		#region relations properties
+
+		//IActumHouseholdWrapper Household { get; set; }
+
+		//IActumPersonWrapper Person { get; set; }
+
+		//IActumHouseholdDayWrapper HouseholdDay { get; set; }
+
+		//List<IActumTourWrapper> Tours { get; set; }
+
+		#endregion
+	
+		
+		
 		int CreatedBusinessTours { get; set; }
 
 		int SimulatedBusinessTours { get; set; }

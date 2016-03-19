@@ -36,9 +36,9 @@ namespace Daysim {
 
 		public dynamic ModeLOS;
 
-		int EarliestFeasibleDepatureTime;
+		public int EarliestFeasibleDepatureTime;
 
-		int LatestFeasibleDepartureTime;
+		public int LatestFeasibleDepartureTime;
 
 		private void FindPeriod(int departureTime) {
 			foreach (var period in DayPeriod.HSmallDayPeriods.Where(period => departureTime.IsBetween(period.Start, period.End))) {

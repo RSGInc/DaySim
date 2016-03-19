@@ -42,6 +42,20 @@ namespace Daysim.DomainModels.Actum.Wrappers {
 			_tour = (IActumTour) tour;
 		}
 
+
+		#region relations properties
+
+		//public IActumHouseholdWrapper Household { get; set; }
+
+		//public IActumPersonWrapper Person { get; set; }
+
+		//public IActumPersonDayWrapper PersonDay { get; set; }
+
+		//public IActumTourWrapper ParentTour { get; set; }
+
+		#endregion
+
+
 		#region flags/choice model/etc. properties
 
 		public int HalfTour1AccessMode { get; set; }
@@ -54,7 +68,7 @@ namespace Daysim.DomainModels.Actum.Wrappers {
 
 		public double HalfTour1AccessDistance { get; set; }
 
-		public int HalfTour1AccessStopArea { get; set; }
+		public int HalfTour1AccessStopAreaKey { get; set; }
 
 		public int HalfTour1EgressMode { get; set; }
 
@@ -78,7 +92,7 @@ namespace Daysim.DomainModels.Actum.Wrappers {
 
 		public double HalfTour2AccessDistance { get; set; }
 
-		public int HalfTour2AccessStopArea { get; set; }
+		public int HalfTour2AccessStopAreaKey { get; set; }
 
 		public int HalfTour2EgressMode { get; set; }
 
@@ -91,6 +105,17 @@ namespace Daysim.DomainModels.Actum.Wrappers {
 		public double HalfTour2EgressDistance { get; set; }
 
 		public int HalfTour2EgressStopAreaKey { get; set; }
+
+		public double HalfTour1TravelTime { get; set; }
+
+		public double HalfTour2TravelTime { get; set; }
+
+		public double TravelCostForPTBikeTour { get; set; }
+
+		public double TravelDistanceForPTBikeTour { get; set; }
+
+
+
 
 		#endregion
 

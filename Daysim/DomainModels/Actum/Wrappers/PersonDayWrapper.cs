@@ -28,6 +28,19 @@ namespace Daysim.DomainModels.Actum.Wrappers {
 			_personDay = (IActumPersonDay) personDay;
 		}
 
+		#region relations properties
+
+		//public IActumHouseholdWrapper Household { get; set; }
+
+		//public IActumPersonWrapper Person { get; set; }
+
+		//public IActumHouseholdDayWrapper HouseholdDay { get; set; }
+
+		//public List<IActumTourWrapper> Tours { get; set; }
+
+		#endregion
+	
+
 		#region domain model properies
 
 		public int WorkHomeAllDay {
@@ -111,6 +124,7 @@ namespace Daysim.DomainModels.Actum.Wrappers {
 		public override int GetTotalSimulatedStops() {
 			return base.GetTotalSimulatedStops() + SimulatedBusinessStops;
 		}
+
 
 		public override void GetMandatoryTourSimulatedData(IPersonDayWrapper personDay, List<ITourWrapper> tours) {
 			tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Work, personDay.UsualWorkplaceTours));

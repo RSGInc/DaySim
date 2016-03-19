@@ -75,6 +75,8 @@ namespace Daysim {
 		public double DestinationAccessTime { get; private set; }
 		public double DestinationAccessDistance { get; private set; }
 		public double DestinationAccessCost { get; private set; }
+		public double PathDistance { get; private set; }
+		public double PathCost { get; private set; }
 
 
 
