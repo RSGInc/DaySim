@@ -106,5 +106,34 @@ namespace Daysim.DomainModels.Default.Models {
 
 		[ColumnName("pdexpfac")]
 		public double ExpansionFactor { get; set; }
+
+		//JLB 20161323
+		[ColumnName("ppattype")]
+		public int PatternType { get; set; }
+
+		[ColumnName("pwrkhday")]
+		public int WorkHomeAllDay { get; set; }
+
+		[ColumnName("pschhmin")]
+		public int MinutesStudiedHome { get; set; }
+
+		[ColumnName("pweekday")]
+		public int DiaryWeekday { get; set; }
+
+		[ColumnName("pdaytype")]
+		public int DiaryDaytype { get; set; }
+
+		[ColumnName("pdayspurp")]
+		public int DayStartPurpose { get; set; }
+
+		[ColumnName("pdayjtyp")]
+		public int DayJourneyType { get; set; }
+
+		[ColumnName("butours")]
+		public int BusinessTours { get; set; }
+
+		[ColumnName("bustops")]
+		public int BusinessStops { get; set; }
+
 	}
 }

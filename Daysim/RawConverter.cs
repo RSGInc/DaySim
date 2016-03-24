@@ -69,7 +69,10 @@ namespace Daysim {
 			var ixxi = ImportIxxi();
 
 			var parkAndRideNodes = new Dictionary<int, Tuple<int, int, int, int, int>>();
-			if (!(Global.Configuration.DataType == "Actum")) {
+
+//JLB 20160323
+//			if (!(Global.Configuration.DataType == "Actum")) {
+			if (!(Global.Configuration.DataType == "Default")) {
 				parkAndRideNodes = ImportParkAndRideNodes();
 			}
 
@@ -82,7 +85,9 @@ namespace Daysim {
 			var zones = new Dictionary<int, int>();
 			var parcels = new Dictionary<int, Tuple<int, int, int>>();
 
-			if (Global.Configuration.DataType == "Actum") {
+			//JLB 20160323
+//			if (Global.Configuration.DataType == "Actum") {
+			if (Global.Configuration.DataType == "Default") {
 				zones = ConvertActumZoneFile(ref ixxi, ref transitStopAreas);
 				parcels = ConvertActumParcelFile(parcelNodes, zones);
 				ConvertActumParkAndRideNodeFile(parcels, transitStopAreas);
@@ -747,7 +752,9 @@ namespace Daysim {
 								writer.Write(Global.Configuration.InputZoneDelimiter);
 								writer.Write("ycoord");
 							}
-							if (!(Global.Configuration.DataType == "Actum")) {
+							//JLB 20160323
+//							if (!(Global.Configuration.DataType == "Actum")) {
+							if (!(Global.Configuration.DataType == "Default")) {
 								writer.Write(Global.Configuration.InputZoneDelimiter);
 								writer.Write("nearest_stoparea_id");
 							}
@@ -1050,7 +1057,9 @@ namespace Daysim {
 								case 74: // dist_crt
 								case 75: // dist_fry
 								case 76: // dist_lrt
-									if ((double.Parse(row[i]) > 5) && (Global.Configuration.DataType != "Actum")) {
+//JLB 20160323
+//								if ((double.Parse(row[i]) > 5) && (Global.Configuration.DataType != "Actum")) {
+								if ((double.Parse(row[i]) > 5) && (Global.Configuration.DataType != "Default")) {
 										writer.Write(Constants.DEFAULT_VALUE);
 									}
 									else {
@@ -1072,7 +1081,9 @@ namespace Daysim {
 									}
 								}
 
-								if (Global.Configuration.DataType == "Actum") {
+								//JLB 20160323
+//								if (Global.Configuration.DataType == "Actum") {
+								if (Global.Configuration.DataType == "Default") {
 									for (var j = 0; j < 12; j++) {
 										writer.Write(Global.Configuration.InputParcelDelimiter);
 										writer.Write("0");
@@ -1460,7 +1471,9 @@ namespace Daysim {
 								writer.Write("Circ_SE3");
 							}
 
-							if (Global.Configuration.DataType == "Actum") {
+//JLB 20160323
+//							if (Global.Configuration.DataType == "Actum") {
+							if (Global.Configuration.DataType == "Default") {
 								writer.Write(Global.Configuration.InputParcelDelimiter);
 								writer.Write("parkdy_p");
 

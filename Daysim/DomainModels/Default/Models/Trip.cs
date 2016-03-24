@@ -97,5 +97,48 @@ namespace Daysim.DomainModels.Default.Models {
 
 		[ColumnName("trexpfac")]
 		public double ExpansionFactor { get; set; }
+
+		[ColumnName("tdescpur")]
+		public int EscortedDestinationPurpose { get; set; }
+
+		[ColumnName("tptbicty")]
+		public int BikePTCombination { get; set; }
+
+		[ColumnName("acmode")]
+		public int AccessMode { get; set; }
+
+		[ColumnName("acpathtp")]
+		public int AccessPathType { get; set; }
+
+		[ColumnName("actime")]
+		public double AccessTime { get; set; }
+
+		[ColumnName("accost")]
+		public double AccessCost { get; set; }
+
+		[ColumnName("acdist")]
+		public double AccessDistance { get; set; }
+
+		[ColumnName("acstopar")]
+		public int AccessStopArea { get; set; }
+
+		[ColumnName("egmode")]
+		public int EgressMode { get; set; }
+
+		[ColumnName("egpathtp")]
+		public int EgressPathType { get; set; }
+
+		[ColumnName("egtime")]
+		public double EgressTime { get; set; }
+
+		[ColumnName("egcost")]
+		public double EgressCost { get; set; }
+
+		[ColumnName("egdist")]
+		public double EgressDistance { get; set; }
+
+		[ColumnName("egstopar")]
+		public int EgressStopArea { get; set; }
+
 	}
 }

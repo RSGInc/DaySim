@@ -209,6 +209,69 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			set { _person.ExpansionFactor = value; }
 		}
 
+		//JLB 20160323
+		public int MainOccupation {
+			get { return _person.MainOccupation; }
+			set { _person.MainOccupation = value; }
+		}
+
+		public int EducationLevel {
+			get { return _person.EducationLevel; }
+			set { _person.EducationLevel = value; }
+		}
+
+		public int HasBike {
+			get { return _person.HasBike; }
+			set { _person.HasBike = value; }
+		}
+
+		public int HasDriversLicense {
+			get { return _person.HasDriversLicense; }
+			set { _person.HasDriversLicense = value; }
+		}
+
+		public int HasCarShare {
+			get { return _person.HasCarShare; }
+			set { _person.HasCarShare = value; }
+		}
+
+		public int Income {
+			get { return _person.Income; }
+			set { _person.Income = value; }
+		}
+
+		public int HasMC {
+			get { return _person.HasMC; }
+			set { _person.HasMC = value; }
+		}
+
+		public int HasMoped {
+			get { return _person.HasMoped; }
+			set { _person.HasMoped = value; }
+		}
+
+		public int HasWorkParking {
+			get { return _person.HasWorkParking; }
+			set { _person.HasWorkParking = value; }
+		}
+
+		public int WorkHoursPerWeek {
+			get { return _person.WorkHoursPerWeek; }
+			set { _person.WorkHoursPerWeek = value; }
+		}
+
+		public int FlexibleWorkHours {
+			get { return _person.FlexibleWorkHours; }
+			set { _person.FlexibleWorkHours = value; }
+		}
+
+		public int HasSchoolParking {
+			get { return _person.HasSchoolParking; }
+			set { _person.HasSchoolParking = value; }
+		}
+
+
+
 		#endregion
 
 		#region flags/choice model/etc. properties
@@ -397,6 +460,49 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				UsualSchoolParcel.AddStudentsK12Prediction(Household.ExpansionFactor);
 			}
 		}
+
+		//JLB 20160323
+		public virtual bool BikeExists() {
+			return HasBike == 1;
+		}
+
+		public virtual bool DriversLicenseExists() {
+			return HasDriversLicense == 1;
+		}
+
+		public virtual bool CarShareExists() {
+			return HasCarShare == 1;
+		}
+
+		public virtual bool MCExists() {
+			return HasMC == 1;
+		}
+
+		public virtual bool MopedExists() {
+			return HasMoped == 1;
+		}
+
+		public virtual bool WorkParkingExists() {
+			return HasWorkParking == 1;
+		}
+
+		public virtual bool SchoolParkingExists() {
+			return HasSchoolParking == 1;
+		}
+
+        public virtual bool IsGymnasiumOrUniversityStudent()   {
+            return
+                PersonType == Global.Settings.PersonTypes.DrivingAgeStudent ||
+                PersonType == Global.Settings.PersonTypes.UniversityStudent;
+        }
+        
+        public virtual int CollapseActumPersonTypes()     {
+			return
+				PersonType <= Global.Settings.PersonTypes.UniversityStudent
+					? PersonType
+					: PersonType -1; //driving age students and children go from 6-8 to 5-7
+ 		}
+
 
 		#endregion
 

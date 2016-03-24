@@ -248,6 +248,47 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			set { _personDay.ExpansionFactor = value; }
 		}
 
+		//JLB 20160323
+		public int WorkHomeAllDay {
+			get { return _personDay.WorkHomeAllDay; }
+			set { _personDay.WorkHomeAllDay = value; }
+		}
+
+		public int MinutesStudiedHome {
+			get { return _personDay.MinutesStudiedHome; }
+			set { _personDay.MinutesStudiedHome = value; }
+		}
+
+		public int DiaryWeekday {
+			get { return _personDay.DiaryWeekday; }
+			set { _personDay.DiaryWeekday = value; }
+		}
+
+		public int DiaryDaytype {
+			get { return _personDay.DiaryDaytype; }
+			set { _personDay.DiaryDaytype = value; }
+		}
+
+		public int DayStartPurpose {
+			get { return _personDay.DayStartPurpose; }
+			set { _personDay.DayStartPurpose = value; }
+		}
+
+		public int DayJourneyType {
+			get { return _personDay.DayJourneyType; }
+			set { _personDay.DayJourneyType = value; }
+		}
+
+		public int BusinessTours {
+			get { return _personDay.BusinessTours; }
+			set { _personDay.BusinessTours = value; }
+		}
+
+		public int BusinessStops {
+			get { return _personDay.BusinessStops; }
+			set { _personDay.BusinessStops = value; }
+		}
+		
 		#endregion
 
 		#region flags/choice model/etc. properties
@@ -342,6 +383,14 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 		public bool IsMissingData { get; set; }
 
+		//JLB 20160323
+		public int CreatedBusinessTours { get; set; }
+
+		public int SimulatedBusinessTours { get; set; }
+
+		public int SimulatedBusinessStops { get; set; }
+
+
 		#endregion
 
 		#region wrapper methods
@@ -356,7 +405,8 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				MealTours +
 				SocialTours +
 				RecreationTours +
-				MedicalTours;
+				MedicalTours +
+				BusinessTours;
 		}
 
 		public virtual int GetTotalToursExcludingWorkAndSchool() {
@@ -392,7 +442,8 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				CreatedSocialTours +
 				CreatedRecreationTours +
 				CreatedMedicalTours +
-				CreatedWorkBasedTours;
+				CreatedWorkBasedTours + 
+				BusinessTours;
 		}
 
 		public virtual int GetTotalCreatedTourPurposes() {
@@ -405,7 +456,8 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				Math.Min(1, CreatedMealTours) +
 				Math.Min(1, CreatedSocialTours) +
 				Math.Min(1, CreatedRecreationTours) +
-				Math.Min(1, CreatedMedicalTours);
+				Math.Min(1, CreatedMedicalTours) +
+				Math.Min(1, CreatedBusinessTours);
 		}
 
 		public virtual int GetTotalSimulatedTours() {
@@ -418,7 +470,8 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				SimulatedMealTours +
 				SimulatedSocialTours +
 				SimulatedRecreationTours +
-				SimulatedMedicalTours;
+				SimulatedMedicalTours +
+				SimulatedBusinessTours;
 		}
 
 		public virtual int GetTotalStops() {
@@ -431,7 +484,8 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				MealStops +
 				SocialStops +
 				RecreationStops +
-				MedicalStops;
+				MedicalStops +
+				BusinessStops;
 		}
 
 		public virtual int GetTotalStopsExcludingWorkAndSchool() {
@@ -455,7 +509,8 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				SimulatedMealStops +
 				SimulatedSocialStops +
 				SimulatedRecreationStops +
-				SimulatedMedicalStops;
+				SimulatedMedicalStops +
+				SimulatedBusinessStops;
 		}
 
 		public virtual int GetTotalStopPurposes() {
@@ -635,7 +690,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 		public virtual void GetMandatoryTourSimulatedData(IPersonDayWrapper personDay, List<ITourWrapper> tours) {
 			tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Work, personDay.UsualWorkplaceTours));
-
+			//JLB 20160323
 			foreach (var tour in tours) {
 				tour.DestinationParcel = personDay.Person.UsualWorkParcel;
 				tour.DestinationParcelId = personDay.Person.UsualWorkParcelId;
@@ -643,7 +698,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				tour.DestinationAddressType = Global.Settings.AddressTypes.UsualWorkplace;
 			}
 
-			tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Work, personDay.WorkTours - personDay.UsualWorkplaceTours));
+			tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Business, ((PersonDayWrapper) personDay).BusinessTours));
 			tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.School, personDay.SchoolTours));
 
 			foreach (var tour in tours.Where(tour => tour.DestinationPurpose == Global.Settings.Purposes.School)) {
@@ -653,6 +708,24 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				tour.DestinationAddressType = Global.Settings.AddressTypes.UsualSchool;
 			}
 		}
+
+//			foreach (var tour in tours) {
+//				tour.DestinationParcel = personDay.Person.UsualWorkParcel;
+//				tour.DestinationParcelId = personDay.Person.UsualWorkParcelId;
+//				tour.DestinationZoneKey = ChoiceModelFactory.ZoneKeys[personDay.Person.UsualWorkParcel.ZoneId];
+//				tour.DestinationAddressType = Global.Settings.AddressTypes.UsualWorkplace;
+//			}
+//
+//			tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Work, personDay.WorkTours - personDay.UsualWorkplaceTours));
+//			tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.School, personDay.SchoolTours));
+//
+//			foreach (var tour in tours.Where(tour => tour.DestinationPurpose == Global.Settings.Purposes.School)) {
+//				tour.DestinationParcel = personDay.Person.UsualSchoolParcel;
+//				tour.DestinationParcelId = personDay.Person.UsualSchoolParcelId;
+//				tour.DestinationZoneKey = ChoiceModelFactory.ZoneKeys[personDay.Person.UsualSchoolParcel.ZoneId];
+//				tour.DestinationAddressType = Global.Settings.AddressTypes.UsualSchool;
+//			}
+//		}
 
 		public virtual void GetIndividualTourSimulatedData(IPersonDayWrapper personDay, List<ITourWrapper> tours) {
 			tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Escort, CreatedEscortTours - EscortFullHalfTours));
@@ -697,8 +770,12 @@ namespace Daysim.DomainModels.Default.Wrappers {
 		}
 
 		public virtual void IncrementSimulatedStops(int destinationPurpose) {
+			//JLB 20160323
 			if (destinationPurpose == Global.Settings.Purposes.Work) {
 				SimulatedWorkStops++;
+			}
+			else if (destinationPurpose == Global.Settings.Purposes.Business) {
+				SimulatedBusinessStops++;
 			}
 			else if (destinationPurpose == Global.Settings.Purposes.School) {
 				SimulatedSchoolStops++;
@@ -725,6 +802,36 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				SimulatedMedicalStops++;
 			}
 		}
+
+	
+			//if (destinationPurpose == Global.Settings.Purposes.Work) {
+			//	SimulatedWorkStops++;
+			//}
+			//else if (destinationPurpose == Global.Settings.Purposes.School) {
+			//	SimulatedSchoolStops++;
+			//}
+			//else if (destinationPurpose == Global.Settings.Purposes.Escort) {
+			//	SimulatedEscortStops++;
+			//}
+			//else if (destinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
+			//	SimulatedPersonalBusinessStops++;
+			//}
+			//else if (destinationPurpose == Global.Settings.Purposes.Shopping) {
+			//	SimulatedShoppingStops++;
+			//}
+			//else if (destinationPurpose == Global.Settings.Purposes.Meal) {
+			//	SimulatedMealStops++;
+			//}
+			//else if (destinationPurpose == Global.Settings.Purposes.Social) {
+			//	SimulatedSocialStops++;
+			//}
+			//else if (destinationPurpose == Global.Settings.Purposes.Recreation) {
+			//	SimulatedRecreationStops++;
+			//}
+			//else if (destinationPurpose == Global.Settings.Purposes.Medical) {
+			//	SimulatedMedicalStops++;
+			//}
+		//}
 
 		public virtual ITourWrapper GetEscortTour(int originAddressType, int originParcelId, int originZoneKey) {
 			var tour = CreateTour(originAddressType, originParcelId, originZoneKey, Global.Settings.Purposes.Escort);
@@ -784,6 +891,13 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			RecreationTours = CreatedRecreationTours;
 			MedicalTours = CreatedMedicalTours;
 		}
+
+		//JLB 20150323
+		public virtual bool SimulatedBusinessStopsExist() {
+			return SimulatedBusinessStops > 0;
+		}
+
+
 
 		#endregion
 
@@ -952,9 +1066,34 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 			HasMandatoryTourToUsualLocation = false;
 			WorksAtHomeFlag = 0;
+
+			//JLB 20160323
+			CreatedBusinessTours = 0;
+			SimulatedBusinessTours = 0;
+			SimulatedBusinessStops = 0;
+			BusinessTours = 0;
+			BusinessStops = 0;
+
 		}
 
 		protected virtual IPersonDay ResetPersonDay() {
+			//JLB 20160323
+			//	_personDay = new PersonDay {
+			//	Id = Id,
+			//	PersonId = PersonId,
+			//	HouseholdDayId = HouseholdDayId,
+			//	HouseholdId = HouseholdId,
+			//	PersonSequence = PersonSequence,
+			//	Day = Day,
+			//	DayBeginsAtHome = DayBeginsAtHome,
+			//	DayEndsAtHome = DayEndsAtHome,
+			//	ExpansionFactor = ExpansionFactor
+			//};
+
+			//return _personDay;
+		//}
+
+			
 			var model = _personDayCreator.CreateModel();
 
 			model.Id = _personDay.Id;

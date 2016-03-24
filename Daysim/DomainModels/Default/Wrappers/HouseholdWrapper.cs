@@ -192,6 +192,28 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			set { _household.SampleType = value; }
 		}
 
+		//JLB 20160323
+		public int MunicipalCode {
+			get { return _household.MunicipalCode; }
+			set { _household.MunicipalCode = value; }
+		}
+
+		public double StationDistance {
+			get { return _household.StationDistance; }
+			set { _household.StationDistance = value; }
+		}
+
+		public int ParkingAvailability {
+			get { return _household.ParkingAvailability; }
+			set { _household.ParkingAvailability = value; }
+		}
+
+		public int InternetPaymentMethod {
+			get { return _household.InternetPaymentMethod; }
+			set { _household.InternetPaymentMethod = value; }
+		}
+
+
 		#endregion
 
 		#region flags/choice model/etc. properties

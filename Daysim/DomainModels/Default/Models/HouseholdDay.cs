@@ -37,5 +37,28 @@ namespace Daysim.DomainModels.Default.Models {
 
 		[ColumnName("hdexpfac")]
 		public double ExpansionFactor { get; set; }
+
+		//JLB 20160323
+		[ColumnName("pfptfrq")]
+		public int SharedActivityHomeStays { get; set; }
+
+		[ColumnName("pfptmax")]
+		public int NumberInLargestSharedHomeStay { get; set; }
+
+		[ColumnName("pfptbeg")]
+		public int StartingMinuteSharedHomeStay { get; set; }
+
+		[ColumnName("pfptdur")]
+		public int DurationMinutesSharedHomeStay { get; set; }
+
+		[ColumnName("pfptad")]
+		public int AdultsInSharedHomeStay { get; set; }
+
+		[ColumnName("pfptch")]
+		public int ChildrenInSharedHomeStay { get; set; }
+
+		[ColumnName("pfpt")]
+		public int PrimaryPriorityTimeFlag { get; set; }
+
 	}
 }

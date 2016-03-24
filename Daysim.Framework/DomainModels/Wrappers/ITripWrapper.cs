@@ -135,6 +135,10 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		void SetTripValueOfTime();
 
+		//JLB20160323
+		bool IsBusinessDestinationPurpose();
+		bool IsBusinessOriginPurpose();
+
 		#endregion
 
 		#region init/utility/export methods

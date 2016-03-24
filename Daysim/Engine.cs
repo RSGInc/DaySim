@@ -677,7 +677,9 @@ namespace Daysim {
 				.Importer
 				.Import();
 
-            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum"))
+//JLB 20160323
+//            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum"))
+            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Default"))
             {
                 return;
             }
@@ -1033,7 +1035,9 @@ namespace Daysim {
 		}
 
 		private static void BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances() {
-			if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum")) {
+//JLB 20160323
+//			if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum")) {
+			if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Default")) {
 				return;
 			}
 			if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToParkAndRideNodeIndexPath)) {

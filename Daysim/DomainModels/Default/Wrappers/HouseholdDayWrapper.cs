@@ -190,6 +190,42 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			set { _householdDay.ExpansionFactor = value; }
 		}
 
+			//JLB 20160323
+			public int SharedActivityHomeStays {
+			get { return _householdDay.SharedActivityHomeStays; }
+			set { _householdDay.SharedActivityHomeStays = value; }
+		}
+
+		public int NumberInLargestSharedHomeStay {
+			get { return _householdDay.NumberInLargestSharedHomeStay; }
+			set { _householdDay.NumberInLargestSharedHomeStay = value; }
+		}
+
+		public int StartingMinuteSharedHomeStay {
+			get { return _householdDay.StartingMinuteSharedHomeStay; }
+			set { _householdDay.StartingMinuteSharedHomeStay = value; }
+		}
+
+		public int DurationMinutesSharedHomeStay {
+			get { return _householdDay.DurationMinutesSharedHomeStay; }
+			set { _householdDay.DurationMinutesSharedHomeStay = value; }
+		}
+
+		public int AdultsInSharedHomeStay {
+			get { return _householdDay.AdultsInSharedHomeStay; }
+			set { _householdDay.AdultsInSharedHomeStay = value; }
+		}
+
+		public int ChildrenInSharedHomeStay {
+			get { return _householdDay.ChildrenInSharedHomeStay; }
+			set { _householdDay.ChildrenInSharedHomeStay = value; }
+		}
+
+		public int PrimaryPriorityTimeFlag {
+			get { return _householdDay.PrimaryPriorityTimeFlag; }
+			set { _householdDay.PrimaryPriorityTimeFlag = value; }
+		}
+
 		#endregion
 
 		#region flags/choice model/etc. properties
@@ -199,6 +235,11 @@ namespace Daysim.DomainModels.Default.Wrappers {
 		public bool IsMissingData { get; set; }
 
 		public bool IsValid { get; set; }
+
+		//JLB 20160323
+		public int JointTourFlag {
+			get; set;
+		}
 
 		#endregion
 

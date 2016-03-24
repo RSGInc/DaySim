@@ -60,5 +60,35 @@ namespace Daysim.Framework.DomainModels.Models {
 		double ValueOfTime { get; set; }
 
 		double ExpansionFactor { get; set; }
+
+		//JLB20160323
+		int EscortedDestinationPurpose { get; set; }
+
+		int BikePTCombination { get; set; }
+
+		int AccessMode { get; set; }
+
+		int AccessPathType { get; set; }
+
+		double AccessTime { get; set; }
+
+		double AccessCost { get; set; }
+
+		double AccessDistance { get; set; }
+
+		int AccessStopArea { get; set; }
+
+		int EgressMode { get; set; }
+
+		int EgressPathType { get; set; }
+
+		double EgressTime { get; set; }
+
+		double EgressCost { get; set; }
+
+		double EgressDistance { get; set; }
+
+		int EgressStopArea { get; set; }
+	
 	}
 }

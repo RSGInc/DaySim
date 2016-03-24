@@ -85,5 +85,43 @@ namespace Daysim.DomainModels.Default.Models {
 
 		[ColumnName("psexpfac")]
 		public double ExpansionFactor { get; set; }
+
+		//JLB 20160323
+		[ColumnName("ppriocc")]
+		public int MainOccupation { get; set; }
+
+		[ColumnName("pedul")]
+		public int EducationLevel { get; set; }
+
+		[ColumnName("phasbike")]
+		public int HasBike { get; set; }
+
+		[ColumnName("pdrivlic")]
+		public int HasDriversLicense { get; set; }
+
+		[ColumnName("pcarshar")]
+		public int HasCarShare { get; set; }
+
+		[ColumnName("pinc")]
+		public int Income { get; set; }
+
+		[ColumnName("phasmc")]
+		public int HasMC { get; set; }
+
+		[ColumnName("phasmop")]
+		public int HasMoped { get; set; }
+
+		[ColumnName("pwprkpos")]
+		public int HasWorkParking { get; set; }
+
+		[ColumnName("pwhrspw")]
+		public int WorkHoursPerWeek { get; set; }
+
+		[ColumnName("pwhrstyp")]
+		public int FlexibleWorkHours { get; set; }
+
+		[ColumnName("psprkpos")]
+		public int HasSchoolParking { get; set; }
+
 	}
 }

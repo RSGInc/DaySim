@@ -103,6 +103,21 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		void SetSchoolParcelPredictions();
 
+		//JLB 20160323
+		bool BikeExists();
+
+		bool DriversLicenseExists();
+
+		bool CarShareExists();
+
+		bool MCExists();
+
+		bool MopedExists();
+
+		bool WorkParkingExists();
+
+		bool SchoolParkingExists();
+
 		#endregion
 
 		#region init/utility/export methods

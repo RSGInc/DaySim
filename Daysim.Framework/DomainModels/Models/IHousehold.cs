@@ -46,5 +46,15 @@ namespace Daysim.Framework.DomainModels.Models {
 		double ExpansionFactor { get; set; }
 
 		int SampleType { get; set; }
+
+		//JLB 20160323
+		int MunicipalCode { get; set; }
+
+		double StationDistance { get; set; }
+
+		int ParkingAvailability { get; set; }
+
+		int InternetPaymentMethod { get; set; }
+	
 	}
 }

@@ -20,5 +20,21 @@ namespace Daysim.Framework.DomainModels.Models {
 		int FullHalfTours { get; set; }
 
 		double ExpansionFactor { get; set; }
+
+		//JLB20160323
+		int SharedActivityHomeStays { get; set; }
+
+		int NumberInLargestSharedHomeStay { get; set; }
+
+		int StartingMinuteSharedHomeStay { get; set; }
+
+		int DurationMinutesSharedHomeStay { get; set; }
+
+		int AdultsInSharedHomeStay { get; set; }
+
+		int ChildrenInSharedHomeStay { get; set; }
+
+		int PrimaryPriorityTimeFlag { get; set; }
+
 	}
 }

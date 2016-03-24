@@ -79,6 +79,66 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		bool IsMissingData { get; set; }
 
+		//JLB 20160323
+		int HalfTour1AccessMode { get; set; }
+
+		int HalfTour1AccessPathType { get; set; }
+
+		double HalfTour1AccessTime { get; set; }
+
+		double HalfTour1AccessCost { get; set; }
+
+		double HalfTour1AccessDistance { get; set; }
+
+		int HalfTour1AccessStopAreaKey { get; set; }
+
+		int HalfTour1EgressMode { get; set; }
+
+		int HalfTour1EgressPathType { get; set; }
+
+		double HalfTour1EgressTime { get; set; }
+
+		double HalfTour1EgressCost { get; set; }
+
+		double HalfTour1EgressDistance { get; set; }
+
+		int HalfTour1EgressStopAreaKey { get; set; }
+	
+		int HalfTour2AccessMode { get; set; }
+
+		int HalfTour2AccessPathType { get; set; }
+
+		double HalfTour2AccessTime { get; set; }
+
+		double HalfTour2AccessCost { get; set; }
+
+		double HalfTour2AccessDistance { get; set; }
+
+		int HalfTour2AccessStopAreaKey { get; set; }
+
+		int HalfTour2EgressMode { get; set; }
+
+		int HalfTour2EgressPathType { get; set; }
+
+		double HalfTour2EgressTime { get; set; }
+
+		double HalfTour2EgressCost { get; set; }
+
+		double HalfTour2EgressDistance { get; set; }
+
+		int HalfTour2EgressStopAreaKey { get; set; }
+
+		double HalfTour1TravelTime { get; set; }
+
+		double HalfTour2TravelTime { get; set; }
+
+		double TravelCostForPTBikeTour { get; set; }
+
+		double TravelDistanceForPTBikeTour { get; set; }
+
+
+
+
 		#endregion
 
 		#region wrapper methods
@@ -162,6 +222,15 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 		void SetParkAndRideStay();
 
 		int GetVotALSegment();
+
+		//JLB 20160323
+		bool IsBusinessPurpose();
+
+		bool IsHovDriverMode();
+
+		bool IsHovPassengerMode();
+
+
 
 		#endregion
 

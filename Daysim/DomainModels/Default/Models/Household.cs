@@ -76,5 +76,20 @@ namespace Daysim.DomainModels.Default.Models {
 
 		[ColumnName("samptype")]
 		public int SampleType { get; set; }
+
+		//JLB 20160323
+		[ColumnName("hmuncode")]
+		public int MunicipalCode { get; set; }
+
+		[ColumnName("hdisstat")]
+		public double StationDistance { get; set; }
+
+		[ColumnName("hparkpos")]
+		public int ParkingAvailability { get; set; }
+
+		[ColumnName("inetpaym")]
+		public int InternetPaymentMethod { get; set; }
+	
+	
 	}
 }

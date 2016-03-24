@@ -52,5 +52,31 @@ namespace Daysim.Framework.DomainModels.Models {
 		int ProxyResponse { get; set; }
 
 		double ExpansionFactor { get; set; }
+
+		//JLB 20160323
+		int MainOccupation { get; set; }
+
+		int EducationLevel { get; set; }
+
+		int HasBike { get; set; }
+
+		int HasDriversLicense { get; set; }
+
+		int HasCarShare { get; set; }
+
+		int Income { get; set; }
+
+		int HasMC { get; set; }
+
+		int HasMoped { get; set; }
+
+		int HasWorkParking { get; set; }
+
+		int WorkHoursPerWeek { get; set; }
+
+		int FlexibleWorkHours { get; set; }
+
+		int HasSchoolParking { get; set; }
+
 	}
 }

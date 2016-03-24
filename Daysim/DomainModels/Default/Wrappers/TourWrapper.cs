@@ -369,6 +369,63 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 		public bool IsMissingData { get; set; }
 
+		//JLB 20160323
+		public int HalfTour1AccessMode { get; set; }
+
+		public int HalfTour1AccessPathType { get; set; }
+
+		public double HalfTour1AccessTime { get; set; }
+
+		public double HalfTour1AccessCost { get; set; }
+
+		public double HalfTour1AccessDistance { get; set; }
+
+		public int HalfTour1AccessStopAreaKey { get; set; }
+
+		public int HalfTour1EgressMode { get; set; }
+
+		public int HalfTour1EgressPathType { get; set; }
+
+		public double HalfTour1EgressTime { get; set; }
+
+		public double HalfTour1EgressCost { get; set; }
+
+		public double HalfTour1EgressDistance { get; set; }
+
+		public int HalfTour1EgressStopAreaKey { get; set; }
+	
+		public int HalfTour2AccessMode { get; set; }
+
+		public int HalfTour2AccessPathType { get; set; }
+
+		public double HalfTour2AccessTime { get; set; }
+
+		public double HalfTour2AccessCost { get; set; }
+
+		public double HalfTour2AccessDistance { get; set; }
+
+		public int HalfTour2AccessStopAreaKey { get; set; }
+
+		public int HalfTour2EgressMode { get; set; }
+
+		public int HalfTour2EgressPathType { get; set; }
+
+		public double HalfTour2EgressTime { get; set; }
+
+		public double HalfTour2EgressCost { get; set; }
+
+		public double HalfTour2EgressDistance { get; set; }
+
+		public int HalfTour2EgressStopAreaKey { get; set; }
+
+		public double HalfTour1TravelTime { get; set; }
+
+		public double HalfTour2TravelTime { get; set; }
+
+		public double TravelCostForPTBikeTour { get; set; }
+
+		public double TravelDistanceForPTBikeTour { get; set; }
+
 
 
 		#endregion
@@ -419,6 +476,12 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			return DestinationPurpose == Global.Settings.Purposes.Social || DestinationPurpose == Global.Settings.Purposes.Recreation;
 		}
 
+		//JLB 20160323
+		public virtual bool IsBusinessPurpose() {
+			return DestinationPurpose == Global.Settings.Purposes.Business;
+		}
+
+
 		public virtual bool IsWalkMode() {
 			return Mode == Global.Settings.Modes.Walk;
 		}
@@ -454,6 +517,16 @@ namespace Daysim.DomainModels.Default.Wrappers {
 		public virtual bool IsWalkOrBikeMode() {
 			return Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike;
 		}
+
+		//JLB 20160323
+		public virtual bool IsHovDriverMode() {
+			return Mode == Global.Settings.Modes.HovDriver;
+		}
+		public virtual bool IsHovPassengerMode() {
+			return Mode == Global.Settings.Modes.HovPassenger;
+		}
+
+
 
 		public virtual bool SubtoursExist() {
 			return Subtours.Count > 0;
@@ -557,16 +630,28 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			return tourCategory;
 		}
 
+		//JLB 20160323
 		public virtual int GetVotALSegment() {
 			var segment =
-				((60 * TimeCoefficient) / CostCoefficient < Global.Settings.VotALSegments.VotLowMedium)
-					? Global.Settings.VotALSegments.Low
-					: ((60 * TimeCoefficient) / CostCoefficient < Global.Settings.VotALSegments.VotMediumHigh)
-						? Global.Settings.VotALSegments.Medium
-						: Global.Settings.VotALSegments.High;
+				(DestinationPurpose == Global.Settings.Purposes.Work || DestinationPurpose == Global.Settings.Purposes.School || DestinationPurpose == Global.Settings.Purposes.Escort)
+					? Global.Settings.VotALSegments.Medium
+					: (DestinationPurpose == Global.Settings.Purposes.Business)
+						? Global.Settings.VotALSegments.High
+						: Global.Settings.VotALSegments.Low;
 
 			return segment;
 		}
+
+//		public virtual int GetVotALSegment() {
+//			var segment =
+//				((60 * TimeCoefficient) / CostCoefficient < Global.Settings.VotALSegments.VotLowMedium)
+//					? Global.Settings.VotALSegments.Low
+//					: ((60 * TimeCoefficient) / CostCoefficient < Global.Settings.VotALSegments.VotMediumHigh)
+//						? Global.Settings.VotALSegments.Medium
+//						: Global.Settings.VotALSegments.High;
+//
+//			return segment;
+//		}
 
 		public virtual void SetHomeBasedIsSimulated() {
 			PersonDay.IncrementSimulatedTours(DestinationPurpose);

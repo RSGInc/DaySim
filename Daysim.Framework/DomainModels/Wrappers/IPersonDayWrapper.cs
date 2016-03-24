@@ -115,6 +115,16 @@ namespace Daysim.Framework.DomainModels.Wrappers {
 
 		bool IsMissingData { get; set; }
 
+		//JLB 20160323
+		int CreatedBusinessTours { get; set; }
+
+		int SimulatedBusinessTours { get; set; }
+
+		int SimulatedBusinessStops { get; set; }
+
+		bool SimulatedBusinessStopsExist();
+
+
 		#endregion
 
 		#region wrapper methods

@@ -66,5 +66,25 @@ namespace Daysim.Framework.DomainModels.Models {
 		int WorkAtHomeDuration { get; set; }
 
 		double ExpansionFactor { get; set; }
+		
+		//JLB 20160323
+		int WorkHomeAllDay { get; set; }
+
+		int MinutesStudiedHome { get; set; }
+
+		int DiaryWeekday { get; set; }
+
+		int DiaryDaytype { get; set; }
+
+		int DayStartPurpose { get; set; }
+
+		int DayJourneyType { get; set; }
+
+		int BusinessTours { get; set; }
+
+		int BusinessStops { get; set; }
+
+	
+	
 	}
 }
