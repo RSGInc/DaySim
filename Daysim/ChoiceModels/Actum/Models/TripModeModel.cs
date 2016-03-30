@@ -13,8 +13,8 @@ using Daysim.Framework.Coefficients;
 using Daysim.Framework.Core;
 using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.PathTypeModels;
-using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using TripWrapper = Daysim.DomainModels.Actum.Wrappers.TripWrapper;
+using HouseholdDayWrapper = Daysim.DomainModels.Default.Wrappers.HouseholdDayWrapper;
+using TripWrapper = Daysim.DomainModels.Default.Wrappers.TripWrapper;
 
 namespace Daysim.ChoiceModels.Actum.Models
 {
@@ -347,14 +347,15 @@ namespace Daysim.ChoiceModels.Actum.Models
 					tour.HalfTourFromDestination.Trips.Where(x => x.Sequence < trip.Sequence).Count(x => tour.Mode == x.Mode);
 			}
 
-			// GV commented out park and ride
+			// GV commented out park and ride for COMPAS1; JOHN restored it for COMPAS2
 			//// if a park and ride tour, only car is available
-			//if (tour.Mode == Global.Settings.Modes.ParkAndRide) {
-			//	tripModeAvailable[Global.Settings.Modes.Sov] = tour.Household.VehiclesAvailable > 0 && tour.Person.IsDrivingAge;
-			//	tripModeAvailable[Global.Settings.Modes.Hov2] = !tripModeAvailable[Global.Settings.Modes.Sov];
-			//}
+			if (tour.Mode == Global.Settings.Modes.ParkAndRide) {
+				tripModeAvailable[Global.Settings.Modes.Sov] = tour.Household.VehiclesAvailable > 0 && person.Age >= 18;
+				tripModeAvailable[Global.Settings.Modes.HovDriver] = tour.Household.VehiclesAvailable > 0 && person.Age >= 18;
+				tripModeAvailable[Global.Settings.Modes.HovPassenger] = !tripModeAvailable[Global.Settings.Modes.Sov];
+			}
 			//// if the last trip of the tour and tour mode not yet used, only the tour mode is available
-			if (isLastTripInTour && frequencyPreviousTripModeIsTourMode == 0)
+			else if (isLastTripInTour && frequencyPreviousTripModeIsTourMode == 0)
 			{
 				tripModeAvailable[tour.Mode] = true;
 			}

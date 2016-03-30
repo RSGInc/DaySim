@@ -7,8 +7,8 @@
 
 using System;
 using Daysim.DomainModels;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
+using Daysim.DomainModels.Default;
+using Daysim.DomainModels.Default.Wrappers;
 using Daysim.DomainModels.Default.Wrappers;
 using Daysim.DomainModels.Extensions;
 using Daysim.Framework.ChoiceModels;
@@ -19,11 +19,11 @@ using Daysim.Framework.DomainModels.Models;
 using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.Framework.Factories;
 using Ninject;
-using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdWrapper;
-using PersonDayWrapper = Daysim.DomainModels.Actum.Wrappers.PersonDayWrapper;
-using PersonWrapper = Daysim.DomainModels.Actum.Wrappers.PersonWrapper;
-using TourWrapper = Daysim.DomainModels.Actum.Wrappers.TourWrapper;
+using HouseholdDayWrapper = Daysim.DomainModels.Default.Wrappers.HouseholdDayWrapper;
+using HouseholdWrapper = Daysim.DomainModels.Default.Wrappers.HouseholdWrapper;
+using PersonDayWrapper = Daysim.DomainModels.Default.Wrappers.PersonDayWrapper;
+using PersonWrapper = Daysim.DomainModels.Default.Wrappers.PersonWrapper;
+using TourWrapper = Daysim.DomainModels.Default.Wrappers.TourWrapper;
 
 namespace Daysim.ChoiceModels.Actum.Models {
 	public class WorkBasedSubtourModeTimeModel : ChoiceModel {

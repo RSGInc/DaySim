@@ -903,8 +903,10 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				if (period.End < this.EarliestDepartureTime || period.Start > this.LatestDepartureTime) {
 					time.Available = false;
 				}
-
-
+				else {
+					time.Available = true;
+				}
+				
 				var travelTime = this.Direction == 1 ? this.Tour.HalfTour1TravelTime : this.Tour.HalfTour2TravelTime;
 
 				//set the feasible window within the small period, accounting for travel time, and recheck availability
@@ -1046,7 +1048,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 				if (Global.Configuration.TraceModelResultValidity) {
 					if (PersonDay.HouseholdDay.AttemptedSimulations >= Global.Configuration.InvalidAttemptsBeforeTrace) {
-						Global.PrintFile.WriteLine("  >> HUpdateTripValues HH/P/T/Hf/T/Arrival time/valid {0} {1} {2} {3} {4} {5} {6}", Household.Id, Person.Sequence, Tour.Sequence, Direction, Sequence, ArrivalTime, PersonDay.IsValid);
+						Global.PrintFile.WriteLine("  >> HPTUpdateTripValues HH/P/T/Hf/T/Arrival time/valid {0} {1} {2} {3} {4} {5} {6}", Household.Id, Person.Sequence, Tour.Sequence, Direction, Sequence, ArrivalTime, PersonDay.IsValid);
 					}
 				}
 
@@ -1087,10 +1089,10 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			}
 
 			if (Tour.IsHomeBasedTour) {
-				Global.PrintFile.WriteLine("  >> HUpdateTripValues SetBusyMinutes HH/P/PDay/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, PersonDay.Id, earliestBusyMinute, latestBusyMinute + 1);
+				Global.PrintFile.WriteLine("  >> HPTUpdateTripValues SetBusyMinutes HH/P/PDay/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, PersonDay.Id, earliestBusyMinute, latestBusyMinute + 1);
 			}
 			else {
-				Global.PrintFile.WriteLine("  >> HUpdateTripValues SetBusyMinutes HH/P/TOUR/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, Tour.ParentTour.Sequence, earliestBusyMinute, latestBusyMinute + 1);
+				Global.PrintFile.WriteLine("  >> HPTUpdateTripValues SetBusyMinutes HH/P/TOUR/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, Tour.ParentTour.Sequence, earliestBusyMinute, latestBusyMinute + 1);
 			}
 		}
 

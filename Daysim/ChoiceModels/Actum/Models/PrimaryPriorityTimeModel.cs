@@ -8,8 +8,7 @@
 
 using System;
 using Daysim.DomainModels;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
+using Daysim.DomainModels.Default.Wrappers;
 using Daysim.DomainModels.Default;
 using Daysim.DomainModels.Extensions;
 using Daysim.Framework.ChoiceModels;

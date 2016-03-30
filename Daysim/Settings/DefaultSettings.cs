@@ -723,7 +723,7 @@ namespace Daysim.Settings {
 		}
 
 		public virtual int MinimumActivityDuration {
-			get { return 1; }
+			get { return 2; }
 		}
 
 		public virtual int ZeroHours {

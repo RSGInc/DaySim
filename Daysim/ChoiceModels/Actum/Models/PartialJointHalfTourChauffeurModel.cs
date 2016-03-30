@@ -9,8 +9,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
+using Daysim.DomainModels.Default;
+using Daysim.DomainModels.Default.Wrappers;
 using Daysim.Framework.ChoiceModels;
 using Daysim.Framework.Coefficients;
 using Daysim.Framework.Core;

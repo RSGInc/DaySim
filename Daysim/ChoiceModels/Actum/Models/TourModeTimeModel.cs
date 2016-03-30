@@ -8,8 +8,7 @@
 
 using System;
 using Daysim.DomainModels;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
+using Daysim.DomainModels.Default;
 using Daysim.DomainModels.Default.Wrappers;
 using Daysim.DomainModels.Extensions;
 using Daysim.Framework.ChoiceModels;
@@ -20,11 +19,11 @@ using Daysim.Framework.DomainModels.Models;
 using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.Framework.Factories;
 using Ninject;
-using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdWrapper;
-using PersonDayWrapper = Daysim.DomainModels.Actum.Wrappers.PersonDayWrapper;
-using PersonWrapper = Daysim.DomainModels.Actum.Wrappers.PersonWrapper;
-using TourWrapper = Daysim.DomainModels.Actum.Wrappers.TourWrapper;
+using HouseholdDayWrapper = Daysim.DomainModels.Default.Wrappers.HouseholdDayWrapper;
+using HouseholdWrapper = Daysim.DomainModels.Default.Wrappers.HouseholdWrapper;
+using PersonDayWrapper = Daysim.DomainModels.Default.Wrappers.PersonDayWrapper;
+using PersonWrapper = Daysim.DomainModels.Default.Wrappers.PersonWrapper;
+using TourWrapper = Daysim.DomainModels.Default.Wrappers.TourWrapper;
 
 namespace Daysim.ChoiceModels.Actum.Models {
 	public class TourModeTimeModel : ChoiceModel {
@@ -107,7 +106,6 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					RunModel(choiceProbabilityCalculator, householdDay, tour, tour.DestinationParcel, tour.Household.VehiclesAvailable,
 						constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
 					var simulatedChoice = choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
-
 					if (simulatedChoice == null) {
 						Global.PrintFile.WriteNoAlternativesAvailableWarning(CHOICE_MODEL_NAME, "Run", tour.PersonDay.Id);
 						if (!Global.Configuration.IsInEstimationMode) {
@@ -118,7 +116,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					}
 					choice = (HTourModeTime) simulatedChoice.Choice;
 				}
-
+				if (Global.Configuration.TraceModelResultValidity) {
+						Global.PrintFile.WriteLine("  >> TourModeTimeModel HH/P/T/mode {0} {1} {2} {3}", tour.Household.Id, tour.Person.Sequence, tour.Sequence, choice.Mode);
+				}
 				tour.Mode = choice.Mode;
 				tour.HalfTour1AccessCost = choice.OriginAccessCost/2.0;
 				tour.HalfTour1AccessDistance = choice.OriginAccessDistance/2.0;
@@ -591,10 +591,23 @@ namespace Daysim.ChoiceModels.Actum.Models {
 
 					var altIndex = modeTimes.Index;
 
+ 
+					
+					
 					//limit availability based on mode and tour purpose
 					bool available = (mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.CarParkRideBike || mode == Global.Settings.Modes.WalkRideBike)
 						&& (!(tour.IsWorkPurpose() || tour.IsSchoolPurpose())) ? false : true;
 
+					//further limit availability if tour includes joint travel
+					if ((tour.JointTourSequence > 0 
+						|| tour.FullHalfTour1Sequence > 0 || tour.FullHalfTour2Sequence > 0 
+						|| tour.PartialHalfTour1Sequence > 0 || tour.PartialHalfTour2Sequence > 0) 
+						&& (mode > Global.Settings.Modes.Transit)) {
+							available = false;
+						}
+					
+					//further limit availability:  kissAndRide and carParkRideBike are not supported 
+					available = (available == true) && (mode != Global.Settings.Modes.CarKissRideWalk) && (mode != Global.Settings.Modes.CarParkRideBike);
 
 					//further limit availabillity based on time window variables and any constrained choices
 					available = (available == true)

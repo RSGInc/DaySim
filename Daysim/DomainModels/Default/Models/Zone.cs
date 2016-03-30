@@ -38,7 +38,7 @@ namespace Daysim.DomainModels.Default.Models {
 		[ColumnName("fraction_filled_by_workers_from_outside")]
 		public double FractionJobsFilledByWorkersFromOutsideRegion { get; set; }
 
-		[ColumnName("nearest_stoparea_id")]
+		[ColumnName("nearest_stop_area_id")]
 		public int NearestStopAreaId { get; set; }
 	}
 }

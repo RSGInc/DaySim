@@ -24,16 +24,10 @@ using Daysim.Framework.Exceptions;
 using Daysim.Framework.Factories;
 using Daysim.Framework.Roster;
 using Ninject;
-using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdWrapper;
 using IntermediateStopGenerationModel = Daysim.ChoiceModels.Actum.Models.IntermediateStopGenerationModel;
 using IntermediateStopLocationModel = Daysim.ChoiceModels.Actum.Models.IntermediateStopLocationModel;
-using PersonDayWrapper = Daysim.DomainModels.Actum.Wrappers.PersonDayWrapper;
-using PersonWrapper = Daysim.DomainModels.Actum.Wrappers.PersonWrapper;
-using TourWrapper = Daysim.DomainModels.Actum.Wrappers.TourWrapper;
 using TripModeModel = Daysim.ChoiceModels.Actum.Models.TripModeModel;
 using TripTimeModel = Daysim.ChoiceModels.Actum.Models.TripTimeModel;
-using TripWrapper = Daysim.DomainModels.Actum.Wrappers.TripWrapper;
 using WorkBasedSubtourGenerationModel = Daysim.ChoiceModels.Actum.Models.WorkBasedSubtourGenerationModel;
 
 namespace Daysim.ChoiceModels.Actum {
@@ -339,7 +333,7 @@ namespace Daysim.ChoiceModels.Actum {
 
 		private static void RunHouseholdDayModelSuite(HouseholdDayWrapper householdDay, int batchNumber) {
 
-			if (householdDay.Household.Id == 80205) { //15454) {
+			if (householdDay.Household.Id == 81400) { //15454) {
 				bool testbreak = true;
 			}
 			//mbtrace
@@ -1908,8 +1902,11 @@ namespace Daysim.ChoiceModels.Actum {
 				}
 				else if (tour[i - 1].Mode == Global.Settings.Modes.Transit || tour[i - 1].Mode == Global.Settings.Modes.ParkAndRide) {
 					impedanceVariable = "ivtime"; // TODO:  logic that uses this SHOULD also include initial wait time and transfer time
-					mode = Global.Settings.Modes.Transit;
-					pathType = Global.Settings.PathTypes.LocalBus;
+					//JLB 20160323 substitute HOV Passenger for Transit for now.  Logic that uses this should use transit total ivtime plus wait and transfer times 
+					//mode = Global.Settings.Modes.Transit;
+					//pathType = Global.Settings.PathTypes.LocalBus;
+					mode = Global.Settings.Modes.HovPassenger;
+					pathType = Global.Settings.PathTypes.FullNetwork;
 				}
 				else {
 					impedanceVariable = "ivtime";
@@ -2094,8 +2091,11 @@ namespace Daysim.ChoiceModels.Actum {
 				}
 				else if (tour[1].Mode == Global.Settings.Modes.Transit || tour[1].Mode == Global.Settings.Modes.ParkAndRide) {
 					impedanceVariable = "ivtime";
-					mode = Global.Settings.Modes.Transit;
-					pathType = Global.Settings.PathTypes.LocalBus;
+					//JLB 20160323 substitute HOV Passenger for Transit for now.  Logic that uses this should use transit total ivtime plus wait and transfer times 
+					//mode = Global.Settings.Modes.Transit;
+					//pathType = Global.Settings.PathTypes.LocalBus;
+					mode = Global.Settings.Modes.HovPassenger;
+					pathType = Global.Settings.PathTypes.FullNetwork;
 				}
 				else {
 					impedanceVariable = "ivtime";
@@ -2447,7 +2447,8 @@ namespace Daysim.ChoiceModels.Actum {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > RunMandatoryTourModelSuite for Household {0} Person {1} Tour {2}", householdDay.Household.Id, personDay.Person.Sequence, tour.Sequence);
 
-			if (householdDay.Household.Id == 80142 && tour.PersonDay.Person.Sequence == 2 && tour.Sequence == 1) {
+			//if (householdDay.Household.Id == 80142 && tour.PersonDay.Person.Sequence == 2 && tour.Sequence == 1) {
+			if (householdDay.Household.Id == 81400 && tour.PersonDay.Person.Sequence == 2) {
 				bool testbreak = true;
 			}
 
@@ -3366,6 +3367,11 @@ namespace Daysim.ChoiceModels.Actum {
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > ProcessHalfTours Person {0} Tour {1} Directions {2} to {3}",
 					 personDay.Person.Sequence, tour.Sequence, firstDirection, lastDirection);
 
+
+			if (tour.Household.Id ==80170 && tour.Person.Sequence == 1 && tour.Sequence == 1) {
+				bool testbreak = true;
+			}
+
 			// goes in two directions, from origin to destination and destination to origin
 			for (var direction = firstDirection; direction <= lastDirection; direction++) {
 				// creates origin and destination half-tours
@@ -3623,6 +3629,12 @@ namespace Daysim.ChoiceModels.Actum {
 			if (Global.Configuration.IsInEstimationMode && (tour.DestinationArrivalBigPeriod == null || tour.DestinationDepartureBigPeriod == null)) {
 				return;
 			}
+
+	
+			if (tour.Household.Id ==81100 && tour.Person.Sequence == 3 && tour.Sequence == 1 && trip.Direction == 2 && trip.Sequence == 1) {
+				bool testbreak = true;
+			}
+			
 			//set bounds on departure time window as new trip properties
 
 			//set time needed from intermediate stop to tour origin
