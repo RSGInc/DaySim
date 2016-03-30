@@ -217,7 +217,9 @@ namespace Daysim.Framework.Roster {
                         (mode == Global.Settings.Modes.Walk && Global.Configuration.IntrazonalWalkMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalWalkMinutesPerMile_OverrideSkims
                       : (mode == Global.Settings.Modes.Bike && Global.Configuration.IntrazonalBikeMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalBikeMinutesPerMile_OverrideSkims
                       : (mode >= Global.Settings.Modes.Sov && mode <= Global.Settings.Modes.Hov3 && Global.Configuration.IntrazonalAutoMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalAutoMinutesPerMile_OverrideSkims
-                      : skimValue.Variable / networkDistance;
+                      : networkDistance>=Constants.EPSILON ? skimValue.Variable / networkDistance
+                      : mode == Global.Settings.Modes.Walk ? 20.0 
+                      : mode == Global.Settings.Modes.Bike ? 6.0 : 3.0;
 
                     skimValue.Variable = skimValue.BlendVariable * minutesPerMile;
                 }
