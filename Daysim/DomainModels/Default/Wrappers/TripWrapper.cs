@@ -504,39 +504,39 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			}
 		}
 
-	
-//		public virtual void SetDriverOrPassenger(List<ITripWrapper> trips) {
-//			if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Transit || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
-//				DriverType = Global.Settings.DriverTypes.NotApplicable;
-//			}
-//			else if (Mode == Global.Settings.Modes.Sov) {
-//				DriverType = Global.Settings.DriverTypes.Driver;
-//			}
-//			else if (Mode == Global.Settings.Modes.Hov2 || Mode == Global.Settings.Modes.Hov3) {
-//				if (Person.IsChildUnder16 || Household.VehiclesAvailable == 0 || (!Tour.IsHov2Mode() && !Tour.IsHov3Mode())) {
-//					DriverType = Global.Settings.DriverTypes.Passenger;
-//				}
-//				else {
-//					if (trips.Any(t => ((TripWrapper) t).IsWalkMode() || ((TripWrapper) t).IsBikeMode())) {
-//						DriverType = Global.Settings.DriverTypes.Passenger;
-//					}
-//					else if (trips.Any(t => ((TripWrapper) t).IsSovMode())) {
-//						DriverType = Global.Settings.DriverTypes.Driver;
-//					}
-//					else if (trips.Any(t => ((TripWrapper) t).IsHov2Mode())) {
-//						var randomNumber = Household.RandomUtility.Uniform01();
-//
-//						DriverType = randomNumber > .799 ? Global.Settings.DriverTypes.Passenger : Global.Settings.DriverTypes.Driver;
-//					}
-//					else {
-//						// HOV3 mode
-//						var randomNumber = Household.RandomUtility.Uniform01();
-//
-//						DriverType = randomNumber > .492 ? Global.Settings.DriverTypes.Passenger : Global.Settings.DriverTypes.Driver;
-//					}
-//				}
-//			}
-//		}
+
+		//		public virtual void SetDriverOrPassenger(List<ITripWrapper> trips) {
+		//			if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Transit || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
+		//				DriverType = Global.Settings.DriverTypes.NotApplicable;
+		//			}
+		//			else if (Mode == Global.Settings.Modes.Sov) {
+		//				DriverType = Global.Settings.DriverTypes.Driver;
+		//			}
+		//			else if (Mode == Global.Settings.Modes.Hov2 || Mode == Global.Settings.Modes.Hov3) {
+		//				if (Person.IsChildUnder16 || Household.VehiclesAvailable == 0 || (!Tour.IsHov2Mode() && !Tour.IsHov3Mode())) {
+		//					DriverType = Global.Settings.DriverTypes.Passenger;
+		//				}
+		//				else {
+		//					if (trips.Any(t => ((TripWrapper) t).IsWalkMode() || ((TripWrapper) t).IsBikeMode())) {
+		//						DriverType = Global.Settings.DriverTypes.Passenger;
+		//					}
+		//					else if (trips.Any(t => ((TripWrapper) t).IsSovMode())) {
+		//						DriverType = Global.Settings.DriverTypes.Driver;
+		//					}
+		//					else if (trips.Any(t => ((TripWrapper) t).IsHov2Mode())) {
+		//						var randomNumber = Household.RandomUtility.Uniform01();
+		//
+		//						DriverType = randomNumber > .799 ? Global.Settings.DriverTypes.Passenger : Global.Settings.DriverTypes.Driver;
+		//					}
+		//					else {
+		//						// HOV3 mode
+		//						var randomNumber = Household.RandomUtility.Uniform01();
+		//
+		//						DriverType = randomNumber > .492 ? Global.Settings.DriverTypes.Passenger : Global.Settings.DriverTypes.Driver;
+		//					}
+		//				}
+		//			}
+		//		}
 
 		public virtual void UpdateTripValues() {
 			if (Global.Configuration.IsInEstimationMode || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunIntermediateStopLocationModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripModeModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripTimeModel)) {
@@ -657,6 +657,33 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				TravelDistance = modeImpedance.PathDistance;
 				PathType = modeImpedance.PathType;
 
+				if (this.Mode == Global.Settings.Modes.Transit) {
+					if (this.Direction == 1) {
+						this.AccessCost = time.DestinationAccessCost;
+						this.AccessDistance = time.DestinationAccessDistance;
+						this.AccessMode = time.DestinationAccessMode;
+						this.AccessStopArea = time.ParkAndRideDestinationStopAreaKey;
+						this.AccessTime = time.DestinationAccessTime;
+						this.EgressCost = time.OriginAccessCost;
+						this.EgressDistance = time.OriginAccessDistance;
+						this.EgressMode = time.OriginAccessMode;
+						this.EgressStopArea = time.ParkAndRideOriginStopAreaKey;
+						this.EgressTime = time.OriginAccessTime;
+
+					}
+					else {
+						this.AccessCost = time.OriginAccessCost;
+						this.AccessDistance = time.OriginAccessDistance;
+						this.AccessMode = time.OriginAccessMode;
+						this.AccessStopArea = time.ParkAndRideOriginStopAreaKey;
+						this.AccessTime = time.OriginAccessTime;
+						this.EgressCost = time.DestinationAccessCost;
+						this.EgressDistance = time.DestinationAccessDistance;
+						this.EgressMode = time.DestinationAccessMode;
+						this.EgressStopArea = time.ParkAndRideDestinationStopAreaKey;
+						this.EgressTime = time.DestinationAccessTime;
+					}
+				}
 				var duration = (int) (TravelTime + 0.5);
 
 				if (duration == Constants.DEFAULT_VALUE && Global.Configuration.ReportInvalidPersonDays) {
@@ -674,46 +701,46 @@ namespace Daysim.DomainModels.Default.Wrappers {
 						? Math.Max(1, DepartureTime - duration)
 						: Math.Min(Global.Settings.Times.MinutesInADay, DepartureTime + duration);
 
-/* doesn't have much effect - turn off for now
-                if (!Global.Configuration.AllowTripArrivalTimeOverlaps && timeWindow.IsBusy(ArrivalTime))   {
-                    // move entire trip up to 15 minutes later or earlier depending on half tour direction.  
-                    // Find the smallest shift that will make the arrival time a non-busy minute while still leaving 
-                    // a gap between the departure time and the arrival time at the trip origin (non-0 activity duration)
-                    //NOTE: This was copied over from the old version above.
-                    // This could possibly cause some inconsistencies for times for different people on joint tours, if it is done separately for each
-                    // (will work better if done before cloning....)
-                    const int moveLimit = 15;
+				/* doesn't have much effect - turn off for now
+									 if (!Global.Configuration.AllowTripArrivalTimeOverlaps && timeWindow.IsBusy(ArrivalTime))   {
+										  // move entire trip up to 15 minutes later or earlier depending on half tour direction.  
+										  // Find the smallest shift that will make the arrival time a non-busy minute while still leaving 
+										  // a gap between the departure time and the arrival time at the trip origin (non-0 activity duration)
+										  //NOTE: This was copied over from the old version above.
+										  // This could possibly cause some inconsistencies for times for different people on joint tours, if it is done separately for each
+										  // (will work better if done before cloning....)
+										  const int moveLimit = 15;
 
-                    if (IsHalfTourFromOrigin)     {
-                        int originArrivalTime = Sequence == 1 ? Tour.DestinationDepartureTime : PreviousTrip.ArrivalTime;
-                        int moveLater = 0;
-                        do       {
-                            moveLater++;
-                        } while (moveLater <= moveLimit && DepartureTime + moveLater < originArrivalTime && timeWindow.IsBusy(ArrivalTime + moveLater));
+										  if (IsHalfTourFromOrigin)     {
+												int originArrivalTime = Sequence == 1 ? Tour.DestinationDepartureTime : PreviousTrip.ArrivalTime;
+												int moveLater = 0;
+												do       {
+													 moveLater++;
+												} while (moveLater <= moveLimit && DepartureTime + moveLater < originArrivalTime && timeWindow.IsBusy(ArrivalTime + moveLater));
 
-                        if (!timeWindow.IsBusy(ArrivalTime + moveLater)) {
-                            ArrivalTime += moveLater;
-                            DepartureTime += moveLater;
-                            if (Sequence == 1) Tour.DestinationArrivalTime += moveLater;
-                            if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved later by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveLater, DepartureTime, originArrivalTime);
-                        }
-                    }
-                    else  {
-                        int originArrivalTime = Sequence == 1 ? Tour.DestinationArrivalTime : PreviousTrip.ArrivalTime;
-                        int moveEarlier = 0;
-                        do   {
-                            moveEarlier++;
-                        } while (moveEarlier <= moveLimit && DepartureTime - moveEarlier > originArrivalTime && timeWindow.IsBusy(ArrivalTime - moveEarlier));
+												if (!timeWindow.IsBusy(ArrivalTime + moveLater)) {
+													 ArrivalTime += moveLater;
+													 DepartureTime += moveLater;
+													 if (Sequence == 1) Tour.DestinationArrivalTime += moveLater;
+													 if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved later by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveLater, DepartureTime, originArrivalTime);
+												}
+										  }
+										  else  {
+												int originArrivalTime = Sequence == 1 ? Tour.DestinationArrivalTime : PreviousTrip.ArrivalTime;
+												int moveEarlier = 0;
+												do   {
+													 moveEarlier++;
+												} while (moveEarlier <= moveLimit && DepartureTime - moveEarlier > originArrivalTime && timeWindow.IsBusy(ArrivalTime - moveEarlier));
 
-                        if (!timeWindow.IsBusy(ArrivalTime - moveEarlier))   {
-                            ArrivalTime -= moveEarlier;
-                            DepartureTime -= moveEarlier;
-                            if (Sequence == 1) Tour.DestinationDepartureTime -= moveEarlier;
-                            if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved earlier by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveEarlier, DepartureTime, originArrivalTime);
-                        }
-                    }
-                }
-*/
+												if (!timeWindow.IsBusy(ArrivalTime - moveEarlier))   {
+													 ArrivalTime -= moveEarlier;
+													 DepartureTime -= moveEarlier;
+													 if (Sequence == 1) Tour.DestinationDepartureTime -= moveEarlier;
+													 if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved earlier by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveEarlier, DepartureTime, originArrivalTime);
+												}
+										  }
+									 }
+				*/
 				//check again after possible adjustment
 
 				if (!Global.Configuration.AllowTripArrivalTimeOverlaps && timeWindow.IsBusy(ArrivalTime)) {
@@ -860,20 +887,20 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			ValueOfTime = (Tour.TimeCoefficient * 60) / (Tour.CostCoefficient / costDivisor);
 		}
 
-//		public virtual void SetTripValueOfTime() {
-//			var costDivisor =
-//				Mode == Global.Settings.Modes.Hov2 && Tour.DestinationPurpose == Global.Settings.Purposes.Work
-//					? Global.Configuration.Coefficients_HOV2CostDivisor_Work
-//					: Mode == Global.Settings.Modes.Hov2 && Tour.DestinationPurpose != Global.Settings.Purposes.Work
-//						? Global.Configuration.Coefficients_HOV2CostDivisor_Other
-//						: Mode == Global.Settings.Modes.Hov3 && Tour.DestinationPurpose == Global.Settings.Purposes.Work
-//							? Global.Configuration.Coefficients_HOV3CostDivisor_Work
-//							: Mode == Global.Settings.Modes.Hov3 && Tour.DestinationPurpose != Global.Settings.Purposes.Work
-//								? Global.Configuration.Coefficients_HOV3CostDivisor_Other
-//								: 1.0;
-//
-//			ValueOfTime = (Tour.TimeCoefficient * 60) / (Tour.CostCoefficient / costDivisor);
-//		}
+		//		public virtual void SetTripValueOfTime() {
+		//			var costDivisor =
+		//				Mode == Global.Settings.Modes.Hov2 && Tour.DestinationPurpose == Global.Settings.Purposes.Work
+		//					? Global.Configuration.Coefficients_HOV2CostDivisor_Work
+		//					: Mode == Global.Settings.Modes.Hov2 && Tour.DestinationPurpose != Global.Settings.Purposes.Work
+		//						? Global.Configuration.Coefficients_HOV2CostDivisor_Other
+		//						: Mode == Global.Settings.Modes.Hov3 && Tour.DestinationPurpose == Global.Settings.Purposes.Work
+		//							? Global.Configuration.Coefficients_HOV3CostDivisor_Work
+		//							: Mode == Global.Settings.Modes.Hov3 && Tour.DestinationPurpose != Global.Settings.Purposes.Work
+		//								? Global.Configuration.Coefficients_HOV3CostDivisor_Other
+		//								: 1.0;
+		//
+		//			ValueOfTime = (Tour.TimeCoefficient * 60) / (Tour.CostCoefficient / costDivisor);
+		//		}
 
 
 		public virtual bool IsBusinessDestinationPurpose() {
@@ -906,7 +933,7 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				else {
 					time.Available = true;
 				}
-				
+
 				var travelTime = this.Direction == 1 ? this.Tour.HalfTour1TravelTime : this.Tour.HalfTour2TravelTime;
 
 				//set the feasible window within the small period, accounting for travel time, and recheck availability
@@ -940,6 +967,8 @@ namespace Daysim.DomainModels.Default.Wrappers {
 				TravelCost = this.Tour.TravelCostForPTBikeTour / 2.0;
 				TravelDistance = this.Tour.TravelDistanceForPTBikeTour / 2.0;
 				PathType = this.Tour.PathType;
+
+				this.Mode = this.Tour.Mode;
 
 				if (this.Direction == 1) {
 					this.AccessCost = this.Tour.HalfTour1AccessCost;
@@ -1096,9 +1125,9 @@ namespace Daysim.DomainModels.Default.Wrappers {
 			}
 		}
 
-	
-		
-		
+
+
+
 		#endregion
 
 		#region init/utility/export methods
@@ -1166,83 +1195,82 @@ namespace Daysim.DomainModels.Default.Wrappers {
 
 
 
-            if (Mode == Global.Settings.Modes.Transit && DestinationPurpose == Global.Settings.Purposes.ChangeMode)  {
-                if (Global.StopAreaIsEnabled)  {
-                    modeImpedance.TravelTime = Tour.ParkAndRideTransitTime / 2.0;
-                    modeImpedance.GeneralizedTime = Tour.ParkAndRideTransitGeneralizedTime / 2.0;
-                    modeImpedance.PathType = Tour.ParkAndRidePathType;
+			if (Mode == Global.Settings.Modes.Transit && DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
+				if (Global.StopAreaIsEnabled) {
+					modeImpedance.TravelTime = Tour.ParkAndRideTransitTime / 2.0;
+					modeImpedance.GeneralizedTime = Tour.ParkAndRideTransitGeneralizedTime / 2.0;
+					modeImpedance.PathType = Tour.ParkAndRidePathType;
 
-                    if (!includeCostAndDistance) {
-                        return modeImpedance;
-                    }
-                    modeImpedance.TravelDistance = Tour.ParkAndRideTransitDistance / 2.0;
-                    modeImpedance.TravelCost = Tour.ParkAndRideTransitCost / 2.0;
-                }
-                else {
-                    var parkAndRideZoneId =
-                        ChoiceModelFactory
-                        .ParkAndRideNodeDao
-                        .Get(Tour.ParkAndRideNodeId)
-                        .ZoneId;
+					if (!includeCostAndDistance) {
+						return modeImpedance;
+					}
+					modeImpedance.TravelDistance = Tour.ParkAndRideTransitDistance / 2.0;
+					modeImpedance.TravelCost = Tour.ParkAndRideTransitCost / 2.0;
+				}
+				else {
+					var parkAndRideZoneId =
+						 ChoiceModelFactory
+						 .ParkAndRideNodeDao
+						 .Get(Tour.ParkAndRideNodeId)
+						 .ZoneId;
 
-                    var origin = IsHalfTourFromOrigin ? parkAndRideZoneId : OriginParcel.ZoneId;
-                    var destination = IsHalfTourFromOrigin ? OriginParcel.ZoneId : parkAndRideZoneId;
+					var origin = IsHalfTourFromOrigin ? parkAndRideZoneId : OriginParcel.ZoneId;
+					var destination = IsHalfTourFromOrigin ? OriginParcel.ZoneId : parkAndRideZoneId;
 
-                    IEnumerable<dynamic> pathTypeModels =
-                        PathTypeModelFactory.Model
-								//20151117 JLB following line was before I made change for Actum under SVN repository 
-								//.Run(Household.RandomUtility, OriginParcel.ZoneId, parkAndRideZoneId, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Mode);
-								//20171117 JLB following line was after I made change for Actum under SVN repository
-								//.Run(Household.RandomUtility, OriginParcel.ZoneId, parkAndRideZoneId, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, Mode);
-								//20171117 JLB following line came from RSG Git repository when I was synching new Git Actum repository with RSG Git repository
-                        //.Run(Household.RandomUtility, origin, destination, Tour.DestinationArrivalTime, Tour.DestinationDepartureTime, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.ParkAndRide);
-								//20151117 JLB following line inserts my change for Actum into the line that came from the RSG Git repository
-                        .Run(Household.RandomUtility, origin, destination, Tour.DestinationArrivalTime, Tour.DestinationDepartureTime, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.ParkAndRide);
+					IEnumerable<dynamic> pathTypeModels =
+						 PathTypeModelFactory.Model
+						//20151117 JLB following line was before I made change for Actum under SVN repository 
+						//.Run(Household.RandomUtility, OriginParcel.ZoneId, parkAndRideZoneId, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Mode);
+						//20171117 JLB following line was after I made change for Actum under SVN repository
+						//.Run(Household.RandomUtility, OriginParcel.ZoneId, parkAndRideZoneId, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, Mode);
+						//20171117 JLB following line came from RSG Git repository when I was synching new Git Actum repository with RSG Git repository
+						//.Run(Household.RandomUtility, origin, destination, Tour.DestinationArrivalTime, Tour.DestinationDepartureTime, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.ParkAndRide);
+						//20151117 JLB following line inserts my change for Actum into the line that came from the RSG Git repository
+						 .Run(Household.RandomUtility, origin, destination, Tour.DestinationArrivalTime, Tour.DestinationDepartureTime, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.ParkAndRide);
 
-                    pathType = pathTypeModels.First();
+					pathType = pathTypeModels.First();
 
-                    modeImpedance.TravelTime = pathType.PathParkAndRideTransitTime;
-                    modeImpedance.GeneralizedTime = pathType.GeneralizedTimeLogsum;
-                    modeImpedance.PathType = pathType.PathType;
+					modeImpedance.TravelTime = pathType.PathParkAndRideTransitTime;
+					modeImpedance.GeneralizedTime = pathType.GeneralizedTimeLogsum;
+					modeImpedance.PathType = pathType.PathType;
 
-                    if (!includeCostAndDistance) {
-                        return modeImpedance;
-                    }
+					if (!includeCostAndDistance) {
+						return modeImpedance;
+					}
 
-                    modeImpedance.TravelCost = pathType.PathParkAndRideTransitCost;
-                    modeImpedance.TravelDistance = pathType.PathParkAndRideTransitDistance;
-                }
-            }
-            else  {
-                var useMode = Mode == Global.Settings.Modes.SchoolBus ? Global.Settings.Modes.Hov3 : Mode;
+					modeImpedance.TravelCost = pathType.PathParkAndRideTransitCost;
+					modeImpedance.TravelDistance = pathType.PathParkAndRideTransitDistance;
+				}
+			}
+			else {
+				var useMode = Mode == Global.Settings.Modes.SchoolBus ? Global.Settings.Modes.Hov3 : Mode;
 
-                var origin = IsHalfTourFromOrigin ? DestinationParcel : OriginParcel;
-                var destination = IsHalfTourFromOrigin ? OriginParcel : DestinationParcel;
+				var origin = IsHalfTourFromOrigin ? DestinationParcel : OriginParcel;
+				var destination = IsHalfTourFromOrigin ? OriginParcel : DestinationParcel;
 
-                IEnumerable<dynamic> pathTypeModels =
-                    PathTypeModelFactory.Model
-								//20151117 JLB following line was before I made change for Actum under SVN repository 
-								//.Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
-								//20171117 JLB following line was after I made change for Actum under SVN repository
-								//.Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, useMode);
-								//20171117 JLB following line came from RSG Git repository when I was synching new Git Actum repository with RSG Git repository
-                        //.Run(Household.RandomUtility, origin, destination, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
-								//20151117 JLB following line inserts my change for Actum into the line that came from the RSG Git repository
-                        .Run(Household.RandomUtility, origin, destination, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, useMode);
-                pathType = pathTypeModels.First();
+				IEnumerable<dynamic> pathTypeModels =
+					 PathTypeModelFactory.Model
+					//20151117 JLB following line was before I made change for Actum under SVN repository 
+					//.Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
+					//20171117 JLB following line was after I made change for Actum under SVN repository
+					//.Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, useMode);
+					//20171117 JLB following line came from RSG Git repository when I was synching new Git Actum repository with RSG Git repository
+					//.Run(Household.RandomUtility, origin, destination, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
+					//20151117 JLB following line inserts my change for Actum into the line that came from the RSG Git repository
+						  .Run(Household.RandomUtility, origin, destination, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.TransitPassOwnership, Person.GetTransitFareDiscountFraction(), false, useMode);
+				pathType = pathTypeModels.First();
 
-                modeImpedance.TravelTime = pathType.PathTime;
-                modeImpedance.GeneralizedTime = pathType.GeneralizedTimeLogsum;
-                modeImpedance.PathType = pathType.PathType;
+				modeImpedance.TravelTime = pathType.PathTime;
+				modeImpedance.GeneralizedTime = pathType.GeneralizedTimeLogsum;
+				modeImpedance.PathType = pathType.PathType;
 
-                if (!includeCostAndDistance)
-                {
-                    return modeImpedance;
-                }
+				if (!includeCostAndDistance) {
+					return modeImpedance;
+				}
 
-                modeImpedance.TravelCost = pathType.PathCost;
-                modeImpedance.TravelDistance = pathType.PathDistance;
-            }
+				modeImpedance.TravelCost = pathType.PathCost;
+				modeImpedance.TravelDistance = pathType.PathDistance;
+			}
 
 
 
