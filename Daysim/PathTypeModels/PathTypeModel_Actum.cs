@@ -2556,12 +2556,13 @@ namespace Daysim.PathTypeModels {
 		//}}
 
 		private void RunStopAreaBikeOnTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
-			var stopAreaReader =
-				Global
-					.Kernel
-					.Get<IPersistenceFactory<ITransitStopArea>>()
-					.Reader;
-			var eligibleTerminals = stopAreaReader.Where(s => s.BikeOnBoardTerminal == 1).ToDictionary(z => z.Key, z => z);
+//			var stopAreaReader =
+//				Global
+//					.Kernel
+//					.Get<IPersistenceFactory<ITransitStopArea>>()
+//					.Reader;
+//			var eligibleTerminals = stopAreaReader.Where(s => s.BikeOnBoardTerminal == 1).ToDictionary(z => z.Key, z => z);
+			var eligibleTerminals = Global.TransitStopAreas.Where(s => s.BikeOnBoardTerminal == 1).ToDictionary(z => z.Key, z => z);
 			if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
 				return;
 			}

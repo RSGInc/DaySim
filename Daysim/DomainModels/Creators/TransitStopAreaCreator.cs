@@ -28,7 +28,7 @@ namespace Daysim.DomainModels.Creators {
 			return CreateWrapper(transitStopArea);
 		}
 
-		private static TWrapper CreateWrapper(ITransitStopArea transitStopArea) {
+		public static TWrapper CreateWrapper(ITransitStopArea transitStopArea) {
 			var type = typeof (TWrapper);
 			var instance = Activator.CreateInstance(type, transitStopArea);
 

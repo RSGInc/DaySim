@@ -287,7 +287,13 @@ namespace Daysim {
 				.Kernel
 				.Get<IWrapperFactory<IPartialHalfTourCreator>>()
 				.Initialize(Global.Configuration);
-		}
+
+				Global
+				.Kernel
+				.Get<IWrapperFactory<ITransitStopAreaCreator>>()
+				.Initialize(Global.Configuration);
+
+	}
 
 		private static void InitializeSkimFactories() {
 			Global.Kernel.Get<SkimFileReaderFactory>().Register("text_ij", new TextIJSkimFileReaderCreator());
@@ -1191,6 +1197,20 @@ namespace Daysim {
 						.Kernel
 						.Get<IPersistenceFactory<ITransitStopArea>>()
 						.Reader;
+
+				var transitStopAreaCreator = 
+					Global
+						.Kernel
+						.Get<IWrapperFactory<ITransitStopAreaCreator>>()
+						.Creator;
+
+				Global.TransitStopAreaDictionary = new Dictionary<int,ITransitStopAreaWrapper>();
+				foreach (var transitStopArea in transitStopAreaReader) {
+					var stopArea = transitStopAreaCreator.CreateWrapper (transitStopArea);
+					var id = stopArea.Id;
+					Global.TransitStopAreaDictionary.Add (id, stopArea);
+				}
+				Global.TransitStopAreas = Global.TransitStopAreaDictionary.Values;
 
 				Global.TransitStopAreaMapping = new Dictionary<int, int>(transitStopAreaReader.Count);
 

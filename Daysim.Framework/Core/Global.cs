@@ -12,6 +12,7 @@ using System.IO;
 using System.Reflection;
 using Daysim.Framework.ChoiceModels;
 using Daysim.Framework.DomainModels.Models;
+using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.Framework.Factories;
 using Daysim.Framework.Sampling;
 using Ninject;
@@ -53,6 +54,9 @@ namespace Daysim.Framework.Core {
 		public static Dictionary<int, int> NodeIndex { get; set; }
 
 		public static Dictionary<int, int> TransitStopAreaMapping { get; set; }
+
+		public static Dictionary<int, ITransitStopAreaWrapper> TransitStopAreaDictionary { get; set; }
+		public static Dictionary<int, ITransitStopAreaWrapper>.ValueCollection TransitStopAreas { get; set; }
 
 		public static Dictionary<int, int> MicrozoneMapping { get; set; }
 
