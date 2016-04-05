@@ -68,6 +68,9 @@ namespace Daysim {
 
 			BeginLoadRoster();
 
+			//GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+			GC.Collect();  
+
 			//moved this up to load data dictionaires sooner
 			ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, ParallelUtility.NBatches);
 			//ChoiceModelFactory.LoadData();
