@@ -1,6 +1,71 @@
-﻿*.suo
-obj/
-bin/
+﻿#.gitignore for Visual Studio from: https://gist.github.com/paigecook/1024746
 
-# Excel temporary
-~$*.xls*
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+#*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store?
+ehthumbs.db
+[Ii]con?
+[Tt]humbs.db
+
+# .NET Specific Folders #
+#########################
+[Oo]bj
+[Oo]bj/*
+[Bb]in
+[Bb]in/*
+deploy
+deploy/*
+_ReSharper.*
+*.csproj.user
+*.Resharper.user
+*.resharper
+*.suo
+*.cache
+~$*
+*.licx
+*/obj
+
+#  Pro Power Tools Document Tab Well Tracking #
+###############################################
+*.docstates
+
+# VS Source Control information #
+#################################
+*.vspscc
+*.vssscc
+
+
+# Includes #
+############
+!lib/*.dll
+!lib/*.xml
+!/packages/*/lib/*.dll
+!/packages/*/lib/*/*.dll
