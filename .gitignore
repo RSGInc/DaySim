@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.suo
+/Daysim/bin
+/Daysim/obj
+/DaysimController/bin/Debug
+/Daysim.VisumExport/obj/Debug
+/DaysimController/obj/Debug
+/Daysim.VisumExport/bin/Debug
+/Daysim.Tests/obj/Debug
+/Daysim.Framework/bin/Debug
+/Daysim.Framework/obj/Debug
