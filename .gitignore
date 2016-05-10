@@ -1,5 +1,4 @@
-﻿#ignore temporary files and binary object created by Visual Studio
-*.suo
+﻿*.suo
 obj/
 bin/
 
