@@ -116,6 +116,23 @@ namespace Daysim.ChoiceModels.Default.Models {
 			alternative.AddUtilityTerm(89, 1);  //new dummy size variable for oddball alt
 			alternative.AddUtilityTerm(90, 100);  //old dummy size variable for oddball alt
 
+            // OD shadow pricing - add for work at home
+            if (Global.Configuration.ShouldUseODShadowPricing)             {
+                var res = person.Household.ResidenceParcel.District;
+                var des = person.Household.ResidenceParcel.District;
+                //var first = res <= des? res : des;
+                //var second = res <= des? des : res;
+                var shadowPriceConfigurationParameter = res == des ? Global.Configuration.WorkLocationOOShadowPriceCoefficient : Global.Configuration.WorkLocationODShadowPriceCoefficient;
+                var odShadowPriceF12Value = MAX_REGULAR_PARAMETER + Global.Configuration.NumberOfODShadowPricingDistricts * (res - 1) + des;
+                alternative.AddUtilityTerm(odShadowPriceF12Value, shadowPriceConfigurationParameter);
+            }
+
+            // set shadow price depending on persontype and add it to utility
+			// we are using the sampling adjustment factor assuming that it is 1
+            if (Global.Configuration.ShouldUseShadowPricing)            {
+                alternative.AddUtilityTerm(1, person.Household.ResidenceParcel.ShadowPriceForEmployment);
+            }
+
 			//make oddball alt unavailable and remove nesting for estimation of conditional MNL 
 			//			alternative.Available = false;
 			alternative.AddNestedAlternative(sampleSize + 3, 1, 98);
