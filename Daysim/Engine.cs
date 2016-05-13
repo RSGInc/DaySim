@@ -1359,7 +1359,7 @@ namespace Daysim {
 				j++;
 			}
 			var index = 0;
-			Parallel.For((int) 0, nBatches,
+			Parallel.For(0, nBatches,
 				new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.LargeDegreeOfParallelism },
 				batchNumber => {
 					ParallelUtility.Register(Thread.CurrentThread.ManagedThreadId, batchNumber);
@@ -1405,7 +1405,7 @@ namespace Daysim {
 								: string.Format("Total {0} Days: {1}",
 									countStringf, countf));
 					}
-				});
+				}); //Parallel.For
 			var countg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
 			var countStringg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
 			var ivcountg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
