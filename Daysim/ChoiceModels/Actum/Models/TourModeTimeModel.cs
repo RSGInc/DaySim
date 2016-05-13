@@ -627,15 +627,15 @@ namespace Daysim.ChoiceModels.Actum.Models {
 					//alternative.AddNestedAlternative(HTourModeTime.TOTAL_TOUR_MODE_TIMES + periodComb + 1, periodComb, THETA_PARAMETER);
 					alternative.AddNestedAlternative(HTourModeTime.TotalTourModeTimes + mode, mode - 1, THETA_PARAMETER);
 
-					if (Global.Configuration.IsInEstimationMode && altIndex == choice.Index) {
-						Global.PrintFile.WriteLine("Aper Dper Mode {0} {1} {2} Travel Times {3} {4} Window {5} {6}",
-															arrivalPeriod.Index, departurePeriod.Index, mode,
-															modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
-															modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
-															modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.Start : -1,
-															modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
+					//if (Global.Configuration.IsInEstimationMode && altIndex == choice.Index) {
+					//	Global.PrintFile.WriteLine("Aper Dper Mode {0} {1} {2} Travel Times {3} {4} Window {5} {6}",
+					//										arrivalPeriod.Index, departurePeriod.Index, mode,
+					//										modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
+					//										modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
+					//										modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.Start : -1,
+					//										modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
 
-					}
+					//}
 					//Following code was used to test handling of partially joint half tours (JLB 20140603)
 					//if (partialHalfTour) {
 					//	Global.PrintFile.WriteLine("HH pers {0} {1} avail {2} Aper Dper Mode {3} {4} {5} Travel Times {6} {7} Window {8} {9}",
