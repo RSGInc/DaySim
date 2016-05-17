@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9C1720
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "compare_output_directories", "Daysim.Tests\Daysim.Tests.external\output_directories_identical\compare_output_directories\compare_output_directories.pyproj", "{66B71A86-D772-4A33-B182-760B912CD7F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,14 @@ Global
 		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Trace|Any CPU.Build.0 = Release|Any CPU
 		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Trace|x64.ActiveCfg = Release|x64
 		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Trace|x64.Build.0 = Release|x64
+		{66B71A86-D772-4A33-B182-760B912CD7F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66B71A86-D772-4A33-B182-760B912CD7F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66B71A86-D772-4A33-B182-760B912CD7F3}.Parallel Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66B71A86-D772-4A33-B182-760B912CD7F3}.Parallel Debug|x64.ActiveCfg = Debug|Any CPU
+		{66B71A86-D772-4A33-B182-760B912CD7F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66B71A86-D772-4A33-B182-760B912CD7F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{66B71A86-D772-4A33-B182-760B912CD7F3}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{66B71A86-D772-4A33-B182-760B912CD7F3}.Trace|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
