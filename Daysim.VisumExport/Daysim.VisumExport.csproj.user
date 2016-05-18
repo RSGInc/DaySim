@@ -13,4 +13,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartArguments>/t=C:\temp\PA\Output\DaySim\_trip.tsv /p=log.log /o=C:\temp\PA\TripOutput</StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <StartArguments>/t=C:\temp\PA\Output\DaySim\_trip.tsv /p=log.log /o=C:\temp\PA\TripOutput</StartArguments>
+  </PropertyGroup>
 </Project>

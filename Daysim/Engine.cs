@@ -35,8 +35,9 @@ namespace Daysim {
 		private static int _start = -1;
 		private static int _end = -1;
 		private static int _index = -1;
+        private static Timer overallDaysimTimer = new Timer("Daysim...", true);
 
-		public static void BeginTestMode() {
+        public static void BeginTestMode() {
 			var randomUtility = new RandomUtility();
 			randomUtility.ResetUniform01(Global.Configuration.RandomSeed);
 			randomUtility.ResetHouseholdSynchronization(Global.Configuration.RandomSeed);
@@ -51,45 +52,45 @@ namespace Daysim {
 			_end = end;
 			_index = index;
 
-			var timer = new Timer("Starting Daysim...");
 
 			var randomUtility = new RandomUtility();
 			randomUtility.ResetUniform01(Global.Configuration.RandomSeed);
 			randomUtility.ResetHouseholdSynchronization(Global.Configuration.RandomSeed);
 
 			BeginInitialize();
-			if (Global.Configuration.ShouldRunInputTester == true) {
+            if (Global.Configuration.ShouldRunInputTester == true) {
 				BeginTestInputs();
-			}
+            }
 
-			BeginRunRawConversion();
-			BeginImportData();
-			BeginBuildIndexes();
+            BeginRunRawConversion();
 
-			BeginLoadRoster();
+            BeginImportData();
+            BeginBuildIndexes();
 
-			//moved this up to load data dictionaires sooner
-			ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, ParallelUtility.NBatches);
-			//ChoiceModelFactory.LoadData();
+            BeginLoadRoster();
 
-			BeginLoadNodeIndex();
-			BeginLoadNodeDistances();
-			BeginLoadNodeStopAreaDistances();
-			BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances();
+            //moved this up to load data dictionaries sooner
+            ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, ParallelUtility.NBatches);
+            //ChoiceModelFactory.LoadData();
 
-			BeginCalculateAggregateLogsums(randomUtility);
-			BeginOutputAggregateLogsums();
-			BeginCalculateSamplingWeights();
-			BeginOutputSamplingWeights();
+            BeginLoadNodeIndex();
+            BeginLoadNodeDistances();
+            BeginLoadNodeStopAreaDistances();
+            BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances();
 
-			BeginRunChoiceModels(randomUtility);
-			BeginPerformHousekeeping();
+            BeginCalculateAggregateLogsums(randomUtility);
+            BeginOutputAggregateLogsums();
+            BeginCalculateSamplingWeights();
+            BeginOutputSamplingWeights();
 
-			if (_start == -1 || _end == -1 || _index == -1) {
+            BeginRunChoiceModels(randomUtility);
+            BeginPerformHousekeeping();
+
+            if (_start == -1 || _end == -1 || _index == -1) {
 				BeginUpdateShadowPricing();
-			}
+            }
 
-			timer.Stop("Total running time");
+            overallDaysimTimer.Stop("Total running time");
 		}
 
 		public static void BeginInitialize() {
@@ -98,13 +99,16 @@ namespace Daysim {
 			Initialize();
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+
+        }
 
 		public static void BeginTestInputs() {
 			var timer = new Timer("Checking Input Validity...");
 			InputTester.RunTest();
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void Initialize() {
 			if (Global.PrintFile != null) {
@@ -613,7 +617,8 @@ namespace Daysim {
 			}
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		public static void BeginImportData() {
 			ImportParcels();
@@ -838,7 +843,8 @@ namespace Daysim {
 			BuildIndexes();
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void BuildIndexes() {
 			if (Global.ParcelNodeIsEnabled) {
@@ -916,7 +922,8 @@ namespace Daysim {
 			LoadNodeIndex();
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void LoadNodeIndex() {
 			var file = new FileInfo(Global.GetInputPath(Global.Configuration.NodeIndexPath));
@@ -968,7 +975,8 @@ namespace Daysim {
 			}
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void BeginLoadNodeStopAreaDistances() {
 			//mb moved this from Global to Engine
@@ -986,7 +994,8 @@ namespace Daysim {
 			}
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		public static void InitializeParcelStopAreaIndex(TextReader reader) {
 			//mb moved this from global to engine in order to use Daysim.ChoiceModels.ChoiceModelFactory
@@ -1055,7 +1064,8 @@ namespace Daysim {
 			}
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		public static void InitializeMicrozoneToBikeCarParkAndRideNodeIndex(TextReader reader) {
 
@@ -1198,7 +1208,8 @@ namespace Daysim {
 			LoadRoster();
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void LoadRoster() {
 			var zoneReader =
@@ -1259,7 +1270,8 @@ namespace Daysim {
 			calculator.Calculate(randomUtility);
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void BeginOutputAggregateLogsums() {
 			if (!Global.Configuration.ShouldOutputAggregateLogsums) {
@@ -1271,7 +1283,8 @@ namespace Daysim {
 			AggregateLogsumsExporter.Export(Global.GetOutputPath(Global.Configuration.OutputAggregateLogsumsPath));
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void BeginCalculateSamplingWeights() {
 			var timer = new Timer("Calculating sampling weights...");
@@ -1279,7 +1292,8 @@ namespace Daysim {
 			SamplingWeightsCalculator.Calculate("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 180);
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void BeginOutputSamplingWeights() {
 			if (!Global.Configuration.ShouldOutputSamplingWeights) {
@@ -1291,7 +1305,8 @@ namespace Daysim {
 			SamplingWeightsExporter.Export(Global.GetOutputPath(Global.Configuration.OutputSamplingWeightsPath));
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void BeginRunChoiceModels(IRandomUtility randomUtility) {
 			if (!Global.Configuration.ShouldRunChoiceModels) {
@@ -1303,7 +1318,8 @@ namespace Daysim {
 			RunChoiceModels(randomUtility);
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void RunChoiceModels(IRandomUtility randomUtility) {
 			var current = 0;
@@ -1343,7 +1359,7 @@ namespace Daysim {
 				j++;
 			}
 			var index = 0;
-			Parallel.For((int) 0, nBatches,
+			Parallel.For(0, nBatches,
 				new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.LargeDegreeOfParallelism },
 				batchNumber => {
 					ParallelUtility.Register(Thread.CurrentThread.ManagedThreadId, batchNumber);
@@ -1389,7 +1405,7 @@ namespace Daysim {
 								: string.Format("Total {0} Days: {1}",
 									countStringf, countf));
 					}
-				});
+				}); //Parallel.For
 			var countg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
 			var countStringg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
 			var ivcountg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
@@ -1411,7 +1427,8 @@ namespace Daysim {
 			PerformHousekeeping();
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void PerformHousekeeping() {
 			ChoiceProbabilityCalculator.Close();
@@ -1436,7 +1453,8 @@ namespace Daysim {
 			ParkAndRideShadowPriceCalculator.CalculateAndWriteShadowPrices();
 
 			timer.Stop();
-		}
+            overallDaysimTimer.Print();
+        }
 
 		private static void OverrideShouldRunRawConversion() {
 			if (Global.Configuration.ShouldRunRawConversion) {
