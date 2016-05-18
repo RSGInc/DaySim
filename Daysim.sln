@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9C1720
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "compare_output_directories", "Daysim.Tests\Daysim.Tests.external\output_directories_identical\compare_output_directories\compare_output_directories.pyproj", "{66B71A86-D772-4A33-B182-760B912CD7F3}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "compare_output_directories", "Daysim.Tests\Daysim.Tests.external\compare_output_directories\compare_output_directories.pyproj", "{66B71A86-D772-4A33-B182-760B912CD7F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
