@@ -54,7 +54,7 @@ def print_diff_files(dcmp):
 def are_outputs_equal_func():
     start_time = time.perf_counter()
     parser = argparse.ArgumentParser(description='Compare two Daysim output directories')
-    parser.add_argument('model_directory',
+    parser.add_argument('--model_directory',
                         help='Directory containing both the "outputs_reference" (expected)  and "outputs" (current) output directories')
     parser.add_argument('--outputs_reference', help='The reference saved outputs from a successful run [default: %(default)s}', default='outputs_reference')
     parser.add_argument('--outputs', help='Newly generated result to be compared to reference [default: %(default)s}', default='outputs')

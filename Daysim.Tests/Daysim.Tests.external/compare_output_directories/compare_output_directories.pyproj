@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>66b71a86-d772-4a33-b182-760b912cd7f3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>compare_output_directories.py</StartupFile>
+    <StartupFile>regress_model.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -13,8 +13,9 @@
     <Name>compare_output_directories</Name>
     <RootNamespace>compare_output_directories</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>"C:\Users\peter.andrews\Documents\dev\DaySim\DaySim Test folder from Ariel readonly - Hardlink Clone"</CommandLineArguments>
+    <CommandLineArguments>-v --configuration_file "C:\Users\peter.andrews\Documents\dev\DaySim\DaySim_test_model\regression_test_data\configuration_regression.xml"</CommandLineArguments>
     <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,10 +27,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="compare_output_directories.py" />
+    <Compile Include="regress_model.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="utilities.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug_2' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <OutputPath>bin\Debug_2\</OutputPath>
   </PropertyGroup>
   <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
   <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
