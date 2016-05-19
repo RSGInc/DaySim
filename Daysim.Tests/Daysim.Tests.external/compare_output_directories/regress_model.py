@@ -127,11 +127,15 @@ def regress_model():
     regression_passed = success
     if success:
         import compare_output_directories
-        outputs_are_equal = compare_output_directories.are_outputs_equal_func(['--model_directory',base_dir
-                                                   ,'--outputs_reference', outputs_reference
-                                                   ,'--outputs', outputs_new
-                                                   , '-v' if args.verbose else ''
-                                                  ])
+        function_parameters = ['--model_directory',base_dir
+                              ,'--outputs_reference', outputs_reference
+                              ,'--outputs', outputs_new
+                              ]
+
+        if args.verbose:
+            function_parameters.append('-v')
+
+        outputs_are_equal = compare_output_directories.are_outputs_equal_func(function_parameters)
         regression_passed = outputs_are_equal
         if outputs_are_equal:
             logging.debug('Yay! regression test passed!')
