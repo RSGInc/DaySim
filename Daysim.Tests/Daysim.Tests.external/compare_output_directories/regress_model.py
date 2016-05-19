@@ -22,9 +22,10 @@ def parse_bool(v):
     
 def regress_model():
     start_time = time.perf_counter()
+    script_directory = os.path.split(os.path.realpath(__file__))[0] + '/'
     parser = argparse.ArgumentParser(description='Run Daysim regression tests for specified model')
     parser.add_argument('--daysim_exe',
-                        help='location of Daysim executable[default: %(default)s}', default='./../../../Daysim/bin/x64/Debug/Daysim.exe')
+                        help='location of Daysim executable[default: %(default)s}', default= script_directory + '../../../Daysim/bin/x64/Debug/Daysim.exe')
     parser.add_argument('--configuration_file',
                         help='path to configuration file to send to Daysim', default='configuration_regression.xml')
     parser.add_argument('--outputs_reference', help='Path to folder of expected results. Can be relative to folder containing configuration file [default: %(default)s}', default='outputs_reference')
@@ -43,6 +44,7 @@ def regress_model():
         print(args)
     
     logging.debug('Current working directory: ' + os.getcwd())
+    logging.debug('script_directory: ' + script_directory)
 
     daysim_exe =  os.path.normpath(os.path.abspath(args.daysim_exe))
     logging.debug('daysim_exe: ' + daysim_exe)
