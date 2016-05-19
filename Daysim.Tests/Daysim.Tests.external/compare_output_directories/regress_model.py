@@ -13,6 +13,7 @@ import shutil
 import xml.etree.ElementTree as ET
 import logging
 import subprocess
+import run_process_with_realtime_output
 
 class Const(Enum):
     REGRESSION_TEST_DIR = "regression_test_data"
@@ -107,19 +108,7 @@ def regress_model():
         old_cwd = os.getcwd()
         os.chdir(base_dir)
 
-        if True:
-
-            import run_process_with_realtime_output
-            return_code = run_process_with_realtime_output.run_process_with_realtime_output(daysim_exe + ' --configuration "' + configuration_file + '"')
-        else:
-            completed_run = subprocess.run(
-                 args = [ daysim_exe, '--configuration', configuration_file ],
-                 universal_newlines = True,
-                 stdout = subprocess.PIPE)
-            return_code = completed_run.returncode
-            if return_code != 0 or logging.getLogger().isEnabledFor(logging.DEBUG):
-                print('Output from Daysim:\n' + completed_run.stdout)
-
+        return_code = run_process_with_realtime_output.run_process_with_realtime_output(daysim_exe + ' --configuration "' + configuration_file + '"')
     finally:
         os.chdir(old_cwd)
     
