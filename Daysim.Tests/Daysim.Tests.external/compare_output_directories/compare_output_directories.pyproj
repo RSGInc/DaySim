@@ -30,6 +30,7 @@
     <Compile Include="regress_model.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="run_process_with_realtime_output.py" />
     <Compile Include="utilities.py" />
   </ItemGroup>
   <PropertyGroup>

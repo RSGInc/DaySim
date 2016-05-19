@@ -51,7 +51,7 @@ def print_diff_files(dcmp):
     for sub_dcmp in dcmp.subdirs.values():
         print_diff_files(sub_dcmp)
 
-def are_outputs_equal_func():
+def are_outputs_equal_func(parameters):
     start_time = time.perf_counter()
     parser = argparse.ArgumentParser(description='Compare two Daysim output directories')
     parser.add_argument('--model_directory',
@@ -61,10 +61,13 @@ def are_outputs_equal_func():
     parser.add_argument('--max_different_lines_to_show', help='When files differ, how many lines that are different should be output to console?  [default: %(default)s}', type= int, default=5)
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
                         action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(parameters)
 
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG)
+
+    if logging.getLogger().isEnabledFor(logging.DEBUG):
+        print(args)
 
     if not os.path.isdir(args.model_directory):
         raise Exception('Model directory does not exist: ' + args.model_directory)
@@ -175,7 +178,7 @@ def are_outputs_equal_func():
     
 if __name__ == "__main__":
     try:
-        outputs_are_equal = are_outputs_equal_func()
+        outputs_are_equal = are_outputs_equal_func(sys.argv)
         sys.exit(0 if outputs_are_equal else 1)
     except Exception as ex:
         sys.exit(ex)
