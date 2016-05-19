@@ -31,7 +31,7 @@ def run_process_with_realtime_output(cmd):
                 if proc.poll() is not None:
                     break
             else:
-                 print(identifier + ':', line.decode("utf-8"), end='')
+                 print(identifier + ':', line.decode("utf-8").rstrip())
 
     print_thread = Thread(target=printer, name='printer')
     print_thread.start()
