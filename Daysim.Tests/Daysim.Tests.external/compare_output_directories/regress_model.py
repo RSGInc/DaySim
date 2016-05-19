@@ -126,10 +126,7 @@ def regress_model():
 
         outputs_are_equal = compare_output_directories.are_outputs_equal_func(function_parameters)
         regression_passed = outputs_are_equal
-        if outputs_are_equal:
-            logging.debug('Yay! regression test passed!')
-        else:
-            logging.debug('Boo hoo! regression test failed!')
+    print('Regression test using configuration file:', configuration_filename, ' ' + ('PASSED' if regression_passed else 'FAILED'))
     return regression_passed
         
 """
