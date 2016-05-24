@@ -1,0 +1,7 @@
+builds/
+workspace/
+lastStable
+lastSuccessful
+nextBuildNumber
+modules/
+*.log
