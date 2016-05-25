@@ -14,7 +14,7 @@
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
         <url>https://github.com/RSGInc/Daysim.git</url>
-        <credentialsId>079f026d-0886-42bb-aaf7-45f343643328</credentialsId>
+        <credentialsId>c94058ef-d0fc-48ee-8651-237c38223afb</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -45,7 +45,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.25">
-      <msBuildName>MSBuild for Visual Studio 2015</msBuildName>
+      <msBuildName>MSBuild.exe</msBuildName>
       <msBuildFile></msBuildFile>
       <cmdLineArgs></cmdLineArgs>
       <buildVariablesAsProperties>false</buildVariablesAsProperties>
@@ -60,5 +60,7 @@
     </jenkins.plugins.shiningpanda.builders.PythonBuilder>
   </builders>
   <publishers/>
-  <buildWrappers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.2"/>
+  </buildWrappers>
 </project>
