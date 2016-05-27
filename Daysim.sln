@@ -32,7 +32,6 @@ Global
 		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Debug|x64.ActiveCfg = Debug|x64
 		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Debug|x64.Build.0 = Debug|x64
 		{66B71A86-D772-4A33-B182-760B912CD7F3}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{66B71A86-D772-4A33-B182-760B912CD7F3}.Debug|x64.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
