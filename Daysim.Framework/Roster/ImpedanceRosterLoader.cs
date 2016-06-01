@@ -245,10 +245,18 @@ namespace Daysim.Framework.Roster {
 //			var cache = new Dictionary<string, List<float[]>>();
 			var cache = new Dictionary<string, List<double[]>>(); // 20150703 JLB
 
-			foreach (var entry in entries.Where(x => x.FileType != null).Select(x => new {x.Name, x.Field, x.FileType, x.MatrixIndex, x.Scaling, x.Length}).Distinct().OrderBy(x => x.Name)) {
-				ISkimFileReader skimFileReader = null;
+            var currentFileName = "";
+            foreach (var entry in entries.Where(x => x.FileType != null).Select(x => new { x.Name, x.Field, x.FileType, x.MatrixIndex, x.Scaling, x.Length }).Distinct().OrderBy(x => x.Name))
+            {
+                ISkimFileReader skimFileReader = null;
 
-				IFileReaderCreator creator = Global.Kernel.Get<SkimFileReaderFactory>().GetFileReaderCreator(entry.FileType);
+                //Issue #40 -- caching is to prevent same file from being read in multiple times. Can clear cache when we change files since group by name
+                if (!entry.Name.Equals(currentFileName))
+                {
+                    cache.Clear();
+                    currentFileName = entry.Name;
+                }
+                IFileReaderCreator creator = Global.Kernel.Get<SkimFileReaderFactory>().GetFileReaderCreator(entry.FileType);
 
 				/*switch (entry.FileType) {
 					case "text_ij":
