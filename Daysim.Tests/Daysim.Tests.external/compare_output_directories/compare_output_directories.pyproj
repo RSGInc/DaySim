@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>66b71a86-d772-4a33-b182-760b912cd7f3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>regress_model.py</StartupFile>
+    <StartupFile>regress_subfolders.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -13,9 +13,11 @@
     <Name>compare_output_directories</Name>
     <RootNamespace>compare_output_directories</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-v --configuration_file "C:\Users\peter.andrews\Documents\dev\DaySim\DaySim_test_model\regression_test_data\configuration_regression.xml"</CommandLineArguments>
+    <CommandLineArguments>-v</CommandLineArguments>
     <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
+    <InterpreterId>{034019d5-f8ff-4d45-8ab3-fb3a65f0eacf}</InterpreterId>
+    <InterpreterVersion>3.5</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,11 +29,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="compare_output_directories.py" />
+    <Compile Include="regress_subfolders.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="regress_model.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="run_process_with_realtime_output.py" />
     <Compile Include="utilities.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>{034019d5-f8ff-4d45-8ab3-fb3a65f0eacf}</Id>
+      <BaseInterpreter>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</BaseInterpreter>
+      <Version>3.5</Version>
+      <Description>env (Python 64-bit 3.5)</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <LibraryPath>Lib\</LibraryPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>Amd64</Architecture>
+    </Interpreter>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

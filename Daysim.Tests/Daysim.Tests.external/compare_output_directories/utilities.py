@@ -1,6 +1,20 @@
 from collections import Mapping, Container
 from sys import getsizeof
+from datetime import datetime
+import time
  
+def get_formatted_date_time(date_time_to_format=datetime.now()):
+    date_time_str = get_formatted_date(date_time_to_format) + '_' + get_formatted_time(date_time_to_format)
+    return date_time_str
+
+def get_formatted_date(date_time_to_format=datetime.now()):
+    date_str = date_time_to_format.strftime("%Y-%m-%d")
+    return date_str
+
+def get_formatted_time(date_time_to_format=datetime.now()):
+    time_str = date_time_to_format.strftime("%Hh%Mm%Ss")
+    return time_str
+
 """from http://code.tutsplus.com/tutorials/understand-how-much-memory-your-python-objects-use--cms-25609"""
 def deep_getsizeof(o, ids, human_readable=True):
     """Find the memory footprint of a Python object
