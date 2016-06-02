@@ -34,21 +34,24 @@ def regress_subfolders(parameters):
 
     regional_data_directory = os.path.normpath(os.path.abspath(args.regional_data_directory))
 
-    regression_files = glob.glob(regional_data_directory + r'/*/*_regress.*')
+    regression_file_paths = glob.glob(regional_data_directory + r'**/*_regress.*', recursive=True)
     regress_model_successful = True
-    for regression_file in regression_files:
-        if os.path.isfile(regression_file):
-            print('Found file for regression: ' + regression_file);
-            regression_file_root, ext = os.path.splitext(regression_file)
+    for regression_file_path in regression_file_paths:
+        if os.path.isfile(regression_file_path):
+            regression_file_folder, regression_filename = os.path.split(regression_file_path)
+            if regression_filename.startswith('archive_'):
+                continue
+            print('Found file for regression: ' + regression_filename + ' in folder ' + regression_file_folder)
+            regression_file_root, ext = os.path.splitext(regression_filename)
 
             if ext in ['.xml','.properties']:
-                function_parameters = ['--configuration_file', regression_file
+                function_parameters = ['--configuration_file', regression_file_path
                                       ]
                 if args.verbose:
                     function_parameters.append('-v')
                 regress_model_successful = regress_model.regress_model(function_parameters)
             elif ext == '.py':
-                return_code = run_process_with_realtime_output.run_process_with_realtime_output('python ' + regression_file)
+                return_code = run_process_with_realtime_output.run_process_with_realtime_output('python ' + regression_file_path)
                 regress_model_successful = return_code == 0
             elif ext in ['.r','.R']:
                 return_code = run_process_with_realtime_output.run_process_with_realtime_output('RScript ' + regression_file)
