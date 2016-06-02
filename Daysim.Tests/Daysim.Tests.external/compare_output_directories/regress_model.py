@@ -29,10 +29,10 @@ def compare_directories(old_dir, new_dir):
 
 class Const():
     REGRESSION_TEST_DIR = "regression_test_data"
-    SHADOW_PRICES_FILE_NAME = "shadow_prices.txt"
-    ARCHIVE_SHADOW_PRICES_FILE_NAME = "archive_" + SHADOW_PRICES_FILE_NAME
-    PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME = "park_and_ride_" + SHADOW_PRICES_FILE_NAME
-    ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME
+    SHADOW_PRICES_FILENAME = "shadow_prices.txt"
+    ARCHIVE_SHADOW_PRICES_FILENAME = "archive_" + SHADOW_PRICES_FILENAME
+    PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "park_and_ride_" + SHADOW_PRICES_FILENAME
+    ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILENAME
 
 """
 It is a mistake for different configuration files to use the same working, estimation, or output directories
@@ -153,13 +153,13 @@ def regress_model(parameters):
     check_all_configured_changeable_directories(configured_estimation_path, 'estimation')
 
     #need to see if outputs folder archived shadow prices file exists and if so copy to the input location for shadow prices
-    archived_shadow_prices_file_path = os.path.join(configured_output_path, Const.ARCHIVE_SHADOW_PRICES_FILE_NAME)
+    archived_shadow_prices_file_path = os.path.join(configured_output_path, Const.ARCHIVE_SHADOW_PRICES_FILENAME)
     if os.path.isfile(archived_shadow_prices_file_path):
-        shutil.copyfile(archived_shadow_prices_file_path, os.path.join(working_new_dir, Const.SHADOW_PRICES_FILE_NAME))
+        shutil.copyfile(archived_shadow_prices_file_path, os.path.join(working_new_dir, Const.SHADOW_PRICES_FILENAME))
     #repeat for Park and Ride Shadow Prices
-    archived_park_and_ride_shadow_prices_file_path = os.path.join(configured_output_path, Const.ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME)
+    archived_park_and_ride_shadow_prices_file_path = os.path.join(configured_output_path, Const.ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME)
     if os.path.isfile(archived_park_and_ride_shadow_prices_file_path):
-        shutil.copyfile(archived_park_and_ride_shadow_prices_file_path, os.path.join(working_new_dir, Const.PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME))
+        shutil.copyfile(archived_park_and_ride_shadow_prices_file_path, os.path.join(working_new_dir, Const.PARK_AND_RIDE_SHADOW_PRICES_FILENAME))
 
     override_parameters = [
                            'OutputSubpath=' + outputs_new_dir,

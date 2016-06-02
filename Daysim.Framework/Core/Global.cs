@@ -19,10 +19,10 @@ using Ninject;
 namespace Daysim.Framework.Core {
 	public static class Global {
 
-        private const string SHADOW_PRICES_FILE_NAME = "shadow_prices.txt";
-        private const string ARCHIVE_SHADOW_PRICES_FILE_NAME = "archive_" + SHADOW_PRICES_FILE_NAME;
-        private const string PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME = "park_and_ride_" + SHADOW_PRICES_FILE_NAME;
-        private const string ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME;
+        private const string SHADOW_PRICES_FILENAME = "shadow_prices.txt";
+        private const string ARCHIVE_SHADOW_PRICES_FILENAME = "archive_" + SHADOW_PRICES_FILENAME;
+        private const string PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "park_and_ride_" + SHADOW_PRICES_FILENAME;
+        private const string ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILENAME;
 
         public static IKernel Kernel { get; set; }
 
@@ -142,12 +142,12 @@ namespace Daysim.Framework.Core {
 
         public static string ArchiveShadowPricesPath
         {
-            get { return GetOutputPath(ARCHIVE_SHADOW_PRICES_FILE_NAME); }
+            get { return GetOutputPath(ARCHIVE_SHADOW_PRICES_FILENAME); }
         }
 
         public static string ArchiveParkAndRideShadowPricesPath
         {
-            get { return GetOutputPath(ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME); }
+            get { return GetOutputPath(ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME); }
         }
 
         public static string DefaultInputParcelPath
@@ -264,11 +264,11 @@ namespace Daysim.Framework.Core {
 		}
 
 		public static string ShadowPricesPath {
-			get { return GetWorkingPath(SHADOW_PRICES_FILE_NAME); }
+			get { return GetWorkingPath(SHADOW_PRICES_FILENAME); }
 		}
 
 		public static string ParkAndRideShadowPricesPath {
-			get { return GetWorkingPath(PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME); }
+			get { return GetWorkingPath(PARK_AND_RIDE_SHADOW_PRICES_FILENAME); }
 		}
 
 		public static double Coefficients_BaseCostCoefficientPerMonetaryUnit {

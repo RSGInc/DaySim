@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Daysim.Framework.Core {
 	public class ErrorFile : IDisposable {
-		public const string DEFAULT_ERROR_FILE_NAME= "errors.log";
+		public const string DEFAULT_ERROR_FILENAME= "errors.log";
 		private readonly StreamWriter _writer;
 		private int _indent;
 
@@ -16,7 +16,7 @@ namespace Daysim.Framework.Core {
 				var location = Assembly.GetExecutingAssembly().Location;
 				var directoryName = Path.GetDirectoryName(location);
 
-				path = directoryName == null ? DEFAULT_ERROR_FILE_NAME : Path.Combine(directoryName, DEFAULT_ERROR_FILE_NAME);
+				path = directoryName == null ? DEFAULT_ERROR_FILENAME : Path.Combine(directoryName, DEFAULT_ERROR_FILENAME);
 			}
 
 			var file = new FileInfo(path);
