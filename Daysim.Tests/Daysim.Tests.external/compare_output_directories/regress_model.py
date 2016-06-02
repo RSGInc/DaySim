@@ -111,6 +111,21 @@ def regress_model(parameters):
     configured_output_path = os.path.normpath(os.path.join(configuration_base_path, output_subpath))
     logging.debug('configured_output_path: ' + configured_output_path)
 
+    if not os.path.isdir(configured_output_path):
+        if args.run_if_needed_to_create_baseline:
+            print('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" which does not exist. --run_if_needed_to_create_baseline is true so will run now...')
+            try:
+                #due to bug Daysim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/Daysim/issues/52
+                old_cwd = os.getcwd()
+                os.chdir(configuration_file_folder)
+                return_code = run_process_with_realtime_output.run_process_with_realtime_output(daysim_exe + ' --configuration "' + configuration_file + '"')
+            finally:
+                os.chdir(old_cwd)
+            #return True even though we didn't really test -- this allows multiple configurations to be initialized in one regression pass
+            return True
+        else:
+            raise Exception('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" but that folder does not exist so cannot be used for regression.')
+
     outputs_new_basename = os.path.basename(configured_output_path)
     outputs_new_dir = os.path.join(regression_results_dir, outputs_new_basename)
     #compare the archived configuration file with the current one since this will find a very common error (different configuration) quickly
@@ -170,21 +185,6 @@ def regress_model(parameters):
                            'WorkingSubpath=' + working_new_dir,
                            'EstimationSubpath=' + estimation_new_dir,
                           ]
-
-    if not os.path.isdir(configured_output_path):
-        if args.run_if_needed_to_create_baseline:
-            print('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" which does not exist. --run_if_needed_to_create_baseline is true so will run now...')
-            try:
-                #due to bug Daysim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/Daysim/issues/52
-                old_cwd = os.getcwd()
-                os.chdir(configuration_file_folder)
-                return_code = run_process_with_realtime_output.run_process_with_realtime_output(daysim_exe + ' --configuration "' + configuration_file + '"')
-            finally:
-                os.chdir(old_cwd)
-            #return True even though we didn't really test -- this allows multiple configurations to be initialized in one regression pass
-            return True
-        else:
-            raise Exception('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" but that folder does not exist so cannot be used for regression.')
     
     try:
         #due to bug Daysim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/Daysim/issues/52
