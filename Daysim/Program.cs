@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.IO;
 
 namespace Daysim {
 	public static class Program {
@@ -58,7 +59,8 @@ namespace Daysim {
                 }
 
                 var configurationManager = new ConfigurationManager(_configurationPath);
-                var configuration = configurationManager.Open();
+
+                 var configuration = configurationManager.Open();
 
                 overrideConfiguration(configuration);
 
@@ -74,6 +76,11 @@ namespace Daysim {
                 Global.Settings = settings;
                 Global.PrintFile = printFile;
                 Global.Kernel = new StandardKernel(new DaysimModule());
+
+                //copy the configuration file into the output so we can tell if configuration changed before regression test called.
+                var archiveConfigurationFilePath = Global.GetOutputPath("archive_" + Path.GetFileName(_configurationPath));
+                archiveConfigurationFilePath.CreateDirectory();
+                File.Copy(_configurationPath, archiveConfigurationFilePath);
 
                 var moduleFactory = new ModuleFactory(configuration);
                 var modelModule = moduleFactory.Create();
