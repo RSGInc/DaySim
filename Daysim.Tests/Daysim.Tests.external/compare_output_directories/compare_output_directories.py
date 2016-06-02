@@ -68,11 +68,12 @@ def are_outputs_equal_func(parameters):
         print(args)
 
     if not os.path.isdir(args.outputs_reference):
-        raise Exception('outputs_reference directory does not exist: ' + args.outputs_reference)
-
-
-    if not os.path.isdir(args.outputs_new):
-        raise Exception('outputs_new directory does not exist: ' + args.outputs_new)
+        if not os.path.isdir(args.outputs_new):
+            #if neither directory exists then consider them equal
+            return True
+        raise Exception('outputs_new "' + args.outputs_new + '" exists but not outputs_reference "' + args.outputs_reference + '"')
+    elif not os.path.isdir(args.outputs_new):
+        raise Exception('outputs_reference "' + args.outputs_reference + '" exists but not outputs_new "' + args.outputs_new + '"')
 
 
     dcmp = filecmp.dircmp(args.outputs_reference, args.outputs_new) 
