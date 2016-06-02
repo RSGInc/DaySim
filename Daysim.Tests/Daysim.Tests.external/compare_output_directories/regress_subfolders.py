@@ -34,7 +34,7 @@ def regress_subfolders(parameters):
 
     regional_data_directory = os.path.normpath(os.path.abspath(args.regional_data_directory))
 
-    regression_file_paths = glob.glob(regional_data_directory + r'**/*_regress.*', recursive=True)
+    regression_file_paths = glob.glob(regional_data_directory + r'/**/*_regress.*', recursive=True)
     regress_model_successful = True
     for regression_file_path in regression_file_paths:
         if os.path.isfile(regression_file_path):
