@@ -14,8 +14,31 @@ import subprocess
 import run_process_with_realtime_output
 import utilities
 
-class Const(Enum):
+def compare_directories(old_dir, new_dir):
+    global args
+    import compare_output_directories
+    function_parameters = ['--outputs_reference', old_dir
+                            ,'--outputs_new', new_dir
+                            ]
+    if args.verbose:
+        function_parameters.append('-v')
+
+    outputs_are_equal = compare_output_directories.are_outputs_equal_func(function_parameters)
+    return outputs_are_equal 
+
+
+class Const():
     REGRESSION_TEST_DIR = "regression_test_data"
+    SHADOW_PRICES_FILE_NAME = "shadow_prices.txt"
+    ARCHIVE_SHADOW_PRICES_FILE_NAME = "archive_" + SHADOW_PRICES_FILE_NAME
+    PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME = "park_and_ride_" + SHADOW_PRICES_FILE_NAME
+    ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME
+
+"""
+It is a mistake for different configuration files to use the same working, estimation, or output directories
+ so this keeps track of paths seen during any call (expected to be called multiple times from regress_subfolders.py)
+"""
+all_configured_changeable_directories = dict()
 
 def parse_bool(v):
   return str(v[:1]).lower() in ("y", "t", "1")
@@ -34,6 +57,7 @@ def regress_model(parameters):
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
                         action="store_true")
 
+    global args
     args = parser.parse_args(parameters)
 
     if args.verbose:
@@ -63,7 +87,7 @@ def regress_model(parameters):
     configuration_file_root, ext = os.path.splitext(configuration_filename)
 
     if ext != '.xml':
-        raise Exception('configuration_file does not end in ".xml" so unlikely to be what you mean: ' + configuration_filename)
+        raise Exception('configuration_file does not end in ".xml" so not yet supported in regression tests: ' + configuration_filename)
 
     tree = ET.parse(configuration_file)
     root = tree.getroot()
@@ -74,11 +98,76 @@ def regress_model(parameters):
     else:
         configuration_base_path = os.path.normpath(os.path.join(configuration_file_folder, configuration_base_path))
 
-    output_subpath = root.get('OutputSubpath')
-    configured_outpath = os.path.normpath(os.path.join(configuration_base_path, output_subpath))
-    logging.debug('configured_outpath: ' + configured_outpath)
+    today_regression_results_dir = os.path.join(configuration_base_path, utilities.get_formatted_date() + '_regression_results')
+    current_configuration_results_dir_name = utilities.get_formatted_time() + '_' + configuration_filename
+    regression_results_dir = os.path.join(today_regression_results_dir, 'RUNNING_' + current_configuration_results_dir_name)
 
-    if not os.path.isdir(configured_outpath):
+    os.makedirs(regression_results_dir)
+
+    output_subpath = root.get('OutputSubpath')
+    configured_output_path = os.path.normpath(os.path.join(configuration_base_path, output_subpath))
+    logging.debug('configured_output_path: ' + configured_output_path)
+
+    #compare the archived configuration file with the current one since this will find a very common error (different configuration) quickly
+    archive_configuration_file_path = os.path.join(configured_output_path, 'archive_' +  configuration_filename)
+    if not os.path.exists(archive_configuration_file_path):
+        print('Skipping check for changed configuration file because "' + archive_configuration_file_path + '" does not exist in the output folder')
+    else:
+        if not filecmp.cmp(configuration_file, archive_configuration_file_path):
+            raise Exception('configuration_file "' + configuration_file + '" different than archived configuration file in the output folder: ' + archive_configuration_file_path)
+    outputs_new_basename = os.path.basename(configured_output_path)
+    outputs_new_dir = os.path.join(regression_results_dir, outputs_new_basename)
+
+    working_directory = root.get('WorkingDirectory')
+    if working_directory is not None:
+         raise Exception('configuration_file has WorkingDirectory which is deprecated and not supported for regression testing. Use WorkingSubpath instead')
+
+    working_subpath = root.get('WorkingSubpath')
+    configured_working_path = os.path.normpath(os.path.join(configuration_base_path, working_subpath))
+    logging.debug('configured_working_path: ' + configured_working_path)
+
+    working_new_basename = os.path.basename(configured_working_path)
+    working_new_dir = os.path.join(regression_results_dir, working_new_basename)
+    #create new regression test working directory in case need to store shadow price files inside
+    os.makedirs(working_new_dir)
+
+    estimation_subpath = root.get('EstimationSubpath')
+    configured_estimation_path = os.path.normpath(os.path.join(configuration_base_path, estimation_subpath))
+    logging.debug('configured_estimation_path: ' + configured_estimation_path)
+    estimation_new_basename = os.path.basename(configured_estimation_path)
+    estimation_new_dir = os.path.join(regression_results_dir, estimation_new_basename)
+
+    working_new_basename = os.path.basename(configured_working_path)
+    working_new_dir = os.path.join(regression_results_dir, working_new_basename)
+
+    def check_all_configured_changeable_directories(parameter_value, parameter_type):
+        #check that the working, output and estimation paths have not been seen
+        if parameter_value in all_configured_changeable_directories:
+            previous_configuration_file, parameter_type = all_configured_changeable_directories.get(parameter_value)
+            raise Exception('Configuration file "' + configuration_file + '" specifies ' + parameter_type + ' which was used in a different configuration file: "' + previous_configuration_file + '" for ' + parameter_type)
+        else:
+            all_configured_changeable_directories[parameter_value] = (configuration_file, parameter_type)
+
+    check_all_configured_changeable_directories(configured_output_path, 'output')
+    check_all_configured_changeable_directories(configured_working_path, 'working')
+    check_all_configured_changeable_directories(configured_estimation_path, 'estimation')
+
+    #need to see if outputs folder archived shadow prices file exists and if so copy to the input location for shadow prices
+    archived_shadow_prices_file_path = os.path.join(configured_output_path, Const.ARCHIVE_SHADOW_PRICES_FILE_NAME)
+    if os.path.isfile(archived_shadow_prices_file_path):
+        shutil.copyfile(archived_shadow_prices_file_path, os.path.join(working_new_dir, Const.SHADOW_PRICES_FILE_NAME))
+    #repeat for Park and Ride Shadow Prices
+    archived_park_and_ride_shadow_prices_file_path = os.path.join(configured_output_path, Const.ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME)
+    if os.path.isfile(archived_park_and_ride_shadow_prices_file_path):
+        shutil.copyfile(archived_park_and_ride_shadow_prices_file_path, os.path.join(working_new_dir, Const.PARK_AND_RIDE_SHADOW_PRICES_FILE_NAME))
+
+    override_parameters = [
+                           'OutputSubpath=' + outputs_new_dir,
+                           'WorkingSubpath=' + working_new_dir,
+                           'EstimationSubpath=' + estimation_new_dir,
+                          ]
+
+    if not os.path.isdir(configured_output_path):
         if args.run_if_needed_to_create_baseline:
             print('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" which does not exist. --run_if_needed_to_create_baseline is true so will run now...')
             try:
@@ -89,29 +178,7 @@ def regress_model(parameters):
             finally:
                 os.chdir(old_cwd)
         raise Exception('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" but that folder does not exist so cannot be used for regression.')
-
-    today_regression_results_dir = os.path.join(configuration_base_path, utilities.get_formatted_date() + '_regression_results')
-    current_configuration_results_dir_name = utilities.get_formatted_time() + ' ' + configuration_filename
-    regression_results_dir = os.path.join(today_regression_results_dir, 'RUNNING_' + current_configuration_results_dir_name)
-
-    os.makedirs(regression_results_dir)
-    outputs_new_basename = os.path.basename(configured_outpath)
-    outputs_new_dir = os.path.join(regression_results_dir, outputs_new_basename)
-
-    override_parameters = [
-                            'OutputSubpath=' + outputs_new_dir,
-]
-    working_directory = root.get('WorkingDirectory')
-    if working_directory is not None:
-         raise Exception('configuration_file has WorkingDirectory which is deprecated and not supported for regression testing. Use WorkingSubpath instead')
-
-    working_subpath = root.get('WorkingSubpath')
-    working = os.path.normpath(os.path.join(configuration_base_path, working_subpath))
-    logging.debug('working: ' + working)
-    """if args.delete_existing_working and os.path.isdir(working):
-        print('Deleting existing working directory: ' + working)
-        shutil.rmtree(working)"""
-
+    
     try:
         #due to bug Daysim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/Daysim/issues/52
         old_cwd = os.getcwd()
@@ -121,18 +188,11 @@ def regress_model(parameters):
     finally:
         os.chdir(old_cwd)
     
-    regression_passed = return_code == 0
-    if regression_passed:
-        import compare_output_directories
-        function_parameters = ['--outputs_reference', outputs_new_dir
-                              ,'--outputs_new', configured_outpath
-                              ]
+    regression_passed = (return_code == 0) and \
+                        compare_directories(configured_output_path, outputs_new_dir) and \
+                        compare_directories(configured_working_path, working_new_dir) and \
+                        compare_directories(configured_estimation_path, estimation_new_dir)
 
-        if args.verbose:
-            function_parameters.append('-v')
-
-        outputs_are_equal = compare_output_directories.are_outputs_equal_func(function_parameters)
-        regression_passed = outputs_are_equal
     results_label = 'PASSED' if regression_passed else 'FAILED'
     os.rename(regression_results_dir, os.path.join(today_regression_results_dir, results_label + '_' + current_configuration_results_dir_name))
     print('Regression test using configuration file "', configuration_filename, '": ' + results_label)
