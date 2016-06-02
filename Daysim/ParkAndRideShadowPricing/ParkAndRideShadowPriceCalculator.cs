@@ -18,7 +18,14 @@ namespace Daysim.ParkAndRideShadowPricing {
 				return;
 			}
 
-			using (var shadowPriceWriter = new ParkAndRideShadowPriceWriter(new FileInfo(Global.ParkAndRideShadowPricesPath))) {
+            //issue #57 https://github.com/RSGInc/DaySim/issues/57 Must keep safe copy of shadow prices files before overwriting
+            //issue #57 https://github.com/RSGInc/DaySim/issues/57 Must keep safe copy of shadow prices files before overwriting
+            if (File.Exists(Global.ParkAndRideShadowPricesPath))
+            {
+                File.Move(Global.ParkAndRideShadowPricesPath, Global.ArchiveParkAndRideShadowPricesPath);
+            }
+
+            using (var shadowPriceWriter = new ParkAndRideShadowPriceWriter(new FileInfo(Global.ParkAndRideShadowPricesPath))) {
 				foreach (var node in ChoiceModelFactory.ParkAndRideNodeDao.Nodes) {
 					var capacity = node.Capacity;
 					for (var i = 1; i < Global.Settings.Times.MinutesInADay; i++) {
