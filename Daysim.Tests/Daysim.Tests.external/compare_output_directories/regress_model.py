@@ -86,12 +86,15 @@ def regress_model(parameters):
     #parse config file to know where output and working are being written to
     configuration_file_root, ext = os.path.splitext(configuration_filename)
 
-    if ext != '.xml':
-        raise Exception('configuration_file does not end in ".xml" so not yet supported in regression tests: ' + configuration_filename)
 
-    tree = ET.parse(configuration_file)
-    root = tree.getroot()
-    
+    if ext == '.xml':
+        tree = ET.parse(configuration_file)
+        root = tree.getroot()
+    elif ext == '.properties':
+        root = utilities.properties_file_to_dict(configuration_file)
+    else:
+        raise Exception('Configuration file extension "' + ext + '" unhandled!')
+
     configuration_base_path = root.get('BasePath')
     if configuration_base_path is None:
         configuration_base_path = configuration_file_folder
@@ -108,15 +111,16 @@ def regress_model(parameters):
     configured_output_path = os.path.normpath(os.path.join(configuration_base_path, output_subpath))
     logging.debug('configured_output_path: ' + configured_output_path)
 
+    outputs_new_basename = os.path.basename(configured_output_path)
+    outputs_new_dir = os.path.join(regression_results_dir, outputs_new_basename)
     #compare the archived configuration file with the current one since this will find a very common error (different configuration) quickly
     archive_configuration_file_path = os.path.join(configured_output_path, 'archive_' +  configuration_filename)
     if not os.path.exists(archive_configuration_file_path):
-        print('Skipping check for changed configuration file because "' + archive_configuration_file_path + '" does not exist in the output folder')
+        print('Skipping check for changed configuration file because "' + archive_configuration_file_path + '" does not exist in the reference output folder. A copy will be put in the outputs folder so that regression test can proceed.')
+        shutil.copy(configuration_file, archive_configuration_file_path)
     else:
         if not filecmp.cmp(configuration_file, archive_configuration_file_path):
             raise Exception('configuration_file "' + configuration_file + '" different than archived configuration file in the output folder: ' + archive_configuration_file_path)
-    outputs_new_basename = os.path.basename(configured_output_path)
-    outputs_new_dir = os.path.join(regression_results_dir, outputs_new_basename)
 
     working_directory = root.get('WorkingDirectory')
     if working_directory is not None:

@@ -21,6 +21,22 @@ def get_formatted_time(date_time_to_format=None):
     time_str = date_time_to_format.strftime("%Hh%Mm%Ss")
     return time_str
 
+def properties_file_to_dict(property_file_path):
+    myprops = {}
+    with open(property_file_path, 'r') as f:
+        for line in f:
+            line = line.rstrip() #removes trailing whitespace and '\n' chars
+
+            if "=" not in line: continue #skips blanks and comments w/o =
+            if line.startswith("#"): continue #skips comments which contain =
+
+            k, v = line.split("=", 1)
+            v = v.strip()
+            if v.startswith('"') and v.endswith('"'):
+                v = v[1:-1]
+            myprops[k.strip()] = v
+    return myprops
+
 """from http://code.tutsplus.com/tutorials/understand-how-much-memory-your-python-objects-use--cms-25609"""
 def deep_getsizeof(o, ids, human_readable=True):
     """Find the memory footprint of a Python object
