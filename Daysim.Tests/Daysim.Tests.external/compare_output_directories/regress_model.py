@@ -181,7 +181,10 @@ def regress_model(parameters):
                 return_code = run_process_with_realtime_output.run_process_with_realtime_output(daysim_exe + ' --configuration "' + configuration_file + '"')
             finally:
                 os.chdir(old_cwd)
-        raise Exception('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" but that folder does not exist so cannot be used for regression.')
+            #return True even though we didn't really test -- this allows multiple configurations to be initialized in one regression pass
+            return True
+        else:
+            raise Exception('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" but that folder does not exist so cannot be used for regression.')
     
     try:
         #due to bug Daysim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/Daysim/issues/52
