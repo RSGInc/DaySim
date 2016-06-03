@@ -62,6 +62,10 @@ namespace Daysim.ShadowPricing {
 
             //issue #57 https://github.com/RSGInc/DaySim/issues/57 Must keep safe copy of shadow prices files before overwriting
             if (File.Exists(Global.ShadowPricesPath)) {
+                if (File.Exists(Global.ArchiveShadowPricesPath))
+                {
+                    File.Delete(Global.ArchiveShadowPricesPath);
+                }
                 File.Move(Global.ShadowPricesPath, Global.ArchiveShadowPricesPath);
             }
 

@@ -19,9 +19,12 @@ namespace Daysim.ParkAndRideShadowPricing {
 			}
 
             //issue #57 https://github.com/RSGInc/DaySim/issues/57 Must keep safe copy of shadow prices files before overwriting
-            //issue #57 https://github.com/RSGInc/DaySim/issues/57 Must keep safe copy of shadow prices files before overwriting
-            if (File.Exists(Global.ParkAndRideShadowPricesPath))
+             if (File.Exists(Global.ParkAndRideShadowPricesPath))
             {
+                if (File.Exists(Global.ArchiveParkAndRideShadowPricesPath))
+                {
+                    File.Delete(Global.ArchiveParkAndRideShadowPricesPath);
+                }
                 File.Move(Global.ParkAndRideShadowPricesPath, Global.ArchiveParkAndRideShadowPricesPath);
             }
 
