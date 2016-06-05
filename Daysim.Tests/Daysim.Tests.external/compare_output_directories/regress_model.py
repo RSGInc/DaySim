@@ -203,6 +203,26 @@ def regress_model(parameters):
     results_label = 'PASSED' if regression_passed else 'FAILED'
     os.rename(regression_results_dir, os.path.join(today_regression_results_dir, results_label + '_' + current_configuration_results_dir_name))
     print('Regression test using configuration file "', configuration_filename, '": ' + results_label)
+
+    if not regression_passed:
+        was_able_to_generate_report = False
+        #if failed then look for report generation code
+        parentOfConfigurationFolder = os.path.dirname(configuration_file_folder)
+        daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_' + configuration_file_root)
+        if os.path.isdir(daySimSummaryPath):
+            try:
+                #RScript assumes current directory is the script directory
+                old_cwd = os.getcwd()
+                os.chdir(daySimSummaryPath)
+                
+                rScript_file = 'main.R'
+                if os.path.isfile(rScript_file):
+                    return_code = run_process_with_realtime_output.run_process_with_realtime_output('RScript ' + rScript_file)
+                    was_able_to_generate_report = return_code == 0
+            finally:
+                os.chdir(old_cwd)
+        print('Generated report in "' + daySimSummaryPath + '"' if was_able_to_generate_report else 'Could not generate a report')
+    
     return regression_passed
         
 if __name__ == "__main__":
