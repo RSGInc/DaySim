@@ -58,7 +58,7 @@
     <jenkins.plugins.shiningpanda.builders.PythonBuilder plugin="shiningpanda@0.22">
       <pythonName>Anaconda_3.5</pythonName>
       <nature>shell</nature>
-      <command>python Daysim.Tests\Daysim.Tests.external\compare_output_directories\regress_model.py --configuration_file &quot;C:\DaySim_test_model\regression_test_data\configuration_regression.xml&quot;</command>
+      <command>python Daysim.Tests\Daysim.Tests.external\compare_output_directories\regress_subfolders.py --regional_data_directory &quot;e:\rd\nashvilleabm-git&quot;</command>
       <ignoreExitCode>false</ignoreExitCode>
     </jenkins.plugins.shiningpanda.builders.PythonBuilder>
   </builders>

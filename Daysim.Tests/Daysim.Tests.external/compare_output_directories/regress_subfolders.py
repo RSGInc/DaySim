@@ -56,6 +56,8 @@ def regress_subfolders(parameters):
             elif ext in ['.r','.R']:
                 return_code = run_process_with_realtime_output.run_process_with_realtime_output('RScript ' + regression_file_path)
                 regress_model_successful = return_code == 0
+            elif ext in ['.Rproj']:
+                continue
             else:
                 raise Exception('File type not supported for regression due to unrecognized extension: ' + regression_file_path + ' in folder "' + regional_data_directory + '"')
 
