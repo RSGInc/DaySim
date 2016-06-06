@@ -170,6 +170,11 @@ namespace Daysim.Framework.Roster
                             for (int vi = 0; vi < rows; vi++)
                             {
                                 double rawValue = sr.ReadDouble() * scale;
+                                
+                                if (vi == vl && rawValue / scale > 999990)  {
+                                    rawValue = 0;
+                                }
+                                
                                 if (rawValue > ushort.MaxValue -1)
                                 {
                                     rawValue = ushort.MaxValue -1;
