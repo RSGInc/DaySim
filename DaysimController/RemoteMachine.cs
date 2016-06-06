@@ -56,7 +56,7 @@ namespace DaysimController {
 				}
 
 				if (string.IsNullOrEmpty(machine.PrintFilePath)) {
-					machine.PrintFilePath = machine.CurrentDirectory + @"\" + Daysim.Framework.Core.PrintFile.DEFAULT_PRINT_FILE_NAME;
+					machine.PrintFilePath = machine.CurrentDirectory + @"\" + Daysim.Framework.Core.PrintFile.DEFAULT_PRINT_FILENAME;
 				}
 
 				machines.Add(machine);

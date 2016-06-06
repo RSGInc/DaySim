@@ -12,7 +12,7 @@ using System.Reflection;
 namespace Daysim.Framework.Core {
 	public class PrintFile : IDisposable {
 		private readonly Configuration _configuration;
-		public const string DEFAULT_PRINT_FILE_NAME = "last-run.log";
+		public const string DEFAULT_PRINT_FILENAME = "last-run.log";
 		private readonly StreamWriter _writer;
 		private int _indent;
 
@@ -25,8 +25,8 @@ namespace Daysim.Framework.Core {
 
 				path =
 					directoryName == null
-						? DEFAULT_PRINT_FILE_NAME
-						: Path.Combine(directoryName, DEFAULT_PRINT_FILE_NAME);
+						? DEFAULT_PRINT_FILENAME
+						: Path.Combine(directoryName, DEFAULT_PRINT_FILENAME);
 			}
 
 			var file = new FileInfo(path);

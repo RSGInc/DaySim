@@ -1,6 +1,42 @@
 from collections import Mapping, Container
 from sys import getsizeof
+from datetime import datetime
+import time
  
+def get_formatted_date_time(date_time_to_format=None):
+    if date_time_to_format is None:
+        date_time_to_format = datetime.now()
+    date_time_str = get_formatted_date(date_time_to_format) + '_' + get_formatted_time(date_time_to_format)
+    return date_time_str
+
+def get_formatted_date(date_time_to_format=None):
+    if date_time_to_format is None:
+        date_time_to_format = datetime.now()
+    date_str = date_time_to_format.strftime("%Y-%m-%d")
+    return date_str
+
+def get_formatted_time(date_time_to_format=None):
+    if date_time_to_format is None:
+        date_time_to_format = datetime.now()
+    time_str = date_time_to_format.strftime("%Hh%Mm%Ss")
+    return time_str
+
+def properties_file_to_dict(property_file_path):
+    myprops = {}
+    with open(property_file_path, 'r') as f:
+        for line in f:
+            line = line.rstrip() #removes trailing whitespace and '\n' chars
+
+            if "=" not in line: continue #skips blanks and comments w/o =
+            if line.startswith("#"): continue #skips comments which contain =
+
+            k, v = line.split("=", 1)
+            v = v.strip()
+            if v.startswith('"') and v.endswith('"'):
+                v = v[1:-1]
+            myprops[k.strip()] = v
+    return myprops
+
 """from http://code.tutsplus.com/tutorials/understand-how-much-memory-your-python-objects-use--cms-25609"""
 def deep_getsizeof(o, ids, human_readable=True):
     """Find the memory footprint of a Python object

@@ -31,7 +31,7 @@ namespace DaysimController {
 				Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManager.DEFAULT_CONFIGURATION_NAME);
 
 				Console.WriteLine();
-				Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the same directory as the executable.", PrintFile.DEFAULT_PRINT_FILE_NAME);
+				Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the same directory as the executable.", PrintFile.DEFAULT_PRINT_FILENAME);
 
 				Console.WriteLine("Please press any key to exit");
 				Console.ReadKey();

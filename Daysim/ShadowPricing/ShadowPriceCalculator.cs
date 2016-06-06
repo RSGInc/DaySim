@@ -60,7 +60,16 @@ namespace Daysim.ShadowPricing {
 			var studentsK12Factor = studentsK12Prediction / Math.Max(externalStudentsK12, 1);
 			var studentsUniversityFactor = studentsUniversityPrediction / Math.Max(externalStudentsUniversity, 1);
 
-			using (var shadowPriceWriter = new ShadowPriceWriter(new FileInfo(Global.ShadowPricesPath))) {
+            //issue #57 https://github.com/RSGInc/DaySim/issues/57 Must keep safe copy of shadow prices files before overwriting
+            if (File.Exists(Global.ShadowPricesPath)) {
+                if (File.Exists(Global.ArchiveShadowPricesPath))
+                {
+                    File.Delete(Global.ArchiveShadowPricesPath);
+                }
+                File.Move(Global.ShadowPricesPath, Global.ArchiveShadowPricesPath);
+            }
+
+            using (var shadowPriceWriter = new ShadowPriceWriter(new FileInfo(Global.ShadowPricesPath))) {
 				foreach (var shadowPriceParcel in ChoiceModelFactory.Parcels.Values) {
 					if (!zoneShadowPrices.ContainsKey(shadowPriceParcel.ZoneId)) {
 						zoneShadowPrices.Add(shadowPriceParcel.ZoneId, new ShadowPriceZone());

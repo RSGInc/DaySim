@@ -51,35 +51,32 @@ def print_diff_files(dcmp):
     for sub_dcmp in dcmp.subdirs.values():
         print_diff_files(sub_dcmp)
 
-def are_outputs_equal_func():
+def are_outputs_equal_func(parameters):
     start_time = time.perf_counter()
     parser = argparse.ArgumentParser(description='Compare two Daysim output directories')
-    parser.add_argument('model_directory',
-                        help='Directory containing both the "outputs_reference" (expected)  and "outputs" (current) output directories')
-    parser.add_argument('--outputs_reference', help='The reference saved outputs from a successful run [default: %(default)s}', default='outputs_reference')
-    parser.add_argument('--outputs', help='Newly generated result to be compared to reference [default: %(default)s}', default='outputs')
+    parser.add_argument('--outputs_reference', help='The reference saved outputs from a successful run [default: %(default)s}')
+    parser.add_argument('--outputs_new', help='Newly generated result to be compared to reference [default: %(default)s}')
     parser.add_argument('--max_different_lines_to_show', help='When files differ, how many lines that are different should be output to console?  [default: %(default)s}', type= int, default=5)
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
                         action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(parameters)
 
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG)
 
-    if not os.path.isdir(args.model_directory):
-        raise Exception('Model directory does not exist: ' + args.model_directory)
+    if logging.getLogger().isEnabledFor(logging.DEBUG):
+        print(args)
 
-    outputs_reference = os.path.join(args.model_directory, args.outputs_reference)
-    if not os.path.isdir(outputs_reference):
-        raise Exception('outputs_reference directory does not exist: ' + outputs_reference)
+    if not os.path.isdir(args.outputs_reference):
+        if not os.path.isdir(args.outputs_new):
+            #if neither directory exists then consider them equal
+            return True
+        raise Exception('outputs_new "' + args.outputs_new + '" exists but not outputs_reference "' + args.outputs_reference + '"')
+    elif not os.path.isdir(args.outputs_new):
+        raise Exception('outputs_reference "' + args.outputs_reference + '" exists but not outputs_new "' + args.outputs_new + '"')
 
 
-    outputs_new = os.path.join(args.model_directory, args.outputs)
-    if not os.path.isdir(outputs_new):
-        raise Exception('outputs_new directory does not exist: ' + outputs_new)
-
-
-    dcmp = filecmp.dircmp(outputs_reference, outputs_new) 
+    dcmp = filecmp.dircmp(args.outputs_reference, args.outputs_new) 
 
     logging.debug('dcmp finished')
     logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
@@ -98,9 +95,9 @@ def are_outputs_equal_func():
 
         for different_file in all_common_different_files:
             #some Daysim files are identical in content but are output in a different line order
-            reference_file = os.path.join(outputs_reference, different_file)
+            reference_file = os.path.join(args.outputs_reference, different_file)
             assert os.path.isfile(reference_file), "reference_file is not a file: " + reference_file
-            new_file = os.path.join(outputs_new, different_file)
+            new_file = os.path.join(args.outputs_new, different_file)
             assert os.path.isfile(reference_file), "new_file is not a file: " + new_file
             if os.path.getsize(reference_file) != os.path.getsize(new_file):
                 logging.debug('length of common file: ' + different_file + ' differs so difference must be more then different sort order!')
@@ -175,7 +172,11 @@ def are_outputs_equal_func():
     
 if __name__ == "__main__":
     try:
-        outputs_are_equal = are_outputs_equal_func()
+        outputs_are_equal = are_outputs_equal_func(sys.argv[1:])
         sys.exit(0 if outputs_are_equal else 1)
     except Exception as ex:
+        print("Exception in user code:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stdout)
+        print("-"*60)
         sys.exit(ex)
