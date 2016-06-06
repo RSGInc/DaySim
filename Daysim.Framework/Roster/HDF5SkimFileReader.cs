@@ -47,11 +47,6 @@ namespace Daysim.Framework.Roster
             long nCols = size2[1];
             long numZones = _mapping.Count();
 
-            var dataArray = new double[nRows, nCols];
-            var wrapArray = new H5Array<double>(dataArray);
-            H5DataTypeId tid1 = H5D.getType(dataSet);
-
-            H5D.read(dataSet, tid1, wrapArray);
 
             // if the count in the hdf5 file is larger than the number of
             // tazs in the mapping, ignore the values over the total number
@@ -63,8 +58,12 @@ namespace Daysim.Framework.Roster
             }
 
             //leave as is for PSRC. Values are already scaled integers and matrices already condensed
-            if (Global.Configuration.PSRC)
-            {
+            if (Global.Configuration.PSRC)  {
+                var dataArray = new UInt16[nRows, nCols];
+                var wrapArray = new H5Array<UInt16>(dataArray);
+                H5DataTypeId tid1 = H5D.getType(dataSet);
+
+                H5D.read(dataSet, tid1, wrapArray);
                 for (var i = 0; i < numZones; i++)
                 {
                     for (var j = 0; j < numZones; j++)
@@ -73,8 +72,13 @@ namespace Daysim.Framework.Roster
                     }
                 }
             }
-            else
-            {
+            else {
+                var dataArray = new double[nRows, nCols];
+                var wrapArray = new H5Array<double>(dataArray);
+                H5DataTypeId tid1 = H5D.getType(dataSet);
+
+                H5D.read(dataSet, tid1, wrapArray);
+
                 for (var row = 0; row < nRows; row++)
                 {
                     if (_mapping.ContainsKey(row + 1))
