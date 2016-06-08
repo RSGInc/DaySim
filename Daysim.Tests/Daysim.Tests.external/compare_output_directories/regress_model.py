@@ -104,7 +104,7 @@ def regress_model(parameters):
     else:
         configuration_base_path = os.path.normpath(os.path.join(configuration_file_folder, configuration_base_path))
 
-    today_regression_results_dir = os.path.join(configuration_base_path, utilities.get_formatted_date() + '_regression_results')
+    today_regression_results_dir = os.path.join(configuration_base_path, 'regression_results' + '_' + utilities.get_formatted_date())
     current_configuration_results_dir_name = utilities.get_formatted_time() + '_' + configuration_filename
     regression_results_dir = os.path.join(today_regression_results_dir, 'RUNNING_' + current_configuration_results_dir_name)
 
