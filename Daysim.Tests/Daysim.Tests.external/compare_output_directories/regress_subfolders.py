@@ -9,6 +9,9 @@ import glob
 import logging
 import run_process_with_realtime_output
 
+def parse_bool(v):
+  return str(v)[:1].lower() in ('y', 't', '1')
+    
 def regress_subfolders(parameters):
     start_time = time.perf_counter()
     script_directory = os.path.split(os.path.realpath(__file__))[0] + '/'
@@ -16,6 +19,8 @@ def regress_subfolders(parameters):
     parser.add_argument('--regional_data_directory',
                         help='Directory containing region specific subfolders of data and run configuration files. It is expected that each one of these will be a separate github project',
                         default=script_directory + '../../../../regional_data')
+    parser.add_argument('--always_create_reports',
+                        help='create reports regardless of whether regression tests passed or failed', type=parse_bool, default=True)
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
                         action="store_true")
     args = parser.parse_args(parameters)
@@ -46,6 +51,7 @@ def regress_subfolders(parameters):
 
             if ext in ['.xml','.properties']:
                 function_parameters = ['--configuration_file', regression_file_path
+                                      ,'--always_create_reports', str(args.always_create_reports)
                                       ]
                 if args.verbose:
                     function_parameters.append('-v')

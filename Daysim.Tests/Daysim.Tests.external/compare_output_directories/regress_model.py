@@ -13,6 +13,7 @@ import logging
 import subprocess
 import run_process_with_realtime_output
 import utilities
+from string import Template
 
 def compare_directories(old_dir, new_dir):
     global args
@@ -41,7 +42,7 @@ It is a mistake for different configuration files to use the same working, estim
 all_configured_changeable_directories = dict()
 
 def parse_bool(v):
-  return str(v[:1]).lower() in ("y", "t", "1")
+  return str(v)[:1].lower() in ('y', 't', '1')
     
 def regress_model(parameters):
     """Passed a DaySim configuration file, this this renames the existing output directory, runs DaySim and compares the exisiting outputs directory to the new one using compare_output_directories.py"""
@@ -53,7 +54,9 @@ def regress_model(parameters):
     parser.add_argument('--configuration_file',
                         help='path to configuration file to send to Daysim', default='configuration_regression.xml')
     parser.add_argument('--run_if_needed_to_create_baseline',
-                        help='if the output folder does not exist stting this to true will run it to create the baseline', default=True)
+                        help='if the output folder does not exist stting this to true will run it to create the baseline', type=parse_bool, default=True)
+    parser.add_argument('--always_create_reports',
+                        help='create reports regardless of whether regression tests passed or failed', type=parse_bool, default=True)
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
                         action="store_true")
 
@@ -201,14 +204,21 @@ def regress_model(parameters):
                         compare_directories(configured_estimation_path, estimation_new_dir)
 
     results_label = 'PASSED' if regression_passed else 'FAILED'
-    os.rename(regression_results_dir, os.path.join(today_regression_results_dir, results_label + '_' + current_configuration_results_dir_name))
-    print('Regression test using configuration file "', configuration_filename, '": ' + results_label)
+    new_regression_results_dir = os.path.join(today_regression_results_dir, current_configuration_results_dir_name + '_' + results_label)
+    os.rename(regression_results_dir, new_regression_results_dir)
+    print('Regression test using configuration file "' + configuration_filename +  '": ' + results_label)
 
-    if not regression_passed:
+    if args.always_create_reports or not regression_passed:
         was_able_to_generate_report = False
         #if failed then look for report generation code
         parentOfConfigurationFolder = os.path.dirname(configuration_file_folder)
-        daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_' + configuration_file_root)
+
+        #look for configuration file specific folder
+        daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_' + configuration_file_root) 
+        if not os.path.isdir(daySimSummaryPath):
+            #if configuration file specific folder not found, look for generic DaySimSummaries_regress folder
+            daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_regress')
+
         if os.path.isdir(daySimSummaryPath):
             try:
                 #RScript assumes current directory is the script directory
@@ -217,7 +227,24 @@ def regress_model(parameters):
                 
                 rScript_file = 'main.R'
                 if os.path.isfile(rScript_file):
-                    return_code = run_process_with_realtime_output.run_process_with_realtime_output('RScript ' + rScript_file)
+                    #if there is a template file, then substitute the current output directory
+                    config_template = 'daysim_output_config.template'
+                    new_outputs_new_dir = os.path.join(new_regression_results_dir, outputs_new_basename)
+                    if os.path.isfile(config_template):
+                         with open(config_template, 'r') as template_file:
+                            content = template_file.read()
+                            template_content = Template(content)
+                            replacement_dict = dict(
+                                                 #need to either escape backslashes or convert to forward slashes to use in R
+                                                 daysim_outputs=new_outputs_new_dir.replace('\\', '/')
+                                                ,daysim_summaries_outputs=os.path.join(new_outputs_new_dir, configuration_file_root + '_DaySimSummaries').replace('\\', '/')
+                                                )
+
+                            config_output = config_template.replace('.template','.R')
+                            with open(config_output, 'w') as config_file:
+                                config_file.write(template_content.substitute(replacement_dict))
+                            
+                    return_code = run_process_with_realtime_output.run_process_with_realtime_output('Rscript ' + rScript_file)
                     was_able_to_generate_report = return_code == 0
             finally:
                 os.chdir(old_cwd)
