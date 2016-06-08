@@ -106,7 +106,7 @@ def regress_model(parameters):
 
     today_regression_results_dir = os.path.join(configuration_base_path, 'regression_results' + '_' + utilities.get_formatted_date())
     current_configuration_results_dir_name = utilities.get_formatted_time() + '_' + configuration_filename
-    regression_results_dir = os.path.join(today_regression_results_dir, 'RUNNING_' + current_configuration_results_dir_name)
+    regression_results_dir = os.path.join(today_regression_results_dir, current_configuration_results_dir_name + '_RUNNING')
 
     os.makedirs(regression_results_dir)
 
@@ -129,7 +129,7 @@ def regress_model(parameters):
         else:
             raise Exception('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" but that folder does not exist so cannot be used for regression.')
 
-    outputs_new_basename = os.path.basename(configured_output_path)
+    outputs_new_basename = 'outputs' #os.path.basename(configured_output_path)
     outputs_new_dir = os.path.join(regression_results_dir, outputs_new_basename)
     #compare the archived configuration file with the current one since this will find a very common error (different configuration) quickly
     archive_configuration_file_path = os.path.join(configured_output_path, 'archive_' +  configuration_filename)
@@ -148,7 +148,7 @@ def regress_model(parameters):
     configured_working_path = os.path.normpath(os.path.join(configuration_base_path, working_subpath))
     logging.debug('configured_working_path: ' + configured_working_path)
 
-    working_new_basename = os.path.basename(configured_working_path)
+    working_new_basename = 'working' #os.path.basename(configured_working_path)
     working_new_dir = os.path.join(regression_results_dir, working_new_basename)
     #create new regression test working directory in case need to store shadow price files inside
     os.makedirs(working_new_dir)
@@ -156,11 +156,8 @@ def regress_model(parameters):
     estimation_subpath = root.get('EstimationSubpath')
     configured_estimation_path = os.path.normpath(os.path.join(configuration_base_path, estimation_subpath))
     logging.debug('configured_estimation_path: ' + configured_estimation_path)
-    estimation_new_basename = os.path.basename(configured_estimation_path)
+    estimation_new_basename = 'estimation' #os.path.basename(configured_estimation_path)
     estimation_new_dir = os.path.join(regression_results_dir, estimation_new_basename)
-
-    working_new_basename = os.path.basename(configured_working_path)
-    working_new_dir = os.path.join(regression_results_dir, working_new_basename)
 
     def check_all_configured_changeable_directories(parameter_value, parameter_type):
         #check that the working, output and estimation paths have not been seen
@@ -229,15 +226,17 @@ def regress_model(parameters):
                 if os.path.isfile(rScript_file):
                     #if there is a template file, then substitute the current output directory
                     config_template = 'daysim_output_config.template'
-                    new_outputs_new_dir = os.path.join(new_regression_results_dir, outputs_new_basename)
                     if os.path.isfile(config_template):
                          with open(config_template, 'r') as template_file:
                             content = template_file.read()
                             template_content = Template(content)
+                            #the output folder for the DaySimSummary R code must be pre-created with Excel files that will be overwritten/updated
+                            reports_path = os.path.join(new_regression_results_dir, 'reports').replace('\\', '/')
+                            shutil.copytree(os.path.join(daySimSummaryPath,'output'), reports_path)
                             replacement_dict = dict(
                                                  #need to either escape backslashes or convert to forward slashes to use in R
-                                                 daysim_outputs=new_outputs_new_dir.replace('\\', '/')
-                                                ,daysim_summaries_outputs=os.path.join(new_outputs_new_dir, configuration_file_root + '_DaySimSummaries').replace('\\', '/')
+                                                 daysim_outputs=os.path.join(new_regression_results_dir, outputs_new_basename).replace('\\', '/')
+                                                ,daysim_summaries_outputs=reports_path
                                                 )
 
                             config_output = config_template.replace('.template','.R')
