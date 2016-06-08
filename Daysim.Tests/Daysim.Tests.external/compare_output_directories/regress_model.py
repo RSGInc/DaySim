@@ -206,48 +206,56 @@ def regress_model(parameters):
     print('Regression test using configuration file "' + configuration_filename +  '": ' + results_label)
 
     if args.always_create_reports or not regression_passed:
-        was_able_to_generate_report = False
-        #if failed then look for report generation code
-        parentOfConfigurationFolder = os.path.dirname(configuration_file_folder)
+        def make_report(daySim_outputs, report_path):
+            was_able_to_generate_report = False
+            #if failed then look for report generation code
+            parentOfConfigurationFolder = os.path.dirname(configuration_file_folder)
 
-        #look for configuration file specific folder
-        daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_' + configuration_file_root) 
-        if not os.path.isdir(daySimSummaryPath):
-            #if configuration file specific folder not found, look for generic DaySimSummaries_regress folder
-            daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_regress')
+            #look for configuration file specific folder
+            daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_' + configuration_file_root) 
+            if not os.path.isdir(daySimSummaryPath):
+                #if configuration file specific folder not found, look for generic DaySimSummaries_regress folder
+                daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_regress')
 
-        if os.path.isdir(daySimSummaryPath):
-            try:
-                #RScript assumes current directory is the script directory
-                old_cwd = os.getcwd()
-                os.chdir(daySimSummaryPath)
+            if os.path.isdir(daySimSummaryPath):
+                try:
+                    #RScript assumes current directory is the script directory
+                    old_cwd = os.getcwd()
+                    os.chdir(daySimSummaryPath)
                 
-                rScript_file = 'main.R'
-                if os.path.isfile(rScript_file):
-                    #if there is a template file, then substitute the current output directory
-                    config_template = 'daysim_output_config.template'
-                    if os.path.isfile(config_template):
-                         with open(config_template, 'r') as template_file:
-                            content = template_file.read()
-                            template_content = Template(content)
-                            #the output folder for the DaySimSummary R code must be pre-created with Excel files that will be overwritten/updated
-                            reports_path = os.path.join(new_regression_results_dir, 'reports').replace('\\', '/')
-                            shutil.copytree(os.path.join(daySimSummaryPath,'output'), reports_path)
-                            replacement_dict = dict(
-                                                 #need to either escape backslashes or convert to forward slashes to use in R
-                                                 daysim_outputs=os.path.join(new_regression_results_dir, outputs_new_basename).replace('\\', '/')
-                                                ,daysim_summaries_outputs=reports_path
-                                                )
+                    rScript_file = 'main.R'
+                    if os.path.isfile(rScript_file):
+                        #if there is a template file, then substitute the current output directory
+                        config_template = 'daysim_output_config.template'
+                        if os.path.isfile(config_template):
+                             with open(config_template, 'r') as template_file:
+                                content = template_file.read()
+                                template_content = Template(content)
+                                #the output folder for the DaySimSummary R code must be pre-created with Excel files that will be overwritten/updated
+                                shutil.copytree(os.path.join(daySimSummaryPath,'output'), report_path)
+                                replacement_dict = dict(
+                                                     #need to either escape backslashes or convert to forward slashes to use in R
+                                                     daysim_outputs=daySim_outputs.replace('\\', '/')
+                                                    ,daysim_summaries_outputs=report_path.replace('\\', '/')
+                                                    )
 
-                            config_output = config_template.replace('.template','.R')
-                            with open(config_output, 'w') as config_file:
-                                config_file.write(template_content.substitute(replacement_dict))
+                                config_output = config_template.replace('.template','.R')
+                                with open(config_output, 'w') as config_file:
+                                    config_file.write(template_content.substitute(replacement_dict))
                             
-                    return_code = run_process_with_realtime_output.run_process_with_realtime_output('Rscript ' + rScript_file)
-                    was_able_to_generate_report = return_code == 0
-            finally:
-                os.chdir(old_cwd)
-        print('Generated report in "' + daySimSummaryPath + '"' if was_able_to_generate_report else 'Could not generate a report')
+                        return_code = run_process_with_realtime_output.run_process_with_realtime_output('Rscript ' + rScript_file)
+                        was_able_to_generate_report = return_code == 0
+                finally:
+                    os.chdir(old_cwd)
+            print(('Successfully generated report' if was_able_to_generate_report else 'Could not generate report') + ' for DaySim outputs "' + daySim_outputs + '"')
+        
+        report_successful = make_report(os.path.join(new_regression_results_dir, outputs_new_basename)
+                                       ,os.path.join(new_regression_results_dir, 'reports')) 
+        if not regression_passed:
+            report_successful = make_report(configured_output_path
+                                           ,os.path.join(new_regression_results_dir, 'reports_of_reference_outputs')) 
+
+          
     
     return regression_passed
         
