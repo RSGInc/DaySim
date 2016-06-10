@@ -51,7 +51,7 @@ def print_diff_files(dcmp):
     for sub_dcmp in dcmp.subdirs.values():
         print_diff_files(sub_dcmp)
 
-def are_outputs_equal_func(parameters):
+def are_outputs_equal(parameters):
     start_time = time.perf_counter()
     parser = argparse.ArgumentParser(description='Compare two Daysim output directories')
     parser.add_argument('--outputs_reference', help='The reference saved outputs from a successful run [default: %(default)s}')
@@ -172,7 +172,7 @@ def are_outputs_equal_func(parameters):
     
 if __name__ == "__main__":
     try:
-        outputs_are_equal = are_outputs_equal_func(sys.argv[1:])
+        outputs_are_equal = are_outputs_equal(sys.argv[1:])
         sys.exit(0 if outputs_are_equal else 1)
     except Exception as ex:
         print("Exception in user code:")
