@@ -24,7 +24,7 @@ def compare_directories(old_dir, new_dir):
     if args.verbose:
         function_parameters.append('-v')
 
-    outputs_are_equal = compare_output_directories.are_outputs_equal_func(function_parameters)
+    outputs_are_equal = compare_output_directories.are_outputs_equal(function_parameters)
     return outputs_are_equal 
 
 
@@ -206,7 +206,7 @@ def regress_model(parameters):
     print('Regression test using configuration file "' + configuration_filename +  '": ' + results_label)
 
     if args.always_create_reports or not regression_passed:
-        def make_report(daySim_outputs, report_path):
+        def make_report(daySim_reference_outputs, daySim_new_outputs, report_path):
             was_able_to_generate_report = False
             #if failed then look for report generation code
             parentOfConfigurationFolder = os.path.dirname(configuration_file_folder)
@@ -235,7 +235,8 @@ def regress_model(parameters):
                                 shutil.copytree(os.path.join(daySimSummaryPath,'output'), report_path)
                                 replacement_dict = dict(
                                                      #need to either escape backslashes or convert to forward slashes to use in R
-                                                     daysim_outputs=daySim_outputs.replace('\\', '/')
+                                                     daysim_reference_outputs=daySim_reference_outputs.replace('\\', '/')
+                                                    ,daysim_new_outputs=daySim_new_outputs.replace('\\', '/')
                                                     ,daysim_summaries_outputs=report_path.replace('\\', '/')
                                                     )
 
@@ -246,16 +247,15 @@ def regress_model(parameters):
                         return_code = run_process_with_realtime_output.run_process_with_realtime_output('Rscript ' + rScript_file)
                         was_able_to_generate_report = return_code == 0
                 finally:
+                    #clean up after DaySimSummaries_regress/main.R which leaves .RData files behind
+                    utilities.delete_matching_files(daySim_reference_outputs, r'^.*[.]Rdata$')
+                    utilities.delete_matching_files(daySim_new_outputs, r'^.*[.]Rdata$')
                     os.chdir(old_cwd)
-            print(('Successfully generated report' if was_able_to_generate_report else 'Could not generate report') + ' for DaySim outputs "' + daySim_outputs + '"')
+            print(('Successfully generated report' if was_able_to_generate_report else 'Could not generate report') + ' comparing DaySim reference outputs "' + daySim_reference_outputs + '" to new outputs "' + daySim_new_outputs + '"')
         
-        report_successful = make_report(os.path.join(new_regression_results_dir, outputs_new_basename)
-                                       ,os.path.join(new_regression_results_dir, 'reports')) 
-        if not regression_passed:
-            report_successful = make_report(configured_output_path
-                                           ,os.path.join(new_regression_results_dir, 'reports_of_reference_outputs')) 
-
-          
+        report_successful = make_report(configured_output_path
+                                       ,os.path.join(new_regression_results_dir, outputs_new_basename)
+                                       ,os.path.join(new_regression_results_dir, 'reports'))           
     
     return regression_passed
         
