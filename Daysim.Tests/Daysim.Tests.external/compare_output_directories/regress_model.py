@@ -129,7 +129,7 @@ def regress_model(parameters):
         else:
             raise Exception('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" but that folder does not exist so cannot be used for regression.')
 
-    outputs_new_basename = 'outputs' #os.path.basename(configured_output_path)
+    outputs_new_basename = os.path.basename(configured_output_path)
     outputs_new_dir = os.path.join(regression_results_dir, outputs_new_basename)
     #compare the archived configuration file with the current one since this will find a very common error (different configuration) quickly
     archive_configuration_file_path = os.path.join(configured_output_path, 'archive_' +  configuration_filename)
@@ -148,7 +148,7 @@ def regress_model(parameters):
     configured_working_path = os.path.normpath(os.path.join(configuration_base_path, working_subpath))
     logging.debug('configured_working_path: ' + configured_working_path)
 
-    working_new_basename = 'working' #os.path.basename(configured_working_path)
+    working_new_basename = os.path.basename(configured_working_path)
     working_new_dir = os.path.join(regression_results_dir, working_new_basename)
     #create new regression test working directory in case need to store shadow price files inside
     os.makedirs(working_new_dir)
@@ -156,7 +156,7 @@ def regress_model(parameters):
     estimation_subpath = root.get('EstimationSubpath')
     configured_estimation_path = os.path.normpath(os.path.join(configuration_base_path, estimation_subpath))
     logging.debug('configured_estimation_path: ' + configured_estimation_path)
-    estimation_new_basename = 'estimation' #os.path.basename(configured_estimation_path)
+    estimation_new_basename = os.path.basename(configured_estimation_path)
     estimation_new_dir = os.path.join(regression_results_dir, estimation_new_basename)
 
     def check_all_configured_changeable_directories(parameter_value, parameter_type):
