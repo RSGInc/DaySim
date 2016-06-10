@@ -2,7 +2,14 @@ from collections import Mapping, Container
 from sys import getsizeof
 from datetime import datetime
 import time
- 
+import os
+import re
+
+def delete_matching_files(directory, pattern):
+    for root, dirs, files in os.walk(directory):
+        for file in filter(lambda x: re.match(pattern, x), files):
+            os.remove(os.path.join(root, file))
+
 def get_formatted_date_time(date_time_to_format=None):
     if date_time_to_format is None:
         date_time_to_format = datetime.now()
