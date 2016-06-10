@@ -13,7 +13,7 @@
     <Name>compare_output_directories</Name>
     <RootNamespace>compare_output_directories</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-v --regional_data_directory C:\rd\DaySim_test_model</CommandLineArguments>
+    <CommandLineArguments>-v --regional_data_directory C:\rd\nashvilleabm-git\2010\DaySim</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>
