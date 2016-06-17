@@ -31,16 +31,4 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("cc9f22e7-9df1-469b-8d30-435ef2fe436c")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+// All version information will be injected by GitVersion Task http://gitversion.readthedocs.io/

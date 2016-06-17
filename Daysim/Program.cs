@@ -24,7 +24,8 @@ namespace Daysim {
 		private static int _start = -1;
 		private static int _end = -1;
 		private static int _index = -1;
-		private static bool _showHelp;
+        private static bool _showHelp;
+        private static bool _showVersion;
         private static string _overrides = "";
 
 		private static void Main(string[] args) {
@@ -37,6 +38,7 @@ namespace Daysim {
                     {"s|start=", "Start index of household range", v => _start = int.Parse(v)},
                     {"e|end=", "End index of household range", v => _end = int.Parse(v)},
                     {"i|index=", "Cluser index", v => _index = int.Parse(v)},
+                    {"v|version", "Show version information", v => _showVersion = v != null},
                     {"h|?|help", "Show help and syntax summary", v => _showHelp = v != null}
                 };
 
@@ -55,6 +57,28 @@ namespace Daysim {
                     Console.WriteLine("Please press any key to exit");
                     Console.ReadKey();
 
+                    Environment.Exit(0);
+                } else if (_showVersion)
+                {
+                    var assembly = typeof(Program).Assembly;
+                    var assemblyName = assembly.GetName().Name;
+                    var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
+
+                    Console.WriteLine(string.Format("Version: {0}",
+                        gitVersionInformationType.GetField("FullSemVer").GetValue(null)));
+                    Console.WriteLine(string.Format("Branch: {0}",
+                         gitVersionInformationType.GetField("BranchName").GetValue(null)));
+                   Console.WriteLine(string.Format("Commit date: {0}",
+                        gitVersionInformationType.GetField("CommitDate").GetValue(null)));
+                    //to get all fields
+                    //var fields = gitVersionInformationType.GetFields();
+
+                    //foreach (var field in fields)
+                    //{
+                    //    Console.WriteLine(string.Format("{0}: {1}", field.Name, field.GetValue(null)));
+                    //}
+                    Console.WriteLine("Please press any key to exit");
+                    Console.ReadKey();
                     Environment.Exit(0);
                 }
 
