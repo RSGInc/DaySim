@@ -1,4 +1,4 @@
-﻿#.gitignore for Visual Studio from: https://gist.github.com/paigecook/1024746
+#.gitignore for Visual Studio from: https://gist.github.com/paigecook/1024746
 
 # Compiled source #
 ###################
@@ -69,3 +69,4 @@ _ReSharper.*
 !lib/*.xml
 !/packages/*/lib/*.dll
 !/packages/*/lib/*/*.dll
+*.pyc

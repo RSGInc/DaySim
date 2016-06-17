@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("RSG Inc.")]
 [assembly: AssemblyProduct("Daysim")]
-[assembly: AssemblyCopyright("Copyright © Resource Systems Group, Inc. 2011")]
+[assembly: AssemblyCopyright("Copyright © Resource Systems Group, Inc. 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

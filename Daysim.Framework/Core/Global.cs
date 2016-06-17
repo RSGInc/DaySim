@@ -18,7 +18,13 @@ using Ninject;
 
 namespace Daysim.Framework.Core {
 	public static class Global {
-		public static IKernel Kernel { get; set; }
+
+        private const string SHADOW_PRICES_FILENAME = "shadow_prices.txt";
+        private const string ARCHIVE_SHADOW_PRICES_FILENAME = "archive_" + SHADOW_PRICES_FILENAME;
+        private const string PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "park_and_ride_" + SHADOW_PRICES_FILENAME;
+        private const string ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILENAME;
+
+        public static IKernel Kernel { get; set; }
 
 		public static Configuration Configuration { get; set; }
 
@@ -134,11 +140,22 @@ namespace Daysim.Framework.Core {
 			get { return GetWorkingPath("parcel_node.tsv"); }
 		}
 
-		public static string DefaultInputParcelPath {
-			get { return GetWorkingPath("parcel.tsv"); }
-		}
+        public static string ArchiveShadowPricesPath
+        {
+            get { return GetOutputPath(ARCHIVE_SHADOW_PRICES_FILENAME); }
+        }
 
-		public static string DefaultInputZonePath {
+        public static string ArchiveParkAndRideShadowPricesPath
+        {
+            get { return GetOutputPath(ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME); }
+        }
+
+        public static string DefaultInputParcelPath
+        {
+            get { return GetWorkingPath("parcel.tsv"); }
+        }
+
+        public static string DefaultInputZonePath {
 			get { return GetWorkingPath("zone.tsv"); }
 		}
 
@@ -247,11 +264,11 @@ namespace Daysim.Framework.Core {
 		}
 
 		public static string ShadowPricesPath {
-			get { return GetWorkingPath("shadow_prices.txt"); }
+			get { return GetWorkingPath(SHADOW_PRICES_FILENAME); }
 		}
 
 		public static string ParkAndRideShadowPricesPath {
-			get { return GetWorkingPath("park_and_ride_shadow_prices.txt"); }
+			get { return GetWorkingPath(PARK_AND_RIDE_SHADOW_PRICES_FILENAME); }
 		}
 
 		public static double Coefficients_BaseCostCoefficientPerMonetaryUnit {

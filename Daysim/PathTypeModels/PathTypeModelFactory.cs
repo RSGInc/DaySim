@@ -31,7 +31,7 @@ namespace Daysim.PathTypeModels {
 						Create<H.PathTypeModel>();
 						break;
 					default:
-						throw new ApplicationException(string.Format("PathTypeModel '{0}' can not be created", type));
+						throw new ApplicationException(string.Format("PathTypeModel '{0}' cannot be created", type));
 				}
 				return;
 			}
