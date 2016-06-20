@@ -145,7 +145,7 @@ def regress_model(parameters):
 
  
         working_subpath = root.get('WorkingSubpath')
-        if working_subpath is not None:
+        if working_subpath is None:
            #if working subpath does not exist look for deprecated working directory
            working_subpath = root.get('WorkingDirectory')
         configured_working_path = os.path.normpath(os.path.join(configuration_base_path, working_subpath))
