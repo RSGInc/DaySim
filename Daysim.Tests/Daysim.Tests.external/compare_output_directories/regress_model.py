@@ -211,14 +211,22 @@ def regress_model(parameters):
     if args.always_create_reports or not regression_passed:
         def make_report(daySim_reference_outputs, daySim_new_outputs, report_path):
             was_able_to_generate_report = False
-            #if failed then look for report generation code
-            parentOfConfigurationFolder = os.path.dirname(configuration_file_folder)
+            #look for report generation code
 
             #look for configuration file specific folder
-            daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_' + configuration_file_root) 
+            daySimSummaryPath = os.path.join(configuration_file_folder, 'DaySimSummaries_' + configuration_file_root) 
+            if not os.path.isdir(daySimSummaryPath):
+                #if not found look one directory above
+                parentOfConfigurationFolder = os.path.dirname(configuration_file_folder)
+                daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_' + configuration_file_root)
+
             if not os.path.isdir(daySimSummaryPath):
                 #if configuration file specific folder not found, look for generic DaySimSummaries_regress folder
-                daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_regress')
+                daySimSummaryPath = os.path.join(configuration_file_folder, 'DaySimSummaries_regress') 
+                if not os.path.isdir(daySimSummaryPath):
+                    #if not found look one directory above
+                    parentOfConfigurationFolder = os.path.dirname(configuration_file_folder)
+                    daySimSummaryPath = os.path.join(parentOfConfigurationFolder, 'DaySimSummaries_regress')
 
             if os.path.isdir(daySimSummaryPath):
                 try:
