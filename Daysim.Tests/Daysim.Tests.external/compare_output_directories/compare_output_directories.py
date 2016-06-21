@@ -85,82 +85,87 @@ def are_outputs_equal(parameters):
     logging.debug('are_all_files_common finished')
     logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
-    result = True
     if not are_all_files_common:
         result = False
     else:
+        result = False
         all_common_different_files = get_all_common_different_files(dcmp)
         logging.debug('get_all_common_different_files finished')
         logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
         for different_file in all_common_different_files:
+            result = False #since files are different assume failure unless changed again
             #some Daysim files are identical in content but are output in a different line order
             reference_file = os.path.join(args.outputs_reference, different_file)
             assert os.path.isfile(reference_file), "reference_file is not a file: " + reference_file
+            filename, file_extension = os.path.splitext(reference_file)
+            allow_text_comparison = file_extension in ['.tsv','dat','.txt']
             new_file = os.path.join(args.outputs_new, different_file)
             assert os.path.isfile(reference_file), "new_file is not a file: " + new_file
             if os.path.getsize(reference_file) != os.path.getsize(new_file):
                 logging.debug('length of common file: ' + different_file + ' differs so difference must be more then different sort order!')
-                result = False
             else:
                 logging.debug('common_file that is different at least has same file size! file: ' + different_file)
-                #since same size need to check if same lines but in different order
+                if allow_text_comparison:
+                    #since same size need to check if same lines but in different order
 
-                #quickest and least memory method is to sum the hash of each line and then compare
-                hash_sum_reference = get_hash_sum_of_lines(reference_file)
-                logging.debug('hash_sum of reference: ' + str(hash_sum_reference))
-                logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
-                hash_sum_new_file = get_hash_sum_of_lines(new_file)
-                logging.debug('hash_sum of new file: ' + str(hash_sum_new_file))
-                logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    #quickest and least memory method is to sum the hash of each line and then compare
+                    hash_sum_reference = get_hash_sum_of_lines(reference_file)
+                    logging.debug('hash_sum of reference: ' + str(hash_sum_reference))
+                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    hash_sum_new_file = get_hash_sum_of_lines(new_file)
+                    logging.debug('hash_sum of new file: ' + str(hash_sum_new_file))
+                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
-                if hash_sum_reference == hash_sum_new_file:
-                     print('File "' + different_file + '" has identical content just in different order.')
-                else: 
-                    #files are different in more than just sort order!
-                    result = False
+                    if hash_sum_reference == hash_sum_new_file:
+                        print('File "' + different_file + '" has identical content just in different order.')
+                        result = True #files count as same despite different order    
+                    #else files are different in more than just sort order!
 
             if result == False:
-                logging.debug('hash_sum of files is different so going to compare lines. reference_file "' + reference_file + '".')
-                #if the files do not have identical lines get more detailed information of differences
-                with open(reference_file, encoding='latin-1') as infile:
-                    counts = collections.Counter(l for l in infile)
+                if not allow_text_comparison:
+                    logging.debug('Files are different but not clearly a text extension so no further details.')
+                else:
+                    logging.debug('hash_sum of files is different so going to compare lines. reference_file "' + reference_file + '".')
+                    #if the files do not have identical lines get more detailed information of differences
+                    with open(reference_file, encoding='latin-1') as infile:
+                        counts = collections.Counter(l for l in infile)
 
-                logging.debug('Finished counting lines in reference folder copy of "' + different_file + '". There are '
-                + str(len(counts)) + ' distinct lines')
-                logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    logging.debug('Finished counting lines in reference folder copy of "' + different_file + '". There are '
+                    + str(len(counts)) + ' distinct lines')
+                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
  
-                logging.debug('deep_getsizeof(counts): ' + human_readable_bytes(deep_getsizeof(counts, set())))
-                logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    logging.debug('deep_getsizeof(counts): ' + human_readable_bytes(deep_getsizeof(counts, set())))
+                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
-                logging.debug('hash_sum of files is different so going to compare lines. new_file "' + new_file + '".')
-                with open(new_file, encoding='latin-1') as infile:
-                    counts.subtract(l for l in infile)
-                logging.debug('Finished checking new version of "' + different_file + '".')
-                logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    logging.debug('hash_sum of files is different so going to compare lines. new_file "' + new_file + '".')
+                    with open(new_file, encoding='latin-1') as infile:
+                        counts.subtract(l for l in infile)
+                    logging.debug('Finished checking new version of "' + different_file + '".')
+                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
-                missing_from_reference = []
-                missing_from_new = []
-                for line, count in counts.items():
-                    if count < 0:
-                        missing_from_reference.append((line,count))
-                    elif count > 0:
-                        missing_from_new.append((line,count))
+                    missing_from_reference = []
+                    missing_from_new = []
+                    for line, count in counts.items():
+                        if count < 0:
+                            missing_from_reference.append((line,count))
+                        elif count > 0:
+                            missing_from_new.append((line,count))
 
-                assert len(missing_from_reference) != 0 or len(missing_from_new) != 0, "hash_sum was different but the counts of each distinct are identical!"
+                    assert len(missing_from_reference) != 0 or len(missing_from_new) != 0, "hash_sum was different but the counts of each distinct are identical!"
 
-                print('File "' + different_file + '" with ' + str(len(counts)) + ' distinct lines has '
-                        + str(len(missing_from_new)) + ' distinct lines that were not found in the new and '
-                        + str(len(missing_from_reference)) + ' distinct lines that were not found in the reference file')
+                    print('File "' + different_file + '" with ' + str(len(counts)) + ' distinct lines has '
+                            + str(len(missing_from_new)) + ' distinct lines that were not found in the new and '
+                            + str(len(missing_from_reference)) + ' distinct lines that were not found in the reference file')
 
-                def print_line_and_counts_to_string(identifier, counted_strings):
-                    if len(counted_strings) > 0:
-                        message = ('All ' if len(counted_strings) <= args.max_different_lines_to_show else (' Sample ' + str(args.max_different_lines_to_show))) + ' lines that are ' + identifier + '.\n'
-                        message += '\n'.join(str(abs(count)) + ': ' + str(line) for line, count in counted_strings[:args.max_different_lines_to_show])
-                        print(message)
+                    def print_line_and_counts_to_string(identifier, counted_strings):
+                        if len(counted_strings) > 0:
+                            message = ('All ' if len(counted_strings) <= args.max_different_lines_to_show else (' Sample ' + str(args.max_different_lines_to_show))) + ' lines that are ' + identifier + '.\n'
+                            message += '\n'.join(str(abs(count)) + ': ' + str(line) for line, count in counted_strings[:args.max_different_lines_to_show])
+                            print(message)
 
-                print_line_and_counts_to_string('missing from new file', missing_from_new)
-                print_line_and_counts_to_string('missing from reference', missing_from_reference)
+                    print_line_and_counts_to_string('missing from new file', missing_from_new)
+                    print_line_and_counts_to_string('missing from reference', missing_from_reference)
 
                 logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
                 #STOP!
