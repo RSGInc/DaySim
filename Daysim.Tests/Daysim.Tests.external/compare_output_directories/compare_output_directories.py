@@ -103,7 +103,7 @@ def are_outputs_equal(parameters):
             new_file = os.path.join(args.outputs_new, different_file)
             assert os.path.isfile(reference_file), "new_file is not a file: " + new_file
             if os.path.getsize(reference_file) != os.path.getsize(new_file):
-                logging.debug('length of common file: ' + different_file + ' differs so difference must be more then different sort order!')
+                logging.debug('length of common file: ' + different_file + ' differs so difference must be more than different sort order!')
             else:
                 logging.debug('common_file that is different at least has same file size! file: ' + different_file)
                 if allow_text_comparison:
