@@ -21,15 +21,12 @@ Global
 		Debug|x64 = Debug|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-
 		{C89E2003-E353-43B8-BF0A-9A821945933A}.Debug|x64.ActiveCfg = Debug|x64
 		{C89E2003-E353-43B8-BF0A-9A821945933A}.Debug|x64.Build.0 = Debug|x64
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Debug|x64.ActiveCfg = Debug|x64
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Debug|x64.Build.0 = Debug|x64
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Debug|x64.ActiveCfg = Debug|x64
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Debug|x64.Build.0 = Debug|x64
-		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Debug|x64.ActiveCfg = Debug|x64
-		{140FBB6C-6B46-48BA-AB8A-F4E4B02AE7DC}.Debug|x64.Build.0 = Debug|x64
 		{66B71A86-D772-4A33-B182-760B912CD7F3}.Debug|x64.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
