@@ -121,9 +121,10 @@ def are_outputs_equal(parameters):
                     result = False
 
             if result == False:
+                logging.debug('hash_sum of files is different so going to compare lines. reference_file "' + reference_file + '".')
                 #if the files do not have identical lines get more detailed information of differences
-                with open(reference_file) as infile:
-                    counts = collections.Counter(l.strip() for l in infile)
+                with open(reference_file, encoding='latin-1') as infile:
+                    counts = collections.Counter(l for l in infile)
 
                 logging.debug('Finished counting lines in reference folder copy of "' + different_file + '". There are '
                 + str(len(counts)) + ' distinct lines')
@@ -132,8 +133,9 @@ def are_outputs_equal(parameters):
                 logging.debug('deep_getsizeof(counts): ' + human_readable_bytes(deep_getsizeof(counts, set())))
                 logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
-                with open(new_file) as infile:
-                    counts.subtract(l.strip() for l in infile)
+                logging.debug('hash_sum of files is different so going to compare lines. new_file "' + new_file + '".')
+                with open(new_file, encoding='latin-1') as infile:
+                    counts.subtract(l for l in infile)
                 logging.debug('Finished checking new version of "' + different_file + '".')
                 logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
