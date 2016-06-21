@@ -15,13 +15,12 @@ import run_process_with_realtime_output
 import utilities
 from string import Template
 
-def compare_directories(old_dir, new_dir):
-    global args
+def compare_directories(old_dir, new_dir, isVerbose):
     import compare_output_directories
     function_parameters = ['--outputs_reference', old_dir
                             ,'--outputs_new', new_dir
                             ]
-    if args.verbose:
+    if isVerbose:
         function_parameters.append('-v')
 
     outputs_are_equal = compare_output_directories.are_outputs_equal(function_parameters)
@@ -60,7 +59,6 @@ def regress_model(parameters):
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
                         action="store_true")
 
-    global args
     args = parser.parse_args(parameters)
 
     if args.verbose:
@@ -199,9 +197,9 @@ def regress_model(parameters):
             os.chdir(old_cwd)
     
         regression_passed = (return_code == 0) and \
-                            compare_directories(configured_output_path, outputs_new_dir) and \
-                            compare_directories(configured_working_path, working_new_dir) and \
-                            compare_directories(configured_estimation_path, estimation_new_dir)
+                            compare_directories(configured_output_path, outputs_new_dir, args.verbose) and \
+                            compare_directories(configured_working_path, working_new_dir, args.verbose) and \
+                            compare_directories(configured_estimation_path, estimation_new_dir, args.verbose)
     finally:
         results_label = 'PASSED' if regression_passed else 'FAILED'
         new_regression_results_dir = os.path.join(today_regression_results_dir, current_configuration_results_dir_name + '_' + results_label)
