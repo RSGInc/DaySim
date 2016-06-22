@@ -125,7 +125,7 @@ namespace Daysim.Framework.Core {
 		}
 
 		public static string DefaultInputParkAndRideNodePath {
-			get { return GetWorkingPath("park_and_ride_node.tsv"); }
+			get { return GetWorkingSubpath("park_and_ride_node.tsv"); }
 		}
 
 		public static bool ParcelNodeIsEnabled {
@@ -137,7 +137,7 @@ namespace Daysim.Framework.Core {
 		}
 
 		public static string DefaultInputParcelNodePath {
-			get { return GetWorkingPath("parcel_node.tsv"); }
+			get { return GetWorkingSubpath("parcel_node.tsv"); }
 		}
 
         public static string ArchiveShadowPricesPath
@@ -152,51 +152,51 @@ namespace Daysim.Framework.Core {
 
         public static string DefaultInputParcelPath
         {
-            get { return GetWorkingPath("parcel.tsv"); }
+            get { return GetWorkingSubpath("parcel.tsv"); }
         }
 
         public static string DefaultInputZonePath {
-			get { return GetWorkingPath("zone.tsv"); }
+			get { return GetWorkingSubpath("zone.tsv"); }
 		}
 
 		public static string DefaultInputTransitStopAreaPath {
-			get { return GetWorkingPath("stoparea.tsv"); }
+			get { return GetWorkingSubpath("stoparea.tsv"); }
 		}
 
 		public static string DefaultInputHouseholdPath {
-			get { return GetWorkingPath("household.tsv"); }
+			get { return GetWorkingSubpath("household.tsv"); }
 		}
 
 		public static string DefaultInputHouseholdDayPath {
-			get { return GetWorkingPath("household_day.tsv"); }
+			get { return GetWorkingSubpath("household_day.tsv"); }
 		}
 
 		public static string DefaultInputJointTourPath {
-			get { return GetWorkingPath("joint_tour.tsv"); }
+			get { return GetWorkingSubpath("joint_tour.tsv"); }
 		}
 
 		public static string DefaultInputFullHalfTourPath {
-			get { return GetWorkingPath("full_half_tour.tsv"); }
+			get { return GetWorkingSubpath("full_half_tour.tsv"); }
 		}
 
 		public static string DefaultInputPartialHalfTourPath {
-			get { return GetWorkingPath("partial_half_tour.tsv"); }
+			get { return GetWorkingSubpath("partial_half_tour.tsv"); }
 		}
 
 		public static string DefaultInputPersonPath {
-			get { return GetWorkingPath("person.tsv"); }
+			get { return GetWorkingSubpath("person.tsv"); }
 		}
 
 		public static string DefaultInputPersonDayPath {
-			get { return GetWorkingPath("person_day.tsv"); }
+			get { return GetWorkingSubpath("person_day.tsv"); }
 		}
 
 		public static string DefaultInputTourPath {
-			get { return GetWorkingPath("tour.tsv"); }
+			get { return GetWorkingSubpath("tour.tsv"); }
 		}
 
 		public static string DefaultInputTripPath {
-			get { return GetWorkingPath("trip.tsv"); }
+			get { return GetWorkingSubpath("trip.tsv"); }
 		}
 
 		public static string WorkingParkAndRideNodePath {
@@ -317,12 +317,12 @@ namespace Daysim.Framework.Core {
 			}
 		}
 
-		private static string GetSubpath(string file, string subPath) {
+		private static string GetSubpath(string file, string subPath, bool ignoreBasePath = false) {
 			if (file.Contains(":\\")) {
 				return file;
 			}
 
-			if (Configuration.BasePath == null) {
+            if (ignoreBasePath || Configuration.BasePath == null) {
 				return
 					subPath == null
 						? file
@@ -341,11 +341,10 @@ namespace Daysim.Framework.Core {
 
 		public static string GetInputPath<TModel>() where TModel : IModel {
 			var path = GetConfigurationValue<TModel, string>("Input", "Path");
+            return GetInputPath(path);
+        }
 
-			return GetInputPath(path);
-		}
-
-		public static char GetInputDelimiter<TModel>() where TModel : IModel {
+        public static char GetInputDelimiter<TModel>() where TModel : IModel {
 			return GetConfigurationValue<TModel, char>("Input", "Delimiter");
 		}
 
@@ -355,8 +354,7 @@ namespace Daysim.Framework.Core {
 
 		public static string GetOutputPath<TModel>() where TModel : IModel {
 			var path = GetConfigurationValue<TModel, string>("Output", "Path");
-
-			return GetOutputPath(path);
+            return GetOutputPath(path);
 		}
 
 		public static char GetOutputDelimiter<TModel>() where TModel : IModel {
@@ -389,14 +387,22 @@ namespace Daysim.Framework.Core {
 			return GetSubpath(file, Configuration.EstimationSubpath);
 		}
 
-		public static string GetWorkingPath(string file) {
-			return
-				GetSubpath(file, string.IsNullOrEmpty(Configuration.WorkingSubpath)
-					? Configuration.WorkingDirectory
-					: Configuration.WorkingSubpath);
-		}
+        public static string GetWorkingPath(string file, bool ignoreBasePath = false)
+        {
+            return
+                GetSubpath(file, string.IsNullOrEmpty(Configuration.WorkingSubpath)
+                    ? Configuration.WorkingDirectory
+                    : Configuration.WorkingSubpath, ignoreBasePath);
+        }
 
-		public static void InitializeNodeIndex() {
+        //Special version that will not prepend the BasePath. This is used for default paths since the BasePath will be added in later.
+        //Related to issue #65
+        public static string GetWorkingSubpath(string file)
+        {
+            return GetWorkingPath(file, ignoreBasePath: true);
+        }
+
+        public static void InitializeNodeIndex() {
 			var reader =
 				Kernel
 					.Get<IPersistenceFactory<IParcelNode>>()
