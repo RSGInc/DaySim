@@ -41,12 +41,24 @@ namespace Daysim.Framework.Core {
 					.ToLower();
 		}
 
-		public Configuration Open() {
+        public class Group
+        {
+            public string GroupName;
+        }
+
+
+        private void Serializer_UnknownAttribute(object sender, XmlAttributeEventArgs e)
+        {
+            Console.Error.WriteLine("WARNING - Unknown attribute: \t" + e.Attr.Name + " " + e.Attr.InnerXml + "\t LineNumber: " + e.LineNumber + "\t LinePosition: " + e.LinePosition);
+        }
+
+        public Configuration Open() {
 			using (var stream = _file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
 				if (_extension == ".xml") {
 					var serializer = new XmlSerializer(typeof (Configuration));
-
-					return (Configuration) serializer.Deserialize(stream);
+                    // Add a delegate to handle unknown element events.
+                    serializer.UnknownAttribute += new XmlAttributeEventHandler(Serializer_UnknownAttribute);
+                    return (Configuration) serializer.Deserialize(stream);
 				}
 
 				if (_extension == ".properties") {
