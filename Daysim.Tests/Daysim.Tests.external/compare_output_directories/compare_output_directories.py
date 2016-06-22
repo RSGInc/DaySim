@@ -79,19 +79,19 @@ def are_outputs_equal(parameters):
     dcmp = filecmp.dircmp(args.outputs_reference, args.outputs_new) 
 
     logging.debug('dcmp finished')
-    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
     are_all_files_common = are_all_files_common_func(dcmp)
-    logging.debug('are_all_files_common finished')
-    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+    logging.debug('are_all_files_common finished: ' + str(are_all_files_common))
+    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
     if not are_all_files_common:
         result = False
     else:
-        result = False
         all_common_different_files = get_all_common_different_files(dcmp)
-        logging.debug('get_all_common_different_files finished')
-        logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+        result = len(all_common_different_files) == 0 #result is good if all common files are the same
+        logging.debug('get_all_common_different_files finished with #' + str(len(all_common_different_files)) + ' common files which differ')
+        #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
         for different_file in all_common_different_files:
             result = False #since files are different assume failure unless changed again
