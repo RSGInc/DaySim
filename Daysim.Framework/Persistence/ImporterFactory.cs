@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Daysim.Framework.DomainModels.Models;
+using Daysim.Framework.Core;
 
 namespace Daysim.Framework.Persistence {
 	public sealed class ImporterFactory {
