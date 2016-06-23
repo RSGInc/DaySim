@@ -154,10 +154,10 @@ namespace Daysim.Framework.Core {
 							.Select(x => x.Name.LocalName)
 							.ToList();
 
-				WriteUnusedProperties(printFile, properties, attributes);
 				WriteInvalidAttributes(printFile, properties, attributes);
-			}
-		}
+                WriteUnusedProperties(printFile, properties, attributes);
+            }
+        }
 
 		private void WriteFromProperties(PrintFile printFile, PropertyInfo[] properties) {}
 
@@ -172,7 +172,7 @@ namespace Daysim.Framework.Core {
 				return;
 			}
 
-			printFile.WriteLine("The following properties in the configuration file where not set:");
+			printFile.WriteLine("The following properties in the configuration file were not set:");
 			printFile.IncrementIndent();
 
 			foreach (var item in list) {

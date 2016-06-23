@@ -16,6 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.IO;
+using System.Globalization;
 
 namespace Daysim {
 	public static class Program {
@@ -90,14 +91,20 @@ namespace Daysim {
 
                 var settingsFactory = new SettingsFactory(configuration);
                 var settings = settingsFactory.Create();
+
+                Global.Configuration = configuration;
+                Global.Settings = settings;
+
+                if (string.IsNullOrWhiteSpace(_printFilePath))
+                {
+                    _printFilePath = Global.GetOutputPath("run_" + DateTime.Now.ToString("yyyy-MM-dd_HH'h'mm'm'", CultureInfo.InvariantCulture) + ".log");
+                }
                 var printFile = new PrintFile(_printFilePath, configuration);
 
                 configurationManager.Write(configuration, printFile);
 
                 ParallelUtility.Init(configuration);
 
-                Global.Configuration = configuration;
-                Global.Settings = settings;
                 Global.PrintFile = printFile;
                 Global.Kernel = new StandardKernel(new DaysimModule());
 

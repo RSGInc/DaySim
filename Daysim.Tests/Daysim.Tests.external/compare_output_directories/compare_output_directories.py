@@ -10,13 +10,18 @@ from utilities import *
 import logging
 
 
-def are_all_files_common_func(dcmp):
+def removeLogFiles(listOfFiles):
+    return [file for file in listOfFiles if not file.endswith('.log')]
+
+def are_all_files_common_func(dcmp, ignoreLogFiles = True):
     """This will return true if the dcmp object passed in shows
     that both directories had the same files and subfolders (recursively)"""
     if len(dcmp.left_only) > 0:
-        return False
-    elif len(dcmp.right_only) > 0:
-       return False
+        if not ignoreLogFiles or len(removeLogFiles(dcmp.left_only)) > 0:
+            return False 
+    if len(dcmp.right_only) > 0:
+        if not ignoreLogFiles or len(removeLogFiles(dcmp.right_only)) > 0:
+            return False 
 
     for sub_dcmp in dcmp.subdirs.values():
         return are_all_files_common_func(sub_dcmp)
