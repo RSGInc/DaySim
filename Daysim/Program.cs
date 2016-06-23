@@ -99,6 +99,7 @@ namespace Daysim {
                 {
                     _printFilePath = Global.GetOutputPath("run_" + DateTime.Now.ToString("yyyy-MM-dd_HH'h'mm'm'", CultureInfo.InvariantCulture) + ".log");
                 }
+                _printFilePath.CreateDirectory(); //create printfile directory if needed
                 var printFile = new PrintFile(_printFilePath, configuration);
 
                 configurationManager.Write(configuration, printFile);
@@ -110,7 +111,7 @@ namespace Daysim {
 
                 //copy the configuration file into the output so we can tell if configuration changed before regression test called.
                 var archiveConfigurationFilePath = Global.GetOutputPath("archive_" + Path.GetFileName(_configurationPath));
-                archiveConfigurationFilePath.CreateDirectory(); //create output direcory if needed
+                archiveConfigurationFilePath.CreateDirectory(); //create output directory if needed
                 File.Copy(_configurationPath, archiveConfigurationFilePath, /* overwrite */ true);
 
                 var moduleFactory = new ModuleFactory(configuration);
