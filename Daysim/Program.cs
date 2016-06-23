@@ -123,22 +123,18 @@ namespace Daysim {
                 //Engine.BeginTestMode();
             }
             catch (Exception e) {
-				Console.WriteLine();
-				Console.WriteLine(e.GetBaseException().Message);
+                string message = e.ToString();
 
-				Console.WriteLine();
-				Console.WriteLine(e.StackTrace);
+                Console.WriteLine();
+                Console.Error.WriteLine(message);
 
-				Console.WriteLine();
-				Console.WriteLine("Please press any key to exit");
-
-				if (Global.PrintFile != null) {
-					Global.PrintFile.WriteLine(e.GetBaseException().Message);
-					Global.PrintFile.WriteLine();
-					Global.PrintFile.WriteLine(e.StackTrace);
+                if (Global.PrintFile != null) {
+					Global.PrintFile.WriteLine(message);
 				}
 
-				Console.ReadKey();
+                Console.WriteLine();
+                Console.WriteLine("Please press any key to exit");
+                Console.ReadKey();
 
 				Environment.Exit(2);
 			}
