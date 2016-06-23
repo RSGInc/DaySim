@@ -222,15 +222,14 @@ namespace Daysim.Framework.ChoiceModels {
 			var tempFile = new FileInfo(Global.GetEstimationPath(Global.Configuration.OutputAlogitDataPath) + ".tmp");
 			var dataFile = new FileInfo(Global.GetEstimationPath(Global.Configuration.OutputAlogitDataPath));
 
-			using (var tempReader = new StreamReader(tempFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var tempReader = new CountingReader(tempFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				using (var dataWriter = new StreamWriter(dataFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read))) {
-					var index = 0;
 					string line;
 
 					while ((line = tempReader.ReadLine()) != null) {
 						var tokens = line.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(double.Parse).ToArray();
 
-						dataWriter.Write(++index);
+						dataWriter.Write(tempReader.LineNumber);
 						dataWriter.Write(" ");
 
 						for (var i = 0; i < totalObservationItems; i++) {

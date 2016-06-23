@@ -50,7 +50,7 @@ namespace DaysimController {
 		}
 
 		private static void RunRemoteProcesses() {
-			using (var reader = new StreamReader(new FileInfo(Global.GetInputPath(Global.Configuration.RawHouseholdPath)).OpenRead())) {
+			using (var reader = new CountingReader(new FileInfo(Global.GetInputPath(Global.Configuration.RawHouseholdPath)).OpenRead())) {
 				while (reader.ReadLine() != null) {
 					_householdCount++;
 				}
@@ -276,7 +276,7 @@ namespace DaysimController {
 					? FileMode.Open
 					: FileMode.Create;
 
-			using (var reader = new StreamReader(remote.OpenRead())) {
+			using (var reader = new CountingReader(remote.OpenRead())) {
 				using (var stream = local.Open(fileMode, FileAccess.Write, FileShare.Read)) {
 					stream.Seek(0, SeekOrigin.End);
 

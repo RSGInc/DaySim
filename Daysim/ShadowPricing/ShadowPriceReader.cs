@@ -22,7 +22,7 @@ namespace Daysim.ShadowPricing {
 				return shadowPrices;
 			}
 
-			using (var reader = new StreamReader(shadowPriceFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(shadowPriceFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				reader.ReadLine();
 
 				string line;

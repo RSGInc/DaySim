@@ -43,10 +43,9 @@ namespace Daysim.Framework.Persistence {
 				Global.PrintFile.WriteLine(@"Creating index file ""{0}"" for primary key.", ifile.FullName);
 			}
 
-			using (var reader = new StreamReader(inputFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(inputFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				using (var iwriter = new BinaryWriter(ifile.Open(FileMode.Create, FileAccess.Write, FileShare.Read))) {
 					using (var writer = new BinaryWriter(file.Open(FileMode.Create, FileAccess.Write, FileShare.Read))) {
-						var i = 0;
 						var position = 0L;
 
 						reader.ReadLine();
@@ -64,12 +63,10 @@ namespace Daysim.Framework.Persistence {
 
 							position += _size;
 
-							if (i > 0 && i % 1024 == 0) {
+							if (reader.LineNumber % 1024 == 0) {
 								iwriter.Flush();
 								writer.Flush();
 							}
-
-							i++;
 						}
 					}
 				}

@@ -52,13 +52,11 @@ namespace Daysim.Framework.Roster {
 //				rows = new List<float[]>();
 				rows = new List<double[]>();  // 20150703 JLB 
 
-				using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+				using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 					string line;
-					var current = 0;
 					if (Global.TextSkimFilesContainHeaderRecord)
 						reader.ReadLine();
 					while ((line = reader.ReadLine()) != null) {
-						current++;
 
 						try
 						{
@@ -70,7 +68,7 @@ namespace Daysim.Framework.Roster {
 							rows.Add(row);
 						}
 						catch (Exception e) {
-							throw new InvalidSkimRowException(string.Format("Error parsing row in {0}.\nError in row {1}.\n{{{2}}}", file.FullName, current, line), e);
+							throw new InvalidSkimRowException(string.Format("Error parsing row in {0}.\nError in row {1}.\n{{{2}}}", file.FullName, reader.LineNumber, line), e);
 						}
 					}
 				}

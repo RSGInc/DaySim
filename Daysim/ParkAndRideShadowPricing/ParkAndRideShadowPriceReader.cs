@@ -12,45 +12,60 @@ using System.IO;
 using Daysim.Framework.Core;
 using Daysim.Framework.ShadowPricing;
 
-namespace Daysim.ParkAndRideShadowPricing {
-	public static class ParkAndRideShadowPriceReader {
-		public static Dictionary<int, IParkAndRideShadowPriceNode> ReadParkAndRideShadowPrices() {
-			var shadowPrices = new Dictionary<int, IParkAndRideShadowPriceNode>();
-			var shadowPriceFile = new FileInfo(Global.ParkAndRideShadowPricesPath);
+namespace Daysim.ParkAndRideShadowPricing
+{
+    public static class ParkAndRideShadowPriceReader
+    {
+        public static Dictionary<int, IParkAndRideShadowPriceNode> ReadParkAndRideShadowPrices()
+        {
+            var shadowPrices = new Dictionary<int, IParkAndRideShadowPriceNode>();
+            var shadowPriceFile = new FileInfo(Global.ParkAndRideShadowPricesPath);
 
-			if (!Global.ParkAndRideNodeIsEnabled || !shadowPriceFile.Exists || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode) {
-				return shadowPrices;
-			}
+            if (!Global.ParkAndRideNodeIsEnabled || !shadowPriceFile.Exists || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode)
+            {
+                return shadowPrices;
+            }
 
-			using (var reader = new StreamReader(shadowPriceFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
-				reader.ReadLine();
+            using (var reader = new CountingReader(shadowPriceFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+            {
+                reader.ReadLine();
 
-				string line;
+                string line = null;
+                try
+                {
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var tokens = line.Split(new[] { Global.Configuration.ParkAndRideShadowPriceDelimiter }, StringSplitOptions.RemoveEmptyEntries);
 
-				while ((line = reader.ReadLine()) != null) {
-					var tokens = line.Split(new[] {Global.Configuration.ParkAndRideShadowPriceDelimiter}, StringSplitOptions.RemoveEmptyEntries);
+                        var shadowPriceNode = new ParkAndRideShadowPriceNode
+                        {
+                            NodeId = Convert.ToInt32(tokens[0]),
+                        };
 
-					var shadowPriceNode = new ParkAndRideShadowPriceNode {
-						NodeId = Convert.ToInt32(tokens[0]),
-					};
+                        shadowPriceNode.ShadowPriceDifference = new double[Global.Settings.Times.MinutesInADay];
+                        shadowPriceNode.ShadowPrice = new double[Global.Settings.Times.MinutesInADay];
+                        shadowPriceNode.ExogenousLoad = new double[Global.Settings.Times.MinutesInADay];
+                        shadowPriceNode.ParkAndRideLoad = new double[Global.Settings.Times.MinutesInADay];
 
-					shadowPriceNode.ShadowPriceDifference = new double[Global.Settings.Times.MinutesInADay];
-					shadowPriceNode.ShadowPrice = new double[Global.Settings.Times.MinutesInADay];
-					shadowPriceNode.ExogenousLoad = new double[Global.Settings.Times.MinutesInADay];
-					shadowPriceNode.ParkAndRideLoad = new double[Global.Settings.Times.MinutesInADay];
+                        for (var i = 1; i <= Global.Settings.Times.MinutesInADay; i++)
+                        {
+                            shadowPriceNode.ShadowPriceDifference[i - 1] = Convert.ToDouble(tokens[i]);
+                            shadowPriceNode.ShadowPrice[i - 1] = Convert.ToDouble(tokens[Global.Settings.Times.MinutesInADay + i]);
+                            shadowPriceNode.ExogenousLoad[i - 1] = Convert.ToDouble(tokens[2 * Global.Settings.Times.MinutesInADay + i]);
+                            shadowPriceNode.ParkAndRideLoad[i - 1] = Convert.ToDouble(tokens[3 * Global.Settings.Times.MinutesInADay + i]);
+                        }
 
-					for (var i = 1; i <= Global.Settings.Times.MinutesInADay; i++) {
-						shadowPriceNode.ShadowPriceDifference[i - 1] = Convert.ToDouble(tokens[i]);
-						shadowPriceNode.ShadowPrice[i - 1] = Convert.ToDouble(tokens[Global.Settings.Times.MinutesInADay + i]);
-						shadowPriceNode.ExogenousLoad[i - 1] = Convert.ToDouble(tokens[2 * Global.Settings.Times.MinutesInADay + i]);
-						shadowPriceNode.ParkAndRideLoad[i - 1] = Convert.ToDouble(tokens[3 * Global.Settings.Times.MinutesInADay + i]);
-					}
+                        shadowPrices.Add(shadowPriceNode.NodeId, shadowPriceNode);
+                    }
+                }
+                catch (FormatException e)
+                {
+                    throw new Exception("Format problem in file '" + shadowPriceFile.FullName + "' at line " + reader.LineNumber + " with content '" + line + "'.", e);
+                }
 
-					shadowPrices.Add(shadowPriceNode.NodeId, shadowPriceNode);
-				}
-			}
+            }
 
-			return shadowPrices;
-		}
-	}
+            return shadowPrices;
+        }
+    }
 }

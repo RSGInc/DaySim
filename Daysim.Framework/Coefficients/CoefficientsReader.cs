@@ -23,7 +23,7 @@ namespace Daysim.Framework.Coefficients {
 			var file = new FileInfo(path);
 			var baseSizeVariableFound = false;
 
-			using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				string line;
 
 				while ((line = reader.ReadLine()) != null) {

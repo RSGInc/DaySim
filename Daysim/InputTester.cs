@@ -48,7 +48,7 @@ namespace Daysim {
 			var zones = new Dictionary<int, int>();
 			var inputFile = Global.GetInputPath(Global.Configuration.RawZonePath).ToFile();
 
-			using (var reader = new StreamReader(inputFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(inputFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				var newId = 0;
 				string line;
 				int lineNum = 1;
@@ -74,7 +74,7 @@ namespace Daysim {
 			var parcels = new Dictionary<int, int>();
 			var inputFile = Global.GetInputPath(Global.Configuration.RawParcelPath).ToFile();
 
-			using (var reader = new StreamReader(inputFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(inputFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				int lineNum = 1;
 				var sequences = new Dictionary<int, int>();
 				string line;
@@ -364,7 +364,7 @@ namespace Daysim {
 			var ixxi = new Dictionary<int, Tuple<double, double>>();
 			var file = Global.GetInputPath(Global.Configuration.IxxiPath).ToFile();
 
-			using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				int lineNum = 1;
 
 				if (Global.Configuration.IxxiFirstLineIsHeader) {
@@ -408,7 +408,7 @@ namespace Daysim {
 			int lineNum = 1;
 
 			try {
-				using (var reader = new StreamReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+				using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 					reader.ReadLine();
 
 					string line;

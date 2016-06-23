@@ -210,7 +210,7 @@ namespace Daysim.Framework.Core {
 			var keys = new List<string>();
 			var number = 0;
 
-			using (var reader = new StreamReader(stream)) {
+			using (var reader = new CountingReader(stream)) {
 				string line;
 
 				while ((line = reader.ReadLine()) != null) {

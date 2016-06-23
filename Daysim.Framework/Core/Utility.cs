@@ -6,8 +6,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using System.IO;
+
 namespace Daysim.Framework.Core {
-	public sealed class Utility : IObservationItem {
+
+    //from http://stackoverflow.com/a/21867370/283973
+    public class CountingReader : StreamReader
+    {
+        private int _lineNumber = 0;
+        public int LineNumber { get { return _lineNumber; } }
+
+        public CountingReader(Stream stream) : base(stream) { }
+
+        public override string ReadLine()
+        {
+            _lineNumber++;
+            return base.ReadLine();
+        }
+    }
+
+    public sealed class Utility : IObservationItem {
 		public Utility(int position, int parameter, bool hasSizeVariable) {
 			PositionIndex = position;
 			Parameter = parameter;

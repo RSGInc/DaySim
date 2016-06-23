@@ -59,7 +59,7 @@ namespace Daysim.Framework.Persistence {
 
 			string header;
 
-			using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				header = reader.ReadLine();
 			}
 

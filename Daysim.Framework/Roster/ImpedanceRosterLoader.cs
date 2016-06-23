@@ -34,7 +34,7 @@ namespace Daysim.Framework.Roster {
 				ActualCombinations[mode] = new bool[Global.Settings.PathTypes.TotalPathTypes];
 			}
 
-			using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				string line;
 
 				while ((line = reader.ReadLine()) != null) {
@@ -99,7 +99,7 @@ namespace Daysim.Framework.Roster {
 
 			var entries = new List<RosterEntry>();
 
-			using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+			using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
 				string line;
 
 				while ((line = reader.ReadLine()) != null)
