@@ -242,6 +242,7 @@ def regress_model(parameters):
                                 template_content = Template(content)
                                 #the output folder for the DaySimSummary R code must be pre-created with Excel files that will be overwritten/updated
                                 shutil.copytree(os.path.join(daySimSummaryPath,'output'), report_path)
+                                report_copy_time = time.time()
                                 replacement_dict = dict(
                                                      #need to either escape backslashes or convert to forward slashes to use in R
                                                      daysim_reference_outputs=daySim_reference_outputs.replace('\\', '/')
@@ -254,6 +255,12 @@ def regress_model(parameters):
                                     config_file.write(template_content.substitute(replacement_dict))
                             
                         return_code = run_process_with_realtime_output.run_process_with_realtime_output('Rscript ' + rScript_file)
+                        #delete any files in report folder that were not modified by the report code
+                        for f in os.listdir(report_path):
+                            f = os.path.join(report_path, f)
+                            if os.stat(f).st_m_mtime < report_copy_time:
+                                os.remove(f)
+
                         was_able_to_generate_report = return_code == 0
                 finally:
                     #clean up after DaySimSummaries_regress/main.R which leaves .RData files behind
