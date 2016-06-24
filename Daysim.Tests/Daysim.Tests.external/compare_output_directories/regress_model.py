@@ -258,7 +258,7 @@ def regress_model(parameters):
                         #delete any files in report folder that were not modified by the report code
                         for f in os.listdir(report_path):
                             f = os.path.join(report_path, f)
-                            if os.stat(f).st_m_mtime < report_copy_time:
+                            if os.stat(f).st_mtime < report_copy_time:
                                 os.remove(f)
 
                         was_able_to_generate_report = return_code == 0
