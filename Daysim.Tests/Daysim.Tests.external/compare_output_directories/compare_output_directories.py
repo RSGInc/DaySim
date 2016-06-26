@@ -9,18 +9,19 @@ from enum import Enum
 from utilities import *
 import logging
 
-
-def removeLogFiles(listOfFiles):
-    return [file for file in listOfFiles if not file.endswith('.log')]
+#ignore some file extensions
+def removeIrrelevantFiles(listOfFiles):
+    return [file for file in listOfFiles if not (   file.endswith('.log')
+                                                 or file.endswith('.RData'))]
 
 def are_all_files_common_func(dcmp, ignoreLogFiles = True):
     """This will return true if the dcmp object passed in shows
     that both directories had the same files and subfolders (recursively)"""
     if len(dcmp.left_only) > 0:
-        if not ignoreLogFiles or len(removeLogFiles(dcmp.left_only)) > 0:
+        if not ignoreLogFiles or len(removeIrrelevantFiles(dcmp.left_only)) > 0:
             return False 
     if len(dcmp.right_only) > 0:
-        if not ignoreLogFiles or len(removeLogFiles(dcmp.right_only)) > 0:
+        if not ignoreLogFiles or len(removeIrrelevantFiles(dcmp.right_only)) > 0:
             return False 
 
     for sub_dcmp in dcmp.subdirs.values():
