@@ -123,6 +123,7 @@ def regress_model(parameters):
                     old_cwd = os.getcwd()
                     os.chdir(configuration_file_folder)
                     return_code = run_process_with_realtime_output.run_process_with_realtime_output(daysim_exe + ' --configuration "' + configuration_file + '"')
+                    print('return_code: ' + str(return_code) + ' after running the regress configuration for first time.')
                 finally:
                     os.chdir(old_cwd)
                 #return True even though we didn't really test -- this allows multiple configurations to be initialized in one regression pass
