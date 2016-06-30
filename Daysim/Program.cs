@@ -16,7 +16,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.IO;
-using System.Globalization;
 
 namespace Daysim {
 	public static class Program {
@@ -53,7 +52,7 @@ namespace Daysim {
                     Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManager.DEFAULT_CONFIGURATION_NAME);
 
                     Console.WriteLine();
-                    Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the same directory as the executable.", PrintFile.DEFAULT_PRINT_FILENAME);
+                    Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the output directory.", PrintFile.DEFAULT_PRINT_FILENAME);
 
                     Console.WriteLine("Please press any key to exit");
                     Console.ReadKey();
@@ -97,17 +96,16 @@ namespace Daysim {
 
                 if (string.IsNullOrWhiteSpace(_printFilePath))
                 {
-                    _printFilePath = Global.GetOutputPath("run_" + DateTime.Now.ToString("yyyy-MM-dd_HH'h'mm'm'", CultureInfo.InvariantCulture) + ".log");
+                    _printFilePath = Global.GetOutputPath(PrintFile.DEFAULT_PRINT_FILENAME);
                 }
                 _printFilePath.CreateDirectory(); //create printfile directory if needed
-                var printFile = new PrintFile(_printFilePath, configuration);
+                Global.PrintFile = new PrintFile(_printFilePath, configuration);
 
-                configurationManager.Write(configuration, printFile);
+                configurationManager.Write(configuration, Global.PrintFile);
 
                 ParallelUtility.Init(configuration);
 
-                Global.PrintFile = printFile;
-                Global.Kernel = new StandardKernel(new DaysimModule());
+                 Global.Kernel = new StandardKernel(new DaysimModule());
 
                 //copy the configuration file into the output so we can tell if configuration changed before regression test called.
                 var archiveConfigurationFilePath = Global.GetOutputPath("archive_" + Path.GetFileName(_configurationPath));
@@ -125,12 +123,17 @@ namespace Daysim {
             catch (Exception e) {
                 string message = e.ToString();
 
+                //even though Global.PrintFile.Dispose(); is called in Finally, it is useful to also
+                //call it here because many times I would forget to close the output window and would be unable to delete outputs
+                //in this odd case I wish I could put the finally before the catch
+                if (Global.PrintFile != null)
+                {
+                    Global.PrintFile.WriteLine(message);
+                    Global.PrintFile.Dispose();
+                    Global.PrintFile = null;
+                }
                 Console.WriteLine();
                 Console.Error.WriteLine(message);
-
-                if (Global.PrintFile != null) {
-					Global.PrintFile.WriteLine(message);
-				}
 
                 Console.WriteLine();
                 Console.WriteLine("Please press any key to exit");
