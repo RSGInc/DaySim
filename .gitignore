@@ -1,3 +1,6 @@
+#Peter section
+__pycache__/
+
 ## from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 ## and recommended by https://docs.nuget.org/Consume/Package-Restore
 ## Ignore Visual Studio temporary files, build results, and
