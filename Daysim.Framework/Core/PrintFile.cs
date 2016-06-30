@@ -6,13 +6,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 
 namespace Daysim.Framework.Core {
 	public class PrintFile : IDisposable {
 		private readonly Configuration _configuration;
-		public const string DEFAULT_PRINT_FILENAME = "last-run.log";
+		public static readonly string DEFAULT_PRINT_FILENAME = "run_" + DateTime.Now.ToString("yyyy-MM-dd_HH'h'mm'm'", CultureInfo.InvariantCulture) + ".log";
 		private readonly StreamWriter _writer;
 		private int _indent;
 
