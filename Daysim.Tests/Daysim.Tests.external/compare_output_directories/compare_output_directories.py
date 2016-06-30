@@ -84,19 +84,20 @@ def are_outputs_equal(parameters):
 
     dcmp = filecmp.dircmp(args.outputs_reference, args.outputs_new) 
 
-    logging.debug('dcmp finished')
+    #logging.debug('dcmp finished')
     #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
     are_all_files_common = are_all_files_common_func(dcmp)
-    logging.debug('are_all_files_common finished: ' + str(are_all_files_common))
+    #logging.debug('are_all_files_common finished: ' + str(are_all_files_common))
     #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
     if not are_all_files_common:
         result = False
+        print("Folders do not have all of the same files so regression fails.")
     else:
         all_common_different_files = get_all_common_different_files(dcmp)
         result = len(all_common_different_files) == 0 #result is good if all common files are the same
-        logging.debug('get_all_common_different_files finished with #' + str(len(all_common_different_files)) + ' common files which differ')
+        logging.debug('There are #' + str(len(all_common_different_files)) + ' files which are not binary identical. Will look more deeply.')
         #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
         for different_file in all_common_different_files:
@@ -111,17 +112,17 @@ def are_outputs_equal(parameters):
             if os.path.getsize(reference_file) != os.path.getsize(new_file):
                 logging.debug('length of common file: ' + different_file + ' differs so difference must be more than different sort order!')
             else:
-                logging.debug('common_file that is different at least has same file size! file: ' + different_file)
+                logging.debug('Common_file that is binary different at least has same file size so, if suitable text file, will check to see if same contents in different order. File: ' + different_file)
                 if allow_text_comparison:
                     #since same size need to check if same lines but in different order
 
                     #quickest and least memory method is to sum the hash of each line and then compare
                     hash_sum_reference = get_hash_sum_of_lines(reference_file)
-                    logging.debug('hash_sum of reference: ' + str(hash_sum_reference))
-                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    #logging.debug('hash_sum of reference: ' + str(hash_sum_reference))
+                    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
                     hash_sum_new_file = get_hash_sum_of_lines(new_file)
-                    logging.debug('hash_sum of new file: ' + str(hash_sum_new_file))
-                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    #logging.debug('hash_sum of new file: ' + str(hash_sum_new_file))
+                    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
                     if hash_sum_reference == hash_sum_new_file:
                         print('File "' + different_file + '" has identical content just in different order.')
@@ -130,7 +131,7 @@ def are_outputs_equal(parameters):
 
             if result == False:
                 if not allow_text_comparison:
-                    logging.debug('Files are different but not clearly a text extension so no further details.')
+                    logging.debug('Files are different but unhandled extension "' + file_extension + '" so cannot check if differ only by line order. Therefore regression fails.')
                 else:
                     logging.debug('hash_sum of files is different so going to compare lines. reference_file "' + reference_file + '".')
                     #if the files do not have identical lines get more detailed information of differences
@@ -139,16 +140,15 @@ def are_outputs_equal(parameters):
 
                     logging.debug('Finished counting lines in reference folder copy of "' + different_file + '". There are '
                     + str(len(counts)) + ' distinct lines')
-                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
  
-                    logging.debug('deep_getsizeof(counts): ' + human_readable_bytes(deep_getsizeof(counts, set())))
-                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    #logging.debug('deep_getsizeof(counts): ' + human_readable_bytes(deep_getsizeof(counts, set())))
+                    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
-                    logging.debug('hash_sum of files is different so going to compare lines. new_file "' + new_file + '".')
                     with open(new_file, encoding='latin-1') as infile:
                         counts.subtract(l for l in infile)
                     logging.debug('Finished checking new version of "' + different_file + '".')
-                    logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
                     missing_from_reference = []
                     missing_from_new = []
@@ -165,6 +165,8 @@ def are_outputs_equal(parameters):
                             + str(len(missing_from_reference)) + ' distinct lines that were not found in the reference file')
 
                     def print_line_and_counts_to_string(identifier, counted_strings):
+                        #sort the missing lines so that the ones shown in reference and new will likely be similar which will make differences easier to spot
+                        counted_strings.sort(key=lambda line_count_tuple :  line_count_tuple[0])
                         if len(counted_strings) > 0:
                             message = ('All ' if len(counted_strings) <= args.max_different_lines_to_show else (' Sample ' + str(args.max_different_lines_to_show))) + ' lines that are ' + identifier + '.\n'
                             message += '\n'.join(str(abs(count)) + ': ' + str(line) for line, count in counted_strings[:args.max_different_lines_to_show])
@@ -173,7 +175,7 @@ def are_outputs_equal(parameters):
                     print_line_and_counts_to_string('missing from new file', missing_from_new)
                     print_line_and_counts_to_string('missing from reference', missing_from_reference)
 
-                logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
                 #STOP!
                 break
 
