@@ -237,6 +237,8 @@
     <Compile Include="Roster\ImpedanceRoster.cs" />
     <Compile Include="Roster\ImpedanceRosterLoader.cs" />
     <Compile Include="Roster\ISkimFileReader.cs" />
+    <Compile Include="Roster\OMXReaderCreator.cs" />
+    <Compile Include="Roster\OMXSkimFileReader.cs" />
     <Compile Include="Roster\RosterEntry.cs" />
     <Compile Include="Roster\SkimFileReaderFactory.cs" />
     <Compile Include="Roster\SkimMatrix.cs" />
