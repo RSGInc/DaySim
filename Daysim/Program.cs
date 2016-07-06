@@ -84,26 +84,33 @@ namespace Daysim {
 
                 var configurationManager = new ConfigurationManager(_configurationPath);
 
-                 var configuration = configurationManager.Open();
+                Global.Configuration = configurationManager.Open();
 
-                overrideConfiguration(configuration);
+                if (string.IsNullOrWhiteSpace(Global.Configuration.BasePath))
+                {
+                    //issue #52 use configuration file folder as default basepath rather than arbitrary current working directory.
+                    Global.Configuration.BasePath = Path.GetDirectoryName(_configurationPath);
+                }
 
-                var settingsFactory = new SettingsFactory(configuration);
-                var settings = settingsFactory.Create();
+                if (string.IsNullOrWhiteSpace(_printFilePath))
+                {
+                    _printFilePath = Global.GetOutputPath(PrintFile.DEFAULT_PRINT_FILENAME);
+                }
+                overrideConfiguration(Global.Configuration);
 
-                Global.Configuration = configuration;
-                Global.Settings = settings;
+                var settingsFactory = new SettingsFactory(Global.Configuration);
+                Global.Settings = settingsFactory.Create();
 
                 if (string.IsNullOrWhiteSpace(_printFilePath))
                 {
                     _printFilePath = Global.GetOutputPath(PrintFile.DEFAULT_PRINT_FILENAME);
                 }
                 _printFilePath.CreateDirectory(); //create printfile directory if needed
-                Global.PrintFile = new PrintFile(_printFilePath, configuration);
+                Global.PrintFile = new PrintFile(_printFilePath, Global.Configuration);
 
-                configurationManager.Write(configuration, Global.PrintFile);
+                configurationManager.Write(Global.Configuration, Global.PrintFile);
 
-                ParallelUtility.Init(configuration);
+                ParallelUtility.Init(Global.Configuration);
 
                  Global.Kernel = new StandardKernel(new DaysimModule());
 
@@ -112,7 +119,7 @@ namespace Daysim {
                 archiveConfigurationFilePath.CreateDirectory(); //create output directory if needed
                 File.Copy(_configurationPath, archiveConfigurationFilePath, /* overwrite */ true);
 
-                var moduleFactory = new ModuleFactory(configuration);
+                var moduleFactory = new ModuleFactory(Global.Configuration);
                 var modelModule = moduleFactory.Create();
 
                 Global.Kernel.Load(modelModule);
