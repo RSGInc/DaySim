@@ -320,6 +320,7 @@ namespace Daysim
             Global.Kernel.Get<SkimFileReaderFactory>().Register("hdf5", new HDF5ReaderCreator());
             Global.Kernel.Get<SkimFileReaderFactory>().Register("cube", new CubeReaderCreator());
             Global.Kernel.Get<SkimFileReaderFactory>().Register("transcad", new TranscadReaderCreator());
+            Global.Kernel.Get<SkimFileReaderFactory>().Register("omx", new OMXReaderCreator());
         }
 
         private static void InitializeSamplingFactories()
