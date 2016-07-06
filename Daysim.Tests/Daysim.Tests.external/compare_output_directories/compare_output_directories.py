@@ -106,7 +106,7 @@ def are_outputs_equal(parameters):
             reference_file = os.path.join(args.outputs_reference, different_file)
             assert os.path.isfile(reference_file), "reference_file is not a file: " + reference_file
             filename, file_extension = os.path.splitext(reference_file)
-            allow_text_comparison = file_extension in ['.tsv','dat','.txt']
+            allow_text_comparison = file_extension in ['.tsv','.dat','.txt']
             new_file = os.path.join(args.outputs_new, different_file)
             assert os.path.isfile(reference_file), "new_file is not a file: " + new_file
             if os.path.getsize(reference_file) != os.path.getsize(new_file):
