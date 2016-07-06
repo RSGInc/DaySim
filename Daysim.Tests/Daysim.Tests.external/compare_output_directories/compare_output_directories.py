@@ -10,19 +10,32 @@ from utilities import *
 import logging
 
 #ignore some file extensions
-def removeIrrelevantFiles(listOfFiles):
+def remove_irrelevant_files(listOfFiles):
     return [file for file in listOfFiles if not (   file.endswith('.log')
                                                  or file.endswith('.RData'))]
 
-def are_all_files_common_func(dcmp, ignoreLogFiles = True):
+#modifies the passed in dcmp object recursively to remove all files we don't care about
+def remove_irrelevant_files_from_dcmp(dcmp, filter_function=remove_irrelevant_files):
+    """This will remove any files we don care about from dcmp results. Needed this because the ignore is does not take wildcard"""
+    dcmp.left_list = filter_function(dcmp.left_list)
+    dcmp.right_list = filter_function(dcmp.right_list)
+    dcmp.left_only = filter_function(dcmp.left_only)
+    dcmp.right_only = filter_function(dcmp.right_only)
+    dcmp.diff_files = filter_function(dcmp.diff_files)
+    dcmp.funny_files = filter_function(dcmp.funny_files)
+    dcmp.common_files = filter_function(dcmp.common_files)
+    dcmp.common_funny = filter_function(dcmp.common_funny)
+
+    for sub_dcmp in dcmp.subdirs.values():
+        remove_irrelevant_files_from_dcmp(sub_dcmp)
+    
+def are_all_files_common_func(dcmp):
     """This will return true if the dcmp object passed in shows
     that both directories had the same files and subfolders (recursively)"""
     if len(dcmp.left_only) > 0:
-        if not ignoreLogFiles or len(removeIrrelevantFiles(dcmp.left_only)) > 0:
-            return False 
+        return False 
     if len(dcmp.right_only) > 0:
-        if not ignoreLogFiles or len(removeIrrelevantFiles(dcmp.right_only)) > 0:
-            return False 
+        return False 
 
     for sub_dcmp in dcmp.subdirs.values():
         return are_all_files_common_func(sub_dcmp)
@@ -83,6 +96,7 @@ def are_outputs_equal(parameters):
 
 
     dcmp = filecmp.dircmp(args.outputs_reference, args.outputs_new) 
+    remove_irrelevant_files_from_dcmp(dcmp)
 
     #logging.debug('dcmp finished')
     #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
@@ -182,7 +196,7 @@ def are_outputs_equal(parameters):
     if result:
         print('Tests passed. Number of order different files: ' + str(len(all_common_different_files)))
     else:
-        dcmp.report()
+        dcmp.report_full_closure()
     return result
     
 if __name__ == "__main__":
