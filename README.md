@@ -3,7 +3,7 @@
 Daysim Activity-Based Model
 
 How to Build
--  Build with Microsoft Visual C# Express or later*  
+-  Build with Microsoft Visual Studio Express 2013 or later*  
 -  Open Daysim.sln solution  
 -  Build + Rebuild Solution outputs Daysim\bin\Debug|Release files  
 
