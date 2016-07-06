@@ -89,7 +89,7 @@ namespace Daysim {
                 if (string.IsNullOrWhiteSpace(Global.Configuration.BasePath))
                 {
                     //issue #52 use configuration file folder as default basepath rather than arbitrary current working directory.
-                    Global.Configuration.BasePath = Path.GetDirectoryName(_configurationPath);
+                    Global.Configuration.BasePath = Path.GetDirectoryName(Path.GetFullPath(_configurationPath));
                 }
 
                 if (string.IsNullOrWhiteSpace(_printFilePath))
