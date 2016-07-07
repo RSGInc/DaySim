@@ -3,7 +3,7 @@
   <installations>
     <jenkins.plugins.shiningpanda.tools.PythonInstallation>
       <name>Anaconda_3.5</name>
-      <home>C:\Users\Peter.Andrews\AppData\Local\Continuum\Anaconda3</home>
+      <home>c:/Users/Peter.Andrews/AppData/Local/Continuum/Anaconda3/</home>
       <properties/>
     </jenkins.plugins.shiningpanda.tools.PythonInstallation>
   </installations>
