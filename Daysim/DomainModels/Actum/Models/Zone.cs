@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Runtime.InteropServices;
-using Daysim.DomainModels.Actum.Models.Interfaces;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Persistence;
+using DaySim.DomainModels.Actum.Models.Interfaces;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Persistence;
 
-namespace Daysim.DomainModels.Actum.Models {
+namespace DaySim.DomainModels.Actum.Models {
 	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
 	[Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
 	public sealed class Zone : IActumZone {

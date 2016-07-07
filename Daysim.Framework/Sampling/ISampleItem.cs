@@ -6,10 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Collections.Generic;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Core;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.Sampling {
+namespace DaySim.Framework.Sampling {
 	public interface ISampleItem {
 		int ParcelId { get; }
 

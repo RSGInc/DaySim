@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class InvalidPathTypeException : Exception {
 		public InvalidPathTypeException() : this("The value used for path type is invalid. Please adjust the roster accordingly.") {}

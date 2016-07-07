@@ -6,14 +6,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Collections.Generic;
-using Daysim.DomainModels.Actum.Models.Interfaces;
-using Daysim.DomainModels.Actum.Wrappers.Interfaces;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
+using DaySim.DomainModels.Actum.Models.Interfaces;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
 
-namespace Daysim.DomainModels.Actum.Wrappers {
+namespace DaySim.DomainModels.Actum.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
 	public class TripWrapper : Default.Wrappers.TripWrapper, IActumTripWrapper {
 		private readonly IActumTrip _trip;

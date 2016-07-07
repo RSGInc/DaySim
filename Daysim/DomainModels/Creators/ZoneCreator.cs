@@ -6,13 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
 
-namespace Daysim.DomainModels.Creators {
+namespace DaySim.DomainModels.Creators {
 	[UsedImplicitly]
 	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
 	public class ZoneCreator<TWrapper, TModel> : IZoneCreator where TWrapper : IZoneWrapper where TModel : IZone, new() {

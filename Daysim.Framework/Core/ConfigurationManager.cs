@@ -15,7 +15,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public class ConfigurationManager {
 		public const string DEFAULT_CONFIGURATION_NAME = "Configuration.xml";
 

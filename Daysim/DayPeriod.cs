@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace Daysim {
+namespace DaySim {
 	public static class DayPeriod {
 		public const int EARLY = 0;
 		public const int NIGHT = 0;

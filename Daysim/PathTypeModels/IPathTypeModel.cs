@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.PathTypeModels {
+namespace DaySim.PathTypeModels {
 	public interface IPathTypeModel {
 		int Mode { get; set; }
 

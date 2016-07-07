@@ -9,24 +9,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Roster;
-using Daysim.Framework.Sampling;
-using Daysim.PathTypeModels;
-using Daysim.Sampling;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Roster;
+using DaySim.Framework.Sampling;
+using DaySim.PathTypeModels;
+using DaySim.Sampling;
 using Ninject;
-using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdWrapper;
-using PersonDayWrapper = Daysim.DomainModels.Actum.Wrappers.PersonDayWrapper;
-using PersonWrapper = Daysim.DomainModels.Actum.Wrappers.PersonWrapper;
-using TourWrapper = Daysim.DomainModels.Actum.Wrappers.TourWrapper;
-using TripWrapper = Daysim.DomainModels.Actum.Wrappers.TripWrapper;
+using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
+using HouseholdWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdWrapper;
+using PersonDayWrapper = DaySim.DomainModels.Actum.Wrappers.PersonDayWrapper;
+using PersonWrapper = DaySim.DomainModels.Actum.Wrappers.PersonWrapper;
+using TourWrapper = DaySim.DomainModels.Actum.Wrappers.TourWrapper;
+using TripWrapper = DaySim.DomainModels.Actum.Wrappers.TripWrapper;
 
-namespace Daysim.ChoiceModels.Actum.Models {
+namespace DaySim.ChoiceModels.Actum.Models {
 	public class IntermediateStopLocationModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "ActumIntermediateStopLocationModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;

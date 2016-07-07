@@ -9,14 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Exceptions;
-using Daysim.Framework.Persistence;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Exceptions;
+using DaySim.Framework.Persistence;
 
-namespace Daysim.Framework.Sampling {
+namespace DaySim.Framework.Sampling {
 	public sealed class DestinationSampler {
 		private readonly ChoiceProbabilityCalculator _choiceProbabilityCalculator;
 		private readonly SegmentZone[] _segmentZones;

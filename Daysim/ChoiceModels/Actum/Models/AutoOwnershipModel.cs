@@ -8,16 +8,16 @@
 
 using System;
 using System.Linq;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
-using Daysim.DomainModels.Extensions;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Actum;
+using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Extensions;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.ChoiceModels.Actum.Models {
+namespace DaySim.ChoiceModels.Actum.Models {
 	public class AutoOwnershipModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "ActumAutoOwnershipModel";
 		private const int TOTAL_ALTERNATIVES = 3;

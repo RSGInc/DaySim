@@ -10,10 +10,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Daysim.Framework.Exceptions;
+using DaySim.Framework.Exceptions;
 using Microsoft.Win32;
 
-namespace Daysim.Framework.Roster {
+namespace DaySim.Framework.Roster {
 	public class CubeSkimFileReader : ISkimFileReader
 	{
 

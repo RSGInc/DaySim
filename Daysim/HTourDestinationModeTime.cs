@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim {
+namespace DaySim {
 	public sealed class HTourDestinationModeTime {
 
 		

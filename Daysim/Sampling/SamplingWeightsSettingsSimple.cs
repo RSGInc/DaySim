@@ -6,10 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using Daysim.Framework.Core;
-using Daysim.Framework.Exceptions;
+using DaySim.Framework.Core;
+using DaySim.Framework.Exceptions;
 
-namespace Daysim.Sampling {
+namespace DaySim.Sampling {
 	public class SamplingWeightsSettingsSimple : ISamplingWeightsSettings {
 
 		public SamplingWeightsSettingsSimple()

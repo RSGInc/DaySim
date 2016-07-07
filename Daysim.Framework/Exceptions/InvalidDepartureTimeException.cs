@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class InvalidDepartureTimeException : Exception {
 		public InvalidDepartureTimeException() : this("An attempt to simulate an invalid departure time was made.") {}

@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public sealed class ChosenAlternative : IObservationItem {
 		public ChosenAlternative(int position) {
 			PositionIndex = position;

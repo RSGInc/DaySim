@@ -8,9 +8,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.Roster {
+namespace DaySim.Framework.Roster {
 	public sealed class BinarySkimFileReader : ISkimFileReader {
 		private readonly string _path;
 		private readonly Dictionary<int, int> _mapping;

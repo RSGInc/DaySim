@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class SkimFileTypeNotSupportedException : Exception {
 		public SkimFileTypeNotSupportedException() : this("The specified skim file type is not supported.") {}

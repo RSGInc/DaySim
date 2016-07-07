@@ -6,14 +6,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Text;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Persisters;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Persisters;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
 using Ninject;
 
-namespace Daysim.DomainModels.Default.Wrappers {
+namespace DaySim.DomainModels.Default.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
 	public class JointTourWrapper : IJointTourWrapper {
 		private readonly IJointTour _jointTour;

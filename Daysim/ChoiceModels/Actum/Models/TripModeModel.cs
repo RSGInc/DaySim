@@ -8,15 +8,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.PathTypeModels;
-using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using TripWrapper = Daysim.DomainModels.Actum.Wrappers.TripWrapper;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.PathTypeModels;
+using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
+using TripWrapper = DaySim.DomainModels.Actum.Wrappers.TripWrapper;
 
-namespace Daysim.ChoiceModels.Actum.Models
+namespace DaySim.ChoiceModels.Actum.Models
 {
 	public class TripModeModel : ChoiceModel
 	{

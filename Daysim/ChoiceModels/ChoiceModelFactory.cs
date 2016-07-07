@@ -10,18 +10,18 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Persistence;
-using Daysim.ShadowPricing;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Persistence;
+using DaySim.ShadowPricing;
 using Ninject;
 
-namespace Daysim.ChoiceModels {
+namespace DaySim.ChoiceModels {
 	public static class ChoiceModelFactory {
 		private static Type _type;
 

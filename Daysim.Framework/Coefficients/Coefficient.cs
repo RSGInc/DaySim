@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-namespace Daysim.Framework.Coefficients {
+namespace DaySim.Framework.Coefficients {
 	public sealed class Coefficient : ICoefficient {
 		private string _label;
 

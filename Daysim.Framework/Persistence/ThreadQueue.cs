@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	public sealed class ThreadQueue {
 		private readonly Queue<ISavable> _queue = new Queue<ISavable>();
 		private Thread _thread;

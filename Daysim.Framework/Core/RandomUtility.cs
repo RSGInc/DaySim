@@ -8,7 +8,7 @@
 
 using System;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public class RandomUtility : IRandomUtility {
 		private readonly object _uniform01Lock = new object();
 		private readonly object _resetUniform01Lock = new object();

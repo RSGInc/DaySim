@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.Roster;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.Roster;
 
-namespace Daysim.DomainModels.Extensions {
+namespace DaySim.DomainModels.Extensions {
 	public static class PointExtensions {
 		public static double DistanceFromOrigin(this IPoint origin, IPoint destination, int minute) {
 			if (origin == null) {

@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class TripModelException : Exception {
 		public TripModelException() : this("Error running trip models.") {}

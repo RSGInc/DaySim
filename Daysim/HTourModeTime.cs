@@ -9,12 +9,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.PathTypeModels;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.PathTypeModels;
 
-namespace Daysim {
+namespace DaySim {
 	public sealed class HTourModeTime {
 		public static readonly int TotalTourModeTimes = DayPeriod.H_BIG_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS * Global.Settings.Modes.MaxMode;
 

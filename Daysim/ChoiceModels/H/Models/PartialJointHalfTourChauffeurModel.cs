@@ -9,13 +9,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
 
-namespace Daysim.ChoiceModels.H.Models {
+namespace DaySim.ChoiceModels.H.Models {
 	public class PartialJointHalfTourChauffeurModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "HPartialJointHalfTourChauffeurModel";
 		private const int TOTAL_ALTERNATIVES = 5;

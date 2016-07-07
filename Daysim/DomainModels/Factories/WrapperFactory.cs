@@ -6,12 +6,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.Factories;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.Factories;
 
-namespace Daysim.DomainModels.Factories {
+namespace DaySim.DomainModels.Factories {
 	public class WrapperFactory<TWrapper, TCreator, TModel> : IWrapperFactory<TCreator> where TCreator : ICreator where TModel : IModel {
 		public TCreator Creator { get; private set; }
 

@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public sealed class Logger : IDisposable {
 		private readonly StreamWriter _writer;
 		private readonly List<string> _buffer = new List<string>();

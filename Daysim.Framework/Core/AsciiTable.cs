@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public static class AsciiTable {
 		private static readonly Dictionary<byte, string> _asciiTable = new Dictionary<byte, string> {
 			{0, "'NUL' (Null char)"},

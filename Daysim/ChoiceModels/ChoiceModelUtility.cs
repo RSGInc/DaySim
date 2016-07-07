@@ -7,10 +7,10 @@
 
 
 using System;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.ChoiceModels {
+namespace DaySim.ChoiceModels {
 	public static class ChoiceModelUtility {
 		public const double CPFACT2 = 2;
 		public const double CPFACT3 = 3.33;

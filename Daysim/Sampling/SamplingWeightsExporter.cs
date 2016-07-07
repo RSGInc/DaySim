@@ -8,14 +8,14 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Persisters;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Sampling;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Persisters;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Sampling;
 using Ninject;
 
-namespace Daysim.Sampling {
+namespace DaySim.Sampling {
 	public static class SamplingWeightsExporter {
 		public static void Export(string path) {
 			BeginRunExport(path);

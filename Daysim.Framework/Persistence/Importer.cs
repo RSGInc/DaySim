@@ -7,10 +7,10 @@
 
 using System.IO;
 using System.Runtime.InteropServices;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	public abstract class Importer<TModel> : IImporter where TModel : IModel, new() {
 		private readonly int _isize;
 		private readonly byte[] _ibuffer;

@@ -1,4 +1,4 @@
-﻿namespace Daysim.AggregateLogsums
+﻿namespace DaySim.AggregateLogsums
 {
     class AggregateLogsumsCalculatorCreator : IAggregateLogsumsCalculatorCreator
     {

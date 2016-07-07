@@ -11,11 +11,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Daysim.Framework.Core;
-using Daysim.Framework.Exceptions;
+using DaySim.Framework.Core;
+using DaySim.Framework.Exceptions;
 using HDF5DotNet;
 
-namespace Daysim
+namespace DaySim
 {
     public static class RawConverter
     {

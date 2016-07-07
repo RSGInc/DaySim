@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-namespace Daysim.ShadowPricing {
+namespace DaySim.ShadowPricing {
 	public sealed class ShadowPriceZone {
 		/// <summary>
 		/// EMPTOTZW

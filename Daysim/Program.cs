@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.DomainModels.Factories;
-using Daysim.Framework.Core;
-using Daysim.Settings;
+using DaySim.DomainModels.Factories;
+using DaySim.Framework.Core;
+using DaySim.Settings;
 using NDesk.Options;
 using Ninject;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ using System.Reflection;
 using System.Text;
 using System.IO;
 
-namespace Daysim {
+namespace DaySim {
 	public static class Program {
 		private static string _configurationPath;
 		private static string _printFilePath;
@@ -112,7 +112,7 @@ namespace Daysim {
 
                 ParallelUtility.Init(Global.Configuration);
 
-                 Global.Kernel = new StandardKernel(new DaysimModule());
+                 Global.Kernel = new StandardKernel(new DaySimModule());
 
                 //copy the configuration file into the output so we can tell if configuration changed before regression test called.
                 var archiveConfigurationFilePath = Global.GetOutputPath("archive_" + Path.GetFileName(_configurationPath));

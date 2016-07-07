@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public class ErrorFile : IDisposable {
 		public const string DEFAULT_ERROR_FILENAME= "errors.log";
 		private readonly StreamWriter _writer;

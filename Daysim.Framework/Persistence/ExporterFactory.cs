@@ -9,15 +9,15 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	public sealed class ExporterFactory {
 		private readonly ModuleBuilder _moduleBuilder;
 
 		public ExporterFactory() {
 			var appDomain = AppDomain.CurrentDomain;
-			var assemblyName = new AssemblyName("Daysim.Dynamic.Exporter");
+			var assemblyName = new AssemblyName("DaySim.Dynamic.Exporter");
 			var assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
 
 			_moduleBuilder = assemblyBuilder.DefineDynamicModule("DynamicModule");

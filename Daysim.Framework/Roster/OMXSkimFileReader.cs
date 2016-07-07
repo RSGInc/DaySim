@@ -9,10 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 using HDF5DotNet;
 
-namespace Daysim.Framework.Roster
+namespace DaySim.Framework.Roster
 {
     public class OMXSkimFileReader : ISkimFileReader
     {
@@ -59,9 +59,9 @@ namespace Daysim.Framework.Roster
 
             //OMX is a square matrix of doubles
             //In addition to the data folder for matrices, an OMX file has a lookup folder
-            //with a zone mapping vector.  However, this is ignored since Daysim also has one.
+            //with a zone mapping vector.  However, this is ignored since DaySim also has one.
             //Therefore, it is assumed the OMX matrix does not skip rows/cols and every row/col
-            //corresponds to an actual zone in the Daysim zone mapping file by index
+            //corresponds to an actual zone in the DaySim zone mapping file by index
             //Scaling should be set to TRUE since OMX stores doubles (not scaled integers)
             var dataArray = new double[nRows, nCols];
             var wrapArray = new H5Array<double>(dataArray);  

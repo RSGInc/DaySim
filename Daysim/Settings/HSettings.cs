@@ -5,10 +5,10 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.Framework.Core;
-using Daysim.Framework.Factories;
+using DaySim.Framework.Core;
+using DaySim.Framework.Factories;
 
-namespace Daysim.Settings {
+namespace DaySim.Settings {
 	[UsedImplicitly]
 	[Factory(Factory.SettingsFactory, ChoiceModelRunner = ChoiceModelRunner.H)]
 	public class HSettings : DefaultSettings {}

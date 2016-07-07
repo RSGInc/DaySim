@@ -8,11 +8,11 @@
 
 using System;
 using System.IO;
-using Daysim.DomainModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.DomainModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim {
+namespace DaySim {
 	public sealed class TDMTripListExporter : IDisposable {
 		private int _current;
 		private readonly char _delimiter;

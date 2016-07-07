@@ -6,10 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Collections.Generic;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.ShadowPricing;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.ShadowPricing;
 
-namespace Daysim.Framework.DomainModels.Wrappers {
+namespace DaySim.Framework.DomainModels.Wrappers {
 	public interface IParkAndRideNodeWrapper : IParkAndRideNode {
 		#region flags/choice model/etc. properties
 

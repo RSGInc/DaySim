@@ -8,18 +8,18 @@
 
 using System;
 using System.Linq;
-using Daysim.ChoiceModels.Default.Models;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Exceptions;
-using Daysim.Framework.Factories;
+using DaySim.ChoiceModels.Default.Models;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Exceptions;
+using DaySim.Framework.Factories;
 using Ninject;
-using TransitPassOwnershipModel = Daysim.ChoiceModels.H.Models.TransitPassOwnershipModel;
+using TransitPassOwnershipModel = DaySim.ChoiceModels.H.Models.TransitPassOwnershipModel;
 
-namespace Daysim.ChoiceModels.Default {
+namespace DaySim.ChoiceModels.Default {
 	[UsedImplicitly]
 	[Factory(Factory.ChoiceModelFactory, ChoiceModelRunner = Framework.Factories.ChoiceModelRunner.Default)]
 	public sealed class ChoiceModelRunner : IChoiceModelRunner {

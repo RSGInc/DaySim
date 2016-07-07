@@ -7,9 +7,9 @@
 
 using System;
 using System.Linq;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.Factories {
+namespace DaySim.Framework.Factories {
 	public abstract class TypeLocator {
 		protected TypeLocator(Configuration configuration) {
 			ChoiceModelRunner = GetChoiceModelRunner(configuration.ChoiceModelRunner);

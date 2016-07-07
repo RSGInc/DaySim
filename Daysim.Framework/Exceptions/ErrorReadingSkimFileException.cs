@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class ErrorReadingSkimFileException : Exception {
 		public ErrorReadingSkimFileException() : this("An error occurred when trying to read the skim file.") {}

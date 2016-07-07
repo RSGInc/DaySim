@@ -8,12 +8,12 @@
 
 using System;
 using System.Linq;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim {
+namespace DaySim {
 	public sealed class TourTime {
 		public const int TOTAL_TOUR_TIMES = DayPeriod.SMALL_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS;
 

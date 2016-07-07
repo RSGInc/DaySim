@@ -8,7 +8,7 @@
 
 using System.Xml.Serialization;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public sealed class Configuration {
 		[XmlAttribute]
 		public string Settings { get; set; }

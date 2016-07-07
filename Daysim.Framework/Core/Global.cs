@@ -10,13 +10,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Sampling;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Sampling;
 using Ninject;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public static class Global {
 
         private const string SHADOW_PRICES_FILENAME = "shadow_prices.txt";

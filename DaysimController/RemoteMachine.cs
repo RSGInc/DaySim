@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 using System.Collections.Generic;
 using System.IO;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace DaysimController {
+namespace DaySimController {
 	public class RemoteMachine {
 		public string Name { get; private set; }
 
@@ -56,7 +56,7 @@ namespace DaysimController {
 				}
 
 				if (string.IsNullOrEmpty(machine.PrintFilePath)) {
-					machine.PrintFilePath = machine.CurrentDirectory + @"\" + Daysim.Framework.Core.PrintFile.DEFAULT_PRINT_FILENAME;
+					machine.PrintFilePath = machine.CurrentDirectory + @"\" + DaySim.Framework.Core.PrintFile.DEFAULT_PRINT_FILENAME;
 				}
 
 				machines.Add(machine);

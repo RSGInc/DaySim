@@ -7,16 +7,16 @@
 
 
 using System;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
-using Daysim.DomainModels.Default;
-using Daysim.DomainModels.Extensions;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Actum;
+using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Default;
+using DaySim.DomainModels.Extensions;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
 
-namespace Daysim.ChoiceModels.Actum.Models {
+namespace DaySim.ChoiceModels.Actum.Models {
 	public class WorkBasedSubtourGenerationModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "ActumWorkBasedSubtourGenerationModel";
 		private const int TOTAL_ALTERNATIVES = 2;

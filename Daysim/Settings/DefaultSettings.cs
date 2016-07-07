@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.Framework.Core;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Settings;
+using DaySim.Framework.Core;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Settings;
 
-namespace Daysim.Settings {
+namespace DaySim.Settings {
 	[UsedImplicitly]
 	[Factory(Factory.SettingsFactory, ChoiceModelRunner = ChoiceModelRunner.Default)]
 	public class DefaultSettings : ISettings {

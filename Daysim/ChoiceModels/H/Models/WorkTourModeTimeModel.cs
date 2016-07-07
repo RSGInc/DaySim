@@ -6,20 +6,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Default;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.DomainModels.Extensions;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Default;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.DomainModels.Extensions;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
 using Ninject;
 
-namespace Daysim.ChoiceModels.H.Models {
+namespace DaySim.ChoiceModels.H.Models {
 	public class WorkTourModeTimeModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "HWorkTourModeTimeModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 21;

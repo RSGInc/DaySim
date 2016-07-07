@@ -8,10 +8,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Core;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.Factories {
+namespace DaySim.Framework.Factories {
 	public class ChoiceModelRunnerTypeLocator : TypeLocator {
 		public ChoiceModelRunnerTypeLocator(Configuration configuration) : base(configuration) {}
 

@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class SegmentRemainsUnassignedException : Exception {
 		public SegmentRemainsUnassignedException() : this("Segment remains unassigned.") {}

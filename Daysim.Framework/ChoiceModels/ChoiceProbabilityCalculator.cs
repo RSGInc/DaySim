@@ -10,11 +10,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.Exceptions;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.Exceptions;
 
-namespace Daysim.Framework.ChoiceModels {
+namespace DaySim.Framework.ChoiceModels {
 	public sealed class ChoiceProbabilityCalculator {
 		private readonly object _getNestedAlternativeLock = new object();
 		private readonly object _getLevelLock = new object();

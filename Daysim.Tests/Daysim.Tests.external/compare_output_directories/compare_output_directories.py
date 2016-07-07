@@ -72,7 +72,7 @@ def print_diff_files(dcmp):
 
 def are_outputs_equal(parameters):
     start_time = time.perf_counter()
-    parser = argparse.ArgumentParser(description='Compare two Daysim output directories')
+    parser = argparse.ArgumentParser(description='Compare two DaySim output directories')
     parser.add_argument('--outputs_reference', help='The reference saved outputs from a successful run [default: %(default)s}')
     parser.add_argument('--outputs_new', help='Newly generated result to be compared to reference [default: %(default)s}')
     parser.add_argument('--max_different_lines_to_show', help='When files differ, how many lines that are different should be output to console?  [default: %(default)s}', type= int, default=5)
@@ -116,7 +116,7 @@ def are_outputs_equal(parameters):
 
         for different_file in all_common_different_files:
             result = False #since files are different assume failure unless changed again
-            #some Daysim files are identical in content but are output in a different line order
+            #some DaySim files are identical in content but are output in a different line order
             reference_file = os.path.join(args.outputs_reference, different_file)
             assert os.path.isfile(reference_file), "reference_file is not a file: " + reference_file
             filename, file_extension = os.path.splitext(reference_file)

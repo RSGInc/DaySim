@@ -9,20 +9,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Sampling;
-using Daysim.PathTypeModels;
-using Daysim.Sampling;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Sampling;
+using DaySim.PathTypeModels;
+using DaySim.Sampling;
 using Ninject;
 //using System.IO;
 //using System.Runtime.Serialization.Formatters.Binary;
 //using System.Threading.Tasks;
 
 
-namespace Daysim.ChoiceModels.H.Models {
+namespace DaySim.ChoiceModels.H.Models {
 	public class AggregateTourModeDestinationModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "AggregateTourModeDestinationModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;

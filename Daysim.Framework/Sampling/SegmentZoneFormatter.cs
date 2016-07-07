@@ -8,7 +8,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Daysim.Framework.Sampling {
+namespace DaySim.Framework.Sampling {
 	public static class SegmentZoneFormatter {
 		public static SegmentZone[] Deserialize(Stream serializationStream) {
 			using (var reader = new BinaryReader(serializationStream)) {

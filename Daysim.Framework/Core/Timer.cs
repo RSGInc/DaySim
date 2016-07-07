@@ -9,7 +9,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public sealed class Timer {
 		private readonly Stopwatch _stopwatch;
         private readonly string _timerName = null;

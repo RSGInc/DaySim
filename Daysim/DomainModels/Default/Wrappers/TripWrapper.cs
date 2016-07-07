@@ -9,17 +9,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Daysim.ChoiceModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Persisters;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Sampling;
-using Daysim.PathTypeModels;
+using DaySim.ChoiceModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Persisters;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Sampling;
+using DaySim.PathTypeModels;
 using Ninject;
 
-namespace Daysim.DomainModels.Default.Wrappers {
+namespace DaySim.DomainModels.Default.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
 	public class TripWrapper : ISamplingTrip, ITripWrapper {
 		private readonly ITrip _trip;

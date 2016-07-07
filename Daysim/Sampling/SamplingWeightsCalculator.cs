@@ -11,16 +11,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Roster;
-using Daysim.Framework.Sampling;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Roster;
+using DaySim.Framework.Sampling;
 using Ninject;
 
-namespace Daysim.Sampling {
+namespace DaySim.Sampling {
 	public sealed class SamplingWeightsCalculator {
 		private readonly List<IParcelWrapper> _eligibleParcels = new List<IParcelWrapper>();
 		private readonly Dictionary<int, int> _parcelCounts = new Dictionary<int, int>();

@@ -9,10 +9,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Daysim.Framework.Core;
-using Daysim.Framework.ShadowPricing;
+using DaySim.Framework.Core;
+using DaySim.Framework.ShadowPricing;
 
-namespace Daysim.ParkAndRideShadowPricing
+namespace DaySim.ParkAndRideShadowPricing
 {
     public static class ParkAndRideShadowPriceReader
     {

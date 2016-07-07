@@ -9,12 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.Exceptions;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.Exceptions;
 using Ninject;
 
-namespace Daysim.Framework.Roster {
+namespace DaySim.Framework.Roster {
 	public static class ImpedanceRoster {
 
 		private static int[] _variableKeys;

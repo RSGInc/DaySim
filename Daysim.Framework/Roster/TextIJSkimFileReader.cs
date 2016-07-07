@@ -9,10 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Daysim.Framework.Core;
-using Daysim.Framework.Exceptions;
+using DaySim.Framework.Core;
+using DaySim.Framework.Exceptions;
 
-namespace Daysim.Framework.Roster {
+namespace DaySim.Framework.Roster {
 	public sealed class TextIJSkimFileReader : ISkimFileReader {
 		private const int FIELD_OFFSET = -1; // This value accounts for the fact that the first two columns are the origin and destination whicn aren't included in the field parameter.
 

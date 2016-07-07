@@ -5,9 +5,9 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim.Framework.Sampling {
+namespace DaySim.Framework.Sampling {
 	public interface ISamplingTrip {
 		IParcel OriginParcel { get; }
 	}

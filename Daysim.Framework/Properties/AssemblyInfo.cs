@@ -12,12 +12,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Daysim.Engine")]
+[assembly: AssemblyTitle("DaySim.Framework")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Daysim.Engine")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2011")]
+[assembly: AssemblyCompany("RSG Inc.")]
+[assembly: AssemblyProduct("DaySim.Framework")]
+[assembly: AssemblyCopyright("Copyright © Resource Systems Group, Inc. 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

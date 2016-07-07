@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class SkimMatrixNotFoundException : Exception {
 		public SkimMatrixNotFoundException() : this("There is not a skim matrix defined for the combination of variable, mode, path type, and minute. Please adjust the roster accordingly.") {}

@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class UndefinedInputPathException : Exception {
 		public UndefinedInputPathException() : this("The input path is missing or empty from the configuration file.") {}

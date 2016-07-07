@@ -5,9 +5,9 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.Framework.ShadowPricing;
+using DaySim.Framework.ShadowPricing;
 
-namespace Daysim.ParkAndRideShadowPricing {
+namespace DaySim.ParkAndRideShadowPricing {
 	public sealed class ParkAndRideShadowPriceNode : IParkAndRideShadowPriceNode {
 		/// <summary>
 		/// Gets or sets the node id.

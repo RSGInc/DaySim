@@ -7,7 +7,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace Daysim.Framework.Sampling {
+namespace DaySim.Framework.Sampling {
 	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
 	public struct SizeSegmentItem {
 		public SizeSegmentItem(int sequence, int id, double value) : this() {

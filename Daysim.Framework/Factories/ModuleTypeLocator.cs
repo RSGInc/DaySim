@@ -8,9 +8,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.Factories {
+namespace DaySim.Framework.Factories {
 	public class ModuleTypeLocator : TypeLocator {
 		public ModuleTypeLocator(Configuration configuration) : base(configuration) {}
 

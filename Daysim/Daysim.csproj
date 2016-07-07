@@ -8,8 +8,8 @@
     <ProjectGuid>{C89E2003-E353-43B8-BF0A-9A821945933A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Daysim</RootNamespace>
-    <AssemblyName>Daysim</AssemblyName>
+    <RootNamespace>DaySim</RootNamespace>
+    <AssemblyName>DaySim</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -406,9 +406,9 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Daysim.Framework\Daysim.Framework.csproj">
+    <ProjectReference Include="..\Daysim.Framework\DaySim.Framework.csproj">
       <Project>{33842B3A-A2CB-4B61-933B-811CED8CF74B}</Project>
-      <Name>Daysim.Framework</Name>
+      <Name>DaySim.Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

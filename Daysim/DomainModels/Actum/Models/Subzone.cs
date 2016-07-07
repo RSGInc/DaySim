@@ -5,11 +5,11 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.DomainModels.Actum.Models.Interfaces;
-using Daysim.Framework.Core;
-using Daysim.Framework.Factories;
+using DaySim.DomainModels.Actum.Models.Interfaces;
+using DaySim.Framework.Core;
+using DaySim.Framework.Factories;
 
-namespace Daysim.DomainModels.Actum.Models {
+namespace DaySim.DomainModels.Actum.Models {
 	[UsedImplicitly]
 	[Factory(Factory.SubzoneFactory, DataType = DataType.Actum)]
 	public class Subzone : Default.Models.Subzone, IActumSubzone {

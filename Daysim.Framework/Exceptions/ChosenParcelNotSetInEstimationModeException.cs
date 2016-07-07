@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class ChosenParcelNotSetInEstimationModeException : Exception {
 		public ChosenParcelNotSetInEstimationModeException() : this("The model is in estimation mode and the chosen parcel is null.") {}

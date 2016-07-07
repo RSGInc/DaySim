@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 using HDF5DotNet;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	public class Hdf5Exporter<TModel> {
 		private readonly List<TModel> _buffer = new List<TModel>();
 

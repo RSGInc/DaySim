@@ -9,34 +9,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.ChoiceModels.Actum.Models;
-//using Daysim.ChoiceModels.Default.Models;
-using Daysim.DomainModels.Default.Models;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.DomainModels.Extensions;
-using Daysim.DomainModels.Factories;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Exceptions;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Roster;
+using DaySim.ChoiceModels.Actum.Models;
+//using DaySim.ChoiceModels.Default.Models;
+using DaySim.DomainModels.Default.Models;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.DomainModels.Extensions;
+using DaySim.DomainModels.Factories;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Exceptions;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Roster;
 using Ninject;
-using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdWrapper;
-using IntermediateStopGenerationModel = Daysim.ChoiceModels.Actum.Models.IntermediateStopGenerationModel;
-using IntermediateStopLocationModel = Daysim.ChoiceModels.Actum.Models.IntermediateStopLocationModel;
-using PersonDayWrapper = Daysim.DomainModels.Actum.Wrappers.PersonDayWrapper;
-using PersonWrapper = Daysim.DomainModels.Actum.Wrappers.PersonWrapper;
-using TourWrapper = Daysim.DomainModels.Actum.Wrappers.TourWrapper;
-using TripModeModel = Daysim.ChoiceModels.Actum.Models.TripModeModel;
-using TripTimeModel = Daysim.ChoiceModels.Actum.Models.TripTimeModel;
-using TripWrapper = Daysim.DomainModels.Actum.Wrappers.TripWrapper;
-using WorkBasedSubtourGenerationModel = Daysim.ChoiceModels.Actum.Models.WorkBasedSubtourGenerationModel;
+using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
+using HouseholdWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdWrapper;
+using IntermediateStopGenerationModel = DaySim.ChoiceModels.Actum.Models.IntermediateStopGenerationModel;
+using IntermediateStopLocationModel = DaySim.ChoiceModels.Actum.Models.IntermediateStopLocationModel;
+using PersonDayWrapper = DaySim.DomainModels.Actum.Wrappers.PersonDayWrapper;
+using PersonWrapper = DaySim.DomainModels.Actum.Wrappers.PersonWrapper;
+using TourWrapper = DaySim.DomainModels.Actum.Wrappers.TourWrapper;
+using TripModeModel = DaySim.ChoiceModels.Actum.Models.TripModeModel;
+using TripTimeModel = DaySim.ChoiceModels.Actum.Models.TripTimeModel;
+using TripWrapper = DaySim.DomainModels.Actum.Wrappers.TripWrapper;
+using WorkBasedSubtourGenerationModel = DaySim.ChoiceModels.Actum.Models.WorkBasedSubtourGenerationModel;
 
-namespace Daysim.ChoiceModels.Actum {
+namespace DaySim.ChoiceModels.Actum {
 	[UsedImplicitly]
 	[Factory(Factory.ChoiceModelFactory, ChoiceModelRunner = Framework.Factories.ChoiceModelRunner.Actum)]
 	public sealed class ChoiceModelRunner : IChoiceModelRunner {

@@ -8,13 +8,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Persisters;
-using Daysim.Framework.Persistence;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Persisters;
+using DaySim.Framework.Persistence;
 using Ninject;
 
-namespace Daysim.DomainModels.Persisters {
+namespace DaySim.DomainModels.Persisters {
 	public abstract class Persister<TModel> : IPersisterReader<TModel>, IPersisterImporter, IPersisterExporter, IDisposable where TModel : class, IModel, new() {
 		private readonly Lazy<Reader<TModel>> _reader = new Lazy<Reader<TModel>>(() =>
 			Global

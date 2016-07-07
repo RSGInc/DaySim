@@ -6,10 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Collections.Generic;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim.Framework.DomainModels.Wrappers {
+namespace DaySim.Framework.DomainModels.Wrappers {
 	public interface ITourWrapper : ITour {
 		#region relations properties
 

@@ -1,4 +1,4 @@
-﻿using Daysim.Framework.Core;
+﻿using DaySim.Framework.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
-namespace Daysim.Framework.Roster
+namespace DaySim.Framework.Roster
 {
     class VisumSkimReader : ISkimFileReader
     {

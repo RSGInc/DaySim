@@ -47,11 +47,11 @@ def regress_model(parameters):
     """Passed a DaySim configuration file, this this renames the existing output directory, runs DaySim and compares the exisiting outputs directory to the new one using compare_output_directories.py"""
     start_time = time.perf_counter()
     script_directory = os.path.split(os.path.realpath(__file__))[0] + '/'
-    parser = argparse.ArgumentParser(description='Run Daysim regression tests for specified model')
+    parser = argparse.ArgumentParser(description='Run DaySim regression tests for specified model')
     parser.add_argument('--daysim_exe',
-                        help='location of Daysim executable[default: %(default)s}', default= script_directory + '../../../Daysim/bin/x64/Debug/Daysim.exe')
+                        help='location of DaySim executable[default: %(default)s}', default= script_directory + '../../../DaySim/bin/x64/Debug/DaySim.exe')
     parser.add_argument('--configuration_file',
-                        help='path to configuration file to send to Daysim', default='configuration_regression.xml')
+                        help='path to configuration file to send to DaySim', default='configuration_regression.xml')
     parser.add_argument('--run_if_needed_to_create_baseline',
                         help='if the output folder does not exist stting this to true will run it to create the baseline', type=parse_bool, default=True)
     parser.add_argument('--always_create_reports',
@@ -119,7 +119,7 @@ def regress_model(parameters):
             if args.run_if_needed_to_create_baseline:
                 print('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" which does not exist. --run_if_needed_to_create_baseline is true so will run now...')
                 try:
-                    #due to bug Daysim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/Daysim/issues/52
+                    #due to bug DaySim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/DaySim/issues/52
                     old_cwd = os.getcwd()
                     os.chdir(configuration_file_folder)
                     return_code = run_process_with_realtime_output.run_process_with_realtime_output(daysim_exe + ' --configuration "' + configuration_file + '"')
@@ -189,7 +189,7 @@ def regress_model(parameters):
                               ]
     
         try:
-            #due to bug Daysim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/Daysim/issues/52
+            #due to bug DaySim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/DaySim/issues/52
             old_cwd = os.getcwd()
             os.chdir(configuration_file_folder)
 

@@ -9,13 +9,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.ChoiceModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Exceptions;
-using Daysim.Framework.Roster;
+using DaySim.ChoiceModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Exceptions;
+using DaySim.Framework.Roster;
 
-namespace Daysim.PathTypeModels {
+namespace DaySim.PathTypeModels {
 	public class PathTypeModel : IPathTypeModel {
 		private const double MAX_UTILITY = 80D;
 		private const double MIN_UTILITY = -80D;

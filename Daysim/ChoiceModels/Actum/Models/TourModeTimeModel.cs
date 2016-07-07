@@ -7,18 +7,18 @@
 
 
 using System;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using HouseholdDayWrapper = Daysim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = Daysim.DomainModels.Default.Wrappers.HouseholdWrapper;
-using TourWrapper = Daysim.DomainModels.Actum.Wrappers.TourWrapper;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Actum;
+using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
+using HouseholdWrapper = DaySim.DomainModels.Default.Wrappers.HouseholdWrapper;
+using TourWrapper = DaySim.DomainModels.Actum.Wrappers.TourWrapper;
 
-namespace Daysim.ChoiceModels.Actum.Models {
+namespace DaySim.ChoiceModels.Actum.Models {
 	public class TourModeTimeModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "ActumTourModeTimeModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 8;

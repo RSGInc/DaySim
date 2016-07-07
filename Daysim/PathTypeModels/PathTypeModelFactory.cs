@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using Daysim.Framework.Core;
-using Daysim.Framework.Factories;
-using Daysim.PathTypeModels;
-//using Daysim.PathTypeModels.Default;
+using DaySim.Framework.Core;
+using DaySim.Framework.Factories;
+using DaySim.PathTypeModels;
+//using DaySim.PathTypeModels.Default;
 
-namespace Daysim.PathTypeModels {
+namespace DaySim.PathTypeModels {
 	static class PathTypeModelFactory {
 		public static Type ModelType { get; private set; }
 		public static dynamic Model { get; private set; }

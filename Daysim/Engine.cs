@@ -12,32 +12,32 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Daysim.AggregateLogsums;
-using Daysim.ChoiceModels;
-using Daysim.DomainModels.Actum.Models.Interfaces;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Exceptions;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Roster;
-using Daysim.ParkAndRideShadowPricing;
-using Daysim.Sampling;
-using Daysim.ShadowPricing;
+using DaySim.AggregateLogsums;
+using DaySim.ChoiceModels;
+using DaySim.DomainModels.Actum.Models.Interfaces;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Exceptions;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Roster;
+using DaySim.ParkAndRideShadowPricing;
+using DaySim.Sampling;
+using DaySim.ShadowPricing;
 using HDF5DotNet;
 using Ninject;
-using Timer = Daysim.Framework.Core.Timer;
+using Timer = DaySim.Framework.Core.Timer;
 
-namespace Daysim
+namespace DaySim
 {
     public static class Engine
     {
         private static int _start = -1;
         private static int _end = -1;
         private static int _index = -1;
-        private static Timer overallDaysimTimer = new Timer("Daysim...", true);
+        private static Timer overallDaySimTimer = new Timer("DaySim...", true);
 
         public static void BeginTestMode()
         {
@@ -96,7 +96,7 @@ namespace Daysim
                 BeginUpdateShadowPricing();
             }
 
-            overallDaysimTimer.Stop("Total running time");
+            overallDaySimTimer.Stop("Total running time");
         }
 
         public static void BeginInitialize()
@@ -106,7 +106,7 @@ namespace Daysim
             Initialize();
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
 
         }
 
@@ -115,7 +115,7 @@ namespace Daysim
             var timer = new Timer("Checking Input Validity...");
             InputTester.RunTest();
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void Initialize()
@@ -680,7 +680,7 @@ namespace Daysim
             }
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         public static void BeginImportData()
@@ -940,7 +940,7 @@ namespace Daysim
             BuildIndexes();
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void BuildIndexes()
@@ -1025,7 +1025,7 @@ namespace Daysim
             LoadNodeIndex();
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void LoadNodeIndex()
@@ -1093,7 +1093,7 @@ namespace Daysim
             }
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void BeginLoadNodeStopAreaDistances()
@@ -1116,12 +1116,12 @@ namespace Daysim
             }
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         public static void InitializeParcelStopAreaIndex(TextReader reader)
         {
-            //mb moved this from global to engine in order to use Daysim.ChoiceModels.ChoiceModelFactory
+            //mb moved this from global to engine in order to use DaySim.ChoiceModels.ChoiceModelFactory
             //mb tried to change this code to set parcel first and last indeces here instead of later, but did not work
 
             //var parcelIds = new List<int>();  
@@ -1193,7 +1193,7 @@ namespace Daysim
             }
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         public static void InitializeMicrozoneToBikeCarParkAndRideNodeIndex(TextReader reader)
@@ -1347,7 +1347,7 @@ namespace Daysim
             LoadRoster();
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void LoadRoster()
@@ -1416,7 +1416,7 @@ namespace Daysim
             calculator.Calculate(randomUtility);
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void BeginOutputAggregateLogsums()
@@ -1431,7 +1431,7 @@ namespace Daysim
             AggregateLogsumsExporter.Export(Global.GetOutputPath(Global.Configuration.OutputAggregateLogsumsPath));
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void BeginCalculateSamplingWeights()
@@ -1441,7 +1441,7 @@ namespace Daysim
             SamplingWeightsCalculator.Calculate("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 180);
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void BeginOutputSamplingWeights()
@@ -1456,7 +1456,7 @@ namespace Daysim
             SamplingWeightsExporter.Export(Global.GetOutputPath(Global.Configuration.OutputSamplingWeightsPath));
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void BeginRunChoiceModels(IRandomUtility randomUtility)
@@ -1471,7 +1471,7 @@ namespace Daysim
             RunChoiceModels(randomUtility);
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void RunChoiceModels(IRandomUtility randomUtility)
@@ -1593,7 +1593,7 @@ namespace Daysim
             PerformHousekeeping();
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void PerformHousekeeping()
@@ -1623,7 +1623,7 @@ namespace Daysim
             ParkAndRideShadowPriceCalculator.CalculateAndWriteShadowPrices();
 
             timer.Stop();
-            overallDaysimTimer.Print();
+            overallDaySimTimer.Print();
         }
 
         private static void OverrideShouldRunRawConversion()

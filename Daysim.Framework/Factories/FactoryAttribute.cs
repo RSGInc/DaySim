@@ -7,7 +7,7 @@
 
 using System;
 
-namespace Daysim.Framework.Factories {
+namespace DaySim.Framework.Factories {
 	[AttributeUsage(AttributeTargets.Class)]
 	public class FactoryAttribute : Attribute {
 		public FactoryAttribute(Factory factory) {

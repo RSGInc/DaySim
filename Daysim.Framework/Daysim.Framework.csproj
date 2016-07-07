@@ -8,8 +8,8 @@
     <ProjectGuid>{33842B3A-A2CB-4B61-933B-811CED8CF74B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Daysim.Framework</RootNamespace>
-    <AssemblyName>Daysim.Framework</AssemblyName>
+    <RootNamespace>DaySim.Framework</RootNamespace>
+    <AssemblyName>DaySim.Framework</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

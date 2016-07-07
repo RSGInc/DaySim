@@ -6,35 +6,35 @@
 // 
 // Copyright 2011-2013 John Bowman, Mark Bradley, and RSG, Inc.
 // 
-// This file is part of Daysim.
+// This file is part of DaySim.
 // 
-// Daysim is free software: you can redistribute it and/or modify
+// DaySim is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// Daysim is distributed in the hope that it will be useful,
+// DaySim is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
-// along with Daysim. If not, see <http://www.gnu.org/licenses/>.
+// along with DaySim. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
-using Daysim.DomainModels.Default;
-using Daysim.DomainModels.Extensions;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.Roster;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Actum;
+using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Default;
+using DaySim.DomainModels.Extensions;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.Roster;
 
-namespace Daysim.ChoiceModels.Actum.Models {
+namespace DaySim.ChoiceModels.Actum.Models {
 	public class IntermediateStopGenerationModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "ActumIntermediateStopGenerationModel";
 		//		private const int TOTAL_ALTERNATIVES = 20;

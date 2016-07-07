@@ -6,10 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.ChoiceModels
+namespace DaySim.Framework.ChoiceModels
 {
 	public sealed class ChoiceModelHelper
 	{

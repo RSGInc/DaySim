@@ -7,10 +7,10 @@
 
 
 using System.IO;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.ChoiceModels {
+namespace DaySim.Framework.ChoiceModels {
 	public sealed class ChoiceProbabilityFactory {
 		private readonly string _title;
 		private readonly ICoefficient _sizeFunctionMultiplier;

@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	public interface IExporter<in TModel> : IDisposable where TModel : IModel {
 		void Export(TModel model);
 	}

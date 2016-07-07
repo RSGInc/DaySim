@@ -8,15 +8,15 @@
 
 using System;
 using System.IO;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.Core;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.Core;
 
 //using System.Linq;
 //using System.Text;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.ParkAndRideShadowPricing {
+namespace DaySim.ParkAndRideShadowPricing {
 	public sealed class ParkAndRideShadowPriceWriter : IDisposable {
 		private readonly StreamWriter _writer;
 

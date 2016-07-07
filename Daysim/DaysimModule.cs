@@ -5,19 +5,19 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.AggregateLogsums;
-using Daysim.DomainModels.Factories;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Persistence;
-using Daysim.Framework.Roster;
-using Daysim.Sampling;
+using DaySim.AggregateLogsums;
+using DaySim.DomainModels.Factories;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Persistence;
+using DaySim.Framework.Roster;
+using DaySim.Sampling;
 using Ninject.Modules;
 
-namespace Daysim {
-	public sealed class DaysimModule : NinjectModule {
+namespace DaySim {
+	public sealed class DaySimModule : NinjectModule {
 		public override void Load() {
 			Bind<ImporterFactory>()
 				.ToSelf()

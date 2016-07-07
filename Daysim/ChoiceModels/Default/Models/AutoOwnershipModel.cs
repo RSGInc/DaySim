@@ -7,15 +7,15 @@
 
 
 using System;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Default;
-using Daysim.DomainModels.Extensions;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Default;
+using DaySim.DomainModels.Extensions;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.ChoiceModels.Default.Models {
+namespace DaySim.ChoiceModels.Default.Models {
 	public class AutoOwnershipModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "AutoOwnershipModel";
 		private const int TOTAL_ALTERNATIVES = 5;

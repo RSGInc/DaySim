@@ -6,12 +6,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim;
-using Daysim.Framework.Core;
+using DaySim;
+using DaySim.Framework.Core;
 using NDesk.Options;
 using Ninject;
 
-namespace DaysimController {
+namespace DaySimController {
 	public static class Program {
 		private static string _configurationPath;
 		private static bool _showHelp;
@@ -44,7 +44,7 @@ namespace DaysimController {
 
 			Global.Configuration = configuration;
 
-			using (var daysimModule = new DaysimModule()) {
+			using (var daysimModule = new DaySimModule()) {
 				Global.Kernel = new StandardKernel(daysimModule);
 
 				Controller.BeginProgram();

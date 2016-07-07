@@ -9,10 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 using HDF5DotNet;
 
-namespace Daysim.Framework.Roster
+namespace DaySim.Framework.Roster
 {
     public class HDF5SkimFileReader : ISkimFileReader
     {

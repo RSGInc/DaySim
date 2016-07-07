@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25402.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daysim", "Daysim\Daysim.csproj", "{C89E2003-E353-43B8-BF0A-9A821945933A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySim", "Daysim\DaySim.csproj", "{C89E2003-E353-43B8-BF0A-9A821945933A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daysim.Framework", "Daysim.Framework\Daysim.Framework.csproj", "{33842B3A-A2CB-4B61-933B-811CED8CF74B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySim.Framework", "Daysim.Framework\DaySim.Framework.csproj", "{33842B3A-A2CB-4B61-933B-811CED8CF74B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaysimController", "DaysimController\DaysimController.csproj", "{FB158352-2310-4E0F-84E2-50EFFF669C55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimController", "DaysimController\DaySimController.csproj", "{FB158352-2310-4E0F-84E2-50EFFF669C55}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9C172028-C7C2-40B7-AE9B-413C4F84EC6D}"
 	ProjectSection(SolutionItems) = preProject

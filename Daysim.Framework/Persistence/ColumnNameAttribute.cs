@@ -7,7 +7,7 @@
 
 using System;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	[AttributeUsage(AttributeTargets.Property)]
 	public sealed class ColumnNameAttribute : Attribute {
 		public ColumnNameAttribute(string columnName) {

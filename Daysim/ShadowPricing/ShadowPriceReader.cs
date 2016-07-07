@@ -9,10 +9,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Daysim.Framework.Core;
-using Daysim.Framework.ShadowPricing;
+using DaySim.Framework.Core;
+using DaySim.Framework.ShadowPricing;
 
-namespace Daysim.ShadowPricing {
+namespace DaySim.ShadowPricing {
 	public static class ShadowPriceReader {
 		public static Dictionary<int, IShadowPriceParcel> ReadShadowPrices() {
 			var shadowPrices = new Dictionary<int, IShadowPriceParcel>();

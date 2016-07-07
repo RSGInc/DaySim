@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class MissingShortDistanceCircuityMeasuresException : Exception {
 		public MissingShortDistanceCircuityMeasuresException() : this("The configuration file is set to use short distance circuity measures but the data is missing from the parcel input.") {}

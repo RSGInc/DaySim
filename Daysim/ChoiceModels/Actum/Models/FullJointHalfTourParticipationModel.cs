@@ -9,15 +9,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.DomainModels.Actum;
-using Daysim.DomainModels.Actum.Wrappers;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.DomainModels.Actum;
+using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.ChoiceModels.Actum.Models {
+namespace DaySim.ChoiceModels.Actum.Models {
 	public class FullJointHalfTourParticipationModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "ActumFullJointHalfTourParticipationModel";
 		private const int TOTAL_ALTERNATIVES = 32;

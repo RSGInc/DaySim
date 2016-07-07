@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim {
+namespace DaySim {
 	public interface ITripSelector
 	{
 		List<ITrip> Select(List<ITrip> trips, int mode, int pathType, int startTime, int endTime);

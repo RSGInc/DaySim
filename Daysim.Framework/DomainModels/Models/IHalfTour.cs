@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Collections.Generic;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.Framework.DomainModels.Models {
+namespace DaySim.Framework.DomainModels.Models {
 	public interface IHalfTour {
 		List<ITripWrapper> Trips { get; }
 

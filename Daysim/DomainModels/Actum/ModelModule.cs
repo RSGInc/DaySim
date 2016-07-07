@@ -5,13 +5,13 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.DomainModels.Actum.Models;
-using Daysim.Framework.Core;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Persistence;
+using DaySim.DomainModels.Actum.Models;
+using DaySim.Framework.Core;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Persistence;
 using Ninject.Modules;
 
-namespace Daysim.DomainModels.Actum {
+namespace DaySim.DomainModels.Actum {
 	[UsedImplicitly]
 	[Factory(Factory.ModuleFactory, DataType = DataType.Actum)]
 	public class ModelModule : NinjectModule {

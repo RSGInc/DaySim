@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class MissingHeaderException : Exception {
 		public MissingHeaderException() : this("The header is missing. Please ensure that the raw file contains the appropriate header.") {}

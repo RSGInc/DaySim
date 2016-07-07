@@ -1,4 +1,4 @@
-﻿namespace Daysim.Framework.Coefficients {
+﻿namespace DaySim.Framework.Coefficients {
 	public interface ICoefficient 
 	{
 		int Parameter { get; set; }

@@ -5,9 +5,9 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.Framework.Settings;
+using DaySim.Framework.Settings;
 
-namespace Daysim.Framework.Factories {
+namespace DaySim.Framework.Factories {
 	public interface ISettings {
 		double LengthUnitsPerFoot { get; }
 

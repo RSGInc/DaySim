@@ -1,4 +1,4 @@
-﻿namespace Daysim.Framework.Core {
+﻿namespace DaySim.Framework.Core {
 	public interface ITripModeImpedance 
 	{
 		int AdjacentMinutesBefore { get; set; }

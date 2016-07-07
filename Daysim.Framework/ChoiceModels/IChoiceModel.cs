@@ -1,6 +1,6 @@
-﻿using Daysim.Framework.Coefficients;
+﻿using DaySim.Framework.Coefficients;
 
-namespace Daysim.Framework.ChoiceModels {
+namespace DaySim.Framework.ChoiceModels {
 	public interface IChoiceModel
 	{
 		void RunInitialize(ICoefficientsReader reader = null);

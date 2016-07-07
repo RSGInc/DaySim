@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.ChoiceModels {
+namespace DaySim.Framework.ChoiceModels {
 	public abstract class ChoiceModel : IChoiceModel
 	{
 		protected ChoiceModelHelper[] _helpers = new ChoiceModelHelper[ParallelUtility.NBatches];

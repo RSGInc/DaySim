@@ -9,16 +9,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Default;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.DomainModels.Extensions;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.Roster;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Default;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.DomainModels.Extensions;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.Roster;
 
-namespace Daysim.ChoiceModels.H.Models {
+namespace DaySim.ChoiceModels.H.Models {
 	public class JointHalfTourGenerationModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "HJointHalfTourGenerationModel";
 		private const int TOTAL_ALTERNATIVES = 7;

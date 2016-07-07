@@ -8,7 +8,7 @@
 
 using System;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public sealed class MinuteSpan : IMinuteSpan {
 		public MinuteSpan(int start, int end) {
 			Index = Constants.DEFAULT_VALUE;

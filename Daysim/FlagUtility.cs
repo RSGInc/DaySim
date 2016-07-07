@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace Daysim
+namespace DaySim
 {
     public static class FlagUtility
     {

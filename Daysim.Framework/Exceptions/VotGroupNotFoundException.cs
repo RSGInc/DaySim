@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class VotGroupNotFoundException : Exception {
 		public VotGroupNotFoundException() : this("The vot group for vot was not found in the roster configuration file. Please correct the problem and run the program again.") {}

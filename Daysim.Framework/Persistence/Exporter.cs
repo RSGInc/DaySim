@@ -9,10 +9,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	public abstract class Exporter<TModel> : IExporter<TModel> where TModel : IModel, new() {
 		private int _current;
 		private readonly char _delimiter;

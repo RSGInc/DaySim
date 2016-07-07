@@ -10,9 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.Coefficients {
+namespace DaySim.Framework.Coefficients {
 	public class CoefficientsReader : ICoefficientsReader {
 		public virtual ICoefficient[] Read(string path, out string title, out ICoefficient sizeFunctionMultiplier, out ICoefficient nestCoefficient) {
 			title = null;

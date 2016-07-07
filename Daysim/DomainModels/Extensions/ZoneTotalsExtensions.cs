@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.DomainModels.Default.Models;
+using DaySim.DomainModels.Default.Models;
 
-namespace Daysim.DomainModels.Extensions {
+namespace DaySim.DomainModels.Extensions {
 	public static class ZoneTotalsExtensions {
 		public static double GetEmploymentEducationDensity(this ZoneTotals zoneTotals, double squareLengthUnits) {
 			if (zoneTotals == null) {

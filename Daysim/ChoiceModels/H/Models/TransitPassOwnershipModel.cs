@@ -10,13 +10,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.PathTypeModels;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.PathTypeModels;
 
-namespace Daysim.ChoiceModels.H.Models {
+namespace DaySim.ChoiceModels.H.Models {
 	public class TransitPassOwnershipModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "HTransitPassOwnershipModel";
 		private const int TOTAL_ALTERNATIVES = 2;

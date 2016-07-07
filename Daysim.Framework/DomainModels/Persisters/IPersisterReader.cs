@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Collections.Generic;
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim.Framework.DomainModels.Persisters {
+namespace DaySim.Framework.DomainModels.Persisters {
 	public interface IPersisterReader<out TModel> : IEnumerable<TModel> where TModel : IModel {
 		int Count { get; }
 

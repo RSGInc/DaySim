@@ -9,7 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public static class ParallelUtility {
 		private static int[] _threadToThreadIdMap;
 

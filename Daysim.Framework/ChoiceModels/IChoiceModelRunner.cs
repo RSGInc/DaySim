@@ -5,9 +5,9 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.Framework.Persistence;
+using DaySim.Framework.Persistence;
 
-namespace Daysim.Framework.ChoiceModels {
+namespace DaySim.Framework.ChoiceModels {
 	public interface IChoiceModelRunner : ISavable {
 		void RunChoiceModels(int batchNumber);
 

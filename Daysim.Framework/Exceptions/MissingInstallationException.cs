@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class MissingInstallationException : Exception {
 		public MissingInstallationException() : this("An installation is missing. Please ensure that appropriate installations are installed.") {}

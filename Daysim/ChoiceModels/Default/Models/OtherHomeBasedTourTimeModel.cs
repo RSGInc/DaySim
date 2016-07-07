@@ -8,12 +8,12 @@
 
 using System;
 using System.Linq;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.ChoiceModels.Default.Models {
+namespace DaySim.ChoiceModels.Default.Models {
 	public class OtherHomeBasedTourTimeModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "OtherHomeBasedTourTimeModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;

@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 using System.IO;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public static class EngineExtensions {
 		public static void CreateDirectory(this string path) {
 			CreateDirectory(new FileInfo(path));

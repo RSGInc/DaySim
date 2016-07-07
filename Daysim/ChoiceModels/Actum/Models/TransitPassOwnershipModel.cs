@@ -9,15 +9,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.DomainModels.Actum.Wrappers;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.Roster;
-using Daysim.PathTypeModels;
+using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.Roster;
+using DaySim.PathTypeModels;
 using Ninject;
 
-namespace Daysim.ChoiceModels.Actum.Models {
+namespace DaySim.ChoiceModels.Actum.Models {
 	public class TransitPassOwnershipModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "ActumTransitPassOwnershipModel";
 		private const int TOTAL_ALTERNATIVES = 2;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using CaliperMTX;
 
-namespace Daysim.Framework.Roster {
+namespace DaySim.Framework.Roster {
 	public class TranscadFileSkimReader : ISkimFileReader {
 		private string _path;
 		private Dictionary<int, int> _mapping;

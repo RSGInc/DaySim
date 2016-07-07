@@ -9,9 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.Factories {
+namespace DaySim.Framework.Factories {
 	public class SettingsTypeLocator : TypeLocator {
 		private readonly string _settings;
 

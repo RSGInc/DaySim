@@ -1,4 +1,4 @@
-﻿namespace Daysim.Framework.Core
+﻿namespace DaySim.Framework.Core
 {
 	public interface IRandomUniform01
 	{

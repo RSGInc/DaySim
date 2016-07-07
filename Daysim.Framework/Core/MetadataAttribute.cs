@@ -8,7 +8,7 @@
 
 using System;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	[AttributeUsage(AttributeTargets.Property)]
 	public sealed class MetadataAttribute : Attribute {
 		public MetadataAttribute(string value) {

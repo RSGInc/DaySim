@@ -11,18 +11,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Roster;
-using Daysim.Framework.Sampling;
-using Daysim.PathTypeModels;
-using Daysim.Sampling;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Roster;
+using DaySim.Framework.Sampling;
+using DaySim.PathTypeModels;
+using DaySim.Sampling;
 using Ninject;
 
-namespace Daysim.ChoiceModels.H.Models {
+namespace DaySim.ChoiceModels.H.Models {
 	public class IntermediateStopLocationModel : ChoiceModel{
 		private const string CHOICE_MODEL_NAME = "HIntermediateStopLocationModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;

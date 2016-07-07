@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public sealed class TimeWindow : ITimeWindow {
 		private List<IMinuteSpan> _busyMinutes = new List<IMinuteSpan>();
 		private List<IMinuteSpan> _availableMinutes = new List<IMinuteSpan>();

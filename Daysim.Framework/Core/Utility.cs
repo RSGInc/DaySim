@@ -8,7 +8,7 @@
 
 using System.IO;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 
     //from http://stackoverflow.com/a/21867370/283973
     public class CountingReader : StreamReader

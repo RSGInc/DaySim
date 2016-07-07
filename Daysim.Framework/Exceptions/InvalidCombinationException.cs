@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class InvalidCombinationException : Exception {
 		public InvalidCombinationException() : this("The combination of mode and path type is invalid. Please adjust the roster accordingly.") {}

@@ -8,15 +8,15 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
-using Daysim.ParkAndRideShadowPricing;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
+using DaySim.ParkAndRideShadowPricing;
 using Ninject;
 
-namespace Daysim {
+namespace DaySim {
 	public sealed class ParkAndRideNodeDao {
 		private readonly Dictionary<int, IParkAndRideNodeWrapper> _nodes = new Dictionary<int, IParkAndRideNodeWrapper>();
 		private readonly Dictionary<int, int[]> _zoneIdKeys = new Dictionary<int, int[]>();

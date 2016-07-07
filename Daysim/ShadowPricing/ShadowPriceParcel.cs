@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using Daysim.Framework.ShadowPricing;
+using DaySim.Framework.ShadowPricing;
 
-namespace Daysim.ShadowPricing {
+namespace DaySim.ShadowPricing {
 	public sealed class ShadowPriceParcel : IShadowPriceParcel {
 		/// <summary>
 		/// Gets or sets the parcel id.

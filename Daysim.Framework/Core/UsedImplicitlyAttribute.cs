@@ -9,7 +9,7 @@
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable InconsistentNaming
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	/// <summary>
 	/// Indicates that the value of the marked element could be <c>null</c> sometimes,
 	/// so the check for <c>null</c> is necessary before its usage

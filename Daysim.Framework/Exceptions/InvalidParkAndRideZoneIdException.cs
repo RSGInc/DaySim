@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class InvalidParkAndRideZoneIdException : Exception {
 		public InvalidParkAndRideZoneIdException() : this("A park-and-ride zone has an ID of zero. Zero is a special case for skims meaning none or empty.") {}

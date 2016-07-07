@@ -8,15 +8,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Persisters;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Factories;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Persisters;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Factories;
 using Ninject;
 
-namespace Daysim.DomainModels.Default.Wrappers {
+namespace DaySim.DomainModels.Default.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
 	public class HouseholdDayWrapper : IHouseholdDayWrapper {
 		private IHouseholdDay _householdDay;

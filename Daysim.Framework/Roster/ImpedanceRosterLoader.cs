@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Daysim.Framework.Core;
-using Daysim.Framework.Exceptions;
+using DaySim.Framework.Core;
+using DaySim.Framework.Exceptions;
 using Ninject;
 
-namespace Daysim.Framework.Roster {
+namespace DaySim.Framework.Roster {
 	public class ImpedanceRosterLoader 
 	{
 

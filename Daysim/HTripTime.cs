@@ -9,11 +9,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.PathTypeModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.PathTypeModels;
 
-namespace Daysim {
+namespace DaySim {
 	public sealed class HTripTime {
 		public const int TOTAL_TRIP_TIMES = DayPeriod.H_SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES;
 

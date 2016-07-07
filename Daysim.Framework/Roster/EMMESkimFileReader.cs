@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Daysim.Framework.Roster {
+namespace DaySim.Framework.Roster {
 	public class EMMESkimFileReader : ISkimFileReader
 	{
 		private string _path;

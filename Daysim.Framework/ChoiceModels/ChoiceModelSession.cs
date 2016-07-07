@@ -8,7 +8,7 @@
 using System;
 using System.Collections.Concurrent;
 
-namespace Daysim.Framework.ChoiceModels {
+namespace DaySim.Framework.ChoiceModels {
 	public class ChoiceModelSession {
 		private readonly ConcurrentDictionary<Type, IChoiceModel> _dictionary = new ConcurrentDictionary<Type, IChoiceModel>();
 

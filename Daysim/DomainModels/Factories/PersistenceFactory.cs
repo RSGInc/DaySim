@@ -6,12 +6,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Persisters;
-using Daysim.Framework.Factories;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Persisters;
+using DaySim.Framework.Factories;
 
-namespace Daysim.DomainModels.Factories {
+namespace DaySim.DomainModels.Factories {
 	public class PersistenceFactory<TModel> : IPersistenceFactory<TModel> where TModel : IModel {
 		private IDisposable _persister;
 

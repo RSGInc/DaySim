@@ -8,7 +8,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	public static class ModelUtility {
 		public static FileInfo GetIndexFile(string path) {
 			var directoryName = Path.GetDirectoryName(path);

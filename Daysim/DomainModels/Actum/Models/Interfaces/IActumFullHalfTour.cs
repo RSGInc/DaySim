@@ -5,8 +5,8 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using Daysim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Models;
 
-namespace Daysim.DomainModels.Actum.Models.Interfaces {
+namespace DaySim.DomainModels.Actum.Models.Interfaces {
 	public interface IActumFullHalfTour : IFullHalfTour {}
 }

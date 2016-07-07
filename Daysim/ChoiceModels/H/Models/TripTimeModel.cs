@@ -7,14 +7,14 @@
 
 
 using System;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Coefficients;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.ChoiceModels.H.Models {
+namespace DaySim.ChoiceModels.H.Models {
 	public class TripTimeModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "HTripTimeModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;

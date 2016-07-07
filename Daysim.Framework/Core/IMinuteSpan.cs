@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public interface IMinuteSpan : IEquatable<IMinuteSpan>
 	{
 		int Index { get; }

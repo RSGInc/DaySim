@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public static class Extensions {
 		private const long ONE_KILOBYTE = 1024L;
 		private const long ONE_MEGABYTE = ONE_KILOBYTE * 1024L;

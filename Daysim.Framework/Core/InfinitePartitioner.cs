@@ -12,7 +12,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public sealed class InfinitePartitioner : Partitioner<bool> {
 		public override IList<IEnumerator<bool>> GetPartitions(int partitionCount) {
 			if (partitionCount < 1) {

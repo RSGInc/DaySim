@@ -9,22 +9,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Daysim.ChoiceModels.H.Models;
-using Daysim.DomainModels.Default.Models;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.DomainModels.Extensions;
-using Daysim.DomainModels.Factories;
-using Daysim.Framework.ChoiceModels;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Creators;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.DomainModels.Wrappers;
-using Daysim.Framework.Exceptions;
-using Daysim.Framework.Factories;
-using Daysim.Framework.Roster;
+using DaySim.ChoiceModels.H.Models;
+using DaySim.DomainModels.Default.Models;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.DomainModels.Extensions;
+using DaySim.DomainModels.Factories;
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Exceptions;
+using DaySim.Framework.Factories;
+using DaySim.Framework.Roster;
 using Ninject;
 
-namespace Daysim.ChoiceModels.H {
+namespace DaySim.ChoiceModels.H {
 	[UsedImplicitly]
 	[Factory(Factory.ChoiceModelFactory, ChoiceModelRunner = Framework.Factories.ChoiceModelRunner.H)]
 	public sealed class ChoiceModelRunner : IChoiceModelRunner {

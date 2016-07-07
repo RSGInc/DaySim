@@ -8,8 +8,8 @@
     <ProjectGuid>{FB158352-2310-4E0F-84E2-50EFFF669C55}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DaysimController</RootNamespace>
-    <AssemblyName>DaysimController</AssemblyName>
+    <RootNamespace>DaySimController</RootNamespace>
+    <AssemblyName>DaySimController</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -93,13 +93,13 @@
     <Compile Include="RemoteMachine.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Daysim.Framework\Daysim.Framework.csproj">
+    <ProjectReference Include="..\Daysim.Framework\DaySim.Framework.csproj">
       <Project>{33842B3A-A2CB-4B61-933B-811CED8CF74B}</Project>
-      <Name>Daysim.Framework</Name>
+      <Name>DaySim.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Daysim\Daysim.csproj">
+    <ProjectReference Include="..\Daysim\DaySim.csproj">
       <Project>{C89E2003-E353-43B8-BF0A-9A821945933A}</Project>
-      <Name>Daysim</Name>
+      <Name>DaySim</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

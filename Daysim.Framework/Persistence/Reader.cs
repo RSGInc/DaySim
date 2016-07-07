@@ -10,9 +10,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Daysim.Framework.Core;
+using DaySim.Framework.Core;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	public class Reader<TModel> : IEnumerator<TModel>, IEnumerable<TModel> where TModel : class {
 		private readonly Dictionary<int, long> _index;
 		private readonly Dictionary<string, Dictionary<int, int[]>> _indexes = new Dictionary<string, Dictionary<int, int[]>>();

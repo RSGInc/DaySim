@@ -8,7 +8,7 @@
 
 using System;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public sealed class FileSizeFormatProvider : IFormatProvider, ICustomFormatter {
 		private const string FILE_SIZE_FORMAT = "fs";
 		private const decimal ONE_KILOBYTE = 1024M;

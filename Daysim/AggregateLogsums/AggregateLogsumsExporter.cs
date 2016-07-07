@@ -7,12 +7,12 @@
 
 
 using System.IO;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Models;
-using Daysim.Framework.Factories;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.Factories;
 using Ninject;
 
-namespace Daysim.AggregateLogsums {
+namespace DaySim.AggregateLogsums {
 	public static class AggregateLogsumsExporter {
 		public static void Export(string path) {
 			BeginRunExport(path);

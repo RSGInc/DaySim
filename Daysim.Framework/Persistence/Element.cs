@@ -7,7 +7,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace Daysim.Framework.Persistence {
+namespace DaySim.Framework.Persistence {
 	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
 	public sealed class Element {
 		public Element() {}

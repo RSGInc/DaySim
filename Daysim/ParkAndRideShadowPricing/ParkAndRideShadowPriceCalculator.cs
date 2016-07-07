@@ -8,10 +8,10 @@
 
 using System;
 using System.IO;
-using Daysim.ChoiceModels;
-using Daysim.Framework.Core;
+using DaySim.ChoiceModels;
+using DaySim.Framework.Core;
 
-namespace Daysim.ParkAndRideShadowPricing {
+namespace DaySim.ParkAndRideShadowPricing {
 	public static class ParkAndRideShadowPriceCalculator {
 		public static void CalculateAndWriteShadowPrices() {
 			if (!Global.ParkAndRideNodeIsEnabled || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode) {

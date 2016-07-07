@@ -9,10 +9,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Daysim.ChoiceModels;
-using Daysim.Framework.Core;
+using DaySim.ChoiceModels;
+using DaySim.Framework.Core;
 
-namespace Daysim.ShadowPricing {
+namespace DaySim.ShadowPricing {
 	public static class ShadowPriceCalculator {
 		public static void CalculateAndWriteShadowPrices() {
 			if (!Global.Configuration.ShouldUseShadowPricing || (!Global.Configuration.ShouldRunWorkLocationModel && !Global.Configuration.ShouldRunSchoolLocationModel)) {

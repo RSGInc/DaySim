@@ -11,19 +11,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Management;
 using System.Threading;
-using Daysim;
-using Daysim.ChoiceModels;
-using Daysim.Framework.Core;
-using Timer = Daysim.Framework.Core.Timer;
+using DaySim;
+using DaySim.ChoiceModels;
+using DaySim.Framework.Core;
+using Timer = DaySim.Framework.Core.Timer;
 
-namespace DaysimController {
+namespace DaySimController {
 	public static class Controller {
 		private static readonly List<Tuple<Process, RemoteMachine, Timer>> _processes = new List<Tuple<Process, RemoteMachine, Timer>>();
 		private static readonly List<Tuple<ManagementScope, ManagementBaseObject, RemoteMachine, Timer>> _instances = new List<Tuple<ManagementScope, ManagementBaseObject, RemoteMachine, Timer>>();
 		private static double _householdCount;
 
 		public static void BeginProgram() {
-			var timer = new Timer("Starting Daysim Controller...");
+			var timer = new Timer("Starting DaySim Controller...");
 
 			Engine.BeginInitialize();
 			Engine.BeginRunRawConversion();

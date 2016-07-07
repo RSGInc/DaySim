@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Daysim.Framework.Sampling {
+namespace DaySim.Framework.Sampling {
 	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
 	public sealed class SegmentZone {
 		private readonly ParcelSize[] _parcelSizes;

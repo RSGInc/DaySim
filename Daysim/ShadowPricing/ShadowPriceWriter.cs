@@ -8,14 +8,14 @@
 
 using System;
 using System.IO;
-using Daysim.DomainModels;
-using Daysim.DomainModels.Default;
-using Daysim.DomainModels.Default.Models;
-using Daysim.DomainModels.Default.Wrappers;
-using Daysim.Framework.Core;
-using Daysim.Framework.DomainModels.Wrappers;
+using DaySim.DomainModels;
+using DaySim.DomainModels.Default;
+using DaySim.DomainModels.Default.Models;
+using DaySim.DomainModels.Default.Wrappers;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
-namespace Daysim.ShadowPricing {
+namespace DaySim.ShadowPricing {
 	public sealed class ShadowPriceWriter : IDisposable {
 		private readonly StreamWriter _writer;
 

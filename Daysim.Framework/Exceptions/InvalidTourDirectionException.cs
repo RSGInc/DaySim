@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Daysim.Framework.Exceptions {
+namespace DaySim.Framework.Exceptions {
 	[Serializable]
 	public class InvalidTourDirectionException : Exception {
 		public InvalidTourDirectionException() : this("The tour direction is invalid. Valid options are ORIGIN_TO_DESTINATION and DESTINATION_TO_ORIGIN.") {}

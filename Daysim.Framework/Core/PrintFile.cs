@@ -10,7 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 
-namespace Daysim.Framework.Core {
+namespace DaySim.Framework.Core {
 	public class PrintFile : IDisposable {
 		private readonly Configuration _configuration;
 		public static readonly string DEFAULT_PRINT_FILENAME = "run_" + DateTime.Now.ToString("yyyy-MM-dd_HH'h'mm'm'", CultureInfo.InvariantCulture) + ".log";
