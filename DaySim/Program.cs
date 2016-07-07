@@ -86,6 +86,8 @@ namespace DaySim {
 
                 Global.Configuration = configurationManager.Open();
 
+                overrideConfiguration(Global.Configuration);
+
                 if (string.IsNullOrWhiteSpace(Global.Configuration.BasePath))
                 {
                     //issue #52 use configuration file folder as default basepath rather than arbitrary current working directory.
@@ -96,7 +98,6 @@ namespace DaySim {
                 {
                     _printFilePath = Global.GetOutputPath(PrintFile.DEFAULT_PRINT_FILENAME);
                 }
-                overrideConfiguration(Global.Configuration);
 
                 var settingsFactory = new SettingsFactory(Global.Configuration);
                 Global.Settings = settingsFactory.Create();
