@@ -71,6 +71,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CaliperMTXNet64">
+      <HintPath>..\CaliperMTXNet64.dll</HintPath>
+    </Reference>
     <Reference Include="HDF5DotNet, Version=1.8.9.0, Culture=neutral, PublicKeyToken=a4952c8df86d6e8c, processorArchitecture=AMD64">
       <HintPath>..\packages\HDF5DotNet.x64.1.8.9\lib\Net40\HDF5DotNet.dll</HintPath>
       <Private>True</Private>
@@ -394,11 +397,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CaliperMTXNet64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CaliperMtxS.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="..\CaliperMtxS.dll">
+      <Link>CaliperMtxS.dll</Link>
     </Content>
     <Content Include="COPYING">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
