@@ -14,7 +14,6 @@ library(descr)
 library(Hmisc)
 library(data.table)
 library(plyr)
-library( rhdf5 ) #PSRC HDF5
 
 ## This will print the stack trace at the time of the error.
 options(error = function() traceback(2))
@@ -42,9 +41,6 @@ progressStart("run DaySim summaries",14)
 #-----------------------
 #Load data
 #-----------------------
-
-#Geographical correspondence
-countycorr <- fread(tazcountycorr)
 
 #Load DaySim outputs into Rdata files
 progressNextStep("reading hh data")
@@ -90,12 +86,6 @@ if(runDayPattern | runTripMode | runTripTOD)
     readSaveRdata(dstripfile,"dstripdata")
   if(prepSurvey)
     readSaveRdata(surveytripfile,"survtripdata")
-}
-
-#Optional tour weight adjustment
-if(tourAdj)
-{
-  touradj <- fread(tourAdjFile)
 }
 
 #force gc()

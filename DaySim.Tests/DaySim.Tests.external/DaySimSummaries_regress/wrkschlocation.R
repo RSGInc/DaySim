@@ -22,9 +22,9 @@ prep_wrkschloc <- function(perdata,hhdata)
   perdata[,schtimecat:=findInterval(psautime,0:89)]
   perdata[pstaz<0,schdistcat:=91]
   perdata[pstaz<0,schtimecat:=91]
-  perdata[,hhcounty:=countycorr$DISTRICT[match(hhtaz,countycorr$TAZ)]]
-  perdata[,pwcounty:=countycorr$DISTRICT[match(pwtaz,countycorr$TAZ)]]
-  perdata[,pscounty:=countycorr$DISTRICT[match(pstaz,countycorr$TAZ)]]
+  perdata[,hhcounty:=1] #county set to 1
+  perdata[,pwcounty:=1] #county set to 1
+  perdata[,pscounty:=1] #county set to 1
   perdata[pwtaz<0,pwcounty:=8]
   perdata[pstaz<0,pscounty:=8]
   perdata[,wfh:=ifelse(wrkr==1 & hhparcel==pwpcl,1,0)]

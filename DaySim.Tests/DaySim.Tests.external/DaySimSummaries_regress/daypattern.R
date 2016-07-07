@@ -4,7 +4,7 @@ print("Day Pattern Summary...Started")
 
 prep_perdata <- function(perdata,hhdata)
 {
-  hhdata[,hhcounty:=countycorr$DISTRICT[match(hhtaz,countycorr$TAZ)]]
+  hhdata[,hhcounty:=1] #county set to 1
   hhdata[,inccat:=findInterval(hhincome,c(0,15000,50000,75000))]
   perdata[,hh16cat:=ifelse(pagey>=16,1,0)]
   hhdata <- merge(hhdata,perdata[,list(hh16cat=sum(hh16cat)),by=hhno],by="hhno",all.x=T)
@@ -122,7 +122,7 @@ prep_tripdata <- function(tripdata,perdata)
   tripdata[dpurp==9,dpurp:=4]
   tripdata[dpurp==0,dpurp:=8]
   
-  tripdata[,ocounty:=countycorr$DISTRICT[match(otaz,countycorr$TAZ)]]
+  tripdata[,ocounty:=1] #county set to 1
 
   return(tripdata)
 }
@@ -133,17 +133,7 @@ if(prepSurvey)
   survhhdata <- assignLoad(paste0(surveyhhfile,".Rdata"))
   survperdata <- prep_perdata(survperdata,survhhdata)
   survperdata <- survperdata[,c("hhno","pno","pptyp","hhcounty","inccat","vehsuf","psexpfac"),with=F]
-  if(tourAdj)
-  {
-    setnames(touradj,2,"adjfac")
-    survperdata <- merge(survperdata,touradj,by=c("pptyp"),all.x=T)
-    survperdata[is.na(adjfac),adjfac:=1]
-    survperdata[,psexpfac_orig:=psexpfac]
-    survperdata[,psexpfac:=psexpfac*adjfac]
-  }
-  else {
-    survperdata[,psexpfac_orig:=psexpfac]
-  }
+  survperdata[,psexpfac_orig:=psexpfac]
   rm(survhhdata)
   
   survpdaydata <- assignLoad(paste0(surveypdayfile,".Rdata"))

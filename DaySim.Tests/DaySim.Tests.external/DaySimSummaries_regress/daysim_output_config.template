@@ -12,13 +12,11 @@ DAYSIM_SUMMARIES_OUTPUTS = "$daysim_summaries_outputs"  # "output"
 dsVersion                                 = "C#"
 
 #daysim outputs
-parcelfile                                = "../inputs/buffered_parcels.dat"
 dshhfile                                  = paste(DAYSIM_NEW_OUTPUTS, "/_household.tsv", sep="")
 dsperfile                                 = paste(DAYSIM_NEW_OUTPUTS, "/_person.tsv", sep="")
 dspdayfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_person_day.tsv", sep="")
 dstourfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_tour.tsv", sep="")
 dstripfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_trip.tsv", sep="")
-dstriplistfile                            = paste(DAYSIM_NEW_OUTPUTS, "/Tdm_trip_list.csv", sep="")
 
 #reference/survey
 surveyhhfile                              = paste(DAYSIM_REFERENCE_OUTPUTS, "/_household.tsv", sep="")
@@ -26,13 +24,6 @@ surveyperfile                             = paste(DAYSIM_REFERENCE_OUTPUTS, "/_p
 surveypdayfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_person_day.tsv", sep="")
 surveytourfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_tour.tsv", sep="")
 surveytripfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_trip.tsv", sep="")
-
-amskimfile                                = "../inputs/7to8.h5"
-mdskimfile                                = "../inputs/10to14.h5"
-pmskimfile                                = "../inputs/17to18.h5"
-evskimfile                                = "../inputs/20to5.h5"
-
-tazcountycorr                             = "./data/county_districts_psrc.csv"
 
 wrklocmodelfile                           = "./templates/WrkLocation.csv"
 schlocmodelfile                           = "./templates/SchLocation.csv"
@@ -76,5 +67,3 @@ runTripMode                               = TRUE
 runTripTOD                                = TRUE
 
 excludeChildren5                          = TRUE
-tourAdj                                   = FALSE
-tourAdjFile				                        = "./data/peradjfac.csv"

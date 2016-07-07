@@ -4,7 +4,7 @@ print("Trip Destination Summary...Started")
 
 prep_perdata <- function(perdata,hhdata)
 {
-  hhdata[,hhcounty:=countycorr$DISTRICT[match(hhtaz,countycorr$TAZ)]]
+  hhdata[,hhcounty:=1] #county set to 1
   hhdata <-hhdata[,list(hhno,hhtaz,hhcounty)]
   perdata <- merge(perdata,hhdata,by="hhno",all.x=T)
   return(perdata)
@@ -15,8 +15,8 @@ prep_tripdata <- function(tripdata,perdata)
   tripdata <- merge(tripdata,perdata,by=c("hhno","pno"),all.x=T)
   if(excludeChildren5)
     tripdata <- tripdata[pptyp<8]
-  tripdata[,ocounty:=countycorr$DISTRICT[match(otaz,countycorr$TAZ)]]
-  tripdata[,dcounty:=countycorr$DISTRICT[match(dtaz,countycorr$TAZ)]]
+  tripdata[,ocounty:=1] #county set to 1
+  tripdata[,dcounty:=1] #county set to 1
   
   if(sum(tripdata$travdist,na.rm=T)==0)
   {
