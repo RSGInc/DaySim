@@ -1,0 +1,7 @@
+type,data,dim,Var1,Var2,outnum,outsheet,cell_loc,xvalsmin,xvalsmax,yvalsmin,yvalsmax,weights,subsetvar,subsetsign,subsetval
+crosstab,reference,2,hhcounty,hhvehcat,1,Vehicles_by_County,$B$6,1,7,0,4,hhexpfac,,,
+crosstab,new,2,hhcounty,hhvehcat,2,Vehicles_by_County,$R$6,1,7,0,4,hhexpfac,,,
+crosstab,reference,2,inccat,hhvehcat,3,Vehicles_by_Income,$B$6,1,4,0,4,hhexpfac,,,
+crosstab,new,2,inccat,hhvehcat,4,Vehicles_by_Income,$R$6,1,4,0,4,hhexpfac,,,
+crosstab,reference,2,hh16cat,hhvehcat,5,Vehicles_by_HHDrivers,$B$6,1,4,0,4,hhexpfac,,,
+crosstab,new,2,hh16cat,hhvehcat,6,Vehicles_by_HHDrivers,$R$6,1,4,0,4,hhexpfac,,,

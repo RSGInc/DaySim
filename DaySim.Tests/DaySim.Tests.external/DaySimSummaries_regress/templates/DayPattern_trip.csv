@@ -1,0 +1,9 @@
+type,data,dim,Var1,Var2,outnum,outsheet,cell_loc,xvalsmin,xvalsmax,yvalsmin,yvalsmax,weights,subsetvar,subsetsign,subsetval
+crosstab,reference,2,dpurp,pptyp,1,output_NHTS,$O$262,1,8,1,8,psexpfac,,,
+crosstab,new,2,dpurp,pptyp,2,output,$O$262,1,8,1,8,psexpfac,,,
+crosstab,reference,2,dpurp,inccat,3,output_NHTS,$O$273,1,8,1,4,psexpfac,,,
+crosstab,new,2,dpurp,inccat,4,output,$O$273,1,8,1,4,psexpfac,,,
+crosstab,reference,2,dpurp,vehsuf,5,output_NHTS,$O$284,1,8,1,4,psexpfac,,,
+crosstab,new,2,dpurp,vehsuf,6,output,$O$284,1,8,1,4,psexpfac,,,
+crosstab,reference,2,dpurp,ocounty,7,output_NHTS,$O$295,1,8,1,7,psexpfac,,,
+crosstab,new,2,dpurp,ocounty,8,output,$O$295,1,8,1,7,psexpfac,,,

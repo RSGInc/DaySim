@@ -1,0 +1,11 @@
+type,data,dim,Var1,Var2,outnum,outsheet,cell_loc,xvalsmin,xvalsmax,yvalsmin,yvalsmax,weights,subsetvar,subsetsign,subsetval,aggfun,transpose,smooth
+crosstab,reference,1,distcat,,1,TLFD,$B$11,1,91,,,psexpfac,,,,,,
+crosstab,new,1,distcat,,2,TLFD,$F$11,1,91,,,psexpfac,,,,,,
+crosstab,reference,1,timecat,,3,TDFD,$B$11,1,91,,,psexpfac,,,,,,
+crosstab,new,1,timecat,,4,TDFD,$F$11,1,91,,,psexpfac,,,,,,
+aggregate,reference,1,tautodist,,5,TLFD,$K$11,,,,,psexpfac,,,,mean,,
+aggregate,new,1,tautodist,,6,TLFD,$L$11,,,,,psexpfac,,,,mean,,
+aggregate,reference,1,tautotime,,7,TDFD,$K$11,,,,,psexpfac,,,,mean,,
+aggregate,new,1,tautotime,,8,TDFD,$L$11,,,,,psexpfac,,,,mean,,
+crosstab,reference,2,ocounty,dcounty,9,County_Flow,$B$7,1,7,1,7,psexpfac,,,,,,
+crosstab,new,2,ocounty,dcounty,10,County_Flow,$M$7,1,7,1,7,psexpfac,,,,,,

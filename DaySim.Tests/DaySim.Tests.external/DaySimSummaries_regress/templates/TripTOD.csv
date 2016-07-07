@@ -1,0 +1,11 @@
+type,data,dim,Var1,Var2,outnum,outsheet,cell_loc,xvalsmin,xvalsmax,yvalsmin,yvalsmax,weights,subsetvar,subsetsign,subsetval,aggfun,transpose,smooth
+crosstab,reference,2,arrtimecat,dpurp,1,Arrival_Time_Outbound_Half_Tour,$B$10,1,51,1,7,psexpfac,arrflag,=,1,,,
+crosstab,new,2,arrtimecat,dpurp,2,Arrival_Time_Outbound_Half_Tour,$L$10,1,51,1,7,psexpfac,arrflag,=,1,,,
+crosstab,reference,2,deptimecat,dpurp,3,Depart_Time_Return_Half_Tour,$B$10,1,51,1,7,psexpfac,depflag,=,1,,,
+crosstab,new,2,deptimecat,dpurp,4,Depart_Time_Return_Half_Tour,$L$10,1,51,1,7,psexpfac,depflag,=,1,,,
+crosstab,reference,2,durdestcat,dpurp,5,Duration,$B$10,1,48,1,7,psexpfac,durflag,=,1,,,
+crosstab,new,2,durdestcat,dpurp,6,Duration,$L$10,1,48,1,7,psexpfac,durflag,=,1,,,
+crosstab,reference,2,arrtimecat,dpurp,7,Arrival_Time_All,$B$10,1,51,1,7,psexpfac,,,,,,
+crosstab,new,2,arrtimecat,dpurp,8,Arrival_Time_All,$L$10,1,51,1,7,psexpfac,,,,,,
+crosstab,reference,2,deptimecat,dpurp,9,Depart_Time_All,$B$10,1,51,1,7,psexpfac,,,,,,
+crosstab,new,2,deptimecat,dpurp,10,Depart_Time_All,$L$10,1,51,1,7,psexpfac,,,,,,

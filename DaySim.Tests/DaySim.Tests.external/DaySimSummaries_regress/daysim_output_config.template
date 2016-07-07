@@ -1,0 +1,80 @@
+
+
+#####################################################
+#replaced by DaysimSummaries_regress Python caller 
+DAYSIM_NEW_OUTPUTS = "$daysim_new_outputs"  # "../outputs"
+DAYSIM_REFERENCE_OUTPUTS = "$daysim_reference_outputs"  # "data"
+DAYSIM_SUMMARIES_OUTPUTS = "$daysim_summaries_outputs"  # "output"
+#####################################################
+
+
+#DaySim Version - DelPhi or C#
+dsVersion                                 = "C#"
+
+#daysim outputs
+parcelfile                                = "../inputs/buffered_parcels.dat"
+dshhfile                                  = paste(DAYSIM_NEW_OUTPUTS, "/_household.tsv", sep="")
+dsperfile                                 = paste(DAYSIM_NEW_OUTPUTS, "/_person.tsv", sep="")
+dspdayfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_person_day.tsv", sep="")
+dstourfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_tour.tsv", sep="")
+dstripfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_trip.tsv", sep="")
+dstriplistfile                            = paste(DAYSIM_NEW_OUTPUTS, "/Tdm_trip_list.csv", sep="")
+
+#reference/survey
+surveyhhfile                              = paste(DAYSIM_REFERENCE_OUTPUTS, "/_household.tsv", sep="")
+surveyperfile                             = paste(DAYSIM_REFERENCE_OUTPUTS, "/_person.tsv", sep="")
+surveypdayfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_person_day.tsv", sep="")
+surveytourfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_tour.tsv", sep="")
+surveytripfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_trip.tsv", sep="")
+
+amskimfile                                = "../inputs/7to8.h5"
+mdskimfile                                = "../inputs/10to14.h5"
+pmskimfile                                = "../inputs/17to18.h5"
+evskimfile                                = "../inputs/20to5.h5"
+
+tazcountycorr                             = "./data/county_districts_psrc.csv"
+
+wrklocmodelfile                           = "./templates/WrkLocation.csv"
+schlocmodelfile                           = "./templates/SchLocation.csv"
+vehavmodelfile                            = "./templates/VehAvailability.csv"
+daypatmodelfile1                          = "./templates/DayPattern_pday.csv"
+daypatmodelfile2                          = "./templates/DayPattern_tour.csv"
+daypatmodelfile3                          = "./templates/DayPattern_trip.csv"
+tourdestmodelfile                         = "./templates/TourDestination.csv"
+tourdestwkbmodelfile                      = "./templates/TourDestination_wkbased.csv"
+tripdestmodelfile                         = "./templates/TripDestination.csv"
+tourmodemodelfile                         = "./templates/TourMode.csv"
+tourtodmodelfile                          = "./templates/TourTOD.csv"
+tripmodemodelfile                         = "./templates/TripMode.csv"
+triptodmodelfile                          = "./templates/TripTOD.csv"
+
+wrklocmodelout                            = "WrkLocation.xlsm"
+schlocmodelout                            = "SchLocation.xlsm"
+vehavmodelout                             = "VehAvailability.xlsm"
+daypatmodelout                            = "DayPattern.xlsm"
+tourdestmodelout                          = c("TourDestination_Escort.xlsm","TourDestination_PerBus.xlsm","TourDestination_Shop.xlsm",
+                                              "TourDestination_Meal.xlsm","TourDestination_SocRec.xlsm")
+tourdestwkbmodelout                       = "TourDestination_WrkBased.xlsm"
+tourmodemodelout                          = "TourMode.xlsm"
+tourtodmodelout                           = "TourTOD.xlsm"
+tripmodemodelout                          = "TripMode.xlsm"
+triptodmodelout                           = "TripTOD.xlsm"
+
+outputsDir                                = paste(DAYSIM_SUMMARIES_OUTPUTS, "", sep="")
+validationDir                             = ""
+
+prepSurvey                                = TRUE
+prepDaySim                                = TRUE
+
+runWrkSchLocationChoice                   = TRUE
+runVehAvailability                        = TRUE
+runDayPattern                             = TRUE
+runTourDestination                        = TRUE
+runTourMode                               = TRUE
+runTourTOD                                = TRUE
+runTripMode                               = TRUE
+runTripTOD                                = TRUE
+
+excludeChildren5                          = TRUE
+tourAdj                                   = FALSE
+tourAdjFile				                        = "./data/peradjfac.csv"
