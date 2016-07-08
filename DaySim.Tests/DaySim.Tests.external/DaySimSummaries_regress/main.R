@@ -23,15 +23,26 @@ library(plyr)
 library( rhdf5 ) #PSRC HDF5
 
 getScriptDirectory <- function() {
-  frame_files <- lapply(sys.frames(), function(x) x$ofile)
-  frame_files <- Filter(Negate(is.null), frame_files)
-  script_dir <- dirname(frame_files[[length(frame_files)]])
+  frame_files_initial <- lapply(sys.frames(), function(x) x$ofile)
+  frame_files_filtered <- Filter(Negate(is.null), frame_files_initial)
+  num_frame_files_filtered = length(frame_files_filtered)
+  print(paste('num_frame_files_filtered:', num_frame_files_filtered))
+  if (num_frame_files_filtered == 0) {
+    stop("Can not get script directory")
+  } else {
+    script_dir <- dirname(frame_files_filtered[[length(frame_files_filtered)]])
+  }
   
   #argv <- commandArgs(trailingOnly = FALSE)
   #script_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
   print(paste('script_dir:', script_dir))
   return(script_dir)
 }
+
+print('sys.frames')
+print(sys.frames)
+print('commandArgs(FALSE)')
+print(commandArgs(FALSE))
 
 setScriptDirectory <- function() {
   script_dir <- getScriptDirectory()

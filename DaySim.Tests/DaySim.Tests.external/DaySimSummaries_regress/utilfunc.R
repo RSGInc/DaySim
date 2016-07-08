@@ -122,8 +122,17 @@ write_tables <- function(outfilename,datafile,templatefilename,outtype)
 {
     templatefile <- read.csv(templatefilename)
     workbook_name <- paste(outputsDir,outfilename,sep="/")
+    
+    #look for spreadsheet in output directory. If not there copy from excel template folder
     if (!file.exists(workbook_name)) {
-      stop(paste0("Workbook file '",workbook_name,"' does not exist!"))
+      original_excel_template = paste('excel_report_files',outfilename,sep="/")
+      if (!dir.exists(outputsDir)) {
+        dir.create(outputsDir)
+      }
+      file.copy(original_excel_template, workbook_name)
+      if (!file.exists(original_excel_template)) {
+        stop(paste0("Workbook file '",original_excel_template,"' does not exist!"))
+      }
     }
     wb = loadWorkbook(workbook_name)
     setStyleAction(wb,XLC$"STYLE_ACTION.NONE")

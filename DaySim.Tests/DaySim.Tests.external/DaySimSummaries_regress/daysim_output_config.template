@@ -1,8 +1,8 @@
 #####################################################
 #replaced by DaysimSummaries_regress Python caller 
-DAYSIM_REFERENCE_OUTPUTS = "$daysim_reference_outputs"  # "data"
-DAYSIM_NEW_OUTPUTS = "$daysim_new_outputs"  # "../outputs"
-DAYSIM_REPORT_DIRECTORY = "$daysim_report_directory"  # "output"
+DAYSIM_REFERENCE_OUTPUTS = "$daysim_reference_outputs"  # "reference/regress_outputs"
+DAYSIM_NEW_OUTPUTS = "$daysim_new_outputs"  # "new/regress_outputs"
+DAYSIM_REPORT_DIRECTORY = "$daysim_report_directory"  # "excel_report_files"
 #####################################################
 
 
@@ -32,19 +32,19 @@ evskimfile                                = "../inputs/20to5.h5"
 
 tazcountycorr                             = "./data/county_districts_psrc.csv"
 
-wrklocmodelfile                           = "./templates/WrkLocation.csv"
-schlocmodelfile                           = "./templates/SchLocation.csv"
-vehavmodelfile                            = "./templates/VehAvailability.csv"
-daypatmodelfile1                          = "./templates/DayPattern_pday.csv"
-daypatmodelfile2                          = "./templates/DayPattern_tour.csv"
-daypatmodelfile3                          = "./templates/DayPattern_trip.csv"
-tourdestmodelfile                         = "./templates/TourDestination.csv"
-tourdestwkbmodelfile                      = "./templates/TourDestination_wkbased.csv"
-tripdestmodelfile                         = "./templates/TripDestination.csv"
-tourmodemodelfile                         = "./templates/TourMode.csv"
-tourtodmodelfile                          = "./templates/TourTOD.csv"
-tripmodemodelfile                         = "./templates/TripMode.csv"
-triptodmodelfile                          = "./templates/TripTOD.csv"
+wrklocmodelfile                           = "./model_csv_files/WrkLocation.csv"
+schlocmodelfile                           = "./model_csv_files/SchLocation.csv"
+vehavmodelfile                            = "./model_csv_files/VehAvailability.csv"
+daypatmodelfile1                          = "./model_csv_files/DayPattern_pday.csv"
+daypatmodelfile2                          = "./model_csv_files/DayPattern_tour.csv"
+daypatmodelfile3                          = "./model_csv_files/DayPattern_trip.csv"
+tourdestmodelfile                         = "./model_csv_files/TourDestination.csv"
+tourdestwkbmodelfile                      = "./model_csv_files/TourDestination_wkbased.csv"
+tripdestmodelfile                         = "./model_csv_files/TripDestination.csv"
+tourmodemodelfile                         = "./model_csv_files/TourMode.csv"
+tourtodmodelfile                          = "./model_csv_files/TourTOD.csv"
+tripmodemodelfile                         = "./model_csv_files/TripMode.csv"
+triptodmodelfile                          = "./model_csv_files/TripTOD.csv"
 
 wrklocmodelout                            = "WrkLocation.xlsm"
 schlocmodelout                            = "SchLocation.xlsm"
