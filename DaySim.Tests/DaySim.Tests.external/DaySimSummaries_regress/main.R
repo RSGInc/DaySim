@@ -22,18 +22,8 @@ library(data.table)
 library(plyr)
 
 getScriptDirectory <- function() {
-  frame_files_initial <- lapply(sys.frames(), function(x) x$ofile)
-  frame_files_filtered <- Filter(Negate(is.null), frame_files_initial)
-  num_frame_files_filtered = length(frame_files_filtered)
-  print(paste('num_frame_files_filtered:', num_frame_files_filtered))
-  if (num_frame_files_filtered == 0) {
-    stop("Can not get script directory")
-  } else {
-    script_dir <- dirname(frame_files_filtered[[length(frame_files_filtered)]])
-  }
-  
-  #argv <- commandArgs(trailingOnly = FALSE)
-  #script_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
+  argv <- commandArgs(trailingOnly = FALSE)
+  script_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
   print(paste('script_dir:', script_dir))
   return(script_dir)
 }
@@ -52,14 +42,15 @@ setScriptDirectory <- function() {
 setScriptDirectory()
 
 #Tried to use ArgParse but it screwed up the long filename of the config file
-args <- commandArgs(trailingOnly=FALSE)
-if (length(args) == 1) {
-  print(paste('no extra arguments beyond script name:', args[1], 'so using default configuration file.'))
+args <- commandArgs(trailingOnly=TRUE)
+if (length(args) == 0) {
+  print(paste('no arguments passed so using default configuration file.'))
   configuration_file = 'daysim_output_config.R'
-} else if (length(args) > 2) {
-  print(paste('Unexpected arguments. Expect only path to configuration file but found more than one argument. Number of args:', length(args)))
+} else if (length(args) == 1) {
+  configuration_file = args[1]
 } else {
-  configuration_file = args[2]
+  print(paste('Unexpected arguments. Expect only path to configuration file but found:')
+  print(args)
   #remove quotes if needed
   configuration_file <- gsub('[\'"]', '', configuration_file)
   print(paste("configuration_file:", configuration_file))
@@ -143,7 +134,6 @@ if(runDayPattern | runTripMode | runTripTOD)
     readSaveRdata(surveytripfile,"survtripdata")
 }
 
-  progressNextStep("reading tour weight adjustment")
 #force gc()
 gc()
 
