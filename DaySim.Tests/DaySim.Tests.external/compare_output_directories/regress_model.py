@@ -229,7 +229,7 @@ def regress_model(parameters):
             config_output = os.path.join(new_regression_results_dir, config_template.replace('.template','.R'))
             with open(config_output, 'w') as config_file:
                 config_file.write(template_content.substitute(replacement_dict))
-            return_code = run_process_with_realtime_output.run_process_with_realtime_output('Rscript ' + rScript_file + ' --configuration_file="' + config_output + '"')
+            return_code = run_process_with_realtime_output.run_process_with_realtime_output('Rscript ' + rScript_file + ' "' + config_output + '"')
             #delete any files in report folder that were not modified by the report code
             for f in os.listdir(report_path):
                 f = os.path.join(report_path, f)
