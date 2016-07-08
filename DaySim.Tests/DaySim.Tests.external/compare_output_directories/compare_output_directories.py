@@ -76,8 +76,8 @@ def are_outputs_equal(parameters):
     parser.add_argument('--outputs_reference', help='The reference saved outputs from a successful run [default: %(default)s}')
     parser.add_argument('--outputs_new', help='Newly generated result to be compared to reference [default: %(default)s}')
     parser.add_argument('--max_different_lines_to_show', help='When files differ, how many lines that are different should be output to console?  [default: %(default)s}', type= int, default=5)
-    parser.add_argument("-v", "--verbose", help="increase output verbosity",
-                        action="store_true")
+    parser.add_argument('-v', '--verbose', help='increase output verbosity',
+                        action='store_true')
     args = parser.parse_args(parameters)
 
     if args.verbose:

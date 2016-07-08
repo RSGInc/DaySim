@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>66b71a86-d772-4a33-b182-760b912cd7f3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>compare_output_directories.py</StartupFile>
+    <StartupFile>regress_model.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -13,7 +13,7 @@
     <Name>compare_output_directories</Name>
     <RootNamespace>compare_output_directories</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-v --outputs_reference C:\rd\DaySim_test_model\configuration_workschool_regress_test_outputs --outputs_new C:\rd\DaySim_test_model\configuration_workschool_regress_test_outputs_copy</CommandLineArguments>
+    <CommandLineArguments>-v  --configuration_file "C:\rd\DaySim_test_model\configuration_workschool_regress.xml"</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>

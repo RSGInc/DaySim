@@ -1,10 +1,27 @@
-
-
 #####################################################
-#replaced by DaysimSummaries_regress Python caller 
-DAYSIM_NEW_OUTPUTS = "$daysim_new_outputs"  # "../outputs"
-DAYSIM_REFERENCE_OUTPUTS = "$daysim_reference_outputs"  # "data"
-DAYSIM_SUMMARIES_OUTPUTS = "$daysim_summaries_outputs"  # "output"
+#The caller main.R may or may not have set the variables below. If not already set, then set.
+
+string_is_empty <- function(theString) { return(theString == "") }
+
+ALL_INPUTS_HAVE_SAME_EXISTENCE_STATE <- function() {
+  one_and_two_have_same_state <- string_is_empty(DAYSIM_REFERENCE_OUTPUTS) == string_is_empty(DAYSIM_NEW_OUTPUTS)
+  one_and_three_have_same_state <- string_is_empty(DAYSIM_NEW_OUTPUTS) == string_is_empty(DAYSIM_REPORT_DIRECTORY)
+  two_and_three_have_same_state <- string_is_empty(DAYSIM_REFERENCE_OUTPUTS) == string_is_empty(DAYSIM_REPORT_DIRECTORY)
+  
+  return(one_and_two_have_same_state && one_and_three_have_same_state && two_and_three_have_same_state)
+}
+
+if (!ALL_INPUTS_HAVE_SAME_EXISTENCE_STATE()) {
+  stop(paste('All of the variables must either exist or not exist but currently some exist and others do not. DAYSIM_REFERENCE_OUTPUTS:', DAYSIM_REFERENCE_OUTPUTS, 'DAYSIM_NEW_OUTPUTS:', DAYSIM_NEW_OUTPUTS, 'DAYSIM_REPORT_DIRECTORY:', DAYSIM_REPORT_DIRECTORY))
+}
+
+#now that we have ensured all variables either exist or don't just need to check any one
+if (!string_is_empty(DAYSIM_NEW_OUTPUTS)) {
+  #replaced by DaysimSummaries_regress Python caller 
+  DAYSIM_REFERENCE_OUTPUTS = "$daysim_reference_outputs"  # "data"
+  DAYSIM_NEW_OUTPUTS = "$daysim_new_outputs"  # "../outputs"
+  DAYSIM_REPORT_DIRECTORY = "$daysim_report_directory"  # "output"
+}
 #####################################################
 
 
@@ -60,7 +77,7 @@ tourtodmodelout                           = "TourTOD.xlsm"
 tripmodemodelout                          = "TripMode.xlsm"
 triptodmodelout                           = "TripTOD.xlsm"
 
-outputsDir                                = paste(DAYSIM_SUMMARIES_OUTPUTS, "", sep="")
+outputsDir                                = paste(DAYSIM_REPORT_DIRECTORY, "", sep="")
 validationDir                             = ""
 
 prepSurvey                                = TRUE
