@@ -12,8 +12,7 @@ import logging
 #ignore some file extensions
 def remove_irrelevant_files(listOfFiles):
     return [file for file in listOfFiles if not (   file.endswith('.log')
-                                                 or file.endswith('.RData')
-                                                or file.endswith('.Rdata'))]
+                                                 or file.endswith('.RData'))]
 
 #modifies the passed in dcmp object recursively to remove all files we don't care about
 def remove_irrelevant_files_from_dcmp(dcmp, filter_function=remove_irrelevant_files):
