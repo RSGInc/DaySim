@@ -3,15 +3,16 @@
 
 #Rprof()
 
+options(warn = 2) #treat warnings like errors
+
 ## This will print the stack trace at the time of the error.
-options(error = function() traceback(2))
-options(warning = function() traceback(2))
+options(error = function() traceback())
+options(warning = function() traceback())
 
 #-----------------------
 #Load packages
 #-----------------------
 ##TODO consider local R installation, with predownloaded packages in that library
-library(argparse)
 library(foreign)
 library(reshape)
 library(XLConnect)
@@ -21,34 +22,43 @@ library(data.table)
 library(plyr)
 library( rhdf5 ) #PSRC HDF5
 
-#this script assumes current working directory in set to script location
-this.dir <- dirname(parent.frame(2)$ofile)
-setwd(this.dir)
+getScriptDirectory <- function() {
+  frame_files <- lapply(sys.frames(), function(x) x$ofile)
+  frame_files <- Filter(Negate(is.null), frame_files)
+  script_dir <- dirname(frame_files[[length(frame_files)]])
+  
+  #argv <- commandArgs(trailingOnly = FALSE)
+  #script_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
+  print(paste('script_dir:', script_dir))
+  return(script_dir)
+}
 
-paste("commandArgs(TRUE)", commandArgs(TRUE))
+setScriptDirectory <- function() {
+  script_dir <- getScriptDirectory()
+  setwd(script_dir)
+}
 
-#read in command line arguments
-parser <-ArgumentParser(description='Compare two DaySim output directories')
-parser$add_argument('--configuration_file', help='The reference saved outputs from a successful run [default: %(default)s]', default='daysim_output_config.R')
-parser$add_argument('--daysim_outputs_reference', help='The reference saved outputs from a successful run', default='')
-parser$add_argument('--daysim_outputs_new', help='Newly generated result to be compared to reference', default='')
-parser$add_argument('--report_directory', help='will create or replace as needed', default='')
-parser$add_argument('-v', '--verbose', help='increase output verbosity',
-                    action='store_true')
-args <- parser$parse_args(commandArgs(TRUE))
+#this script uses relative paths for sourcing so requires that the current working directory be script directory
+setScriptDirectory()
 
-#parser too stupid to remove quotes
-print(cat("args$configuration_file", args$configuration_file))
-args$configuration_file <- gsub('[\'"]', '', args$configuration_file)
-print(cat("args$configuration_file", args$configuration_file))
-
-#print(args)
-
-DAYSIM_REFERENCE_OUTPUTS <- args$daysim_outputs_reference
-DAYSIM_NEW_OUTPUTS <- args$daysim_outputs_new
-DAYSIM_REPORT_DIRECTORY <- args$report_directory
+#Tried to use ArgParse but it screwed up the long filename of the config file
+args <- commandArgs(trailingOnly=FALSE)
+if (length(args) == 1) {
+  print(paste('no extra arguments beyond script name:', args[1], 'so using default configuration file.'))
+  configuration_file = 'daysim_output_config.R'
+} else if (length(args) > 2) {
+  print(paste('Unexpected arguments. Expect only path to configuration file but found more than one argument. Number of args:', length(args)))
+} else {
+  configuration_file = args[2]
+  #remove quotes if needed
+  configuration_file <- gsub('[\'"]', '', configuration_file)
+  print(paste("configuration_file:", configuration_file))
+}
 
 sourceAFileInTryCatch <- function(filename){
+  if (!file.exists(filename)) {
+    stop(paste('Expected source file does not exist:', filename))
+  }
   tryCatch({
     source(filename)
   }, warning = function(war) {
@@ -65,7 +75,7 @@ sourceAFileInTryCatch <- function(filename){
 #Source functions and config settings
 #------------------------------------
 #TODO function in package to create template config file in a specified location
-sourceAFileInTryCatch(args$configuration_file)
+sourceAFileInTryCatch(configuration_file)
 
 #stop("Finished test")
 
