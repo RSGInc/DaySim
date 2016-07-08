@@ -23,16 +23,26 @@ library(plyr)
 library( rhdf5 ) #PSRC HDF5
 
 getScriptDirectory <- function() {
-  argv <- commandArgs(trailingOnly = FALSE)
-  file_arg = argv[grep("--file=", argv)]
-  script_path <- substring(file_arg, 8)
-  script_dir <- dirname(script_path)
+  frame_files_initial <- lapply(sys.frames(), function(x) x$ofile)
+  frame_files_filtered <- Filter(Negate(is.null), frame_files_initial)
+  num_frame_files_filtered = length(frame_files_filtered)
+  print(paste('num_frame_files_filtered:', num_frame_files_filtered))
+  if (num_frame_files_filtered == 0) {
+    stop("Can not get script directory")
+  } else {
+    script_dir <- dirname(frame_files_filtered[[length(frame_files_filtered)]])
+  }
+  
+  #argv <- commandArgs(trailingOnly = FALSE)
+  #script_dir <- dirname(substring(argv[grep("--file=", argv)], 8))
   print(paste('script_dir:', script_dir))
   return(script_dir)
 }
 
 print('sys.frames')
 print(sys.frames)
+print('commandArgs(FALSE)')
+print(commandArgs(FALSE))
 
 setScriptDirectory <- function() {
   script_dir <- getScriptDirectory()
@@ -43,16 +53,19 @@ setScriptDirectory <- function() {
 setScriptDirectory()
 
 #Tried to use ArgParse but it screwed up the long filename of the config file
-args <- commandArgs(trailingOnly=TRUE)
+args <- commandArgs(trailingOnly=FALSE)
 if (length(args) == 1) {
-  configuration_file = args[1]
+  print(paste('no extra arguments beyond script name:', args[1], 'so using default configuration file.'))
+  configuration_file = 'daysim_output_config.R'
+} else if (length(args) > 2) {
+  print(paste('Unexpected arguments. Expect only path to configuration file but found more than one argument. Number of args:', length(args)))
+} else {
+  configuration_file = args[2]
   #remove quotes if needed
   configuration_file <- gsub('[\'"]', '', configuration_file)
   print(paste("configuration_file:", configuration_file))
-} else {
-  print(paste('Unexpected arguments. Expect only path to configuration file but found:'))
-  print(args)
 }
+
 sourceAFileInTryCatch <- function(filename){
   if (!file.exists(filename)) {
     stop(paste('Expected source file does not exist:', filename))
