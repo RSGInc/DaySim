@@ -4,42 +4,9 @@ print("Tour Destination Summary...Started")
 
 prep_perdata <- function(perdata,hhdata)
 {
-  hhdata[,hhcounty:=countycorr$DISTRICT[match(hhtaz,countycorr$TAZ)]]
+  hhdata[,hhcounty:=1] #county set to 1
   perdata <- merge(perdata,hhdata,by="hhno",all.x=T)
   return(perdata)
-}
-
-merge_skims <- function(tourdata)
-{
-  #Map the timeperiods for the two tour halves
-  nm2 <- names(tourdata)
-  tourdata[,h1timp:=findInterval(tardest,c(360,540,930,1110))]
-  tourdata[h1timp==0,h1timp:=4]
-  tourdata[,h2timp:=findInterval(tlvdest,c(360,540,930,1110))]
-  tourdata[h2timp==0,h2timp:=4]
-  skimsfiles <- c(amskimfile,mdskimfile,pmskimfile,evskimfile)
-  for(k in 1:4)
-  {
-    #read matrices
-    timemat <- t( h5read(skimsfiles[k], "Skims/svtl2t") )
-    distmat <- t( h5read(skimsfiles[k], "Skims/svtl2d") )
-    skims <- data.frame(rep(countycorr$TAZ, length(countycorr$TAZ)), 
-      rep(countycorr$TAZ, each=length(countycorr$TAZ)), 
-      as.vector(timemat), as.vector(distmat)
-      )
-    
-    setnames(skims,c("totaz","tdtaz","H1TIM","H1DIS"))
-    skims <- skims[,c("totaz","tdtaz","H1TIM","H1DIS")]
-    tourdata[h1timp==k,H1TIM:=skims$H1TIM[match(paste(totaz,tdtaz,sep="-"),paste(skims$totaz,skims$tdtaz,sep="-"))]] 
-    tourdata[h1timp==k,H1DIS:=skims$H1DIS[match(paste(totaz,tdtaz,sep="-"),paste(skims$totaz,skims$tdtaz,sep="-"))]]
-    setnames(skims,c("totaz","tdtaz","H2TIM","H2DIS"))
-    tourdata[h2timp==k,H2TIM:=skims$H2TIM[match(paste(totaz,tdtaz,sep="-"),paste(skims$totaz,skims$tdtaz,sep="-"))]] 
-    tourdata[h2timp==k,H2DIS:=skims$H2DIS[match(paste(totaz,tdtaz,sep="-"),paste(skims$totaz,skims$tdtaz,sep="-"))]]
-    rm(skims)         
-  }
-  tourdata[,tautotime:= H1TIM + H2TIM]
-  tourdata[,tautodist:= H1DIS + H2DIS]
-  return(tourdata[,c(nm2),with=F])
 }
 
 prep_tourdata <- function(tourdata,perdata)
@@ -50,12 +17,8 @@ prep_tourdata <- function(tourdata,perdata)
   tourdata[pdpurp==8,pdpurp:=7]
   tourdata[pdpurp==9,pdpurp:=4]
   tourdata[,pdpurp2:=ifelse(parent == 0,pdpurp,8)]
-  tourdata[,ocounty:=countycorr$DISTRICT[match(totaz,countycorr$TAZ)]]
-  tourdata[,dcounty:=countycorr$DISTRICT[match(tdtaz,countycorr$TAZ)]]
-  if(sum(tourdata$tautodist,na.rm=T)==0)
-  {
-    tourdata <- merge_skims(tourdata)
-  }
+  tourdata[,ocounty:=1] #county set to 1
+  tourdata[,dcounty:=1] #county set to 1
   
   tourdata[,distcat:=findInterval(tautodist,0:90)]
   tourdata[,timecat:=findInterval(tautotime,0:90)]

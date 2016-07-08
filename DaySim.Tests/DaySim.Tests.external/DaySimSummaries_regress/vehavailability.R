@@ -11,7 +11,7 @@ prep_vehavail <- function(hhdata,perdata)
   hhdata <- merge(hhdata,aggper,by="hhno")
   hhdata[hh16cat>4,hh16cat:=4]
   hhdata[,inccat:=1+findInterval(hhincome,c(15000,50000,75000))]
-  hhdata[,hhcounty:=countycorr$DISTRICT[match(hhtaz,countycorr$TAZ)]]
+  hhdata[,hhcounty:=1] #county set to 1
   return(hhdata)
 }
 

@@ -20,7 +20,6 @@ library(descr)
 library(Hmisc)
 library(data.table)
 library(plyr)
-library( rhdf5 ) #PSRC HDF5
 
 getScriptDirectory <- function() {
   frame_files_initial <- lapply(sys.frames(), function(x) x$ofile)
@@ -98,9 +97,6 @@ progressStart("run DaySim summaries",14)
 #Load data
 #-----------------------
 
-#Geographical correspondence
-countycorr <- fread(tazcountycorr)
-
 #Load DaySim outputs into Rdata files
 if(runWrkSchLocationChoice | runVehAvailability | runDayPattern | runTourDestination | runTourMode)
 {
@@ -147,13 +143,7 @@ if(runDayPattern | runTripMode | runTripTOD)
     readSaveRdata(surveytripfile,"survtripdata")
 }
 
-#Optional tour weight adjustment
-if(tourAdj)
-{
   progressNextStep("reading tour weight adjustment")
-  touradj <- fread(tourAdjFile)
-}
-
 #force gc()
 gc()
 
