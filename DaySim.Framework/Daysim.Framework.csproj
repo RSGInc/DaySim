@@ -288,6 +288,7 @@
   <ItemGroup>
     <Content Include="..\CaliperMtxS.dll">
       <Link>CaliperMtxS.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
