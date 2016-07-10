@@ -35,7 +35,12 @@ print(commandArgs(FALSE))
 
 setScriptDirectory <- function() {
   script_dir <- getScriptDirectory()
-  setwd(script_dir)
+  if (length(script_dir) == 0) {
+    print("WARNING: script directory could not be found so leaving current working directory")
+  }
+  else {
+    setwd(script_dir)
+  }
 }
 
 #this script uses relative paths for sourcing so requires that the current working directory be script directory
@@ -43,17 +48,22 @@ setScriptDirectory()
 
 #Tried to use ArgParse but it screwed up the long filename of the config file
 args <- commandArgs(trailingOnly=TRUE)
+print(paste('# of args=',length(args), 'Args:'))
+print(args)
+      
 if (length(args) == 0) {
   print(paste('no arguments passed so using default configuration file.'))
   configuration_file = 'daysim_output_config.R'
 } else if (length(args) == 1) {
   configuration_file = args[1]
-} else {
-  print(paste('Unexpected arguments. Expect only path to configuration file but found:')
-  print(args)
+  print(paste("configuration_file:", configuration_file))
   #remove quotes if needed
   configuration_file <- gsub('[\'"]', '', configuration_file)
   print(paste("configuration_file:", configuration_file))
+} else {
+  print(paste('Unexpected arguments. Expect only path to configuration file but found # of args=',length(args), 'Args:'))
+  print(args)
+  stop()
 }
 
 sourceAFileInTryCatch <- function(filename){
