@@ -3,7 +3,7 @@
 
 #Rprof()
 
-options(warn = 2) #treat warnings like errors
+options(warn = 1) #print warnings as they occur
 
 ## This will print the stack trace at the time of the error.
 options(error = function() traceback())
