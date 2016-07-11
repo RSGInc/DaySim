@@ -68,7 +68,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>DaySim.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CaliperMTXNet64">
