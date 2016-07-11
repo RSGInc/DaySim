@@ -1,5 +1,10 @@
 #Peter section
 __pycache__/
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rdata
 
 ## from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 ## and recommended by https://docs.nuget.org/Consume/Package-Restore
