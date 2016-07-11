@@ -18,10 +18,13 @@ prep_tripdata <- function(tripdata,perdata)
   tripdata[,ocounty:=1] #county set to 1
   tripdata[,dcounty:=1] #county set to 1
   
-  if(sum(tripdata$travdist,na.rm=T)==0)
+  sumOfTravelDistance <- sum(tripdata$travdist,na.rm=T)
+  print(paste("sumOfTravelDistance:", sumOfTravelDistance))
+  if(sumOfTravelDistance==0)
   {
     print("Error!!! - Skims information missing.")
   }
+
   tripdata[,distcat:=findInterval(travdist,0:90)]
   tripdata[,timecat:=findInterval(travtime,0:90)]
   tripdata[,wrkrtyp:=c(1,2,3,3,3,3,3,3)[pptyp]]
@@ -46,7 +49,7 @@ if(prepSurvey)
   survtripdata <- assignLoad(paste0(surveytripfile,".Rdata"))
   survtripdata <- prep_tripdata(survtripdata,survperdata)
 
-  wb = loadWorkbook(paste(outputsDir,"/TripDestination.xlsm",sep=""))
+  wb = my_loadworkbook("TripDestination.xlsm")
   setStyleAction(wb,XLC$"STYLE_ACTION.NONE")
   for(i in 1:length(suff))
   {
@@ -74,7 +77,7 @@ if(prepDaySim)
   dstripdata <- assignLoad(paste0(dstripfile,".Rdata"))
   dstripdata <- prep_tripdata(dstripdata,dsperdata)
   
-  wb = loadWorkbook(paste(outputsDir,"/TripDestination.xlsm",sep=""))
+  wb = my_loadworkbook("TripDestination.xlsm")
   setStyleAction(wb,XLC$"STYLE_ACTION.NONE")
   for(i in 1:length(suff))
   {

@@ -1,0 +1,67 @@
+#####################################################
+#replaced by DaysimSummaries_regress Python caller 
+DAYSIM_REFERENCE_OUTPUTS = "C:/rd/DaySim_test_model/configuration_workschool_regress_outputs"  # "reference/regress_outputs"
+DAYSIM_NEW_OUTPUTS = "C:/rd/DaySim_test_model/regression_results_2016-07-09/13h33m03s_configuration_workschool_regress.xml_PASSED/configuration_workschool_regress_outputs"  # "new/regress_outputs"
+DAYSIM_REPORT_DIRECTORY = "C:/rd/DaySim_test_model/regression_results_2016-07-09/13h33m03s_configuration_workschool_regress.xml_PASSED/reports"  # "excel_report_files"
+#####################################################
+
+
+#DaySim Version - DelPhi or C#
+dsVersion                                 = "C#"
+
+#daysim outputs
+dshhfile                                  = paste(DAYSIM_NEW_OUTPUTS, "/_household.tsv", sep="")
+dsperfile                                 = paste(DAYSIM_NEW_OUTPUTS, "/_person.tsv", sep="")
+dspdayfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_person_day.tsv", sep="")
+dstourfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_tour.tsv", sep="")
+dstripfile                                = paste(DAYSIM_NEW_OUTPUTS, "/_trip.tsv", sep="")
+
+#reference/survey
+surveyhhfile                              = paste(DAYSIM_REFERENCE_OUTPUTS, "/_household.tsv", sep="")
+surveyperfile                             = paste(DAYSIM_REFERENCE_OUTPUTS, "/_person.tsv", sep="")
+surveypdayfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_person_day.tsv", sep="")
+surveytourfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_tour.tsv", sep="")
+surveytripfile                            = paste(DAYSIM_REFERENCE_OUTPUTS, "/_trip.tsv", sep="")
+
+wrklocmodelfile                           = "./model_csv_files/WrkLocation.csv"
+schlocmodelfile                           = "./model_csv_files/SchLocation.csv"
+vehavmodelfile                            = "./model_csv_files/VehAvailability.csv"
+daypatmodelfile1                          = "./model_csv_files/DayPattern_pday.csv"
+daypatmodelfile2                          = "./model_csv_files/DayPattern_tour.csv"
+daypatmodelfile3                          = "./model_csv_files/DayPattern_trip.csv"
+tourdestmodelfile                         = "./model_csv_files/TourDestination.csv"
+tourdestwkbmodelfile                      = "./model_csv_files/TourDestination_wkbased.csv"
+tripdestmodelfile                         = "./model_csv_files/TripDestination.csv"
+tourmodemodelfile                         = "./model_csv_files/TourMode.csv"
+tourtodmodelfile                          = "./model_csv_files/TourTOD.csv"
+tripmodemodelfile                         = "./model_csv_files/TripMode.csv"
+triptodmodelfile                          = "./model_csv_files/TripTOD.csv"
+
+wrklocmodelout                            = "WrkLocation.xlsm"
+schlocmodelout                            = "SchLocation.xlsm"
+vehavmodelout                             = "VehAvailability.xlsm"
+daypatmodelout                            = "DayPattern.xlsm"
+tourdestmodelout                          = c("TourDestination_Escort.xlsm","TourDestination_PerBus.xlsm","TourDestination_Shop.xlsm",
+                                              "TourDestination_Meal.xlsm","TourDestination_SocRec.xlsm")
+tourdestwkbmodelout                       = "TourDestination_WrkBased.xlsm"
+tourmodemodelout                          = "TourMode.xlsm"
+tourtodmodelout                           = "TourTOD.xlsm"
+tripmodemodelout                          = "TripMode.xlsm"
+triptodmodelout                           = "TripTOD.xlsm"
+
+outputsDir                                = paste(DAYSIM_REPORT_DIRECTORY, "", sep="")
+validationDir                             = ""
+
+prepSurvey                                = TRUE
+prepDaySim                                = TRUE
+
+runWrkSchLocationChoice                   = TRUE
+runVehAvailability                        = TRUE
+runDayPattern                             = TRUE
+runTourDestination                        = TRUE
+runTourMode                               = TRUE
+runTourTOD                                = TRUE
+runTripMode                               = TRUE
+runTripTOD                                = TRUE
+
+excludeChildren5                          = TRUE
