@@ -82,6 +82,10 @@ namespace DaySim {
                     Environment.Exit(0);
                 }
 
+                if (!File.Exists(_configurationPath))
+                {
+                    throw new Exception("Configuration file '" + _configurationPath + "' does not exist.");
+                }
                 var configurationManager = new ConfigurationManager(_configurationPath);
 
                 Global.Configuration = configurationManager.Open();
