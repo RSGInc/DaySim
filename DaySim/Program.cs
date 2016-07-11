@@ -55,7 +55,7 @@ namespace DaySim {
                     Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the output directory.", PrintFile.DEFAULT_PRINT_FILENAME);
 
                     Console.WriteLine("Please press any key to exit");
-                    Console.ReadKey();
+                    if (Environment.UserInteractive) Console.ReadKey();
 
                     Environment.Exit(0);
                 } else if (_showVersion)
@@ -78,7 +78,7 @@ namespace DaySim {
                     //    Console.WriteLine(string.Format("{0}: {1}", field.Name, field.GetValue(null)));
                     //}
                     Console.WriteLine("Please press any key to exit");
-                    Console.ReadKey();
+                    if (Environment.UserInteractive) Console.ReadKey();
                     Environment.Exit(0);
                 }
 
@@ -149,7 +149,7 @@ namespace DaySim {
 
                 Console.WriteLine();
                 Console.WriteLine("Please press any key to exit");
-                Console.ReadKey();
+                if (Environment.UserInteractive) Console.ReadKey();
 
 				Environment.Exit(2);
 			}
