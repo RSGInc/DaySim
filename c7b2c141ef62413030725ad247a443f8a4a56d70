@@ -1,11 +1,11 @@
 {
   "built_on": "master",
-  "duration": 225.489999924,
-  "full_display_name": "DaySim_multi_configuration_quickie #4",
-  "id": "4",
-  "number": 4,
-  "result": "SUCCESS",
+  "duration": 217.232999952,
+  "full_display_name": "DaySim_multi_configuration_quickie #5",
+  "id": "5",
+  "number": 5,
+  "result": "FAILURE",
   "status_message": "?",
-  "time": "2016-07-15 18:09:57 -0400",
-  "url": "job/DaySim_multi_configuration_quickie/4/"
+  "time": "2016-07-15 18:25:09 -0400",
+  "url": "job/DaySim_multi_configuration_quickie/5/"
 }
