@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <org.jvnet.hudson.plugins.thinbackup.ThinBackupPluginImpl plugin="thinBackup@1.7.4">
-  <fullBackupSchedule></fullBackupSchedule>
+  <fullBackupSchedule>@weekly</fullBackupSchedule>
   <diffBackupSchedule>@daily</diffBackupSchedule>
   <backupPath>E:\Projects\DaySim\DaySim-git\DaySim.Tests\Jenkins_jobs</backupPath>
   <nrMaxStoredFull>-1</nrMaxStoredFull>
   <excludedFilesRegex></excludedFilesRegex>
-  <waitForIdle>true</waitForIdle>
+  <waitForIdle>false</waitForIdle>
   <forceQuietModeTimeout>120</forceQuietModeTimeout>
   <cleanupDiff>true</cleanupDiff>
   <moveOldBackupsToZipFile>false</moveOldBackupsToZipFile>
