@@ -264,3 +264,4 @@ paket-files/
 /packages
 .Rproj.user
 /DaySim.Tests/DaySim.Tests.external/DaySimSummaries_regress/daysim_output_config.R
+/gitversion.properties
