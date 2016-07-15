@@ -2,7 +2,7 @@
 
 DaySim Activity-Based Model
 
-How to Build
+How to Build 
 -  Build with Microsoft Visual Studio Express 2013 or later*  
 -  Open DaySim.sln solution  
 -  Build + Rebuild Solution outputs DaySim\bin\x64\Debug files  
