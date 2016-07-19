@@ -1,11 +1,11 @@
 {
   "built_on": "master",
-  "duration": 207.951000072,
-  "full_display_name": "DaySim_chattanoogo_only_test_full_sequence #8",
-  "id": "8",
-  "number": 8,
+  "duration": 4427.194999929,
+  "full_display_name": "DaySim_all_regions #14",
+  "id": "14",
+  "number": 14,
   "result": "FAILURE",
   "status_message": "?",
-  "time": "2016-07-19 13:26:20 -0400",
-  "url": "job/DaySim_chattanoogo_only_test_full_sequence/8/"
+  "time": "2016-07-19 14:01:55 -0400",
+  "url": "job/DaySim_all_regions/14/"
 }
