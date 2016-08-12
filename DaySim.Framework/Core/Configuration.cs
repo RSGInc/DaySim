@@ -46,10 +46,13 @@ namespace DaySim.Framework.Core {
 		//[Metadata("Foo...")]
 		public string RosterPath { get; set; }
 
-		[XmlAttribute]
-		public string RosterCombinationsPath { get; set; }
+    [XmlAttribute]
+    public string RosterCombinationsPath { get; set; }
 
-		[XmlAttribute]
+    [XmlAttribute]
+    public string CustomizationDllPathTypeModel { get; set; }
+
+    [XmlAttribute]
 		public double VotVeryLowLow { get; set; }
 
 		[XmlAttribute]
