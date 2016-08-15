@@ -79,8 +79,8 @@ namespace DaySim.PathTypeModels {
 		  */
 
 
-      if (!string.IsNullOrWhiteSpace(Global.Configuration.CustomizationDllPathTypeModel)) {
-        string pluginsPath = Global.GetInputPath(Global.Configuration.CustomizationDllPathTypeModel);
+      if (!string.IsNullOrWhiteSpace(Global.Configuration.CustomizationDll)) {
+        string pluginsPath = Global.GetInputPath(Global.Configuration.CustomizationDll);
         Model = GenericPluginLoader<IPathTypeModel>.LoadPlugin(pluginsPath);
       } else {
         switch (Global.PathTypeModel) {

@@ -1068,6 +1068,7 @@ namespace DaySim.PathTypeModels {
           }
         }
       } else if (Global.Configuration.DVRPC == true) {
+        throw new Exception("Internal PathTypeModel.RegionSpecificTransitImpedanceCalculation when this should have been handled by CustomizationDll");
         //this is the outer weight on the sum of all the path specific terms
         pathTypeSpecificTimeWeight = 1.0;
         pathTypeSpecificTime =
@@ -1087,6 +1088,7 @@ namespace DaySim.PathTypeModels {
           + Global.Configuration.PathImpedance_TransitTrolleyTimeAdditiveWeight * ImpedanceRoster.GetValue("troltime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
         }
       } else if (Global.Configuration.PSRC == true) {
+        throw new Exception("Internal PathTypeModel.RegionSpecificTransitImpedanceCalculation when this should have been handled by CustomizationDll");
         //this is the outer weight on the sum of all the path specific terms
         pathTypeSpecificTimeWeight = 1.0;
         pathTypeSpecificTime = Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight * ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
@@ -1101,6 +1103,7 @@ namespace DaySim.PathTypeModels {
           + Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight * ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
         }
       } else if (Global.Configuration.Nashville == true) {
+        throw new Exception("Internal PathTypeModel.RegionSpecificTransitImpedanceCalculation when this should have been handled by CustomizationDll");
         //Nashville BRT coded in Ferry
         //Nashville Commuter Rail coded in Commuter rail
         //Nashville Express Bus coded in Premium bus

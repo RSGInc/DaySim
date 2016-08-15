@@ -50,7 +50,7 @@ namespace DaySim.Framework.Core {
     public string RosterCombinationsPath { get; set; }
 
     [XmlAttribute]
-    public string CustomizationDllPathTypeModel { get; set; }
+    public string CustomizationDll { get; set; }
 
     [XmlAttribute]
 		public double VotVeryLowLow { get; set; }
