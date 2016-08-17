@@ -112,7 +112,11 @@ namespace DaySim.ChoiceModels.H.Models {
 			alternative.AddNestedAlternative(sampleSize + 3, 1, 98);
 		}
 
-		private sealed class WorkLocationUtilities : ISamplingUtilities {
+        protected static void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) {
+        //see PSRC customization dll for example
+    }
+
+    private sealed class WorkLocationUtilities : ISamplingUtilities {
 			private readonly IPersonWrapper _person;
 			private readonly int _sampleSize;
 			private readonly int _destinationArrivalTime;
@@ -229,28 +233,6 @@ namespace DaySim.ChoiceModels.H.Models {
 				alternative.AddUtilityTerm(35, _person.IsNotFullOrPartTimeWorker.ToFlag() * _person.Household.HasIncomeUnder50K.ToFlag() * governmentBuffer);
 				alternative.AddUtilityTerm(36, _person.IsNotFullOrPartTimeWorker.ToFlag() * _person.Household.HasIncomeUnder50K.ToFlag() * employmentTotalBuffer);
 
-                //PSRC specific district constants for model calibration
-                if (Global.Configuration.PSRC == true)
-                {
-                    var homedist = _person.Household.ResidenceParcel.District;
-                    var zonedist = destinationParcel.District;
-                    var homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
-                    var homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
-                    var homeEastWorkCBD = homedist == 6 && zonedist == 4 ? 1 : 0;
-                    var homeKitWorkCBD = homedist == 9 && (zonedist == 4) ? 1 : 0;
-                    var homeTacWorkKit = homedist == 8 && (zonedist == 9 || zonedist== 11) ? 1 : 0;
-                    var homeEvWorkEv = homedist == 2 && zonedist == 2 ? 1 : 0;
-                    var homeWSWorkEast = homedist == 5 && zonedist == 6 ? 1 : 0;
-
-                    alternative.AddUtilityTerm(37, homeTacWorkKit);
-                    alternative.AddUtilityTerm(38, homeEvWorkEv);
-                    alternative.AddUtilityTerm(39, homeWSWorkEast);
-                    alternative.AddUtilityTerm(40, homeSKitWorkTRP);
-                    alternative.AddUtilityTerm(45, homeKitWorkTRP);
-                    alternative.AddUtilityTerm(47, homeKitWorkTRP);
-                    alternative.AddUtilityTerm(48, homeEastWorkCBD);
-                    alternative.AddUtilityTerm(49, homeKitWorkCBD);
-                }
 				//Size
 				alternative.AddUtilityTerm(51, _person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentService);
 				alternative.AddUtilityTerm(52, _person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentEducation);
@@ -293,7 +275,11 @@ namespace DaySim.ChoiceModels.H.Models {
 
 				//remove nesting for estimation of conditional MNL 
 				alternative.AddNestedAlternative(_sampleSize + 2, 0, 98);
-			}
-		}
+
+                RegionSpecificCustomizations(alternative, _person, destinationParcel);
+
+            }
+
+        }
 	}
 }

@@ -367,17 +367,18 @@ namespace DaySim
 
         private static void InitializeInput()
         {
-            if (string.IsNullOrEmpty(Global.Configuration.InputParkAndRideNodePath))
-            {
-                Global.Configuration.InputParkAndRideNodePath = Global.DefaultInputParkAndRideNodePath;
-                Global.Configuration.InputParkAndRideNodeDelimiter = '\t';
-            }
+            //removed as tests of issue #70 'Simplify and make more explicit Configuration parameters default values'
+            //if (string.IsNullOrEmpty(Global.Configuration.InputParkAndRideNodePath))
+            //{
+            //    Global.Configuration.InputParkAndRideNodePath = Global.DefaultInputParkAndRideNodePath;
+            //    Global.Configuration.InputParkAndRideNodeDelimiter = '\t';
+            //}
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputParcelNodePath))
-            {
-                Global.Configuration.InputParcelNodePath = Global.DefaultInputParcelNodePath;
-                Global.Configuration.InputParcelNodeDelimiter = '\t';
-            }
+            //if (string.IsNullOrEmpty(Global.Configuration.InputParcelNodePath))
+            //{
+            //    Global.Configuration.InputParcelNodePath = Global.DefaultInputParcelNodePath;
+            //    Global.Configuration.InputParcelNodeDelimiter = '\t';
+            //}
 
             if (string.IsNullOrEmpty(Global.Configuration.InputParcelPath))
             {
@@ -1079,17 +1080,20 @@ namespace DaySim
 
             var timer = new Timer("Loading node distances...");
 
-            if (Global.Configuration.PSRC)
-            {
-                LoadNodeDistancesFromHDF5();
-            }
-            else if (Global.Configuration.NodeDistancesDelimiter == (char)0)
-            {
-                LoadNodeDistancesFromBinary();
-            }
-            else
-            {
-                LoadNodeDistancesFromText();
+            switch (Global.Configuration.NodeDistanceReaderType) {
+                case Configuration.NodeDistanceReaderTypes.HDF5:
+                    LoadNodeDistancesFromHDF5();
+                    break;
+                case Configuration.NodeDistanceReaderTypes.TextOrBinary:
+                    if (Global.Configuration.NodeDistancesDelimiter == (char)0) {
+                        LoadNodeDistancesFromBinary();
+                    } else {
+                        LoadNodeDistancesFromText();
+                    }
+                    break;
+                default:
+                    throw new Exception("Unhandled Global.Configuration.NodeDistanceReaderType: " + Global.Configuration.NodeDistanceReaderType);
+                    //break;
             }
 
             timer.Stop();

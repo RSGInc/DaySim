@@ -111,15 +111,6 @@ namespace DaySim.Framework.Core {
 			}
 		}
 
-		public static bool PSRC {
-			get { return Configuration.PSRC; }
-		}
-
-        public static bool Nashville
-        {
-            get { return Configuration.Nashville; }
-        }
-
 		public static bool ParkAndRideNodeIsEnabled {
 			get { return !string.IsNullOrEmpty(Configuration.RawParkAndRideNodePath) && !string.IsNullOrEmpty(Configuration.InputParkAndRideNodePath); }
 		}
@@ -134,10 +125,6 @@ namespace DaySim.Framework.Core {
 
 		public static bool StopAreaIsEnabled {
 			get { return !string.IsNullOrEmpty(Configuration.RawTransitStopAreaPath) && !string.IsNullOrEmpty(Configuration.InputTransitStopAreaPath); }
-		}
-
-		public static string DefaultInputParcelNodePath {
-			get { return GetWorkingSubpath("parcel_node.tsv"); }
 		}
 
         public static string ArchiveShadowPricesPath

@@ -84,13 +84,14 @@ namespace DaySim.Framework.Core {
 		[XmlAttribute]
 		public char RawParkAndRideNodeDelimiter { get; set; }
 
-		[XmlAttribute]
-		public string InputParkAndRideNodePath { get; set; }
+        [XmlAttribute]
+        public string InputParkAndRideNodePath { get; set; } = Global.GetWorkingSubpath("park_and_ride_node.tsv");
 
-		[XmlAttribute]
-		public char InputParkAndRideNodeDelimiter { get; set; }
 
-		[XmlAttribute]
+        [XmlAttribute]
+        public char InputParkAndRideNodeDelimiter { get; set; } = '\t';
+
+        [XmlAttribute]
 		public bool ShouldReadParkAndRideNodeSkim { get; set; }
 
 		[XmlAttribute]
@@ -107,10 +108,10 @@ namespace DaySim.Framework.Core {
 		public char RawParcelNodeDelimiter { get; set; }
 
 		[XmlAttribute]
-		public string InputParcelNodePath { get; set; }
+		public string InputParcelNodePath { get; set; } = Global.GetWorkingSubpath("parcel_node.tsv");
 
-		[XmlAttribute]
-		public char InputParcelNodeDelimiter { get; set; }
+        [XmlAttribute]
+        public char InputParcelNodeDelimiter { get; set; } = '\t';
 
 
 		[XmlAttribute]
@@ -1338,16 +1339,19 @@ namespace DaySim.Framework.Core {
 
 		//new since 203
 		[XmlAttribute]
-		public bool PSRC { get; set; }
-
+        public bool PSRC {
+            get { return false; } set { throw new System.Exception("PSRC in configuration file no longer allowed. Use CustomizationDll to override default behavior"); }
+        }
 		[XmlAttribute]
 		public bool DVRPC { get; set; }
 
 		[XmlAttribute]
-		public bool Nashville { get; set; }
-
-		//new since 203
-		[XmlAttribute]
+        public bool Nashville {
+            get { return false; }
+            set { throw new System.Exception("Nashville in configuration file no longer allowed. Use CustomizationDll to override default behavior"); }
+        }
+    //new since 203
+    [XmlAttribute]
 		public bool AvoidDisaggregateModeChoiceLogsums { get; set; }
 
 		[XmlAttribute]
@@ -1430,6 +1434,10 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double IntrazonalAutoMinutesPerMile_OverrideSkims { get; set; }
+        [XmlAttribute]
+        public bool HDF5SkimScaledAndCondensed { get; set; } = false;
 
-	}
+        public enum NodeDistanceReaderTypes { HDF5, TextOrBinary};
+        public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
+    }
 }

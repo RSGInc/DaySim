@@ -58,7 +58,7 @@ namespace DaySim.Framework.Roster
             }
 
             //leave as is for PSRC. Values are already scaled integers and matrices already condensed
-            if (Global.Configuration.PSRC)  {
+            if (Global.Configuration.HDF5SkimScaledAndCondensed)  {
                 var dataArray = new UInt16[nRows, nCols];
                 var wrapArray = new H5Array<UInt16>(dataArray);
                 H5DataTypeId tid1 = H5D.getType(dataSet);

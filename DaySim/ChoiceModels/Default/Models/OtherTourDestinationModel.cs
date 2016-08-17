@@ -318,25 +318,11 @@ namespace DaySim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(34, housesBuffer); // also psrc
 					alternative.AddUtilityTerm(35, studUniBuffer);
 
-					//PSRC specific district constants for model calibration
-					if (Global.Configuration.PSRC == true) {
-						var origdist = _tour.OriginParcel.District;
-						var destdist = destinationParcel.District;
-						var origKitDestTRP = (origdist == 9 || origdist == 11) && (destdist == 8 || destdist == 10 || destdist == 7) ? 1 : 0;
-						var origEastDestCBD = origdist == 6 && destdist == 4 ? 1 : 0;
-						var origTacDestKit = origdist == 8 && destdist == 9 || destdist == 11 ? 1 : 0;
-						var origKitDestNotKit = (origdist == 9 || origdist == 11) && (destdist != 9 && destdist != 11) ? 1 : 0;
-						var origSTacWorkCBD = (origdist == 11 && destdist == 4) ? 1 : 0;
+                    RegionSpecificOtherTourDistrictCoefficients(alternative, _tour.OriginParcel, destinationParcel);
 
-						alternative.AddUtilityTerm(58, origEastDestCBD);
-						alternative.AddUtilityTerm(59, origKitDestTRP);
-						alternative.AddUtilityTerm(60, origTacDestKit);
-						alternative.AddUtilityTerm(61, origKitDestNotKit);
-						alternative.AddUtilityTerm(62, origSTacWorkCBD);
-					}
 
-					// Size terms
-					alternative.AddUtilityTerm(89, destinationParcel.EmploymentEducation);
+                    // Size terms
+                    alternative.AddUtilityTerm(89, destinationParcel.EmploymentEducation);
 					alternative.AddUtilityTerm(90, destinationParcel.EmploymentFood);
 					alternative.AddUtilityTerm(91, destinationParcel.EmploymentOffice);
 					alternative.AddUtilityTerm(92, destinationParcel.EmploymentRetail);
@@ -404,7 +390,10 @@ namespace DaySim.ChoiceModels.Default.Models {
 				}
 			}
 
-			public static bool ShouldRunInEstimationModeForModel(ITourWrapper tour) {
+            protected void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, IParcelWrapper originParcel, IParcelWrapper destinationParcel) {
+             }
+
+            public static bool ShouldRunInEstimationModeForModel(ITourWrapper tour) {
 				// determine validity and need, then characteristics
 				// detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
 				var excludeReason = 0;

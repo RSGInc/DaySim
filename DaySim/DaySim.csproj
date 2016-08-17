@@ -403,7 +403,6 @@
     <Content Include="COPYING">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Daysim.Framework\DaySim.Framework.csproj">
