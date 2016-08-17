@@ -32,9 +32,12 @@ def regress_subfolders(parameters):
     if logging.getLogger().isEnabledFor(logging.DEBUG):
         print(args)
 
-    if not os.path.isdir(args.regional_data_directory):
+    if args.regional_data_directory is None:
         args.regional_data_directory = os.getcwd();
         print('--regional_data_directory not specified so using current directory: ' + args.regional_data_directory)
+
+    if not os.path.isdir(args.regional_data_directory):
+        throw('--regional_data_directory is not a valid directory: ' + args.regional_data_directory)
 
     configuration_file_regex = re.compile(r'^.*_regress[.](xml|properties)$')
 
