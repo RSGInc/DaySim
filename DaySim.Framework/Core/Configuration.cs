@@ -85,7 +85,7 @@ namespace DaySim.Framework.Core {
 		public char RawParkAndRideNodeDelimiter { get; set; }
 
         [XmlAttribute]
-        public string InputParkAndRideNodePath { get; set; } = Global.GetWorkingSubpath("park_and_ride_node.tsv");
+        public string InputParkAndRideNodePath { get; set; }
 
 
         [XmlAttribute]
@@ -108,7 +108,7 @@ namespace DaySim.Framework.Core {
 		public char RawParcelNodeDelimiter { get; set; }
 
 		[XmlAttribute]
-		public string InputParcelNodePath { get; set; } = Global.GetWorkingSubpath("parcel_node.tsv");
+		public string InputParcelNodePath { get; set; }
 
         [XmlAttribute]
         public char InputParcelNodeDelimiter { get; set; } = '\t';
@@ -1339,19 +1339,14 @@ namespace DaySim.Framework.Core {
 
 		//new since 203
 		[XmlAttribute]
-        public bool PSRC {
-            get { return false; } set { throw new System.Exception("PSRC in configuration file no longer allowed. Use CustomizationDll to override default behavior"); }
-        }
-		[XmlAttribute]
+        public bool PSRC { get; set; }
+        [XmlAttribute]
 		public bool DVRPC { get; set; }
 
 		[XmlAttribute]
-        public bool Nashville {
-            get { return false; }
-            set { throw new System.Exception("Nashville in configuration file no longer allowed. Use CustomizationDll to override default behavior"); }
-        }
-    //new since 203
-    [XmlAttribute]
+        public bool Nashville { get; set; }
+        //new since 203
+        [XmlAttribute]
 		public bool AvoidDisaggregateModeChoiceLogsums { get; set; }
 
 		[XmlAttribute]

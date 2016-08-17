@@ -18,7 +18,7 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "compare_output_directories"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsNashville", "..\nashvilleabm\DaySimCustomizationsNashville\Nashville\DaySimCustomizationsNashville.csproj", "{3D0BF5C8-440A-417E-8856-FC7373F4D488}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsDVRPC", "..\dvrpc_daysim_test\DaySimCustomizationsDVPRC\DVPRC\DaySimCustomizationsDVRPC.csproj", "{6F39C2BD-CE55-4686-A33D-EDC10904C113}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsDVRPC", "..\dvrpc_daysim_test\DaySimCustomizationsDVRPC\DVRPC\DaySimCustomizationsDVRPC.csproj", "{6F39C2BD-CE55-4686-A33D-EDC10904C113}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C89E2003-E353-43B8-BF0A-9A821945933A} = {C89E2003-E353-43B8-BF0A-9A821945933A}
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B} = {33842B3A-A2CB-4B61-933B-811CED8CF74B}

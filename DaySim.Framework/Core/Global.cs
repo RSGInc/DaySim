@@ -127,6 +127,10 @@ namespace DaySim.Framework.Core {
 			get { return !string.IsNullOrEmpty(Configuration.RawTransitStopAreaPath) && !string.IsNullOrEmpty(Configuration.InputTransitStopAreaPath); }
 		}
 
+		public static string DefaultInputParcelNodePath {
+			get { return GetWorkingSubpath("parcel_node.tsv"); }
+		}
+
         public static string ArchiveShadowPricesPath
         {
             get { return GetOutputPath(ARCHIVE_SHADOW_PRICES_FILENAME); }
