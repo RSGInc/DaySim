@@ -18,7 +18,7 @@ def regress_subfolders(parameters):
     parser = argparse.ArgumentParser(description='Find all files ending with "_regress.xml" or "_regress.properties" and call regress_model.py on each as long as return value is true. Return true if all passed else false.')
     parser.add_argument('--regional_data_directory',
                         help='Directory containing region specific subfolders of data and run configuration files. It is expected that each one of these will be a separate github project',
-                        default=script_directory + '../../../../regional_data')
+                        default=None)
     parser.add_argument('--always_create_reports',
                         help='create reports regardless of whether regression tests passed or failed', type=parse_bool, default=True)
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
@@ -33,7 +33,8 @@ def regress_subfolders(parameters):
         print(args)
 
     if not os.path.isdir(args.regional_data_directory):
-        raise Exception('regional_data_directory does not exist: ' + args.regional_data_directory)
+        args.regional_data_directory = os.getcwd();
+        print('--regional_data_directory not specified so using current directory: ' + args.regional_data_directory)
 
     configuration_file_regex = re.compile(r'^.*_regress[.](xml|properties)$')
 
