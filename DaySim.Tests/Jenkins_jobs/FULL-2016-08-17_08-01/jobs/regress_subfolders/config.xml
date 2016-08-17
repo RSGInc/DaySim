@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+         <name>daysim_git_folder</name>
+          <description>Default is the fixed dev location but when called by Jenkins this will be where Jenkins checked out DaySim-git repo and built it</description>
+          <defaultValue>E:\Projects\DaySim\regional_data\DaySim</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>start_folder</name>
+          <description>Will recursively search from here to find DaySim configuration files</description>
+          <defaultValue>C:\rd</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>echo daysim_git_folder %daysim_git_folder%&#xd;
+echo start_folder %start_folder%</command>
+    </hudson.tasks.BatchFile>
+    <jenkins.plugins.shiningpanda.builders.PythonBuilder plugin="shiningpanda@0.23">
+      <pythonName>Anaconda_3.5</pythonName>
+      <nature>shell</nature>
+      <command>python %daysim_git_folder%\Daysim.Tests\Daysim.Tests.external\compare_output_directories\regress_subfolders.py --regional_data_directory &quot;%start_folder%&quot;</command>
+      <ignoreExitCode>false</ignoreExitCode>
+    </jenkins.plugins.shiningpanda.builders.PythonBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.git.GitSCM_-DescriptorImpl plugin="git@2.5.3">
+  <generation>23</generation>
+  <globalConfigName>Peter.Andrews@rsginc.com</globalConfigName>
+  <globalConfigEmail>Peter.Andrews@rsginc.com</globalConfigEmail>
+  <createAccountBasedOnEmail>false</createAccountBasedOnEmail>
+</hudson.plugins.git.GitSCM_-DescriptorImpl>
