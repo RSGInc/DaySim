@@ -196,6 +196,6 @@ namespace DaySim {
                     }
                 }
             }
-        }
-    }
-}
+        }   //end overrideConfiguration
+    }   //end class Program
+}   //end namespace

@@ -5,6 +5,7 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.Framework.Core;
 using System;
 using System.Collections.Concurrent;
 
@@ -15,9 +16,12 @@ namespace DaySim.Framework.ChoiceModels {
 		public TChoiceModel Get<TChoiceModel>() where TChoiceModel : IChoiceModel {
 			var type = typeof (TChoiceModel);
 
-			var model = _dictionary.GetOrAdd(type, key => {
-				var m = (IChoiceModel) Activator.CreateInstance(type);
 
+			var model = _dictionary.GetOrAdd(type, key => {
+                var m = (IChoiceModel) Global.Configuration.getCustomizationType(type);
+                if (m == null) { 
+                    m = (IChoiceModel) Activator.CreateInstance(type);
+                }
 				m.RunInitialize();
 
 				return m;
