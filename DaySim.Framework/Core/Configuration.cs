@@ -131,7 +131,7 @@ namespace DaySim.Framework.Core {
         public string InputParcelPath { get; set; }
 
         [XmlAttribute]
-        public char InputParcelDelimiter { get; set; }
+        public char InputParcelDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public bool ImportZones { get; set; }
@@ -146,7 +146,7 @@ namespace DaySim.Framework.Core {
         public string InputZonePath { get; set; }
 
         [XmlAttribute]
-        public char InputZoneDelimiter { get; set; }
+        public char InputZoneDelimiter { get; set; } = '\t';
 
 
         [XmlAttribute]
@@ -162,7 +162,7 @@ namespace DaySim.Framework.Core {
         public string InputHouseholdPath { get; set; }
 
         [XmlAttribute]
-        public char InputHouseholdDelimiter { get; set; }
+        public char InputHouseholdDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputHouseholdPath { get; set; }
@@ -184,7 +184,7 @@ namespace DaySim.Framework.Core {
         public string InputPersonPath { get; set; }
 
         [XmlAttribute]
-        public char InputPersonDelimiter { get; set; }
+        public char InputPersonDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputPersonPath { get; set; }
@@ -220,7 +220,7 @@ namespace DaySim.Framework.Core {
         public string InputHouseholdDayPath { get; set; }
 
         [XmlAttribute]
-        public char InputHouseholdDayDelimiter { get; set; }
+        public char InputHouseholdDayDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputHouseholdDayPath { get; set; }
@@ -242,7 +242,7 @@ namespace DaySim.Framework.Core {
         public string InputJointTourPath { get; set; }
 
         [XmlAttribute]
-        public char InputJointTourDelimiter { get; set; }
+        public char InputJointTourDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputJointTourPath { get; set; }
@@ -264,7 +264,7 @@ namespace DaySim.Framework.Core {
         public string InputFullHalfTourPath { get; set; }
 
         [XmlAttribute]
-        public char InputFullHalfTourDelimiter { get; set; }
+        public char InputFullHalfTourDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputFullHalfTourPath { get; set; }
@@ -286,7 +286,7 @@ namespace DaySim.Framework.Core {
         public string InputPartialHalfTourPath { get; set; }
 
         [XmlAttribute]
-        public char InputPartialHalfTourDelimiter { get; set; }
+        public char InputPartialHalfTourDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputPartialHalfTourPath { get; set; }
@@ -308,7 +308,7 @@ namespace DaySim.Framework.Core {
         public string InputPersonDayPath { get; set; }
 
         [XmlAttribute]
-        public char InputPersonDayDelimiter { get; set; }
+        public char InputPersonDayDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputPersonDayPath { get; set; }
@@ -330,7 +330,7 @@ namespace DaySim.Framework.Core {
         public string InputTourPath { get; set; }
 
         [XmlAttribute]
-        public char InputTourDelimiter { get; set; }
+        public char InputTourDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputTourPath { get; set; }
@@ -352,7 +352,7 @@ namespace DaySim.Framework.Core {
         public string InputTripPath { get; set; }
 
         [XmlAttribute]
-        public char InputTripDelimiter { get; set; }
+        public char InputTripDelimiter { get; set; } = '\t';
 
         [XmlAttribute]
         public string OutputTripPath { get; set; }
@@ -1213,7 +1213,7 @@ namespace DaySim.Framework.Core {
 
         //new since 203
         [XmlAttribute]
-        public char InputTransitStopAreaDelimiter { get; set; }
+        public char InputTransitStopAreaDelimiter { get; set; } = '\t';
 
         //new since 203
         [XmlAttribute]
