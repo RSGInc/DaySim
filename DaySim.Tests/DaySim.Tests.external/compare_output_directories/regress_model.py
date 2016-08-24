@@ -49,7 +49,7 @@ def regress_model(parameters):
     script_directory = os.path.split(os.path.realpath(__file__))[0] + '/'
     parser = argparse.ArgumentParser(description='Run DaySim regression tests for specified model')
     parser.add_argument('--daysim_exe',
-                        help='location of DaySim executable [default: %(default)s]', default= script_directory + '../../../DaySim/bin/x64/Debug/DaySim.exe')
+                        help='location of DaySim executable [default: %(default)s]', default= script_directory + '../../../DaySim_dist/DaySim.exe')
     parser.add_argument('--configuration_file',
                         help='path to configuration file to send to DaySim', default='configuration_regression.xml')
     parser.add_argument('--run_if_needed_to_create_baseline',
