@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25402.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySim", "Daysim\DaySim.csproj", "{C89E2003-E353-43B8-BF0A-9A821945933A}"
 EndProject
@@ -16,15 +16,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9C1720
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "compare_output_directories", "Daysim.Tests\Daysim.Tests.external\compare_output_directories\compare_output_directories.pyproj", "{66B71A86-D772-4A33-B182-760B912CD7F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsNashville", "..\nashvilleabm\DaySimCustomizationsNashville\Nashville\DaySimCustomizationsNashville.csproj", "{3D0BF5C8-440A-417E-8856-FC7373F4D488}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsNashville", "..\nashvilleabm\DaySimCustomizationsNashville\DaySimCustomizationsNashville.csproj", "{3D0BF5C8-440A-417E-8856-FC7373F4D488}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsDVRPC", "..\dvrpc_daysim_test\DaySimCustomizationsDVRPC\DVRPC\DaySimCustomizationsDVRPC.csproj", "{6F39C2BD-CE55-4686-A33D-EDC10904C113}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsDVRPC", "..\dvrpc_daysim_test\DaySimCustomizationsDVRPC\DaySimCustomizationsDVRPC.csproj", "{6F39C2BD-CE55-4686-A33D-EDC10904C113}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C89E2003-E353-43B8-BF0A-9A821945933A} = {C89E2003-E353-43B8-BF0A-9A821945933A}
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B} = {33842B3A-A2CB-4B61-933B-811CED8CF74B}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsPSRC", "..\psrc_daysim_test\DaySimCustomizationsPSRC\PSRC\DaySimCustomizationsPSRC.csproj", "{881E7750-B121-46EA-ACB3-F039E2919767}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimCustomizationsPSRC", "..\psrc_daysim_test\DaySimCustomizationsPSRC\DaySimCustomizationsPSRC.csproj", "{881E7750-B121-46EA-ACB3-F039E2919767}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
