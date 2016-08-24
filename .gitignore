@@ -5,6 +5,7 @@ __pycache__/
 .RData
 .Ruserdata
 *.Rdata
+DaySim_dist
 
 ## from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 ## and recommended by https://docs.nuget.org/Consume/Package-Restore

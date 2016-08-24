@@ -24,22 +24,27 @@ namespace DaySim.Framework.Core {
 
 		public ConfigurationManager(string path) {
 			if (string.IsNullOrEmpty(path)) {
-				var location = Assembly.GetExecutingAssembly().Location;
-				var directoryName = Path.GetDirectoryName(location);
+                string directoryName = GetExecutingAssemblyLocation();
 
-				path =
-					directoryName == null
-						? DEFAULT_CONFIGURATION_NAME
-						: Path.Combine(directoryName, DEFAULT_CONFIGURATION_NAME);
-			}
+                path =
+                    directoryName == null
+                        ? DEFAULT_CONFIGURATION_NAME
+                        : Path.Combine(directoryName, DEFAULT_CONFIGURATION_NAME);
+            }
 
-			_file = new FileInfo(path);
+            _file = new FileInfo(path);
 
 			_extension =
 				Path
 					.GetExtension(_file.Name)
 					.ToLower();
 		}
+
+        public static string GetExecutingAssemblyLocation() {
+            var location = Assembly.GetExecutingAssembly().Location;
+            var directoryName = Path.GetDirectoryName(location);
+            return directoryName;
+        }
 
         public class Group
         {

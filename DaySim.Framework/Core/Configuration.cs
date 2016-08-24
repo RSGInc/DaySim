@@ -1460,7 +1460,12 @@ namespace DaySim.Framework.Core {
             if (!string.IsNullOrWhiteSpace(Global.Configuration.CustomizationDll)) {
                 string dllFile = Global.GetInputPath(Global.Configuration.CustomizationDll);
                 bool fileExists = File.Exists(dllFile);
-                if (fileExists) {
+                if (!fileExists) {
+                    //if file not found relative to the basePath then look for it in the same directory as the .exe
+                    string directoryName = ConfigurationManager.GetExecutingAssemblyLocation();
+                    dllFile = Path.Combine(directoryName, Global.Configuration.CustomizationDll);
+                }
+                    if (fileExists) {
                     AssemblyName an = AssemblyName.GetAssemblyName(dllFile);
                     assembly = Assembly.Load(an);
                     if (assembly != null) {

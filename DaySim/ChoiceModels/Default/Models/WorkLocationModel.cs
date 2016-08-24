@@ -138,7 +138,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			alternative.AddNestedAlternative(sampleSize + 3, 1, 98);
 		}
 
-        protected static void RegionSpecificWorkLocationDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist) {
+        protected static void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist) {
             //see PSRC customization dll for example
         }
 
@@ -272,7 +272,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                 var homedist = _person.Household.ResidenceParcel.District;
                 var zonedist = destinationParcel.District;
-                RegionSpecificWorkLocationDistrictCoefficients(alternative, homedist, zonedist);
+                RegionSpecificCustomizations(alternative, homedist, zonedist);
 
 
                 //Size

@@ -112,11 +112,11 @@ namespace DaySim.ChoiceModels.H.Models {
 			alternative.AddNestedAlternative(sampleSize + 3, 1, 98);
 		}
 
-        protected static void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) {
-        //see PSRC customization dll for example
-    }
+        protected static void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist) {
+            //see PSRC customization dll for example
+        }
 
-    private sealed class WorkLocationUtilities : ISamplingUtilities {
+        private sealed class WorkLocationUtilities : ISamplingUtilities {
 			private readonly IPersonWrapper _person;
 			private readonly int _sampleSize;
 			private readonly int _destinationArrivalTime;
@@ -276,7 +276,9 @@ namespace DaySim.ChoiceModels.H.Models {
 				//remove nesting for estimation of conditional MNL 
 				alternative.AddNestedAlternative(_sampleSize + 2, 0, 98);
 
-                RegionSpecificCustomizations(alternative, _person, destinationParcel);
+                var homedist = _person.Household.ResidenceParcel.District;
+                var zonedist = destinationParcel.District;
+                RegionSpecificCustomizations(alternative, homedist, zonedist);
 
             }
 
