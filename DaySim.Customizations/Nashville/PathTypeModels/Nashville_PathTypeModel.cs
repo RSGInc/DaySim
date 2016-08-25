@@ -1,10 +1,20 @@
 ﻿using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 
 namespace DaySim.PathTypeModels
 {
     class Nashville_PathTypeModel : PathTypeModel
     {
+        public Nashville_PathTypeModel(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode) : base(originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode)
+        {
+        }
+
+        public Nashville_PathTypeModel(int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode) : base(originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode)
+        {
+            _originZoneId = originZoneId;
+            _destinationZoneId = destinationZoneId;
+        }
         protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight)
         {
             Global.PrintFile.WriteLine("Nashville_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
