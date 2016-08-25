@@ -1449,14 +1449,20 @@ namespace DaySim.Framework.Core
             {
                 pluginTypes = LoadCustomizationTypes();
             }
-            foreach (Type type in pluginTypes)
+            foreach (Type loadedType in pluginTypes)
             {
-                if (type.GetInterface(requestedType.FullName) != null)
+                if (requestedType.IsAssignableFrom(loadedType))
                 {
-                    requestedObject = Activator.CreateInstance(type);
+                    requestedObject = Activator.CreateInstance(loadedType);
+                    Global.PrintFile.WriteLine("getCustomizationType for '" + requestedType + "' is returning object of type '" + loadedType + "': " + requestedObject);
                     break;
                 }
             }   //end foreach
+            if (requestedObject == null)
+            {
+                Global.PrintFile.WriteLine("getCustomizationType for '" + requestedType + "' could not find a loaded object of that type and is returning null");
+
+            }
             return requestedObject;
         }   //end getCustomizationType
 
@@ -1486,7 +1492,7 @@ namespace DaySim.Framework.Core
 
                         foreach (Type type in types)
                         {
-                             if (type.IsInterface || type.IsAbstract)
+                            if (type.IsInterface || type.IsAbstract)
                             {
                                 Global.PrintFile.WriteLine("LoadCustomizationTypes: found type: " + type + " but is not saving because type.IsInterface=" + type.IsInterface + " or type.IsAbstract=" + type.IsAbstract);
                                 continue;
