@@ -53,13 +53,7 @@ namespace DaySim.PathTypeModels
         protected readonly double[] _pathParkAndRideWalkAccessEgressTime = new double[Global.Settings.PathTypes.TotalPathTypes];
         protected readonly double[] _pathTransitWalkAccessEgressTime = new double[Global.Settings.PathTypes.TotalPathTypes];
 
-        public PathTypeModel()
-        {
-            GeneralizedTimeLogsum = Global.Settings.GeneralizedTimeUnavailable;
-            GeneralizedTimeChosen = Global.Settings.GeneralizedTimeUnavailable;
-        }
-
-        protected PathTypeModel(int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode) : this()
+        private void initialize(int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode)
         {
             _outboundTime = outboundTime;
             _returnTime = returnTime;
@@ -73,23 +67,24 @@ namespace DaySim.PathTypeModels
             Mode = mode;
         }
 
-        public PathTypeModel(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode) : this(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode)
+        private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode)
         {
+            initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode);
             _originParcel = originParcel;
             _destinationParcel = destinationParcel;
         }
-
-        public PathTypeModel(int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode) : this(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode)
+        private void initialize(int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode)
         {
+            initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode);
             _originZoneId = originZoneId;
             _destinationZoneId = destinationZoneId;
         }
 
         public virtual int Mode { get; set; }
 
-        public virtual double GeneralizedTimeLogsum { get; protected set; }
+        public virtual double GeneralizedTimeLogsum { get; protected set; } = Global.Settings.GeneralizedTimeUnavailable;
 
-        public virtual double GeneralizedTimeChosen { get; protected set; }
+        public virtual double GeneralizedTimeChosen { get; protected set; } = Global.Settings.GeneralizedTimeUnavailable;
 
         public virtual double PathTime { get; protected set; }
 
@@ -146,7 +141,9 @@ namespace DaySim.PathTypeModels
             foreach (int mode in modes)
             {
                 object[] args = new object[] { originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode };
-                IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
+                //IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
+                IPathTypeModel pathTypeModel = PathTypeModelFactory.New(new object[] { });
+                ((PathTypeModel)pathTypeModel).initialize(originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode);
                 pathTypeModel.RunModel(randomUtility, /* useZones */ false);
 
                 list.Add(pathTypeModel);
@@ -155,6 +152,7 @@ namespace DaySim.PathTypeModels
             return list;
         }
 
+ 
         public virtual List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, params int[] modes)
         {
             var list = new List<IPathTypeModel>();
@@ -162,7 +160,9 @@ namespace DaySim.PathTypeModels
             foreach (int mode in modes)
             {
                object[] args = new object[] { originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode };
-                IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
+                //IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
+                IPathTypeModel pathTypeModel = PathTypeModelFactory.New(new object[] { });
+                ((PathTypeModel)pathTypeModel).initialize(originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode);
                 pathTypeModel.RunModel(randomUtility, /* useZones */ true);
 
                 list.Add(pathTypeModel);
