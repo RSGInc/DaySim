@@ -12,8 +12,10 @@ using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace DaySim.Framework.Core {
-    public sealed class Configuration {
+namespace DaySim.Framework.Core
+{
+    public sealed class Configuration
+    {
         [XmlAttribute]
         public string Settings { get; set; }
 
@@ -1440,13 +1442,17 @@ namespace DaySim.Framework.Core {
         public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
 
         private List<Type> pluginTypes = null;
-        public dynamic getCustomizationType(Type requestedType) {
+        public dynamic getCustomizationType(Type requestedType)
+        {
             dynamic requestedObject = null;
-            if (pluginTypes == null) {
+            if (pluginTypes == null)
+            {
                 pluginTypes = LoadCustomizationTypes();
             }
-            foreach (Type type in pluginTypes) {
-                if (type.GetInterface(requestedType.FullName) != null) {
+            foreach (Type type in pluginTypes)
+            {
+                if (type.GetInterface(requestedType.FullName) != null)
+                {
                     requestedObject = Activator.CreateInstance(type);
                     break;
                 }
@@ -1454,37 +1460,50 @@ namespace DaySim.Framework.Core {
             return requestedObject;
         }   //end getCustomizationType
 
-        public static List<Type> LoadCustomizationTypes() {
+        public static List<Type> LoadCustomizationTypes()
+        {
             List<Type> pluginTypes = new List<Type>();
             Assembly assembly = null;
-            if (!string.IsNullOrWhiteSpace(Global.Configuration.CustomizationDll)) {
+            if (!string.IsNullOrWhiteSpace(Global.Configuration.CustomizationDll))
+            {
                 string dllFile = Global.GetInputPath(Global.Configuration.CustomizationDll);
                 bool fileExists = File.Exists(dllFile);
-                if (!fileExists) {
+                if (!fileExists)
+                {
                     //if file not found relative to the basePath then look for it in the same directory as the .exe
                     string directoryName = ConfigurationManager.GetExecutingAssemblyLocation();
                     dllFile = Path.Combine(directoryName, Global.Configuration.CustomizationDll);
+                    fileExists = File.Exists(dllFile);
+                    Global.PrintFile.WriteLine("LoadCustomizationTypes: dll '" + Global.Configuration.CustomizationDll + "' not found at location relative to BasePath so looked relative to executing assembly location: " + dllFile + ". File exists?: " + fileExists);
                 }
-                    if (fileExists) {
+                if (fileExists)
+                {
                     AssemblyName an = AssemblyName.GetAssemblyName(dllFile);
                     assembly = Assembly.Load(an);
-                    if (assembly != null) {
+                    if (assembly != null)
+                    {
                         Type[] types = assembly.GetTypes();
 
-                        foreach (Type type in types) {
-                            if (type.IsInterface || type.IsAbstract) {
+                        foreach (Type type in types)
+                        {
+                            if (type.IsInterface || type.IsAbstract)
+                            {
                                 continue;
-                            } else {
-                                Global.PrintFile.WriteLine("LoadPlugin: Successfully loaded dll: " + dllFile + " with type " + type);
+                            }
+                            else
+                            {
                                 pluginTypes.Add(type);
                             }
                         }   //end if assembly != null
                     } //end if assembly not null
                 } //end if file exists
-                if (pluginTypes.Count == 0) {
+                if (pluginTypes.Count == 0)
+                {
                     throw new Exception("LoadCustomizationTypes: For dll: " + dllFile + ". File exists?: " + fileExists + ". Assembly loaded?: " + (assembly != null) + " but no types loaded!");
-                } else {
-                    Global.PrintFile.WriteLine("LoadPlugin: Successfully loaded dll: " + dllFile + " with " + pluginTypes.Count + " types: " + pluginTypes.ToString());
+                }
+                else
+                {
+                    Global.PrintFile.WriteLine("LoadCustomizationTypes: Successfully loaded dll: " + dllFile + " with " + pluginTypes.Count + " types: " + pluginTypes.ToString());
                 }
             } // end if customization dll specified
             return pluginTypes;
