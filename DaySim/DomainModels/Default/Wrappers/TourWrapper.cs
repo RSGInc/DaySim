@@ -667,8 +667,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 				return;
 			}
 
-			IEnumerable<dynamic> pathTypeModels =
-			PathTypeModelFactory.Model
+			IEnumerable<IPathTypeModel> pathTypeModels =
+			PathTypeModelFactory.Singleton
 				.Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
 			
 			var autoPathRoundTrip =		pathTypeModels.First();
@@ -984,13 +984,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 					? Global.Settings.Modes.Hov3
 					: Mode;
 
-            IEnumerable<dynamic> pathTypeModels =
-                PathTypeModelFactory.Model
+            IEnumerable<IPathTypeModel> pathTypeModels =
+                PathTypeModelFactory.Singleton
                     .Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
             var pathTypeFromOrigin = pathTypeModels.First();
 
             pathTypeModels = 
-				PathTypeModelFactory.Model
+				PathTypeModelFactory.Singleton
 					.Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
             var pathTypeFromDestination = pathTypeModels.First();
 

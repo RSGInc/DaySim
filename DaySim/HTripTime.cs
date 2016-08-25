@@ -34,7 +34,7 @@ namespace DaySim {
 		
 		public bool Available;
 
-		public dynamic ModeLOS;
+		public IPathTypeModel ModeLOS;
 
 		int EarliestFeasibleDepatureTime;
 
@@ -111,8 +111,8 @@ namespace DaySim {
 			else {
 				var pathMode = (trip.Mode >= Global.Settings.Modes.SchoolBus - 1) ? Global.Settings.Modes.Hov3 : trip.Mode;
 
-				IEnumerable<dynamic> pathTypeModels =
-									PathTypeModelFactory.Model.Run(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+									PathTypeModelFactory.Singleton.Run(
 									trip.Household.RandomUtility,
 									trip.IsHalfTourFromOrigin ? trip.DestinationParcel : trip.OriginParcel,
 									trip.IsHalfTourFromOrigin ? trip.OriginParcel : trip.DestinationParcel,

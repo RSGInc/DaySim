@@ -59,6 +59,32 @@ namespace DaySim.PathTypeModels
             GeneralizedTimeChosen = Global.Settings.GeneralizedTimeUnavailable;
         }
 
+        protected PathTypeModel(int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode) : this()
+        {
+            _outboundTime = outboundTime;
+            _returnTime = returnTime;
+            _purpose = purpose;
+            _tourCostCoefficient = tourCostCoefficient;
+            _tourTimeCoefficient = tourTimeCoefficient;
+            _isDrivingAge = isDrivingAge;
+            _householdCars = householdCars;
+            _transitDiscountFraction = transitDiscountFraction;
+            _randomChoice = randomChoice;
+            Mode = mode;
+        }
+
+        public PathTypeModel(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode) : this(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode)
+        {
+            _originParcel = originParcel;
+            _destinationParcel = destinationParcel;
+        }
+
+        public PathTypeModel(int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, int mode) : this(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode)
+        {
+            _originZoneId = originZoneId;
+            _destinationZoneId = destinationZoneId;
+        }
+
         public virtual int Mode { get; set; }
 
         public virtual double GeneralizedTimeLogsum { get; protected set; }
@@ -119,8 +145,9 @@ namespace DaySim.PathTypeModels
 
             foreach (int mode in modes)
             {
-                var pathTypeModel = new PathTypeModel { _originParcel = originParcel, _destinationParcel = destinationParcel, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _isDrivingAge = isDrivingAge, _householdCars = householdCars, _transitDiscountFraction = transitDiscountFraction, _randomChoice = randomChoice, Mode = mode };
-                pathTypeModel.RunModel(randomUtility);
+                object[] args = new object[] { originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode };
+                IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
+                pathTypeModel.RunModel(randomUtility, /* useZones */ false);
 
                 list.Add(pathTypeModel);
             }
@@ -132,9 +159,11 @@ namespace DaySim.PathTypeModels
         {
             var list = new List<IPathTypeModel>();
 
-            foreach (var pathTypeModel in modes.Select(mode => new PathTypeModel { _originZoneId = originZoneId, _destinationZoneId = destinationZoneId, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _isDrivingAge = isDrivingAge, _householdCars = householdCars, _transitDiscountFraction = transitDiscountFraction, _randomChoice = randomChoice, Mode = mode }))
+            foreach (int mode in modes)
             {
-                pathTypeModel.RunModel(randomUtility, true);
+               object[] args = new object[] { originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitDiscountFraction, randomChoice, mode };
+                IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
+                pathTypeModel.RunModel(randomUtility, /* useZones */ true);
 
                 list.Add(pathTypeModel);
             }
@@ -172,7 +201,7 @@ namespace DaySim.PathTypeModels
         }   //end RegionSpecificTransitImpedanceCalculation
 
 
-        protected void RunModel(IRandomUtility randomUtility, bool useZones = false)
+        public void RunModel(IRandomUtility randomUtility, bool useZones = false)
         {
             if (Mode == Global.Settings.Modes.Hov2)
             {
@@ -1219,7 +1248,6 @@ namespace DaySim.PathTypeModels
                 ? walkDist * Global.PathImpedance_WalkMinutesPerDistanceUnit
                 : Constants.DEFAULT_VALUE; // -1 is "missing" value
         }
-
     }
 
 }

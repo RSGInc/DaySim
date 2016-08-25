@@ -61,8 +61,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 					return;
 				}
 
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.RunAllPlusParkAndRide(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.RunAllPlusParkAndRide(
 					tour.Household.RandomUtility,
 						tour.OriginParcel,
 						tour.DestinationParcel,
@@ -87,8 +87,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 				choiceProbabilityCalculator.WriteObservation();
 			}
 			else {
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.RunAllPlusParkAndRide(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.RunAllPlusParkAndRide(
 					tour.Household.RandomUtility,
 						tour.OriginParcel,
 						tour.DestinationParcel,
@@ -157,8 +157,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 		public ChoiceProbabilityCalculator.Alternative RunNested(ITourWrapper tour, IParcelWrapper destinationParcel, int householdCars, double transitDiscountFraction) {
 			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetNestedChoiceProbabilityCalculator();
 
-            IEnumerable<dynamic> pathTypeModels =
-				PathTypeModelFactory.Model.RunAll(
+            IEnumerable<IPathTypeModel> pathTypeModels =
+				PathTypeModelFactory.Singleton.RunAll(
 				tour.Household.RandomUtility,
 					tour.OriginParcel,
 					destinationParcel,
@@ -177,7 +177,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			return choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
 		}
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<dynamic> pathTypeModels, IParcelWrapper destinationParcel, int householdCars, int choice = Constants.DEFAULT_VALUE) {
+		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper destinationParcel, int householdCars, int choice = Constants.DEFAULT_VALUE) {
 			var household = tour.Household;
 			var householdTotals = household.HouseholdTotals;
 			var personDay = tour.PersonDay;

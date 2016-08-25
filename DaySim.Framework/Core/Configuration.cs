@@ -1442,27 +1442,37 @@ namespace DaySim.Framework.Core
         public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
 
         private List<Type> pluginTypes = null;
-        public dynamic getCustomizationType(Type requestedType)
+        private static Dictionary<Type, Type> assignableObjectTypes = new Dictionary<Type, Type>();
+        /**
+         * Given a type, if that type was found in the customization dll return it, otherwise return the requested type
+         **/
+        public Type getAssignableObjectType(Type requestedType)
         {
-            dynamic requestedObject = null;
-            if (pluginTypes == null)
+            Type returnType = null;
+            if (!assignableObjectTypes.TryGetValue(requestedType, out returnType))
             {
-                pluginTypes = LoadCustomizationTypes();
-            }
-            foreach (Type loadedType in pluginTypes)
-            {
-                if (requestedType.IsAssignableFrom(loadedType))
+                if (pluginTypes == null)
                 {
-                    requestedObject = Activator.CreateInstance(loadedType);
-                    Global.PrintFile.WriteLine("getCustomizationType for '" + requestedType + "' is returning object of type '" + loadedType + "': " + requestedObject);
-                    break;
+                    pluginTypes = LoadCustomizationTypes();
                 }
-            }   //end foreach
-            if (requestedObject == null)
-            {
-                Global.PrintFile.WriteLine("getCustomizationType for '" + requestedType + "' could not find a loaded object of that type and is returning null");
-            }
-            return requestedObject;
+                foreach (Type loadedType in pluginTypes)
+                {
+                    if (requestedType.IsAssignableFrom(loadedType))
+                    {
+                        returnType = loadedType;
+                        Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
+                        break;
+                    }
+                }   //end foreach
+                if (returnType == null)
+                {
+                    returnType = requestedType;
+                    Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
+                }
+                //add to dictionary so we have quick retrieval next time.
+                assignableObjectTypes.Add(requestedType, returnType);
+            }   //end if not in dictionary
+            return returnType;
         }   //end getCustomizationType
 
         public static List<Type> LoadCustomizationTypes()

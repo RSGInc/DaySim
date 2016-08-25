@@ -33,6 +33,19 @@ namespace DaySim.PathTypeModels {
 
 		List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, params int[] modes);
 
-		List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, params int[] modes);
-	}
+        List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, params int[] modes);
+
+        void RunModel(IRandomUtility randomUtility, bool useZones);
+
+
+        int PathOriginStopAreaKey { get;  }
+
+        int PathDestinationStopAreaKey { get;  }
+
+
+        double PathParkAndRideWalkAccessEgressTime { get; }
+
+        double PathTransitWalkAccessEgressTime { get; }
+
+    }
 }

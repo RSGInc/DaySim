@@ -18,7 +18,7 @@ namespace DaySim.Framework.ChoiceModels {
 
 
 			var model = _dictionary.GetOrAdd(type, key => {
-                var m = (IChoiceModel) Global.Configuration.getCustomizationType(type);
+                var m = (IChoiceModel) Global.Configuration.getAssignableObjectType(type);
                 if (m == null) { 
                     m = (IChoiceModel) Activator.CreateInstance(type);
                 }

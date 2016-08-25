@@ -235,8 +235,8 @@ namespace DaySim {
 				         Global.Configuration.PathImpedance_UtilityForm_Transit == 1)
 				{
 					// park and ride has to use round-trip path type, approximate each half 
-					IEnumerable<dynamic> pathTypeModels =
-						PathTypeModelFactory.Model.Run(
+					IEnumerable<IPathTypeModel> pathTypeModels =
+						PathTypeModelFactory.Singleton.Run(
 							tour.Household.RandomUtility,
 							tour.OriginParcel,
 							destinationParcel,
@@ -276,8 +276,8 @@ namespace DaySim {
 					{
 						bool testbreak = true;
 					}
-					IEnumerable<dynamic> pathTypeModels =
-						PathTypeModelFactory.Model.Run(
+					IEnumerable<IPathTypeModel> pathTypeModels =
+						PathTypeModelFactory.Singleton.Run(
 							tour.Household.RandomUtility,
 							tour.OriginParcel,
 							destinationParcel,
@@ -303,7 +303,7 @@ namespace DaySim {
 					}
 
 					pathTypeModels =
-						PathTypeModelFactory.Model.Run(
+						PathTypeModelFactory.Singleton.Run(
 							tour.Household.RandomUtility,
 							destinationParcel,
 							tour.OriginParcel,

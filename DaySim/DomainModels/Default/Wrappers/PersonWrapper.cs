@@ -357,8 +357,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public virtual void UpdatePersonValues() {
 			if (!Global.Configuration.IsInEstimationMode && UsualWorkParcel != null) {
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton
 						.Run(Household.RandomUtility, Household.ResidenceParcel, UsualWorkParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.FivePM, Global.Settings.Purposes.Work, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Work, true, 1, 0.0, false, Global.Settings.Modes.Sov);
 				
 				var	autoPathRoundTrip = pathTypeModels.First();
@@ -368,8 +368,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 			}
 
 			if (!Global.Configuration.IsInEstimationMode && UsualSchoolParcel != null) {
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton
 						.Run(Household.RandomUtility, Household.ResidenceParcel, UsualSchoolParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.ThreePM, Global.Settings.Purposes.School, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Other, true, 1, 0.0, false, Global.Settings.Modes.Sov);
 				
 				var autoPathRoundTrip = pathTypeModels.First();

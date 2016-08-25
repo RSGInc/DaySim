@@ -11,8 +11,14 @@ using System.IO;
 namespace DaySim.PathTypeModels {
 
     static class PathTypeModelFactory {
-        public static Type ModelType { get; private set; }
-        public static dynamic Model { get; private set; }
+        private static Type ModelType { get; set; }
+        public static IPathTypeModel Singleton { get; private set; }
+
+        public static IPathTypeModel New(object[] args)
+        {
+            //this version of CreateInstance will call the constructor that best matches the signature of the args
+            return (IPathTypeModel) Activator.CreateInstance(ModelType, args);
+        }
 
         static PathTypeModelFactory() {
             /*
@@ -50,12 +56,9 @@ namespace DaySim.PathTypeModels {
                 */
 
 
-            ModelType = typeof(PathTypeModel);
-            Model = Global.Configuration.getCustomizationType(ModelType);
+            ModelType = Global.Configuration.getAssignableObjectType(typeof(PathTypeModel));
 
-            if (Model == null) {
-                Model = (IPathTypeModel)Activator.CreateInstance(ModelType);
-            }
+           Singleton = New(new object[] { });
         }   //end PathTypeModelFactory
     }   //end class
 }   //end namespace

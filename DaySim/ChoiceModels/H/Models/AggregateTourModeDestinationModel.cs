@@ -185,8 +185,8 @@ namespace DaySim.ChoiceModels.H.Models {
 
 //				var destinationSubzone = _zoneSubzones[destinationParcel.ZoneId][destinationTransitBand3];
 
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.Run(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.Run(
 					tour.Household.RandomUtility,
 						originParcel.ZoneId,
 						destinationParcel.ZoneId,

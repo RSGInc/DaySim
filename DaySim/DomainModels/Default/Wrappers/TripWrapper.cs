@@ -844,7 +844,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 			var costCoefficient = Tour.CostCoefficient;
 			var timeCoefficient = Tour.TimeCoefficient;
 
-			dynamic pathType;
+            IPathTypeModel pathType;
 
             if (Mode == Global.Settings.Modes.Transit && DestinationPurpose == Global.Settings.Purposes.ChangeMode)  {
                 //if (Global.StopAreaIsEnabled)  {
@@ -869,7 +869,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 //    var origin = IsHalfTourFromOrigin ? parkAndRideZoneId : OriginParcel.ZoneId;
                 //    var destination = IsHalfTourFromOrigin ? OriginParcel.ZoneId : parkAndRideZoneId;
 
-                //    IEnumerable<dynamic> pathTypeModels =
+                //    IEnumerable<IPathTypeModel> pathTypeModels =
                 //        PathTypeModelFactory.Model
                 //        .Run(Household.RandomUtility, origin, destination, minute, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Transit);
                 //    pathType = pathTypeModels.First();
@@ -892,8 +892,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 var origin = IsHalfTourFromOrigin ? DestinationParcel : OriginParcel;
                 var destination = IsHalfTourFromOrigin ? OriginParcel : DestinationParcel;
 
-                IEnumerable<dynamic> pathTypeModels =
-                    PathTypeModelFactory.Model
+                IEnumerable<IPathTypeModel> pathTypeModels =
+                    PathTypeModelFactory.Singleton
                         .Run(Household.RandomUtility, origin, destination, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
                 pathType = pathTypeModels.First();
 

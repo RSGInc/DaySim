@@ -47,8 +47,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 					return;
 				}
 
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.Run(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.Run(
 					tour.Household.RandomUtility,
 						tour.OriginParcel,
 						tour.DestinationParcel,
@@ -74,8 +74,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 				choiceProbabilityCalculator.WriteObservation();
 			}
 			else {
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.Run(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.Run(
 					tour.Household.RandomUtility,
 						tour.OriginParcel,
 						tour.DestinationParcel,
@@ -117,8 +117,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetNestedChoiceProbabilityCalculator();
 
-            IEnumerable<dynamic> pathTypeModels =
-				PathTypeModelFactory.Model.Run(
+            IEnumerable<IPathTypeModel> pathTypeModels =
+				PathTypeModelFactory.Singleton.Run(
 				tour.Household.RandomUtility,
 					tour.OriginParcel,
 					destinationParcel,
@@ -138,7 +138,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			return choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
 		}
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<dynamic> pathTypeModels, IParcelWrapper destinationParcel, int choice = Constants.DEFAULT_VALUE) {
+		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper destinationParcel, int choice = Constants.DEFAULT_VALUE) {
 			var household = tour.Household;
 			var householdTotals = household.HouseholdTotals;
 			var person = tour.Person;

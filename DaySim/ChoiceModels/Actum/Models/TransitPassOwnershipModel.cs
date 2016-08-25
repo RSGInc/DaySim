@@ -96,8 +96,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 			if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
-                IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.Run(
+                IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.Run(
 					person.Household.RandomUtility,
 						homeParcel,
 						workParcel,
@@ -116,9 +116,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 				workGenTimeNoPass = path.GeneralizedTimeLogsum;
 
-                // intermediate variable of type IEnumerable<dynamic> is needed to acquire First() method as extension
+                // intermediate variable of type IEnumerable<IPathTypeModel> is needed to acquire First() method as extension
                 pathTypeModels =
-                    PathTypeModelFactory.Model.Run(
+                    PathTypeModelFactory.Singleton.Run(
                     person.Household.RandomUtility,
                         homeParcel,
                         workParcel,
@@ -144,8 +144,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 			if (!schoolParcelMissing && schoolTranDist < maxTranDist && homeTranDist < maxTranDist) {
 				//				schoolGenTimeNoPass = path.GeneralizedTimeLogsum;
 
-                IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.Run(
+                IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.Run(
 					person.Household.RandomUtility,
 						homeParcel,
 						schoolParcel,

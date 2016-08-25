@@ -52,8 +52,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 					return;
 				}
 
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.RunAll(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.RunAll(
 					tour.Household.RandomUtility,
 						tour.OriginParcel,
 						tour.DestinationParcel,
@@ -78,8 +78,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 				choiceProbabilityCalculator.WriteObservation();
 			}
 			else {
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.RunAll(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.RunAll(
 					tour.Household.RandomUtility,
 						tour.OriginParcel,
 						tour.DestinationParcel,
@@ -120,8 +120,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetNestedChoiceProbabilityCalculator();
 
-			IEnumerable<dynamic> pathTypeModels =
-				PathTypeModelFactory.Model.RunAll(
+			IEnumerable<IPathTypeModel> pathTypeModels =
+				PathTypeModelFactory.Singleton.RunAll(
 				tour.Household.RandomUtility,
 					tour.OriginParcel,
 					destinationParcel,
@@ -140,7 +140,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			return choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
 		}
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<dynamic> pathTypeModels, IParcelWrapper destinationParcel, int choice = Constants.DEFAULT_VALUE) {
+		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper destinationParcel, int choice = Constants.DEFAULT_VALUE) {
 			var household = tour.Household;
 			var householdTotals = household.HouseholdTotals;
 			var person = tour.Person;
@@ -179,7 +179,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			ChoiceModelUtility.SetEscortPercentages(personDay, out escortPercentage, out nonEscortPercentage, true);
 
             //foreach (var pathTypeModel in pathTypeModels) {
-            foreach (dynamic pathTypeModel in pathTypeModels) {
+            foreach (IPathTypeModel pathTypeModel in pathTypeModels) {
                 IPathTypeModel ipathTypeModel = pathTypeModel;
 				var mode = pathTypeModel.Mode;
 				var available = pathTypeModel.Mode != Global.Settings.Modes.ParkAndRide && pathTypeModel.Available;

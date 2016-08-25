@@ -127,8 +127,8 @@ namespace DaySim.ChoiceModels.Actum.Models
 					return;
 				}
 
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.RunAll(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.RunAll(
 						trip.Household.RandomUtility,
 						originParcel,
 						destinationParcel,
@@ -159,8 +159,8 @@ namespace DaySim.ChoiceModels.Actum.Models
 			}
 			else
 			{
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.RunAll(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.RunAll(
 						trip.Household.RandomUtility,
 						originParcel,
 						destinationParcel,
@@ -217,7 +217,7 @@ namespace DaySim.ChoiceModels.Actum.Models
 		}
 
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TripWrapper trip,
-		                      IEnumerable<dynamic> pathTypeModels, IParcelWrapper originParcel,
+		                      IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper originParcel,
 		                      IParcelWrapper destinationParcel,
 		                      int choice = Constants.DEFAULT_VALUE)
 		{

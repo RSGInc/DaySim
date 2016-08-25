@@ -72,8 +72,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 					return;
 				}
 
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.RunAll(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.RunAll(
 					trip.Household.RandomUtility,
 						originParcel,
 						destinationParcel,
@@ -100,8 +100,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 				choiceProbabilityCalculator.WriteObservation();
 			}
 			else {
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.RunAll(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.RunAll(
 					trip.Household.RandomUtility,
 						originParcel,
 						destinationParcel,
@@ -145,7 +145,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			}
 		}
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITripWrapper trip, IEnumerable<dynamic> pathTypeModels, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int departureTime, int choice = Constants.DEFAULT_VALUE) {
+		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITripWrapper trip, IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int departureTime, int choice = Constants.DEFAULT_VALUE) {
 			var household = trip.Household;
 			var householdTotals = household.HouseholdTotals;
 			var person = trip.Person;

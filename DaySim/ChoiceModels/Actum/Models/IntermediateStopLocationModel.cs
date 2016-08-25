@@ -888,8 +888,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				var origin = (leg == 1) ? tripOrigin : tripDestination;
 				var destination = (leg == 1) ? tripDestination : tourOrigin;
 
-				IEnumerable<dynamic> pathTypeModels =
-					PathTypeModelFactory.Model.Run(
+				IEnumerable<IPathTypeModel> pathTypeModels =
+					PathTypeModelFactory.Singleton.Run(
 					randomUtility,
 						origin,
 						destination,
