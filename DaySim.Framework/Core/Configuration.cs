@@ -1461,7 +1461,6 @@ namespace DaySim.Framework.Core
             if (requestedObject == null)
             {
                 Global.PrintFile.WriteLine("getCustomizationType for '" + requestedType + "' could not find a loaded object of that type and is returning null");
-
             }
             return requestedObject;
         }   //end getCustomizationType

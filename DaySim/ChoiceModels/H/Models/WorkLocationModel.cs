@@ -90,7 +90,7 @@ namespace DaySim.ChoiceModels.H.Models {
 			var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, person.Household.ResidenceParcel, choice);
 			var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
 			var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
-			var workLocationUtilites = new WorkLocationUtilities(person, sampleSize, destinationArrivalTime, destinationDepartureTime);
+			var workLocationUtilites = new WorkLocationUtilities(this, person, sampleSize, destinationArrivalTime, destinationDepartureTime);
 
 			destinationSampler.SampleTourDestinations(workLocationUtilites);
 
@@ -112,19 +112,22 @@ namespace DaySim.ChoiceModels.H.Models {
 			alternative.AddNestedAlternative(sampleSize + 3, 1, 98);
 		}
 
-        protected static void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist) {
+        protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist) {
             //see PSRC customization dll for example
+            Global.PrintFile.WriteLine("Generic H WorkLocationModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
         }
 
         private sealed class WorkLocationUtilities : ISamplingUtilities {
-			private readonly IPersonWrapper _person;
+            private readonly WorkLocationModel _parentClass;
+            private readonly IPersonWrapper _person;
 			private readonly int _sampleSize;
 			private readonly int _destinationArrivalTime;
 			private readonly int _destinationDepartureTime;
 			private readonly int[] _seedValues;
 
-			public WorkLocationUtilities(IPersonWrapper person, int sampleSize, int destinationArrivalTime, int destinationDepartureTime) {
-				_person = person;
+			public WorkLocationUtilities(WorkLocationModel parentClass, IPersonWrapper person, int sampleSize, int destinationArrivalTime, int destinationDepartureTime) {
+                _parentClass = parentClass;
+                _person = person;
 				_sampleSize = sampleSize;
 				_destinationArrivalTime = destinationArrivalTime;
 				_destinationDepartureTime = destinationDepartureTime;
@@ -278,8 +281,7 @@ namespace DaySim.ChoiceModels.H.Models {
 
                 var homedist = _person.Household.ResidenceParcel.District;
                 var zonedist = destinationParcel.District;
-                RegionSpecificCustomizations(alternative, homedist, zonedist);
-
+                _parentClass.RegionSpecificCustomizations(alternative, homedist, zonedist);
             }
 
         }

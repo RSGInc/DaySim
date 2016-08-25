@@ -142,18 +142,14 @@ namespace DaySim.PathTypeModels
             return list;
         }
 
-        protected static void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
-            //toggle region specific transit impedance calculation
-            if (Global.Configuration.DVRPC == true) {
-                throw new Exception("Internal PathTypeModel.RegionSpecificTransitImpedanceCalculation when this should have been handled by CustomizationDll");
-            } else if (Global.Configuration.PSRC == true) {
-                throw new Exception("Internal PathTypeModel.RegionSpecificTransitImpedanceCalculation when this should have been handled by CustomizationDll");
-            } else if (Global.Configuration.Nashville == true) {
-                throw new Exception("Internal PathTypeModel.RegionSpecificTransitImpedanceCalculation when this should have been handled by CustomizationDll");
-            } //end Nashville
-             else if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime) {
+        protected virtual void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight)
+        {
+            Global.PrintFile.WriteLine("Generic RegionSpecificTransitImpedanceCalculation being called so must not be overridden by CustomizationDll");
+            if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime)
+            {
 
-                if (Math.Abs(pathTypeSpecificTimeWeight) > Constants.EPSILON) {
+                if (Math.Abs(pathTypeSpecificTimeWeight) > Constants.EPSILON)
+                {
                     pathTypeSpecificTime =
                        pathType == Global.Settings.PathTypes.LightRail
                           ? ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
@@ -161,7 +157,8 @@ namespace DaySim.PathTypeModels
                               ? ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
                               : 0D;
 
-                    if (returnTime > 0) {
+                    if (returnTime > 0)
+                    {
                         pathTypeSpecificTime +=
                            pathType == Global.Settings.PathTypes.LightRail
                               ? ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable

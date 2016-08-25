@@ -5,7 +5,7 @@ namespace DaySim.ChoiceModels.Default.Models
 {
     class PSRC_WorkLocationModel : WorkLocationModel
     {
-        protected static new void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist)
+        protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist)
         {
             Global.PrintFile.WriteLine("Default PSRC_WorkLocationModel.RegionSpecificCustomizations called");
             var homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;

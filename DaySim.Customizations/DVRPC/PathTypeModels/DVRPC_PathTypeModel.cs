@@ -5,7 +5,7 @@ namespace DaySim.PathTypeModels
 {
     class DVRPC_PathTypeModel : PathTypeModel
     {
-        protected new static void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight)
+        protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight)
         {
             Global.PrintFile.WriteLine("DVRPC_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
             //this is the outer weight on the sum of all the path specific terms

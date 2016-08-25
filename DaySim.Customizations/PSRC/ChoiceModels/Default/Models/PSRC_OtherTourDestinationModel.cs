@@ -5,7 +5,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 namespace DaySim.ChoiceModels.Default.Models {
     class PSRC_OtherTourDestinationModel : OtherTourDestinationModel {
 
-        protected static new void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, IParcelWrapper originParcel, IParcelWrapper destinationParcel) {
+        protected override void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, IParcelWrapper originParcel, IParcelWrapper destinationParcel) {
             Global.PrintFile.WriteLine("PSRC_OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients called");
             var origdist = originParcel.District;
             var destdist = destinationParcel.District;

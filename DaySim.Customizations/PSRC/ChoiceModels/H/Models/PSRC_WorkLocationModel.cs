@@ -1,9 +1,12 @@
 ﻿using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 
-namespace DaySim.ChoiceModels.H.Models {
-    class PSRC_WorkLocationModel : WorkLocationModel {
-        protected static new void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist) {
+namespace DaySim.ChoiceModels.H.Models
+{
+    class PSRC_WorkLocationModel : WorkLocationModel
+    {
+        protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist)
+        {
             Global.PrintFile.WriteLine("H PSRC_WorkLocationModel.RegionSpecificCustomizations called");
             var homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
             var homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
