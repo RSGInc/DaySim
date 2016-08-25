@@ -32,7 +32,7 @@ namespace DaySim {
             try {
                 var options = new OptionSet {
                     {"c|configuration=", "Path to configuration file", v => _configurationPath = v},
-                    {"o|overrides=", "name value pairs to override configuration file values", v => _overrides = v},
+                    {"o|overrides=", "comma delimited name=value pairs to override configuration file values", v => _overrides = v},
                     {"p|printfile=", "Path to print file", v => _printFilePath = v},
                     {"s|start=", "Start index of household range", v => _start = int.Parse(v)},
                     {"e|end=", "End index of household range", v => _end = int.Parse(v)},

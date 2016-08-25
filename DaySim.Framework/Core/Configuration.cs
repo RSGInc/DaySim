@@ -1486,12 +1486,14 @@ namespace DaySim.Framework.Core
 
                         foreach (Type type in types)
                         {
-                            if (type.IsInterface || type.IsAbstract)
+                             if (type.IsInterface || type.IsAbstract)
                             {
+                                Global.PrintFile.WriteLine("LoadCustomizationTypes: found type: " + type + " but is not saving because type.IsInterface=" + type.IsInterface + " or type.IsAbstract=" + type.IsAbstract);
                                 continue;
                             }
                             else
                             {
+                                Global.PrintFile.WriteLine("LoadCustomizationTypes: found type: " + type + " and is keeping it.");
                                 pluginTypes.Add(type);
                             }
                         }   //end if assembly != null
@@ -1503,7 +1505,7 @@ namespace DaySim.Framework.Core
                 }
                 else
                 {
-                    Global.PrintFile.WriteLine("LoadCustomizationTypes: Successfully loaded dll: " + dllFile + " with " + pluginTypes.Count + " types: " + pluginTypes.ToString());
+                    Global.PrintFile.WriteLine("LoadCustomizationTypes: Successfully loaded dll: " + dllFile + " with " + pluginTypes.Count + " types: " + String.Join(", ", pluginTypes));
                 }
             } // end if customization dll specified
             return pluginTypes;

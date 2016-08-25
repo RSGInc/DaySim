@@ -37,7 +37,12 @@ namespace DaySim.ChoiceModels.Default.Models {
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.OtherTourDestinationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
 		}
 
-		public void Run(ITourWrapper tour, int sampleSize) {
+        protected static void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, IParcelWrapper originParcel, IParcelWrapper destinationParcel)
+        {
+            //see PSRC_OtherTourDestinationModel for example
+        }
+
+        public void Run(ITourWrapper tour, int sampleSize) {
 			if (tour == null) {
 				throw new ArgumentNullException("tour");
 			}
@@ -389,9 +394,6 @@ namespace DaySim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(113, destinationParcel.GetStudentsK12());
 				}
 			}
-
-            protected void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, IParcelWrapper originParcel, IParcelWrapper destinationParcel) {
-             }
 
             public static bool ShouldRunInEstimationModeForModel(ITourWrapper tour) {
 				// determine validity and need, then characteristics
