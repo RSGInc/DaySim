@@ -1501,7 +1501,7 @@ namespace DaySim.Framework.Core
                 if (!fileExists)
                 {
                     //if file not found relative to the basePath then look for it in the same directory as the .exe
-                    string directoryName = ConfigurationManager.GetExecutingAssemblyLocation();
+                    string directoryName = ConfigurationManagerRSG.GetExecutingAssemblyLocation();
                     dllFile = Path.Combine(directoryName, Global.Configuration.CustomizationDll);
                     fileExists = File.Exists(dllFile);
                     Global.PrintFile.WriteLine("LoadCustomizationTypes: dll '" + Global.Configuration.CustomizationDll + "' not found at location relative to BasePath so looked relative to executing assembly location: " + dllFile + ". File exists?: " + fileExists);

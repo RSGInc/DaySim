@@ -47,7 +47,7 @@ namespace DaySim {
                     options.WriteOptionDescriptions(Console.Out);
 
                     Console.WriteLine();
-                    Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManager.DEFAULT_CONFIGURATION_NAME);
+                    Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME);
 
                     Console.WriteLine();
                     Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the output directory.", PrintFile.DEFAULT_PRINT_FILENAME);
@@ -82,7 +82,7 @@ namespace DaySim {
                 if (!File.Exists(_configurationPath)) {
                     throw new Exception("Configuration file '" + _configurationPath + "' does not exist.");
                 }
-                var configurationManager = new ConfigurationManager(_configurationPath);
+                var configurationManager = new ConfigurationManagerRSG(_configurationPath);
 
                 Global.Configuration = configurationManager.Open();
 

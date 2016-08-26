@@ -28,7 +28,7 @@ namespace DaySimController {
 				options.WriteOptionDescriptions(Console.Out);
 
 				Console.WriteLine();
-				Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManager.DEFAULT_CONFIGURATION_NAME);
+				Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME);
 
 				Console.WriteLine();
 				Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the same directory as the executable.", PrintFile.DEFAULT_PRINT_FILENAME);
@@ -39,7 +39,7 @@ namespace DaySimController {
 				Environment.Exit(0);
 			}
 
-			var configurationManager = new ConfigurationManager(_configurationPath);
+			var configurationManager = new ConfigurationManagerRSG(_configurationPath);
 			var configuration = configurationManager.Open();
 
 			Global.Configuration = configuration;

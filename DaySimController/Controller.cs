@@ -189,7 +189,7 @@ namespace DaySimController {
 			
 			for (var i = 0; i < machines.Count; i++) {
 				var machine = machines[i];
-				var configurationManager = new ConfigurationManager(machine.ConfigurationPath.ToUncPath(machine.Name));
+				var configurationManager = new ConfigurationManagerRSG(machine.ConfigurationPath.ToUncPath(machine.Name));
 				var configuration = configurationManager.Open();
 
 				var household = new FileInfo(Global.GetOutputPath(Global.Configuration.OutputHouseholdPath));

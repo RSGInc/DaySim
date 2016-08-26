@@ -16,13 +16,13 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace DaySim.Framework.Core {
-	public class ConfigurationManager {
+	public class ConfigurationManagerRSG {
 		public const string DEFAULT_CONFIGURATION_NAME = "Configuration.xml";
 
 		private readonly FileInfo _file;
 		private readonly string _extension;
 
-		public ConfigurationManager(string path) {
+		public ConfigurationManagerRSG(string path) {
 			if (string.IsNullOrEmpty(path)) {
                 string directoryName = GetExecutingAssemblyLocation();
 

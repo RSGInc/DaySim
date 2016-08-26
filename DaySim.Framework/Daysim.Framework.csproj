@@ -81,7 +81,7 @@
     <Compile Include="Coefficients\Coefficient.cs" />
     <Compile Include="Coefficients\CoefficientsReader.cs" />
     <Compile Include="Core\Configuration.cs" />
-    <Compile Include="Core\ConfigurationManager.cs" />
+    <Compile Include="Core\ConfigurationManagerRSG.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\IMinuteSpan.cs" />
     <Compile Include="Core\ITimeWindow.cs" />
@@ -281,6 +281,7 @@
     <Compile Include="Settings\IVotGroups.cs" />
     <Compile Include="ShadowPricing\IParkAndRideShadowPriceNode.cs" />
     <Compile Include="ShadowPricing\IShadowPriceParcel.cs" />
+    <Compile Include="System\Configuration\ConfigurationManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

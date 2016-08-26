@@ -52,7 +52,7 @@ namespace DaySimController {
 				}
 
 				if (string.IsNullOrEmpty(machine.ConfigurationPath)) {
-					machine.ConfigurationPath = machine.CurrentDirectory + @"\" + ConfigurationManager.DEFAULT_CONFIGURATION_NAME;
+					machine.ConfigurationPath = machine.CurrentDirectory + @"\" + ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME;
 				}
 
 				if (string.IsNullOrEmpty(machine.PrintFilePath)) {
