@@ -281,8 +281,7 @@
     <Compile Include="Settings\IVotGroups.cs" />
     <Compile Include="ShadowPricing\IParkAndRideShadowPriceNode.cs" />
     <Compile Include="ShadowPricing\IShadowPriceParcel.cs" />
-    <Compile Include="System\Configuration\ConfigurationManager.cs" />
-  </ItemGroup>
+   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

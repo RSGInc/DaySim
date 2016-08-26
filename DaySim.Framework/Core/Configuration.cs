@@ -1440,7 +1440,9 @@ namespace DaySim.Framework.Core
         [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;
 
-        public enum NodeDistanceReaderTypes { HDF5, TextOrBinary };
+        public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
+
+        [XmlAttribute]
         public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
 
         private List<Type> pluginTypes = null;
