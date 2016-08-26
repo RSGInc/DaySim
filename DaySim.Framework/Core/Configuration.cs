@@ -1451,26 +1451,36 @@ namespace DaySim.Framework.Core
             Type returnType = null;
             if (!assignableObjectTypes.TryGetValue(requestedType, out returnType))
             {
-                if (pluginTypes == null)
+                lock (assignableObjectTypes)
                 {
-                    pluginTypes = LoadCustomizationTypes();
-                }
-                foreach (Type loadedType in pluginTypes)
-                {
-                    if (requestedType.IsAssignableFrom(loadedType))
+                    if (assignableObjectTypes.TryGetValue(requestedType, out returnType))
                     {
-                        returnType = loadedType;
-                        Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
-                        break;
+                        Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' found type was filled in while waiting for lock");
                     }
-                }   //end foreach
-                if (returnType == null)
-                {
-                    returnType = requestedType;
-                    Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
-                }
-                //add to dictionary so we have quick retrieval next time.
-                assignableObjectTypes.Add(requestedType, returnType);
+                    else
+                    {
+                        if (pluginTypes == null)
+                        {
+                            pluginTypes = LoadCustomizationTypes();
+                        }
+                        foreach (Type loadedType in pluginTypes)
+                        {
+                            if (requestedType.IsAssignableFrom(loadedType))
+                            {
+                                returnType = loadedType;
+                                Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
+                                break;
+                            }
+                        }   //end foreach
+                        if (returnType == null)
+                        {
+                            returnType = requestedType;
+                            Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
+                        }
+                        //add to dictionary so we have quick retrieval next time.
+                        assignableObjectTypes.Add(requestedType, returnType);
+                    } //end if still not in dictionary after getting lock
+                }   //end lock
             }   //end if not in dictionary
             return returnType;
         }   //end getCustomizationType
