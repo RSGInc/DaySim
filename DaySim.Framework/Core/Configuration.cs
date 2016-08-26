@@ -1460,7 +1460,7 @@ namespace DaySim.Framework.Core
                 {
                     if (assignableObjectTypes.TryGetValue(requestedType, out returnType))
                     {
-                        Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' found type was filled in while waiting for lock");
+                        //Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' found type was filled in while waiting for lock");
                     }
                     else
                     {
