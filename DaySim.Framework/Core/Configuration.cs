@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
@@ -1443,37 +1444,51 @@ namespace DaySim.Framework.Core
         public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
 
         private List<Type> pluginTypes = null;
-        private static ConcurrentDictionary<Type, Type> assignableObjectTypes = new ConcurrentDictionary<Type, Type>();
+        //could use a ConcurrentDictionary with GetOrAdd method but the assignment can then happend multiple times which
+        //is not terrible but makes for a confusing log since the same type is logged multiple times.
+        //See https://blogs.endjin.com/2015/10/using-lazy-and-concurrentdictionary-to-ensure-a-thread-safe-run-once-lazy-loaded-collection/
+        private readonly Dictionary<Type, Type> assignableObjectTypes = new Dictionary<Type, Type>();
         /**
          * Given a type, if that type was found in the customization dll return it, otherwise return the requested type
          **/
         public Type getAssignableObjectType(Type requestedType)
         {
-            Type returnType = assignableObjectTypes.GetOrAdd(requestedType, key =>
+            Type returnType = null;
+            if (!assignableObjectTypes.TryGetValue(requestedType, out returnType))
             {
-                Type dictionaryValueType = null;
-                if (pluginTypes == null)
+                lock (assignableObjectTypes)
                 {
-                    pluginTypes = LoadCustomizationTypes();
-                }
-                foreach (Type loadedType in pluginTypes)
-                {
-                    if (requestedType.IsAssignableFrom(loadedType))
+                    if (assignableObjectTypes.TryGetValue(requestedType, out returnType))
                     {
-                        dictionaryValueType = loadedType;
-                        Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
-                        break;
+                        Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' found type was filled in while waiting for lock");
                     }
-                }   //end foreach
-                if (dictionaryValueType == null)
-                {
-                    dictionaryValueType = requestedType;
-                    Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
-                }
-                return dictionaryValueType;
-            });
+                    else
+                    {
+                        if (pluginTypes == null)
+                        {
+                            pluginTypes = LoadCustomizationTypes();
+                        }
+                        foreach (Type loadedType in pluginTypes)
+                        {
+                            if (requestedType.IsAssignableFrom(loadedType))
+                            {
+                                returnType = loadedType;
+                                Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
+                                break;
+                            }
+                        }   //end foreach
+                        if (returnType == null)
+                        {
+                            returnType = requestedType;
+                            Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
+                        }
+                        //add to dictionary so we have quick retrieval next time.
+                        assignableObjectTypes.Add(requestedType, returnType);
+                    } //end if still not in dictionary after getting lock
+                }   //end lock
+            }   //end if not in dictionary
             return returnType;
-        }   //end getCustomizationType
+        }   //end getAssignableObjectType
 
         public static List<Type> LoadCustomizationTypes()
         {
