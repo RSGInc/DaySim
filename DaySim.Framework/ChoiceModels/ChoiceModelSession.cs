@@ -9,25 +9,16 @@ using DaySim.Framework.Core;
 using System;
 using System.Collections.Concurrent;
 
-namespace DaySim.Framework.ChoiceModels {
-	public class ChoiceModelSession {
-		private readonly ConcurrentDictionary<Type, IChoiceModel> _dictionary = new ConcurrentDictionary<Type, IChoiceModel>();
-
-		public TChoiceModel Get<TChoiceModel>() where TChoiceModel : IChoiceModel {
-			var type = typeof (TChoiceModel);
-
-
-			var model = _dictionary.GetOrAdd(type, key => {
-                var m = (IChoiceModel) Global.Configuration.getAssignableObjectType(type);
-                if (m == null) { 
-                    m = (IChoiceModel) Activator.CreateInstance(type);
-                }
-				m.RunInitialize();
-
-				return m;
-			});
-
-			return (TChoiceModel) model;
-		}
-	}
+namespace DaySim.Framework.ChoiceModels
+{
+    public class ChoiceModelSession
+    {
+        public TChoiceModel Get<TChoiceModel>() where TChoiceModel : IChoiceModel
+        {
+            Type type = Global.Configuration.getAssignableObjectType(typeof(TChoiceModel));
+            TChoiceModel model = (TChoiceModel)Activator.CreateInstance(type);
+            model.RunInitialize();
+            return model;
+        }
+    }
 }

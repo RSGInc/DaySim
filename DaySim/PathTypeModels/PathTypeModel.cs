@@ -173,7 +173,7 @@ namespace DaySim.PathTypeModels
 
         protected virtual void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight)
         {
-            Global.PrintFile.WriteLine("Generic RegionSpecificTransitImpedanceCalculation being called so must not be overridden by CustomizationDll");
+            //Global.PrintFile.WriteLine("Generic RegionSpecificTransitImpedanceCalculation being called so must not be overridden by CustomizationDll");
             if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime)
             {
 

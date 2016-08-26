@@ -40,7 +40,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         protected virtual void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, IParcelWrapper originParcel, IParcelWrapper destinationParcel)
         {
             //see PSRC_OtherTourDestinationModel for example
-            Global.PrintFile.WriteLine("Generic OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients being called so must not be overridden by CustomizationDll");
+            //Global.PrintFile.WriteLine("Generic OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients being called so must not be overridden by CustomizationDll");
         }
 
         public void Run(ITourWrapper tour, int sampleSize) {

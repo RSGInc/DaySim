@@ -8,7 +8,7 @@ namespace DaySim.PathTypeModels
     {
          protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight)
         {
-            Global.PrintFile.WriteLine("Nashville_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
+            //Global.PrintFile.WriteLine("Nashville_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
             //Nashville BRT coded in Ferry
             //Nashville Commuter Rail coded in Commuter rail
             //Nashville Express Bus coded in Premium bus

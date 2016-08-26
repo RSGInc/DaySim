@@ -7,6 +7,7 @@
 
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -1442,46 +1443,35 @@ namespace DaySim.Framework.Core
         public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
 
         private List<Type> pluginTypes = null;
-        private static Dictionary<Type, Type> assignableObjectTypes = new Dictionary<Type, Type>();
+        private static ConcurrentDictionary<Type, Type> assignableObjectTypes = new ConcurrentDictionary<Type, Type>();
         /**
          * Given a type, if that type was found in the customization dll return it, otherwise return the requested type
          **/
         public Type getAssignableObjectType(Type requestedType)
         {
-            Type returnType = null;
-            if (!assignableObjectTypes.TryGetValue(requestedType, out returnType))
+            Type returnType = assignableObjectTypes.GetOrAdd(requestedType, key =>
             {
-                lock (assignableObjectTypes)
+                Type dictionaryValueType = null;
+                if (pluginTypes == null)
                 {
-                    if (assignableObjectTypes.TryGetValue(requestedType, out returnType))
+                    pluginTypes = LoadCustomizationTypes();
+                }
+                foreach (Type loadedType in pluginTypes)
+                {
+                    if (requestedType.IsAssignableFrom(loadedType))
                     {
-                        Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' found type was filled in while waiting for lock");
+                        dictionaryValueType = loadedType;
+                        Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
+                        break;
                     }
-                    else
-                    {
-                        if (pluginTypes == null)
-                        {
-                            pluginTypes = LoadCustomizationTypes();
-                        }
-                        foreach (Type loadedType in pluginTypes)
-                        {
-                            if (requestedType.IsAssignableFrom(loadedType))
-                            {
-                                returnType = loadedType;
-                                Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
-                                break;
-                            }
-                        }   //end foreach
-                        if (returnType == null)
-                        {
-                            returnType = requestedType;
-                            Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
-                        }
-                        //add to dictionary so we have quick retrieval next time.
-                        assignableObjectTypes.Add(requestedType, returnType);
-                    } //end if still not in dictionary after getting lock
-                }   //end lock
-            }   //end if not in dictionary
+                }   //end foreach
+                if (dictionaryValueType == null)
+                {
+                    dictionaryValueType = requestedType;
+                    Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
+                }
+                return dictionaryValueType;
+            });
             return returnType;
         }   //end getCustomizationType
 

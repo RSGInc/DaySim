@@ -7,7 +7,7 @@ namespace DaySim.ChoiceModels.H.Models
     {
         protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist)
         {
-            Global.PrintFile.WriteLine("H PSRC_WorkLocationModel.RegionSpecificCustomizations called");
+            //Global.PrintFile.WriteLine("H PSRC_WorkLocationModel.RegionSpecificCustomizations called");
             var homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
             var homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
             var homeEastWorkCBD = homedist == 6 && zonedist == 4 ? 1 : 0;

@@ -6,7 +6,7 @@ namespace DaySim.ChoiceModels.Default.Models {
     class PSRC_OtherTourDestinationModel : OtherTourDestinationModel {
 
         protected override void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, IParcelWrapper originParcel, IParcelWrapper destinationParcel) {
-            Global.PrintFile.WriteLine("PSRC_OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients called");
+            //Global.PrintFile.WriteLine("PSRC_OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients called");
             var origdist = originParcel.District;
             var destdist = destinationParcel.District;
             var origKitDestTRP = (origdist == 9 || origdist == 11) && (destdist == 8 || destdist == 10 || destdist == 7) ? 1 : 0;

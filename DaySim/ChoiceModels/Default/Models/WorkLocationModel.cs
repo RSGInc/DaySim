@@ -140,7 +140,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
         protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist) {
             //see PSRC customization dll for example
-            Global.PrintFile.WriteLine("Generic Default WorkLocationModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
+            //Global.PrintFile.WriteLine("Generic Default WorkLocationModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
         }
 
         private sealed class WorkLocationUtilities : ISamplingUtilities {

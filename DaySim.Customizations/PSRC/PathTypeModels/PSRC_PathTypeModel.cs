@@ -7,7 +7,7 @@ namespace DaySim.PathTypeModels
     {
         protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight)
         {
-            Global.PrintFile.WriteLine("PSRC_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
+            //Global.PrintFile.WriteLine("PSRC_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
             //this is the outer weight on the sum of all the path specific terms
             pathTypeSpecificTimeWeight = 1.0;
             pathTypeSpecificTime = Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight * ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
