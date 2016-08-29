@@ -87,6 +87,7 @@
     <Compile Include="Core\ITimeWindow.cs" />
     <Compile Include="Core\ITourModeImpedance.cs" />
     <Compile Include="Core\ITripModeImpedance.cs" />
+    <Compile Include="Core\LazyConcurrentDictionary.cs" />
     <Compile Include="Core\UsedImplicitlyAttribute.cs" />
     <Compile Include="DomainModels\Creators\ICreator.cs" />
     <Compile Include="DomainModels\Creators\IFullHalfTourCreator.cs" />
@@ -281,7 +282,7 @@
     <Compile Include="Settings\IVotGroups.cs" />
     <Compile Include="ShadowPricing\IParkAndRideShadowPriceNode.cs" />
     <Compile Include="ShadowPricing\IShadowPriceParcel.cs" />
-   </ItemGroup>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
