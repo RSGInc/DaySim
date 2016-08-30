@@ -4,37 +4,21 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.21.0">
+      <projectUrl>https://github.com/RSGInc/psrc_daysim_test/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-         <name>daysim_git_folder</name>
-          <description>Default is the fixed dev location but when called by Jenkins this will be where Jenkins checked out DaySim-git repo and built it</description>
-          <defaultValue>E:\Projects\DaySim\regional_data\DaySim</defaultValue>
+          <name>daysim_git_folder</name>
+          <description>Default is the fixed dev location but when called by Jenkins this will be where Jenkins checked out DaySim repo and built it</description>
+          <defaultValue>C:\\rd\DaySim</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.5.2">
-    <configVersion>2</configVersion>
-    <userRemoteConfigs>
-      <hudson.plugins.git.UserRemoteConfig>
-        <url>https://github.com/RSGInc/sfcta_daysim_test</url>
-        <credentialsId>56fea146-d8a0-4083-9998-38312cf740a5</credentialsId>
-      </hudson.plugins.git.UserRemoteConfig>
-    </userRemoteConfigs>
-    <branches>
-      <hudson.plugins.git.BranchSpec>
-        <name>*/master</name>
-      </hudson.plugins.git.BranchSpec>
-    </branches>
-    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <submoduleCfg class="list"/>
-    <extensions>
-      <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
-        <relativeTargetDir>C:\\rd\\sfcta_daysim_test-git</relativeTargetDir>
-      </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
-    </extensions>
-  </scm>
+  <scm class="hudson.scm.NullSCM"/>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
@@ -42,14 +26,20 @@
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <hudson.plugins.parameterizedtrigger.TriggerBuilder plugin="parameterized-trigger@2.31">
+    <hudson.tasks.BatchFile>
+      <command>REM Could not get GitHub source control to correctly pull master so doing manually&#xd;
+cd C:\\rd\\psrc_daysim_test&#xd;
+git pull&#xd;
+</command>
+    </hudson.tasks.BatchFile>
+    <hudson.plugins.parameterizedtrigger.TriggerBuilder plugin="parameterized-trigger@2.32">
       <configs>
         <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
           <configs>
             <hudson.plugins.parameterizedtrigger.NodeParameters/>
             <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
               <properties>daysim_git_folder=$daysim_git_folder
-start_folder=C:\\rd\\sfcta_daysim_test-git</properties>
+regional_data_directory=C:\\rd\\psrc_daysim_test</properties>
             </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
           </configs>
           <projects>regress_subfolders</projects>
