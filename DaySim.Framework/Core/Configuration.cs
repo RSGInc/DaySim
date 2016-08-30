@@ -1446,51 +1446,34 @@ namespace DaySim.Framework.Core
         public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
 
         private List<Type> pluginTypes = null;
-        //could use a ConcurrentDictionary with GetOrAdd method but the assignment can then happend multiple times which
-        //is not terrible but makes for a confusing log since the same type is logged multiple times.
-        //See https://blogs.endjin.com/2015/10/using-lazy-and-concurrentdictionary-to-ensure-a-thread-safe-run-once-lazy-loaded-collection/
-        private readonly Dictionary<Type, Type> assignableObjectTypes = new Dictionary<Type, Type>();
+        private readonly LazyConcurrentDictionary<Type, Type> assignableObjectTypes = new LazyConcurrentDictionary<Type, Type>();
         /**
          * Given a type, if that type was found in the customization dll return it, otherwise return the requested type
          **/
         public Type getAssignableObjectType(Type requestedType)
         {
-            Type returnType = null;
-            if (!assignableObjectTypes.TryGetValue(requestedType, out returnType))
-            {
-                lock (assignableObjectTypes)
-                {
-                    if (assignableObjectTypes.TryGetValue(requestedType, out returnType))
-                    {
-                        //Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' found type was filled in while waiting for lock");
-                    }
-                    else
-                    {
-                        if (pluginTypes == null)
-                        {
-                            pluginTypes = LoadCustomizationTypes();
-                        }
-                        foreach (Type loadedType in pluginTypes)
-                        {
-                            if (requestedType.IsAssignableFrom(loadedType))
-                            {
-                                returnType = loadedType;
-                                Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
-                                break;
-                            }
-                        }   //end foreach
-                        if (returnType == null)
-                        {
-                            returnType = requestedType;
-                            Global.PrintFile.WriteLine("getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
-                        }
-                        //add to dictionary so we have quick retrieval next time.
-                        assignableObjectTypes.Add(requestedType, returnType);
-                    } //end if still not in dictionary after getting lock
-                }   //end lock
-            }   //end if not in dictionary
+            Type returnType = assignableObjectTypes.GetOrAdd(requestedType, (key) => getObjectType(key));
             return returnType;
         }   //end getAssignableObjectType
+
+        private Type getObjectType(Type requestedType) {
+            Type returnType = null;
+            if (pluginTypes == null) {
+                pluginTypes = LoadCustomizationTypes();
+            }
+            foreach (Type loadedType in pluginTypes) {
+                if (requestedType.IsAssignableFrom(loadedType)) {
+                    returnType = loadedType;
+                    Global.PrintFile.WriteLine("CustomizationDll getAssignableObjectType for '" + requestedType + "' is returning type '" + loadedType);
+                    break;
+                }
+            }   //end foreach
+            if (returnType == null) {
+                returnType = requestedType;
+                Global.PrintFile.WriteLine("CustomizationDll getAssignableObjectType for '" + requestedType + "' could not find a custom version of that type so is just returning the passed in type");
+            }
+            return returnType;
+        }   //end get getObjectType
 
         public static List<Type> LoadCustomizationTypes()
         {
@@ -1506,7 +1489,7 @@ namespace DaySim.Framework.Core
                     string directoryName = ConfigurationManagerRSG.GetExecutingAssemblyLocation();
                     dllFile = Path.Combine(directoryName, Global.Configuration.CustomizationDll);
                     fileExists = File.Exists(dllFile);
-                    Global.PrintFile.WriteLine("LoadCustomizationTypes: dll '" + Global.Configuration.CustomizationDll + "' not found at location relative to BasePath so looked relative to executing assembly location: " + dllFile + ". File exists?: " + fileExists);
+                    Global.PrintFile.WriteLine("CustomizationDll LoadCustomizationTypes: dll '" + Global.Configuration.CustomizationDll + "' not found at location relative to BasePath so looked relative to executing assembly location: " + dllFile + ". File exists?: " + fileExists);
                 }
                 if (fileExists)
                 {
@@ -1520,12 +1503,12 @@ namespace DaySim.Framework.Core
                         {
                             if (type.IsInterface || type.IsAbstract)
                             {
-                                Global.PrintFile.WriteLine("LoadCustomizationTypes: found type: " + type + " but is not saving because type.IsInterface=" + type.IsInterface + " or type.IsAbstract=" + type.IsAbstract);
+                                Global.PrintFile.WriteLine("CustomizationDll LoadCustomizationTypes: found type: " + type + " but is not saving because type.IsInterface=" + type.IsInterface + " or type.IsAbstract=" + type.IsAbstract);
                                 continue;
                             }
                             else
                             {
-                                Global.PrintFile.WriteLine("LoadCustomizationTypes: found type: " + type + " and is keeping it.");
+                                Global.PrintFile.WriteLine("CustomizationDll LoadCustomizationTypes: found type: " + type + " and is keeping it.");
                                 pluginTypes.Add(type);
                             }
                         }   //end if assembly != null
@@ -1533,11 +1516,11 @@ namespace DaySim.Framework.Core
                 } //end if file exists
                 if (pluginTypes.Count == 0)
                 {
-                    throw new Exception("LoadCustomizationTypes: For dll: " + dllFile + ". File exists?: " + fileExists + ". Assembly loaded?: " + (assembly != null) + " but no types loaded!");
+                    throw new Exception("CustomizationDll LoadCustomizationTypes: For dll: " + dllFile + ". File exists?: " + fileExists + ". Assembly loaded?: " + (assembly != null) + " but no types loaded!");
                 }
                 else
                 {
-                    Global.PrintFile.WriteLine("LoadCustomizationTypes: Successfully loaded dll: " + dllFile + " with " + pluginTypes.Count + " types: " + String.Join(", ", pluginTypes));
+                    Global.PrintFile.WriteLine("CustomizationDll LoadCustomizationTypes: Successfully loaded dll: " + dllFile + " with " + pluginTypes.Count + " types: " + String.Join(", ", pluginTypes));
                 }
             } // end if customization dll specified
             return pluginTypes;
