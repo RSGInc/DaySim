@@ -24,8 +24,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 		private const int MAX_PARAMETER = 199;
 		private const int THETA_PARAMETER = 99;
 
-		private readonly int[] _nestedAlternativeIds = new[] {0, 19, 19, 20, 21, 21, 22, 0, 0, 23};
-		private readonly int[] _nestedAlternativeIndexes = new[] {0, 0, 0, 1, 2, 2, 3, 0, 0, 2};
+		private readonly int[] _nestedAlternativeIds = new[] {0, 19, 19, 20, 21, 21, 22, 0, 0};
+		private readonly int[] _nestedAlternativeIndexes = new[] {0, 0, 0, 1, 2, 2, 3, 0, 0};
 
 		public override void RunInitialize(ICoefficientsReader reader = null)
 		{
@@ -177,35 +177,6 @@ namespace DaySim.ChoiceModels.Default.Models {
 			double nonEscortPercentage;
 
 			ChoiceModelUtility.SetEscortPercentages(personDay, out escortPercentage, out nonEscortPercentage, true);
-
-            // paidRideShare is another special case  - set in config file - use HOV2 impedance 
-            if (Global.Configuration.SetPaidRideShareModeAvailable)
-            {
-                var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov2);
-                var modeExtra = Global.Settings.Modes.PaidRideShare;
-                var availableExtra = pathTypeExtra.Available;
-                var generalizedTimeLogsumExtra = pathTypeExtra.GeneralizedTimeLogsum;
-                var distanceExtra = pathTypeExtra.PathDistance;
-
-                var alternative = choiceProbabilityCalculator.GetAlternative(modeExtra, availableExtra, choice == modeExtra);
-                alternative.Choice = modeExtra;
-
-                alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
-
-                if (availableExtra)
-                {
-                    //	case Global.Settings.Modes.PaidRideShare
-                    alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
-                    alternative.AddUtilityTerm(2, distanceExtra * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit * tour.CostCoefficient);
-                    alternative.AddUtilityTerm(2, Global.Configuration.PaidRideShare_FixedCostPerRide * tour.CostCoefficient);
-
-                    alternative.AddUtilityTerm(90, 1);
-                    alternative.AddUtilityTerm(91, tour.Person.AgeIsBetween18And25.ToFlag());
-                    alternative.AddUtilityTerm(92, tour.Person.AgeIsBetween26And35.ToFlag());
-                    alternative.AddUtilityTerm(93, tour.Person.IsYouth.ToFlag());
-                }
-            }
-
 
             //foreach (var pathTypeModel in pathTypeModels) {
             foreach (IPathTypeModel pathTypeModel in pathTypeModels) {
