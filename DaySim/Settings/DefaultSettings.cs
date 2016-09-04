@@ -314,8 +314,12 @@ namespace DaySim.Settings {
 			get { return 8; }
 		}
 
-		public virtual int Other {
-			get { return 9; }
+        public virtual int PaidRideShare {
+            get { return 9; }
+        }
+
+        public virtual int Other {
+			get { return 10; }
 		}
 
 		public virtual int HovDriver {
