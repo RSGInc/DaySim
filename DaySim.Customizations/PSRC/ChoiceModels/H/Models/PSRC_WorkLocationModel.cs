@@ -1,12 +1,17 @@
 ﻿using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.H.Models
 {
     class PSRC_WorkLocationModel : WorkLocationModel
     {
-        protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist)
+        protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel)
         {
+            var homedist = _person.Household.ResidenceParcel.District;
+            var zonedist = destinationParcel.District;
+
+            //add any region-specific new terms in region-specific class, using coefficient numbers 121-200
             //Global.PrintFile.WriteLine("H PSRC_WorkLocationModel.RegionSpecificCustomizations called");
             var homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
             var homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
@@ -16,14 +21,13 @@ namespace DaySim.ChoiceModels.H.Models
             var homeEvWorkEv = homedist == 2 && zonedist == 2 ? 1 : 0;
             var homeWSWorkEast = homedist == 5 && zonedist == 6 ? 1 : 0;
 
-            alternative.AddUtilityTerm(37, homeTacWorkKit);
-            alternative.AddUtilityTerm(38, homeEvWorkEv);
-            alternative.AddUtilityTerm(39, homeWSWorkEast);
-            alternative.AddUtilityTerm(40, homeSKitWorkTRP);
-            alternative.AddUtilityTerm(45, homeKitWorkTRP);
-            alternative.AddUtilityTerm(47, homeKitWorkTRP);
-            alternative.AddUtilityTerm(48, homeEastWorkCBD);
-            alternative.AddUtilityTerm(49, homeKitWorkCBD);
+            alternative.AddUtilityTerm(122, homeTacWorkKit);
+            alternative.AddUtilityTerm(123, homeEvWorkEv);
+            alternative.AddUtilityTerm(124, homeWSWorkEast);
+            alternative.AddUtilityTerm(125, homeSKitWorkTRP);
+            alternative.AddUtilityTerm(127, homeKitWorkTRP);
+            alternative.AddUtilityTerm(129, homeEastWorkCBD);
+            alternative.AddUtilityTerm(130, homeKitWorkCBD);
         }
     }
 }

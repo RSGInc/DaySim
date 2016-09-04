@@ -27,7 +27,7 @@ namespace DaySim.ChoiceModels.H.Models {
 		private const string CHOICE_MODEL_NAME = "HWorkLocationModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 2;
 		private const int TOTAL_LEVELS = 2;
-		private const int MAX_PARAMETER = 99;
+		private const int MAX_PARAMETER = 200;
 
 		public override void RunInitialize(ICoefficientsReader reader = null)
 		{
@@ -112,7 +112,7 @@ namespace DaySim.ChoiceModels.H.Models {
 			alternative.AddNestedAlternative(sampleSize + 3, 1, 98);
 		}
 
-        protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, int homedist, int zonedist) {
+        protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper person, IParcelWrapper destinationParcel) {
             //see PSRC customization dll for example
             //Global.PrintFile.WriteLine("Generic H WorkLocationModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
         }
@@ -279,9 +279,8 @@ namespace DaySim.ChoiceModels.H.Models {
 				//remove nesting for estimation of conditional MNL 
 				alternative.AddNestedAlternative(_sampleSize + 2, 0, 98);
 
-                var homedist = _person.Household.ResidenceParcel.District;
-                var zonedist = destinationParcel.District;
-                _parentClass.RegionSpecificCustomizations(alternative, homedist, zonedist);
+                //add any region-specific new terms in region-specific class, using coefficient numbers 121-200
+                _parentClass.RegionSpecificCustomizations(alternative, _person, destinationParcel);
             }
 
         }

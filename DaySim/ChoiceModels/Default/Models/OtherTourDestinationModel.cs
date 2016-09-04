@@ -28,7 +28,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;
 		private const int TOTAL_LEVELS = 1;
 		// regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
-		private const int MAX_REGULAR_PARAMETER = 120;
+		private const int MAX_REGULAR_PARAMETER = 200;
 		private const int MaxDistrictNumber = 100;
 		private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
@@ -37,7 +37,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.OtherTourDestinationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
 		}
 
-        protected virtual void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, IParcelWrapper originParcel, IParcelWrapper destinationParcel)
+        protected virtual void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour, IParcelWrapper destinationParcel)
         {
             //see PSRC_OtherTourDestinationModel for example
             //Global.PrintFile.WriteLine("Generic OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients being called so must not be overridden by CustomizationDll");
@@ -269,17 +269,6 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 				alternative.AddUtilityTerm(19, noCarsFlag * c34Ratio);
 
-				// OD shadow pricing
-				if (Global.Configuration.ShouldUseODShadowPricing) {
-					var ori = _tour.OriginParcel.District;
-					var des = destinationParcel.District;
-					//var first = res <= des? res : des;
-					//var second = res <= des? des : res;
-					var shadowPriceConfigurationParameter = ori == des? Global.Configuration.OtherTourDestinationOOShadowPriceCoefficient : Global.Configuration.OtherTourDestinationODShadowPriceCoefficient;
-					var odShadowPriceF12Value = MAX_REGULAR_PARAMETER + Global.Configuration.NumberOfODShadowPricingDistricts * (ori - 1) + des;
-					alternative.AddUtilityTerm(odShadowPriceF12Value, shadowPriceConfigurationParameter);
-				}
-
 
 				if (_tour.DestinationPurpose == Global.Settings.Purposes.Escort) {
 					alternative.AddUtilityTerm(20, tourLogsum);
@@ -325,8 +314,6 @@ namespace DaySim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(33, empMedBuffer);
 					alternative.AddUtilityTerm(34, housesBuffer); // also psrc
 					alternative.AddUtilityTerm(35, studUniBuffer);
-
-                    _parentClass.RegionSpecificOtherTourDistrictCoefficients(alternative, _tour.OriginParcel, destinationParcel);
 
 
                     // Size terms
@@ -396,7 +383,23 @@ namespace DaySim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(112, destinationParcel.StudentsUniversity);
 					alternative.AddUtilityTerm(113, destinationParcel.GetStudentsK12());
 				}
-			}
+
+                //add any region-specific new terms in region-specific class, using coefficient numbers 121-200
+                _parentClass.RegionSpecificOtherTourDistrictCoefficients(alternative, _tour, destinationParcel);
+
+                // OD shadow pricing
+                if (Global.Configuration.ShouldUseODShadowPricing)
+                {
+                    var ori = _tour.OriginParcel.District;
+                    var des = destinationParcel.District;
+                    //var first = res <= des? res : des;
+                    //var second = res <= des? des : res;
+                    var shadowPriceConfigurationParameter = ori == des ? Global.Configuration.OtherTourDestinationOOShadowPriceCoefficient : Global.Configuration.OtherTourDestinationODShadowPriceCoefficient;
+                    var odShadowPriceF12Value = MAX_REGULAR_PARAMETER + Global.Configuration.NumberOfODShadowPricingDistricts * (ori - 1) + des;
+                    alternative.AddUtilityTerm(odShadowPriceF12Value, shadowPriceConfigurationParameter);
+                }
+
+            }
 
             public static bool ShouldRunInEstimationModeForModel(ITourWrapper tour) {
 				// determine validity and need, then characteristics
