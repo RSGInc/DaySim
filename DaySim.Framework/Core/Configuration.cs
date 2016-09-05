@@ -1437,6 +1437,15 @@ namespace DaySim.Framework.Core
 
         [XmlAttribute]
         public double IntrazonalAutoMinutesPerMile_OverrideSkims { get; set; }
+
+        [XmlAttribute]
+        public bool SetPaidRideShareModeAvailable { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideShare_ExtraCostPerDistanceUnit { get; set; } //over and above HOV2 vehicle operating cost, which is already in path impedance
+        [XmlAttribute]
+        public double PaidRideShare_FixedCostPerRide { get; set; } //over and above cost per mile
+
         [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;
 

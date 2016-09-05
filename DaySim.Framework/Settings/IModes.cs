@@ -28,6 +28,8 @@ namespace DaySim.Framework.Settings {
 		int ParkAndRide { get; }
 		
 		int SchoolBus { get; }
+
+        int PaidRideShare { get; }
 		
 		int Other { get; }
 		

@@ -100,50 +100,62 @@ namespace DaySim.ChoiceModels.Default.Models {
 				choiceProbabilityCalculator.WriteObservation();
 			}
 			else {
-				IEnumerable<IPathTypeModel> pathTypeModels =
-					PathTypeModelFactory.Singleton.RunAll(
-					trip.Household.RandomUtility,
-						originParcel,
-						destinationParcel,
-						departureTime,
-						0,
-						trip.Tour.DestinationPurpose,
-						trip.Tour.CostCoefficient,
-						trip.Tour.TimeCoefficient,
-						trip.Person.IsDrivingAge,
-						trip.Household.VehiclesAvailable,
-						trip.Person.GetTransitFareDiscountFraction(),
-						false);
+                //for now, if the tour mode is PaidRideShare, so is the trip mode - will need to re-estimate at some point later
+                if (trip.Tour.Mode == Global.Settings.Modes.PaidRideShare)
+                {
+                    trip.Mode = Global.Settings.Modes.PaidRideShare;
+                    trip.PathType = 0;
+                }
+                else
+                {
+                    IEnumerable<IPathTypeModel> pathTypeModels =
+                    PathTypeModelFactory.Singleton.RunAll(
+                    trip.Household.RandomUtility,
+                        originParcel,
+                        destinationParcel,
+                        departureTime,
+                        0,
+                        trip.Tour.DestinationPurpose,
+                        trip.Tour.CostCoefficient,
+                        trip.Tour.TimeCoefficient,
+                        trip.Person.IsDrivingAge,
+                        trip.Household.VehiclesAvailable,
+                        trip.Person.GetTransitFareDiscountFraction(),
+                        false);
 
-				RunModel(choiceProbabilityCalculator, trip, pathTypeModels, originParcel, destinationParcel, departureTime);
+                    RunModel(choiceProbabilityCalculator, trip, pathTypeModels, originParcel, destinationParcel, departureTime);
 
-				var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(trip.Household.RandomUtility);
+                    var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(trip.Household.RandomUtility);
 
-				if (chosenAlternative == null) {
-					Global.PrintFile.WriteNoAlternativesAvailableWarning(CHOICE_MODEL_NAME, "Run", trip.PersonDay.Id);
-					trip.Mode = Global.Settings.Modes.Hov3;
-					trip.PersonDay.IsValid = false;
-					return;
-				}
+                    if (chosenAlternative == null)
+                    {
+                        Global.PrintFile.WriteNoAlternativesAvailableWarning(CHOICE_MODEL_NAME, "Run", trip.PersonDay.Id);
+                        trip.Mode = Global.Settings.Modes.Hov3;
+                        trip.PersonDay.IsValid = false;
+                        return;
+                    }
 
-				var choice = (int) chosenAlternative.Choice;
+                    var choice = (int)chosenAlternative.Choice;
 
-				trip.Mode = choice;
-				if (choice == Global.Settings.Modes.SchoolBus) {
-					trip.PathType = 0;
-				}
-				else {
-					var chosenPathType = pathTypeModels.First(x => x.Mode == choice);
-					trip.PathType = chosenPathType.PathType;
-					// for transit trips, overwrite origin and destination zones with stop area ids
-					if (Global.StopAreaIsEnabled && choice == Global.Settings.Modes.Transit
-						&& Global.Configuration.WriteStopAreaIDsInsteadOfZonesForTransitTrips) {
-						trip.OriginZoneKey = chosenPathType.PathOriginStopAreaKey;
-						trip.DestinationZoneKey = chosenPathType.PathDestinationStopAreaKey;
-					}
-				}
-			}
-		}
+                    if (choice >= Global.Settings.Modes.SchoolBus)
+                    {
+                        trip.PathType = 0;
+                    }
+                    else
+                    {
+                        var chosenPathType = pathTypeModels.First(x => x.Mode == choice);
+                        trip.PathType = chosenPathType.PathType;
+                        // for transit trips, overwrite origin and destination zones with stop area ids
+                        if (Global.StopAreaIsEnabled && choice == Global.Settings.Modes.Transit
+                            && Global.Configuration.WriteStopAreaIDsInsteadOfZonesForTransitTrips)
+                        {
+                            trip.OriginZoneKey = chosenPathType.PathOriginStopAreaKey;
+                            trip.DestinationZoneKey = chosenPathType.PathDestinationStopAreaKey;
+                        }
+                    }
+                }
+            }
+        }
 
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITripWrapper trip, IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int departureTime, int choice = Constants.DEFAULT_VALUE) {
 			var household = trip.Household;
