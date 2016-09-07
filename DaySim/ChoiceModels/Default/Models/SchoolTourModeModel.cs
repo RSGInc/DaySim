@@ -27,8 +27,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 		private const int MAX_PARAMETER = 199;
 		private const int THETA_PARAMETER = 99;
 
-		private readonly int[] _nestedAlternativeIds = new[] {0, 19, 19, 20, 21, 21, 22, 0, 23, 24};
-		private readonly int[] _nestedAlternativeIndexes = new[] {0, 0, 0, 1, 2, 2, 3, 0, 4, 2};
+		private readonly int[] _nestedAlternativeIds = new[] {0, 19, 19, 20, 21, 21, 22, 0, 23};
+		private readonly int[] _nestedAlternativeIndexes = new[] {0, 0, 0, 1, 2, 2, 3, 0, 4};
 		
 		private readonly ITourCreator _creator = 
 			Global
@@ -200,63 +200,31 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			ChoiceModelUtility.SetEscortPercentages(personDay, out escortPercentage, out nonEscortPercentage);
 
-            // school bus is a special case - use HOV3 impedance
-            {
-                var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov3);
-                var modeExtra = Global.Settings.Modes.SchoolBus;
-                var availableExtra = pathTypeExtra.Available;
-                var generalizedTimeLogsumExtra = pathTypeExtra.GeneralizedTimeLogsum;
+			// school bus is a special case - use HOV3 impedance
+			var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov3);
+			var modeExtra = Global.Settings.Modes.SchoolBus;
+			var availableExtra = pathTypeExtra.Available;
+			var generalizedTimeLogsumExtra = pathTypeExtra.GeneralizedTimeLogsum;
 
-                var alternative = choiceProbabilityCalculator.GetAlternative(modeExtra, availableExtra, choice == modeExtra);
-                alternative.Choice = modeExtra;
+			var alternative = choiceProbabilityCalculator.GetAlternative(modeExtra, availableExtra, choice == modeExtra);
+			alternative.Choice = modeExtra;
 
-                alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
+			alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
-                if (availableExtra)
-                {
-                    //	case Global.Settings.Modes.SchoolBus:
-                    alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
-                    alternative.AddUtilityTerm(10, 1);
-                    alternative.AddUtilityTerm(17, childUnder5Flag);
-                    alternative.AddUtilityTerm(18, adultFlag);
-                }
-            }
+			if (availableExtra) {
+				//	case Global.Settings.Modes.SchoolBus:
+				alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
+				alternative.AddUtilityTerm(10, 1);
+				alternative.AddUtilityTerm(17, childUnder5Flag);
+				alternative.AddUtilityTerm(18, adultFlag);
+			}
 
-            // paidRideShare is another special case  - set in config file - use HOV2 impedance 
-            if (Global.Configuration.SetPaidRideShareModeAvailable)
-            {
-                var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov2);
-                var modeExtra = Global.Settings.Modes.PaidRideShare;
-                var availableExtra = pathTypeExtra.Available;
-                var generalizedTimeLogsumExtra = pathTypeExtra.GeneralizedTimeLogsum;
-                var distanceExtra = pathTypeExtra.PathDistance;
-
-                var alternative = choiceProbabilityCalculator.GetAlternative(modeExtra, availableExtra, choice == modeExtra);
-                alternative.Choice = modeExtra;
-
-                alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
-
-                if (availableExtra)
-                {
-                    //	case Global.Settings.Modes.PaidRideShare
-                    alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
-                    alternative.AddUtilityTerm(2, distanceExtra * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit * tour.CostCoefficient);
-                    alternative.AddUtilityTerm(2, Global.Configuration.PaidRideShare_FixedCostPerRide * tour.CostCoefficient);
-
-                    alternative.AddUtilityTerm(90, 1);
-                    alternative.AddUtilityTerm(91, tour.Person.AgeIsBetween18And25.ToFlag());
-                    alternative.AddUtilityTerm(92, tour.Person.AgeIsBetween26And35.ToFlag());
-                    alternative.AddUtilityTerm(93, tour.Person.IsYouth.ToFlag());
-                }
-            }
-
-            
-            foreach (var pathTypeModel in pathTypeModels) {
+			foreach (var pathTypeModel in pathTypeModels) {
 				var mode = pathTypeModel.Mode;
 				var available = pathTypeModel.Available;
 				var generalizedTimeLogsum = pathTypeModel.GeneralizedTimeLogsum;
 
-				var alternative = choiceProbabilityCalculator.GetAlternative(mode, available, choice == mode);
+				alternative = choiceProbabilityCalculator.GetAlternative(mode, available, choice == mode);
 				alternative.Choice = mode;
 
 				alternative.AddNestedAlternative(_nestedAlternativeIds[mode], _nestedAlternativeIndexes[mode], THETA_PARAMETER);
@@ -275,13 +243,13 @@ namespace DaySim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(28, adultFlag);
 					alternative.AddUtilityTerm(29, drivingAgeStudentFlag);
 					alternative.AddUtilityTerm(129, destinationParcel.MixedUse2Index1());
-                    //						alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(125, originParcel.HouseholdDensity1());
-                    //						alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
-                    //						alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
-                    alternative.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1 + 1));
+//						alternative.AddUtility(128, destinationParcel.TotalEmploymentDensity1());
+//						alternative.AddUtility(127, destinationParcel.NetIntersectionDensity1());
+//						alternative.AddUtility(126, originParcel.NetIntersectionDensity1());
+//						alternative.AddUtility(125, originParcel.HouseholdDensity1());
+//						alternative.AddUtility(124, originParcel.MixedUse2Index1());
+//						alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
+					alternative.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1 + 1));
 				}
 				else if (mode == Global.Settings.Modes.Hov3) {
 					alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT3));
@@ -340,10 +308,10 @@ namespace DaySim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(69, adultFlag);
 					alternative.AddUtilityTerm(169, destinationParcel.MixedUse4Index1());
 					alternative.AddUtilityTerm(168, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtilityTerm(167, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(166, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(165, originParcel.HouseholdDensity1());
-                    alternative.AddUtilityTerm(164, originParcel.MixedUse4Index1());
+//						alternative.AddUtility(167, destinationParcel.NetIntersectionDensity1());
+//						alternative.AddUtility(166, originParcel.NetIntersectionDensity1());
+//						alternative.AddUtility(165, originParcel.HouseholdDensity1());
+					alternative.AddUtilityTerm(164, originParcel.MixedUse4Index1());
 					alternative.AddUtilityTerm(161, (class1Dist > 0).ToFlag());
 					alternative.AddUtilityTerm(162, (class2Dist > 0).ToFlag());
 					alternative.AddUtilityTerm(163, (worstDist > 0).ToFlag());
@@ -352,11 +320,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(70, 1);
                     alternative.AddUtilityTerm(79, adultFlag);
 					alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
-                    //						alternative.AddUtilityTerm(178, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtilityTerm(177, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(176, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
-                    alternative.AddUtilityTerm(179, originParcel.MixedUse4Index1());
+//						alternative.AddUtility(178, destinationParcel.TotalEmploymentDensity1());
+//						alternative.AddUtility(177, destinationParcel.NetIntersectionDensity1());
+//						alternative.AddUtility(176, originParcel.NetIntersectionDensity1());
+//						alternative.AddUtility(175, originParcel.HouseholdDensity1());
+					alternative.AddUtilityTerm(179, originParcel.MixedUse4Index1());
 				}
 			}
 		}
