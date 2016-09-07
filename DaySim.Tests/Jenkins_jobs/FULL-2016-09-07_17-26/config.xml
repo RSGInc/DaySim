@@ -3,7 +3,7 @@
   <disabledAdministrativeMonitors>
     <string>GitHubHookRegisterProblemMonitor</string>
   </disabledAdministrativeMonitors>
-  <version>2.18</version>
+  <version>2.21</version>
   <numExecutors>3</numExecutors>
   <mode>NORMAL</mode>
   <useSecurity>true</useSecurity>
@@ -13,9 +13,9 @@
   <securityRealm class="org.jenkinsci.plugins.GithubSecurityRealm">
     <githubWebUri>https://github.com</githubWebUri>
     <githubApiUri>https://api.github.com</githubApiUri>
-    <clientID>6abb93ebb338f354e0b9</clientID>
-    <clientSecret>Me5rJTX4xl/StGUxD4/YQ4y+KrgwrLJWKXhPpsM+hiLfw24qBX5CKtkDXVGj9qVtAaMrZORTy4mvJG47rLQtBA==</clientSecret>
-    <oauthScopes>read:org,user:email</oauthScopes>
+    <clientID>f1a2dd8ce28dc59e27ea</clientID>
+    <clientSecret>c3oy0Bw7bSeHbhw2k3Vh4OK2z3TVnd/Sv5Q8mQj/GQXl2BGlVRtqpztufnl8iSf0AaMrZORTy4mvJG47rLQtBA==</clientSecret>
+    <oauthScopes>read:org,user:email,admin:repo_hook,repo</oauthScopes>
   </securityRealm>
   <disableRememberMe>false</disableRememberMe>
   <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>

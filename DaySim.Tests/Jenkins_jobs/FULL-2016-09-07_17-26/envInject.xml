@@ -3,7 +3,7 @@
   <envInjectGlobalPasswordEntries>
     <org.jenkinsci.plugins.envinject.EnvInjectGlobalPasswordEntry>
       <name>PeterVermont</name>
-      <value>PJ3woLHasnCbdKgJV5ebZQGjK2TkU8uJryRuO6y0LQQ=</value>
+      <value>ZHGDWCKB8mjJjjd//0q8ZyUf+wMlJ5Q8tBhCry9EieA=</value>
     </org.jenkinsci.plugins.envinject.EnvInjectGlobalPasswordEntry>
   </envInjectGlobalPasswordEntries>
 </org.jenkinsci.plugins.envinject.EnvInjectNodeProperty_-EnvInjectNodePropertyDescriptor>

@@ -4,17 +4,19 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.21.0">
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.21.1">
       <projectUrl>https://github.com/RSGInc/Daysim.git/</projectUrl>
       <displayName></displayName>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.5.3">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.6.0">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
+        <name>origin</name>
+        <refspec>+refs/heads/develop:refs/remotes/origin/develop</refspec>
         <url>https://github.com/RSGInc/DaySim</url>
-        <credentialsId>154f2c7f-ee22-4a2a-9e90-69a3b256de11</credentialsId>
+        <credentialsId>DaySim-Jenkins-user_password</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -26,6 +28,7 @@
     <submoduleCfg class="list"/>
     <extensions>
       <hudson.plugins.git.extensions.impl.PerBuildTag/>
+      <hudson.plugins.git.extensions.impl.CleanBeforeCheckout/>
       <hudson.plugins.git.extensions.impl.PreBuildMerge>
         <options>
           <mergeRemote>origin</mergeRemote>
@@ -34,25 +37,20 @@
           <fastForwardMode>FF</fastForwardMode>
         </options>
       </hudson.plugins.git.extensions.impl.PreBuildMerge>
-      <hudson.plugins.git.extensions.impl.CleanCheckout/>
     </extensions>
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers>
-    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.21.0">
-      <spec></spec>
-    </com.cloudbees.jenkins.GitHubPushTrigger>
+    <hudson.triggers.SCMTrigger>
+      <spec>H/5 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <com.cloudbees.jenkins.GitHubSetCommitStatusBuilder plugin="github@1.21.0">
-      <statusMessage>
-        <content>Jenkins job DaySim_all_regions on WRJMDLPPW01 starting...</content>
-      </statusMessage>
-    </com.cloudbees.jenkins.GitHubSetCommitStatusBuilder>
     <hudson.tasks.BatchFile>
       <command>nuget restore DaySim.sln</command>
     </hudson.tasks.BatchFile>
@@ -65,13 +63,18 @@
       <unstableIfWarnings>false</unstableIfWarnings>
     </hudson.plugins.msbuild.MsBuildBuilder>
     <hudson.tasks.BatchFile>
-      <command>packages\GitVersion.CommandLine.3.6.0\tools\GitVersion.exe /output buildserver</command>
+      <command>packages\GitVersion.CommandLine.3.6.2\tools\GitVersion.exe /output buildserver</command>
     </hudson.tasks.BatchFile>
     <EnvInjectBuilder plugin="envinject@1.92.1">
       <info>
         <propertiesFilePath>gitversion.properties</propertiesFilePath>
       </info>
     </EnvInjectBuilder>
+    <com.cloudbees.jenkins.GitHubSetCommitStatusBuilder plugin="github@1.21.1">
+      <statusMessage>
+        <content>testing_${GitVersion_CommitDate}_${GitVersion_FullSemVer}_${GitVersion_Sha}</content>
+      </statusMessage>
+    </com.cloudbees.jenkins.GitHubSetCommitStatusBuilder>
     <hudson.plugins.parameterizedtrigger.TriggerBuilder plugin="parameterized-trigger@2.32">
       <configs>
         <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
@@ -269,6 +272,52 @@
       </configs>
     </hudson.plugins.parameterizedtrigger.TriggerBuilder>
   </builders>
-  <publishers/>
+  <publishers>
+    <org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter plugin="github@1.21.1">
+      <commitShaSource class="org.jenkinsci.plugins.github.status.sources.BuildDataRevisionShaSource"/>
+      <reposSource class="org.jenkinsci.plugins.github.status.sources.AnyDefinedRepositorySource"/>
+      <contextSource class="org.jenkinsci.plugins.github.status.sources.ManuallyEnteredCommitContextSource">
+        <context>${GitVersion_CommitDate}_${GitVersion_FullSemVer}_${GitVersion_Sha}</context>
+      </contextSource>
+      <statusResultSource class="org.jenkinsci.plugins.github.status.sources.ConditionalStatusResultSource">
+        <results>
+          <org.jenkinsci.plugins.github.status.sources.misc.BetterThanOrEqualBuildResult>
+            <state>SUCCESS</state>
+            <message>${GitVersion_CommitDate}_${GitVersion_FullSemVer}_${GitVersion_Sha} passed!</message>
+            <result>SUCCESS</result>
+          </org.jenkinsci.plugins.github.status.sources.misc.BetterThanOrEqualBuildResult>
+          <org.jenkinsci.plugins.github.status.sources.misc.AnyBuildResult>
+            <state>FAILURE</state>
+            <message>${GitVersion_CommitDate}_${GitVersion_FullSemVer}_${GitVersion_Sha} failed!</message>
+          </org.jenkinsci.plugins.github.status.sources.misc.AnyBuildResult>
+        </results>
+      </statusResultSource>
+      <errorHandlers>
+        <org.jenkinsci.plugins.github.status.err.ChangingBuildStatusErrorHandler>
+          <result>FAILURE</result>
+        </org.jenkinsci.plugins.github.status.err.ChangingBuildStatusErrorHandler>
+      </errorHandlers>
+    </org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter>
+    <hudson.plugins.git.GitPublisher plugin="git@2.6.0">
+      <configVersion>2</configVersion>
+      <pushMerge>true</pushMerge>
+      <pushOnlyIfSuccess>true</pushOnlyIfSuccess>
+      <forcePush>false</forcePush>
+      <tagsToPush>
+        <hudson.plugins.git.GitPublisher_-TagToPush>
+          <targetRepoName>origin</targetRepoName>
+          <tagName>${GitVersion_CommitDate}_${GitVersion_FullSemVer}_${GitVersion_Sha}</tagName>
+          <tagMessage></tagMessage>
+          <createTag>true</createTag>
+          <updateTag>false</updateTag>
+        </hudson.plugins.git.GitPublisher_-TagToPush>
+      </tagsToPush>
+    </hudson.plugins.git.GitPublisher>
+    <hudson.tasks.Mailer plugin="mailer@1.18">
+      <recipients>Peter.Andrews@rsginc.com Ben.Stabler@rsginc.com </recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
   <buildWrappers/>
 </project>

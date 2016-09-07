@@ -3,7 +3,7 @@
   <plugins>
     <entry>
       <string>github-branch-source</string>
-      <string>1.8.1</string>
+      <string>1.9</string>
     </entry>
     <entry>
       <string>git-tag-message</string>
@@ -23,15 +23,19 @@
     </entry>
     <entry>
       <string>git-client</string>
-      <string>1.19.7</string>
+      <string>1.21.0</string>
     </entry>
     <entry>
       <string>scm-api</string>
       <string>1.2</string>
     </entry>
     <entry>
+      <string>pipeline-stage-step</string>
+      <string>2.2</string>
+    </entry>
+    <entry>
       <string>github</string>
-      <string>1.21.0</string>
+      <string>1.21.1</string>
     </entry>
     <entry>
       <string>windows-slaves</string>
@@ -51,7 +55,7 @@
     </entry>
     <entry>
       <string>mailer</string>
-      <string>1.17</string>
+      <string>1.18</string>
     </entry>
     <entry>
       <string>antisamy-markup-formatter</string>
@@ -59,7 +63,7 @@
     </entry>
     <entry>
       <string>pipeline-rest-api</string>
-      <string>1.7</string>
+      <string>2.0</string>
     </entry>
     <entry>
       <string>conditional-buildstep</string>
@@ -131,7 +135,7 @@
     </entry>
     <entry>
       <string>git</string>
-      <string>2.5.3</string>
+      <string>2.6.0</string>
     </entry>
     <entry>
       <string>icon-shim</string>
@@ -155,7 +159,7 @@
     </entry>
     <entry>
       <string>workflow-job</string>
-      <string>2.5</string>
+      <string>2.6</string>
     </entry>
     <entry>
       <string>github-api</string>
@@ -166,8 +170,12 @@
       <string>1.18</string>
     </entry>
     <entry>
+      <string>pipeline-graph-analysis</string>
+      <string>1.1</string>
+    </entry>
+    <entry>
       <string>structs</string>
-      <string>1.3</string>
+      <string>1.5</string>
     </entry>
     <entry>
       <string>msbuild</string>
@@ -179,7 +187,7 @@
     </entry>
     <entry>
       <string>workflow-cps</string>
-      <string>2.12</string>
+      <string>2.13</string>
     </entry>
     <entry>
       <string>ssh-slaves</string>
@@ -196,6 +204,10 @@
     <entry>
       <string>subversion</string>
       <string>2.6</string>
+    </entry>
+    <entry>
+      <string>display-url-api</string>
+      <string>0.2</string>
     </entry>
     <entry>
       <string>saferestart</string>
@@ -219,15 +231,15 @@
     </entry>
     <entry>
       <string>branch-api</string>
-      <string>1.10</string>
+      <string>1.10.2</string>
     </entry>
     <entry>
       <string>Hudson core</string>
-      <string>2.18</string>
+      <string>2.21</string>
     </entry>
     <entry>
       <string>workflow-api</string>
-      <string>2.1</string>
+      <string>2.2</string>
     </entry>
   </plugins>
 </org.jvnet.hudson.plugins.thinbackup.backup.PluginList>
