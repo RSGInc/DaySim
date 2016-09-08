@@ -114,21 +114,30 @@ namespace DaySim.ChoiceModels.Default.Models {
 				}
 
 				var choice = (int) chosenAlternative.Choice;
+                tour.Mode = choice;
 
-				tour.Mode = choice;
-				var chosenPathType = pathTypeModels.First(x => x.Mode == choice);
-				tour.PathType = chosenPathType.PathType;
-				if (choice == Global.Settings.Modes.ParkAndRide) {
-                    tour.ParkAndRideNodeId = chosenPathType.PathParkAndRideNodeId;
-                    tour.ParkAndRidePathType = chosenPathType.PathType;
-                    tour.ParkAndRideTransitTime = chosenPathType.PathParkAndRideTransitTime;
-                    tour.ParkAndRideTransitDistance = chosenPathType.PathParkAndRideTransitDistance;
-                    tour.ParkAndRideTransitCost = chosenPathType.PathParkAndRideTransitCost;
-                    tour.ParkAndRideWalkAccessEgressTime = chosenPathType.PathParkAndRideWalkAccessEgressTime;
-                    tour.ParkAndRideTransitGeneralizedTime = chosenPathType.PathParkAndRideTransitGeneralizedTime;
-                    if (Global.StopAreaIsEnabled) {
-                        tour.ParkAndRideOriginStopAreaKey = chosenPathType.PathOriginStopAreaKey;
-                        tour.ParkAndRideDestinationStopAreaKey = chosenPathType.PathDestinationStopAreaKey;
+                if (choice == Global.Settings.Modes.SchoolBus || choice == Global.Settings.Modes.PaidRideShare)
+                {
+                    tour.PathType = 0;
+                }
+                else
+                {
+                    var chosenPathType = pathTypeModels.First(x => x.Mode == choice);
+                    tour.PathType = chosenPathType.PathType;
+                    if (choice == Global.Settings.Modes.ParkAndRide)
+                    {
+                        tour.ParkAndRideNodeId = chosenPathType.PathParkAndRideNodeId;
+                        tour.ParkAndRidePathType = chosenPathType.PathType;
+                        tour.ParkAndRideTransitTime = chosenPathType.PathParkAndRideTransitTime;
+                        tour.ParkAndRideTransitDistance = chosenPathType.PathParkAndRideTransitDistance;
+                        tour.ParkAndRideTransitCost = chosenPathType.PathParkAndRideTransitCost;
+                        tour.ParkAndRideWalkAccessEgressTime = chosenPathType.PathParkAndRideWalkAccessEgressTime;
+                        tour.ParkAndRideTransitGeneralizedTime = chosenPathType.PathParkAndRideTransitGeneralizedTime;
+                        if (Global.StopAreaIsEnabled)
+                        {
+                            tour.ParkAndRideOriginStopAreaKey = chosenPathType.PathOriginStopAreaKey;
+                            tour.ParkAndRideDestinationStopAreaKey = chosenPathType.PathDestinationStopAreaKey;
+                        }
                     }
                 }
 			}

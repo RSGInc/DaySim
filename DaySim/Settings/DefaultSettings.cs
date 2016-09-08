@@ -319,7 +319,7 @@ namespace DaySim.Settings {
         }
 
         public virtual int Other {
-			get { return 10; }
+			get { return 9; }
 		}
 
 		public virtual int HovDriver {

@@ -30,8 +30,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 		private const string CHOICE_MODEL_NAME = "WorkLocationModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 2;
 		private const int TOTAL_LEVELS = 2;
-		// regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
-		private const int MAX_REGULAR_PARAMETER = 200;
+        // regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
+        private const int THETA_PARAMETER = 98;
+        private const int MAX_REGULAR_PARAMETER = 100;
 		private const int MaxDistrictNumber = 100;
 		private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
@@ -135,7 +136,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			//make oddball alt unavailable and remove nesting for estimation of conditional MNL 
 			//			alternative.Available = false;
-			alternative.AddNestedAlternative(sampleSize + 3, 1, 98);
+			alternative.AddNestedAlternative(sampleSize + 3, 1, THETA_PARAMETER);
 		}
 
         protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) { 
@@ -172,7 +173,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var alternative = sampleItem.Alternative;
 
                 //remove nesting for estimation of conditional MNL 
-                alternative.AddNestedAlternative(_sampleSize + 2, 0, 98);
+                alternative.AddNestedAlternative(_sampleSize + 2, 0, THETA_PARAMETER);
 
                 if (!alternative.Available) {
                     return;
@@ -309,7 +310,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddUtilityTerm(79, _person.Household.HasMissingIncome.ToFlag() * destinationParcel.EmploymentTotal);
                 alternative.AddUtilityTerm(80, _person.Household.HasMissingIncome.ToFlag() * destinationParcel.StudentsUniversity);
 
-                //add any region-specific new terms in region-specific class, using coefficient numbers 121-200
+                //add any region-specific new terms in region-specific class, using coefficient numbers 91-100 or other unused variable #
                 _parentClass.RegionSpecificCustomizations(alternative, _person, destinationParcel);
 
 

@@ -11,7 +11,7 @@ namespace DaySim.ChoiceModels.H.Models
             var homedist = _person.Household.ResidenceParcel.District;
             var zonedist = destinationParcel.District;
 
-            //add any region-specific new terms in region-specific class, using coefficient numbers 121-200
+            //add any region-specific new terms in region-specific class, using coefficient numbers 91-100 or other unused var #
             //Global.PrintFile.WriteLine("H PSRC_WorkLocationModel.RegionSpecificCustomizations called");
             var homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
             var homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
@@ -21,13 +21,13 @@ namespace DaySim.ChoiceModels.H.Models
             var homeEvWorkEv = homedist == 2 && zonedist == 2 ? 1 : 0;
             var homeWSWorkEast = homedist == 5 && zonedist == 6 ? 1 : 0;
 
-            alternative.AddUtilityTerm(122, homeTacWorkKit);
-            alternative.AddUtilityTerm(123, homeEvWorkEv);
-            alternative.AddUtilityTerm(124, homeWSWorkEast);
-            alternative.AddUtilityTerm(125, homeSKitWorkTRP);
-            alternative.AddUtilityTerm(127, homeKitWorkTRP);
-            alternative.AddUtilityTerm(129, homeEastWorkCBD);
-            alternative.AddUtilityTerm(130, homeKitWorkCBD);
+            alternative.AddUtilityTerm(92, homeTacWorkKit);
+            alternative.AddUtilityTerm(93, homeEvWorkEv);
+            alternative.AddUtilityTerm(94, homeWSWorkEast);
+            alternative.AddUtilityTerm(95, homeSKitWorkTRP);
+            alternative.AddUtilityTerm(97, homeKitWorkTRP);
+            alternative.AddUtilityTerm(99, homeEastWorkCBD);
+            alternative.AddUtilityTerm(100, homeKitWorkCBD);
         }
     }
 }

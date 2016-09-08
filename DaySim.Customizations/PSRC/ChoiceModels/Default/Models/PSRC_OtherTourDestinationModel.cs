@@ -8,8 +8,8 @@ namespace DaySim.ChoiceModels.Default.Models {
         protected override void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper _tour, IParcelWrapper destinationParcel) {
 
 
-             //add any region-specific new terms in region-specific class, using coefficient numbers 121-200
-             //Global.PrintFile.WriteLine("PSRC_OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients called");
+            //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #
+            //Global.PrintFile.WriteLine("PSRC_OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients called");
             var origdist = _tour.OriginParcel.District;
             var destdist = destinationParcel.District;
             var origKitDestTRP = (origdist == 9 || origdist == 11) && (destdist == 8 || destdist == 10 || destdist == 7) ? 1 : 0;
@@ -18,11 +18,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             var origKitDestNotKit = (origdist == 9 || origdist == 11) && (destdist != 9 && destdist != 11) ? 1 : 0;
             var origSTacWorkCBD = (origdist == 11 && destdist == 4) ? 1 : 0;
 
-            alternative.AddUtilityTerm(121, origEastDestCBD);
-            alternative.AddUtilityTerm(122, origKitDestTRP);
-            alternative.AddUtilityTerm(123, origTacDestKit);
-            alternative.AddUtilityTerm(124, origKitDestNotKit);
-            alternative.AddUtilityTerm(125, origSTacWorkCBD);
+            alternative.AddUtilityTerm(115, origEastDestCBD);
+            alternative.AddUtilityTerm(116, origKitDestTRP);
+            alternative.AddUtilityTerm(117, origTacDestKit);
+            alternative.AddUtilityTerm(118, origKitDestNotKit);
+            alternative.AddUtilityTerm(119, origSTacWorkCBD);
         }
     }
 }

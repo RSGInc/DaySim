@@ -854,8 +854,9 @@ namespace DaySim.ChoiceModels.Default {
 						trip.DestinationZoneKey = trip.Tour.ParkAndRideDestinationStopAreaKey;
 					}
 				}
-				else {
-						ChoiceModelFactory.TotalTimesTripModeModelRun[batchNumber]++;
+                else
+                {
+					ChoiceModelFactory.TotalTimesTripModeModelRun[batchNumber]++;
 					Global.ChoiceModelSession.Get<TripModeModel>().Run(trip);
 				}
 				if (!trip.PersonDay.IsValid) {

@@ -109,9 +109,17 @@ namespace DaySim.ChoiceModels.Default.Models {
 				var choice = (int) chosenAlternative.Choice;
 
 				subtour.Mode = choice;
-				var chosenPathType = pathTypeModels.First(x => x.Mode == choice);
-				subtour.PathType = chosenPathType.PathType;
-				subtour.ParkAndRideNodeId = choice == Global.Settings.Modes.ParkAndRide ? chosenPathType.PathParkAndRideNodeId : 0;
+                if (choice == Global.Settings.Modes.SchoolBus || choice == Global.Settings.Modes.PaidRideShare)
+                {
+                    subtour.PathType = 0;
+                }
+                else
+                {
+
+                    var chosenPathType = pathTypeModels.First(x => x.Mode == choice);
+                    subtour.PathType = chosenPathType.PathType;
+                    subtour.ParkAndRideNodeId = choice == Global.Settings.Modes.ParkAndRide ? chosenPathType.PathParkAndRideNodeId : 0;
+                }
 			}
 		}
 

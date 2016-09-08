@@ -27,7 +27,7 @@ namespace DaySim.ChoiceModels.H.Models {
 		private const string CHOICE_MODEL_NAME = "HWorkLocationModel";
 		private const int TOTAL_NESTED_ALTERNATIVES = 2;
 		private const int TOTAL_LEVELS = 2;
-		private const int MAX_PARAMETER = 200;
+		private const int MAX_PARAMETER = 100;
 
 		public override void RunInitialize(ICoefficientsReader reader = null)
 		{
@@ -279,7 +279,7 @@ namespace DaySim.ChoiceModels.H.Models {
 				//remove nesting for estimation of conditional MNL 
 				alternative.AddNestedAlternative(_sampleSize + 2, 0, 98);
 
-                //add any region-specific new terms in region-specific class, using coefficient numbers 121-200
+                //add any region-specific new terms in region-specific class, using coefficient numbers 91-100 or other unused var #
                 _parentClass.RegionSpecificCustomizations(alternative, _person, destinationParcel);
             }
 

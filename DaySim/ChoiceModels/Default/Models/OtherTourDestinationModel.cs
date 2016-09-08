@@ -28,7 +28,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;
 		private const int TOTAL_LEVELS = 1;
 		// regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
-		private const int MAX_REGULAR_PARAMETER = 200;
+		private const int MAX_REGULAR_PARAMETER = 120;
 		private const int MaxDistrictNumber = 100;
 		private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
@@ -384,7 +384,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(113, destinationParcel.GetStudentsK12());
 				}
 
-                //add any region-specific new terms in region-specific class, using coefficient numbers 121-200
+                //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #
                 _parentClass.RegionSpecificOtherTourDistrictCoefficients(alternative, _tour, destinationParcel);
 
                 // OD shadow pricing
