@@ -271,7 +271,7 @@ namespace DaySim.Settings {
 
 	public class DefaultModes : IModes {
 		public virtual int TotalModes {
-			get { return 10; }
+			get { return 9; }
 		}
 
 		public virtual int MaxMode {

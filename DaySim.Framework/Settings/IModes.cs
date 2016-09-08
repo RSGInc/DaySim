@@ -30,8 +30,8 @@ namespace DaySim.Framework.Settings {
 		int SchoolBus { get; }
 
         int PaidRideShare { get; }
-		
-		int Other { get; }
+
+        int Other { get; }
 		
 		int HovDriver { get; }
 		

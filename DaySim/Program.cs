@@ -67,6 +67,8 @@ namespace DaySim {
                          gitVersionInformationType.GetField("BranchName").GetValue(null)));
                     Console.WriteLine(string.Format("Commit date: {0}",
                          gitVersionInformationType.GetField("CommitDate").GetValue(null)));
+                    Console.WriteLine(string.Format("Commit Sha: {0}",
+                         gitVersionInformationType.GetField("Sha").GetValue(null)));
                     //to get all fields
                     //var fields = gitVersionInformationType.GetFields();
 
