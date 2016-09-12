@@ -18,9 +18,13 @@ using DaySim.PathTypeModels;
 namespace DaySim.ChoiceModels.Default.Models {
 	public class EscortTourModeModel : ChoiceModel {
 		private const string CHOICE_MODEL_NAME = "EscortTourModeModel";
-		private const int TOTAL_NESTED_ALTERNATIVES = 0;
-		private const int TOTAL_LEVELS = 1;
-		private const int MAX_PARAMETER = 111;
+        private const int TOTAL_NESTED_ALTERNATIVES = 4;
+        private const int TOTAL_LEVELS = 2;
+        private const int MAX_PARAMETER = 199;
+        private const int THETA_PARAMETER = 99;
+
+        private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 0, 0, 23 };
+        private readonly int[] _nestedAlternativeIndexes = new[] { 0, 0, 0, 1, 2, 2, 3, 0, 0, 2 };
 
 		public override void RunInitialize(ICoefficientsReader reader = null) 
 		{
@@ -163,7 +167,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 				var alternative = choiceProbabilityCalculator.GetAlternative(mode, available, choice == mode);
 				alternative.Choice = mode;
 
-				if (!available) {
+                alternative.AddNestedAlternative(_nestedAlternativeIds[pathTypeModel.Mode], _nestedAlternativeIndexes[pathTypeModel.Mode], THETA_PARAMETER);
+
+                if (!available) {
 					continue;
 				}
 

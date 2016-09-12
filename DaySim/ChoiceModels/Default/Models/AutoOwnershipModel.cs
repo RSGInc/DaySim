@@ -21,7 +21,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 		private const int TOTAL_ALTERNATIVES = 5;
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;
 		private const int TOTAL_LEVELS = 1;
-		private const int MAX_PARAMETER = 84;
+		private const int MAX_PARAMETER = 99;
 
 		public override void RunInitialize(ICoefficientsReader reader = null) 
 		{
@@ -116,7 +116,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			alternative.Choice = 0;
 
-			alternative.AddUtilityTerm(1, household.Has1Driver.ToFlag());
+            alternative.AddUtilityTerm(90, 1); //new calibration constant - can be used in estimation if coefficient 5 is constrained to 0
+            alternative.AddUtilityTerm(1, household.Has1Driver.ToFlag());
 			alternative.AddUtilityTerm(5, household.Has2Drivers.ToFlag());
 			alternative.AddUtilityTerm(9, household.Has3Drivers.ToFlag());
 			alternative.AddUtilityTerm(13, household.Has4OrMoreDrivers.ToFlag());
@@ -154,7 +155,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			alternative.Choice = 1;
 
-			alternative.AddUtilityTerm(6, household.Has2Drivers.ToFlag());
+            alternative.AddUtilityTerm(91, 1); //new calibration constant - can be used in estimation if coefficient 6 is constrained to 0
+            alternative.AddUtilityTerm(6, household.Has2Drivers.ToFlag());
 			alternative.AddUtilityTerm(10, household.Has3Drivers.ToFlag());
 			alternative.AddUtilityTerm(14, household.Has4OrMoreDrivers.ToFlag());
 //			alternative.AddUtility(17, 1D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 1 car per driving age members
@@ -183,7 +185,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			alternative.Choice = 2;
 
-			alternative.AddUtilityTerm(2, household.Has1Driver.ToFlag());
+            alternative.AddUtilityTerm(92, 1); //new calibration constant - must be constrained to 0 in estimation
+            alternative.AddUtilityTerm(2, household.Has1Driver.ToFlag());
 			alternative.AddUtilityTerm(11, household.Has3Drivers.ToFlag());
 			alternative.AddUtilityTerm(15, household.Has4OrMoreDrivers.ToFlag());
 //			alternative.AddUtility(17, 2D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 2 cars per driving age members
@@ -202,7 +205,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			alternative.Choice = 3;
 
-			alternative.AddUtilityTerm(3, household.Has1Driver.ToFlag());
+            alternative.AddUtilityTerm(93, 1); //new calibration constant - can be used in estimation if coefficient 7 is constrained to 0
+            alternative.AddUtilityTerm(3, household.Has1Driver.ToFlag());
 			alternative.AddUtilityTerm(7, household.Has2Drivers.ToFlag());
 			alternative.AddUtilityTerm(16, household.Has4OrMoreDrivers.ToFlag());
 //			alternative.AddUtility(17, 3D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 3 cars per driving age members
@@ -231,7 +235,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			alternative.Choice = 4;
 
-			alternative.AddUtilityTerm(4, household.Has1Driver.ToFlag());
+            alternative.AddUtilityTerm(94, 1); //new calibration constant - can be used in estimation if coefficient 8 is constrained to 0
+            alternative.AddUtilityTerm(4, household.Has1Driver.ToFlag());
 			alternative.AddUtilityTerm(8, household.Has2Drivers.ToFlag());
 			alternative.AddUtilityTerm(12, household.Has3Drivers.ToFlag());
 //			alternative.AddUtility(17, 4D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 4 cars per driving age members

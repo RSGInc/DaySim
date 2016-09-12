@@ -44,6 +44,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(person.Id);
 
 			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+                if (person.TransitPassOwnership > 1) { person.TransitPassOwnership = 1; }  //recoding to allow for multiple types of transit passes for codes >0
 				if (person.TransitPassOwnership < 0 || person.TransitPassOwnership > 1) {
 					return;
 				}
