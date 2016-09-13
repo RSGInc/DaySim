@@ -17,7 +17,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
 using Ninject;
-using TransitPassOwnershipModel = DaySim.ChoiceModels.H.Models.TransitPassOwnershipModel;
+//using TransitPassOwnershipModel = DaySim.ChoiceModels.H.Models.TransitPassOwnershipModel;
 
 namespace DaySim.ChoiceModels.Default {
 	[UsedImplicitly]
