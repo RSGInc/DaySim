@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.msbuild.MsBuildBuilder_-DescriptorImpl plugin="msbuild@1.25">
+  <installations>
+    <hudson.plugins.msbuild.MsBuildInstallation>
+      <name>MSBuild</name>
+      <home>C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe</home>
+      <properties/>
+    </hudson.plugins.msbuild.MsBuildInstallation>
+  </installations>
+</hudson.plugins.msbuild.MsBuildBuilder_-DescriptorImpl>
