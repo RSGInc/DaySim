@@ -21,14 +21,19 @@ namespace DaySim.ChoiceModels.Default.Models {
 		private const int TOTAL_ALTERNATIVES = 5;
 		private const int TOTAL_NESTED_ALTERNATIVES = 0;
 		private const int TOTAL_LEVELS = 1;
-		private const int MAX_PARAMETER = 99;
+		private const int MAX_PARAMETER = 199;
 
 		public override void RunInitialize(ICoefficientsReader reader = null) 
 		{
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.AutoOwnershipModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER, reader as CoefficientsReader);
 		}
 
-		public void Run(IHouseholdWrapper household)
+        protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IHouseholdWrapper household)
+        {
+            //Global.PrintFile.WriteLine("Generic AutoOwmnershipModel.RegionSpecificAutoOwnershipCoefficients being called so must not be overridden by CustomizationDll");
+        }
+
+        public void Run(IHouseholdWrapper household)
 		{
 			if (household == null) {
 				throw new ArgumentNullException("household");
@@ -149,9 +154,12 @@ namespace DaySim.ChoiceModels.Default.Models {
 //			alternative.AddUtility(82, foodRetailServiceMedicalQtrMileLog * ruralFlag);
 			alternative.AddUtilityTerm(83, ruralFlag);
 
-			// 1 AUTO
+            RegionSpecificCustomizations(alternative, household);
 
-			alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
+
+            // 1 AUTO
+
+            alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
 
 			alternative.Choice = 1;
 
@@ -179,9 +187,12 @@ namespace DaySim.ChoiceModels.Default.Models {
 			//alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan1.ToFlag());
 			alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan1.ToFlag());
 
-			// 2 AUTOS
+            RegionSpecificCustomizations(alternative, household);
 
-			alternative = choiceProbabilityCalculator.GetAlternative(2, true, choice == 2);
+
+            // 2 AUTOS
+
+            alternative = choiceProbabilityCalculator.GetAlternative(2, true, choice == 2);
 
 			alternative.Choice = 2;
 
@@ -199,9 +210,11 @@ namespace DaySim.ChoiceModels.Default.Models {
 //			alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan2.ToFlag());
 			alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan2.ToFlag());
 
-			// 3 AUTOS
+            RegionSpecificCustomizations(alternative, household);
 
-			alternative = choiceProbabilityCalculator.GetAlternative(3, true, choice == 3);
+            // 3 AUTOS
+
+            alternative = choiceProbabilityCalculator.GetAlternative(3, true, choice == 3);
 
 			alternative.Choice = 3;
 
@@ -229,9 +242,11 @@ namespace DaySim.ChoiceModels.Default.Models {
 //			alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan3.ToFlag());
 			alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan3.ToFlag());
 
-			// 4+ AUTOS
+            RegionSpecificCustomizations(alternative, household);
 
-			alternative = choiceProbabilityCalculator.GetAlternative(4, true, choice == 4);
+            // 4+ AUTOS
+
+            alternative = choiceProbabilityCalculator.GetAlternative(4, true, choice == 4);
 
 			alternative.Choice = 4;
 
@@ -258,6 +273,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 			alternative.AddUtilityTerm(72, Math.Log(1 + household.ResidenceParcel.StopsTransitBuffer1) * household.HasMoreDriversThan4.ToFlag());
 //			alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan4.ToFlag());
 			alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan4.ToFlag());
-		}
-	}
+
+            RegionSpecificCustomizations(alternative, household);
+
+        }
+    }
 }
