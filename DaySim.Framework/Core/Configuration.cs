@@ -1403,6 +1403,11 @@ namespace DaySim.Framework.Core
         public bool ShouldUseODShadowPricing { get; set; }
 
         [XmlAttribute]
+        public bool UseODShadowPricingForWorkAtHomeAlternative { get; set; } = true;
+        [XmlAttribute]
+        public bool UseWorkShadowPricingForWorkAtHomeAlternative { get; set; } = true;
+
+        [XmlAttribute]
         public double WorkLocationODShadowPriceCoefficient { get; set; }
 
         [XmlAttribute]

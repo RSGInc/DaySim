@@ -36,6 +36,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 		private const int MaxDistrictNumber = 100;
 		private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
+        private const bool ESTIMATE_NESTED_MODEL = true;
+
 		public override void RunInitialize(ICoefficientsReader reader = null) {
 			int sampleSize = Global.Configuration.WorkLocationModelSampleSize;
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.WorkLocationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -94,31 +96,37 @@ namespace DaySim.ChoiceModels.Default.Models {
 			}
 		}
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false) {
-			var segment = Global.Kernel.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.Work, Global.Settings.TourPriorities.HomeBasedTour, Global.Settings.Modes.Sov, person.PersonType);
-			var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, person.Household.ResidenceParcel, choice);
-			var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
-			var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
-			var workLocationUtilites = new WorkLocationUtilities(this, person, sampleSize, destinationArrivalTime, destinationDepartureTime);
+        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false)
+        {
+            var segment = Global.Kernel.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.Work, Global.Settings.TourPriorities.HomeBasedTour, Global.Settings.Modes.Sov, person.PersonType);
+            var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, person.Household.ResidenceParcel, choice);
+            var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
+            var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
+            var workLocationUtilites = new WorkLocationUtilities(this, person, sampleSize, destinationArrivalTime, destinationDepartureTime);
 
-			destinationSampler.SampleTourDestinations(workLocationUtilites);
+            destinationSampler.SampleTourDestinations(workLocationUtilites);
 
-			//var alternative = choiceProbabilityCalculator.GetAlternative(countSampled, true);  
+            //var alternative = choiceProbabilityCalculator.GetAlternative(countSampled, true);  
 
-			// JLB 20120329 added third call parameter to idenitfy whether this alt is chosen or not
-			var alternative = choiceProbabilityCalculator.GetAlternative(sampleSize, true, choseHome);
+            // JLB 20120329 added third call parameter to idenitfy whether this alt is chosen or not
+            if (Global.Configuration.IsInEstimationMode && !ESTIMATE_NESTED_MODEL)
+            {
+                return;
+            }
+            var alternative = choiceProbabilityCalculator.GetAlternative(sampleSize, true, choseHome);
 
-			alternative.Choice = person.Household.ResidenceParcel;
+            alternative.Choice = person.Household.ResidenceParcel;
 
-			alternative.AddUtilityTerm(41, 1);
-			alternative.AddUtilityTerm(42, person.IsPartTimeWorker.ToFlag());
-			alternative.AddUtilityTerm(43, person.IsStudentAge.ToFlag());
-			alternative.AddUtilityTerm(44, person.IsFemale.ToFlag());
-			alternative.AddUtilityTerm(89, 1);  //new dummy size variable for oddball alt
-			alternative.AddUtilityTerm(90, 100);  //old dummy size variable for oddball alt
+            alternative.AddUtilityTerm(41, 1);
+            alternative.AddUtilityTerm(42, person.IsPartTimeWorker.ToFlag());
+            alternative.AddUtilityTerm(43, person.IsStudentAge.ToFlag());
+            alternative.AddUtilityTerm(44, person.IsFemale.ToFlag());
+            alternative.AddUtilityTerm(89, 1);  //new dummy size variable for oddball alt
+            alternative.AddUtilityTerm(90, 100);  //old dummy size variable for oddball alt
 
             // OD shadow pricing - add for work at home
-            if (Global.Configuration.ShouldUseODShadowPricing)             {
+            if (Global.Configuration.ShouldUseODShadowPricing && Global.Configuration.UseODShadowPricingForWorkAtHomeAlternative)
+            {
                 var res = person.Household.ResidenceParcel.District;
                 var des = person.Household.ResidenceParcel.District;
                 //var first = res <= des? res : des;
@@ -129,14 +137,14 @@ namespace DaySim.ChoiceModels.Default.Models {
             }
 
             // set shadow price depending on persontype and add it to utility
-			// we are using the sampling adjustment factor assuming that it is 1
-            if (Global.Configuration.ShouldUseShadowPricing)            {
+            // we are using the sampling adjustment factor assuming that it is 1
+            if (Global.Configuration.ShouldUseShadowPricing && Global.Configuration.UseWorkShadowPricingForWorkAtHomeAlternative)
+            {
                 alternative.AddUtilityTerm(1, person.Household.ResidenceParcel.ShadowPriceForEmployment);
             }
 
-			//make oddball alt unavailable and remove nesting for estimation of conditional MNL 
-			//			alternative.Available = false;
-			alternative.AddNestedAlternative(sampleSize + 3, 1, THETA_PARAMETER);
+            //make oddball alt unavailable and remove nesting for estimation of conditional MNL 
+            alternative.AddNestedAlternative(sampleSize + 3, 1, THETA_PARAMETER);
 		}
 
         protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) { 
@@ -173,8 +181,10 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var alternative = sampleItem.Alternative;
 
                 //remove nesting for estimation of conditional MNL 
-                alternative.AddNestedAlternative(_sampleSize + 2, 0, THETA_PARAMETER);
-
+                if (!Global.Configuration.IsInEstimationMode || ESTIMATE_NESTED_MODEL)
+                {
+                    alternative.AddNestedAlternative(_sampleSize + 2, 0, THETA_PARAMETER);
+                }
                 if (!alternative.Available) {
                     return;
                 }
@@ -229,7 +239,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var c34Ratio = destinationParcel.C34RatioBuffer1();
 
 
-                alternative.AddUtilityTerm(1, sampleItem.AdjustmentFactor);
+                alternative.AddUtilityTerm(1, sampleItem.AdjustmentFactor);  //constrain coeff to 1
                 alternative.AddUtilityTerm(2, _person.IsFulltimeWorker.ToFlag() * workTourLogsum);
                 alternative.AddUtilityTerm(3, _person.IsPartTimeWorker.ToFlag() * workTourLogsum);
                 alternative.AddUtilityTerm(4, _person.IsNotFullOrPartTimeWorker.ToFlag() * workTourLogsum);
