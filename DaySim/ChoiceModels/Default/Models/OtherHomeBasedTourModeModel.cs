@@ -147,6 +147,12 @@ namespace DaySim.ChoiceModels.Default.Models {
 			return choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
 		}
 
+        protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour, int mode)
+        {
+            //see PSRC customization dll for example
+            //Global.PrintFile.WriteLine("Generic Default WorkTourModeModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
+        }
+
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper destinationParcel, int choice = Constants.DEFAULT_VALUE) {
 			var household = tour.Household;
 			var householdTotals = household.HouseholdTotals;
@@ -325,6 +331,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 					alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
 //						alternative.AddUtility(174, originParcel.MixedUse4Index1());
 				}
+
+                RegionSpecificCustomizations(alternative, tour, mode);
 			}
 		}
 	}
