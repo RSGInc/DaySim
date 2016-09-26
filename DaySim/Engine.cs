@@ -1350,9 +1350,8 @@ namespace DaySim {
                 batches[i] = new List<IHousehold>();
             }
 
-            var households = Global.Kernel.Get<IPersistenceFactory<IHousehold>>().Reader;
             var j = 0;
-            foreach (var household in households) {
+            foreach (var household in Global.Kernel.Get<IPersistenceFactory<IHousehold>>().Reader) {
                 randoms[household.Id] = randomUtility.GetNext();
                 var i = j / batchSize;
                 if (i >= nBatches) {
@@ -1364,10 +1363,16 @@ namespace DaySim {
                 j++;
             }
             var index = 0;
+
+            //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
             ParallelUtility.InitThreadLocalBatchIndex();
-            Parallel.ForEach(households, 
-                new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.NThreads},
-                household => {
+            List<Thread> threads = new List<Thread>();
+            for (int threadIndex = 0; threadIndex < ParallelUtility.NThreads; ++threadIndex) {
+                Thread myThread = new Thread(new ThreadStart(delegate {
+                    //retrieve batchIndex so can see logging output
+                    int threaLocalBatchIndex = ParallelUtility.GetBatchFromThreadId();
+                    List<IHousehold> batchHouseholds = batches[threaLocalBatchIndex];
+                    foreach (IHousehold household in batchHouseholds) {
                         //var index = 0;
                         if ((household.Id % Global.Configuration.HouseholdSamplingRateOneInX == (Global.Configuration.HouseholdSamplingStartWithY - 1))) {
 #if RELEASE
@@ -1408,7 +1413,15 @@ namespace DaySim {
                                 : string.Format("Total {0} Days: {1}",
                                     countStringf, countf));
 
-                }); //Parallel.ForEach
+                    }   //end household loop for this batch
+                }));    //end creating Thread and ThreadStart
+                myThread.Name = "ChoiceModelRunner_" + (threadIndex + 1);
+                threads.Add(myThread);
+            }   //end threads loop
+
+            threads.ForEach(t => t.Start());
+            threads.ForEach(t => t.Join());
+
             var countg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
             var countStringg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
             var ivcountg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);

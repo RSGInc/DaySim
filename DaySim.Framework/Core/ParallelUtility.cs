@@ -13,7 +13,6 @@ namespace DaySim.Framework.Core {
 	public static class ParallelUtility {
         private static ThreadLocal<int> threadLocalBatchIndex = null;
 
-        private static int threadsSoFarIndex = -1000; 
         public static int NThreads { get; private set; }
 
 		public static void Init(Configuration configuration) {
@@ -28,7 +27,7 @@ namespace DaySim.Framework.Core {
 		}
 
         public static void InitThreadLocalBatchIndex() {
-            threadsSoFarIndex = -1;
+            int threadsSoFarIndex = -1;
             threadLocalBatchIndex = new ThreadLocal<int>(() => {
                 int threadLocalBatchIndexThreadSpecificValue = Interlocked.Increment(ref threadsSoFarIndex);
 
