@@ -936,7 +936,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
             }
         }
 
-		public virtual double NodeToNodeDistance(IParcelWrapper destination, int batch) {
+		public virtual double NodeToNodeDistance(IParcelWrapper destination) {
+            int batch = ParallelUtility.GetBatchFromThreadId();
             //added for intra-microzone distance, square root of area over 2
             if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
                 return Math.Sqrt(ThousandsSquareLengthUnits) / 2.0;

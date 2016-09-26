@@ -38,7 +38,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 		public override void RunInitialize(ICoefficientsReader reader = null) 
 		{
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.HouseholdDayPatternTypeModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-			int nBatches = ParallelUtility.NBatches;
+			int nBatches = ParallelUtility.NThreads;
 			i3 = new int[4, 4, 4, 6, 6, 6, 6, 6, nBatches];
 			xt = new int[6, 4, nBatches];
 

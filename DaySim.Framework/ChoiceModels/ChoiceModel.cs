@@ -8,7 +8,7 @@ using DaySim.Framework.Core;
 namespace DaySim.Framework.ChoiceModels {
 	public abstract class ChoiceModel : IChoiceModel
 	{
-		protected ChoiceModelHelper[] _helpers = new ChoiceModelHelper[ParallelUtility.NBatches];
+		protected ChoiceModelHelper[] _helpers = new ChoiceModelHelper[ParallelUtility.NThreads];
 		protected ICoefficientsReader _reader = null;
 		public abstract void RunInitialize(ICoefficientsReader reader = null);
 
@@ -22,7 +22,7 @@ namespace DaySim.Framework.ChoiceModels {
 
 			_reader = reader;
 
-			for (int x = 0; x < ParallelUtility.NBatches; x++)
+			for (int x = 0; x < ParallelUtility.NThreads; x++)
 			{
 				ChoiceModelHelper.Initialize(ref _helpers[x], choiceModelName,
 				                             Global.GetInputPath(coefficientsPath),

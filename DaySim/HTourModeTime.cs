@@ -143,8 +143,8 @@ namespace DaySim {
 					return;
 				}
 
-				ModeTimes = new HTourModeTime[ParallelUtility.NBatches][];
-				for (int i = 0; i < ParallelUtility.NBatches; i++)
+				ModeTimes = new HTourModeTime[ParallelUtility.NThreads][];
+				for (int i = 0; i < ParallelUtility.NThreads; i++)
 				{
 					ModeTimes[i] = new HTourModeTime[TotalTourModeTimes];
 

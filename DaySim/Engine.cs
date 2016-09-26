@@ -70,7 +70,7 @@ namespace DaySim {
             BeginLoadRoster();
 
             //moved this up to load data dictionaries sooner
-            ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, ParallelUtility.NBatches);
+            ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner);
             //ChoiceModelFactory.LoadData();
 
             BeginLoadNodeIndex();
@@ -1338,9 +1338,9 @@ namespace DaySim {
                 Global.Configuration.HouseholdSamplingRateOneInX = 1;
             }
 
-            ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, ParallelUtility.NBatches, false);
+            ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, false);
 
-            var nBatches = ParallelUtility.NBatches;
+            var nBatches = ParallelUtility.NThreads;
             var batchSize = total / nBatches;
             var randoms = new Dictionary<int, int>();
 
@@ -1350,8 +1350,9 @@ namespace DaySim {
                 batches[i] = new List<IHousehold>();
             }
 
+            var households = Global.Kernel.Get<IPersistenceFactory<IHousehold>>().Reader;
             var j = 0;
-            foreach (var household in Global.Kernel.Get<IPersistenceFactory<IHousehold>>().Reader) {
+            foreach (var household in households) {
                 randoms[household.Id] = randomUtility.GetNext();
                 var i = j / batchSize;
                 if (i >= nBatches) {
@@ -1363,12 +1364,10 @@ namespace DaySim {
                 j++;
             }
             var index = 0;
-            Parallel.For(0, nBatches,
-                new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.LargeDegreeOfParallelism },
-                batchNumber => {
-                    ParallelUtility.Register(Thread.CurrentThread.ManagedThreadId, batchNumber);
-
-                    foreach (var household in batches[batchNumber]) {
+            ParallelUtility.InitThreadLocalBatchIndex();
+            Parallel.ForEach(households, 
+                new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.NThreads},
+                household => {
                         //var index = 0;
                         if ((household.Id % Global.Configuration.HouseholdSamplingRateOneInX == (Global.Configuration.HouseholdSamplingStartWithY - 1))) {
 #if RELEASE
@@ -1378,7 +1377,7 @@ namespace DaySim {
                                 var randomSeed = randoms[household.Id];
                                 var choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
 
-                                choiceModelRunner.RunChoiceModels(batchNumber);
+                                choiceModelRunner.RunChoiceModels();
                             }
 #if RELEASE
 					}
@@ -1389,13 +1388,13 @@ namespace DaySim {
                         }
 
                         if (!Global.Configuration.ShowRunChoiceModelsStatus) {
-                            continue;
+                            return;
                         }
 
                         current++;
 
                         if (current != 1 && current != total && current % 1000 != 0) {
-                            continue;
+                            return;
                         }
 
                         var countf = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
@@ -1408,8 +1407,8 @@ namespace DaySim {
                                     countStringf, countf, ivcountf)
                                 : string.Format("Total {0} Days: {1}",
                                     countStringf, countf));
-                    }
-                }); //Parallel.For
+
+                }); //Parallel.ForEach
             var countg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
             var countStringg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
             var ivcountg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);

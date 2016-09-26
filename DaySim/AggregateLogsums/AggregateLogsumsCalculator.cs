@@ -307,7 +307,7 @@ namespace DaySim.AggregateLogsums {
 
 			Global.AggregateLogsums = new double[_zoneCount][][][][];
 
-			Parallel.For(0, _zoneCount, new ParallelOptions {MaxDegreeOfParallelism = ParallelUtility.LargeDegreeOfParallelism}, id => CalculateZone(randomUtility, id));
+			Parallel.For(0, _zoneCount, new ParallelOptions {MaxDegreeOfParallelism = ParallelUtility.NThreads}, id => CalculateZone(randomUtility, id));
 
 			for (var id = 0; id < _zoneCount; id++) {
 				var purposes = Global.AggregateLogsums[id];

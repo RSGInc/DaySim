@@ -76,8 +76,8 @@ namespace DaySim {
 				}
 
 				
-				Times = new HTripTime[ParallelUtility.NBatches][];
-				for (int i = 0; i < ParallelUtility.NBatches; i++)
+				Times = new HTripTime[ParallelUtility.NThreads][];
+				for (int i = 0; i < ParallelUtility.NThreads; i++)
 				{
 					Times[i] = new HTripTime[TOTAL_TRIP_TIMES];
 					var alternativeIndex = 0;

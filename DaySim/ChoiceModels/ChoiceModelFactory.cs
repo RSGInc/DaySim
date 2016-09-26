@@ -251,7 +251,7 @@ namespace DaySim.ChoiceModels {
 		public static ParkAndRideNodeDao ParkAndRideNodeDao { get; private set; }
 
 
-		public static void Initialize(string name, int nBatches, bool loadData = true) {
+		public static void Initialize(string name, bool loadData = true) {
 			var helper = new FactoryHelper(Global.Configuration);
 
 			_type = helper.ChoiceModelRunner.GetChoiceModelRunnerType();
@@ -274,150 +274,150 @@ namespace DaySim.ChoiceModels {
 			}
 
 
-		TotalTimesHouseholdModelSuiteRun = new int[nBatches];
+		TotalTimesHouseholdModelSuiteRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesPersonModelSuiteRun = new int[nBatches];
+		TotalTimesPersonModelSuiteRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesHouseholdDayModelSuiteRun = new int[nBatches];
+		TotalTimesHouseholdDayModelSuiteRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesJointHalfTourGenerationModelSuiteRun = new int[nBatches];
+		TotalTimesJointHalfTourGenerationModelSuiteRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesJointTourGenerationModelSuiteRun = new int[nBatches];
+		TotalTimesJointTourGenerationModelSuiteRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesPersonDayMandatoryModelSuiteRun = new int[nBatches];
+		TotalTimesPersonDayMandatoryModelSuiteRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesPersonDayModelSuiteRun = new int[nBatches];
+		TotalTimesPersonDayModelSuiteRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesPartialJointHalfTourModelSuiteRun = new int[nBatches];
+		TotalTimesPartialJointHalfTourModelSuiteRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesFullJointHalfTourModelSuiteRun = new int[nBatches];
+		TotalTimesFullJointHalfTourModelSuiteRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesMandatoryTourModelSuiteRun = new int[nBatches];
+		TotalTimesMandatoryTourModelSuiteRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesJointTourModelSuiteRun = new int[nBatches];
+		TotalTimesJointTourModelSuiteRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesNonMandatoryTourModelSuiteRun = new int[nBatches];
+		TotalTimesNonMandatoryTourModelSuiteRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTourModelSuiteRun = new int[nBatches];
+		TotalTimesTourModelSuiteRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTourTripModelsRun = new int[nBatches];
+		TotalTimesTourTripModelsRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTourSubtourModelsRun = new int[nBatches];
+		TotalTimesTourSubtourModelsRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesProcessHalfToursRun = new int[nBatches];
+		TotalTimesProcessHalfToursRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTourSubtourModelSuiteRun = new int[nBatches];
+		TotalTimesTourSubtourModelSuiteRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesSubtourTripModelsRun = new int[nBatches];
+		TotalTimesSubtourTripModelsRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesProcessHalfSubtoursRun = new int[nBatches];
+		TotalTimesProcessHalfSubtoursRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesAutoOwnershipModelRun = new int[nBatches];
+		TotalTimesAutoOwnershipModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesWorkLocationModelRun = new int[nBatches];
+		TotalTimesWorkLocationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesSchoolLocationModelRun = new int[nBatches];
+		TotalTimesSchoolLocationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesPaidParkingAtWorkplaceModelRun = new int[nBatches];
+		TotalTimesPaidParkingAtWorkplaceModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesWorkUsualModeAndScheduleModelRun = new int[nBatches];
+		TotalTimesWorkUsualModeAndScheduleModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesTransitPassOwnershipModelRun = new int[nBatches];
+		TotalTimesTransitPassOwnershipModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesMandatoryTourGenerationModelRun = new int[nBatches];
+		TotalTimesMandatoryTourGenerationModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesMandatoryStopPresenceModelRun = new int[nBatches];
+		TotalTimesMandatoryStopPresenceModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesJointHalfTourGenerationModelRun = new int[nBatches];
+		TotalTimesJointHalfTourGenerationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesFullJointHalfTourParticipationModelRun = new int[nBatches];
+		TotalTimesFullJointHalfTourParticipationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesPartialJointHalfTourParticipationAndChauffeurModelsRun = new int[nBatches];
+		TotalTimesPartialJointHalfTourParticipationAndChauffeurModelsRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesJointTourGenerationModelRun = new int[nBatches];
+		TotalTimesJointTourGenerationModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesJointTourParticipationModelRun = new int[nBatches];
+		TotalTimesJointTourParticipationModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesPersonDayPatternModelRun = new int[nBatches];
+		TotalTimesPersonDayPatternModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesPersonTourGenerationModelRun = new int[nBatches];
+		TotalTimesPersonTourGenerationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesPersonExactNumberOfToursModelRun = new int[nBatches];
+		TotalTimesPersonExactNumberOfToursModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesWorkTourDestinationModelRun = new int[nBatches];
+		TotalTimesWorkTourDestinationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTourDestinationModelRun = new int[nBatches];
+		TotalTimesTourDestinationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesOtherTourDestinationModelRun = new int[nBatches];
+		TotalTimesOtherTourDestinationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesWorkBasedSubtourGenerationModelRun = new int[nBatches];
+		TotalTimesWorkBasedSubtourGenerationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTourDestinationModeTimeModelRun = new int[nBatches];
+		TotalTimesTourDestinationModeTimeModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesTourModeTimeModelRun = new int[nBatches];
+		TotalTimesTourModeTimeModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesWorkTourModeModelRun = new int[nBatches];
+		TotalTimesWorkTourModeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesWorkTourTimeModelRun = new int[nBatches];
+		TotalTimesWorkTourTimeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesSchoolTourModeModelRun = new int[nBatches];
+		TotalTimesSchoolTourModeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesSchoolTourTimeModelRun = new int[nBatches];
+		TotalTimesSchoolTourTimeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesEscortTourModeModelRun = new int[nBatches];
+		TotalTimesEscortTourModeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesOtherHomeBasedTourModeModelRun = new int[nBatches];
+		TotalTimesOtherHomeBasedTourModeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesOtherHomeBasedTourTimeModelRun = new int[nBatches];
+		TotalTimesOtherHomeBasedTourTimeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesWorkSubtourDestinationModelRun = new int[nBatches];
+		TotalTimesWorkSubtourDestinationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesBusinessSubtourDestinationModelRun = new int[nBatches];
+		TotalTimesBusinessSubtourDestinationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesOtherSubtourDestinationModelRun = new int[nBatches];
+		TotalTimesOtherSubtourDestinationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesWorkBasedSubtourModeModelRun = new int[nBatches];
+		TotalTimesWorkBasedSubtourModeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesWorkBasedSubtourTimeModelRun = new int[nBatches];
+		TotalTimesWorkBasedSubtourTimeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTripModelSuiteRun = new int[nBatches];
+		TotalTimesTripModelSuiteRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesIntermediateStopGenerationModelRun = new int[nBatches];
+		TotalTimesIntermediateStopGenerationModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesIntermediateStopGenerated = new int[nBatches];
+		TotalTimesIntermediateStopGenerated = new int[ParallelUtility.NThreads];
 		
-		TotalTimesChangeModeStopGenerated = new int[nBatches];
+		TotalTimesChangeModeStopGenerated = new int[ParallelUtility.NThreads];
 		
-		TotalTimesChangeModeLocationSet = new int[nBatches];
+		TotalTimesChangeModeLocationSet = new int[ParallelUtility.NThreads];
 		
-		TotalTimesChangeModeTransitModeSet = new int[nBatches];
+		TotalTimesChangeModeTransitModeSet = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTripIsToTourOrigin = new int[nBatches];
+		TotalTimesTripIsToTourOrigin = new int[ParallelUtility.NThreads];
 		
-		TotalTimesNextTripIsNull = new int[nBatches];
+		TotalTimesNextTripIsNull = new int[ParallelUtility.NThreads];
 		
-		TotalTimesIntermediateStopLocationModelRun = new int[nBatches];
+		TotalTimesIntermediateStopLocationModelRun = new int[ParallelUtility.NThreads];
 
-    TotalTimesTripModeTimeModelRun = new int[nBatches];
+    TotalTimesTripModeTimeModelRun = new int[ParallelUtility.NThreads];
 
-    TotalTimesTripModeModelRun = new int[nBatches];
+    TotalTimesTripModeModelRun = new int[ParallelUtility.NThreads];
 		
-		TotalTimesTripTimeModelRun = new int[nBatches];
+		TotalTimesTripTimeModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesActumPrimaryPriorityTimeModelRun = new int[nBatches];
+		TotalTimesActumPrimaryPriorityTimeModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesLDPrimaryPriorityTimeModelRun = new int[nBatches];
+		TotalTimesLDPrimaryPriorityTimeModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesHouseholdDayPatternTypeModelRun = new int[nBatches];
+		TotalTimesHouseholdDayPatternTypeModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesPersonDayPatternTypeModelRun = new int[nBatches];
+		TotalTimesPersonDayPatternTypeModelRun = new int[ParallelUtility.NThreads];
 
-		TotalTimesWorkAtHomeModelRun = new int[nBatches];
-		TotalPersonDays = new int[nBatches];
+		TotalTimesWorkAtHomeModelRun = new int[ParallelUtility.NThreads];
+		TotalPersonDays = new int[ParallelUtility.NThreads];
 
-		TotalHouseholdDays = new int[nBatches];
+		TotalHouseholdDays = new int[ParallelUtility.NThreads];
 
-		TotalInvalidAttempts = new int[nBatches];
+		TotalInvalidAttempts = new int[ParallelUtility.NThreads];
 		}
 
 		public static void LoadData() {

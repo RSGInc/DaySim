@@ -57,9 +57,9 @@ namespace DaySim.ChoiceModels.Actum {
 			_household.Init();
 		}
 
-		public void RunChoiceModels(int batchNumber) {
-			RunHouseholdModels(batchNumber);
-			RunHouseholdDayModels(batchNumber);
+		public void RunChoiceModels() {
+             RunHouseholdModels();
+			RunHouseholdDayModels();
 
 			UpdateHousehold();
 
@@ -68,8 +68,9 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private void RunHouseholdModels(int batchNumber) {
-			if (!Global.Configuration.ShouldRunHouseholdModels) {
+		private void RunHouseholdModels() {
+            int batch = ParallelUtility.GetBatchFromThreadId();
+            if (!Global.Configuration.ShouldRunHouseholdModels) {
 				return;
 			}
 
@@ -77,9 +78,9 @@ namespace DaySim.ChoiceModels.Actum {
 			try {
 #endif
 
-			ChoiceModelFactory.TotalTimesHouseholdModelSuiteRun[batchNumber]++;
+			ChoiceModelFactory.TotalTimesHouseholdModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-			RunHouseholdModelSuite(_household, batchNumber);
+			RunHouseholdModelSuite(_household);
 #if RELEASE
 			}
 			catch (Exception e) {
@@ -89,17 +90,18 @@ namespace DaySim.ChoiceModels.Actum {
 		}
 
 
-		private void RunHouseholdDayModels(int batchNumber) {
+		private void RunHouseholdDayModels() {
 			if (!Global.Configuration.ShouldRunPersonDayModels) {
 				return;
 			}
 
+            int batchNumber = ParallelUtility.GetBatchFromThreadId();
 			foreach (HouseholdDayWrapper householdDay in _household.HouseholdDays) {
 #if RELEASE
 				try {
 #endif
 
-				ChoiceModelFactory.TotalHouseholdDays[batchNumber]++;  //TODO:  John M.  This replaces TotalPersonDays, but TotalPersonDays is used in Engine, so that code probably needs to be patched
+				ChoiceModelFactory.TotalHouseholdDays[ParallelUtility.GetBatchFromThreadId()]++;  //TODO:  John M.  This replaces TotalPersonDays, but TotalPersonDays is used in Engine, so that code probably needs to be patched
 
 				var simulatedAnInvalidHouseholdDay = false;
 
@@ -122,13 +124,13 @@ namespace DaySim.ChoiceModels.Actum {
 					if (Global.TraceResults) Global.PrintFile.WriteLine("> RunHouseholdDayModels for household {0}, attempt {1}", householdDay.Household.Id, householdDay.AttemptedSimulations);
 
 
-					ChoiceModelFactory.TotalTimesHouseholdDayModelSuiteRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesHouseholdDayModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					/*if (householdDay.ToString().Contains("80205"))
 					{
 						
 					}*/
-					RunHouseholdDayModelSuite((HouseholdDayWrapper) householdDay, batchNumber);
+					RunHouseholdDayModelSuite((HouseholdDayWrapper) householdDay);
 
 					// householdDay is invalid if any person day is invalid
 					foreach (var personDay in householdDay.PersonDays) {
@@ -161,7 +163,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 						// counts unique instances where a household's day is invalid
 
-						ChoiceModelFactory.TotalInvalidAttempts[batchNumber]++;
+						ChoiceModelFactory.TotalInvalidAttempts[ParallelUtility.GetBatchFromThreadId()]++;
 
 					}
 
@@ -179,7 +181,7 @@ namespace DaySim.ChoiceModels.Actum {
 		}
 
 
-		private static void RunTourTripModels(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int firstDirection, int lastDirection, int batchNumber) {
+		private static void RunTourTripModels(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int firstDirection, int lastDirection) {
 			if (!Global.Configuration.ShouldRunTourTripModels) {
 				return;
 			}
@@ -189,9 +191,9 @@ namespace DaySim.ChoiceModels.Actum {
 				 personDay.Person.Sequence, tour.Sequence, firstDirection, lastDirection);
 
 
-			ChoiceModelFactory.TotalTimesProcessHalfToursRun[batchNumber]++;
+			ChoiceModelFactory.TotalTimesProcessHalfToursRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-			ProcessHalfTours(tour, personDay, householdDay, firstDirection, lastDirection, batchNumber);
+			ProcessHalfTours(tour, personDay, householdDay, firstDirection, lastDirection);
 
 			if (!tour.PersonDay.IsValid) {
 				return;
@@ -200,7 +202,7 @@ namespace DaySim.ChoiceModels.Actum {
 			tour.SetOriginTimes();
 		}
 
-		private static void RunSubtourModels(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunSubtourModels(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay) {
 			if (!Global.Configuration.ShouldRunSubtourModels) {
 				return;
 			}
@@ -213,18 +215,18 @@ namespace DaySim.ChoiceModels.Actum {
 				try {
 #endif
 
-				ChoiceModelFactory.TotalTimesTourSubtourModelSuiteRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesTourSubtourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-				RunSubtourModelSuite(subtour, householdDay, batchNumber);
+				RunSubtourModelSuite(subtour, householdDay);
 
 				if (!tour.PersonDay.IsValid) {
 					return;
 				}
 
 
-				ChoiceModelFactory.TotalTimesSubtourTripModelsRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesSubtourTripModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-				RunSubtourTripModels(subtour, personDay, householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin, batchNumber);
+				RunSubtourTripModels(subtour, personDay, householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin);
 
 				if (!tour.PersonDay.IsValid) {
 					return;
@@ -239,7 +241,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunSubtourTripModels(TourWrapper subtour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int firstDirection, int lastDirection, int batchNumber) {
+		private static void RunSubtourTripModels(TourWrapper subtour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int firstDirection, int lastDirection) {
 			if (!Global.Configuration.ShouldRunSubtourTripModels) {
 				return;
 			}
@@ -248,9 +250,9 @@ namespace DaySim.ChoiceModels.Actum {
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > RunSubtourTripModels Subtour {0}", subtour.Sequence);
 
 
-			ChoiceModelFactory.TotalTimesProcessHalfSubtoursRun[batchNumber]++;
+			ChoiceModelFactory.TotalTimesProcessHalfSubtoursRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-			ProcessHalfTours(subtour, personDay, householdDay, firstDirection, lastDirection, batchNumber);
+			ProcessHalfTours(subtour, personDay, householdDay, firstDirection, lastDirection);
 
 			if (!subtour.PersonDay.IsValid) {
 				return;
@@ -259,7 +261,7 @@ namespace DaySim.ChoiceModels.Actum {
 			subtour.SetOriginTimes();
 		}
 
-		private static void RunHouseholdModelSuite(HouseholdWrapper household, int batchNumber) {
+		private static void RunHouseholdModelSuite(HouseholdWrapper household) {
 
 			//begin work location person loop
 			foreach ( PersonWrapper person in household.Persons) {
@@ -268,7 +270,7 @@ namespace DaySim.ChoiceModels.Actum {
 					if (Global.Configuration.IsInEstimationMode || person.Household.RandomUtility.Uniform01() > household.FractionWorkersWithJobsOutsideRegion) {
 						// sets a person's usual work location
 						// for full or part-time workers
-						ChoiceModelFactory.TotalTimesWorkLocationModelRun[batchNumber]++;
+						ChoiceModelFactory.TotalTimesWorkLocationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 						Global.ChoiceModelSession.Get<WorkLocationModel>().Run(person, Global.Configuration.WorkLocationModelSampleSize);
 					}
 					else {
@@ -281,7 +283,7 @@ namespace DaySim.ChoiceModels.Actum {
 				//if (Global.Configuration.ShouldRunSchoolLocationModel && person.IsStudent) {
 				// sets a person's school location
 
-				//	ChoiceModelFactory.TotalTimesSchoolLocationModelRun[batchNumber]++;
+				//	ChoiceModelFactory.TotalTimesSchoolLocationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				//	Global.ChoiceModelSession.Get<SchoolLocationModel>().Run(person, Global.Configuration.SchoolLocationModelSampleSize);
 				//}
@@ -290,7 +292,7 @@ namespace DaySim.ChoiceModels.Actum {
 					if (Global.Configuration.IsInEstimationMode || person.Household.RandomUtility.Uniform01() > household.FractionWorkersWithJobsOutsideRegion) {
 						// sets a person's usual work location
 						// for other workers in relation to a person's school location
-						ChoiceModelFactory.TotalTimesWorkLocationModelRun[batchNumber]++;
+						ChoiceModelFactory.TotalTimesWorkLocationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 						Global.ChoiceModelSession.Get<WorkLocationModel>().Run(person, Global.Configuration.WorkLocationModelSampleSize);
 					}
 					else {
@@ -302,7 +304,7 @@ namespace DaySim.ChoiceModels.Actum {
 				//if (person.IsWorker && person.UsualWorkParcel != null // && person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer2 > 0 
 				//	 && Global.Configuration.IncludePayToParkAtWorkplaceModel) {
 				//	if (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel) {
-				//		ChoiceModelFactory.TotalTimesPaidParkingAtWorkplaceModelRun[batchNumber]++;
+				//		ChoiceModelFactory.TotalTimesPaidParkingAtWorkplaceModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 				//		Global.ChoiceModelSession.Get<PayToParkAtWorkplaceModel>().Run(person);
 				//	}
 				//}
@@ -315,7 +317,7 @@ namespace DaySim.ChoiceModels.Actum {
 			// begin household auto ownership section
 			if (Global.Configuration.ShouldRunAutoOwnershipModel) {
 				// sets number of vehicles in household
-				ChoiceModelFactory.TotalTimesAutoOwnershipModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesAutoOwnershipModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 				Global.ChoiceModelSession.Get<AutoOwnershipModel>().Run(household);
 			}
 			// end household auto ownership section
@@ -327,7 +329,7 @@ namespace DaySim.ChoiceModels.Actum {
 				if (!person.IsChildUnder5 && Global.Configuration.IncludeTransitPassOwnershipModel) {
 					if (Global.Configuration.ShouldRunTransitPassOwnershipModel) {
 
-						ChoiceModelFactory.TotalTimesTransitPassOwnershipModelRun[batchNumber]++;
+						ChoiceModelFactory.TotalTimesTransitPassOwnershipModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 						Global.ChoiceModelSession.Get<TransitPassOwnershipModel>().Run(person);
 					}
@@ -337,7 +339,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 		}
 
-		private static void RunHouseholdDayModelSuite(HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunHouseholdDayModelSuite(HouseholdDayWrapper householdDay) {
 
 			if (householdDay.Household.Id == 80205) { //15454) {
 				bool testbreak = true;
@@ -348,7 +350,7 @@ namespace DaySim.ChoiceModels.Actum {
 			if (Global.Configuration.ShouldRunActumPrimaryPriorityTimeModel) {
 				// determines if household day includes primary priority time
 
-				ChoiceModelFactory.TotalTimesActumPrimaryPriorityTimeModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesActumPrimaryPriorityTimeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				Global.ChoiceModelSession.Get<PrimaryPriorityTimeModel>().Run(householdDay);
 				Global.ChoiceModelSession.Get<PrimaryPriorityTimeScheduleModel>().Run(householdDay);
@@ -371,7 +373,7 @@ namespace DaySim.ChoiceModels.Actum {
 			if (Global.Configuration.ShouldRunHouseholdDayPatternTypeModel) {
 				// determines if household day includes primary priority time
 
-				ChoiceModelFactory.TotalTimesHouseholdDayPatternTypeModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesHouseholdDayPatternTypeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				Global.ChoiceModelSession.Get<HouseholdDayPatternTypeModel>().Run(householdDay);
 				IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.Person.GetHouseholdDayPatternParticipationPriority()).ToList().Cast<PersonDayWrapper>();
@@ -380,7 +382,7 @@ namespace DaySim.ChoiceModels.Actum {
 					i++;
 					if (i > 4 || (Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "ActumPersonDayPatternTypeModel")) {
 
-						ChoiceModelFactory.TotalTimesPersonDayPatternTypeModelRun[batchNumber]++;
+						ChoiceModelFactory.TotalTimesPersonDayPatternTypeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 						Global.ChoiceModelSession.Get<PersonDayPatternTypeModel>().Run(personDay, householdDay);
 					}
@@ -395,23 +397,23 @@ namespace DaySim.ChoiceModels.Actum {
 
 			foreach (PersonDayWrapper personDay in householdDay.PersonDays) {
 
-				ChoiceModelFactory.TotalTimesPersonDayMandatoryModelSuiteRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesPersonDayMandatoryModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-				RunPersonDayMandatoryModelSuite(personDay, householdDay, batchNumber);
+				RunPersonDayMandatoryModelSuite(personDay, householdDay);
 				if (personDay.IsValid == false) {
 					return;
 				}
 			}
 
 
-			ChoiceModelFactory.TotalTimesJointHalfTourGenerationModelSuiteRun[batchNumber]++;
+			ChoiceModelFactory.TotalTimesJointHalfTourGenerationModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-			RunJointHalfTourGenerationModelSuite(householdDay, batchNumber);
+			RunJointHalfTourGenerationModelSuite(householdDay);
 
 
-			ChoiceModelFactory.TotalTimesJointTourGenerationModelSuiteRun[batchNumber]++;
+			ChoiceModelFactory.TotalTimesJointTourGenerationModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-			RunJointTourGenerationModelSuite(householdDay, batchNumber);
+			RunJointTourGenerationModelSuite(householdDay);
 			if (householdDay.IsValid == false) {
 				return;
 			}
@@ -421,9 +423,9 @@ namespace DaySim.ChoiceModels.Actum {
 					try {
 #endif
 
-				ChoiceModelFactory.TotalTimesPersonDayModelSuiteRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesPersonDayModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-				RunPersonDayModelSuite(personDay, householdDay, batchNumber);
+				RunPersonDayModelSuite(personDay, householdDay);
 				if (personDay.IsValid == false) {
 					return;
 				}
@@ -449,9 +451,9 @@ namespace DaySim.ChoiceModels.Actum {
 					break;
 				}
 
-				ChoiceModelFactory.TotalTimesPartialJointHalfTourModelSuiteRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesPartialJointHalfTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-				RunPartialJointHalfTourModelSuite(householdDay, partialJointHalfTour, batchNumber);
+				RunPartialJointHalfTourModelSuite(householdDay, partialJointHalfTour);
 				if (householdDay.IsValid == false) {
 					return;
 				}
@@ -459,7 +461,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 			foreach (var fullJointHalfTour in householdDay.FullHalfToursList) {
 
-				ChoiceModelFactory.TotalTimesFullJointHalfTourModelSuiteRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesFullJointHalfTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 
 				if (householdDay.Household.Id == 80138 && householdDay.AttemptedSimulations == 0) {
@@ -468,7 +470,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 
 
-				RunFullJointHalfTourModelSuite(householdDay, fullJointHalfTour, batchNumber);
+				RunFullJointHalfTourModelSuite(householdDay, fullJointHalfTour);
 				if (householdDay.IsValid == false) {
 					return;
 				}
@@ -480,10 +482,10 @@ namespace DaySim.ChoiceModels.Actum {
 						|| tour.DestinationPurpose == Global.Settings.Purposes.School
 						|| tour.DestinationPurpose == Global.Settings.Purposes.Business) {
 
-						ChoiceModelFactory.TotalTimesMandatoryTourModelSuiteRun[batchNumber]++;
+						ChoiceModelFactory.TotalTimesMandatoryTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 
-						RunMandatoryTourModelSuite(tour, personDay, householdDay, batchNumber);
+						RunMandatoryTourModelSuite(tour, personDay, householdDay);
 						if (personDay.IsValid == false) {
 							return;
 						}
@@ -493,9 +495,9 @@ namespace DaySim.ChoiceModels.Actum {
 
 			foreach (var jointTour in householdDay.JointToursList) {
 
-				ChoiceModelFactory.TotalTimesJointTourModelSuiteRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesJointTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-				RunJointTourModelSuite(householdDay, jointTour, batchNumber);
+				RunJointTourModelSuite(householdDay, jointTour);
 			}
 			if (householdDay.IsValid == false) {
 				return;
@@ -515,9 +517,9 @@ namespace DaySim.ChoiceModels.Actum {
 						|| tour.DestinationPurpose == Global.Settings.Purposes.School
 						|| tour.DestinationPurpose == Global.Settings.Purposes.Business)) {
 
-						ChoiceModelFactory.TotalTimesNonMandatoryTourModelSuiteRun[batchNumber]++;
+						ChoiceModelFactory.TotalTimesNonMandatoryTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-						RunNonMandatoryTourModelSuite(tour, personDay, householdDay, batchNumber);
+						RunNonMandatoryTourModelSuite(tour, personDay, householdDay);
 						if (personDay.IsValid == false) {
 							return;
 						}
@@ -551,7 +553,7 @@ namespace DaySim.ChoiceModels.Actum {
 			// TODO:  add logic that deals with invalid person days.  Probably need to flag invalid householdDays instead.
 		}
 
-		private static void RunPersonDayMandatoryModelSuite(PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunPersonDayMandatoryModelSuite(PersonDayWrapper personDay, HouseholdDayWrapper householdDay) {
 
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > RunPersonDayMandatoryModelSuite for household {0} person {1}", householdDay.Household.Id, personDay.Person.Sequence);
@@ -559,7 +561,7 @@ namespace DaySim.ChoiceModels.Actum {
 			if (Global.Configuration.ShouldRunWorkAtHomeModel) {
 				// determines if full or part time worker works at home during day
 
-				ChoiceModelFactory.TotalTimesWorkAtHomeModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesWorkAtHomeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				Global.ChoiceModelSession.Get<WorkAtHomeModel>().Run(personDay, householdDay);
 				//mbtrace
@@ -590,7 +592,7 @@ namespace DaySim.ChoiceModels.Actum {
 							else if (i < totalMandatoryTours[0]) { choice = 3; }
 							else { choice = 0; }
 
-							ChoiceModelFactory.TotalTimesMandatoryTourGenerationModelRun[batchNumber]++;
+							ChoiceModelFactory.TotalTimesMandatoryTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 							ncallsfortour++;
 							Global.ChoiceModelSession.Get<MandatoryTourGenerationModel>().Run(personDay, householdDay, ncallsfortour, simulatedMandatoryTours, choice);
@@ -605,7 +607,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 						for (var i = 0; i <= totalMandatoryTours[0]; i++) {
 
-							ChoiceModelFactory.TotalTimesMandatoryTourGenerationModelRun[batchNumber]++;
+							ChoiceModelFactory.TotalTimesMandatoryTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 							ncallsfortour++;
 							var chosenAlternative = Global.ChoiceModelSession.Get<MandatoryTourGenerationModel>().Run(personDay, householdDay, ncallsfortour, simulatedMandatoryTours);
@@ -636,7 +638,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 					// determine presence of mandatory stops
 
-					ChoiceModelFactory.TotalTimesMandatoryStopPresenceModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesMandatoryStopPresenceModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					Global.ChoiceModelSession.Get<MandatoryStopPresenceModel>().Run(personDay, householdDay);
 					//mbtrace
@@ -652,7 +654,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 		}
 
-		private static void RunJointHalfTourGenerationModelSuite(HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunJointHalfTourGenerationModelSuite(HouseholdDayWrapper householdDay) {
 
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > RunJointHalfTourGenerationModelSuite for Household {0}", householdDay.Household.Id);
@@ -916,7 +918,7 @@ namespace DaySim.ChoiceModels.Actum {
 					}
 				}
 
-				ChoiceModelFactory.TotalTimesJointHalfTourGenerationModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesJointHalfTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				nCallsForTour++;
 				int genChoice = Global.ChoiceModelSession.Get<JointHalfTourGenerationModel>().Run(householdDay, nCallsForTour, jHTAvailable, type, subType);
@@ -934,7 +936,7 @@ namespace DaySim.ChoiceModels.Actum {
 				if (genChoice > 0 && genChoice <= 3) {
 					// run full half tour participation model
 
-					ChoiceModelFactory.TotalTimesFullJointHalfTourParticipationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesFullJointHalfTourParticipationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					participants = Global.ChoiceModelSession.Get<FullJointHalfTourParticipationModel>().Run(householdDay, jHTSimulated, genChoice, hTAvailable, fHTAvailable, jHTParticipation);
 					if (!Global.Configuration.IsInEstimationMode && !householdDay.IsValid) {
@@ -1109,7 +1111,7 @@ namespace DaySim.ChoiceModels.Actum {
 				}
 				else if (genChoice > 0) {
 
-					ChoiceModelFactory.TotalTimesPartialJointHalfTourParticipationAndChauffeurModelsRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesPartialJointHalfTourParticipationAndChauffeurModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					participants = Global.ChoiceModelSession.Get<PartialJointHalfTourParticipationModel>().Run(householdDay, jHTSimulated, genChoice - 3, hTAvailable, pHTAvailable, jHTParticipation);
 
@@ -1187,8 +1189,8 @@ namespace DaySim.ChoiceModels.Actum {
 							}
 							else if (destinationParcel[j] != null) {
 								var circuityDistance = Global.Configuration.UseShortDistanceNodeToNodeMeasures
-													  ? chauffeurParcel.NodeToNodeDistance(destinationParcel[j], batchNumber)
-													  : (Global.Configuration.UseShortDistanceCircuityMeasures)
+													  ? chauffeurParcel.NodeToNodeDistance(destinationParcel[j])
+                                                      : (Global.Configuration.UseShortDistanceCircuityMeasures)
 																? chauffeurParcel.CircuityDistance(destinationParcel[j])
 																: Constants.DEFAULT_VALUE;
 
@@ -1378,7 +1380,7 @@ namespace DaySim.ChoiceModels.Actum {
 			} //end generation and participation loops
 		}
 
-		private static void RunJointTourGenerationModelSuite(HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunJointTourGenerationModelSuite(HouseholdDayWrapper householdDay) {
 			//don't run this model if no more than one person in household is eligible for joint tour
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > RunJointTourGenerationModelSuite for Household {0}", householdDay.Household.Id);
@@ -1458,7 +1460,7 @@ namespace DaySim.ChoiceModels.Actum {
 			var nCallsForTour = 0;
 			for (var i = 0; i < 8; i++) {
 
-				ChoiceModelFactory.TotalTimesJointTourGenerationModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesJointTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				nCallsForTour++;
 				purpose[nCallsForTour] = Global.ChoiceModelSession.Get<JointTourGenerationModel>().Run(householdDay, nCallsForTour, purpose[nCallsForTour]);
@@ -1468,7 +1470,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 					// run tour participation model and create tour
 
-					ChoiceModelFactory.TotalTimesJointTourParticipationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesJointTourParticipationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					int[] participants = Global.ChoiceModelSession.Get<JointTourParticipationModel>().Run(householdDay, nCallsForTour, purpose, jTParticipation);
 
@@ -1578,7 +1580,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunPersonDayModelSuite(PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunPersonDayModelSuite(PersonDayWrapper personDay, HouseholdDayWrapper householdDay) {
 			if (personDay.PatternType == Global.Settings.PatternTypes.Home) {
 				return;
 			}
@@ -1589,7 +1591,7 @@ namespace DaySim.ChoiceModels.Actum {
 				// determines if there are tours for a person's day
 				// sets number of stops for a person's day
 
-				ChoiceModelFactory.TotalTimesPersonDayPatternModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesPersonDayPatternModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				Global.ChoiceModelSession.Get<PersonDayPatternModel>().Run(personDay, householdDay);
 			}
@@ -1665,7 +1667,7 @@ namespace DaySim.ChoiceModels.Actum {
 			int maxPurpose = 2;
 			for (var count = 1; count <= 8; count++) {
 
-				ChoiceModelFactory.TotalTimesPersonTourGenerationModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesPersonTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				tourPurpose[count] = Global.ChoiceModelSession.Get<PersonTourGenerationModel>().Run(personDay, householdDay, maxPurpose, tourPurpose[count]);
 				if (tourPurpose[count] == Global.Settings.Purposes.NoneOrHome || personDay.GetTotalCreatedTours() >= 8) {
@@ -1701,7 +1703,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunPartialJointHalfTourModelSuite(HouseholdDayWrapper householdDay, IPartialHalfTourWrapper partialJointHalfTour, int batchNumber) {
+		private static void RunPartialJointHalfTourModelSuite(HouseholdDayWrapper householdDay, IPartialHalfTourWrapper partialJointHalfTour) {
 
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > RunPartialJointHalfTourModelSuite for Household {0} PartialHalfTour {1}", householdDay.Household.Id, partialJointHalfTour.Sequence);
@@ -1850,7 +1852,7 @@ namespace DaySim.ChoiceModels.Actum {
 					}
 				}
 				// model arrival and departure time too, but they will be changed later
-				else SetTourModeAndTime(householdDay, tour[1], 0, 0, 0, batchNumber);
+				else SetTourModeAndTime(householdDay, tour[1], 0, 0, 0);
 				if (householdDay.IsValid == false) {
 					return;
 				}
@@ -1918,8 +1920,8 @@ namespace DaySim.ChoiceModels.Actum {
 				}
 
 				var circuityDistance = Global.Configuration.UseShortDistanceNodeToNodeMeasures
-												? tour[i - 1].DestinationParcel.NodeToNodeDistance(tour[i].DestinationParcel, batchNumber)
-												: (Global.Configuration.UseShortDistanceCircuityMeasures)
+												? tour[i - 1].DestinationParcel.NodeToNodeDistance(tour[i].DestinationParcel)
+                                                : (Global.Configuration.UseShortDistanceCircuityMeasures)
 												? tour[i - 1].DestinationParcel.CircuityDistance(tour[i].DestinationParcel)
 												: Constants.DEFAULT_VALUE;
 
@@ -1927,7 +1929,7 @@ namespace DaySim.ChoiceModels.Actum {
 				if (i == 2) {
 					if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
 						// set tour TOD for i.  If i == 2 then arrival and departure time are modeled
-						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, 0, 0, batchNumber);
+						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, 0, 0);
 						if (householdDay.IsValid == false) {
 							return;
 						}
@@ -1941,7 +1943,7 @@ namespace DaySim.ChoiceModels.Actum {
 								trip.OriginParcel = trip.Tour.DestinationParcel;
 								trip.Mode = tour[i].Mode;
 								bool forTourTimesOnly = true;
-								SetTripModeAndTime(householdDay, tour[i], trip, batchNumber, forTourTimesOnly);
+								SetTripModeAndTime(householdDay, tour[i], trip, forTourTimesOnly);
 								tour[i].DestinationArrivalTime = trip.DepartureTime;
 							}
 						}
@@ -1954,7 +1956,7 @@ namespace DaySim.ChoiceModels.Actum {
 								trip.OriginParcel = trip.Tour.DestinationParcel;
 								trip.Mode = tour[i].Mode;
 								bool forTourTimesOnly = true;
-								SetTripModeAndTime(householdDay, tour[i], trip, batchNumber, forTourTimesOnly);
+								SetTripModeAndTime(householdDay, tour[i], trip, forTourTimesOnly);
 								tour[i].DestinationDepartureTime = trip.DepartureTime;
 							}
 						}
@@ -1989,7 +1991,7 @@ namespace DaySim.ChoiceModels.Actum {
 						}
 					}
 					// Mode and times were already set, but other properties need to be set by SetTourModeAndTime()
-					SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, tour[i].DestinationArrivalTime, tour[i].DestinationDepartureTime, batchNumber);
+					SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, tour[i].DestinationArrivalTime, tour[i].DestinationDepartureTime);
 					if (householdDay.IsValid == false) {
 						return;
 					}
@@ -2007,13 +2009,13 @@ namespace DaySim.ChoiceModels.Actum {
 						}
 						//departure time is modeled
 						//JLB 20140528 replaced the following line because tour mode is known at this point
-						//SetTourModeAndTime(householdDay, tour[i], 0, destinationArrivalTime, 0, batchNumber);
+						//SetTourModeAndTime(householdDay, tour[i], 0, destinationArrivalTime, 0);
 					}
 					if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
-						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, tour[i].DestinationArrivalTime, 0, batchNumber);
+						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, tour[i].DestinationArrivalTime, 0);
 					}
 					else {
-						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, tour[i].DestinationArrivalTime, tour[i].DestinationDepartureTime, batchNumber);
+						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, tour[i].DestinationArrivalTime, tour[i].DestinationDepartureTime);
 					}
 					if (householdDay.IsValid == false) {
 						return;
@@ -2032,13 +2034,13 @@ namespace DaySim.ChoiceModels.Actum {
 						}
 						//arrival time is modeled
 						//JLB 20140528 replaced the following line because tour mode is known at this point
-						//SetTourModeAndTime(householdDay, tour[i], 0, 0, destinationDepartureTime, batchNumber);
+						//SetTourModeAndTime(householdDay, tour[i], 0, 0, destinationDepartureTime);
 					}
 					if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
-						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, 0, tour[i].DestinationDepartureTime, batchNumber);
+						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, 0, tour[i].DestinationDepartureTime);
 					}
 					else {
-						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, tour[i].DestinationArrivalTime, tour[i].DestinationDepartureTime, batchNumber);
+						SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, tour[i].DestinationArrivalTime, tour[i].DestinationDepartureTime);
 					}
 					if (householdDay.IsValid == false) {
 						return;
@@ -2123,7 +2125,7 @@ namespace DaySim.ChoiceModels.Actum {
 						}
 					}
 					// Mode and times were already set, but other properties need to be set by SetTourModeAndTime()
-					SetTourModeAndTime(householdDay, tour[1], tour[1].Mode, tour[1].DestinationArrivalTime, tour[1].DestinationDepartureTime, batchNumber);
+					SetTourModeAndTime(householdDay, tour[1], tour[1].Mode, tour[1].DestinationArrivalTime, tour[1].DestinationDepartureTime);
 					if (householdDay.IsValid == false) {
 						return;
 					}
@@ -2147,9 +2149,9 @@ namespace DaySim.ChoiceModels.Actum {
 						}
 						//departure time is modeled
 						//JLB 20140528 replaced the following line because tour mode is known at this point
-						//SetTourModeAndTime(householdDay, tour[1], 0, destinationArrivalTime, 0, batchNumber);
+						//SetTourModeAndTime(householdDay, tour[1], 0, destinationArrivalTime, 0);
 					}
-					SetTourModeAndTime(householdDay, tour[1], tour[1].Mode, tour[1].DestinationArrivalTime, 0, batchNumber);
+					SetTourModeAndTime(householdDay, tour[1], tour[1].Mode, tour[1].DestinationArrivalTime, 0);
 					if (householdDay.IsValid == false) {
 						return;
 					}
@@ -2170,7 +2172,7 @@ namespace DaySim.ChoiceModels.Actum {
 						}
 						//arrival time is modeled
 					}
-					SetTourModeAndTime(householdDay, tour[1], tour[1].Mode, 0, tour[1].DestinationDepartureTime, batchNumber);
+					SetTourModeAndTime(householdDay, tour[1], tour[1].Mode, 0, tour[1].DestinationDepartureTime);
 					if (householdDay.IsValid == false) {
 						return;
 					}
@@ -2242,7 +2244,7 @@ namespace DaySim.ChoiceModels.Actum {
 					else {
 						tripDepartureTime = tour[tourWithDestination[j]].DestinationDepartureTime;
 					}
-					RunPartialHalfTourTripModelSuite(tour[i], halfTour[i], trip, stopPurpose, stopLocation, tripMode, tripDepartureTime, batchNumber);
+					RunPartialHalfTourTripModelSuite(tour[i], halfTour[i], trip, stopPurpose, stopLocation, tripMode, tripDepartureTime);
 				}
 				if (direction == Global.Settings.TourDirections.OriginToDestination) {
 					tour[i].HalfTour1HasBeenSimulated = true;
@@ -2258,7 +2260,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunFullJointHalfTourModelSuite(HouseholdDayWrapper householdDay, IFullHalfTourWrapper fullJointHalfTour, int batchNumber) {
+		private static void RunFullJointHalfTourModelSuite(HouseholdDayWrapper householdDay, IFullHalfTourWrapper fullJointHalfTour) {
 
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > RunFullJointHalfTourModelSuite for Household {0} FullHalfTour {1}", householdDay.Household.Id, fullJointHalfTour.Sequence);
@@ -2324,13 +2326,13 @@ namespace DaySim.ChoiceModels.Actum {
 				for (var i = 1; i <= 8; i++) {
 					if ((participantDay[i] != null) && (oldestNonEscortPersonID == participantDay[i].Person.Id)) {
 						destinationParcel = tour[i].DestinationPurpose == Global.Settings.Purposes.Work ? tour[i].Person.UsualWorkParcel : tour[i].Person.UsualSchoolParcel;
-						SetTourDestination(householdDay, tour[i], batchNumber, destinationParcel);
+						SetTourDestination(householdDay, tour[i], destinationParcel);
 						if (householdDay.IsValid == false) {
 							return;
 						}
 						// reset destinationParcel in case TourDestinationModel reset it in error situations
 						destinationParcel = tour[i].DestinationPurpose == Global.Settings.Purposes.Work ? tour[i].Person.UsualWorkParcel : tour[i].Person.UsualSchoolParcel;
-						SetTourModeAndTime(householdDay, tour[i], 0, 0, 0, batchNumber);
+						SetTourModeAndTime(householdDay, tour[i], 0, 0, 0);
 						if (householdDay.IsValid == false) {
 							return;
 						}
@@ -2376,11 +2378,11 @@ namespace DaySim.ChoiceModels.Actum {
 							arrivalTime = defaultArrivalTime;
 							departureTime = defaultDepartureTime;
 						}
-						SetTourDestination(householdDay, tour[i], batchNumber, destinationParcel);
+						SetTourDestination(householdDay, tour[i], destinationParcel);
 						if (householdDay.IsValid == false) {
 							return;
 						}
-						SetTourModeAndTime(householdDay, tour[i], mode, arrivalTime, departureTime, batchNumber);
+						SetTourModeAndTime(householdDay, tour[i], mode, arrivalTime, departureTime);
 						if (householdDay.IsValid == false) {
 							return;
 						}
@@ -2402,7 +2404,7 @@ namespace DaySim.ChoiceModels.Actum {
 			TourWrapper sourceTour = null;
 			for (var i = 1; i <= 8; i++) {
 				if (!(participantDay[i] == null) && oldestNonEscortPersonID == participantDay[i].Person.Id) {
-					ProcessHalfTours(tour[i], participantDay[i], householdDay, fullJointHalfTour.Direction, fullJointHalfTour.Direction, batchNumber);
+					ProcessHalfTours(tour[i], participantDay[i], householdDay, fullJointHalfTour.Direction, fullJointHalfTour.Direction);
 					sourceTour = tour[i];
 					if (fullJointHalfTour.Direction == Global.Settings.TourDirections.OriginToDestination) {
 						tour[i].HalfTour1HasBeenSimulated = true;
@@ -2424,7 +2426,7 @@ namespace DaySim.ChoiceModels.Actum {
 			for (var i = 1; i <= 8; i++) {
 				if (!(participantDay[i] == null) && !(oldestNonEscortPersonID == participantDay[i].Person.Id)) {
 					if (!Global.Configuration.IsInEstimationMode) {
-						CloneHalfTours(sourceTour, tour[i], fullJointHalfTour.Direction, fullJointHalfTour.Direction, batchNumber);
+						CloneHalfTours(sourceTour, tour[i], fullJointHalfTour.Direction, fullJointHalfTour.Direction);
 						tour[i].SetOriginTimes(fullJointHalfTour.Direction);
 					}
 					if (fullJointHalfTour.Direction == Global.Settings.TourDirections.OriginToDestination) {
@@ -2441,7 +2443,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 		}
 
-		private static void RunMandatoryTourModelSuite(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunMandatoryTourModelSuite(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay) {
 			//needs to include running subtour models of work tours;  see RunTourModels
 
 			//mbtrace
@@ -2456,24 +2458,24 @@ namespace DaySim.ChoiceModels.Actum {
 			if (!tour.DestinationModeAndTimeHaveBeenSimulated) {
 				// JLB 201406 added this next conditional call
 				if (Global.Configuration.ShouldRunTourDestinationModeTimeModel && tour.DestinationPurpose == Global.Settings.Purposes.Business) {
-					SetTourDestinationModeAndTime(householdDay, tour, null, 0, 0, 0, batchNumber);
+					SetTourDestinationModeAndTime(householdDay, tour, null, 0, 0, 0);
 				}
 				else {
 					if (!(tour.DestinationParcelId > 0 && tour.DestinationParcelId == tour.Person.UsualWorkParcelId)) {
-						SetTourDestination(householdDay, tour, batchNumber);
+						SetTourDestination(householdDay, tour);
 					}
 					if (!tour.PersonDay.IsValid) {
 						return;
 					}
 
 					if (tour.DestinationPurpose == Global.Settings.Purposes.Work) {
-						GenerateSubtours(tour, householdDay, batchNumber);
+						GenerateSubtours(tour, householdDay);
 						if (!tour.PersonDay.IsValid) {
 							return;
 						}
 					}
 					if (!tour.DestinationModeAndTimeHaveBeenSimulated) {
-						SetTourModeAndTime(householdDay, tour, 0, 0, 0, batchNumber);
+						SetTourModeAndTime(householdDay, tour, 0, 0, 0);
 						if (!tour.PersonDay.IsValid) {
 							return;
 						}
@@ -2502,9 +2504,9 @@ namespace DaySim.ChoiceModels.Actum {
 					lastDirection = Global.Settings.TourDirections.OriginToDestination;
 				}
 
-				ChoiceModelFactory.TotalTimesTourTripModelsRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-				RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection, batchNumber);
+				RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection);
 				if (!personDay.IsValid) {
 					return;
 				}
@@ -2512,15 +2514,15 @@ namespace DaySim.ChoiceModels.Actum {
 			UpdateTimeWindowForTourDestinationTimes(tour);
 
 
-			ChoiceModelFactory.TotalTimesTourSubtourModelsRun[batchNumber]++;
+			ChoiceModelFactory.TotalTimesTourSubtourModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-			RunSubtourModels(tour, personDay, householdDay, batchNumber);
+			RunSubtourModels(tour, personDay, householdDay);
 			if (!personDay.IsValid) {
 				return;
 			}
 		}
 
-		private static void RunJointTourModelSuite(HouseholdDayWrapper householdDay, IJointTourWrapper jointTour, int batchNumber) {
+		private static void RunJointTourModelSuite(HouseholdDayWrapper householdDay, IJointTourWrapper jointTour) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > RunJointTourModelSuite for Household {0} JointTour {1}", householdDay.Household.Id, jointTour.Sequence);
 
@@ -2575,15 +2577,15 @@ namespace DaySim.ChoiceModels.Actum {
 
 			// JLB 201406 added this conditional use of SetTourDestinaitonModeAndTime
 			if (Global.Configuration.ShouldRunTourDestinationModeTimeModel) {
-				SetTourDestinationModeAndTime(householdDay, tour[iOldest], null, 0, 0, 0, batchNumber);
+				SetTourDestinationModeAndTime(householdDay, tour[iOldest], null, 0, 0, 0);
 			}
 			else {
 
-				SetTourDestination(householdDay, tour[iOldest], batchNumber);
+				SetTourDestination(householdDay, tour[iOldest]);
 
 				if (!participantDay[iOldest].IsValid) { return; }
 
-				SetTourModeAndTime(householdDay, tour[iOldest], 0, 0, 0, batchNumber);
+				SetTourModeAndTime(householdDay, tour[iOldest], 0, 0, 0);
 			}
 
 			if (!participantDay[iOldest].IsValid) { return; }
@@ -2595,14 +2597,14 @@ namespace DaySim.ChoiceModels.Actum {
 						if (!Global.Configuration.IsInEstimationMode) {
 							// JLB 201406 added the conditional call to SetTourDestinationModeAndTime()
 							if (Global.Configuration.ShouldRunTourDestinationModeTimeModel) {
-								SetTourDestinationModeAndTime(householdDay, tour[i], tour[iOldest].DestinationParcel, tour[iOldest].Mode, tour[iOldest].DestinationArrivalTime, tour[iOldest].DestinationDepartureTime, batchNumber);
+								SetTourDestinationModeAndTime(householdDay, tour[i], tour[iOldest].DestinationParcel, tour[iOldest].Mode, tour[iOldest].DestinationArrivalTime, tour[iOldest].DestinationDepartureTime);
 							}
 							else {
-								SetTourDestination(householdDay, tour[i], batchNumber, tour[iOldest].DestinationParcel);
+								SetTourDestination(householdDay, tour[i], tour[iOldest].DestinationParcel);
 								if (householdDay.IsValid == false) {
 									return;
 								}
-								SetTourModeAndTime(householdDay, tour[i], tour[iOldest].Mode, tour[iOldest].DestinationArrivalTime, tour[iOldest].DestinationDepartureTime, batchNumber);
+								SetTourModeAndTime(householdDay, tour[i], tour[iOldest].Mode, tour[iOldest].DestinationArrivalTime, tour[iOldest].DestinationDepartureTime);
 							}
 							if (householdDay.IsValid == false) {
 								return;
@@ -2616,7 +2618,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 
 			// model halfTours for oldest
-			ProcessHalfTours(tour[iOldest], participantDay[iOldest], householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin, batchNumber);
+			ProcessHalfTours(tour[iOldest], participantDay[iOldest], householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin);
 
 			if (!participantDay[iOldest].IsValid) { return; }
 
@@ -2635,7 +2637,7 @@ namespace DaySim.ChoiceModels.Actum {
 						if (tour[i].Id == 21) {
 							bool testbreak = true;
 						}
-						CloneHalfTours(tour[iOldest], tour[i], Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin, batchNumber);
+						CloneHalfTours(tour[iOldest], tour[i], Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin);
 						if (tour[i].PersonDay.IsValid) {
 							tour[i].SetOriginTimes();
 							tour[i].HalfTour1HasBeenSimulated = true;
@@ -2648,7 +2650,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunNonMandatoryTourModelSuite(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunNonMandatoryTourModelSuite(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay) {
 #if RELEASE
 				try {
 #endif
@@ -2670,14 +2672,14 @@ namespace DaySim.ChoiceModels.Actum {
 
 			// JLB 201406 added the conditional call to SetTourDestinationModeAndTime
 			if (Global.Configuration.ShouldRunTourDestinationModeTimeModel) {
-				SetTourDestinationModeAndTime(householdDay, tour, destinationParcel, mode, destinationArrivalTime, destinationDepartureTime, batchNumber);
+				SetTourDestinationModeAndTime(householdDay, tour, destinationParcel, mode, destinationArrivalTime, destinationDepartureTime);
 			}
 			else {
-				SetTourDestination(householdDay, tour, batchNumber, destinationParcel);
+				SetTourDestination(householdDay, tour, destinationParcel);
 				if (!tour.PersonDay.IsValid) {
 					return;
 				}
-				SetTourModeAndTime(householdDay, tour, mode, destinationArrivalTime, destinationDepartureTime, batchNumber);
+				SetTourModeAndTime(householdDay, tour, mode, destinationArrivalTime, destinationDepartureTime);
 			}
 			if (!tour.PersonDay.IsValid) {
 				return;
@@ -2703,9 +2705,9 @@ namespace DaySim.ChoiceModels.Actum {
 				lastDirection = Global.Settings.TourDirections.OriginToDestination;
 			}
 
-			ChoiceModelFactory.TotalTimesTourTripModelsRun[batchNumber]++;
+			ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-			RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection, batchNumber);
+			RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection);
 			if (!personDay.IsValid) {
 				return;
 			}
@@ -2760,7 +2762,7 @@ namespace DaySim.ChoiceModels.Actum {
 			tour.TimeWindow.SetBusyMinutes(tour.DestinationDepartureTime, Global.Settings.Times.MinutesInADay + 1);
 		}
 
-		private static void SetTourDestination(HouseholdDayWrapper householdDay, TourWrapper tour, int batchNumber, IParcelWrapper constrainedParcel = null) {
+		private static void SetTourDestination(HouseholdDayWrapper householdDay, TourWrapper tour, IParcelWrapper constrainedParcel = null) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > SetTourDestination for Tour {0}", tour.Sequence);
 
@@ -2782,7 +2784,7 @@ namespace DaySim.ChoiceModels.Actum {
 					// sets the destination for the business tour
 					// not the usual work location, only some other location
 
-					ChoiceModelFactory.TotalTimesTourDestinationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTourDestinationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					Global.ChoiceModelSession.Get<TourDestinationModel>().Run(tour, householdDay, Global.Configuration.TourDestinationModelSampleSize, constrainedParcel);
 				}
@@ -2809,7 +2811,7 @@ namespace DaySim.ChoiceModels.Actum {
 					// sets the destination for the work tour
 					// the usual work location or some another work location
 
-					ChoiceModelFactory.TotalTimesTourDestinationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTourDestinationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					Global.ChoiceModelSession.Get<TourDestinationModel>().Run(tour, householdDay, Global.Configuration.TourDestinationModelSampleSize, constrainedParcel);
 				}
@@ -2818,7 +2820,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void GenerateSubtours(TourWrapper tour, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void GenerateSubtours(TourWrapper tour, HouseholdDayWrapper householdDay) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > GenerateSubtours for Tour {0}", tour.Sequence);
 
@@ -2834,14 +2836,14 @@ namespace DaySim.ChoiceModels.Actum {
 					// -- in estimation mode --
 					// sets the destination purpose of the subtour when in application mode
 
-					ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					nCallsForTour++;
 					Global.ChoiceModelSession.Get<WorkBasedSubtourGenerationModel>().Run(tour, householdDay, nCallsForTour, subtour.DestinationPurpose);
 				}
 				nCallsForTour++;
 
-				ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				Global.ChoiceModelSession.Get<WorkBasedSubtourGenerationModel>().Run(tour, householdDay, nCallsForTour);
 			}
@@ -2852,7 +2854,7 @@ namespace DaySim.ChoiceModels.Actum {
 					// -- in application mode --
 					// sets the destination purpose of the subtour
 
-					ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					nCallsForTour++;
 					var destinationPurposeForSubtour = Global.ChoiceModelSession.Get<WorkBasedSubtourGenerationModel>().Run(tour, householdDay, nCallsForTour);
@@ -2871,7 +2873,7 @@ namespace DaySim.ChoiceModels.Actum {
 		}
 
 		private static void SetTourModeAndTime(HouseholdDayWrapper householdDay, TourWrapper tour,
-			  int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, int batchNumber) {
+			  int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime) {
 
 			//if (householdDay.Household.Id == 80138 && tour.Person.Sequence == 2) {
 			if (tour.Sequence > 10) {
@@ -2885,7 +2887,7 @@ namespace DaySim.ChoiceModels.Actum {
 					bool testbreak = true;
 				}
 
-				ChoiceModelFactory.TotalTimesTourModeTimeModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesTourModeTimeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 				if (tour.DestinationPurpose == Global.Settings.Purposes.Work) {
 					//Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().Run(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
 					Global.ChoiceModelSession.Get<TourModeTimeModel>().Run(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
@@ -2930,24 +2932,24 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunSubtourModelSuite(TourWrapper subtour, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void RunSubtourModelSuite(TourWrapper subtour, HouseholdDayWrapper householdDay) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > RunSubtourModelSuite for Subtour {0}", subtour.Sequence);
 
 			subtour.SetWorkBasedIsSimulated();
 
 			if (Global.Configuration.ShouldRunTourDestinationModeTimeModel) {
-				SetTourDestinationModeAndTime(householdDay, subtour, null, 0, 0, 0, batchNumber);
+				SetTourDestinationModeAndTime(householdDay, subtour, null, 0, 0, 0);
 			}
 			else {
 
-				SetSubtourDestination(subtour, householdDay, batchNumber);
+				SetSubtourDestination(subtour, householdDay);
 
 				if (!subtour.PersonDay.IsValid) {
 					return;
 				}
 
-				SetSubtourModeAndTime(householdDay, subtour, batchNumber);
+				SetSubtourModeAndTime(householdDay, subtour);
 
 				if (!subtour.PersonDay.IsValid) {
 					return;
@@ -2980,7 +2982,7 @@ namespace DaySim.ChoiceModels.Actum {
 			subtour.ParentTour.TimeWindow.SetBusyMinutes(subtour.DestinationArrivalTime, subtour.DestinationDepartureTime + 1);
 		}
 
-		private static void SetSubtourDestination(TourWrapper subtour, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void SetSubtourDestination(TourWrapper subtour, HouseholdDayWrapper householdDay) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > SetSubtourGeneration for Subtour {0}", subtour.Sequence);
 
@@ -2988,7 +2990,7 @@ namespace DaySim.ChoiceModels.Actum {
 				if (Global.Configuration.ShouldRunTourDestinationModel) {
 					// sets the destination for the business tour
 
-					ChoiceModelFactory.TotalTimesBusinessSubtourDestinationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesBusinessSubtourDestinationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					Global.ChoiceModelSession.Get<TourDestinationModel>().Run(subtour, householdDay, Global.Configuration.TourDestinationModelSampleSize);
 				}
@@ -3013,7 +3015,7 @@ namespace DaySim.ChoiceModels.Actum {
 				if (Global.Configuration.ShouldRunTourDestinationModel) {
 					// sets the destination for the subtour
 
-					ChoiceModelFactory.TotalTimesOtherSubtourDestinationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesOtherSubtourDestinationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					Global.ChoiceModelSession.Get<TourDestinationModel>().Run(subtour, householdDay, Global.Configuration.TourDestinationModelSampleSize);
 				}
@@ -3022,7 +3024,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void SetSubtourModeAndTime(HouseholdDayWrapper householdDay, TourWrapper subtour, int batchNumber) {
+		private static void SetSubtourModeAndTime(HouseholdDayWrapper householdDay, TourWrapper subtour) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > SetSubtourModeAndTime for Subtour {0}", subtour.Sequence);
 
@@ -3080,7 +3082,7 @@ namespace DaySim.ChoiceModels.Actum {
 				//HTourModeTime.InitializeTourModeTimes();
 
 
-				ChoiceModelFactory.TotalTimesTourModeTimeModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesTourModeTimeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				Global.ChoiceModelSession.Get<TourModeTimeModel>().Run(householdDay, subtour, 0, 0, 0);
 
@@ -3113,13 +3115,13 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunPartialHalfTourTripModelSuite(TourWrapper tour, IHalfTour halfTour, TripWrapper trip, int stopPurpose, IParcelWrapper stopLocation, int mode, int departureTime, int batchNumber) {
+		private static void RunPartialHalfTourTripModelSuite(TourWrapper tour, IHalfTour halfTour, TripWrapper trip, int stopPurpose, IParcelWrapper stopLocation, int mode, int departureTime) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > RunPartialHalfTourTripModelSuite for HalfTour {0} Direction {1} Trip {2}", tour.Sequence, trip.Direction, trip.Sequence);
 
-			var nextTrip = (TripWrapper) GeneratePartialHalfTourIntermediateStop(halfTour, trip, stopPurpose, stopLocation, mode, departureTime, batchNumber);
+			var nextTrip = (TripWrapper) GeneratePartialHalfTourIntermediateStop(halfTour, trip, stopPurpose, stopLocation, mode, departureTime);
 
-			SetPartialHalfTourIntermediateStopDestination(trip, nextTrip, stopPurpose, stopLocation, mode, departureTime, batchNumber);
+			SetPartialHalfTourIntermediateStopDestination(trip, nextTrip, stopPurpose, stopLocation, mode, departureTime);
 			SetPartialHalfTourTripModeAndTime(tour, trip, stopPurpose, stopLocation, mode, departureTime);
 
 			if (!trip.PersonDay.IsValid) {
@@ -3153,7 +3155,7 @@ namespace DaySim.ChoiceModels.Actum {
 			//			}
 		}
 
-		private static DomainModels.Default.Wrappers.TripWrapper GeneratePartialHalfTourIntermediateStop(IHalfTour halfTour, TripWrapper trip, int stopPurpose, IParcelWrapper stopLocation, int mode, int departureTime, int batchNumber) {
+		private static DomainModels.Default.Wrappers.TripWrapper GeneratePartialHalfTourIntermediateStop(IHalfTour halfTour, TripWrapper trip, int stopPurpose, IParcelWrapper stopLocation, int mode, int departureTime) {
 			if (!Global.Configuration.ShouldRunIntermediateStopGenerationModel) {
 				return null;
 			}
@@ -3203,7 +3205,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 				if (stopPurpose != Global.Settings.Purposes.NoneOrHome) {
 
-					ChoiceModelFactory.TotalTimesIntermediateStopGenerated[batchNumber]++;
+					ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
 
 					var destinationPurposeForNextTrip = trip.DestinationPurpose;
 
@@ -3225,19 +3227,19 @@ namespace DaySim.ChoiceModels.Actum {
 			return nextTrip;
 		}
 
-		private static void SetPartialHalfTourIntermediateStopDestination(TripWrapper trip, TripWrapper nextTrip, int stopPurpose, IParcelWrapper stopLocation, int mode, int departureTime, int batchNumber) {
+		private static void SetPartialHalfTourIntermediateStopDestination(TripWrapper trip, TripWrapper nextTrip, int stopPurpose, IParcelWrapper stopLocation, int mode, int departureTime) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > > SetPartialHalfTourTripIntermediateStopDestination Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
 
 			if (nextTrip == null || trip.IsToTourOrigin || !Global.Configuration.ShouldRunIntermediateStopLocationModel) {
 				if (trip.IsToTourOrigin) {
 
-					ChoiceModelFactory.TotalTimesTripIsToTourOrigin[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.GetBatchFromThreadId()]++;
 
 				}
 				else if (nextTrip == null) {
 
-					ChoiceModelFactory.TotalTimesNextTripIsNull[batchNumber]++;
+					ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.GetBatchFromThreadId()]++;
 
 				}
 
@@ -3360,7 +3362,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void ProcessHalfTours(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int firstDirection, int lastDirection, int batchNumber) {
+		private static void ProcessHalfTours(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int firstDirection, int lastDirection) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > ProcessHalfTours Person {0} Tour {1} Directions {2} to {3}",
 					 personDay.Person.Sequence, tour.Sequence, firstDirection, lastDirection);
@@ -3392,9 +3394,9 @@ namespace DaySim.ChoiceModels.Actum {
 					}
 
 
-					ChoiceModelFactory.TotalTimesTripModelSuiteRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-					RunTripModelSuite(householdDay, personDay, tour, halfTour, trip, batchNumber);
+					RunTripModelSuite(householdDay, personDay, tour, halfTour, trip);
 
 					if (!trip.PersonDay.IsValid) {
 						return;
@@ -3409,7 +3411,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunTripModelSuite(HouseholdDayWrapper householdDay, PersonDayWrapper personDay, TourWrapper tour, IHalfTour halfTour, TripWrapper trip, int batchNumber) {
+		private static void RunTripModelSuite(HouseholdDayWrapper householdDay, PersonDayWrapper personDay, TourWrapper tour, IHalfTour halfTour, TripWrapper trip) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > RunTripModelSuite Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
 
@@ -3419,13 +3421,13 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 
 
-			var nextTrip = (TripWrapper) GenerateIntermediateStop(halfTour, trip, householdDay, batchNumber);
+			var nextTrip = (TripWrapper) GenerateIntermediateStop(halfTour, trip, householdDay);
 
-			SetIntermediateStopDestination(trip, nextTrip, householdDay, batchNumber);
+			SetIntermediateStopDestination(trip, nextTrip, householdDay);
 			if (!trip.PersonDay.IsValid) {
 				return;
 			}
-			SetTripModeAndTime(householdDay, tour, trip, batchNumber);
+			SetTripModeAndTime(householdDay, tour, trip);
 
 			if (!trip.PersonDay.IsValid) {
 				return;
@@ -3468,7 +3470,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static TripWrapper GenerateIntermediateStop(IHalfTour halfTour, TripWrapper trip, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static TripWrapper GenerateIntermediateStop(IHalfTour halfTour, TripWrapper trip, HouseholdDayWrapper householdDay) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > > GenerateIntermediateStops Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
 
@@ -3489,13 +3491,13 @@ namespace DaySim.ChoiceModels.Actum {
 
 				if (intermediateStopPurpose != Global.Settings.Purposes.NoneOrHome) {
 
-					ChoiceModelFactory.TotalTimesIntermediateStopGenerated[batchNumber]++;
+					ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
 
 					trip.PersonDay.IncrementSimulatedStops(intermediateStopPurpose);
 				}
 				if (trip.PersonDay.GetTotalStops() > 0 && halfTour.SimulatedTrips < 10) {
 
-					ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					Global.ChoiceModelSession.Get<IntermediateStopGenerationModel>().Run(trip, householdDay, intermediateStopPurpose);
 				}
@@ -3510,7 +3512,7 @@ namespace DaySim.ChoiceModels.Actum {
 				if (trip.Sequence == 1 && trip.Tour.Mode == Global.Settings.Modes.ParkAndRide) {
 					intermediateStopPurpose = Global.Settings.Purposes.ChangeMode;
 
-					ChoiceModelFactory.TotalTimesChangeModeStopGenerated[batchNumber]++;
+					ChoiceModelFactory.TotalTimesChangeModeStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
 
 				}
 				else if (trip.PersonDay.GetTotalStops() == 0) {
@@ -3518,7 +3520,7 @@ namespace DaySim.ChoiceModels.Actum {
 				}
 				else {
 
-					ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 
 					if (trip.Sequence > 5) {
@@ -3530,7 +3532,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 				if (intermediateStopPurpose != Global.Settings.Purposes.NoneOrHome && halfTour.SimulatedTrips < 10) {
 
-					ChoiceModelFactory.TotalTimesIntermediateStopGenerated[batchNumber]++;
+					ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
 
 					var destinationPurposeForNextTrip = trip.DestinationPurpose;
 
@@ -3552,19 +3554,19 @@ namespace DaySim.ChoiceModels.Actum {
 			return nextTrip;
 		}
 
-		private static void SetIntermediateStopDestination(TripWrapper trip, TripWrapper nextTrip, HouseholdDayWrapper householdDay, int batchNumber) {
+		private static void SetIntermediateStopDestination(TripWrapper trip, TripWrapper nextTrip, HouseholdDayWrapper householdDay) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > > SetIntermediateStopDestination Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
 
 			if (nextTrip == null || trip.IsToTourOrigin || !Global.Configuration.ShouldRunIntermediateStopLocationModel) {
 				if (trip.IsToTourOrigin) {
 
-					ChoiceModelFactory.TotalTimesTripIsToTourOrigin[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.GetBatchFromThreadId()]++;
 
 				}
 				else if (nextTrip == null) {
 
-					ChoiceModelFactory.TotalTimesNextTripIsNull[batchNumber]++;
+					ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.GetBatchFromThreadId()]++;
 
 				}
 
@@ -3589,13 +3591,13 @@ namespace DaySim.ChoiceModels.Actum {
 					trip.DestinationAddressType = Global.Settings.AddressTypes.Other;
 
 
-					ChoiceModelFactory.TotalTimesChangeModeLocationSet[batchNumber]++;
+					ChoiceModelFactory.TotalTimesChangeModeLocationSet[ParallelUtility.GetBatchFromThreadId()]++;
 
 				}
 			}
 			else {
 
-				ChoiceModelFactory.TotalTimesIntermediateStopLocationModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesIntermediateStopLocationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 				Global.ChoiceModelSession.Get<IntermediateStopLocationModel>().Run(trip, householdDay, Global.Configuration.IntermediateStopLocationModelSampleSize);
 			}
@@ -3609,7 +3611,7 @@ namespace DaySim.ChoiceModels.Actum {
 			nextTrip.SetOriginAddressType(trip.DestinationAddressType);
 		}
 
-		private static void SetTripModeAndTime(HouseholdDayWrapper householdDay, TourWrapper tour, TripWrapper trip, int batchNumber, bool forTourTimesOnly = false) {
+		private static void SetTripModeAndTime(HouseholdDayWrapper householdDay, TourWrapper tour, TripWrapper trip, bool forTourTimesOnly = false) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > > SetTripModeAndTime Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
 
@@ -3668,13 +3670,13 @@ namespace DaySim.ChoiceModels.Actum {
 				if (trip.DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
 					// trips to change mode destination are always by transit
 
-					ChoiceModelFactory.TotalTimesChangeModeTransitModeSet[batchNumber]++;
+					ChoiceModelFactory.TotalTimesChangeModeTransitModeSet[ParallelUtility.GetBatchFromThreadId()]++;
 
 					trip.Mode = Global.Settings.Modes.Transit;
 				}
 				else {
 
-					ChoiceModelFactory.TotalTimesTripModeModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTripModeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					Global.ChoiceModelSession.Get<TripModeModel>().Run(householdDay, trip);
 
@@ -3717,7 +3719,7 @@ namespace DaySim.ChoiceModels.Actum {
 			else {
 				if (Global.Configuration.ShouldRunTripTimeModel) {
 
-					ChoiceModelFactory.TotalTimesTripTimeModelRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTripTimeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 
 					Global.ChoiceModelSession.Get<TripTimeModel>().Run(householdDay, trip);
 
@@ -3738,7 +3740,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void CloneHalfTours(TourWrapper sourceTour, TourWrapper tour, int firstDirection, int lastDirection, int batchNumber) {
+		private static void CloneHalfTours(TourWrapper sourceTour, TourWrapper tour, int firstDirection, int lastDirection) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > > CloneHalfTours Tour {0} Directions {1} to {2}", tour.Sequence, firstDirection, lastDirection);
 
@@ -3771,9 +3773,9 @@ namespace DaySim.ChoiceModels.Actum {
 					}
 
 
-					ChoiceModelFactory.TotalTimesTripModelSuiteRun[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
 
-					RunTripCloneSuite(sourceTour, sourceHalfTour, sourceTrip, tour, halfTour, trip, batchNumber);
+					RunTripCloneSuite(sourceTour, sourceHalfTour, sourceTrip, tour, halfTour, trip);
 
 					if (!trip.PersonDay.IsValid) {
 						return;
@@ -3788,13 +3790,13 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void RunTripCloneSuite(TourWrapper sourceTour, IHalfTour sourceHalfTour, TripWrapper sourceTrip, TourWrapper tour, IHalfTour halfTour, TripWrapper trip, int batchNumber) {
+		private static void RunTripCloneSuite(TourWrapper sourceTour, IHalfTour sourceHalfTour, TripWrapper sourceTrip, TourWrapper tour, IHalfTour halfTour, TripWrapper trip) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > > RunTripCloneSuite Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
 
-			var nextTrip = (TripWrapper) GenerateIntermediateStopClone(sourceHalfTour, sourceTrip, halfTour, trip, batchNumber);
+			var nextTrip = (TripWrapper) GenerateIntermediateStopClone(sourceHalfTour, sourceTrip, halfTour, trip);
 
-			CloneIntermediateStopDestination(sourceTrip, trip, nextTrip, batchNumber);
+			CloneIntermediateStopDestination(sourceTrip, trip, nextTrip);
 			CloneTripModeAndTime(sourceTour, sourceTrip, tour, trip);
 
 			if (!trip.PersonDay.IsValid) {
@@ -3830,7 +3832,7 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static DomainModels.Default.Wrappers.TripWrapper GenerateIntermediateStopClone(IHalfTour sourceHalfTour, TripWrapper sourceTrip, IHalfTour halfTour, TripWrapper trip, int batchNumber) {
+		private static DomainModels.Default.Wrappers.TripWrapper GenerateIntermediateStopClone(IHalfTour sourceHalfTour, TripWrapper sourceTrip, IHalfTour halfTour, TripWrapper trip) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > > GenerateIntermediateStopClone Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
 
@@ -3840,7 +3842,7 @@ namespace DaySim.ChoiceModels.Actum {
 
 			if (intermediateStopPurpose != Global.Settings.Purposes.NoneOrHome) {
 
-				ChoiceModelFactory.TotalTimesIntermediateStopGenerated[batchNumber]++;
+				ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
 
 				var destinationPurposeForNextTrip = trip.DestinationPurpose;
 
@@ -3860,19 +3862,19 @@ namespace DaySim.ChoiceModels.Actum {
 			return nextTrip;
 		}
 
-		private static void CloneIntermediateStopDestination(TripWrapper sourceTrip, TripWrapper trip, TripWrapper nextTrip, int batchNumber) {
+		private static void CloneIntermediateStopDestination(TripWrapper sourceTrip, TripWrapper trip, TripWrapper nextTrip) {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > > CloneIntermediateStopDestination Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
 
 			if (nextTrip == null || trip.IsToTourOrigin || !Global.Configuration.ShouldRunIntermediateStopLocationModel) {
 				if (trip.IsToTourOrigin) {
 
-					ChoiceModelFactory.TotalTimesTripIsToTourOrigin[batchNumber]++;
+					ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.GetBatchFromThreadId()]++;
 
 				}
 				else if (nextTrip == null) {
 
-					ChoiceModelFactory.TotalTimesNextTripIsNull[batchNumber]++;
+					ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.GetBatchFromThreadId()]++;
 
 				}
 
@@ -3936,13 +3938,14 @@ namespace DaySim.ChoiceModels.Actum {
 			}
 		}
 
-		private static void SetTourDestinationModeAndTime(HouseholdDayWrapper householdDay, TourWrapper tour, IParcelWrapper constrainedParcel, int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, int batchNumber) {
-			//mbtrace
-			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > SetTourDestinationModeAndTime for Tour {0}", tour.Sequence);
+		private static void SetTourDestinationModeAndTime(HouseholdDayWrapper householdDay, TourWrapper tour, IParcelWrapper constrainedParcel, int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime) {
+            int batchNumber = ParallelUtility.GetBatchFromThreadId();
+            //mbtrace
+            if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > > SetTourDestinationModeAndTime for Tour {0}", tour.Sequence);
 
 			if (Global.Configuration.ShouldRunTourDestinationModeTimeModel) {
 
-				ChoiceModelFactory.TotalTimesTourDestinationModeTimeModelRun[batchNumber]++;
+				ChoiceModelFactory.TotalTimesTourDestinationModeTimeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
 				// Purpose-specific models can be substituted as they are developed.  For now all purposes cal the same model
 				if (tour.DestinationPurpose == Global.Settings.Purposes.Escort) {
 					Global.ChoiceModelSession.Get<TourDestinationModeTimeModel>().Run(householdDay, tour, constrainedParcel, constrainedMode, constrainedArrivalTime, constrainedDepartureTime);

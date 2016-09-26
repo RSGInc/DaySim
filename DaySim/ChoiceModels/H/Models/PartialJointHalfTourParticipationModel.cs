@@ -290,8 +290,8 @@ namespace DaySim.ChoiceModels.H.Models {
 							(zzDist > Global.Configuration.MaximumBlendingDistance)
 								? Constants.DEFAULT_VALUE
 								: (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-									? pUsualLocationParcel[t1].NodeToNodeDistance(pUsualLocationParcel[t2], batchNumber)
-									: (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceCircuityMeasures)
+									? pUsualLocationParcel[t1].NodeToNodeDistance(pUsualLocationParcel[t2])
+                                    : (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceCircuityMeasures)
 										? pUsualLocationParcel[t1].CircuityDistance(pUsualLocationParcel[t2])
 										: Constants.DEFAULT_VALUE;
 						var skimValue =
