@@ -1533,7 +1533,7 @@ namespace DaySim
                     //retrieve batchIndex so can see logging output
                     int threadLocalBatchIndex = ParallelUtility.threadLocalBatchIndex.Value;
                     List<IHousehold> batchHouseholds = batches[threadLocalBatchIndex];
-                    Console.WriteLine("For threadLocalBatchIndex: " + threadLocalBatchIndex + " there are " + batchHouseholds.Count + " households");
+                    Global.PrintFile.WriteLine("For threadLocalBatchIndex: " + threadLocalBatchIndex + " there are " + batchHouseholds.Count + " households");
                     foreach (var household in batchHouseholds)
                     {
 #if RELEASE
