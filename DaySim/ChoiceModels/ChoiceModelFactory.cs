@@ -256,7 +256,7 @@ namespace DaySim.ChoiceModels {
 
 			_type = helper.ChoiceModelRunner.GetChoiceModelRunnerType();
 			
-			if (!Global.Configuration.IsInEstimationMode) {
+			if (!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) {
 				ThreadQueue = new ThreadQueue();
 			}
 

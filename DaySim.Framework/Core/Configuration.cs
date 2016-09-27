@@ -371,6 +371,9 @@ namespace DaySim.Framework.Core
         [XmlAttribute]
         public bool ShouldRunRawConversion { get; set; }
 
+        [XmlAttribute]
+        public bool ShouldOutputStandardFilesInEstimationMode { get; set; }
+
         //Deprecated
         [XmlAttribute]
         public string WorkingDirectory { get; set; }

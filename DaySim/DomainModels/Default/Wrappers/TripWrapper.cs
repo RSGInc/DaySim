@@ -458,7 +458,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 		}
 
 		public virtual void UpdateTripValues() {
-			if (Global.Configuration.IsInEstimationMode || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunIntermediateStopLocationModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripModeModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripTimeModel)) {
+			if ((Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldOutputStandardFilesInEstimationMode) 
+                || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunIntermediateStopLocationModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripModeModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripTimeModel)) {
 				return;
 			}
 
@@ -467,6 +468,10 @@ namespace DaySim.DomainModels.Default.Wrappers {
 			TravelTime = modeImpedance.TravelTime;
 			TravelCost = modeImpedance.TravelCost;
 			TravelDistance = modeImpedance.TravelDistance;
+            if (Global.Configuration.IsInEstimationMode)
+            {
+                return;
+            }
 			PathType = modeImpedance.PathType;
             // new - for transit use DriverType for walk time
             if (Mode == Global.Settings.Modes.Transit) {
@@ -887,7 +892,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 //}
             }
             else  {
-                var useMode = Mode == Global.Settings.Modes.SchoolBus ? Global.Settings.Modes.Hov3 : Mode;
+                var useMode = Mode >= Global.Settings.Modes.SchoolBus ? Global.Settings.Modes.Hov3 : Mode;
 
                 var origin = IsHalfTourFromOrigin ? DestinationParcel : OriginParcel;
                 var destination = IsHalfTourFromOrigin ? OriginParcel : DestinationParcel;

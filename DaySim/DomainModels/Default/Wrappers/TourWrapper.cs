@@ -22,333 +22,333 @@ using DaySim.PathTypeModels;
 using Ninject;
 
 namespace DaySim.DomainModels.Default.Wrappers {
-	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
-	public class TourWrapper : ITourWrapper, ISamplingTour {
-		private readonly ITour _tour;
+    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
+    public class TourWrapper : ITourWrapper, ISamplingTour {
+        private readonly ITour _tour;
 
-		private readonly IPersisterExporter _exporter;
+        private readonly IPersisterExporter _exporter;
 
-		private readonly ITourCreator _tourCreator;
+        private readonly ITourCreator _tourCreator;
 
-		[UsedImplicitly]
-		public TourWrapper(ITour tour, IPersonWrapper personWrapper, IPersonDayWrapper personDayWrapper, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int destinationArrivalTime, int destinationDepartureTime, int destinationPurpose) {
-			_tour = tour;
+        [UsedImplicitly]
+        public TourWrapper(ITour tour, IPersonWrapper personWrapper, IPersonDayWrapper personDayWrapper, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int destinationArrivalTime, int destinationDepartureTime, int destinationPurpose) {
+            _tour = tour;
 
-			_exporter =
-				Global
-					.Kernel
-					.Get<IPersistenceFactory<ITour>>()
-					.Exporter;
+            _exporter =
+                Global
+                    .Kernel
+                    .Get<IPersistenceFactory<ITour>>()
+                    .Exporter;
 
-			_tourCreator =
-				Global
-					.Kernel
-					.Get<IWrapperFactory<ITourCreator>>()
-					.Creator;
+            _tourCreator =
+                Global
+                    .Kernel
+                    .Get<IWrapperFactory<ITourCreator>>()
+                    .Creator;
 
-			// relations properties
+            // relations properties
 
-			Household = personWrapper.Household;
-			Person = personWrapper;
-			PersonDay = personDayWrapper;
+            Household = personWrapper.Household;
+            Person = personWrapper;
+            PersonDay = personDayWrapper;
 
-			OriginParcel = originParcel;
-			DestinationParcel = destinationParcel;
-			DestinationPurpose = destinationPurpose;
-			DestinationArrivalTime = destinationArrivalTime;
-			DestinationDepartureTime = destinationDepartureTime;
-			DestinationPurpose = destinationPurpose;
+            OriginParcel = originParcel;
+            DestinationParcel = destinationParcel;
+            DestinationPurpose = destinationPurpose;
+            DestinationArrivalTime = destinationArrivalTime;
+            DestinationDepartureTime = destinationDepartureTime;
+            DestinationPurpose = destinationPurpose;
 
-			// flags/choice model/etc. properties
+            // flags/choice model/etc. properties
 
-			SetValueOfTimeCoefficients(destinationPurpose, true);
-		}
+            SetValueOfTimeCoefficients(destinationPurpose, true);
+        }
 
-		[UsedImplicitly]
-		public TourWrapper(ITour subtour, ITourWrapper tourWrapper, int purpose, bool suppressRandomVOT) {
-			_tour = subtour;
+        [UsedImplicitly]
+        public TourWrapper(ITour subtour, ITourWrapper tourWrapper, int purpose, bool suppressRandomVOT) {
+            _tour = subtour;
 
-			_exporter =
-				Global
-					.Kernel
-					.Get<IPersistenceFactory<ITour>>()
-					.Exporter;
+            _exporter =
+                Global
+                    .Kernel
+                    .Get<IPersistenceFactory<ITour>>()
+                    .Exporter;
 
-			_tourCreator =
-				Global
-					.Kernel
-					.Get<IWrapperFactory<ITourCreator>>()
-					.Creator;
+            _tourCreator =
+                Global
+                    .Kernel
+                    .Get<IWrapperFactory<ITourCreator>>()
+                    .Creator;
 
-			// relations properties
+            // relations properties
 
-			Household = tourWrapper.Household;
-			Person = tourWrapper.Person;
-			PersonDay = tourWrapper.PersonDay;
-			ParentTour = tourWrapper;
+            Household = tourWrapper.Household;
+            Person = tourWrapper.Person;
+            PersonDay = tourWrapper.PersonDay;
+            ParentTour = tourWrapper;
 
-			SetParcelRelationships(subtour);
+            SetParcelRelationships(subtour);
 
-			// flags/choice model/etc. properties
+            // flags/choice model/etc. properties
 
-			SetValueOfTimeCoefficients(purpose, suppressRandomVOT);
-		}
+            SetValueOfTimeCoefficients(purpose, suppressRandomVOT);
+        }
 
-		[UsedImplicitly]
-		public TourWrapper(ITour tour, IPersonDayWrapper personDayWrapper, int purpose, bool suppressRandomVOT) {
-			_tour = tour;
+        [UsedImplicitly]
+        public TourWrapper(ITour tour, IPersonDayWrapper personDayWrapper, int purpose, bool suppressRandomVOT) {
+            _tour = tour;
 
-			_exporter =
-				Global
-					.Kernel
-					.Get<IPersistenceFactory<ITour>>()
-					.Exporter;
+            _exporter =
+                Global
+                    .Kernel
+                    .Get<IPersistenceFactory<ITour>>()
+                    .Exporter;
 
-			_tourCreator =
-				Global
-					.Kernel
-					.Get<IWrapperFactory<ITourCreator>>()
-					.Creator;
+            _tourCreator =
+                Global
+                    .Kernel
+                    .Get<IWrapperFactory<ITourCreator>>()
+                    .Creator;
 
-			// relations properties
+            // relations properties
 
-			Household = personDayWrapper.Household;
-			Person = personDayWrapper.Person;
-			PersonDay = personDayWrapper;
-			Subtours = new List<ITourWrapper>();
+            Household = personDayWrapper.Household;
+            Person = personDayWrapper.Person;
+            PersonDay = personDayWrapper;
+            Subtours = new List<ITourWrapper>();
 
-			SetParcelRelationships(tour);
+            SetParcelRelationships(tour);
 
-			// flags/choice model/etc. properties
+            // flags/choice model/etc. properties
 
-			SetValueOfTimeCoefficients(purpose, suppressRandomVOT);
+            SetValueOfTimeCoefficients(purpose, suppressRandomVOT);
 
-			IsHomeBasedTour = true;
-			TimeWindow = new TimeWindow();
-		}
+            IsHomeBasedTour = true;
+            TimeWindow = new TimeWindow();
+        }
 
-		#region relations properties
+        #region relations properties
 
-		public IHouseholdWrapper Household { get; set; }
+        public IHouseholdWrapper Household { get; set; }
 
-		public IPersonWrapper Person { get; set; }
+        public IPersonWrapper Person { get; set; }
 
-		public IPersonDayWrapper PersonDay { get; set; }
+        public IPersonDayWrapper PersonDay { get; set; }
 
-		public ITourWrapper ParentTour { get; set; }
+        public ITourWrapper ParentTour { get; set; }
 
-		public List<ITourWrapper> Subtours { get; set; }
+        public List<ITourWrapper> Subtours { get; set; }
 
-		public IHalfTour HalfTourFromOrigin { get; set; }
+        public IHalfTour HalfTourFromOrigin { get; set; }
 
-		public IHalfTour HalfTourFromDestination { get; set; }
+        public IHalfTour HalfTourFromDestination { get; set; }
 
-		public IParcelWrapper OriginParcel { get; set; }
+        public IParcelWrapper OriginParcel { get; set; }
 
-		IParcel ISamplingTour.OriginParcel {
-			get { return OriginParcel; }
-		}
+        IParcel ISamplingTour.OriginParcel {
+            get { return OriginParcel; }
+        }
 
-		public IParcelWrapper DestinationParcel { get; set; }
+        public IParcelWrapper DestinationParcel { get; set; }
 
-		#endregion
+        #endregion
 
-		#region domain model properies
+        #region domain model properies
 
-		public int Id {
-			get { return _tour.Id; }
-			set { _tour.Id = value; }
-		}
+        public int Id {
+            get { return _tour.Id; }
+            set { _tour.Id = value; }
+        }
 
-		public int PersonId {
-			get { return _tour.PersonId; }
-			set { _tour.PersonId = value; }
-		}
+        public int PersonId {
+            get { return _tour.PersonId; }
+            set { _tour.PersonId = value; }
+        }
 
-		public int PersonDayId {
-			get { return _tour.PersonDayId; }
-			set { _tour.PersonDayId = value; }
-		}
+        public int PersonDayId {
+            get { return _tour.PersonDayId; }
+            set { _tour.PersonDayId = value; }
+        }
 
-		public int HouseholdId {
-			get { return _tour.HouseholdId; }
-			set { _tour.HouseholdId = value; }
-		}
+        public int HouseholdId {
+            get { return _tour.HouseholdId; }
+            set { _tour.HouseholdId = value; }
+        }
 
-		public int PersonSequence {
-			get { return _tour.PersonSequence; }
-			set { _tour.PersonSequence = value; }
-		}
-
-		public int Day {
-			get { return _tour.Day; }
-			set { _tour.Day = value; }
-		}
-
-		public int Sequence {
-			get { return _tour.Sequence; }
-			set { _tour.Sequence = value; }
-		}
-
-		public int JointTourSequence {
-			get { return _tour.JointTourSequence; }
-			set { _tour.JointTourSequence = value; }
-		}
-
-		public int ParentTourSequence {
-			get { return _tour.ParentTourSequence; }
-			set { _tour.ParentTourSequence = value; }
-		}
-
-		public int TotalSubtours {
-			get { return _tour.TotalSubtours; }
-			set { _tour.TotalSubtours = value; }
-		}
-
-		public int DestinationPurpose {
-			get { return _tour.DestinationPurpose; }
-			set { _tour.DestinationPurpose = value; }
-		}
-
-		public int OriginDepartureTime {
-			get { return _tour.OriginDepartureTime.ToMinutesAfter3AM(); }
-			set { _tour.OriginDepartureTime = value.ToMinutesAfterMidnight(); }
-		}
-
-		public int DestinationArrivalTime {
-			get { return _tour.DestinationArrivalTime.ToMinutesAfter3AM(); }
-			set { _tour.DestinationArrivalTime = value.ToMinutesAfterMidnight(); }
-		}
-
-		public int DestinationDepartureTime {
-			get { return _tour.DestinationDepartureTime.ToMinutesAfter3AM(); }
-			set { _tour.DestinationDepartureTime = value.ToMinutesAfterMidnight(); }
-		}
-
-		public int OriginArrivalTime {
-			get { return _tour.OriginArrivalTime.ToMinutesAfter3AM(); }
-			set { _tour.OriginArrivalTime = value.ToMinutesAfterMidnight(); }
-		}
+        public int PersonSequence {
+            get { return _tour.PersonSequence; }
+            set { _tour.PersonSequence = value; }
+        }
+
+        public int Day {
+            get { return _tour.Day; }
+            set { _tour.Day = value; }
+        }
+
+        public int Sequence {
+            get { return _tour.Sequence; }
+            set { _tour.Sequence = value; }
+        }
+
+        public int JointTourSequence {
+            get { return _tour.JointTourSequence; }
+            set { _tour.JointTourSequence = value; }
+        }
+
+        public int ParentTourSequence {
+            get { return _tour.ParentTourSequence; }
+            set { _tour.ParentTourSequence = value; }
+        }
+
+        public int TotalSubtours {
+            get { return _tour.TotalSubtours; }
+            set { _tour.TotalSubtours = value; }
+        }
+
+        public int DestinationPurpose {
+            get { return _tour.DestinationPurpose; }
+            set { _tour.DestinationPurpose = value; }
+        }
+
+        public int OriginDepartureTime {
+            get { return _tour.OriginDepartureTime.ToMinutesAfter3AM(); }
+            set { _tour.OriginDepartureTime = value.ToMinutesAfterMidnight(); }
+        }
+
+        public int DestinationArrivalTime {
+            get { return _tour.DestinationArrivalTime.ToMinutesAfter3AM(); }
+            set { _tour.DestinationArrivalTime = value.ToMinutesAfterMidnight(); }
+        }
+
+        public int DestinationDepartureTime {
+            get { return _tour.DestinationDepartureTime.ToMinutesAfter3AM(); }
+            set { _tour.DestinationDepartureTime = value.ToMinutesAfterMidnight(); }
+        }
+
+        public int OriginArrivalTime {
+            get { return _tour.OriginArrivalTime.ToMinutesAfter3AM(); }
+            set { _tour.OriginArrivalTime = value.ToMinutesAfterMidnight(); }
+        }
 
-		public int OriginAddressType {
-			get { return _tour.OriginAddressType; }
-			set { _tour.OriginAddressType = value; }
-		}
+        public int OriginAddressType {
+            get { return _tour.OriginAddressType; }
+            set { _tour.OriginAddressType = value; }
+        }
 
-		public int DestinationAddressType {
-			get { return _tour.DestinationAddressType; }
-			set { _tour.DestinationAddressType = value; }
-		}
+        public int DestinationAddressType {
+            get { return _tour.DestinationAddressType; }
+            set { _tour.DestinationAddressType = value; }
+        }
 
-		public int OriginParcelId {
-			get { return _tour.OriginParcelId; }
-			set { _tour.OriginParcelId = value; }
-		}
+        public int OriginParcelId {
+            get { return _tour.OriginParcelId; }
+            set { _tour.OriginParcelId = value; }
+        }
 
-		public int OriginZoneKey {
-			get { return _tour.OriginZoneKey; }
-			set { _tour.OriginZoneKey = value; }
-		}
+        public int OriginZoneKey {
+            get { return _tour.OriginZoneKey; }
+            set { _tour.OriginZoneKey = value; }
+        }
 
-		public int DestinationParcelId {
-			get { return _tour.DestinationParcelId; }
-			set { _tour.DestinationParcelId = value; }
-		}
+        public int DestinationParcelId {
+            get { return _tour.DestinationParcelId; }
+            set { _tour.DestinationParcelId = value; }
+        }
 
-		public int DestinationZoneKey {
-			get { return _tour.DestinationZoneKey; }
-			set { _tour.DestinationZoneKey = value; }
-		}
+        public int DestinationZoneKey {
+            get { return _tour.DestinationZoneKey; }
+            set { _tour.DestinationZoneKey = value; }
+        }
 
-		public int Mode {
-			get { return _tour.Mode; }
-			set { _tour.Mode = value; }
-		}
+        public int Mode {
+            get { return _tour.Mode; }
+            set { _tour.Mode = value; }
+        }
 
-		public int PathType {
-			get { return _tour.PathType; }
-			set { _tour.PathType = value; }
-		}
+        public int PathType {
+            get { return _tour.PathType; }
+            set { _tour.PathType = value; }
+        }
 
-		public double AutoTimeOneWay {
-			get { return _tour.AutoTimeOneWay; }
-			set { _tour.AutoTimeOneWay = value; }
-		}
+        public double AutoTimeOneWay {
+            get { return _tour.AutoTimeOneWay; }
+            set { _tour.AutoTimeOneWay = value; }
+        }
 
-		public double AutoCostOneWay {
-			get { return _tour.AutoCostOneWay; }
-			set { _tour.AutoCostOneWay = value; }
-		}
+        public double AutoCostOneWay {
+            get { return _tour.AutoCostOneWay; }
+            set { _tour.AutoCostOneWay = value; }
+        }
 
-		public double AutoDistanceOneWay {
-			get { return _tour.AutoDistanceOneWay; }
-			set { _tour.AutoDistanceOneWay = value; }
-		}
+        public double AutoDistanceOneWay {
+            get { return _tour.AutoDistanceOneWay; }
+            set { _tour.AutoDistanceOneWay = value; }
+        }
 
-		public int HalfTour1Trips {
-			get { return _tour.HalfTour1Trips; }
-			set { _tour.HalfTour1Trips = value; }
-		}
+        public int HalfTour1Trips {
+            get { return _tour.HalfTour1Trips; }
+            set { _tour.HalfTour1Trips = value; }
+        }
 
-		public int HalfTour2Trips {
-			get { return _tour.HalfTour2Trips; }
-			set { _tour.HalfTour2Trips = value; }
-		}
+        public int HalfTour2Trips {
+            get { return _tour.HalfTour2Trips; }
+            set { _tour.HalfTour2Trips = value; }
+        }
 
-		public int PartialHalfTour1Sequence {
-			get { return _tour.PartialHalfTour1Sequence; }
-			set { _tour.PartialHalfTour1Sequence = value; }
-		}
+        public int PartialHalfTour1Sequence {
+            get { return _tour.PartialHalfTour1Sequence; }
+            set { _tour.PartialHalfTour1Sequence = value; }
+        }
 
-		public int PartialHalfTour2Sequence {
-			get { return _tour.PartialHalfTour2Sequence; }
-			set { _tour.PartialHalfTour2Sequence = value; }
-		}
+        public int PartialHalfTour2Sequence {
+            get { return _tour.PartialHalfTour2Sequence; }
+            set { _tour.PartialHalfTour2Sequence = value; }
+        }
 
-		public int FullHalfTour1Sequence {
-			get { return _tour.FullHalfTour1Sequence; }
-			set { _tour.FullHalfTour1Sequence = value; }
-		}
+        public int FullHalfTour1Sequence {
+            get { return _tour.FullHalfTour1Sequence; }
+            set { _tour.FullHalfTour1Sequence = value; }
+        }
 
-		public int FullHalfTour2Sequence {
-			get { return _tour.FullHalfTour2Sequence; }
-			set { _tour.FullHalfTour2Sequence = value; }
-		}
+        public int FullHalfTour2Sequence {
+            get { return _tour.FullHalfTour2Sequence; }
+            set { _tour.FullHalfTour2Sequence = value; }
+        }
 
-		public double ExpansionFactor {
-			get { return _tour.ExpansionFactor; }
-			set { _tour.ExpansionFactor = value; }
-		}
+        public double ExpansionFactor {
+            get { return _tour.ExpansionFactor; }
+            set { _tour.ExpansionFactor = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region flags/choice model/etc. properties
+        #region flags/choice model/etc. properties
 
-		public bool IsHomeBasedTour { get; set; }
+        public bool IsHomeBasedTour { get; set; }
 
-		public ITimeWindow TimeWindow { get; set; }
+        public ITimeWindow TimeWindow { get; set; }
 
-		public double IndicatedTravelTimeToDestination { get; set; }
+        public double IndicatedTravelTimeToDestination { get; set; }
 
-		public double IndicatedTravelTimeFromDestination { get; set; }
+        public double IndicatedTravelTimeFromDestination { get; set; }
 
-		public int EarliestOriginDepartureTime { get; set; }
+        public int EarliestOriginDepartureTime { get; set; }
 
-		public int LatestOriginArrivalTime { get; set; }
+        public int LatestOriginArrivalTime { get; set; }
 
-		public IMinuteSpan DestinationDepartureBigPeriod { get; set; }
+        public IMinuteSpan DestinationDepartureBigPeriod { get; set; }
 
-		public IMinuteSpan DestinationArrivalBigPeriod { get; set; }
+        public IMinuteSpan DestinationArrivalBigPeriod { get; set; }
 
-		public double TimeCoefficient { get; set; }
+        public double TimeCoefficient { get; set; }
 
-		public double CostCoefficient { get; set; }
+        public double CostCoefficient { get; set; }
 
-		public int ParkAndRideNodeId { get; set; }
+        public int ParkAndRideNodeId { get; set; }
 
-		public int ParkAndRideOriginStopAreaKey { get; set; }
+        public int ParkAndRideOriginStopAreaKey { get; set; }
 
-		public int ParkAndRideDestinationStopAreaKey { get; set; }
+        public int ParkAndRideDestinationStopAreaKey { get; set; }
 
         public int ParkAndRidePathType { get; set; }
 
@@ -361,309 +361,311 @@ namespace DaySim.DomainModels.Default.Wrappers {
         public double ParkAndRideWalkAccessEgressTime { get; set; }
 
         public double ParkAndRideTransitGeneralizedTime { get; set; }
-        
-		public bool DestinationModeAndTimeHaveBeenSimulated { get; set; }
 
-		public bool HalfTour1HasBeenSimulated { get; set; }
+        public bool DestinationModeAndTimeHaveBeenSimulated { get; set; }
 
-		public bool HalfTour2HasBeenSimulated { get; set; }
+        public bool HalfTour1HasBeenSimulated { get; set; }
 
-		public bool IsMissingData { get; set; }
+        public bool HalfTour2HasBeenSimulated { get; set; }
 
+        public bool IsMissingData { get; set; }
 
 
-		#endregion
 
-		#region wrapper methods
+        #endregion
 
-		public virtual bool IsWorkPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.Work;
-		}
+        #region wrapper methods
 
-		public virtual bool IsSchoolPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.School;
-		}
+        public virtual bool IsWorkPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.Work;
+        }
 
-		public virtual bool IsEscortPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.Escort;
-		}
+        public virtual bool IsSchoolPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.School;
+        }
 
-		public virtual bool IsPersonalBusinessPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.PersonalBusiness;
-		}
+        public virtual bool IsEscortPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.Escort;
+        }
 
-		public virtual bool IsShoppingPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.Shopping;
-		}
+        public virtual bool IsPersonalBusinessPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.PersonalBusiness;
+        }
 
-		public virtual bool IsMealPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.Meal;
-		}
+        public virtual bool IsShoppingPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.Shopping;
+        }
 
-		public virtual bool IsSocialPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.Social;
-		}
+        public virtual bool IsMealPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.Meal;
+        }
 
-		public virtual bool IsRecreationPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.Recreation;
-		}
+        public virtual bool IsSocialPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.Social;
+        }
 
-		public virtual bool IsMedicalPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.Medical;
-		}
+        public virtual bool IsRecreationPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.Recreation;
+        }
 
-		public virtual bool IsPersonalBusinessOrMedicalPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.PersonalBusiness || DestinationPurpose == Global.Settings.Purposes.Medical;
-		}
+        public virtual bool IsMedicalPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.Medical;
+        }
 
-		public virtual bool IsSocialOrRecreationPurpose() {
-			return DestinationPurpose == Global.Settings.Purposes.Social || DestinationPurpose == Global.Settings.Purposes.Recreation;
-		}
+        public virtual bool IsPersonalBusinessOrMedicalPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.PersonalBusiness || DestinationPurpose == Global.Settings.Purposes.Medical;
+        }
 
-		public virtual bool IsWalkMode() {
-			return Mode == Global.Settings.Modes.Walk;
-		}
+        public virtual bool IsSocialOrRecreationPurpose() {
+            return DestinationPurpose == Global.Settings.Purposes.Social || DestinationPurpose == Global.Settings.Purposes.Recreation;
+        }
 
-		public virtual bool IsBikeMode() {
-			return Mode == Global.Settings.Modes.Bike;
-		}
+        public virtual bool IsWalkMode() {
+            return Mode == Global.Settings.Modes.Walk;
+        }
 
-		public virtual bool IsSovMode() {
-			return Mode == Global.Settings.Modes.Sov;
-		}
+        public virtual bool IsBikeMode() {
+            return Mode == Global.Settings.Modes.Bike;
+        }
 
-		public virtual bool IsHov2Mode() {
-			return Mode == Global.Settings.Modes.Hov2;
-		}
+        public virtual bool IsSovMode() {
+            return Mode == Global.Settings.Modes.Sov;
+        }
 
-		public virtual bool IsHov3Mode() {
-			return Mode == Global.Settings.Modes.Hov3;
-		}
+        public virtual bool IsHov2Mode() {
+            return Mode == Global.Settings.Modes.Hov2;
+        }
 
-		public virtual bool IsTransitMode() {
-			return Mode == Global.Settings.Modes.Transit;
-		}
+        public virtual bool IsHov3Mode() {
+            return Mode == Global.Settings.Modes.Hov3;
+        }
 
-		public virtual bool IsParkAndRideMode() {
-			return Mode == Global.Settings.Modes.ParkAndRide;
-		}
+        public virtual bool IsTransitMode() {
+            return Mode == Global.Settings.Modes.Transit;
+        }
 
-		public virtual bool IsSchoolBusMode() {
-			return Mode == Global.Settings.Modes.SchoolBus;
-		}
+        public virtual bool IsParkAndRideMode() {
+            return Mode == Global.Settings.Modes.ParkAndRide;
+        }
 
-		public virtual bool IsWalkOrBikeMode() {
-			return Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike;
-		}
+        public virtual bool IsSchoolBusMode() {
+            return Mode == Global.Settings.Modes.SchoolBus;
+        }
 
-		public virtual bool SubtoursExist() {
-			return Subtours.Count > 0;
-		}
+        public virtual bool IsWalkOrBikeMode() {
+            return Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike;
+        }
 
-		public virtual bool IsAnHovMode() {
-			return IsHov2Mode() || IsHov3Mode();
-		}
-
-		public virtual bool IsAnAutoMode() {
-			return IsSovMode() || IsHov2Mode() || IsHov3Mode();
-		}
-
-		public virtual bool UsesTransitModes() {
-			return IsTransitMode() || IsParkAndRideMode();
-		}
-
-		public virtual int GetTotalToursByPurpose() {
-			if (DestinationPurpose == Global.Settings.Purposes.Work) {
-				return PersonDay.WorkTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.School) {
-				return PersonDay.SchoolTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.Escort) {
-				return PersonDay.EscortTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
-				return PersonDay.PersonalBusinessTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.Shopping) {
-				return PersonDay.ShoppingTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.Meal) {
-				return PersonDay.MealTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.Social) {
-				return PersonDay.SocialTours;
-			}
-
-			return 0;
-		}
-
-		public virtual int GetTotalSimulatedToursByPurpose() {
-			if (DestinationPurpose == Global.Settings.Purposes.Work) {
-				return PersonDay.SimulatedWorkTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.School) {
-				return PersonDay.SimulatedSchoolTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.Escort) {
-				return PersonDay.SimulatedEscortTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
-				return PersonDay.SimulatedPersonalBusinessTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.Shopping) {
-				return PersonDay.SimulatedShoppingTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.Meal) {
-				return PersonDay.SimulatedMealTours;
-			}
-
-			if (DestinationPurpose == Global.Settings.Purposes.Social) {
-				return PersonDay.SimulatedSocialTours;
-			}
-
-			return 0;
-		}
-
-		public virtual int GetTourPurposeSegment() {
-			return
-				IsHomeBasedTour
-					? Global.Settings.Purposes.HomeBasedComposite
-					: Global.Settings.Purposes.WorkBased;
-		}
-
-		public virtual int GetTourCategory() {
-			var tourCategory =
-				IsHomeBasedTour
-					? PersonDay.SimulatedHomeBasedTours == 1
-						? Global.Settings.TourCategories.Primary
-						: Global.Settings.TourCategories.Secondary
-					: Global.Settings.TourCategories.WorkBased;
-
-			if (tourCategory == Global.Settings.TourCategories.Secondary && (IsWorkPurpose() && !Person.IsFulltimeWorker) || (IsSchoolPurpose() && Person.IsAdult)) {
-				tourCategory = Global.Settings.TourCategories.HomeBased;
-			}
-
-			return tourCategory;
-		}
-
-		public virtual int GetVotALSegment() {
-			var segment =
-				((60 * TimeCoefficient) / CostCoefficient < Global.Settings.VotALSegments.VotLowMedium)
-					? Global.Settings.VotALSegments.Low
-					: ((60 * TimeCoefficient) / CostCoefficient < Global.Settings.VotALSegments.VotMediumHigh)
-						? Global.Settings.VotALSegments.Medium
-						: Global.Settings.VotALSegments.High;
-
-			return segment;
-		}
-
-		public virtual void SetHomeBasedIsSimulated() {
-			PersonDay.IncrementSimulatedTours(DestinationPurpose);
-		}
-
-		public virtual void SetWorkBasedIsSimulated() {
-			PersonDay.IncrementSimulatedStops(DestinationPurpose);
-		}
-
-		public virtual void SetHalfTours(int direction) {
-			if (direction == Global.Settings.TourDirections.OriginToDestination) {
-				HalfTourFromOrigin = new HalfTour(this);
-
-				HalfTourFromOrigin.SetTrips(direction);
-			}
-			else if (direction == Global.Settings.TourDirections.DestinationToOrigin) {
-				HalfTourFromDestination = new HalfTour(this);
-
-				HalfTourFromDestination.SetTrips(direction);
-			}
-		}
-
-		public virtual ITimeWindow GetRelevantTimeWindow(IHouseholdDayWrapper householdDay) {
-			var timeWindow = new TimeWindow();
-			if (JointTourSequence > 0) {
-				foreach (var pDay in householdDay.PersonDays) {
-					var tInJoint =
-						pDay
-							.Tours
-							.Find(t => t.JointTourSequence == JointTourSequence);
-
-					if (tInJoint != null) {
-						// set jointTour time window
-						timeWindow.IncorporateAnotherTimeWindow(tInJoint.PersonDay.TimeWindow);
-					}
-				}
-			}
-			else if (FullHalfTour1Sequence > 0 || FullHalfTour2Sequence > 0) {
-				if (FullHalfTour1Sequence > 0) {
-					foreach (var pDay in householdDay.PersonDays) {
-						var tInJoint =
-							pDay
-								.Tours
-								.Find(t => t.FullHalfTour1Sequence == FullHalfTour1Sequence);
-
-						if (tInJoint != null) {
-							// set jointTour time window
-							timeWindow.IncorporateAnotherTimeWindow(tInJoint.PersonDay.TimeWindow);
-						}
-					}
-				}
-
-				if (FullHalfTour2Sequence <= 0) {
-					return timeWindow;
-				}
-
-				foreach (var pDay in householdDay.PersonDays) {
-					var tInJoint =
-						pDay
-							.Tours
-							.Find(t => t.FullHalfTour2Sequence == FullHalfTour2Sequence);
-
-					if (tInJoint != null) {
-						// set jointTour time window
-						timeWindow.IncorporateAnotherTimeWindow(tInJoint.PersonDay.TimeWindow);
-					}
-				}
-			}
-			else if (ParentTour == null) {
-				timeWindow.IncorporateAnotherTimeWindow(PersonDay.TimeWindow);
-			}
-			else {
-				timeWindow.IncorporateAnotherTimeWindow(ParentTour.TimeWindow);
-			}
-
-			return timeWindow;
-		}
-
-		public virtual void SetOriginTimes(int direction = 0) {
-			if (Global.Configuration.IsInEstimationMode) {
-				return;
-			}
-
-			// sets origin departure time
-			if (direction != Global.Settings.TourDirections.DestinationToOrigin) {
-				OriginDepartureTime = HalfTourFromOrigin.Trips.Last().ArrivalTime;
-			}
-
-			// sets origin arrival time
-			if (direction != Global.Settings.TourDirections.OriginToDestination) {
-				OriginArrivalTime = HalfTourFromDestination.Trips.Last().ArrivalTime;
-			}
-		}
-
-		public virtual void UpdateTourValues() {
-			if (Global.Configuration.IsInEstimationMode || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) {
+        public virtual bool SubtoursExist() {
+            return Subtours.Count > 0;
+        }
+
+        public virtual bool IsAnHovMode() {
+            return IsHov2Mode() || IsHov3Mode();
+        }
+
+        public virtual bool IsAnAutoMode() {
+            return IsSovMode() || IsHov2Mode() || IsHov3Mode();
+        }
+
+        public virtual bool UsesTransitModes() {
+            return IsTransitMode() || IsParkAndRideMode();
+        }
+
+        public virtual int GetTotalToursByPurpose() {
+            if (DestinationPurpose == Global.Settings.Purposes.Work) {
+                return PersonDay.WorkTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.School) {
+                return PersonDay.SchoolTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.Escort) {
+                return PersonDay.EscortTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
+                return PersonDay.PersonalBusinessTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.Shopping) {
+                return PersonDay.ShoppingTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.Meal) {
+                return PersonDay.MealTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.Social) {
+                return PersonDay.SocialTours;
+            }
+
+            return 0;
+        }
+
+        public virtual int GetTotalSimulatedToursByPurpose() {
+            if (DestinationPurpose == Global.Settings.Purposes.Work) {
+                return PersonDay.SimulatedWorkTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.School) {
+                return PersonDay.SimulatedSchoolTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.Escort) {
+                return PersonDay.SimulatedEscortTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
+                return PersonDay.SimulatedPersonalBusinessTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.Shopping) {
+                return PersonDay.SimulatedShoppingTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.Meal) {
+                return PersonDay.SimulatedMealTours;
+            }
+
+            if (DestinationPurpose == Global.Settings.Purposes.Social) {
+                return PersonDay.SimulatedSocialTours;
+            }
+
+            return 0;
+        }
+
+        public virtual int GetTourPurposeSegment() {
+            return
+                IsHomeBasedTour
+                    ? Global.Settings.Purposes.HomeBasedComposite
+                    : Global.Settings.Purposes.WorkBased;
+        }
+
+        public virtual int GetTourCategory() {
+            var tourCategory =
+                IsHomeBasedTour
+                    ? PersonDay.SimulatedHomeBasedTours == 1
+                        ? Global.Settings.TourCategories.Primary
+                        : Global.Settings.TourCategories.Secondary
+                    : Global.Settings.TourCategories.WorkBased;
+
+            if (tourCategory == Global.Settings.TourCategories.Secondary && (IsWorkPurpose() && !Person.IsFulltimeWorker) || (IsSchoolPurpose() && Person.IsAdult)) {
+                tourCategory = Global.Settings.TourCategories.HomeBased;
+            }
+
+            return tourCategory;
+        }
+
+        public virtual int GetVotALSegment() {
+            var segment =
+                ((60 * TimeCoefficient) / CostCoefficient < Global.Settings.VotALSegments.VotLowMedium)
+                    ? Global.Settings.VotALSegments.Low
+                    : ((60 * TimeCoefficient) / CostCoefficient < Global.Settings.VotALSegments.VotMediumHigh)
+                        ? Global.Settings.VotALSegments.Medium
+                        : Global.Settings.VotALSegments.High;
+
+            return segment;
+        }
+
+        public virtual void SetHomeBasedIsSimulated() {
+            PersonDay.IncrementSimulatedTours(DestinationPurpose);
+        }
+
+        public virtual void SetWorkBasedIsSimulated() {
+            PersonDay.IncrementSimulatedStops(DestinationPurpose);
+        }
+
+        public virtual void SetHalfTours(int direction) {
+            if (direction == Global.Settings.TourDirections.OriginToDestination) {
+                HalfTourFromOrigin = new HalfTour(this);
+
+                HalfTourFromOrigin.SetTrips(direction);
+            }
+            else if (direction == Global.Settings.TourDirections.DestinationToOrigin) {
+                HalfTourFromDestination = new HalfTour(this);
+
+                HalfTourFromDestination.SetTrips(direction);
+            }
+        }
+
+        public virtual ITimeWindow GetRelevantTimeWindow(IHouseholdDayWrapper householdDay) {
+            var timeWindow = new TimeWindow();
+            if (JointTourSequence > 0) {
+                foreach (var pDay in householdDay.PersonDays) {
+                    var tInJoint =
+                        pDay
+                            .Tours
+                            .Find(t => t.JointTourSequence == JointTourSequence);
+
+                    if (tInJoint != null) {
+                        // set jointTour time window
+                        timeWindow.IncorporateAnotherTimeWindow(tInJoint.PersonDay.TimeWindow);
+                    }
+                }
+            }
+            else if (FullHalfTour1Sequence > 0 || FullHalfTour2Sequence > 0) {
+                if (FullHalfTour1Sequence > 0) {
+                    foreach (var pDay in householdDay.PersonDays) {
+                        var tInJoint =
+                            pDay
+                                .Tours
+                                .Find(t => t.FullHalfTour1Sequence == FullHalfTour1Sequence);
+
+                        if (tInJoint != null) {
+                            // set jointTour time window
+                            timeWindow.IncorporateAnotherTimeWindow(tInJoint.PersonDay.TimeWindow);
+                        }
+                    }
+                }
+
+                if (FullHalfTour2Sequence <= 0) {
+                    return timeWindow;
+                }
+
+                foreach (var pDay in householdDay.PersonDays) {
+                    var tInJoint =
+                        pDay
+                            .Tours
+                            .Find(t => t.FullHalfTour2Sequence == FullHalfTour2Sequence);
+
+                    if (tInJoint != null) {
+                        // set jointTour time window
+                        timeWindow.IncorporateAnotherTimeWindow(tInJoint.PersonDay.TimeWindow);
+                    }
+                }
+            }
+            else if (ParentTour == null) {
+                timeWindow.IncorporateAnotherTimeWindow(PersonDay.TimeWindow);
+            }
+            else {
+                timeWindow.IncorporateAnotherTimeWindow(ParentTour.TimeWindow);
+            }
+
+            return timeWindow;
+        }
+
+        public virtual void SetOriginTimes(int direction = 0) {
+            if (Global.Configuration.IsInEstimationMode) {
+                return;
+            }
+
+            // sets origin departure time
+            if (direction != Global.Settings.TourDirections.DestinationToOrigin) {
+                OriginDepartureTime = HalfTourFromOrigin.Trips.Last().ArrivalTime;
+            }
+
+            // sets origin arrival time
+            if (direction != Global.Settings.TourDirections.OriginToDestination) {
+                OriginArrivalTime = HalfTourFromDestination.Trips.Last().ArrivalTime;
+            }
+        }
+
+        public virtual void UpdateTourValues() {
+            if ((Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldOutputStandardFilesInEstimationMode)
+                || OriginParcel == null || DestinationParcel == null || DestinationArrivalTime < 0 || DestinationArrivalTime >= Global.Settings.Times.MinutesInADay || DestinationDepartureTime < 0 || DestinationDepartureTime >= Global.Settings.Times.MinutesInADay
+                || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) {
 				return;
 			}
 
@@ -677,7 +679,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 			AutoCostOneWay = autoPathRoundTrip.PathCost / 2.0;
 			AutoDistanceOneWay = autoPathRoundTrip.PathDistance / 2.0;
 
-			if (HalfTourFromOrigin == null || HalfTourFromDestination == null) {
+			if (Global.Configuration.IsInEstimationMode || HalfTourFromOrigin == null || HalfTourFromDestination == null) {
 				return;
 			}
 

@@ -866,14 +866,14 @@ namespace DaySim.ChoiceModels.Default {
 
 			// sets the trip's destination arrival and departure times
 			if (trip.Sequence == 1) {
-				if (!Global.Configuration.IsInEstimationMode) {
+                if (!Global.Configuration.IsInEstimationMode) {
 					trip.DepartureTime = trip.IsHalfTourFromOrigin ? tour.DestinationArrivalTime : tour.DestinationDepartureTime;
 					trip.UpdateTripValues();
 				}
 			}
 			else if (trip.OriginPurpose == Global.Settings.Purposes.ChangeMode) {
-				//stay at park and ride lot assumed to be 3 minutes
-				if (!Global.Configuration.IsInEstimationMode) {
+                //stay at park and ride lot assumed to be 3 minutes
+                if (!Global.Configuration.IsInEstimationMode) {
 					int endpoint;
 
 					if (trip.IsHalfTourFromOrigin) {
@@ -900,9 +900,13 @@ namespace DaySim.ChoiceModels.Default {
 					Global.ChoiceModelSession.Get<TripTimeModel>().Run(trip);
 				}
 			}
-		}
+            if (Global.Configuration.IsInEstimationMode && Global.Configuration.ShouldOutputStandardFilesInEstimationMode 
+                && trip.OriginParcel != null && trip.DestinationParcel !=null && trip.DepartureTime>=0 && trip.DepartureTime<Global.Settings.Times.MinutesInADay && trip.Mode > 0) {
+                trip.UpdateTripValues();
+            }
+        }
 
-		private void UpdateHousehold() {
+        private void UpdateHousehold() {
 			foreach (var person in _household.Persons) {
 				person.UpdatePersonValues();
 			}
