@@ -33,7 +33,7 @@ namespace DaySim.Framework.Core {
             threadLocalBatchIndex = new ThreadLocal<int>(() => {
                 int threadLocalBatchIndexThreadSpecificValue = Interlocked.Increment(ref threadsSoFarIndex);
 
-                Console.WriteLine("Thread.CurrentThread.ManagedThreadId: " + Thread.CurrentThread.ManagedThreadId + " assigned threadLocalBatchIndexThreadSpecificValue: " + threadLocalBatchIndexThreadSpecificValue);
+                Global.PrintFile.WriteLine("Thread.CurrentThread.ManagedThreadId: " + Thread.CurrentThread.ManagedThreadId + " assigned threadLocalBatchIndexThreadSpecificValue: " + threadLocalBatchIndexThreadSpecificValue);
             return threadLocalBatchIndexThreadSpecificValue;
         });
         }   //end InitThreadLocalBatchIndex
@@ -45,27 +45,5 @@ namespace DaySim.Framework.Core {
             threadLocalBatchIndex = null;
         }   //end DisposeThreadLocalBatchIndex
 
-        //private static long batchFromThreadIdCounter = 0;
-        //public static int GetBatchFromThreadId() {
-        //    Interlocked.Increment(ref batchFromThreadIdCounter);
-        //    if (batchFromThreadIdCounter % 10000 == 0 || batchFromThreadIdCounter < 20) {
-               
-        //        Console.WriteLine("GetBatchFromThreadIdCounter=" + batchFromThreadIdCounter + " from thread: " + Thread.CurrentThread.ManagedThreadId + " threadLocalBatchIndex.IsValueCreated: " + threadLocalBatchIndex.IsValueCreated + " returning batch index: " + threadLocalBatchIndex.Value);
-        //    }
-        //    int batchIndex = threadLocalBatchIndex.Value;
-        //    return batchIndex;
-        //}
-
-        public static void While(ParallelOptions parallelOptions, Func<bool> condition, Action<ParallelLoopState> body) {
-			Parallel.ForEach(new InfinitePartitioner(), parallelOptions,
-				(ignored, state) => {
-					if (condition()) {
-						body(state);
-					}
-					else {
-						state.Stop();
-					}
-				});
-		}
 	}
 }

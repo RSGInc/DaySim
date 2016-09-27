@@ -1555,6 +1555,8 @@ namespace DaySim
                             continue;
                         }
 
+                        //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
+                        //because of multithreaded issues may see skipped outputs or duplicated outputs
                         current++;
 
                         if (current != 1 && current != total && current % 1000 != 0)
