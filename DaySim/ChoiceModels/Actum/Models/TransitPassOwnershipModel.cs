@@ -37,14 +37,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
 			person.ResetRandom(3);
 
 			if (Global.Configuration.IsInEstimationMode) {
-				if (!_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+				if (!_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 					return;
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(person.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 				if (person.TransitPassOwnership < 0 || person.TransitPassOwnership > 1) {
 					return;
 				}

@@ -768,7 +768,7 @@ namespace DaySim.PathTypeModels
             {
                 return;
             }
-            int batchNumber = ParallelUtility.GetBatchFromThreadId();
+            int batchNumber = ParallelUtility.threadLocalBatchIndex.Value;
             IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
 
             if (Global.Configuration.ShouldReadParkAndRideNodeSkim)
@@ -921,7 +921,7 @@ namespace DaySim.PathTypeModels
             {
                 return;
             }
-            int batchNumber = ParallelUtility.GetBatchFromThreadId();
+            int batchNumber = ParallelUtility.threadLocalBatchIndex.Value;
             IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
 
             if (Global.Configuration.ShouldReadParkAndRideNodeSkim)

@@ -471,12 +471,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(householdDay.Household.Id * 10 + householdDay.Day);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(householdDay.Household.Id * 10 + householdDay.Day);
 
 			
 
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 
 				RunModel(choiceProbabilityCalculator, householdDay, altPTypes, numberPersonsModeledJointly, choice);
 
@@ -515,7 +515,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int[,] altPTypes, int numberPersonsModeledJointly, int choice = Constants.DEFAULT_VALUE)
 		{
-			int currentBatch = ParallelUtility.GetBatchFromThreadId();
+			int currentBatch = ParallelUtility.threadLocalBatchIndex.Value;
 			bool includeThreeWayInteractions = false;   // set this at compile time, dependign on whether we want to include or exclude 3-way interactions.
 			int numberPersonTypes = 7;  // set this at compile time; 7 for Actum
 			int numberAlternatives = numberPersonsModeledJointly == 4 ? 120 : 363;

@@ -65,9 +65,9 @@ namespace DaySim.ChoiceModels.H.Models {
 
 			HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, -1, -1.0);
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(tour.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(tour.Id);
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 
 				var observedChoice = new HTourModeTime(tour.Mode, tour.DestinationArrivalTime, tour.DestinationDepartureTime);
 
@@ -174,7 +174,7 @@ namespace DaySim.ChoiceModels.H.Models {
 			if (Global.Configuration.AvoidDisaggregateModeChoiceLogsums) {
 				return null;
 			}
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetNestedChoiceProbabilityCalculator();
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetNestedChoiceProbabilityCalculator();
 
 			IHouseholdDayWrapper householdDay = (tour.PersonDay == null) ? null : tour.PersonDay.HouseholdDay;
 
@@ -499,7 +499,7 @@ namespace DaySim.ChoiceModels.H.Models {
 
 			//loop on all alternatives, using modeTimes objects
 			{
-				foreach (var modeTimes in HTourModeTime.ModeTimes[ParallelUtility.GetBatchFromThreadId()])
+				foreach (var modeTimes in HTourModeTime.ModeTimes[ParallelUtility.threadLocalBatchIndex.Value])
 				{
 					var arrivalPeriod = modeTimes.ArrivalPeriod;
 					var arrivalPeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(arrivalPeriod.Start, arrivalPeriod.End);

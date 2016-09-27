@@ -1370,10 +1370,11 @@ namespace DaySim {
             for (int threadIndex = 0; threadIndex < ParallelUtility.NThreads; ++threadIndex) {
                 Thread myThread = new Thread(new ThreadStart(delegate {
                     //retrieve batchIndex so can see logging output
-                    int threaLocalBatchIndex = ParallelUtility.GetBatchFromThreadId();
-                    List<IHousehold> batchHouseholds = batches[threaLocalBatchIndex];
-                    foreach (IHousehold household in batchHouseholds) {
-                        //var index = 0;
+                    int threadLocalBatchIndex = ParallelUtility.threadLocalBatchIndex.Value;
+                    List<IHousehold> batchHouseholds = batches[threadLocalBatchIndex];
+                    Console.WriteLine("For threadLocalBatchIndex: " + threadLocalBatchIndex + " there are " + batchHouseholds.Count + " households");
+                    foreach (var household in batchHouseholds)
+                    {
                         if ((household.Id % Global.Configuration.HouseholdSamplingRateOneInX == (Global.Configuration.HouseholdSamplingStartWithY - 1))) {
 #if RELEASE
 					try {
@@ -1390,16 +1391,16 @@ namespace DaySim {
 						throw new ChoiceModelRunnerException(string.Format("An error occurred in ChoiceModelRunner for household {0}.", household.Id), e);
 					}
 #endif
-                        }
+                        }   //end if household is being sampled
 
                         if (!Global.Configuration.ShowRunChoiceModelsStatus) {
-                            return;
+                            continue;
                         }
 
                         current++;
 
                         if (current != 1 && current != total && current % 1000 != 0) {
-                            return;
+                            continue;
                         }
 
                         var countf = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
@@ -1421,7 +1422,7 @@ namespace DaySim {
 
             threads.ForEach(t => t.Start());
             threads.ForEach(t => t.Join());
-
+            ParallelUtility.DisposeThreadLocalBatchIndex();
             var countg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
             var countStringg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
             var ivcountg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);

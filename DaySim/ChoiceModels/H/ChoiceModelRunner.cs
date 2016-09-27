@@ -68,7 +68,7 @@ namespace DaySim.ChoiceModels.H {
 #if RELEASE
 			try {
 #endif
-				ChoiceModelFactory.TotalTimesHouseholdModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+				ChoiceModelFactory.TotalTimesHouseholdModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 			RunHouseholdModelSuite(_household);
 #if RELEASE
 			}
@@ -87,7 +87,7 @@ namespace DaySim.ChoiceModels.H {
 #if RELEASE
 				try {
 #endif
-					ChoiceModelFactory.TotalTimesPersonModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesPersonModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				RunPersonModelSuite(person);
 #if RELEASE
 				}
@@ -109,7 +109,7 @@ namespace DaySim.ChoiceModels.H {
 #if RELEASE
 				try {
 #endif
-					ChoiceModelFactory.TotalHouseholdDays[ParallelUtility.GetBatchFromThreadId()]++;  //TODO:  John M.  This replaces TotalPersonDays, but TotalPersonDays is used in Engine, so that code probably needs to be patched
+					ChoiceModelFactory.TotalHouseholdDays[ParallelUtility.threadLocalBatchIndex.Value]++;  //TODO:  John M.  This replaces TotalPersonDays, but TotalPersonDays is used in Engine, so that code probably needs to be patched
 				var simulatedAnInvalidHouseholdDay = false;
 
 				while (!householdDay.IsValid && (!Global.Configuration.IsInEstimationMode || !simulatedAnInvalidHouseholdDay)) { //don't retry household in estimation mode
@@ -130,7 +130,7 @@ namespace DaySim.ChoiceModels.H {
 					//mbtrace
 					if (Global.TraceResults) Global.PrintFile.WriteLine("> RunHouseholdDayModels for household {0}, attempt {1}", householdDay.Household.Id, householdDay.AttemptedSimulations);
 
-						ChoiceModelFactory.TotalTimesHouseholdDayModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesHouseholdDayModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					RunHouseholdDayModelSuite((HouseholdDayWrapper) householdDay);
 
 					// householdDay is invalid if any person day is invalid
@@ -164,7 +164,7 @@ namespace DaySim.ChoiceModels.H {
 						simulatedAnInvalidHouseholdDay = true;
 
 						// counts unique instances where a household's day is invalid
-							ChoiceModelFactory.TotalInvalidAttempts[ParallelUtility.GetBatchFromThreadId()]++;
+							ChoiceModelFactory.TotalInvalidAttempts[ParallelUtility.threadLocalBatchIndex.Value]++;
 						}
 
 					if (householdDay.Household.Id == 2033) { //3556) { // 35552) {
@@ -194,7 +194,7 @@ namespace DaySim.ChoiceModels.H {
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > RunTourTripModels Person {0} Tour {1} Direction {2} to {3}",
 				 personDay.Person.Sequence, tour.Sequence, firstDirection, lastDirection);
 
-				ChoiceModelFactory.TotalTimesProcessHalfToursRun[ParallelUtility.GetBatchFromThreadId()]++;
+				ChoiceModelFactory.TotalTimesProcessHalfToursRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 			ProcessHalfTours(tour, personDay, householdDay, firstDirection, lastDirection);
 
 			if (!tour.PersonDay.IsValid) {
@@ -215,14 +215,14 @@ namespace DaySim.ChoiceModels.H {
 #if RELEASE
 				try {
 #endif
-					ChoiceModelFactory.TotalTimesTourSubtourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesTourSubtourModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				RunSubtourModelSuite(subtour, householdDay);
 
 				if (!subtour.PersonDay.IsValid) {
 					return;
 				}
 
-					ChoiceModelFactory.TotalTimesSubtourTripModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesSubtourTripModelsRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				RunSubtourTripModels(subtour, personDay, householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin);
 
 				if (!subtour.PersonDay.IsValid) {
@@ -244,7 +244,7 @@ namespace DaySim.ChoiceModels.H {
 			//mbtrace
 			if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > RunSubtourTripModels Subtour {0}", subtour.Sequence);
 
-				ChoiceModelFactory.TotalTimesProcessHalfSubtoursRun[ParallelUtility.GetBatchFromThreadId()]++;
+				ChoiceModelFactory.TotalTimesProcessHalfSubtoursRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 			ProcessHalfTours(subtour, personDay, householdDay, firstDirection, lastDirection);
 
 			if (!subtour.PersonDay.IsValid) {
@@ -260,7 +260,7 @@ namespace DaySim.ChoiceModels.H {
 			}
 
 			// sets number of vehicles in household
-				ChoiceModelFactory.TotalTimesAutoOwnershipModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+				ChoiceModelFactory.TotalTimesAutoOwnershipModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 			Global.ChoiceModelSession.Get<AutoOwnershipModel>().Run(household);
 		}
 
@@ -269,7 +269,7 @@ namespace DaySim.ChoiceModels.H {
 				if (Global.Configuration.IsInEstimationMode || person.Household.RandomUtility.Uniform01() > _household.FractionWorkersWithJobsOutsideRegion) {
 					// sets a person's usual work location
 					// for full or part-time workers
-						ChoiceModelFactory.TotalTimesWorkLocationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesWorkLocationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<WorkLocationModel>().Run(person, Global.Configuration.WorkLocationModelSampleSize);
 
 				}
@@ -282,7 +282,7 @@ namespace DaySim.ChoiceModels.H {
 
 			if (Global.Configuration.ShouldRunSchoolLocationModel && person.IsStudent) {
 				// sets a person's school location
-					ChoiceModelFactory.TotalTimesSchoolLocationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesSchoolLocationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				Global.ChoiceModelSession.Get<SchoolLocationModel>().Run(person, Global.Configuration.SchoolLocationModelSampleSize);
 			}
 
@@ -290,7 +290,7 @@ namespace DaySim.ChoiceModels.H {
 				if (Global.Configuration.IsInEstimationMode || person.Household.RandomUtility.Uniform01() > _household.FractionWorkersWithJobsOutsideRegion) {
 					// sets a person's usual work location
 					// for other workers in relation to a person's school location
-						ChoiceModelFactory.TotalTimesWorkLocationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesWorkLocationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<WorkLocationModel>().Run(person, Global.Configuration.WorkLocationModelSampleSize);
 				}
 				else {
@@ -302,7 +302,7 @@ namespace DaySim.ChoiceModels.H {
 			if (person.IsWorker && person.UsualWorkParcel != null // && person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer2 > 0 
 				  && Global.Configuration.IncludePayToParkAtWorkplaceModel) {
 				if (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel) {
-						ChoiceModelFactory.TotalTimesPaidParkingAtWorkplaceModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesPaidParkingAtWorkplaceModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<PayToParkAtWorkplaceModel>().Run(person);
 				}
 			}
@@ -312,7 +312,7 @@ namespace DaySim.ChoiceModels.H {
 
 			if (person.IsWorker && person.UsualWorkParcel != null) {
 				if (Global.Configuration.ShouldRunWorkUsualModeAndScheduleModel) {
-						ChoiceModelFactory.TotalTimesWorkUsualModeAndScheduleModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesWorkUsualModeAndScheduleModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<WorkUsualModeAndScheduleModel>().Run(person);
 				}
 			}
@@ -321,7 +321,7 @@ namespace DaySim.ChoiceModels.H {
 				person.TransitPassOwnership = 1; //policy to turn on transit pass ownership
 			}
 			else if (!person.IsChildUnder5 && Global.Configuration.IncludeTransitPassOwnershipModel && Global.Configuration.ShouldRunTransitPassOwnershipModel) {
-					ChoiceModelFactory.TotalTimesTransitPassOwnershipModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesTransitPassOwnershipModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				Global.ChoiceModelSession.Get<TransitPassOwnershipModel>().Run(person);
 			}
 			else {
@@ -339,14 +339,14 @@ namespace DaySim.ChoiceModels.H {
 
 			if (Global.Configuration.ShouldRunHouseholdDayPatternTypeModel) {
 				// determines if household day includes primary priority time
-					ChoiceModelFactory.TotalTimesHouseholdDayPatternTypeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesHouseholdDayPatternTypeModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				Global.ChoiceModelSession.Get<HouseholdDayPatternTypeModel>().Run(householdDay);
 				IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.Person.GetHouseholdDayPatternParticipationPriority()).ToList().Cast<PersonDayWrapper>();
 				int i = 0;
 				foreach (PersonDayWrapper personDay in orderedPersonDays) {
 					i++;
 					if (i > 5 || (i > 4 && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "HPersonDayPatternTypeModel")) {
-							ChoiceModelFactory.TotalTimesPersonDayPatternTypeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+							ChoiceModelFactory.TotalTimesPersonDayPatternTypeModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 						Global.ChoiceModelSession.Get<PersonDayPatternTypeModel>().Run(personDay, householdDay);
 					}
 					/*override to test without stops
@@ -373,7 +373,7 @@ namespace DaySim.ChoiceModels.H {
 				//TODO:  replace the following reset of personDay.IsValid when the logic for invalid person days is enhanced to handle householdDays
 				//personDay.IsValid = true;
 
-					ChoiceModelFactory.TotalTimesPersonDayMandatoryModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesPersonDayMandatoryModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				RunPersonDayMandatoryModelSuite(personDay, householdDay);
 
 				if (personDay.IsValid == false) {
@@ -381,14 +381,14 @@ namespace DaySim.ChoiceModels.H {
 				}
 			}
 
-				ChoiceModelFactory.TotalTimesJointHalfTourGenerationModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+				ChoiceModelFactory.TotalTimesJointHalfTourGenerationModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 			RunJointHalfTourGenerationModelSuite(householdDay);
 
 			if (householdDay.IsValid == false) {
 				return;
 			}
 
-				ChoiceModelFactory.TotalTimesJointTourGenerationModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+				ChoiceModelFactory.TotalTimesJointTourGenerationModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 			RunJointTourGenerationModelSuite((HouseholdDayWrapper) householdDay);
 
 			if (householdDay.IsValid == false) {
@@ -399,7 +399,7 @@ namespace DaySim.ChoiceModels.H {
 #if RELEASE
 				try {
 #endif
-					ChoiceModelFactory.TotalTimesPersonDayModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesPersonDayModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				RunPersonDayModelSuite(personDay, householdDay);
 
 				if (personDay.IsValid == false) {
@@ -446,7 +446,7 @@ namespace DaySim.ChoiceModels.H {
 				if (householdDay.IsMissingData) {
 					break;
 				}
-					ChoiceModelFactory.TotalTimesPartialJointHalfTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesPartialJointHalfTourModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				RunPartialJointHalfTourModelSuite((HouseholdDayWrapper) householdDay, (PartialHalfTourWrapper) partialJointHalfTour);
 
 				if (householdDay.IsValid == false) {
@@ -455,7 +455,7 @@ namespace DaySim.ChoiceModels.H {
 			}
 			
 			foreach (var fullJointHalfTour in householdDay.FullHalfToursList) {
-					ChoiceModelFactory.TotalTimesFullJointHalfTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesFullJointHalfTourModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				
 				RunFullJointHalfTourModelSuite((HouseholdDayWrapper) householdDay, (FullHalfTourWrapper) fullJointHalfTour);
 				if (householdDay.IsValid == false) {
@@ -466,7 +466,7 @@ namespace DaySim.ChoiceModels.H {
 			foreach (var personDay in householdDay.PersonDays) {
 				foreach (var tour in personDay.Tours) {
 					if (tour.DestinationPurpose == Global.Settings.Purposes.Work || tour.DestinationPurpose == Global.Settings.Purposes.School) {
-							ChoiceModelFactory.TotalTimesMandatoryTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+							ChoiceModelFactory.TotalTimesMandatoryTourModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 						
 						if (householdDay.Household.Id == 1267500 && personDay.Person.Sequence == 5 
 							&& householdDay.AttemptedSimulations == 2) {
@@ -485,7 +485,7 @@ namespace DaySim.ChoiceModels.H {
 			}
 
 			foreach (var jointTour in householdDay.JointToursList) {
-					ChoiceModelFactory.TotalTimesJointTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesJointTourModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				RunJointTourModelSuite((HouseholdDayWrapper) householdDay, (JointTourWrapper) jointTour);
 
 				if (householdDay.IsValid == false) {
@@ -507,7 +507,7 @@ namespace DaySim.ChoiceModels.H {
 						bool testbreak = true;
 					}
 					if (!(tour.DestinationPurpose == Global.Settings.Purposes.Work || tour.DestinationPurpose == Global.Settings.Purposes.School)) {
-							ChoiceModelFactory.TotalTimesNonMandatoryTourModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+							ChoiceModelFactory.TotalTimesNonMandatoryTourModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 						RunNonMandatoryTourModelSuite((TourWrapper) tour, (PersonDayWrapper) personDay, (HouseholdDayWrapper) householdDay);
 
 						if (personDay.IsValid == false) {
@@ -553,7 +553,7 @@ namespace DaySim.ChoiceModels.H {
 
 			if (Global.Configuration.ShouldRunWorkAtHomeModel) {
 				// determines if full or part time worker works at home during day
-					ChoiceModelFactory.TotalTimesWorkAtHomeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesWorkAtHomeModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				Global.ChoiceModelSession.Get<WorkAtHomeModel>().Run(personDay, householdDay);
 				//mbtrace
 				if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > HWorkAtHomeModel predicts WorkAtHomeDuration {0}", personDay.WorkAtHomeDuration);
@@ -582,7 +582,7 @@ namespace DaySim.ChoiceModels.H {
 							else if (i < totalMandatoryTours[1] + totalMandatoryTours[2]) { choice = 2; }
 							else if (i < totalMandatoryTours[0]) { choice = 3; }
 							else { choice = 0; }
-								ChoiceModelFactory.TotalTimesMandatoryTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+								ChoiceModelFactory.TotalTimesMandatoryTourGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 							ncallsfortour++;
 							Global.ChoiceModelSession.Get<MandatoryTourGenerationModel>().Run(personDay, householdDay, ncallsfortour, simulatedMandatoryTours, choice);
 							if (choice > 0) {
@@ -595,7 +595,7 @@ namespace DaySim.ChoiceModels.H {
 						int maxNumberOfMandatoryTours = 4;
 
 						for (var i = 0; i <= totalMandatoryTours[0]; i++) {
-								ChoiceModelFactory.TotalTimesMandatoryTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+								ChoiceModelFactory.TotalTimesMandatoryTourGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 							ncallsfortour++;
 							var tourPurpose = Global.ChoiceModelSession.Get<MandatoryTourGenerationModel>().Run(personDay, householdDay, ncallsfortour, simulatedMandatoryTours);
 							if (tourPurpose > 0) {
@@ -623,7 +623,7 @@ namespace DaySim.ChoiceModels.H {
 					personDay.CreatedSchoolTours = personDay.SchoolTours;
 
 					// determine presence of mandatory stops
-						ChoiceModelFactory.TotalTimesMandatoryStopPresenceModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesMandatoryStopPresenceModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<MandatoryStopPresenceModel>().Run(personDay, householdDay);
 					/*temp override to test without stops
 					personDay.WorkStops = 0;
@@ -908,7 +908,7 @@ namespace DaySim.ChoiceModels.H {
 					}
 				}
 
-					ChoiceModelFactory.TotalTimesJointHalfTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesJointHalfTourGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				nCallsForTour++;
 				int genChoice = Global.ChoiceModelSession.Get<JointHalfTourGenerationModel>().Run(householdDay, nCallsForTour, jHTAvailable, type, subType);
 
@@ -933,7 +933,7 @@ namespace DaySim.ChoiceModels.H {
 					for (int p = 0; p < 8; p++) {
 						participants[p] = 0;
 					}
-						ChoiceModelFactory.TotalTimesFullJointHalfTourParticipationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesFullJointHalfTourParticipationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					//					int[] participants = HFullJointHalfTourParticipationModel.Run(householdDay, jHTSimulated, genChoice, hTAvailable, fHTAvailable, jHTParticipation);
 					participants = Global.ChoiceModelSession.Get<FullJointHalfTourParticipationModel>().Run(householdDay, jHTSimulated, genChoice, hTAvailable, fHTAvailable, jHTParticipation);
 
@@ -1127,7 +1127,7 @@ namespace DaySim.ChoiceModels.H {
 					}
 				}
 				else if (genChoice > 0) {
-						ChoiceModelFactory.TotalTimesPartialJointHalfTourParticipationAndChauffeurModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesPartialJointHalfTourParticipationAndChauffeurModelsRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					if (householdDay.Household.Id == 2071) {
 						bool testbreak = true;
 					}
@@ -1484,7 +1484,7 @@ namespace DaySim.ChoiceModels.H {
 
 			var nCallsForTour = 0;
 			for (var i = 0; i <= 8; i++) {
-					ChoiceModelFactory.TotalTimesJointTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesJointTourGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				nCallsForTour++;
 				purpose[nCallsForTour] = Global.ChoiceModelSession.Get<JointTourGenerationModel>().Run(householdDay, nCallsForTour, purpose[nCallsForTour]);
 				if (purpose[nCallsForTour] > Global.Settings.Purposes.NoneOrHome) {
@@ -1492,7 +1492,7 @@ namespace DaySim.ChoiceModels.H {
 					if (Global.TraceResults) Global.PrintFile.WriteLine("> > > Generated joint tour {0} with purpose {1}", nCallsForTour, purpose[nCallsForTour]);
 
 					// run tour participation model and create tour
-						ChoiceModelFactory.TotalTimesJointTourParticipationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesJointTourParticipationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					int[] participants = Global.ChoiceModelSession.Get<JointTourParticipationModel>().Run(householdDay, nCallsForTour, purpose, jTParticipation);
                     if (!Global.Configuration.IsInEstimationMode && !householdDay.IsValid)   {
                         return;
@@ -1612,7 +1612,7 @@ namespace DaySim.ChoiceModels.H {
 			if (Global.Configuration.ShouldRunHouseholdPersonDayPatternModel) {
 				// determines if there are tours for a person's day
 				// sets number of stops for a person's day
-					ChoiceModelFactory.TotalTimesPersonDayPatternModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesPersonDayPatternModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				Global.ChoiceModelSession.Get<PersonDayPatternModel>().Run(personDay, householdDay);
 
 				if (householdDay.IsValid == false || personDay.IsValid == false) {
@@ -1691,7 +1691,7 @@ namespace DaySim.ChoiceModels.H {
 
 			int maxPurpose = 2;
 			for (var count = 1; count <= 8; count++) {
-					ChoiceModelFactory.TotalTimesPersonTourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesPersonTourGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				tourPurpose[count] = Global.ChoiceModelSession.Get<PersonTourGenerationModel>().Run(personDay, householdDay, maxPurpose, tourPurpose[count]);
 				if (tourPurpose[count] == Global.Settings.Purposes.NoneOrHome || personDay.GetTotalCreatedTours() >= 8) {
 					break;
@@ -2420,7 +2420,7 @@ namespace DaySim.ChoiceModels.H {
 				else if (tour.HalfTour2HasBeenSimulated) {
 					lastDirection = Global.Settings.TourDirections.OriginToDestination;
 				}
-					ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection);
 				if (!personDay.IsValid) {
 					return;
@@ -2428,7 +2428,7 @@ namespace DaySim.ChoiceModels.H {
 			}
 			UpdateTimeWindowForTourDestinationTimes(tour);
 			
-				ChoiceModelFactory.TotalTimesTourSubtourModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
+				ChoiceModelFactory.TotalTimesTourSubtourModelsRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 			RunSubtourModels(tour, personDay, householdDay);
 			if (!personDay.IsValid) {
 				return;
@@ -2590,7 +2590,7 @@ namespace DaySim.ChoiceModels.H {
 			else if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour2Sequence > 0) {
 				lastDirection = Global.Settings.TourDirections.OriginToDestination;
 			}
-				ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.GetBatchFromThreadId()]++;
+				ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 			RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection);
 			if (!personDay.IsValid) {
 				return;
@@ -2655,7 +2655,7 @@ namespace DaySim.ChoiceModels.H {
 				if (Global.Configuration.ShouldRunWorkTourDestinationModel) {
 					// sets the destination for the work tour
 					// the usual work location or some another work location
-					ChoiceModelFactory.TotalTimesWorkTourDestinationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesWorkTourDestinationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<TourDestinationModel>().Run(tour, householdDay, Global.Configuration.OtherTourDestinationModelSampleSize, constrainedParcel);
 				}
 
@@ -2683,7 +2683,7 @@ namespace DaySim.ChoiceModels.H {
 				if (Global.Configuration.ShouldRunOtherTourDestinationModel) {
 					// sets the destination for the work tour
 					// the usual work location or some another work location
-					ChoiceModelFactory.TotalTimesOtherTourDestinationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesOtherTourDestinationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<TourDestinationModel>().Run(tour, householdDay, Global.Configuration.OtherTourDestinationModelSampleSize, constrainedParcel);
 				}
 
@@ -2706,12 +2706,12 @@ namespace DaySim.ChoiceModels.H {
 				foreach (var subtour in tour.Subtours) {
 					// -- in estimation mode --
 					// sets the destination purpose of the subtour when in application mode
-						ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					nCallsForTour++;
 					Global.ChoiceModelSession.Get<WorkBasedSubtourGenerationModel>().Run(tour, nCallsForTour, householdDay, subtour.DestinationPurpose);
 				}
 				nCallsForTour++;
-					ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				Global.ChoiceModelSession.Get<WorkBasedSubtourGenerationModel>().Run(tour, nCallsForTour, householdDay);
 			}
 			else {
@@ -2720,7 +2720,7 @@ namespace DaySim.ChoiceModels.H {
 				while (tour.Subtours.Count < 4 && tour.PersonDay.GetTotalCreatedTours() < 8) {
 					// -- in application mode --
 					// sets the destination purpose of the subtour
-						ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesWorkBasedSubtourGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					nCallsForTour++;
 					var destinationPurposeForSubtour = Global.ChoiceModelSession.Get<WorkBasedSubtourGenerationModel>().Run(tour, nCallsForTour, householdDay);
 
@@ -2749,7 +2749,7 @@ namespace DaySim.ChoiceModels.H {
 					bool testbreak = true;
 				}
 
-					ChoiceModelFactory.TotalTimesTourModeTimeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesTourModeTimeModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				if (tour.DestinationPurpose == Global.Settings.Purposes.Work)	{
 					Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().Run(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
 				}
@@ -2844,7 +2844,7 @@ namespace DaySim.ChoiceModels.H {
 			if (subtour.DestinationPurpose == Global.Settings.Purposes.Work) {
 				if (Global.Configuration.ShouldRunWorkTourDestinationModel) {
 					// the usual work location or some another work location
-					ChoiceModelFactory.TotalTimesWorkSubtourDestinationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesWorkSubtourDestinationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<TourDestinationModel>().Run(subtour, householdDay, Global.Configuration.OtherTourDestinationModelSampleSize);
 				}
 
@@ -2867,7 +2867,7 @@ namespace DaySim.ChoiceModels.H {
 			else {
 				if (Global.Configuration.ShouldRunOtherTourDestinationModel) {
 					// sets the destination for the subtour
-					ChoiceModelFactory.TotalTimesOtherSubtourDestinationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesOtherSubtourDestinationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<TourDestinationModel>().Run(subtour, householdDay, Global.Configuration.OtherTourDestinationModelSampleSize);
 				}
 
@@ -2930,7 +2930,7 @@ namespace DaySim.ChoiceModels.H {
 
 				//HTourModeTime.InitializeTourModeTimes();
 
-					ChoiceModelFactory.TotalTimesTourModeTimeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesTourModeTimeModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				Global.ChoiceModelSession.Get<WorkBasedSubtourModeTimeModel>().Run(householdDay, subtour, 0, 0, 0);
 				if (subtour.PersonDay.IsValid == false){
 					return;
@@ -3051,7 +3051,7 @@ namespace DaySim.ChoiceModels.H {
 				//}
 
 				if (stopPurpose != Global.Settings.Purposes.NoneOrHome) {
-						ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.threadLocalBatchIndex.Value]++;
 					var destinationPurposeForNextTrip = trip.DestinationPurpose;
 
 					// creates the next trip in the half-tour 
@@ -3078,10 +3078,10 @@ namespace DaySim.ChoiceModels.H {
 
 			if (nextTrip == null || trip.IsToTourOrigin || !Global.Configuration.ShouldRunIntermediateStopLocationModel) {
 				if (trip.IsToTourOrigin) {
-						ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.threadLocalBatchIndex.Value]++;
 					}
 				else if (nextTrip == null) {
-						ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.threadLocalBatchIndex.Value]++;
 					}
 
 				if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "IntermediateStopLocationModel") {
@@ -3239,7 +3239,7 @@ namespace DaySim.ChoiceModels.H {
 						tour.HalfTour2Trips++;
 					}
 
-						ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					RunTripModelSuite(householdDay, personDay, tour, halfTour, trip);
 
 					if (!trip.PersonDay.IsValid) {
@@ -3324,11 +3324,11 @@ namespace DaySim.ChoiceModels.H {
 				nextTrip = trip.GetNextTrip();
 
 				if (intermediateStopPurpose != Global.Settings.Purposes.NoneOrHome) {
-						ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.threadLocalBatchIndex.Value]++;
 					trip.PersonDay.IncrementSimulatedStops(intermediateStopPurpose);
 				}
 				if (trip.PersonDay.GetTotalStops() > 0 && halfTour.SimulatedTrips < 10) {
-						ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<IntermediateStopGenerationModel>().Run(trip, householdDay, intermediateStopPurpose);
 				}
 			}
@@ -3341,19 +3341,19 @@ namespace DaySim.ChoiceModels.H {
 				int intermediateStopPurpose;
 				if (trip.Sequence == 1 && trip.Tour.Mode == Global.Settings.Modes.ParkAndRide) {
 					intermediateStopPurpose = Global.Settings.Purposes.ChangeMode;
-						ChoiceModelFactory.TotalTimesChangeModeStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesChangeModeStopGenerated[ParallelUtility.threadLocalBatchIndex.Value]++;
 				}
 				// MB commented out - joint tour and half tours can have stops - safer to let the model code decide
 				//else if (trip.PersonDay.TotalStops == 0 ) {
 				//	intermediateStopPurpose = Global.Settings.Purposes.NoneOrHome;
 				//}
 				else {
-						ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					intermediateStopPurpose = Global.ChoiceModelSession.Get<IntermediateStopGenerationModel>().Run(trip, householdDay);
 				}
 
 				if (intermediateStopPurpose != Global.Settings.Purposes.NoneOrHome && halfTour.SimulatedTrips < 10) {
-						ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.threadLocalBatchIndex.Value]++;
 					var destinationPurposeForNextTrip = trip.DestinationPurpose;
 
 					// creates the next trip in the half-tour 
@@ -3380,10 +3380,10 @@ namespace DaySim.ChoiceModels.H {
 
 			if (nextTrip == null || trip.IsToTourOrigin || !Global.Configuration.ShouldRunIntermediateStopLocationModel) {
 				if (trip.IsToTourOrigin) {
-						ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.threadLocalBatchIndex.Value]++;
 					}
 				else if (nextTrip == null) {
-						ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.threadLocalBatchIndex.Value]++;
 					}
 
 				if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "IntermediateStopLocationModel") {
@@ -3407,11 +3407,11 @@ namespace DaySim.ChoiceModels.H {
 					trip.DestinationZoneKey = parkAndRideNode.ZoneId;
 					trip.DestinationAddressType = Global.Settings.AddressTypes.Other;
 
-						ChoiceModelFactory.TotalTimesChangeModeLocationSet[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesChangeModeLocationSet[ParallelUtility.threadLocalBatchIndex.Value]++;
 					}
 			}
 			else {
-					ChoiceModelFactory.TotalTimesIntermediateStopLocationModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesIntermediateStopLocationModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 				Global.ChoiceModelSession.Get<IntermediateStopLocationModel>().Run(trip, householdDay, Global.Configuration.IntermediateStopLocationModelSampleSize);
 			}
 			if (Global.Configuration.IsInEstimationMode) {
@@ -3483,7 +3483,7 @@ namespace DaySim.ChoiceModels.H {
 				// sets the trip's mode of travel to the destination
 				if (trip.DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
 					// trips to change mode destination are always by transit
-					ChoiceModelFactory.TotalTimesChangeModeTransitModeSet[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesChangeModeTransitModeSet[ParallelUtility.threadLocalBatchIndex.Value]++;
 					trip.Mode = Global.Settings.Modes.Transit;
 					if (Global.StopAreaIsEnabled && Global.Configuration.WriteStopAreaIDsInsteadOfZonesForTransitTrips) {
 						trip.OriginZoneKey = trip.Tour.ParkAndRideOriginStopAreaKey;
@@ -3491,7 +3491,7 @@ namespace DaySim.ChoiceModels.H {
 					}
 				}
 				else {
-						ChoiceModelFactory.TotalTimesTripModeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesTripModeModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<TripModeModel>().Run(householdDay, trip);
 
 					//mbtrace
@@ -3533,7 +3533,7 @@ namespace DaySim.ChoiceModels.H {
 			}
 			else {
 				if (Global.Configuration.ShouldRunTripTimeModel) {
-						ChoiceModelFactory.TotalTimesTripTimeModelRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesTripTimeModelRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					Global.ChoiceModelSession.Get<TripTimeModel>().Run(householdDay, trip);
 
 					//mbtrace
@@ -3583,7 +3583,7 @@ namespace DaySim.ChoiceModels.H {
 						tour.HalfTour2Trips++;
 					}
 
-						ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalBatchIndex.Value]++;
 					
 					if (!trip.PersonDay.IsValid) {
 						bool testbreak = true;
@@ -3660,7 +3660,7 @@ namespace DaySim.ChoiceModels.H {
 			var intermediateStopPurpose = sourceTrip.DestinationPurpose;
 
 			if (intermediateStopPurpose != Global.Settings.Purposes.NoneOrHome) {
-					ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.GetBatchFromThreadId()]++;
+					ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.threadLocalBatchIndex.Value]++;
 				var destinationPurposeForNextTrip = trip.DestinationPurpose;
 
 				// creates the next trip in the half-tour 
@@ -3685,10 +3685,10 @@ namespace DaySim.ChoiceModels.H {
 
 			if (nextTrip == null || trip.IsToTourOrigin || !Global.Configuration.ShouldRunIntermediateStopLocationModel) {
 				if (trip.IsToTourOrigin) {
-						ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesTripIsToTourOrigin[ParallelUtility.threadLocalBatchIndex.Value]++;
 					}
 				else if (nextTrip == null) {
-						ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.GetBatchFromThreadId()]++;
+						ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.threadLocalBatchIndex.Value]++;
 					}
 
 				if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "IntermediateStopLocationModel") {
