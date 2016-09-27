@@ -9,7 +9,7 @@ using DaySim.Framework.Persistence;
 
 namespace DaySim.Framework.ChoiceModels {
 	public interface IChoiceModelRunner : ISavable {
-		void RunChoiceModels(int batchNumber);
+		void RunChoiceModels();
 
 		void SetRandomSeed(int randomSeed);
 	}

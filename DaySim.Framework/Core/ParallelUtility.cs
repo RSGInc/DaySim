@@ -6,77 +6,44 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaySim.Framework.Core {
 	public static class ParallelUtility {
-		private static int[] _threadToThreadIdMap;
+        public static ThreadLocal<int> threadLocalBatchIndex = null;
 
-		public static int NBatches { get; private set; }
-
-		public static int SmallDegreeOfParallelism { get; private set; }
-
-		public static int LargeDegreeOfParallelism { get; private set; }
+        public static int NThreads { get; private set; }
 
 		public static void Init(Configuration configuration) {
-			var nProcessors =
+            NThreads =
 				configuration.NProcessors == 0
 					? 1
 					: configuration.NProcessors;
 
 			if (configuration.IsInEstimationMode) {
-				NBatches = 1;
-			}
-			else {
-				NBatches = configuration.NBatches == 0
-					? nProcessors * 4
-					: configuration.NBatches;
-			}
-
-			SmallDegreeOfParallelism =
-				configuration
-					.SmallDegreeOfParallelism == 0
-					? nProcessors / 2
-					: configuration.SmallDegreeOfParallelism;
-
-			LargeDegreeOfParallelism =
-				configuration.LargeDegreeOfParallelism == 0
-					? nProcessors
-					: configuration.LargeDegreeOfParallelism;
-
-			_threadToThreadIdMap = new int[NBatches];
-		}
-
-		public static void Register(int threadId, int batchNumber) {
-			try {
-				_threadToThreadIdMap[batchNumber] = threadId;
-			}
-			catch (Exception) {
-				throw new Exception("Invalid BatchNumber " + batchNumber + ":" + _threadToThreadIdMap.Length);
+				NThreads = 1;
 			}
 		}
 
-		public static int GetBatchFromThreadId() {
-			for (var i = 0; i < NBatches; i++) {
-				if (_threadToThreadIdMap[i] == Thread.CurrentThread.ManagedThreadId) {
-					return i;
-				}
-			}
+        public static void InitThreadLocalBatchIndex() {
+            Debug.Assert(threadLocalBatchIndex == null, "InitThreadLocalBatchIndex called when threadLocalBatchIndex is already not null!");
+            int threadsSoFarIndex = -1;
+            threadLocalBatchIndex = new ThreadLocal<int>(() => {
+                int threadLocalBatchIndexThreadSpecificValue = Interlocked.Increment(ref threadsSoFarIndex);
 
-			return NBatches;
-		}
+                Global.PrintFile.WriteLine("Thread.CurrentThread.ManagedThreadId: " + Thread.CurrentThread.ManagedThreadId + " assigned threadLocalBatchIndexThreadSpecificValue: " + threadLocalBatchIndexThreadSpecificValue);
+            return threadLocalBatchIndexThreadSpecificValue;
+        });
+        }   //end InitThreadLocalBatchIndex
 
-		public static void While(ParallelOptions parallelOptions, Func<bool> condition, Action<ParallelLoopState> body) {
-			Parallel.ForEach(new InfinitePartitioner(), parallelOptions,
-				(ignored, state) => {
-					if (condition()) {
-						body(state);
-					}
-					else {
-						state.Stop();
-					}
-				});
-		}
+        public static void DisposeThreadLocalBatchIndex()
+        {
+            Debug.Assert(threadLocalBatchIndex != null, "DisposeThreadLocalBatchIndex called when threadLocalBatchIndex is already null!");
+            threadLocalBatchIndex.Dispose();
+            threadLocalBatchIndex = null;
+        }   //end DisposeThreadLocalBatchIndex
+
 	}
 }

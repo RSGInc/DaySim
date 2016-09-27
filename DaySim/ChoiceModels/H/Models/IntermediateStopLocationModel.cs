@@ -52,9 +52,9 @@ namespace DaySim.ChoiceModels.H.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(trip.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 				RunModel(choiceProbabilityCalculator, trip, householdDay, sampleSize, trip.DestinationParcel);
 				if (trip.PersonDay.IsValid == false)
 					return;

@@ -67,9 +67,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(trip.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 				if (trip.OriginParcel == null) {
 					return Constants.DEFAULT_VALUE;
 				}

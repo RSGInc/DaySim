@@ -94,9 +94,9 @@ namespace DaySim.ChoiceModels.H.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(((householdDay.Household.Id * 10 + householdDay.Day) * 397) ^ jHTSimulated);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(((householdDay.Household.Id * 10 + householdDay.Day) * 397) ^ jHTSimulated);
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 
 				RunModel(choiceProbabilityCalculator, householdDay, jHTSimulated, genChoice, jHTAvailable, pHTAvailable, altParticipants, choice);
 
@@ -127,7 +127,7 @@ namespace DaySim.ChoiceModels.H.Models {
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int jHTSimulated, int genChoice, bool[,] jHTAvailable, bool[] pHTAvailable, int[][] altParticipants, int choice = Constants.DEFAULT_VALUE) {
 
 			IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointHalfTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
-			int batchNumber = ParallelUtility.GetBatchFromThreadId();
+			int batchNumber = ParallelUtility.threadLocalBatchIndex.Value;
 			int pairedHalfTour = genChoice == 1 ? 1 : 0;
 			int firstHalfTour = genChoice == 2 ? 1 : 0;
 			int secondHalfTour = genChoice == 3 ? 1 : 0;
@@ -290,8 +290,8 @@ namespace DaySim.ChoiceModels.H.Models {
 							(zzDist > Global.Configuration.MaximumBlendingDistance)
 								? Constants.DEFAULT_VALUE
 								: (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-									? pUsualLocationParcel[t1].NodeToNodeDistance(pUsualLocationParcel[t2], batchNumber)
-									: (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceCircuityMeasures)
+									? pUsualLocationParcel[t1].NodeToNodeDistance(pUsualLocationParcel[t2])
+                                    : (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Parcel && Global.Configuration.UseShortDistanceCircuityMeasures)
 										? pUsualLocationParcel[t1].CircuityDistance(pUsualLocationParcel[t2])
 										: Constants.DEFAULT_VALUE;
 						var skimValue =

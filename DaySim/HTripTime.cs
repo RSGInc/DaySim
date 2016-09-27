@@ -46,7 +46,7 @@ namespace DaySim {
 			}
 			
 			foreach (
-				var time in Times[ParallelUtility.GetBatchFromThreadId()].Where(time => time.DeparturePeriod == DeparturePeriod))
+				var time in Times[ParallelUtility.threadLocalBatchIndex.Value].Where(time => time.DeparturePeriod == DeparturePeriod))
 			{
 				Index = time.Index;
 
@@ -76,8 +76,8 @@ namespace DaySim {
 				}
 
 				
-				Times = new HTripTime[ParallelUtility.NBatches][];
-				for (int i = 0; i < ParallelUtility.NBatches; i++)
+				Times = new HTripTime[ParallelUtility.NThreads][];
+				for (int i = 0; i < ParallelUtility.NThreads; i++)
 				{
 					Times[i] = new HTripTime[TOTAL_TRIP_TIMES];
 					var alternativeIndex = 0;
@@ -93,7 +93,7 @@ namespace DaySim {
 
 		public static void SetTimeImpedances(ITripWrapper trip) {
 
-			foreach (var time in Times[ParallelUtility.GetBatchFromThreadId()]) {
+			foreach (var time in Times[ParallelUtility.threadLocalBatchIndex.Value]) {
 				SetTimeImpedanceAndWindow(trip, time);
 			}
 		}

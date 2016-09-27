@@ -82,7 +82,7 @@ namespace DaySim {
 
 				foreach (
 					var modeTime in
-						ModeTimes[ParallelUtility.GetBatchFromThreadId()].Where(
+						ModeTimes[ParallelUtility.threadLocalBatchIndex.Value].Where(
 							modeTime =>
 							modeTime.ArrivalPeriod == ArrivalPeriod && modeTime.DeparturePeriod == DeparturePeriod && modeTime.Mode == Mode))
 				{
@@ -143,8 +143,8 @@ namespace DaySim {
 					return;
 				}
 
-				ModeTimes = new HTourModeTime[ParallelUtility.NBatches][];
-				for (int i = 0; i < ParallelUtility.NBatches; i++)
+				ModeTimes = new HTourModeTime[ParallelUtility.NThreads][];
+				for (int i = 0; i < ParallelUtility.NThreads; i++)
 				{
 					ModeTimes[i] = new HTourModeTime[TotalTourModeTimes];
 
@@ -187,7 +187,7 @@ namespace DaySim {
 			var timeWindow = (householdDay != null && tour != null) ? tour.GetRelevantTimeWindow(householdDay) : new TimeWindow();
 			
 			{
-				foreach (var modeTimes in ModeTimes[ParallelUtility.GetBatchFromThreadId()])
+				foreach (var modeTimes in ModeTimes[ParallelUtility.threadLocalBatchIndex.Value])
 				{
 					modeTimes.LongestFeasibleWindow = null;
 					if ((constrainedMode <= 0 || constrainedMode == modeTimes.Mode)

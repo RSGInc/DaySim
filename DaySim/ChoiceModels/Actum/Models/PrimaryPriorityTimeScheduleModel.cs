@@ -246,11 +246,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				return;
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(householdDay.Household.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(householdDay.Household.Id);
 
 			
 
-			//if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			//if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 
 			//				// set choice variable here  (derive from available household properties)
 			//				if (householdDay.SharedActivityHomeStays >= 1 

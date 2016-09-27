@@ -67,9 +67,9 @@ namespace DaySim.ChoiceModels.H.Models {
                 }
             }
 
-            var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(person.Id);
+            var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-            if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode)
+            if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode)
             {
                 if (person.UsualSchoolParcel == null)
                 {

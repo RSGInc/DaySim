@@ -42,7 +42,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(household.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(household.Id);
 
 			var vehicles = household.VehiclesAvailable;
 
@@ -50,7 +50,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				vehicles = 2;
 			}
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 				RunModel(choiceProbabilityCalculator, household, vehicles);
 
 				choiceProbabilityCalculator.WriteObservation();

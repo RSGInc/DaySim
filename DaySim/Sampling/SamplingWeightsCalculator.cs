@@ -88,7 +88,7 @@ namespace DaySim.Sampling {
 
 			Global.SegmentZones = new SegmentZone[segmentCount][];
 
-			Parallel.For(0, segmentCount, new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.LargeDegreeOfParallelism }, segment => CalculateSegment(samplingWeightsCalculator, segment));
+			Parallel.For(0, segmentCount, new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.NThreads }, segment => CalculateSegment(samplingWeightsCalculator, segment));
 		}
 
 		private static void CalculateSegment(SamplingWeightsCalculator samplingWeightsCalculator, int segment) {

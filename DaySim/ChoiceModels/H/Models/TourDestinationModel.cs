@@ -75,9 +75,9 @@ namespace DaySim.ChoiceModels.H.Models {
 				return;
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(tour.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(tour.Id);
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
 				if (constrainedParcel == null) {
 					RunModel(choiceProbabilityCalculator, tour, householdDay, sampleSize, tour.DestinationParcel);
 

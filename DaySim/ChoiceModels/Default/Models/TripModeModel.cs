@@ -44,7 +44,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(trip.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
 
 			var originParcel =
 				trip.IsHalfTourFromOrigin
@@ -67,7 +67,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 						  ? trip.Tour.DestinationDepartureTime
 						  : trip.GetPreviousTrip().ArrivalTime;
 
-            if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode)
+            if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode)
             {
                 if (destinationParcel == null || originParcel == null || trip.Mode <= Global.Settings.Modes.None || trip.Mode == Global.Settings.Modes.ParkAndRide || trip.Mode == Global.Settings.Modes.Other)
                 {

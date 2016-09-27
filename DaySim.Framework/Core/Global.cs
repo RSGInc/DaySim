@@ -405,11 +405,11 @@ namespace DaySim.Framework.Core {
 				NodeIndex.Add(node.Id, node.NodeId);
 			}
 
-			NodeNodePreviousOriginParcelId = new int[ParallelUtility.NBatches]; //Constants.DEFAULT_VALUE;
-			NodeNodePreviousDestinationParcelId = new int[ParallelUtility.NBatches]; // = Constants.DEFAULT_VALUE;
-			NodeNodePreviousDistance = new double[ParallelUtility.NBatches]; // = Constants.DEFAULT_VALUE;
+			NodeNodePreviousOriginParcelId = new int[ParallelUtility.NThreads]; //Constants.DEFAULT_VALUE;
+			NodeNodePreviousDestinationParcelId = new int[ParallelUtility.NThreads]; // = Constants.DEFAULT_VALUE;
+			NodeNodePreviousDistance = new double[ParallelUtility.NThreads]; // = Constants.DEFAULT_VALUE;
 
-			for (var i = 0; i < ParallelUtility.NBatches; i++) {
+			for (var i = 0; i < ParallelUtility.NThreads; i++) {
 				NodeNodePreviousOriginParcelId[i] = Constants.DEFAULT_VALUE;
 				NodeNodePreviousDestinationParcelId[i] = Constants.DEFAULT_VALUE;
 				NodeNodePreviousDistance[i] = Constants.DEFAULT_VALUE;
