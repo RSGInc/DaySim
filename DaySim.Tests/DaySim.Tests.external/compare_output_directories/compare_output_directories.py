@@ -96,7 +96,7 @@ def are_outputs_equal(parameters):
     elif not os.path.isdir(args.outputs_new):
         raise Exception('outputs_reference "' + args.outputs_reference + '" exists but not outputs_new "' + args.outputs_new + '"')
 
-
+    print(os.path.realpath(__file__) + ' --outputs_reference "' + os.path.realpath(args.outputs_reference) +  '" --outputs_new "' + os.path.realpath(args.outputs_new) + '"') 
     dcmp = filecmp.dircmp(args.outputs_reference, args.outputs_new) 
     remove_irrelevant_files_from_dcmp(dcmp)
 
@@ -145,7 +145,9 @@ def are_outputs_equal(parameters):
                 else: #files are different in more than just sort order!
                     print('hash_sum of files is different so going to compare lines. File "' + different_file + '".')
                     #if the files do not have identical lines get more detailed information of differences
+
                     with open(reference_file, encoding='latin-1') as infile:
+                        reference_header = infile.readline()
                         counts = collections.Counter(l for l in infile)
 
                     logging.debug('Finished counting lines in reference folder copy of "' + different_file + '". There are '
@@ -156,34 +158,40 @@ def are_outputs_equal(parameters):
                     #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
                     with open(new_file, encoding='latin-1') as infile:
+                        new_header = infile.readline()
                         counts.subtract(l for l in infile)
                     logging.debug('Finished checking new version of "' + different_file + '".')
                     #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
-                    missing_from_reference = []
-                    missing_from_new = []
-                    for line, count in counts.items():
-                        if count < 0:
-                            missing_from_reference.append((line,count))
-                        elif count > 0:
-                            missing_from_new.append((line,count))
+                    if reference_header != new_header:
+                        print('File headers are different!\nref: ' + reference_header + '\nnew: ' + new_header)
+                    else:
+                        missing_from_reference = []
+                        missing_from_new = []
+                        for line, count in counts.items():
+                            if count < 0:
+                                missing_from_reference.append((line,count))
+                            elif count > 0:
+                                missing_from_new.append((line,count))
 
-                    assert len(missing_from_reference) != 0 or len(missing_from_new) != 0, "hash_sum was different but the counts of each distinct are identical!"
+                        assert len(missing_from_reference) != 0 or len(missing_from_new) != 0, "hash_sum was different but the counts of each distinct are identical!"
 
-                    print('File "' + different_file + '" with ' + str(len(counts)) + ' distinct lines has '
-                            + str(len(missing_from_new)) + ' distinct lines that were not found in the new and '
-                            + str(len(missing_from_reference)) + ' distinct lines that were not found in the reference file')
+                        print('File "' + different_file + '" with ' + str(len(counts)) + ' distinct lines has '
+                                + str(len(missing_from_new)) + ' distinct lines that were not found in the new and '
+                                + str(len(missing_from_reference)) + ' distinct lines that were not found in the reference file')
 
-                    def print_line_and_counts_to_string(identifier, counted_strings):
-                        #sort the missing lines so that the ones shown in reference and new will likely be similar which will make differences easier to spot
-                        counted_strings.sort(key=lambda line_count_tuple :  line_count_tuple[0])
-                        if len(counted_strings) > 0:
-                            message = ('All ' if len(counted_strings) <= args.max_different_lines_to_show else (' Sample ' + str(args.max_different_lines_to_show))) + ' lines that are ' + identifier + '.\n'
-                            message += '\n'.join(str(abs(count)) + ': ' + str(line) for line, count in counted_strings[:args.max_different_lines_to_show])
-                            print(message)
+                        #sort list and only keep top few lines
+                        missing_from_reference.sort(key=lambda line_count_tuple :  line_count_tuple[0])
+                        missing_from_reference = missing_from_reference[:args.max_different_lines_to_show]
 
-                    print_line_and_counts_to_string('missing from new file', missing_from_new)
-                    print_line_and_counts_to_string('missing from reference', missing_from_reference)
+                        missing_from_new.sort(key=lambda line_count_tuple :  line_count_tuple[0])
+                        missing_from_new = missing_from_new[::args.max_different_lines_to_show]
+                    
+                        print('hdr: ' + reference_header)
+                        for missing_line_index in range(0, min(len(missing_from_reference), len(missing_from_new))):
+                            print('ref: ' + missing_from_reference[missing_line_index][0] + '\tmissing count: ' +  str(missing_from_reference[missing_line_index][1]))
+                            print('new: ' + missing_from_new[missing_line_index][0] + '\tmissing count: ' +  str(missing_from_new[missing_line_index][1]))
+                            print('------')
             if filesAreDifferent:
                 actuallyDifferentFiles.append(different_file)
             result = result and not filesAreDifferent
