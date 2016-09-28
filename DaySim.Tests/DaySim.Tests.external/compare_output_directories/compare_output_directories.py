@@ -113,7 +113,7 @@ def are_outputs_equal(parameters):
         dcmp.report_full_closure()
     else:
         all_common_different_files = get_all_common_different_files(dcmp)
-        result = len(all_common_different_files) == 0 #result is good if all common files are the same
+        result = True   #this will be changed to false if any individual file is different in an important way (other than order)
         logging.debug('There are #' + str(len(all_common_different_files)) + ' files which are not binary identical. Will look more deeply.')
         #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
