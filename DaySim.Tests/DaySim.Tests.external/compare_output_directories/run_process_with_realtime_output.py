@@ -2,6 +2,7 @@
 from subprocess import Popen, PIPE
 from threading import Thread
 from queue import Queue, Empty
+import sys
 
 if sys.version_info < (3,0):
     print("Sorry, requires Python 3.x, not Python 2.x")
