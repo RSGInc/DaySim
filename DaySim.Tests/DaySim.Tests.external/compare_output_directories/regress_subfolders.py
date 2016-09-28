@@ -4,9 +4,15 @@ import os
 import sys
 import traceback
 import time
-import regress_model
 import glob
 import logging
+
+if sys.version_info < (3,0):
+    print("Sorry, requires Python 3.x, not Python 2.x")
+    sys.exit(1)
+sys.path.append(os.path.realpath(os.path.dirname(sys.argv[0])) + '.regress_model')
+import regress_model
+sys.path.append(os.path.realpath(os.path.dirname(sys.argv[0])) + '.run_process_with_realtime_output')
 import run_process_with_realtime_output
 
 def parse_bool(v):

@@ -6,14 +6,19 @@ import sys
 import traceback
 import collections
 import time
-from enum import Enum
 import shutil
 import xml.etree.ElementTree as ET
 import logging
 import subprocess
-import run_process_with_realtime_output
-import utilities
 from string import Template
+
+if sys.version_info < (3,0):
+    print("Sorry, requires Python 3.x, not Python 2.x")
+    sys.exit(1)
+sys.path.append(os.path.realpath(os.path.dirname(sys.argv[0])) + '.run_process_with_realtime_output')
+import run_process_with_realtime_output
+sys.path.append(os.path.realpath(os.path.dirname(sys.argv[0])) + '.utilities')
+import utilities
 
 def compare_directories(old_dir, new_dir, isVerbose):
     import compare_output_directories

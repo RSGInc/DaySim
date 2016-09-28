@@ -3,6 +3,10 @@ from subprocess import Popen, PIPE
 from threading import Thread
 from queue import Queue, Empty
 
+if sys.version_info < (3,0):
+    print("Sorry, requires Python 3.x, not Python 2.x")
+    sys.exit(1)
+
 def run_process_with_realtime_output(cmd):
     io_q = Queue()
 
