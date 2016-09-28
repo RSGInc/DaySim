@@ -8,6 +8,7 @@ import time
 from enum import Enum
 from utilities import *
 import logging
+import difflib
 
 #ignore some file extensions
 def remove_irrelevant_files(listOfFiles):
@@ -57,7 +58,7 @@ def get_all_common_different_files(dcmp):
 
 def get_hash_sum_of_lines(filename):
     """this can be used to get a nearly unique identifier for the content of a file
-    where order does not matter. Two files with identical linesin different order should have the same hash sum"""
+    where order does not matter. Two files with identical lines in different order should have the same hash sum"""
     with open(filename) as infile:
         hash_sum = sum(hash(l) for l in infile)
     return hash_sum
@@ -109,14 +110,15 @@ def are_outputs_equal(parameters):
     if not are_all_files_common:
         result = False
         print("Folders do not have all of the same files so regression fails.")
+        dcmp.report_full_closure()
     else:
         all_common_different_files = get_all_common_different_files(dcmp)
         result = len(all_common_different_files) == 0 #result is good if all common files are the same
         logging.debug('There are #' + str(len(all_common_different_files)) + ' files which are not binary identical. Will look more deeply.')
         #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
 
+        actuallyDifferentFiles = []
         for different_file in all_common_different_files:
-            result = False #since files are different assume failure unless changed again
             #some DaySim files are identical in content but are output in a different line order
             reference_file = os.path.join(args.outputs_reference, different_file)
             assert os.path.isfile(reference_file), "reference_file is not a file: " + reference_file
@@ -124,31 +126,24 @@ def are_outputs_equal(parameters):
             allow_text_comparison = file_extension in ['.csv','.dat','.tsv','.txt']
             new_file = os.path.join(args.outputs_new, different_file)
             assert os.path.isfile(reference_file), "new_file is not a file: " + new_file
-            if os.path.getsize(reference_file) != os.path.getsize(new_file):
-                logging.debug('length of common file: ' + different_file + ' differs so difference must be more than different sort order!')
+            #could check file size here with os.path.getsize is concerned about speed but don't bother because want to give more detailed diff if possible
+            filesAreDifferent = not allow_text_comparison
+            if filesAreDifferent:
+                print('Files are different: "' + different_file + '" but do not know how to examine this type of file line by line so must assume different in a significant way!')
             else:
-                logging.debug('Common_file that is binary different at least has same file size so, if suitable text file, will check to see if same contents in different order. File: ' + different_file)
-                if allow_text_comparison:
-                    #since same size need to check if same lines but in different order
-
-                    #quickest and least memory method is to sum the hash of each line and then compare
-                    hash_sum_reference = get_hash_sum_of_lines(reference_file)
-                    #logging.debug('hash_sum of reference: ' + str(hash_sum_reference))
-                    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
-                    hash_sum_new_file = get_hash_sum_of_lines(new_file)
-                    #logging.debug('hash_sum of new file: ' + str(hash_sum_new_file))
-                    #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
-
-                    if hash_sum_reference == hash_sum_new_file:
-                        print('File "' + different_file + '" has identical content just in different order.')
-                        result = True #files count as same despite different order    
-                    #else files are different in more than just sort order!
-
-            if result == False:
-                if not allow_text_comparison:
-                    logging.debug('Files are different but unhandled extension "' + file_extension + '" so cannot check if differ only by line order. Therefore regression fails.')
-                else:
-                    logging.debug('hash_sum of files is different so going to compare lines. reference_file "' + reference_file + '".')
+                #quickest and least memory method is to sum the hash of each line and then compare
+                hash_sum_reference = get_hash_sum_of_lines(reference_file)
+                #logging.debug('hash_sum of reference: ' + str(hash_sum_reference))
+                #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                hash_sum_new_file = get_hash_sum_of_lines(new_file)
+                #logging.debug('hash_sum of new file: ' + str(hash_sum_new_file))
+                #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
+                    
+                filesAreDifferent = hash_sum_reference != hash_sum_new_file
+                if not filesAreDifferent:
+                    print('File "' + different_file + '" has identical content just in different order.')
+                else: #files are different in more than just sort order!
+                    print('hash_sum of files is different so going to compare lines. File "' + different_file + '".')
                     #if the files do not have identical lines get more detailed information of differences
                     with open(reference_file, encoding='latin-1') as infile:
                         counts = collections.Counter(l for l in infile)
@@ -189,15 +184,16 @@ def are_outputs_equal(parameters):
 
                     print_line_and_counts_to_string('missing from new file', missing_from_new)
                     print_line_and_counts_to_string('missing from reference', missing_from_reference)
-
-                #logging.debug('perf_time(): ' + str(time.perf_counter() - start_time))
-                #STOP!
-                break
-
+            if filesAreDifferent:
+                actuallyDifferentFiles.append(different_file)
+            result = result and not filesAreDifferent
+            #print('Is "' + different_file + '" actually different?: ' + str(filesAreDifferent) + '. Is regression still passing?: ' + str(result))
+        
+        print('There were ' + str(len(all_common_different_files)) + ' that were binary different. Of those, ' + str(len(actuallyDifferentFiles)) + ' files differed in ways that mattered: ' + str(actuallyDifferentFiles))
     if result:
-        print('Tests passed. Number of order different files: ' + str(len(all_common_different_files)))
+        print('PASSED! :-)')
     else:
-        dcmp.report_full_closure()
+        print('FAILED! :-(')
     return result
     
 if __name__ == "__main__":
