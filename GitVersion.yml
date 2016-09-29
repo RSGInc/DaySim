@@ -1,0 +1,12 @@
+assembly-versioning-scheme: MajorMinorPatch
+mode: Mainline
+next-version: 2.2.0
+branches:
+  master:
+    mode: ContinuousDeployment
+    tag: rc
+  develop:
+    mode: ContinuousDeployment
+    tag: beta
+ignore:
+  sha: []
