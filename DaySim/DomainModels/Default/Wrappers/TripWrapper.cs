@@ -468,8 +468,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 			TravelTime = modeImpedance.TravelTime;
 			TravelCost = modeImpedance.TravelCost;
 			TravelDistance = modeImpedance.TravelDistance;
-            if (Global.Configuration.IsInEstimationMode)
-            {
+
+            if (Global.Configuration.IsInEstimationMode) {
                 return;
             }
 			PathType = modeImpedance.PathType;

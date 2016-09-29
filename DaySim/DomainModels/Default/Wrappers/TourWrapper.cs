@@ -663,13 +663,15 @@ namespace DaySim.DomainModels.Default.Wrappers {
         }
 
         public virtual void UpdateTourValues() {
-            if ((Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldOutputStandardFilesInEstimationMode)
-                || OriginParcel == null || DestinationParcel == null || DestinationArrivalTime < 0 || DestinationArrivalTime >= Global.Settings.Times.MinutesInADay || DestinationDepartureTime < 0 || DestinationDepartureTime >= Global.Settings.Times.MinutesInADay
-                || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) {
-				return;
+            if ((Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldOutputStandardFilesInEstimationMode) || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) { 
+                return;
 			}
+            if (Global.Configuration.IsInEstimationMode && 
+                (OriginParcel == null || DestinationParcel == null || DestinationArrivalTime < 0 || DestinationArrivalTime >= Global.Settings.Times.MinutesInADay || DestinationDepartureTime < 0 || DestinationDepartureTime >= Global.Settings.Times.MinutesInADay))    {
+                return;
+            }
 
-			IEnumerable<IPathTypeModel> pathTypeModels =
+            IEnumerable<IPathTypeModel> pathTypeModels =
 			PathTypeModelFactory.Singleton
 				.Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
 			
