@@ -4,6 +4,11 @@ from datetime import datetime
 import time
 import os
 import re
+import sys
+
+if sys.version_info < (3,0):
+    print("Sorry, requires Python 3.x, not Python 2.x")
+    sys.exit(1)
 
 def delete_matching_files(directory, pattern):
     for root, dirs, files in os.walk(directory):
