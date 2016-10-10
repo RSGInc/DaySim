@@ -154,7 +154,7 @@ namespace Daysim.PathTypeModels {
 			var expUtilitySum = 0D;
 			var bestExpUtility = 0D;
 			var bestPathType = Constants.DEFAULT_VALUE;
-			int batchNumber = ParallelUtility.GetBatchFromThreadId();
+			int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
 
 			// loop on all relevant path types for the mode
 			for (var pathType = Global.Settings.PathTypes.FullNetwork; pathType < Global.Settings.PathTypes.TotalPathTypes; pathType++) {
@@ -166,7 +166,7 @@ namespace Daysim.PathTypeModels {
 
 				// set path type utility and impedance, depending on the mode
 				if (Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Walk) {
-					RunWalkBikeModel(skimMode, pathType, votValue, useZones, batchNumber);
+					RunWalkBikeModel(skimMode, pathType, votValue, useZones, threadAssignedIndex);
 				}
 				else if (Mode == Global.Settings.Modes.Hov3 || Mode == Global.Settings.Modes.Hov2 || Mode == Global.Settings.Modes.Sov) {
 					if (Mode != Global.Settings.Modes.Sov || (_isDrivingAge && _householdCars > 0)) {
@@ -249,13 +249,13 @@ namespace Daysim.PathTypeModels {
 		}
 
 
-		private void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones, int batch) {
+		private void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones, int threadAssignedIndex) {
 			var zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
 			var circuityDistance =
 				(zzDist > Global.Configuration.MaximumBlendingDistance)
 					? Constants.DEFAULT_VALUE
 					: (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-						? _originParcel.NodeToNodeDistance(_destinationParcel, batch)
+						? _originParcel.NodeToNodeDistance(_destinationParcel, threadAssignedIndex)
 						: (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
 							? _originParcel.CircuityDistance(_destinationParcel)
 							: Constants.DEFAULT_VALUE;
@@ -420,12 +420,12 @@ namespace Daysim.PathTypeModels {
 			}
 
 			var zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
-			int batchNumber = ParallelUtility.GetBatchFromThreadId();
+			int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
 			var circuityDistance =
 				(zzDist > Global.Configuration.MaximumBlendingDistance)
 					? Constants.DEFAULT_VALUE
 					: (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-						? _originParcel.NodeToNodeDistance(_destinationParcel, batchNumber)
+						? _originParcel.NodeToNodeDistance(_destinationParcel, threadAssignedIndex)
 						: (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
 							? _originParcel.CircuityDistance(_destinationParcel)
 							: Constants.DEFAULT_VALUE;
@@ -734,7 +734,7 @@ namespace Daysim.PathTypeModels {
 			if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
 				return;
 			}
-			int batchNumber = ParallelUtility.GetBatchFromThreadId();
+			int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
 			IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
 
 			if (Global.Configuration.ShouldReadParkAndRideNodeSkim) {
@@ -779,7 +779,7 @@ namespace Daysim.PathTypeModels {
 					(zzDist > Global.Configuration.MaximumBlendingDistance)
 						? Constants.DEFAULT_VALUE
 						: (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-							? _originParcel.NodeToNodeDistance(parkAndRideParcel, batchNumber)
+							? _originParcel.NodeToNodeDistance(parkAndRideParcel, threadAssignedIndex)
 							: (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
 								? _originParcel.CircuityDistance(parkAndRideParcel)
 								: Constants.DEFAULT_VALUE;

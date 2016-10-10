@@ -46,9 +46,9 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(tour.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(tour.Id);
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				if (tour.DestinationParcel == null || (tour.Mode > Global.Settings.Modes.Hov3 || tour.Mode < Global.Settings.Modes.Walk)) {
 					return;
 				}
@@ -123,7 +123,7 @@ namespace Daysim.ChoiceModels.Actum.Models {
 				throw new ArgumentNullException("tour");
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetNestedChoiceProbabilityCalculator();
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetNestedChoiceProbabilityCalculator();
 
 			var pathTypeModels =
 				PathTypeModel.Run(

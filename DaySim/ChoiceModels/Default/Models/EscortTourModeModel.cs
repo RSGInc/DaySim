@@ -40,9 +40,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(tour.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(tour.Id);
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				if (tour.DestinationParcel == null || (tour.Mode > Global.Settings.Modes.Hov3 || tour.Mode < Global.Settings.Modes.Walk)) {
 					return;
 				}
@@ -115,7 +115,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 				throw new ArgumentNullException("tour");
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetNestedChoiceProbabilityCalculator();
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetNestedChoiceProbabilityCalculator();
 
             IEnumerable<IPathTypeModel> pathTypeModels =
 				PathTypeModelFactory.Singleton.Run(

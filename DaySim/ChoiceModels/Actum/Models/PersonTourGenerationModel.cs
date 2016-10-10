@@ -50,9 +50,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(((personDay.Person.Id * 10 + personDay.Day) * 397) ^ personDay.GetTotalCreatedTours());
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(((personDay.Person.Id * 10 + personDay.Day) * 397) ^ personDay.GetTotalCreatedTours());
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				RunModel(choiceProbabilityCalculator, personDay, householdDay, maxPurpose, choice);
 
 				choiceProbabilityCalculator.WriteObservation();

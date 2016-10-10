@@ -1208,7 +1208,7 @@ namespace Daysim.Tests
 		{
 			TestParcelNodeReader reader = GetTestParcelNodeReader();
 			Global.Configuration = new Configuration();
-			Global.Configuration.NBatches = 1;
+			Global.Configuration.NProcessors = 1;
 			ICondensedParcelExtensions.InitializeNodeNodeIndex(reader);
 			CondensedParcel parcel = GetDefaultCondensedParcel();
 			double ans = -1;
@@ -1227,7 +1227,7 @@ namespace Daysim.Tests
 		{
 			TestParcelNodeReader reader = GetTestParcelNodeReader();
 			Global.Configuration = new Configuration();
-			Global.Configuration.NBatches = 1;
+			Global.Configuration.NProcessors = 1;
 			ICondensedParcelExtensions.InitializeNodeNodeIndex(reader);
 			CondensedParcel parcel = GetDefaultCondensedParcel();
 			Global.ANodeFirstRecord = new int[50];
@@ -1251,7 +1251,7 @@ namespace Daysim.Tests
 		{
 			TestParcelNodeReader reader = GetTestParcelNodeReader();
 			Global.Configuration = new Configuration();
-			Global.Configuration.NBatches = 1;
+			Global.Configuration.NProcessors = 1;
 			ICondensedParcelExtensions.InitializeNodeNodeIndex(reader);
 			CondensedParcel parcel = GetDefaultCondensedParcel();
 			Global.ANodeFirstRecord = new int[50];
@@ -1276,7 +1276,7 @@ namespace Daysim.Tests
 		{
 			TestParcelNodeReader reader = GetTestParcelNodeReader();
 			Global.Configuration = new Configuration();
-			Global.Configuration.NBatches = 1;
+			Global.Configuration.NProcessors = 1;
 			ICondensedParcelExtensions.InitializeNodeNodeIndex(reader);
 			CondensedParcel parcel = GetDefaultCondensedParcel();
 			Global.ANodeFirstRecord = new int[50];

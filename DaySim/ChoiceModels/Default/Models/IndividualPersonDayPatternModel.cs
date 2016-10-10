@@ -44,9 +44,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(personDay.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(personDay.Id);
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				RunModel(choiceProbabilityCalculator, personDay, new DayPattern(personDay));
 
 				choiceProbabilityCalculator.WriteObservation();

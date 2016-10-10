@@ -937,18 +937,18 @@ namespace DaySim.DomainModels.Default.Wrappers {
         }
 
 		public virtual double NodeToNodeDistance(IParcelWrapper destination) {
-            int batch = ParallelUtility.threadLocalBatchIndex.Value;
+            int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
             //added for intra-microzone distance, square root of area over 2
             if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
                 return Math.Sqrt(ThousandsSquareLengthUnits) / 2.0;
             }
-            if (Id == Global.NodeNodePreviousOriginParcelId[batch] && destination.Id == Global.NodeNodePreviousDestinationParcelId[batch]) {
-				return Global.NodeNodePreviousDistance[batch];
+            if (Id == Global.NodeNodePreviousOriginParcelId[threadAssignedIndex] && destination.Id == Global.NodeNodePreviousDestinationParcelId[threadAssignedIndex]) {
+				return Global.NodeNodePreviousDistance[threadAssignedIndex];
 			}
 
-			Global.NodeNodePreviousOriginParcelId[batch] = Id;
-			Global.NodeNodePreviousDestinationParcelId[batch] = destination.Id;
-			Global.NodeNodePreviousDistance[batch] = Constants.DEFAULT_VALUE;
+			Global.NodeNodePreviousOriginParcelId[threadAssignedIndex] = Id;
+			Global.NodeNodePreviousDestinationParcelId[threadAssignedIndex] = destination.Id;
+			Global.NodeNodePreviousDistance[threadAssignedIndex] = Constants.DEFAULT_VALUE;
 
 			// this is a 2-stage search through a partial matrix with many millions of cells...
 			// get record for aNode_Id in node index arrays
@@ -1010,7 +1010,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			var distance = Global.NodePairDistance[index] / 5280.0; // convert feet to miles
 
-			Global.NodeNodePreviousDistance[batch] = distance;
+			Global.NodeNodePreviousDistance[threadAssignedIndex] = distance;
 
 			return distance;
 		}

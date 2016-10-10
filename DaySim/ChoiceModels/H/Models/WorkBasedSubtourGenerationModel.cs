@@ -47,9 +47,9 @@ namespace DaySim.ChoiceModels.H.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator((tour.Id * 397) ^ nCallsForTour);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator((tour.Id * 397) ^ nCallsForTour);
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				if (tour.PersonDay.GetTotalStops() > 0) {
 					RunModel(choiceProbabilityCalculator, tour, nCallsForTour, householdDay, choice);
 

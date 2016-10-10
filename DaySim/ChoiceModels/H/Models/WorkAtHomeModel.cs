@@ -40,14 +40,14 @@ namespace DaySim.ChoiceModels.H.Models {
 
 				if (personDay.WorkAtHomeDuration >= 120 && personDay.Person.IsFullOrPartTimeWorker) { personDay.WorksAtHomeFlag = 1; }
 				else personDay.WorksAtHomeFlag = 0;
-				if (!_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode || !personDay.Person.IsFullOrPartTimeWorker) {
+				if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode || !personDay.Person.IsFullOrPartTimeWorker) {
 					return;
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(personDay.Person.Id * 10 + personDay.Day);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(personDay.Person.Id * 10 + personDay.Day);
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
 				if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
 					return;

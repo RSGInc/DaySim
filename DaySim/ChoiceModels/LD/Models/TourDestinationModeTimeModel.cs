@@ -82,10 +82,10 @@ namespace Daysim.ChoiceModels.LD.Models {
 				return;
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(tour.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(tour.Id);
 
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
 				var observedModeTimes = new HTourModeTime(tour.Mode, tour.DestinationArrivalTime, tour.DestinationDepartureTime);
 				var observedChoice = new HTourDestinationModeTime(tour.DestinationParcel, observedModeTimes);
@@ -851,7 +851,7 @@ namespace Daysim.ChoiceModels.LD.Models {
 				HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, constrainedHouseholdCars, constrainedTransitDiscountFraction, destinationParcel);
 
 				//loop on all mode and time alternatives, using modeTimes objects
-				foreach (var modeTimes in HTourModeTime.ModeTimes[ParallelUtility.GetBatchFromThreadId()]) {
+				foreach (var modeTimes in HTourModeTime.ModeTimes[ParallelUtility.threadLocalAssignedIndex.Value]) {
 					var arrivalPeriod = modeTimes.ArrivalPeriod;
 					var arrivalPeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(arrivalPeriod.Start, arrivalPeriod.End);
 

@@ -94,9 +94,9 @@ namespace DaySim.ChoiceModels.H.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(((householdDay.Household.Id * 10 + householdDay.Day) * 397) ^ jHTSimulated);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(((householdDay.Household.Id * 10 + householdDay.Day) * 397) ^ jHTSimulated);
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
 				RunModel(choiceProbabilityCalculator, householdDay, jHTSimulated, genChoice, jHTAvailable, pHTAvailable, altParticipants, choice);
 
@@ -127,7 +127,7 @@ namespace DaySim.ChoiceModels.H.Models {
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int jHTSimulated, int genChoice, bool[,] jHTAvailable, bool[] pHTAvailable, int[][] altParticipants, int choice = Constants.DEFAULT_VALUE) {
 
 			IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointHalfTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
-			int batchNumber = ParallelUtility.threadLocalBatchIndex.Value;
+			int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
 			int pairedHalfTour = genChoice == 1 ? 1 : 0;
 			int firstHalfTour = genChoice == 2 ? 1 : 0;
 			int secondHalfTour = genChoice == 3 ? 1 : 0;

@@ -20,7 +20,7 @@ namespace Daysim.Tests
 		[Fact]
 		public void TestAutoOwnershipModel()
 		{
-			Global.Configuration = new Configuration {NBatches = 1};
+			Global.Configuration = new Configuration {NProcessors = 1};
 			ParallelUtility.Init();
 			Global.Configuration.AutoOwnershipModelCoefficients = "c:\\a.txt";
 			ParallelUtility.Register(Thread.CurrentThread.ManagedThreadId, 0);
@@ -37,7 +37,7 @@ namespace Daysim.Tests
 		[Fact]
 		public void TestAutoOwnershipModelNullHouseholdException()
 		{
-			Global.Configuration = new Configuration {NBatches = 1};
+			Global.Configuration = new Configuration {NProcessors = 1};
 			ParallelUtility.Init();
 			Global.Configuration.AutoOwnershipModelCoefficients = "c:\\a.txt";
 			ParallelUtility.Register(Thread.CurrentThread.ManagedThreadId, 0);

@@ -49,7 +49,7 @@ namespace DaySim.ChoiceModels.H.Models {
 					return;
 				}
 	
-				var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+				var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
 				RunModel(choiceProbabilityCalculator, person);
 
@@ -57,7 +57,7 @@ namespace DaySim.ChoiceModels.H.Models {
 			}
 			else {
 
-				var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+				var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
 				RunModel(choiceProbabilityCalculator, person);
 

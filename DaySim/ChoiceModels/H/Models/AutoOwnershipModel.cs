@@ -42,13 +42,13 @@ namespace DaySim.ChoiceModels.H.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(household.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(household.Id);
 
 			if (household.VehiclesAvailable > 4) {
 				household.VehiclesAvailable = 4;
 			}
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				RunModel(choiceProbabilityCalculator, household, household.VehiclesAvailable);
 
 				choiceProbabilityCalculator.WriteObservation();

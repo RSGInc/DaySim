@@ -92,7 +92,7 @@ namespace Daysim.ChoiceModels.LD.Models
 			}
 
 			var choiceProbabilityCalculator =
-				_helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(trip.Id);
+				_helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
 
 			var originParcel =
 				trip.IsHalfTourFromOrigin
@@ -119,7 +119,7 @@ namespace Daysim.ChoiceModels.LD.Models
 				return;
 			}
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode)
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode)
 			{
 				if (destinationParcel == null || originParcel == null || trip.Mode <= Global.Settings.Modes.None ||
 				    trip.Mode > Global.Settings.Modes.Transit)

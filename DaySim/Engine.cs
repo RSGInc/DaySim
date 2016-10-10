@@ -1494,15 +1494,14 @@ namespace DaySim
 
             ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, false);
 
-            var nBatches = ParallelUtility.NThreads;
-            var batchSize = total / nBatches;
-            var randoms = new Dictionary<int, int>();
+            var numThreads = ParallelUtility.NThreads;
+             var householdRandomValues = new Dictionary<int, int>();
 
-            var batches = new List<IHousehold>[nBatches];
+            var threadHouseholds = new List<IHousehold>[numThreads];
 
-            for (var i = 0; i < nBatches; i++)
+            for (var i = 0; i < numThreads; i++)
             {
-                batches[i] = new List<IHousehold>();
+                threadHouseholds[i] = new List<IHousehold>();
             }
 
             var householdIndex = 0;
@@ -1514,32 +1513,32 @@ namespace DaySim
                 {
                     if (_start == -1 || _end == -1 || _index == -1 || householdIndex.IsBetween(_start, _end))
                     {
-                        randoms[household.Id] = nextRandom;
-                        int batchIndex = addedHousehouldCounter++ % nBatches;
+                        householdRandomValues[household.Id] = nextRandom;
+                        int threadIndex = addedHousehouldCounter++ % numThreads;
 
-                        batches[batchIndex].Add(household);
+                        threadHouseholds[threadIndex].Add(household);
                     }
                 }   //end if household being sampled
                 householdIndex++;
             }   //end foreach household
 
             //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
-            ParallelUtility.InitThreadLocalBatchIndex();
+            ParallelUtility.AssignThreadIndex();
             List<Thread> threads = new List<Thread>();
             for (int threadIndex = 0; threadIndex < ParallelUtility.NThreads; ++threadIndex)
             {
                 Thread myThread = new Thread(new ThreadStart(delegate
                 {
-                    //retrieve batchIndex so can see logging output
-                    int threadLocalBatchIndex = ParallelUtility.threadLocalBatchIndex.Value;
-                    List<IHousehold> batchHouseholds = batches[threadLocalBatchIndex];
-                    Global.PrintFile.WriteLine("For threadLocalBatchIndex: " + threadLocalBatchIndex + " there are " + batchHouseholds.Count + " households");
-                    foreach (var household in batchHouseholds)
+                    //retrieve threadAssignedIndexIndex so can see logging output
+                    int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
+                    List<IHousehold> currentThreadHouseholds = threadHouseholds[threadAssignedIndex];
+                    Global.PrintFile.WriteLine("For threadAssignedIndex: " + threadAssignedIndex + " there are " + currentThreadHouseholds.Count + " households");
+                    foreach (var household in currentThreadHouseholds)
                     {
 #if RELEASE
 					try {
 #endif
-                        var randomSeed = randoms[household.Id];
+                        var randomSeed = householdRandomValues[household.Id];
                         var choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
 
                         choiceModelRunner.RunChoiceModels();
@@ -1556,7 +1555,7 @@ namespace DaySim
                         }
 
                         //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
-                        //because of multithreaded issues may see skipped outputs or duplicated outputs
+                        //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
                         current++;
 
                         if (current != 1 && current != total && current % 1000 != 0)
@@ -1575,7 +1574,7 @@ namespace DaySim
                                 : string.Format("Total {0} Days: {1}",
                                     countStringf, countf));
 
-                    }   //end household loop for this batch
+                    }   //end household loop for this threadAssignedIndex
                 }));    //end creating Thread and ThreadStart
                 myThread.Name = "ChoiceModelRunner_" + (threadIndex + 1);
                 threads.Add(myThread);
@@ -1583,7 +1582,7 @@ namespace DaySim
 
             threads.ForEach(t => t.Start());
             threads.ForEach(t => t.Join());
-            ParallelUtility.DisposeThreadLocalBatchIndex();
+            ParallelUtility.DisposeThreadIndex();
             var countg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
             var countStringg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
             var ivcountg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);

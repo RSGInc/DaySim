@@ -42,7 +42,7 @@ namespace Daysim.ChoiceModels.LD.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.GetBatchFromThreadId()].GetChoiceProbabilityCalculator(household.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(household.Id);
 
 			var vehicles = household.VehiclesAvailable;
 
@@ -50,7 +50,7 @@ namespace Daysim.ChoiceModels.LD.Models {
 				vehicles = 2;
 			}
 
-			if (_helpers[ParallelUtility.GetBatchFromThreadId()].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				RunModel(choiceProbabilityCalculator, household, vehicles);
 
 				choiceProbabilityCalculator.WriteObservation();

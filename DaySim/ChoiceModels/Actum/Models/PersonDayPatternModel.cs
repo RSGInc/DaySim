@@ -62,9 +62,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 			InitializeDayPatterns(personDay, dayPatterns);
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(personDay.Person.Id * 10 + personDay.Day);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(personDay.Person.Id * 10 + personDay.Day);
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
 				DayPattern dayPattern = new DayPattern(personDay);
 				RunModel(choiceProbabilityCalculator, personDay, householdDay, dayPatterns, dayPattern);

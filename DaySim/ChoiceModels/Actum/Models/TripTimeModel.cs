@@ -38,9 +38,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				if (trip.DestinationParcel == null || trip.OriginParcel == null || trip.Mode <= Global.Settings.Modes.None || trip.Mode == Global.Settings.Modes.Other) {
 					return;
 				}
@@ -178,7 +178,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 			var previousArrivalPeriod = new HTripTime(previousArrivalTime).DeparturePeriod;
 
-			foreach (var time in HTripTime.Times[ParallelUtility.threadLocalBatchIndex.Value]) {
+			foreach (var time in HTripTime.Times[ParallelUtility.threadLocalAssignedIndex.Value]) {
 				var period = time.DeparturePeriod;
 
 				var departurePeriodFraction = timeWindow.TotalAvailableMinutes(period.Start, period.End) / (period.End - period.Start + 1D);

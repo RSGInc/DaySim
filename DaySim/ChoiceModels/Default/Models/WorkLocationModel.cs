@@ -51,7 +51,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 			person.ResetRandom(0);
 
 			if (Global.Configuration.IsInEstimationMode) {
-				//	if (!_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+				//	if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				//		return;
 				//	}
 				if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
@@ -59,9 +59,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				if (person.UsualWorkParcel == null) {
 					return;
 				}

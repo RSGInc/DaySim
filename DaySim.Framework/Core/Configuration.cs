@@ -781,6 +781,9 @@ namespace DaySim.Framework.Core
         [XmlAttribute]
         public int LargeDegreeOfParallelism { get; set; }
 
+        /// <summary>
+        /// NO LONGER USED. NProcessors alone controls how many threads are allocated during multiprocessing.
+        /// </summary>
         [XmlAttribute]
         public int NBatches { get; set; }
 

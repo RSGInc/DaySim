@@ -38,15 +38,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
 		public override void RunInitialize(ICoefficientsReader reader = null) 
 		{
 			Initialize(CHOICE_MODEL_NAME, Global.Configuration.HouseholdDayPatternTypeModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-			int nBatches = ParallelUtility.NThreads;
-			i3 = new int[4, 4, 4, 6, 6, 6, 6, 6, nBatches];
-			xt = new int[6, 4, nBatches];
+			int nThreads = ParallelUtility.NThreads;
+			i3 = new int[4, 4, 4, 6, 6, 6, 6, 6, nThreads];
+			xt = new int[6, 4, nThreads];
 
-			i2 = new int[9, 9, 6, 6, 6, 6, 6, nBatches];
+			i2 = new int[9, 9, 6, 6, 6, 6, 6, nThreads];
 
-			component1 = new int[4, 6, nBatches];
-			component2 = new int[4, 6, 6, 6, 6, 6, nBatches];
-			component3 = new int[4, 6, 6, 6, 6, 6, nBatches];
+			component1 = new int[4, 6, nThreads];
+			component2 = new int[4, 6, 6, 6, 6, 6, nThreads];
+			component3 = new int[4, 6, 6, 6, 6, 6, nThreads];
 		}
 
 		// array associating alternative with the purposes of each of the five possible positions in the alternative
@@ -471,12 +471,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(householdDay.Household.Id * 10 + householdDay.Day);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(householdDay.Household.Id * 10 + householdDay.Day);
 
 			
 
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
 				RunModel(choiceProbabilityCalculator, householdDay, altPTypes, numberPersonsModeledJointly, choice);
 
@@ -515,7 +515,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int[,] altPTypes, int numberPersonsModeledJointly, int choice = Constants.DEFAULT_VALUE)
 		{
-			int currentBatch = ParallelUtility.threadLocalBatchIndex.Value;
+			int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
 			bool includeThreeWayInteractions = false;   // set this at compile time, dependign on whether we want to include or exclude 3-way interactions.
 			int numberPersonTypes = 7;  // set this at compile time; 7 for Actum
 			int numberAlternatives = numberPersonsModeledJointly == 4 ? 120 : 363;
@@ -672,9 +672,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 						for (var p2 = 2; p2 <= numberPersonsModeledJointly; p2++) {
 							for (var p1 = 1; p1 < p2; p1++) {
-								i2[t1, t2, p1, p2, 0, 0, 0, currentBatch] = pt[p1, t1] * pt[p2, t2];  // i2[t1,t2,p1,p2,0,0,0] = 1 if person p1 has person type t1 and person p2 has person type t2
+								i2[t1, t2, p1, p2, 0, 0, 0, threadAssignedIndex] = pt[p1, t1] * pt[p2, t2];  // i2[t1,t2,p1,p2,0,0,0] = 1 if person p1 has person type t1 and person p2 has person type t2
 								if (t1 != t2) {
-									i2[t1, t2, p1, p2, 0, 0, 0, currentBatch] = i2[t1, t2, p1, p2, 0, 0, 0, currentBatch] + pt[p1, t2] * pt[p2, t1]; // i2[t1,t2,p1,p2,0,0,0] = or if one person p2 person type t1 and person p1 has person type t2
+									i2[t1, t2, p1, p2, 0, 0, 0, threadAssignedIndex] = i2[t1, t2, p1, p2, 0, 0, 0, threadAssignedIndex] + pt[p1, t2] * pt[p2, t1]; // i2[t1,t2,p1,p2,0,0,0] = or if one person p2 person type t1 and person p1 has person type t2
 								}
 							}
 						}
@@ -688,9 +688,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 							for (var p3 = 3; p3 <= numberPersonsModeledJointly; p3++) {
 								for (var p2 = 2; p2 < p3; p2++) {
 									for (var p1 = 1; p1 < p2; p1++) {
-										i2[t1, t2, p1, p2, p3, 0, 0, currentBatch] = i2[t1, t2, p1, p2, 0, 0, 0, currentBatch]
-																			  + i2[t1, t2, p1, p3, 0, 0, 0, currentBatch]
-																			  + i2[t1, t2, p2, p3, 0, 0, 0, currentBatch];
+										i2[t1, t2, p1, p2, p3, 0, 0, threadAssignedIndex] = i2[t1, t2, p1, p2, 0, 0, 0, threadAssignedIndex]
+																			  + i2[t1, t2, p1, p3, 0, 0, 0, threadAssignedIndex]
+																			  + i2[t1, t2, p2, p3, 0, 0, 0, threadAssignedIndex];
 									}
 								}
 							}
@@ -703,12 +703,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 								for (var p3 = 3; p3 < p4; p3++) {
 									for (var p2 = 2; p2 < p3; p2++) {
 										for (var p1 = 1; p1 < p2; p1++) {
-											i2[t1, t2, p1, p2, p3, p4, 0, currentBatch] = i2[t1, t2, p1, p2, 0, 0, 0, currentBatch]
-																					+ i2[t1, t2, p1, p3, 0, 0, 0, currentBatch]
-																					+ i2[t1, t2, p1, p4, 0, 0, 0, currentBatch]
-																					+ i2[t1, t2, p2, p3, 0, 0, 0, currentBatch]
-																					+ i2[t1, t2, p2, p4, 0, 0, 0, currentBatch]
-																					+ i2[t1, t2, p3, p4, 0, 0, 0, currentBatch];
+											i2[t1, t2, p1, p2, p3, p4, 0, threadAssignedIndex] = i2[t1, t2, p1, p2, 0, 0, 0, threadAssignedIndex]
+																					+ i2[t1, t2, p1, p3, 0, 0, 0, threadAssignedIndex]
+																					+ i2[t1, t2, p1, p4, 0, 0, 0, threadAssignedIndex]
+																					+ i2[t1, t2, p2, p3, 0, 0, 0, threadAssignedIndex]
+																					+ i2[t1, t2, p2, p4, 0, 0, 0, threadAssignedIndex]
+																					+ i2[t1, t2, p3, p4, 0, 0, 0, threadAssignedIndex];
 										}
 									}
 								}
@@ -717,16 +717,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 						// pairwise interaction terms for the five different persons in the householdDayPatternType
 						if (hhsize >= 5 && numberPersonsModeledJointly == 5) {
-							i2[t1, t2, 1, 2, 3, 4, 5, currentBatch] = i2[t1, t2, 1, 2, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 1, 3, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 1, 4, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 1, 5, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 2, 3, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 2, 4, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 2, 5, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 3, 4, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 3, 5, 0, 0, 0, currentBatch]
-															  + i2[t1, t2, 4, 5, 0, 0, 0, currentBatch];
+							i2[t1, t2, 1, 2, 3, 4, 5, threadAssignedIndex] = i2[t1, t2, 1, 2, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 1, 3, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 1, 4, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 1, 5, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 2, 3, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 2, 4, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 2, 5, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 3, 4, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 3, 5, 0, 0, 0, threadAssignedIndex]
+															  + i2[t1, t2, 4, 5, 0, 0, 0, threadAssignedIndex];
 						}
 					}
 				}
@@ -740,9 +740,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				foreach (PersonDayWrapper personDay in orderedPersonDays) {
 					ct++;
 					if (ct <= numberPersonsModeledJointly) {
-						if (personDay.Person.PersonType == 1) { xt[ct, 1, currentBatch] = 1; }
-						if (personDay.Person.PersonType == 2 || personDay.Person.PersonType == 4) { xt[ct, 2, currentBatch] = 1; }
-						if (personDay.Person.PersonType == 7 || personDay.Person.PersonType == 8) { xt[ct, 3, currentBatch] = 1; }
+						if (personDay.Person.PersonType == 1) { xt[ct, 1, threadAssignedIndex] = 1; }
+						if (personDay.Person.PersonType == 2 || personDay.Person.PersonType == 4) { xt[ct, 2, threadAssignedIndex] = 1; }
+						if (personDay.Person.PersonType == 7 || personDay.Person.PersonType == 8) { xt[ct, 3, threadAssignedIndex] = 1; }
 					}
 				}
 
@@ -758,18 +758,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
 								for (var p3 = 3; p3 <= numberPersonsModeledJointly; p3++) {
 									for (var p2 = 2; p2 < p3; p2++) {
 										for (var p1 = 1; p1 < p2; p1++) {
-											i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] = xt[p1, t1, currentBatch] * xt[p2, t2, currentBatch] * xt[p3, t3, currentBatch];
+											i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] = xt[p1, t1, threadAssignedIndex] * xt[p2, t2, threadAssignedIndex] * xt[p3, t3, threadAssignedIndex];
 											if (t2 != t3) {
-												i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] = i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] + xt[p1, t1, currentBatch] * xt[p2, t3, currentBatch] * xt[p3, t2, currentBatch];
+												i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] = i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] + xt[p1, t1, threadAssignedIndex] * xt[p2, t3, threadAssignedIndex] * xt[p3, t2, threadAssignedIndex];
 											}
 											if (t1 != t2) {
-												i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] = i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] + xt[p1, t2, currentBatch] * xt[p2, t1, currentBatch] * xt[p3, t3, currentBatch];
+												i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] = i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] + xt[p1, t2, threadAssignedIndex] * xt[p2, t1, threadAssignedIndex] * xt[p3, t3, threadAssignedIndex];
 											}
 											if (t1 != t3) {
-												i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] = i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] + xt[p1, t3, currentBatch] * xt[p2, t2, currentBatch] * xt[p3, t1, currentBatch];
+												i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] = i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] + xt[p1, t3, threadAssignedIndex] * xt[p2, t2, threadAssignedIndex] * xt[p3, t1, threadAssignedIndex];
 											}
 											if (t1 != t3 && t1 != t2 && t2 != t3) {
-												i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] = i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch] + xt[p1, t2, currentBatch] * xt[p2, t3, currentBatch] * xt[p3, t1, currentBatch] + xt[p1, t3, currentBatch] * xt[p2, t1, currentBatch] * xt[p3, t2, currentBatch];
+												i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] = i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex] + xt[p1, t2, threadAssignedIndex] * xt[p2, t3, threadAssignedIndex] * xt[p3, t1, threadAssignedIndex] + xt[p1, t3, threadAssignedIndex] * xt[p2, t1, threadAssignedIndex] * xt[p3, t2, threadAssignedIndex];
 											}
 										}
 									}
@@ -781,10 +781,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
 										for (var p3 = 3; p3 < p4; p3++) {
 											for (var p2 = 2; p2 < p3; p2++) {
 												for (var p1 = 1; p1 < p2; p1++) {
-													i3[t1, t2, t3, p1, p2, p3, p4, 0, currentBatch] = i3[t1, t2, t3, p1, p2, p3, 0, 0, currentBatch]
-																								 + i3[t1, t2, t3, p1, p2, p4, 0, 0, currentBatch]
-																								 + i3[t1, t2, t3, p1, p3, p4, 0, 0, currentBatch]
-																								 + i3[t1, t2, t3, p2, p3, p4, 0, 0, currentBatch];
+													i3[t1, t2, t3, p1, p2, p3, p4, 0, threadAssignedIndex] = i3[t1, t2, t3, p1, p2, p3, 0, 0, threadAssignedIndex]
+																								 + i3[t1, t2, t3, p1, p2, p4, 0, 0, threadAssignedIndex]
+																								 + i3[t1, t2, t3, p1, p3, p4, 0, 0, threadAssignedIndex]
+																								 + i3[t1, t2, t3, p2, p3, p4, 0, 0, threadAssignedIndex];
 												}
 											}
 										}
@@ -793,17 +793,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 								// 3-way interaction terms for the five different persons in the householdDayPatternType
 								if (hhsize >= 5 && numberPersonsModeledJointly == 5) {
-									i3[t1, t2, t3, 1, 2, 3, 4, 5, currentBatch]
-									= i3[t1, t2, t3, 1, 2, 3, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 1, 2, 4, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 1, 2, 5, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 1, 3, 4, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 1, 3, 5, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 1, 4, 5, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 2, 3, 4, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 2, 3, 5, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 2, 4, 5, 0, 0, currentBatch]
-									+ i3[t1, t2, t3, 3, 4, 5, 0, 0, currentBatch];
+									i3[t1, t2, t3, 1, 2, 3, 4, 5, threadAssignedIndex]
+									= i3[t1, t2, t3, 1, 2, 3, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 1, 2, 4, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 1, 2, 5, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 1, 3, 4, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 1, 3, 5, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 1, 4, 5, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 2, 3, 4, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 2, 3, 5, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 2, 4, 5, 0, 0, threadAssignedIndex]
+									+ i3[t1, t2, t3, 3, 4, 5, 0, 0, threadAssignedIndex];
 								}
 							}
 						}
@@ -817,7 +817,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 				for (var p1 = 1; p1 <= numberPersonsModeledJointly; p1++) {
 					//create the personPurpose component
 					compNum++;
-					component1[purp, p1, currentBatch] = compNum;
+					component1[purp, p1, threadAssignedIndex] = compNum;
 					choiceProbabilityCalculator.CreateUtilityComponent(compNum);
 					//populate the personPurpose component with utility terms
 
@@ -934,110 +934,110 @@ namespace DaySim.ChoiceModels.Actum.Models {
 						for (var p2 = (p1 + 1); p2 <= numberPersonsModeledJointly; p2++) {
 							//create the 2-way component for cases where 2 people share a purpose
 							compNum++;
-							component2[purp, p1, p2, 0, 0, 0, currentBatch] = compNum;
+							component2[purp, p1, p2, 0, 0, 0, threadAssignedIndex] = compNum;
 							choiceProbabilityCalculator.CreateUtilityComponent(compNum);
 							//populate the 2-way component with utility terms
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 301, i2[1, 1, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 302, i2[1, 2, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 303, i2[1, 3, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 304, i2[1, 4, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 305, i2[1, 5, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 306, i2[1, 6, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 307, i2[1, 7, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 308, i2[2, 2, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 309, i2[2, 3, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 310, i2[2, 4, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 311, i2[2, 5, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 312, i2[2, 6, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 313, i2[2, 7, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 314, i2[3, 3, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 315, i2[3, 4, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 5, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 6, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 7, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 319, i2[4, 4, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 320, i2[4, 5, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 321, i2[4, 6, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 322, i2[4, 7, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 323, i2[5, 5, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 324, i2[5, 6, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 325, i2[5, 7, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 326, i2[6, 6, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 327, i2[6, 7, p1, p2, 0, 0, 0, currentBatch]);
-							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 328, i2[7, 7, p1, p2, 0, 0, 0, currentBatch]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 301, i2[1, 1, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 302, i2[1, 2, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 303, i2[1, 3, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 304, i2[1, 4, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 305, i2[1, 5, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 306, i2[1, 6, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 307, i2[1, 7, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 308, i2[2, 2, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 309, i2[2, 3, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 310, i2[2, 4, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 311, i2[2, 5, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 312, i2[2, 6, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 313, i2[2, 7, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 314, i2[3, 3, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 315, i2[3, 4, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 5, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 6, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 7, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 319, i2[4, 4, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 320, i2[4, 5, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 321, i2[4, 6, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 322, i2[4, 7, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 323, i2[5, 5, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 324, i2[5, 6, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 325, i2[5, 7, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 326, i2[6, 6, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 327, i2[6, 7, p1, p2, 0, 0, 0, threadAssignedIndex]);
+							choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 328, i2[7, 7, p1, p2, 0, 0, 0, threadAssignedIndex]);
 							if (numberPersonTypes == 8) {
-								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 329, i2[1, 8, p1, p2, 0, 0, 0, currentBatch]);
-								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 330, i2[2, 8, p1, p2, 0, 0, 0, currentBatch]);
-								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 331, i2[3, 8, p1, p2, 0, 0, 0, currentBatch]);
-								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 332, i2[4, 8, p1, p2, 0, 0, 0, currentBatch]);
-								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, 0, 0, 0, currentBatch]);
-								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, 0, 0, 0, currentBatch]);
-								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, 0, 0, 0, currentBatch]);
-								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, 0, 0, 0, currentBatch]);
+								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 329, i2[1, 8, p1, p2, 0, 0, 0, threadAssignedIndex]);
+								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 330, i2[2, 8, p1, p2, 0, 0, 0, threadAssignedIndex]);
+								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 331, i2[3, 8, p1, p2, 0, 0, 0, threadAssignedIndex]);
+								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 332, i2[4, 8, p1, p2, 0, 0, 0, threadAssignedIndex]);
+								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, 0, 0, 0, threadAssignedIndex]);
+								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, 0, 0, 0, threadAssignedIndex]);
+								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, 0, 0, 0, threadAssignedIndex]);
+								choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, 0, 0, 0, threadAssignedIndex]);
 							}
 
 							if (hhsize >= 3 || Global.Configuration.IsInEstimationMode) {
 								for (var p3 = (p2 + 1); p3 <= 5; p3++) {
 									//create the 2-way component for cases where three people share a purpose
 									compNum++;
-									component2[purp, p1, p2, p3, 0, 0, currentBatch] = compNum;
+									component2[purp, p1, p2, p3, 0, 0, threadAssignedIndex] = compNum;
 									choiceProbabilityCalculator.CreateUtilityComponent(compNum);
 									//populate the 2-way component with utility terms for cases where three people share a purpose
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 301, i2[1, 1, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 302, i2[1, 2, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 303, i2[1, 3, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 304, i2[1, 4, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 305, i2[1, 5, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 306, i2[1, 6, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 307, i2[1, 7, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 308, i2[2, 2, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 309, i2[2, 3, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 310, i2[2, 4, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 311, i2[2, 5, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 312, i2[2, 6, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 313, i2[2, 7, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 314, i2[3, 3, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 315, i2[3, 4, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 5, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 317, i2[3, 6, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 318, i2[3, 7, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 319, i2[4, 4, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 320, i2[4, 5, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 321, i2[4, 6, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 322, i2[4, 7, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 323, i2[5, 5, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 324, i2[5, 6, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 325, i2[5, 7, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 326, i2[6, 6, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 327, i2[6, 7, p1, p2, p3, 0, 0, currentBatch]);
-									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 328, i2[7, 7, p1, p2, p3, 0, 0, currentBatch]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 301, i2[1, 1, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 302, i2[1, 2, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 303, i2[1, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 304, i2[1, 4, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 305, i2[1, 5, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 306, i2[1, 6, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 307, i2[1, 7, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 308, i2[2, 2, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 309, i2[2, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 310, i2[2, 4, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 311, i2[2, 5, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 312, i2[2, 6, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 313, i2[2, 7, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 314, i2[3, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 315, i2[3, 4, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 5, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 317, i2[3, 6, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 318, i2[3, 7, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 319, i2[4, 4, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 320, i2[4, 5, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 321, i2[4, 6, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 322, i2[4, 7, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 323, i2[5, 5, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 324, i2[5, 6, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 325, i2[5, 7, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 326, i2[6, 6, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 327, i2[6, 7, p1, p2, p3, 0, 0, threadAssignedIndex]);
+									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 328, i2[7, 7, p1, p2, p3, 0, 0, threadAssignedIndex]);
 									if (numberPersonTypes == 8) {
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 329, i2[1, 8, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 330, i2[2, 8, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 331, i2[3, 8, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 332, i2[4, 8, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, p3, 0, 0, currentBatch]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 329, i2[1, 8, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 330, i2[2, 8, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 331, i2[3, 8, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 332, i2[4, 8, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, p3, 0, 0, threadAssignedIndex]);
 									}
 
 									//create the 3-way component with utility terms for cases where three people share a purpose
 									compNum++;
-									component3[purp, p1, p2, p3, 0, 0, currentBatch] = compNum;
+									component3[purp, p1, p2, p3, 0, 0, threadAssignedIndex] = compNum;
 									choiceProbabilityCalculator.CreateUtilityComponent(compNum);
 									//populate the 3-way component with utility terms for cases where three people share a purpose
 									if (includeThreeWayInteractions) {
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 337, i3[1, 1, 1, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 338, i3[1, 1, 2, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 339, i3[1, 1, 3, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 340, i3[1, 2, 2, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 341, i3[1, 2, 3, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 342, i3[1, 3, 3, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 343, i3[2, 2, 2, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 344, i3[2, 2, 3, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 345, i3[2, 3, 3, p1, p2, p3, 0, 0, currentBatch]);
-										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 346, i3[3, 3, 3, p1, p2, p3, 0, 0, currentBatch]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 337, i3[1, 1, 1, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 338, i3[1, 1, 2, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 339, i3[1, 1, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 340, i3[1, 2, 2, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 341, i3[1, 2, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 342, i3[1, 3, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 343, i3[2, 2, 2, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 344, i3[2, 2, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 345, i3[2, 3, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
+										choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 346, i3[3, 3, 3, p1, p2, p3, 0, 0, threadAssignedIndex]);
 									}
 									//choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 353, hhsize >= 3 ? 1.0 : 0.0); // exactly 3 of up to 5 persons in HH have same pattern type
 									choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 353, hhsize == 3 ? 1.0 : 0.0); // GV changed: 3-way interactions in the HH==3
@@ -1046,64 +1046,64 @@ namespace DaySim.ChoiceModels.Actum.Models {
 										for (var p4 = (p3 + 1); p4 <= 5; p4++) {
 											//create the 2-way component for cases where four people share a purpose
 											compNum++;
-											component2[purp, p1, p2, p3, p4, 0, currentBatch] = compNum;
+											component2[purp, p1, p2, p3, p4, 0, threadAssignedIndex] = compNum;
 											choiceProbabilityCalculator.CreateUtilityComponent(compNum);
 											//populate the 2-way component with utility terms for cases where four people share a purpose
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 301, i2[1, 1, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 302, i2[1, 2, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 303, i2[1, 3, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 304, i2[1, 4, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 305, i2[1, 5, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 306, i2[1, 6, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 307, i2[1, 7, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 308, i2[2, 2, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 309, i2[2, 3, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 310, i2[2, 4, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 311, i2[2, 5, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 312, i2[2, 6, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 313, i2[2, 7, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 314, i2[3, 3, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 315, i2[3, 4, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 5, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 317, i2[3, 6, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 318, i2[3, 7, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 319, i2[4, 4, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 320, i2[4, 5, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 321, i2[4, 6, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 322, i2[4, 7, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 323, i2[5, 5, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 324, i2[5, 6, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 325, i2[5, 7, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 326, i2[6, 6, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 327, i2[6, 7, p1, p2, p3, p4, 0, currentBatch]);
-											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 328, i2[7, 7, p1, p2, p3, p4, 0, currentBatch]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 301, i2[1, 1, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 302, i2[1, 2, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 303, i2[1, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 304, i2[1, 4, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 305, i2[1, 5, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 306, i2[1, 6, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 307, i2[1, 7, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 308, i2[2, 2, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 309, i2[2, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 310, i2[2, 4, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 311, i2[2, 5, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 312, i2[2, 6, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 313, i2[2, 7, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 314, i2[3, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 315, i2[3, 4, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 5, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 317, i2[3, 6, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 318, i2[3, 7, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 319, i2[4, 4, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 320, i2[4, 5, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 321, i2[4, 6, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 322, i2[4, 7, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 323, i2[5, 5, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 324, i2[5, 6, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 325, i2[5, 7, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 326, i2[6, 6, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 327, i2[6, 7, p1, p2, p3, p4, 0, threadAssignedIndex]);
+											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 328, i2[7, 7, p1, p2, p3, p4, 0, threadAssignedIndex]);
 											if (numberPersonTypes == 8) {
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 329, i2[1, 8, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 330, i2[2, 8, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 331, i2[3, 8, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 332, i2[4, 8, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, p3, p4, 0, currentBatch]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 329, i2[1, 8, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 330, i2[2, 8, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 331, i2[3, 8, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 332, i2[4, 8, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, p3, p4, 0, threadAssignedIndex]);
 											}
 
 											//create the 3-way component with utility terms for cases where four people share a purpose
 											compNum++;
-											component3[purp, p1, p2, p3, p4, 0, currentBatch] = compNum;
+											component3[purp, p1, p2, p3, p4, 0, threadAssignedIndex] = compNum;
 											choiceProbabilityCalculator.CreateUtilityComponent(compNum);
 											//populate the 3-way component with utility terms for cases where four people share a purpose
 											if (includeThreeWayInteractions) {
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 337, i3[1, 1, 1, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 338, i3[1, 1, 2, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 339, i3[1, 1, 3, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 340, i3[1, 2, 2, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 341, i3[1, 2, 3, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 342, i3[1, 3, 3, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 343, i3[2, 2, 2, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 344, i3[2, 2, 3, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 345, i3[2, 3, 3, p1, p2, p3, p4, 0, currentBatch]);
-												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 346, i3[3, 3, 3, p1, p2, p3, p4, 0, currentBatch]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 337, i3[1, 1, 1, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 338, i3[1, 1, 2, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 339, i3[1, 1, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 340, i3[1, 2, 2, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 341, i3[1, 2, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 342, i3[1, 3, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 343, i3[2, 2, 2, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 344, i3[2, 2, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 345, i3[2, 3, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
+												choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 346, i3[3, 3, 3, p1, p2, p3, p4, 0, threadAssignedIndex]);
 											}
 											//choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 354, hhsize >= 4 ? 1.0 : 0.0);  // exactly 4 of up to 5 persons in HH have same pattern type
 											choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 354, hhsize >= 4 ? 1.0 : 0.0);  // GV changed: 4-way interactions in the HH==4
@@ -1112,64 +1112,64 @@ namespace DaySim.ChoiceModels.Actum.Models {
 												for (var p5 = (p4 + 1); p5 <= numberPersonsModeledJointly; p5++) {
 													//create the 2-way component for cases where five people share a purpose
 													compNum++;
-													component2[purp, p1, p2, p3, p4, p5, currentBatch] = compNum;
+													component2[purp, p1, p2, p3, p4, p5, threadAssignedIndex] = compNum;
 													choiceProbabilityCalculator.CreateUtilityComponent(compNum);
 													//populate the 2-way component with utility terms for cases where five people share a purpose
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 301, i2[1, 1, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 302, i2[1, 2, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 303, i2[1, 3, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 304, i2[1, 4, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 305, i2[1, 5, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 306, i2[1, 6, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 307, i2[1, 7, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 308, i2[2, 2, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 309, i2[2, 3, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 310, i2[2, 4, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 311, i2[2, 5, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 312, i2[2, 6, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 313, i2[2, 7, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 314, i2[3, 3, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 315, i2[3, 4, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 5, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 317, i2[3, 6, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 318, i2[3, 7, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 319, i2[4, 4, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 320, i2[4, 5, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 321, i2[4, 6, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 322, i2[4, 7, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 323, i2[5, 5, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 324, i2[5, 6, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 325, i2[5, 7, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 326, i2[6, 6, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 327, i2[6, 7, p1, p2, p3, p4, p5, currentBatch]);
-													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 328, i2[7, 7, p1, p2, p3, p4, p5, currentBatch]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 301, i2[1, 1, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 302, i2[1, 2, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 303, i2[1, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 304, i2[1, 4, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 305, i2[1, 5, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 306, i2[1, 6, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 307, i2[1, 7, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 308, i2[2, 2, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 309, i2[2, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 310, i2[2, 4, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 311, i2[2, 5, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 312, i2[2, 6, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 313, i2[2, 7, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 314, i2[3, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 315, i2[3, 4, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 316, i2[3, 5, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 317, i2[3, 6, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 318, i2[3, 7, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 319, i2[4, 4, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 320, i2[4, 5, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 321, i2[4, 6, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 322, i2[4, 7, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 323, i2[5, 5, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 324, i2[5, 6, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 325, i2[5, 7, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 326, i2[6, 6, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 327, i2[6, 7, p1, p2, p3, p4, p5, threadAssignedIndex]);
+													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 328, i2[7, 7, p1, p2, p3, p4, p5, threadAssignedIndex]);
 													if (numberPersonTypes == 8) {
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 329, i2[1, 8, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 330, i2[2, 8, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 331, i2[3, 8, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 332, i2[4, 8, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, p3, p4, p5, currentBatch]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 329, i2[1, 8, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 330, i2[2, 8, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 331, i2[3, 8, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 332, i2[4, 8, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, p3, p4, p5, threadAssignedIndex]);
 													}
 
 													//create the 3-way component for cases where five people share a purpose
 													compNum++;
-													component3[purp, p1, p2, p3, p4, p5, currentBatch] = compNum;
+													component3[purp, p1, p2, p3, p4, p5, threadAssignedIndex] = compNum;
 													choiceProbabilityCalculator.CreateUtilityComponent(compNum);
 													//populate the 3-way component with utility terms for cases where five people share a purpose
 													if (includeThreeWayInteractions) {
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 337, i3[1, 1, 1, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 338, i3[1, 1, 2, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 339, i3[1, 1, 3, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 340, i3[1, 2, 2, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 341, i3[1, 2, 3, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 342, i3[1, 3, 3, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 343, i3[2, 2, 2, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 344, i3[2, 2, 3, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 345, i3[2, 3, 3, p1, p2, p3, p4, p5, currentBatch]);
-														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 346, i3[3, 3, 3, p1, p2, p3, p4, p5, currentBatch]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 337, i3[1, 1, 1, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 338, i3[1, 1, 2, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 339, i3[1, 1, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 340, i3[1, 2, 2, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 341, i3[1, 2, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 342, i3[1, 3, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 343, i3[2, 2, 2, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 344, i3[2, 2, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 345, i3[2, 3, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
+														choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 346, i3[3, 3, 3, p1, p2, p3, p4, p5, threadAssignedIndex]);
 													}
 													choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 355, hhsize >= 5 ? 1.0 : 0.0);  // exactly 5 of up to 5 persons in HH have same pattern type
 												}
@@ -1246,7 +1246,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 					int[] componentP = new int[6];
 					for (var p = 1; p <= numberPersonsModeledJointly; p++) {
 						if (altPTypes[alt, p] == purp) {
-							alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(component1[purp, p, currentBatch]));
+							alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(component1[purp, p, threadAssignedIndex]));
 
 							//alternatives position-purpose matches current purpose; note this position in current component position for component types 2 and 3  
 							componentP[componentPosition] = p;
@@ -1260,16 +1260,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
 						&& (componentP[5] > componentP[4] || componentP[5] == 0)
 						&& (componentP[5] > componentP[3] || componentP[5] == 0)
 						&& (componentP[5] > componentP[2] || componentP[5] == 0)
-						&& choiceProbabilityCalculator.GetUtilityComponent(component2[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5], currentBatch]) != null) {
-						alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(component2[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5], currentBatch]));
+						&& choiceProbabilityCalculator.GetUtilityComponent(component2[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5], threadAssignedIndex]) != null) {
+						alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(component2[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5], threadAssignedIndex]));
 					}
 					//			if (includeThreeWayInteractions) {
 					if (componentP[1] > 0 && componentP[2] > componentP[1] && componentP[3] > componentP[2]
 						&& (componentP[4] > componentP[3] || componentP[4] == 0)
 						&& (componentP[5] > componentP[4] || componentP[5] == 0)
 						&& (componentP[5] > componentP[3] || componentP[5] == 0)
-						&& choiceProbabilityCalculator.GetUtilityComponent(component3[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5], currentBatch]) != null) {
-						alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(component3[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5], currentBatch]));
+						&& choiceProbabilityCalculator.GetUtilityComponent(component3[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5], threadAssignedIndex]) != null) {
+						alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(component3[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5], threadAssignedIndex]));
 					}
 					//			}
 				}

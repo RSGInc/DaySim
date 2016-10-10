@@ -44,7 +44,7 @@ namespace DaySim.ChoiceModels.H.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
 
 			var originParcel =
 				trip.IsHalfTourFromOrigin
@@ -64,7 +64,7 @@ namespace DaySim.ChoiceModels.H.Models {
 				Global.PrintFile.WriteLine("From origin / latest / earliest  {0} {1} {2}", trip.IsHalfTourFromOrigin, trip.LatestDepartureTime, trip.EarliestDepartureTime);
 			}
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 				if (destinationParcel == null || originParcel == null || trip.Mode <= Global.Settings.Modes.None || trip.Mode == Global.Settings.Modes.ParkAndRide || trip.Mode == Global.Settings.Modes.Other) {
 					return;
 				}

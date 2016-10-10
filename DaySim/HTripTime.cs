@@ -46,7 +46,7 @@ namespace DaySim {
 			}
 			
 			foreach (
-				var time in Times[ParallelUtility.threadLocalBatchIndex.Value].Where(time => time.DeparturePeriod == DeparturePeriod))
+				var time in Times[ParallelUtility.threadLocalAssignedIndex.Value].Where(time => time.DeparturePeriod == DeparturePeriod))
 			{
 				Index = time.Index;
 
@@ -93,7 +93,7 @@ namespace DaySim {
 
 		public static void SetTimeImpedances(ITripWrapper trip) {
 
-			foreach (var time in Times[ParallelUtility.threadLocalBatchIndex.Value]) {
+			foreach (var time in Times[ParallelUtility.threadLocalAssignedIndex.Value]) {
 				SetTimeImpedanceAndWindow(trip, time);
 			}
 		}

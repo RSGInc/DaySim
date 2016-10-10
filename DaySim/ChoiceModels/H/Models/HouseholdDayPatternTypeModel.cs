@@ -81,7 +81,7 @@ namespace DaySim.ChoiceModels.H.Models {
 				}
 			}
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalBatchIndex.Value].GetChoiceProbabilityCalculator(householdDay.Household.Id * 10 + householdDay.Day);
+			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(householdDay.Household.Id * 10 + householdDay.Day);
 
 			// array associating alternative with the purposes of each of the five possible positions in the alternative
 			//  altPTypes[a,p] is the purpose of position p in alternative a  
@@ -452,7 +452,7 @@ namespace DaySim.ChoiceModels.H.Models {
 				{0,3,3,3,3,3}};
 
 
-			if (_helpers[ParallelUtility.threadLocalBatchIndex.Value].ModelIsInEstimationMode) {
+			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
 				RunModel(choiceProbabilityCalculator, householdDay, altPTypes, numberPersonsModeledJointly, choice);
 
