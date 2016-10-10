@@ -745,6 +745,13 @@ namespace DaySim.Framework.Core
         [XmlAttribute]
         public bool ShouldRunChoiceModels { get; set; }
 
+        /// <summary>
+        /// When true, run choice models with only 1 thread, regardless of NProcessors (similar to InEstimation mode)
+        /// </summary>
+        [XmlAttribute]
+        public bool ChoiceModelDebugMode { get; set; } = false;
+
+
         [XmlAttribute]
         public bool ShouldRunHouseholdModels { get; set; }
 
