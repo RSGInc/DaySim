@@ -21,7 +21,7 @@ namespace DaySim.Framework.Core {
 
         public static void Init(Configuration configuration) {
             NThreads =
-                configuration.NProcessors == 0
+                configuration.NProcessors < 1
                     ? 1
                     : configuration.NProcessors;
         }
