@@ -29,6 +29,7 @@ using DaySim.ShadowPricing;
 using HDF5DotNet;
 using Ninject;
 using Timer = DaySim.Framework.Core.Timer;
+using System.Diagnostics;
 
 namespace DaySim
 {
@@ -1477,6 +1478,17 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
+        private static int GetNumberOfChoiceModelThreads() {
+            int numberOfChoiceModelThreads;
+
+            if (Global.Configuration.IsInEstimationMode || Global.Configuration.ChoiceModelDebugMode) {
+                numberOfChoiceModelThreads = 1;
+            } else {
+                numberOfChoiceModelThreads = ParallelUtility.NThreads;
+            }
+            return numberOfChoiceModelThreads;
+        }
+
         private static void RunChoiceModels(IRandomUtility randomUtility)
         {
             var current = 0;
@@ -1491,18 +1503,16 @@ namespace DaySim
             {
                 Global.Configuration.HouseholdSamplingRateOneInX = 1;
             }
-
+            Debug.Assert(Global.Configuration.HouseholdSamplingStartWithY < Global.Configuration.HouseholdSamplingRateOneInX, "Error: Global.Configuration.HouseholdSamplingStartWithY (" + Global.Configuration.HouseholdSamplingStartWithY + ") must be less than Global.Configuration.HouseholdSamplingRateOneInX (" + Global.Configuration.HouseholdSamplingRateOneInX + ") or no models will be run!");
             ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, false);
 
-            var numThreadsForChoiceModels = ParallelUtility.NThreads;
-            if (Global.Configuration.IsInEstimationMode) {
-                numThreadsForChoiceModels = 1;
-            }
+            int numberOfChoiceModelThreads = GetNumberOfChoiceModelThreads();
+
             var householdRandomValues = new Dictionary<int, int>();
 
-            var threadHouseholds = new List<IHousehold>[numThreadsForChoiceModels];
+            var threadHouseholds = new List<IHousehold>[numberOfChoiceModelThreads];
 
-            for (var i = 0; i < numThreadsForChoiceModels; i++)
+            for (var i = 0; i < numberOfChoiceModelThreads; i++)
             {
                 threadHouseholds[i] = new List<IHousehold>();
             }
@@ -1517,7 +1527,7 @@ namespace DaySim
                     if (_start == -1 || _end == -1 || _index == -1 || householdIndex.IsBetween(_start, _end))
                     {
                         householdRandomValues[household.Id] = nextRandom;
-                        int threadIndex = addedHousehouldCounter++ % numThreadsForChoiceModels;
+                        int threadIndex = addedHousehouldCounter++ % numberOfChoiceModelThreads;
 
                         threadHouseholds[threadIndex].Add(household);
                     }
@@ -1526,9 +1536,9 @@ namespace DaySim
             }   //end foreach household
 
             //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
-            ParallelUtility.AssignThreadIndex(numThreadsForChoiceModels);
+            ParallelUtility.AssignThreadIndex(numberOfChoiceModelThreads);
             List<Thread> threads = new List<Thread>();
-            for (int threadIndex = 0; threadIndex < numThreadsForChoiceModels; ++threadIndex)
+            for (int threadIndex = 0; threadIndex < numberOfChoiceModelThreads; ++threadIndex)
             {
                 Thread myThread = new Thread(new ThreadStart(delegate
                 {
