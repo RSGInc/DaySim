@@ -1494,12 +1494,15 @@ namespace DaySim
 
             ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, false);
 
-            var numThreads = ParallelUtility.NThreads;
-             var householdRandomValues = new Dictionary<int, int>();
+            var numThreadsForChoiceModels = ParallelUtility.NThreads;
+            if (Global.Configuration.IsInEstimationMode) {
+                numThreadsForChoiceModels = 1;
+            }
+            var householdRandomValues = new Dictionary<int, int>();
 
-            var threadHouseholds = new List<IHousehold>[numThreads];
+            var threadHouseholds = new List<IHousehold>[numThreadsForChoiceModels];
 
-            for (var i = 0; i < numThreads; i++)
+            for (var i = 0; i < numThreadsForChoiceModels; i++)
             {
                 threadHouseholds[i] = new List<IHousehold>();
             }
@@ -1514,7 +1517,7 @@ namespace DaySim
                     if (_start == -1 || _end == -1 || _index == -1 || householdIndex.IsBetween(_start, _end))
                     {
                         householdRandomValues[household.Id] = nextRandom;
-                        int threadIndex = addedHousehouldCounter++ % numThreads;
+                        int threadIndex = addedHousehouldCounter++ % numThreadsForChoiceModels;
 
                         threadHouseholds[threadIndex].Add(household);
                     }
@@ -1523,9 +1526,9 @@ namespace DaySim
             }   //end foreach household
 
             //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
-            ParallelUtility.AssignThreadIndex();
+            ParallelUtility.AssignThreadIndex(numThreadsForChoiceModels);
             List<Thread> threads = new List<Thread>();
-            for (int threadIndex = 0; threadIndex < ParallelUtility.NThreads; ++threadIndex)
+            for (int threadIndex = 0; threadIndex < numThreadsForChoiceModels; ++threadIndex)
             {
                 Thread myThread = new Thread(new ThreadStart(delegate
                 {

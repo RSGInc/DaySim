@@ -24,15 +24,11 @@ namespace DaySim.Framework.Core {
                 configuration.NProcessors == 0
                     ? 1
                     : configuration.NProcessors;
-
-            if (configuration.IsInEstimationMode) {
-                NThreads = 1;
-            }
         }
         /// <summary>
         /// For the current thread, create and store an index in thread local memory. This can/will be used so that code can have store multithreaded generated data in arrays where each thread has a dedicated slot for storage. Any array that is created using [Configuration.NProcessors] should use this index to store data.
         /// </summary>
-        public static void AssignThreadIndex() {
+        public static void AssignThreadIndex(int maximumExpectedThreads) {
             Debug.Assert(threadLocalAssignedIndex == null, "AssignThreadIndex called when threadLocalAssignedIndex is already not null!");
             int threadsSoFarIndex = -1;
 
@@ -40,7 +36,8 @@ namespace DaySim.Framework.Core {
             //threadSoFarIndex acts like a static variable in that it remains alive due to closure
             threadLocalAssignedIndex = new ThreadLocal<int>(() => {
                 int threadLocalAssignedIndexSpecificValue = Interlocked.Increment(ref threadsSoFarIndex);
-
+                Debug.Assert((Global.Configuration.IsInEstimationMode && (threadLocalAssignedIndexSpecificValue == 0) || !Global.Configuration.IsInEstimationMode), "In EstimationMode but more than one thread is being used!");
+                Debug.Assert(threadLocalAssignedIndexSpecificValue < maximumExpectedThreads, "More threads allocated than expected! Maximum expected: " + maximumExpectedThreads + " but am now on thread " + threadLocalAssignedIndex);
                 Global.PrintFile.WriteLine("Thread.CurrentThread.ManagedThreadId: " + Thread.CurrentThread.ManagedThreadId + " threadLocalAssignedIndexSpecificValue: " + threadLocalAssignedIndexSpecificValue);
                 return threadLocalAssignedIndexSpecificValue;
             });
