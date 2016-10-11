@@ -37,7 +37,7 @@ namespace DaySim.Framework.Core {
             threadLocalAssignedIndex = new ThreadLocal<int>(() => {
                 int threadLocalAssignedIndexSpecificValue = Interlocked.Increment(ref threadsSoFarIndex);
                 Debug.Assert((Global.Configuration.IsInEstimationMode && (threadLocalAssignedIndexSpecificValue == 0) || !Global.Configuration.IsInEstimationMode), "In EstimationMode but more than one thread is being used!");
-                Debug.Assert(threadLocalAssignedIndexSpecificValue < maximumExpectedThreads, "More threads allocated than expected! Maximum expected: " + maximumExpectedThreads + " but am now on thread " + threadLocalAssignedIndex);
+                Debug.Assert(threadLocalAssignedIndexSpecificValue < maximumExpectedThreads, "More threads allocated than expected! Maximum expected: " + maximumExpectedThreads + " but am now on thread " + threadsSoFarIndex);
                 Global.PrintFile.WriteLine("Thread.CurrentThread.ManagedThreadId: " + Thread.CurrentThread.ManagedThreadId + " threadLocalAssignedIndexSpecificValue: " + threadLocalAssignedIndexSpecificValue);
                 return threadLocalAssignedIndexSpecificValue;
             });
