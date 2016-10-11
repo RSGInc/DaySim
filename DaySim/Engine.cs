@@ -1401,29 +1401,27 @@ namespace DaySim {
 					}
 #endif
 
-                        if (!Global.Configuration.ShowRunChoiceModelsStatus) {
-                            continue;
-                        }
+                        if (Global.Configuration.ShowRunChoiceModelsStatus) {
 
-                        //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
-                        //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
-                        current++;
+                            //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
+                            //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
+                            current++;
 
-                        if (current != 1 && current != total && current % 1000 != 0) {
-                            continue;
-                        }
+                            if (current != 1 && current != addedHousehouldCounter && current % 1000 != 0) {
+                                var countLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
+                                //Actum and Default differ in that one Actum counts TotalHouseholdDays and Default counts TotalPersonDays
+                                var countStringLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
 
-                        var countf = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
-                        var countStringf = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
-                        var ivcountf = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
+                                var ivcountLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
 
-                        Console.Write("\r{0:p} {1}", (double)current / total,
-                            Global.Configuration.ReportInvalidPersonDays
-                                ? string.Format("Total {0} Days: {1}, Total Invalid Attempts: {2}",
-                                    countStringf, countf, ivcountf)
-                                : string.Format("Total {0} Days: {1}",
-                                    countStringf, countf));
-
+                                Console.Write(string.Format("\r{0:p}", (double)current / addedHousehouldCounter) +
+                                    string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", current, addedHousehouldCounter, countStringLocal, countLocal) +
+                                    (Global.Configuration.ReportInvalidPersonDays
+                                        ? string.Format("Total Invalid Attempts: {0:n0}",
+                                            ivcountLocal)
+                                        : ""));
+                            }   //if outputting progress to console
+                        }   //end if ShowRunChoiceModelsStatus
                     }   //end household loop for this threadAssignedIndex
                 }));    //end creating Thread and ThreadStart
                 myThread.Name = "ChoiceModelRunner_" + (threadIndex + 1);
@@ -1433,15 +1431,15 @@ namespace DaySim {
             threads.ForEach(t => t.Start());
             threads.ForEach(t => t.Join());
             ParallelUtility.DisposeThreadIndex();
-            var countg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
-            var countStringg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
-            var ivcountg = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
-            Console.Write("\r{0:p} {1}", (double)1.0,
-                Global.Configuration.ReportInvalidPersonDays
-                    ? string.Format("Total {0} Days: {1}, Total Invalid Attempts: {2}",
-                        countStringg, countg, ivcountg)
-                    : string.Format("Total {0} Days: {1}",
-                        countStringg, countg));
+            var count = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
+            var countString = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
+            var ivcount = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
+            Console.Write(string.Format("\r{0:p}", 1.0) +
+                string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", addedHousehouldCounter, addedHousehouldCounter, countString, count) +
+                (Global.Configuration.ReportInvalidPersonDays
+                    ? string.Format("Total Invalid Attempts: {0:n0}",
+                        ivcount)
+                    : ""));
             Console.WriteLine();
         }
 
