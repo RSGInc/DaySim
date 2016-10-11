@@ -31,17 +31,14 @@ using Ninject;
 using Timer = DaySim.Framework.Core.Timer;
 using System.Diagnostics;
 
-namespace DaySim
-{
-    public static class Engine
-    {
+namespace DaySim {
+    public static class Engine {
         private static int _start = -1;
         private static int _end = -1;
         private static int _index = -1;
         private static Timer overallDaySimTimer = new Timer("DaySim...", true);
 
-        public static void BeginTestMode()
-        {
+        public static void BeginTestMode() {
             var randomUtility = new RandomUtility();
             randomUtility.ResetUniform01(Global.Configuration.RandomSeed);
             randomUtility.ResetHouseholdSynchronization(Global.Configuration.RandomSeed);
@@ -51,8 +48,7 @@ namespace DaySim
             //RawConverter.RunTestMode();
         }
 
-        public static void BeginProgram(int start, int end, int index)
-        {
+        public static void BeginProgram(int start, int end, int index) {
             _start = start;
             _end = end;
             _index = index;
@@ -63,8 +59,7 @@ namespace DaySim
             randomUtility.ResetHouseholdSynchronization(Global.Configuration.RandomSeed);
 
             BeginInitialize();
-            if (Global.Configuration.ShouldRunInputTester == true)
-            {
+            if (Global.Configuration.ShouldRunInputTester == true) {
                 BeginTestInputs();
             }
 
@@ -92,16 +87,14 @@ namespace DaySim
             BeginRunChoiceModels(randomUtility);
             BeginPerformHousekeeping();
 
-            if (_start == -1 || _end == -1 || _index == -1)
-            {
+            if (_start == -1 || _end == -1 || _index == -1) {
                 BeginUpdateShadowPricing();
             }
 
             overallDaySimTimer.Stop("Total running time");
         }
 
-        public static void BeginInitialize()
-        {
+        public static void BeginInitialize() {
             var timer = new Timer("Initializing...");
 
             Initialize();
@@ -111,22 +104,18 @@ namespace DaySim
 
         }
 
-        public static void BeginTestInputs()
-        {
+        public static void BeginTestInputs() {
             var timer = new Timer("Checking Input Validity...");
             InputTester.RunTest();
             timer.Stop();
             overallDaySimTimer.Print();
         }
 
-        private static void Initialize()
-        {
-            if (Global.PrintFile != null)
-            {
+        private static void Initialize() {
+            if (Global.PrintFile != null) {
                 Global.PrintFile.WriteLine("Application mode: {0}", Global.Configuration.IsInEstimationMode ? "Estimation" : "Simulation");
 
-                if (Global.Configuration.IsInEstimationMode)
-                {
+                if (Global.Configuration.IsInEstimationMode) {
                     Global.PrintFile.WriteLine("Estimation model: {0}", Global.Configuration.EstimationModel);
                 }
             }
@@ -143,36 +132,30 @@ namespace DaySim
             InitializeInput();
             InitializeWorking();
 
-            if (Global.Configuration.ShouldOutputAggregateLogsums)
-            {
+            if (Global.Configuration.ShouldOutputAggregateLogsums) {
                 Global.GetOutputPath(Global.Configuration.OutputAggregateLogsumsPath).CreateDirectory();
             }
 
-            if (Global.Configuration.ShouldOutputSamplingWeights)
-            {
+            if (Global.Configuration.ShouldOutputSamplingWeights) {
                 Global.GetOutputPath(Global.Configuration.OutputSamplingWeightsPath).CreateDirectory();
             }
 
-            if (Global.Configuration.ShouldOutputTDMTripList)
-            {
+            if (Global.Configuration.ShouldOutputTDMTripList) {
                 Global.GetOutputPath(Global.Configuration.OutputTDMTripListPath).CreateDirectory();
             }
 
-            if (!Global.Configuration.IsInEstimationMode)
-            {
+            if (!Global.Configuration.IsInEstimationMode) {
                 return;
             }
 
-            if (Global.Configuration.ShouldOutputAlogitData)
-            {
+            if (Global.Configuration.ShouldOutputAlogitData) {
                 Global.GetOutputPath(Global.Configuration.OutputAlogitDataPath).CreateDirectory();
             }
 
             Global.GetOutputPath(Global.Configuration.OutputAlogitControlPath).CreateDirectory();
         }
 
-        private static void InitializePersistenceFactories()
-        {
+        private static void InitializePersistenceFactories() {
             Global
                 .Kernel
                 .Get<IPersistenceFactory<IParcel>>()
@@ -244,8 +227,7 @@ namespace DaySim
                 .Initialize(Global.Configuration);
         }
 
-        private static void InitializeWrapperFactories()
-        {
+        private static void InitializeWrapperFactories() {
             Global
                 .Kernel
                 .Get<IWrapperFactory<IParcelCreator>>()
@@ -312,8 +294,7 @@ namespace DaySim
                 .Initialize(Global.Configuration);
         }
 
-        private static void InitializeSkimFactories()
-        {
+        private static void InitializeSkimFactories() {
             Global.Kernel.Get<SkimFileReaderFactory>().Register("text_ij", new TextIJSkimFileReaderCreator());
             Global.Kernel.Get<SkimFileReaderFactory>().Register("visum-bin", new VisumSkimReaderCreator());
             Global.Kernel.Get<SkimFileReaderFactory>().Register("bin", new BinarySkimFileReaderCreator());
@@ -324,33 +305,28 @@ namespace DaySim
             Global.Kernel.Get<SkimFileReaderFactory>().Register("omx", new OMXReaderCreator());
         }
 
-        private static void InitializeSamplingFactories()
-        {
+        private static void InitializeSamplingFactories() {
             Global.Kernel.Get<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettings", new SamplingWeightsSettings());
             Global.Kernel.Get<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsSimple", new SamplingWeightsSettingsSimple());
             Global.Kernel.Get<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsSACOG", new SamplingWeightsSettingsSACOG());
             Global.Kernel.Get<SamplingWeightsSettingsFactory>().Initialize();
         }
 
-        private static void InitializeAggregateLogsumsFactories()
-        {
+        private static void InitializeAggregateLogsumsFactories() {
             Global.Kernel.Get<AggregateLogsumsCalculatorFactory>().Register("AggregateLogsumCalculator", new AggregateLogsumsCalculatorCreator());
             Global.Kernel.Get<AggregateLogsumsCalculatorFactory>().Register("OtherAggregateLogsumCalculator", new OtherAggregateLogsumsCalculatorCreator());
             Global.Kernel.Get<AggregateLogsumsCalculatorFactory>().Initialize();
         }
 
-        private static void InitializeOther()
-        {
+        private static void InitializeOther() {
             Global.ChoiceModelSession = new ChoiceModelSession();
 
             HTripTime.InitializeTripTimes();
             HTourModeTime.InitializeTourModeTimes();
         }
 
-        private static void InitializeOutput()
-        {
-            if (_start == -1 || _end == -1 || _index == -1)
-            {
+        private static void InitializeOutput() {
+            if (_start == -1 || _end == -1 || _index == -1) {
                 return;
             }
 
@@ -366,90 +342,74 @@ namespace DaySim
             Global.Configuration.OutputTDMTripListPath = Global.GetOutputPath(Global.Configuration.OutputTDMTripListPath).ToIndexedPath(_index);
         }
 
-        private static void InitializeInput()
-        {
-            if (string.IsNullOrEmpty(Global.Configuration.InputParkAndRideNodePath))
-            {
+        private static void InitializeInput() {
+            if (string.IsNullOrEmpty(Global.Configuration.InputParkAndRideNodePath)) {
                 Global.Configuration.InputParkAndRideNodePath = Global.DefaultInputParkAndRideNodePath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputParcelNodePath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputParcelNodePath)) {
                 Global.Configuration.InputParcelNodePath = Global.DefaultInputParcelNodePath;
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputParcelPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputParcelPath)) {
                 Global.Configuration.InputParcelPath = Global.DefaultInputParcelPath;
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputParcelPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputParcelPath)) {
                 Global.Configuration.InputParcelPath = Global.DefaultInputParcelPath;
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputZonePath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputZonePath)) {
                 Global.Configuration.InputZonePath = Global.DefaultInputZonePath;
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputTransitStopAreaPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputTransitStopAreaPath)) {
                 Global.Configuration.InputTransitStopAreaPath = Global.DefaultInputTransitStopAreaPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputHouseholdPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputHouseholdPath)) {
                 Global.Configuration.InputHouseholdPath = Global.DefaultInputHouseholdPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputPersonPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputPersonPath)) {
                 Global.Configuration.InputPersonPath = Global.DefaultInputPersonPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputHouseholdDayPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputHouseholdDayPath)) {
                 Global.Configuration.InputHouseholdDayPath = Global.DefaultInputHouseholdDayPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputJointTourPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputJointTourPath)) {
                 Global.Configuration.InputJointTourPath = Global.DefaultInputJointTourPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputFullHalfTourPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputFullHalfTourPath)) {
                 Global.Configuration.InputFullHalfTourPath = Global.DefaultInputFullHalfTourPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputPartialHalfTourPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputPartialHalfTourPath)) {
                 Global.Configuration.InputPartialHalfTourPath = Global.DefaultInputPartialHalfTourPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputPersonDayPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputPersonDayPath)) {
                 Global.Configuration.InputPersonDayPath = Global.DefaultInputPersonDayPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputTourPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputTourPath)) {
                 Global.Configuration.InputTourPath = Global.DefaultInputTourPath;
 
             }
 
-            if (string.IsNullOrEmpty(Global.Configuration.InputTripPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.InputTripPath)) {
                 Global.Configuration.InputTripPath = Global.DefaultInputTripPath;
 
             }
@@ -470,8 +430,7 @@ namespace DaySim
 
             InitializeInputDirectories(inputParkAndRideNodeFile, inputParcelNodeFile, inputParcelFile, inputZoneFile, inputHouseholdFile, inputPersonFile, inputHouseholdDayFile, inputJointTourFile, inputFullHalfTourFile, inputPartialHalfTourFile, inputPersonDayFile, inputTourFile, inputTripFile);
 
-            if (Global.PrintFile == null)
-            {
+            if (Global.PrintFile == null) {
                 return;
             }
 
@@ -485,8 +444,7 @@ namespace DaySim
             Global.PrintFile.WriteFileInfo(inputHouseholdFile);
             Global.PrintFile.WriteFileInfo(inputPersonFile);
 
-            if (Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldRunRawConversion)
-            {
+            if (Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldRunRawConversion) {
                 Global.PrintFile.WriteFileInfo(inputHouseholdDayFile);
                 Global.PrintFile.WriteFileInfo(inputJointTourFile);
                 Global.PrintFile.WriteFileInfo(inputFullHalfTourFile);
@@ -499,15 +457,12 @@ namespace DaySim
             Global.PrintFile.DecrementIndent();
         }
 
-        private static void InitializeInputDirectories(FileInfo inputParkAndRideNodeFile, FileInfo inputParcelNodeFile, FileInfo inputParcelFile, FileInfo inputZoneFile, FileInfo inputHouseholdFile, FileInfo inputPersonFile, FileInfo inputHouseholdDayFile, FileInfo inputJointTourFile, FileInfo inputFullHalfTourFile, FileInfo inputPartialHalfTourFile, FileInfo inputPersonDayFile, FileInfo inputTourFile, FileInfo inputTripFile)
-        {
-            if (inputParkAndRideNodeFile != null)
-            {
+        private static void InitializeInputDirectories(FileInfo inputParkAndRideNodeFile, FileInfo inputParcelNodeFile, FileInfo inputParcelFile, FileInfo inputZoneFile, FileInfo inputHouseholdFile, FileInfo inputPersonFile, FileInfo inputHouseholdDayFile, FileInfo inputJointTourFile, FileInfo inputFullHalfTourFile, FileInfo inputPartialHalfTourFile, FileInfo inputPersonDayFile, FileInfo inputTourFile, FileInfo inputTripFile) {
+            if (inputParkAndRideNodeFile != null) {
                 inputParkAndRideNodeFile.CreateDirectory();
             }
 
-            if (inputParcelNodeFile != null)
-            {
+            if (inputParcelNodeFile != null) {
                 inputParcelNodeFile.CreateDirectory();
             }
 
@@ -523,13 +478,11 @@ namespace DaySim
             var override1 = (inputParkAndRideNodeFile != null && !inputParkAndRideNodeFile.Exists) || (inputParcelNodeFile != null && !inputParcelNodeFile.Exists) || !inputParcelFile.Exists || !inputZoneFile.Exists || !inputHouseholdFile.Exists || !inputPersonFile.Exists;
             var override2 = false;
 
-            if (Global.Configuration.IsInEstimationMode)
-            {
+            if (Global.Configuration.IsInEstimationMode) {
                 inputHouseholdDayFile.CreateDirectory();
                 Global.GetOutputPath(Global.Configuration.OutputHouseholdDayPath).CreateDirectory();
 
-                if (Global.Settings.UseJointTours)
-                {
+                if (Global.Settings.UseJointTours) {
                     inputJointTourFile.CreateDirectory();
                     Global.GetOutputPath(Global.Configuration.OutputJointTourPath).CreateDirectory();
 
@@ -552,14 +505,12 @@ namespace DaySim
                 override2 = !inputHouseholdDayFile.Exists || !inputJointTourFile.Exists || !inputFullHalfTourFile.Exists || !inputPartialHalfTourFile.Exists || !inputPersonDayFile.Exists || !inputTourFile.Exists || !inputTripFile.Exists;
             }
 
-            if (override1 || override2)
-            {
+            if (override1 || override2) {
                 OverrideShouldRunRawConversion();
             }
         }
 
-        private static void InitializeWorking()
-        {
+        private static void InitializeWorking() {
             var workingParkAndRideNodeFile = Global.ParkAndRideNodeIsEnabled ? Global.WorkingParkAndRideNodePath.ToFile() : null;
             var workingParcelNodeFile = Global.ParcelNodeIsEnabled ? Global.WorkingParcelNodePath.ToFile() : null;
             var workingParcelFile = Global.WorkingParcelPath.ToFile();
@@ -578,8 +529,7 @@ namespace DaySim
 
             InitializeWorkingImports(workingParkAndRideNodeFile, workingParcelNodeFile, workingParcelFile, workingZoneFile, workingHouseholdFile, workingPersonFile, workingHouseholdDayFile, workingJointTourFile, workingFullHalfTourFile, workingPartialHalfTourFile, workingPersonDayFile, workingTourFile, workingTripFile);
 
-            if (Global.PrintFile == null)
-            {
+            if (Global.PrintFile == null) {
                 return;
             }
 
@@ -603,17 +553,14 @@ namespace DaySim
             Global.PrintFile.DecrementIndent();
         }
 
-        private static void InitializeWorkingDirectory()
-        {
+        private static void InitializeWorkingDirectory() {
             var workingDirectory = new DirectoryInfo(Global.GetWorkingPath(""));
 
-            if (Global.PrintFile != null)
-            {
+            if (Global.PrintFile != null) {
                 Global.PrintFile.WriteLine("Working directory: {0}", workingDirectory);
             }
 
-            if (workingDirectory.Exists)
-            {
+            if (workingDirectory.Exists) {
                 return;
             }
 
@@ -621,17 +568,13 @@ namespace DaySim
             OverrideShouldRunRawConversion();
         }
 
-        private static void InitializeWorkingImports(FileInfo workingParkAndRideNodeFile, FileInfo workingParcelNodeFile, FileInfo workingParcelFile, FileInfo workingZoneFile, FileInfo workingHouseholdFile, FileInfo workingPersonFile, FileInfo workingHouseholdDayFile, FileInfo workingJointTourFile, FileInfo workingFullHalfTourFile, FileInfo workingPartialHalfTourFile, FileInfo workingPersonDayFile, FileInfo workingTourFile, FileInfo workingTripFile)
-        {
-            if (Global.Configuration.ShouldRunRawConversion || (workingParkAndRideNodeFile != null && !workingParkAndRideNodeFile.Exists) || (workingParcelNodeFile != null && !workingParcelNodeFile.Exists) || !workingParcelFile.Exists || !workingZoneFile.Exists || !workingHouseholdFile.Exists || !workingPersonFile.Exists)
-            {
-                if (workingParkAndRideNodeFile != null)
-                {
+        private static void InitializeWorkingImports(FileInfo workingParkAndRideNodeFile, FileInfo workingParcelNodeFile, FileInfo workingParcelFile, FileInfo workingZoneFile, FileInfo workingHouseholdFile, FileInfo workingPersonFile, FileInfo workingHouseholdDayFile, FileInfo workingJointTourFile, FileInfo workingFullHalfTourFile, FileInfo workingPartialHalfTourFile, FileInfo workingPersonDayFile, FileInfo workingTourFile, FileInfo workingTripFile) {
+            if (Global.Configuration.ShouldRunRawConversion || (workingParkAndRideNodeFile != null && !workingParkAndRideNodeFile.Exists) || (workingParcelNodeFile != null && !workingParcelNodeFile.Exists) || !workingParcelFile.Exists || !workingZoneFile.Exists || !workingHouseholdFile.Exists || !workingPersonFile.Exists) {
+                if (workingParkAndRideNodeFile != null) {
                     OverrideImport(Global.Configuration, x => x.ImportParkAndRideNodes);
                 }
 
-                if (workingParcelNodeFile != null)
-                {
+                if (workingParcelNodeFile != null) {
                     OverrideImport(Global.Configuration, x => x.ImportParcelNodes);
                 }
 
@@ -641,8 +584,7 @@ namespace DaySim
                 OverrideImport(Global.Configuration, x => x.ImportPersons);
             }
 
-            if (!Global.Configuration.IsInEstimationMode || (!Global.Configuration.ShouldRunRawConversion && workingHouseholdDayFile.Exists && workingJointTourFile.Exists && workingFullHalfTourFile.Exists && workingPartialHalfTourFile.Exists && workingPersonDayFile.Exists && workingTourFile.Exists && workingTripFile.Exists))
-            {
+            if (!Global.Configuration.IsInEstimationMode || (!Global.Configuration.ShouldRunRawConversion && workingHouseholdDayFile.Exists && workingJointTourFile.Exists && workingFullHalfTourFile.Exists && workingPartialHalfTourFile.Exists && workingPersonDayFile.Exists && workingTourFile.Exists && workingTripFile.Exists)) {
                 return;
             }
 
@@ -655,24 +597,20 @@ namespace DaySim
             OverrideImport(Global.Configuration, x => x.ImportTrips);
         }
 
-        public static void BeginRunRawConversion()
-        {
-            if (!Global.Configuration.ShouldRunRawConversion)
-            {
+        public static void BeginRunRawConversion() {
+            if (!Global.Configuration.ShouldRunRawConversion) {
                 return;
             }
 
             var timer = new Timer("Running raw conversion...");
 
-            if (Global.PrintFile != null)
-            {
+            if (Global.PrintFile != null) {
                 Global.PrintFile.IncrementIndent();
             }
 
             RawConverter.Run();
 
-            if (Global.PrintFile != null)
-            {
+            if (Global.PrintFile != null) {
                 Global.PrintFile.DecrementIndent();
             }
 
@@ -680,8 +618,7 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        public static void BeginImportData()
-        {
+        public static void BeginImportData() {
             ImportParcels();
             ImportParcelNodes();
             ImportParkAndRideNodes();
@@ -690,8 +627,7 @@ namespace DaySim
             ImportHouseholds();
             ImportPersons();
 
-            if (!Global.Configuration.IsInEstimationMode)
-            {
+            if (!Global.Configuration.IsInEstimationMode) {
                 return;
             }
 
@@ -700,8 +636,7 @@ namespace DaySim
             ImportTours();
             ImportTrips();
 
-            if (!Global.Settings.UseJointTours)
-            {
+            if (!Global.Settings.UseJointTours) {
                 return;
             }
 
@@ -710,10 +645,8 @@ namespace DaySim
             ImportPartialHalfTours();
         }
 
-        private static void ImportParcels()
-        {
-            if (!Global.Configuration.ImportParcels)
-            {
+        private static void ImportParcels() {
+            if (!Global.Configuration.ImportParcels) {
                 return;
             }
 
@@ -724,10 +657,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportParcelNodes()
-        {
-            if (!Global.ParcelNodeIsEnabled || !Global.Configuration.ImportParcelNodes)
-            {
+        private static void ImportParcelNodes() {
+            if (!Global.ParcelNodeIsEnabled || !Global.Configuration.ImportParcelNodes) {
                 return;
             }
 
@@ -738,10 +669,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportParkAndRideNodes()
-        {
-            if (!Global.ParkAndRideNodeIsEnabled || !Global.Configuration.ImportParkAndRideNodes)
-            {
+        private static void ImportParkAndRideNodes() {
+            if (!Global.ParkAndRideNodeIsEnabled || !Global.Configuration.ImportParkAndRideNodes) {
                 return;
             }
 
@@ -751,8 +680,7 @@ namespace DaySim
                 .Importer
                 .Import();
 
-            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum"))
-            {
+            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum")) {
                 return;
             }
 
@@ -764,22 +692,18 @@ namespace DaySim
 
             Global.ParkAndRideNodeMapping = new Dictionary<int, int>(parkAndRideNodeReader.Count);
 
-            foreach (var parkAndRideNode in parkAndRideNodeReader)
-            {
+            foreach (var parkAndRideNode in parkAndRideNodeReader) {
                 Global.ParkAndRideNodeMapping.Add(parkAndRideNode.ZoneId, parkAndRideNode.Id);
             }
         }
 
 
-        private static void ImportTransitStopAreas()
-        {
-            if (!Global.Configuration.ImportTransitStopAreas)
-            {
+        private static void ImportTransitStopAreas() {
+            if (!Global.Configuration.ImportTransitStopAreas) {
                 return;
             }
 
-            if (string.IsNullOrEmpty(Global.WorkingTransitStopAreaPath) || string.IsNullOrEmpty(Global.Configuration.InputTransitStopAreaPath))
-            {
+            if (string.IsNullOrEmpty(Global.WorkingTransitStopAreaPath) || string.IsNullOrEmpty(Global.Configuration.InputTransitStopAreaPath)) {
                 return;
             }
 
@@ -790,10 +714,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportZones()
-        {
-            if (!Global.Configuration.ImportZones)
-            {
+        private static void ImportZones() {
+            if (!Global.Configuration.ImportZones) {
                 return;
             }
 
@@ -804,10 +726,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportHouseholds()
-        {
-            if (!Global.Configuration.ImportHouseholds)
-            {
+        private static void ImportHouseholds() {
+            if (!Global.Configuration.ImportHouseholds) {
                 return;
             }
 
@@ -818,10 +738,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportPersons()
-        {
-            if (!Global.Configuration.ImportPersons)
-            {
+        private static void ImportPersons() {
+            if (!Global.Configuration.ImportPersons) {
                 return;
             }
 
@@ -832,10 +750,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportHouseholdDays()
-        {
-            if (!Global.Configuration.ImportHouseholdDays)
-            {
+        private static void ImportHouseholdDays() {
+            if (!Global.Configuration.ImportHouseholdDays) {
                 return;
             }
 
@@ -846,10 +762,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportPersonDays()
-        {
-            if (!Global.Configuration.ImportPersonDays)
-            {
+        private static void ImportPersonDays() {
+            if (!Global.Configuration.ImportPersonDays) {
                 return;
             }
 
@@ -860,10 +774,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportTours()
-        {
-            if (!Global.Configuration.ImportTours)
-            {
+        private static void ImportTours() {
+            if (!Global.Configuration.ImportTours) {
                 return;
             }
 
@@ -874,10 +786,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportTrips()
-        {
-            if (!Global.Configuration.ImportTrips)
-            {
+        private static void ImportTrips() {
+            if (!Global.Configuration.ImportTrips) {
                 return;
             }
 
@@ -888,10 +798,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportJointTours()
-        {
-            if (!Global.Configuration.ImportJointTours)
-            {
+        private static void ImportJointTours() {
+            if (!Global.Configuration.ImportJointTours) {
                 return;
             }
 
@@ -902,10 +810,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportFullHalfTours()
-        {
-            if (!Global.Configuration.ImportFullHalfTours)
-            {
+        private static void ImportFullHalfTours() {
+            if (!Global.Configuration.ImportFullHalfTours) {
                 return;
             }
 
@@ -916,10 +822,8 @@ namespace DaySim
                 .Import();
         }
 
-        private static void ImportPartialHalfTours()
-        {
-            if (!Global.Configuration.ImportPartialHalfTours)
-            {
+        private static void ImportPartialHalfTours() {
+            if (!Global.Configuration.ImportPartialHalfTours) {
                 return;
             }
 
@@ -930,8 +834,7 @@ namespace DaySim
                 .Import();
         }
 
-        public static void BeginBuildIndexes()
-        {
+        public static void BeginBuildIndexes() {
             var timer = new Timer("Building indexes...");
 
             BuildIndexes();
@@ -940,10 +843,8 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void BuildIndexes()
-        {
-            if (Global.ParcelNodeIsEnabled)
-            {
+        private static void BuildIndexes() {
+            if (Global.ParcelNodeIsEnabled) {
                 Global
                     .Kernel
                     .Get<IPersistenceFactory<IParcelNode>>()
@@ -957,8 +858,7 @@ namespace DaySim
                 .Reader
                 .BuildIndex("household_fk", "Id", "HouseholdId");
 
-            if (!Global.Configuration.IsInEstimationMode)
-            {
+            if (!Global.Configuration.IsInEstimationMode) {
                 return;
             }
 
@@ -986,8 +886,7 @@ namespace DaySim
                 .Reader
                 .BuildIndex("tour_fk", "Id", "TourId");
 
-            if (!Global.Settings.UseJointTours)
-            {
+            if (!Global.Settings.UseJointTours) {
                 return;
             }
 
@@ -1010,10 +909,8 @@ namespace DaySim
                 .BuildIndex("household_day_fk", "Id", "HouseholdDayId");
         }
 
-        private static void BeginLoadNodeIndex()
-        {
-            if (!Global.ParcelNodeIsEnabled || !Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-            {
+        private static void BeginLoadNodeIndex() {
+            if (!Global.ParcelNodeIsEnabled || !Global.Configuration.UseShortDistanceNodeToNodeMeasures) {
                 return;
             }
 
@@ -1025,37 +922,30 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void LoadNodeIndex()
-        {
+        private static void LoadNodeIndex() {
             var file = new FileInfo(Global.GetInputPath(Global.Configuration.NodeIndexPath));
 
             var aNodeId = new List<int>();
             var aNodeFirstRecord = new List<int>();
             var aNodeLastRecord = new List<int>();
 
-            using (var reader = new CountingReader(file.OpenRead()))
-            {
+            using (var reader = new CountingReader(file.OpenRead())) {
                 reader.ReadLine();
 
                 string line = null;
-                try
-                {
-                    while ((line = reader.ReadLine()) != null)
-                    {
+                try {
+                    while ((line = reader.ReadLine()) != null) {
                         var tokens = line.Split(Global.Configuration.NodeIndexDelimiter);
 
                         aNodeId.Add(int.Parse(tokens[0]));
                         aNodeFirstRecord.Add(int.Parse(tokens[1]));
                         int lastRecord = int.Parse(tokens[2]);
                         aNodeLastRecord.Add(lastRecord);
-                        if (lastRecord > Global.LastNodeDistanceRecord)
-                        {
+                        if (lastRecord > Global.LastNodeDistanceRecord) {
                             Global.LastNodeDistanceRecord = lastRecord;
                         }
                     }
-                }
-                catch (FormatException e)
-                {
+                } catch (FormatException e) {
                     throw new Exception("Format problem in file '" + file.FullName + "' at line " + reader.LineNumber + " with content '" + line + "'.", e);
                 }
             }
@@ -1065,10 +955,8 @@ namespace DaySim
             Global.ANodeLastRecord = aNodeLastRecord.ToArray();
         }
 
-        private static void BeginLoadNodeDistances()
-        {
-            if (!Global.ParcelNodeIsEnabled || !Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-            {
+        private static void BeginLoadNodeDistances() {
+            if (!Global.ParcelNodeIsEnabled || !Global.Configuration.UseShortDistanceNodeToNodeMeasures) {
                 return;
             }
 
@@ -1076,18 +964,14 @@ namespace DaySim
 
             var timer = new Timer("Loading node distances...");
 
-            switch (Global.Configuration.NodeDistanceReaderType)
-            {
+            switch (Global.Configuration.NodeDistanceReaderType) {
                 case Configuration.NodeDistanceReaderTypes.HDF5:
                     LoadNodeDistancesFromHDF5();
                     break;
                 case Configuration.NodeDistanceReaderTypes.TextOrBinary:
-                    if (Global.Configuration.NodeDistancesDelimiter == (char)0)
-                    {
+                    if (Global.Configuration.NodeDistancesDelimiter == (char)0) {
                         LoadNodeDistancesFromBinary();
-                    }
-                    else
-                    {
+                    } else {
                         LoadNodeDistancesFromText();
                     }
                     break;
@@ -1100,22 +984,18 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void BeginLoadNodeStopAreaDistances()
-        {
+        private static void BeginLoadNodeStopAreaDistances() {
             //mb moved this from Global to Engine
-            if (!Global.StopAreaIsEnabled)
-            {
+            if (!Global.StopAreaIsEnabled) {
                 return;
             }
-            if (string.IsNullOrEmpty(Global.Configuration.NodeStopAreaIndexPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.NodeStopAreaIndexPath)) {
                 throw new ArgumentNullException("NodeStopAreaIndexPath");
             }
 
             var timer = new Timer("Loading node stop area distances...");
             var filename = Global.GetInputPath(Global.Configuration.NodeStopAreaIndexPath);
-            using (var reader = File.OpenText(filename))
-            {
+            using (var reader = File.OpenText(filename)) {
                 InitializeParcelStopAreaIndex(reader);
             }
 
@@ -1123,8 +1003,7 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        public static void InitializeParcelStopAreaIndex(TextReader reader)
-        {
+        public static void InitializeParcelStopAreaIndex(TextReader reader) {
             //mb moved this from global to engine in order to use DaySim.ChoiceModels.ChoiceModelFactory
             //mb tried to change this code to set parcel first and last indeces here instead of later, but did not work
 
@@ -1146,14 +1025,12 @@ namespace DaySim
             stopAreaKeys.Add(0);
             distances.Add(0F);
 
-            while ((line = reader.ReadLine()) != null)
-            {
+            while ((line = reader.ReadLine()) != null) {
                 var tokens = line.Split(new[] { ' ' });
 
                 arrayIndex++;
                 int parcelId = int.Parse(tokens[0]);
-                if (parcelId != lastParcelId)
-                {
+                if (parcelId != lastParcelId) {
                     //Console.WriteLine(parcelId);
                     parcel = ChoiceModelFactory.Parcels[parcelId];
                     parcel.FirstPositionInStopAreaDistanceArray = arrayIndex;
@@ -1178,21 +1055,17 @@ namespace DaySim
 
         }
 
-        private static void BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances()
-        {
-            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum"))
-            {
+        private static void BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances() {
+            if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum")) {
                 return;
             }
-            if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToParkAndRideNodeIndexPath))
-            {
+            if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToParkAndRideNodeIndexPath)) {
                 throw new ArgumentNullException("MicrozoneToParkAndRideNodeIndexPath");
             }
 
             var timer = new Timer("MicrozoneToParkAndRideNode distances...");
             var filename = Global.GetInputPath(Global.Configuration.MicrozoneToParkAndRideNodeIndexPath);
-            using (var reader = File.OpenText(filename))
-            {
+            using (var reader = File.OpenText(filename)) {
                 InitializeMicrozoneToBikeCarParkAndRideNodeIndex(reader);
             }
 
@@ -1200,8 +1073,7 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        public static void InitializeMicrozoneToBikeCarParkAndRideNodeIndex(TextReader reader)
-        {
+        public static void InitializeMicrozoneToBikeCarParkAndRideNodeIndex(TextReader reader) {
 
             //var parcelIds = new List<int>();  
             var nodeSequentialIds = new List<int>();
@@ -1221,14 +1093,12 @@ namespace DaySim
             parkAndRideNodeIds.Add(0);
             distances.Add(0F);
 
-            while ((line = reader.ReadLine()) != null)
-            {
+            while ((line = reader.ReadLine()) != null) {
                 var tokens = line.Split(new[] { Global.Configuration.MicrozoneToParkAndRideNodeIndexDelimiter });
 
                 arrayIndex++;
                 int parcelId = int.Parse(tokens[0]);
-                if (parcelId != lastParcelId)
-                {
+                if (parcelId != lastParcelId) {
                     //Console.WriteLine(parcelId);
                     parcel = ChoiceModelFactory.Parcels[parcelId];
                     parcel.FirstPositionInStopAreaDistanceArray = arrayIndex;
@@ -1253,12 +1123,10 @@ namespace DaySim
         }
 
 
-        private static void LoadNodeDistancesFromText()
-        {
+        private static void LoadNodeDistancesFromText() {
             var file = new FileInfo(Global.GetInputPath(Global.Configuration.NodeDistancesPath));
 
-            using (var reader = new CountingReader(file.OpenRead()))
-            {
+            using (var reader = new CountingReader(file.OpenRead())) {
                 Global.NodePairBNodeId = new int[Global.LastNodeDistanceRecord];
                 Global.NodePairDistance = new ushort[Global.LastNodeDistanceRecord];
 
@@ -1267,8 +1135,7 @@ namespace DaySim
                 string line;
 
                 int i = 0;
-                while ((line = reader.ReadLine()) != null)
-                {
+                while ((line = reader.ReadLine()) != null) {
                     var tokens = line.Split(Global.Configuration.NodeDistancesDelimiter);
 
                     int aNodeId = int.Parse(tokens[0]);
@@ -1282,19 +1149,16 @@ namespace DaySim
         }
 
 
-        private static void LoadNodeDistancesFromBinary()
-        {
+        private static void LoadNodeDistancesFromBinary() {
             var file = new FileInfo(Global.GetInputPath(Global.Configuration.NodeDistancesPath));
 
-            using (var reader = new BinaryReader(file.OpenRead()))
-            {
+            using (var reader = new BinaryReader(file.OpenRead())) {
                 Global.NodePairBNodeId = new int[file.Length / 8];
                 Global.NodePairDistance = new ushort[file.Length / 8];
 
                 var i = 0;
                 var length = reader.BaseStream.Length;
-                while (reader.BaseStream.Position < length)
-                {
+                while (reader.BaseStream.Position < length) {
                     Global.NodePairBNodeId[i] = reader.ReadInt32();
 
                     var distance = reader.ReadInt32();
@@ -1306,8 +1170,7 @@ namespace DaySim
             }
         }
 
-        private static void LoadNodeDistancesFromHDF5()
-        {
+        private static void LoadNodeDistancesFromHDF5() {
             var file = H5F.open(Global.GetInputPath(Global.Configuration.NodeDistancesPath),
                 H5F.OpenMode.ACC_RDONLY);
 
@@ -1344,8 +1207,7 @@ namespace DaySim
             H5F.close(file);
         }
 
-        private static void BeginLoadRoster()
-        {
+        private static void BeginLoadRoster() {
             var timer = new Timer("Loading roster...");
 
             LoadRoster();
@@ -1354,8 +1216,7 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void LoadRoster()
-        {
+        private static void LoadRoster() {
             var zoneReader =
                 Global
                     .Kernel
@@ -1364,15 +1225,13 @@ namespace DaySim
 
             var zoneMapping = new Dictionary<int, int>(zoneReader.Count);
 
-            foreach (var zone in zoneReader)
-            {
+            foreach (var zone in zoneReader) {
                 zoneMapping.Add(zone.Key, zone.Id);
             }
 
             Global.TransitStopAreaMapping = new Dictionary<int, int>();
 
-            if (Global.Configuration.ImportTransitStopAreas)
-            {
+            if (Global.Configuration.ImportTransitStopAreas) {
                 var transitStopAreaReader =
                     Global
                         .Kernel
@@ -1381,16 +1240,14 @@ namespace DaySim
 
                 Global.TransitStopAreaMapping = new Dictionary<int, int>(transitStopAreaReader.Count);
 
-                foreach (var transitStopArea in transitStopAreaReader)
-                {
+                foreach (var transitStopArea in transitStopAreaReader) {
                     Global.TransitStopAreaMapping.Add(transitStopArea.Key, transitStopArea.Id);
                 }
             }
 
             Global.MicrozoneMapping = new Dictionary<int, int>();
 
-            if (Global.Configuration.UseMicrozoneSkims)
-            {
+            if (Global.Configuration.UseMicrozoneSkims) {
                 var microzoneReader =
                     Global
                         .Kernel
@@ -1400,8 +1257,7 @@ namespace DaySim
                 Global.MicrozoneMapping = new Dictionary<int, int>(microzoneReader.Count);
 
                 int mzSequence = 0;
-                foreach (var microzone in microzoneReader)
-                {
+                foreach (var microzone in microzoneReader) {
                     Global.MicrozoneMapping.Add(microzone.Id, mzSequence++);
                 }
 
@@ -1412,8 +1268,7 @@ namespace DaySim
 
         }
 
-        private static void BeginCalculateAggregateLogsums(IRandomUtility randomUtility)
-        {
+        private static void BeginCalculateAggregateLogsums(IRandomUtility randomUtility) {
             var timer = new Timer("Calculating aggregate logsums...");
 
             var calculator = Global.Kernel.Get<AggregateLogsumsCalculatorFactory>().AggregateLogsumCalculatorCreator.Create();
@@ -1423,10 +1278,8 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void BeginOutputAggregateLogsums()
-        {
-            if (!Global.Configuration.ShouldOutputAggregateLogsums)
-            {
+        private static void BeginOutputAggregateLogsums() {
+            if (!Global.Configuration.ShouldOutputAggregateLogsums) {
                 return;
             }
 
@@ -1438,8 +1291,7 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void BeginCalculateSamplingWeights()
-        {
+        private static void BeginCalculateSamplingWeights() {
             var timer = new Timer("Calculating sampling weights...");
 
             SamplingWeightsCalculator.Calculate("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 180);
@@ -1448,10 +1300,8 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void BeginOutputSamplingWeights()
-        {
-            if (!Global.Configuration.ShouldOutputSamplingWeights)
-            {
+        private static void BeginOutputSamplingWeights() {
+            if (!Global.Configuration.ShouldOutputSamplingWeights) {
                 return;
             }
 
@@ -1463,10 +1313,8 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void BeginRunChoiceModels(IRandomUtility randomUtility)
-        {
-            if (!Global.Configuration.ShouldRunChoiceModels)
-            {
+        private static void BeginRunChoiceModels(IRandomUtility randomUtility) {
+            if (!Global.Configuration.ShouldRunChoiceModels) {
                 return;
             }
 
@@ -1478,7 +1326,7 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static int GetNumberOfChoiceModelThreads() {
+        public static int GetNumberOfChoiceModelThreads() {
             int numberOfChoiceModelThreads;
 
             if (Global.Configuration.IsInEstimationMode || Global.Configuration.ChoiceModelDebugMode) {
@@ -1489,8 +1337,7 @@ namespace DaySim
             return numberOfChoiceModelThreads;
         }
 
-        private static void RunChoiceModels(IRandomUtility randomUtility)
-        {
+        private static void RunChoiceModels(IRandomUtility randomUtility) {
             var current = 0;
             var total =
                 Global
@@ -1499,8 +1346,7 @@ namespace DaySim
                     .Reader
                     .Count;
 
-            if (Global.Configuration.HouseholdSamplingRateOneInX < 1)
-            {
+            if (Global.Configuration.HouseholdSamplingRateOneInX < 1) {
                 Global.Configuration.HouseholdSamplingRateOneInX = 1;
             }
             Debug.Assert(Global.Configuration.HouseholdSamplingStartWithY < Global.Configuration.HouseholdSamplingRateOneInX, "Error: Global.Configuration.HouseholdSamplingStartWithY (" + Global.Configuration.HouseholdSamplingStartWithY + ") must be less than Global.Configuration.HouseholdSamplingRateOneInX (" + Global.Configuration.HouseholdSamplingRateOneInX + ") or no models will be run!");
@@ -1512,20 +1358,16 @@ namespace DaySim
 
             var threadHouseholds = new List<IHousehold>[numberOfChoiceModelThreads];
 
-            for (var i = 0; i < numberOfChoiceModelThreads; i++)
-            {
+            for (var i = 0; i < numberOfChoiceModelThreads; i++) {
                 threadHouseholds[i] = new List<IHousehold>();
             }
 
             var householdIndex = 0;
             var addedHousehouldCounter = 0;
-            foreach (var household in Global.Kernel.Get<IPersistenceFactory<IHousehold>>().Reader)
-            {
+            foreach (var household in Global.Kernel.Get<IPersistenceFactory<IHousehold>>().Reader) {
                 var nextRandom = randomUtility.GetNext();  //always get next random, even if won't be used so behavior identical with DaySimController and usual 
-                if ((household.Id % Global.Configuration.HouseholdSamplingRateOneInX == (Global.Configuration.HouseholdSamplingStartWithY - 1)))
-                {
-                    if (_start == -1 || _end == -1 || _index == -1 || householdIndex.IsBetween(_start, _end))
-                    {
+                if ((household.Id % Global.Configuration.HouseholdSamplingRateOneInX) == (Global.Configuration.HouseholdSamplingStartWithY - 1)) {
+                    if (_start == -1 || _end == -1 || _index == -1 || householdIndex.IsBetween(_start, _end)) {
                         householdRandomValues[household.Id] = nextRandom;
                         int threadIndex = addedHousehouldCounter++ % numberOfChoiceModelThreads;
 
@@ -1538,16 +1380,13 @@ namespace DaySim
             //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
             ParallelUtility.AssignThreadIndex(numberOfChoiceModelThreads);
             List<Thread> threads = new List<Thread>();
-            for (int threadIndex = 0; threadIndex < numberOfChoiceModelThreads; ++threadIndex)
-            {
-                Thread myThread = new Thread(new ThreadStart(delegate
-                {
+            for (int threadIndex = 0; threadIndex < numberOfChoiceModelThreads; ++threadIndex) {
+                Thread myThread = new Thread(new ThreadStart(delegate {
                     //retrieve threadAssignedIndexIndex so can see logging output
                     int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
                     List<IHousehold> currentThreadHouseholds = threadHouseholds[threadAssignedIndex];
                     Global.PrintFile.WriteLine("For threadAssignedIndex: " + threadAssignedIndex + " there are " + currentThreadHouseholds.Count + " households");
-                    foreach (var household in currentThreadHouseholds)
-                    {
+                    foreach (var household in currentThreadHouseholds) {
 #if RELEASE
 					try {
 #endif
@@ -1562,8 +1401,7 @@ namespace DaySim
 					}
 #endif
 
-                        if (!Global.Configuration.ShowRunChoiceModelsStatus)
-                        {
+                        if (!Global.Configuration.ShowRunChoiceModelsStatus) {
                             continue;
                         }
 
@@ -1571,8 +1409,7 @@ namespace DaySim
                         //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
                         current++;
 
-                        if (current != 1 && current != total && current % 1000 != 0)
-                        {
+                        if (current != 1 && current != total && current % 1000 != 0) {
                             continue;
                         }
 
@@ -1608,10 +1445,8 @@ namespace DaySim
             Console.WriteLine();
         }
 
-        private static void BeginPerformHousekeeping()
-        {
-            if (!Global.Configuration.ShouldRunChoiceModels)
-            {
+        private static void BeginPerformHousekeeping() {
+            if (!Global.Configuration.ShouldRunChoiceModels) {
                 return;
             }
             var timer = new Timer("Performing housekeeping...");
@@ -1622,24 +1457,20 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void PerformHousekeeping()
-        {
+        private static void PerformHousekeeping() {
             ChoiceProbabilityCalculator.Close();
 
             ChoiceModelHelper.WriteTimesModelsRun();
             ChoiceModelFactory.WriteCounters();
             ChoiceModelFactory.SignalShutdown();
 
-            if (Global.Configuration.ShouldOutputTDMTripList)
-            {
+            if (Global.Configuration.ShouldOutputTDMTripList) {
                 ChoiceModelFactory.TDMTripListExporter.Dispose();
             }
         }
 
-        public static void BeginUpdateShadowPricing()
-        {
-            if (!Global.Configuration.ShouldRunChoiceModels)
-            {
+        public static void BeginUpdateShadowPricing() {
+            if (!Global.Configuration.ShouldRunChoiceModels) {
                 return;
             }
 
@@ -1652,36 +1483,30 @@ namespace DaySim
             overallDaySimTimer.Print();
         }
 
-        private static void OverrideShouldRunRawConversion()
-        {
-            if (Global.Configuration.ShouldRunRawConversion)
-            {
+        private static void OverrideShouldRunRawConversion() {
+            if (Global.Configuration.ShouldRunRawConversion) {
                 return;
             }
 
             Global.Configuration.ShouldRunRawConversion = true;
 
-            if (Global.PrintFile != null)
-            {
+            if (Global.PrintFile != null) {
                 Global.PrintFile.WriteLine("ShouldRunRawConversion in the configuration file has been overridden, a raw conversion is required.");
             }
         }
 
-        private static void OverrideImport(Configuration configuration, Expression<Func<Configuration, bool>> expression)
-        {
+        private static void OverrideImport(Configuration configuration, Expression<Func<Configuration, bool>> expression) {
             var body = (MemberExpression)expression.Body;
             var property = (PropertyInfo)body.Member;
             var value = (bool)property.GetValue(configuration, null);
 
-            if (value)
-            {
+            if (value) {
                 return;
             }
 
             property.SetValue(configuration, true, null);
 
-            if (Global.PrintFile != null)
-            {
+            if (Global.PrintFile != null) {
                 Global.PrintFile.WriteLine("{0} in the configuration file has been overridden, an import is required.", property.Name);
             }
         }
