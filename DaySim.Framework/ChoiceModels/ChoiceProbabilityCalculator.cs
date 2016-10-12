@@ -929,9 +929,7 @@ namespace DaySim.Framework.ChoiceModels {
                     throw new ValueIsInfinityException(string.Format(@"Value is Infinity for alternative {0}, parameter {1}.", _index, parameter));
                 }
 
-                if (value == 0) return;
-
-                if (parameter >= _choiceProbabilityCalculator._coefficients.Length) {
+                 if (parameter >= _choiceProbabilityCalculator._coefficients.Length) {
                     return;
                 }
 
@@ -954,6 +952,8 @@ namespace DaySim.Framework.ChoiceModels {
 
                     _choiceProbabilityCalculator.AddObservation(utility);
                 } else {
+                    if (value == 0.0) return;
+
                     if (coefficient.IsBaseSizeVariable) {
                         Size += value;
                     } else if (coefficient.IsSizeVariable) {
@@ -1128,8 +1128,6 @@ namespace DaySim.Framework.ChoiceModels {
                     throw new ValueIsInfinityException(string.Format(@"Value is Infinity for component {0}, parameter {1}.", _index, parameter));
                 }
 
-                if (value == 0) return;
-
                 if (parameter >= _choiceProbabilityCalculator._coefficients.Length) {
                     return;
                 }
@@ -1153,6 +1151,8 @@ namespace DaySim.Framework.ChoiceModels {
 
                     _choiceProbabilityCalculator.AddObservation(utility);
                 } else {
+                    if (value == 0.0) return;
+
                     if (coefficient.IsBaseSizeVariable) {
                         Size += value;
                     } else if (coefficient.IsSizeVariable) {
