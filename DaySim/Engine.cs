@@ -1349,7 +1349,7 @@ namespace DaySim {
             if (Global.Configuration.HouseholdSamplingRateOneInX < 1) {
                 Global.Configuration.HouseholdSamplingRateOneInX = 1;
             }
-            Debug.Assert(Global.Configuration.HouseholdSamplingStartWithY < Global.Configuration.HouseholdSamplingRateOneInX, "Error: Global.Configuration.HouseholdSamplingStartWithY (" + Global.Configuration.HouseholdSamplingStartWithY + ") must be less than Global.Configuration.HouseholdSamplingRateOneInX (" + Global.Configuration.HouseholdSamplingRateOneInX + ") or no models will be run!");
+            Debug.Assert(Global.Configuration.HouseholdSamplingStartWithY <= Global.Configuration.HouseholdSamplingRateOneInX, "Error: Global.Configuration.HouseholdSamplingStartWithY (" + Global.Configuration.HouseholdSamplingStartWithY + ") must be less than or equal to Global.Configuration.HouseholdSamplingRateOneInX (" + Global.Configuration.HouseholdSamplingRateOneInX + ") or no models will be run!");
             ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner, false);
 
             int numberOfChoiceModelThreads = GetNumberOfChoiceModelThreads();
