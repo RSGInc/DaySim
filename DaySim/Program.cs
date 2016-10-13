@@ -150,6 +150,13 @@ namespace DaySim {
 
                 Environment.Exit(2);
             } finally {
+#if DEBUG
+                string lockCounts = ParallelUtility.getLockCounts();
+                Console.WriteLine(lockCounts);
+                if (Global.PrintFile != null) {
+                    Global.PrintFile.WriteLine(lockCounts);
+                }
+#endif
                 if (Global.PrintFile != null) {
                     Global.PrintFile.Dispose();
                 }

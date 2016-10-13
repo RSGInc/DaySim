@@ -5,6 +5,7 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.Framework.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -29,6 +30,10 @@ namespace DaySim.Framework.Persistence {
 			}
 
 			lock (_queue) {
+#if DEBUG
+ParallelUtility.countLocks("_queue");
+#endif
+
 				_shutdown = true;
 
 				Monitor.Pulse(_queue);
@@ -65,6 +70,10 @@ namespace DaySim.Framework.Persistence {
 
 		public void Add(ISavable obj) {
 			lock (_queue) {
+#if DEBUG
+ParallelUtility.countLocks("_queue");
+#endif
+
 				_queue.Enqueue(obj);
 
 				Monitor.Pulse(_queue);
@@ -74,6 +83,10 @@ namespace DaySim.Framework.Persistence {
 		private void Save() {
 			while (true) {
 				lock (_queue) {
+#if DEBUG
+ParallelUtility.countLocks("_queue");
+#endif
+
 					if (_queue.Count == 0 && !_shutdown) {
 						Monitor.Wait(_queue);
 					}

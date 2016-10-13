@@ -6,7 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +19,21 @@ namespace DaySim.Framework.Core {
         /// </summary>
         public static ThreadLocal<int> threadLocalAssignedIndex = null;
 
+#if DEBUG
+        internal static Dictionary<string, long> lockCounts = new Dictionary<string, long>();
+        internal static void countLocks(string lockObjectName) {
+            long counter;
+            lockCounts[lockObjectName] = lockCounts.TryGetValue(lockObjectName, out counter) ? ++counter : 1;
+        }
+
+        public static string getLockCounts() {
+            StringBuilder sb = new StringBuilder("Lock counts:\n");
+            foreach (KeyValuePair<string, long> kv in lockCounts) {
+                sb.AppendLine("\t" + kv.Key + ": " + string.Format("{0:n0}", kv.Value));
+            }
+            return sb.ToString();
+        }
+#endif
         public static int NThreads { get; private set; }
 
         public static void Init(Configuration configuration) {

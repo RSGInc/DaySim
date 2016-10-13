@@ -551,6 +551,10 @@ namespace DaySim.Framework.ChoiceModels {
         private int GetNextPosition() {
             if (_modelIsInEstimationMode) {
                 lock (_getNextPositionLock) {
+#if DEBUG
+ParallelUtility.countLocks("_getNextPositionLock");
+#endif
+
                     return _position++;
                 }
             }
@@ -580,6 +584,10 @@ namespace DaySim.Framework.ChoiceModels {
 
         private NestedAlternative GetNestedAlternative(int id, int index, int levelIndex, int thetaParameter) {
             lock (_getNestedAlternativeLock) {
+#if DEBUG
+ParallelUtility.countLocks("_getNestedAlternativeLock");
+#endif
+
                 var nestedAlternative = _nestedAlternatives[index];
 
                 if (nestedAlternative == null) {
@@ -596,6 +604,10 @@ namespace DaySim.Framework.ChoiceModels {
 
         private Level GetLevel(int levelIndex) {
             lock (_getLevelLock) {
+#if DEBUG
+ParallelUtility.countLocks("_getLevelLock");
+#endif
+
                 var level = _levels[levelIndex];
 
                 if (level == null) {
@@ -610,6 +622,10 @@ namespace DaySim.Framework.ChoiceModels {
 
         public void CreateUtilityComponent(int index) {
             lock (_createUtilityComponentLock) {
+#if DEBUG
+ParallelUtility.countLocks("_createUtilityComponentLock");
+#endif
+
                 if (index >= _utilityComponents.Count) {
                     for (var i = _utilityComponents.Count; i <= index; i++) {
                         _utilityComponents.Add(null);
@@ -634,6 +650,10 @@ namespace DaySim.Framework.ChoiceModels {
 
         public void CreateSizeComponent(int index) {
             lock (_addSizeComponentLock) {
+#if DEBUG
+ParallelUtility.countLocks("_addSizeComponentLock");
+#endif
+
                 if (index >= _sizeComponents.Count) {
                     for (var i = _sizeComponents.Count; i <= index; i++) {
                         _sizeComponents.Add(null);

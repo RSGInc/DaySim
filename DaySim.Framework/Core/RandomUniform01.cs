@@ -15,12 +15,20 @@ namespace DaySim.Framework.Core {
 
 		public RandomUniform01(int randseed = 1) {
 			lock (_randomUniform01ResetLock) {
+#if DEBUG
+ParallelUtility.countLocks("_randomUniform01ResetLock");
+#endif
+
 				ResetUniform01(randseed);
 			}
 		}
 
 		public double Uniform01() {
 		 lock (_randomUniform01Lock) {
+#if DEBUG
+ParallelUtility.countLocks("_randomUniform01Lock");
+#endif
+
 			var r = _randseed / 177;
 			var s = _randseed - 177 * r;
 

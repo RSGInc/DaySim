@@ -17,6 +17,7 @@ A copy of the GNU General Public License is available at
 http://www.fsf.org/licensing/licenses
 >>> END OF LICENSE >>>
 *************************************************************************/
+using DaySim.Framework.Core;
 using System;
 public partial class alglib {
     /********************************************************************
@@ -504,6 +505,10 @@ public partial class alglib {
         public static double randomreal() {
             double r = 0;
             lock (rndobject) {
+#if DEBUG
+ParallelUtility.countLocks("rndobject");
+#endif
+
                 r = rndobject.NextDouble();
             }
             return r;
@@ -511,6 +516,10 @@ public partial class alglib {
         public static int randominteger(int N) {
             int r = 0;
             lock (rndobject) {
+#if DEBUG
+ParallelUtility.countLocks("rndobject");
+#endif
+
                 r = rndobject.Next(N);
             }
             return r;

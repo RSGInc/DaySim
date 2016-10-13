@@ -45,12 +45,20 @@ namespace DaySim.Framework.Core {
 
 		public double Uniform01() {
 			lock (_uniform01Lock) {
+#if DEBUG
+ParallelUtility.countLocks("_uniform01Lock");
+#endif
+
 				return GetRandomUniform().Uniform01();
 			}
 		}
 
 		public void ResetUniform01(int randomSeed = 1) {
 			lock (_resetUniform01Lock) {
+#if DEBUG
+ParallelUtility.countLocks("_resetUniform01Lock");
+#endif
+
 					_uniformRandom.ResetUniform01(randomSeed);
 			}
 		}

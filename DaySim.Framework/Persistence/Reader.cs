@@ -55,6 +55,10 @@ namespace DaySim.Framework.Persistence {
 
 		public TModel Seek(int id) {
 			lock (typeof (TModel)) {
+#if DEBUG
+ParallelUtility.countLocks("typeof (TModel)");
+#endif
+
 				long location;
 
 				return !_index.TryGetValue(id, out location) ? null : Seek(location);
@@ -169,6 +173,10 @@ namespace DaySim.Framework.Persistence {
 
 		public IList<TModel> Seek(int parentId, string indexName) {
 			lock (typeof (TModel)) {
+#if DEBUG
+ParallelUtility.countLocks("typeof (TModel)");
+#endif
+
 				var index = _indexes[indexName];
 
 				int[] elements;
