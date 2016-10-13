@@ -1385,7 +1385,7 @@ namespace DaySim {
                     //retrieve threadAssignedIndexIndex so can see logging output
                     int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
                     List<IHousehold> currentThreadHouseholds = threadHouseholds[threadAssignedIndex];
-                    Global.PrintFile.WriteLine("For threadAssignedIndex: " + threadAssignedIndex + " there are " + currentThreadHouseholds.Count + " households");
+                    Global.PrintFile.WriteLine("For threadAssignedIndex: " + threadAssignedIndex + " there are " + string.Format("{0:n0}", currentThreadHouseholds.Count) + " households", writeToConsole: true);
                     foreach (var household in currentThreadHouseholds) {
 #if RELEASE
 					try {
