@@ -550,13 +550,7 @@ namespace DaySim.Framework.ChoiceModels {
 
         private int GetNextPosition() {
             if (_modelIsInEstimationMode) {
-                lock (_getNextPositionLock) {
-#if DEBUG
-ParallelUtility.countLocks("_getNextPositionLock");
-#endif
-
-                    return _position++;
-                }
+                return _position++;
             }
 
             return _position;
@@ -583,65 +577,53 @@ ParallelUtility.countLocks("_getNextPositionLock");
         }
 
         private NestedAlternative GetNestedAlternative(int id, int index, int levelIndex, int thetaParameter) {
-            lock (_getNestedAlternativeLock) {
-#if DEBUG
-ParallelUtility.countLocks("_getNestedAlternativeLock");
-#endif
 
-                var nestedAlternative = _nestedAlternatives[index];
+            var nestedAlternative = _nestedAlternatives[index];
 
-                if (nestedAlternative == null) {
-                    nestedAlternative = new NestedAlternative(this, id, index, levelIndex, thetaParameter, _modelIsInEstimationMode ? Constants.DEFAULT_VALUE : _coefficients[thetaParameter].Value);
+            if (nestedAlternative == null) {
+                nestedAlternative = new NestedAlternative(this, id, index, levelIndex, thetaParameter, _modelIsInEstimationMode ? Constants.DEFAULT_VALUE : _coefficients[thetaParameter].Value);
 
-                    _nestedAlternatives[index] = nestedAlternative;
-                }
-
-                nestedAlternative.Update(_key);
-
-                return nestedAlternative;
+                _nestedAlternatives[index] = nestedAlternative;
             }
+
+            nestedAlternative.Update(_key);
+
+            return nestedAlternative;
+
         }
 
         private Level GetLevel(int levelIndex) {
-            lock (_getLevelLock) {
-#if DEBUG
-ParallelUtility.countLocks("_getLevelLock");
-#endif
 
-                var level = _levels[levelIndex];
+            var level = _levels[levelIndex];
 
-                if (level == null) {
-                    level = new Level(_nestedAlternatives.Length);
+            if (level == null) {
+                level = new Level(_nestedAlternatives.Length);
 
-                    _levels[levelIndex] = level;
-                }
-
-                return level;
+                _levels[levelIndex] = level;
             }
+
+            return level;
+
         }
 
         public void CreateUtilityComponent(int index) {
-            lock (_createUtilityComponentLock) {
-#if DEBUG
-ParallelUtility.countLocks("_createUtilityComponentLock");
-#endif
 
-                if (index >= _utilityComponents.Count) {
-                    for (var i = _utilityComponents.Count; i <= index; i++) {
-                        _utilityComponents.Add(null);
-                    }
+            if (index >= _utilityComponents.Count) {
+                for (var i = _utilityComponents.Count; i <= index; i++) {
+                    _utilityComponents.Add(null);
                 }
-
-                var component = _utilityComponents[index];
-
-                if (component == null) {
-                    component = new Component(this, index);
-
-                    _utilityComponents[index] = component;
-                }
-
-                component.Update(_key);
             }
+
+            var component = _utilityComponents[index];
+
+            if (component == null) {
+                component = new Component(this, index);
+
+                _utilityComponents[index] = component;
+            }
+
+            component.Update(_key);
+
         }
 
         public Component GetUtilityComponent(int index) {
@@ -649,27 +631,22 @@ ParallelUtility.countLocks("_createUtilityComponentLock");
         }
 
         public void CreateSizeComponent(int index) {
-            lock (_addSizeComponentLock) {
-#if DEBUG
-ParallelUtility.countLocks("_addSizeComponentLock");
-#endif
-
-                if (index >= _sizeComponents.Count) {
-                    for (var i = _sizeComponents.Count; i <= index; i++) {
-                        _sizeComponents.Add(null);
-                    }
+            if (index >= _sizeComponents.Count) {
+                for (var i = _sizeComponents.Count; i <= index; i++) {
+                    _sizeComponents.Add(null);
                 }
-
-                var component = _sizeComponents[index];
-
-                if (component == null) {
-                    component = new Component(this, index);
-
-                    _sizeComponents[index] = component;
-                }
-
-                component.Update(_key);
             }
+
+            var component = _sizeComponents[index];
+
+            if (component == null) {
+                component = new Component(this, index);
+
+                _sizeComponents[index] = component;
+            }
+
+            component.Update(_key);
+
         }
 
         public Component GetSizeComponent(int index) {
@@ -949,7 +926,7 @@ ParallelUtility.countLocks("_addSizeComponentLock");
                     throw new ValueIsInfinityException(string.Format(@"Value is Infinity for alternative {0}, parameter {1}.", _index, parameter));
                 }
 
-                 if (parameter >= _choiceProbabilityCalculator._coefficients.Length) {
+                if (parameter >= _choiceProbabilityCalculator._coefficients.Length) {
                     return;
                 }
 
