@@ -11,10 +11,8 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using DaySim.AggregateLogsums;
 using DaySim.ChoiceModels;
-using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
@@ -28,6 +26,7 @@ using DaySim.Sampling;
 using DaySim.ShadowPricing;
 using HDF5DotNet;
 using Ninject;
+
 using Timer = DaySim.Framework.Core.Timer;
 using System.Diagnostics;
 
@@ -1362,19 +1361,19 @@ namespace DaySim {
                 threadHouseholds[i] = new List<IHousehold>();
             }
 
-            var householdIndex = 0;
+            var overallHouseholdIndex = 0;
             var addedHousehouldCounter = 0;
             foreach (var household in Global.Kernel.Get<IPersistenceFactory<IHousehold>>().Reader) {
                 var nextRandom = randomUtility.GetNext();  //always get next random, even if won't be used so behavior identical with DaySimController and usual 
                 if ((household.Id % Global.Configuration.HouseholdSamplingRateOneInX) == (Global.Configuration.HouseholdSamplingStartWithY - 1)) {
-                    if (_start == -1 || _end == -1 || _index == -1 || householdIndex.IsBetween(_start, _end)) {
+                    if (_start == -1 || _end == -1 || _index == -1 || overallHouseholdIndex.IsBetween(_start, _end)) {
                         householdRandomValues[household.Id] = nextRandom;
                         int threadIndex = addedHousehouldCounter++ % numberOfChoiceModelThreads;
 
                         threadHouseholds[threadIndex].Add(household);
                     }
                 }   //end if household being sampled
-                householdIndex++;
+                overallHouseholdIndex++;
             }   //end foreach household
 
             //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
@@ -1386,43 +1385,40 @@ namespace DaySim {
                     int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
                     List<IHousehold> currentThreadHouseholds = threadHouseholds[threadAssignedIndex];
                     Global.PrintFile.WriteLine("For threadAssignedIndex: " + threadAssignedIndex + " there are " + string.Format("{0:n0}", currentThreadHouseholds.Count) + " households", writeToConsole: true);
-                    foreach (var household in currentThreadHouseholds) {
-#if RELEASE
-					try {
-#endif
-                        var randomSeed = householdRandomValues[household.Id];
-                        var choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
+                    IHousehold household = null;
+                    try {
+                        //use a for loop instead of foreach on currentThreadHouseholds because wish to make try catch outside loop but still have access to value of household on catch
+                        for (int threadHouseholdIndex = currentThreadHouseholds.Count - 1; threadHouseholdIndex >= 0; --threadHouseholdIndex) {
+                            household = currentThreadHouseholds[threadHouseholdIndex];
+                            var randomSeed = householdRandomValues[household.Id];
+                            var choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
 
-                        choiceModelRunner.RunChoiceModels();
-#if RELEASE
-					}
-					catch (Exception e) {
-						throw new ChoiceModelRunnerException(string.Format("An error occurred in ChoiceModelRunner for household {0}.", household.Id), e);
-					}
-#endif
+                            choiceModelRunner.RunChoiceModels();
 
-                        if (Global.Configuration.ShowRunChoiceModelsStatus) {
+                            if (Global.Configuration.ShowRunChoiceModelsStatus) {
+                                if (current % 1000 == 0) {
+                                    var countLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
+                                    //Actum and Default differ in that one Actum counts TotalHouseholdDays and Default counts TotalPersonDays
+                                    var countStringLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
 
-                            //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
-                            //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
-                            current++;
+                                    var ivcountLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
 
-                            if (current != 1 && current != addedHousehouldCounter && current % 1000 != 0) {
-                                var countLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
-                                //Actum and Default differ in that one Actum counts TotalHouseholdDays and Default counts TotalPersonDays
-                                var countStringLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
+                                    Console.Write(string.Format("\r{0:p}", (double)current / addedHousehouldCounter) +
+                                        string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", current, addedHousehouldCounter, countStringLocal, countLocal) +
+                                        (Global.Configuration.ReportInvalidPersonDays
+                                            ? string.Format("Total Invalid Attempts: {0:n0}",
+                                                ivcountLocal)
+                                            : ""));
+                                }   //if outputting progress to console
 
-                                var ivcountLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
-
-                                Console.Write(string.Format("\r{0:p}", (double)current / addedHousehouldCounter) +
-                                    string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", current, addedHousehouldCounter, countStringLocal, countLocal) +
-                                    (Global.Configuration.ReportInvalidPersonDays
-                                        ? string.Format("Total Invalid Attempts: {0:n0}",
-                                            ivcountLocal)
-                                        : ""));
-                            }   //if outputting progress to console
-                        }   //end if ShowRunChoiceModelsStatus
-                    }   //end household loop for this threadAssignedIndex
+                                //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
+                                //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
+                                current++;
+                            }   //end if ShowRunChoiceModelsStatus
+                        }   //end household loop for this threadAssignedIndex
+                    } catch (Exception e) {
+                        throw new ChoiceModelRunnerException(string.Format("An error occurred in ChoiceModelRunner for household {0}.", household.Id), e);
+                    }
                 }));    //end creating Thread and ThreadStart
                 myThread.Name = "ChoiceModelRunner_" + (threadIndex + 1);
                 threads.Add(myThread);
