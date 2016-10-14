@@ -24,7 +24,7 @@ using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.Framework.Roster;
 using Daysim.Framework.Sampling;
 using Daysim.Sampling;
-using Ninject;
+using SimpleInjector;
 using HouseholdDayWrapper = Daysim.DomainModels.LD.Wrappers.HouseholdDayWrapper;
 using HouseholdWrapper = Daysim.DomainModels.LD.Wrappers.HouseholdWrapper;
 using PersonDayWrapper = Daysim.DomainModels.LD.Wrappers.PersonDayWrapper;

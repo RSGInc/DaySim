@@ -14,7 +14,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.ParkAndRideShadowPricing;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim {
 	public sealed class ParkAndRideNodeDao {
@@ -25,13 +25,13 @@ namespace DaySim {
 		public ParkAndRideNodeDao() {
 			var reader =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IParkAndRideNode>>()
 					.Reader;
 
 			var creator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IParkAndRideNodeCreator>>()
 					.Creator;
 

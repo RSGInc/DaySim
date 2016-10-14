@@ -13,7 +13,7 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.ChoiceModels.H.Models {
 	public class WorkUsualModeAndScheduleModel : ChoiceModel {
@@ -28,7 +28,7 @@ namespace DaySim.ChoiceModels.H.Models {
 		
 		private readonly ITourCreator _creator = 
 			Global
-			.Kernel
+			.Container
 			.Get<IWrapperFactory<ITourCreator>>()
 			.Creator;
 		

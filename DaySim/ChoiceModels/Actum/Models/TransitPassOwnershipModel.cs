@@ -15,7 +15,7 @@ using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.ChoiceModels.Actum.Models {
 	public class TransitPassOwnershipModel : ChoiceModel {

@@ -13,7 +13,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Persisters;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Sampling;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.Sampling {
 	public static class SamplingWeightsExporter {
@@ -43,7 +43,7 @@ namespace DaySim.Sampling {
 			
 			var zoneReader = 
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IZone>>()
 					.Reader;
 

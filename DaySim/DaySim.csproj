@@ -87,8 +87,8 @@
       <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ninject, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.4.0.0-beta-0134\lib\net45\Ninject.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=3.2.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.3.2.2\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -274,7 +274,6 @@
     <Compile Include="DomainModels\Default\Wrappers\TransitStopAreaWrapper.cs" />
     <Compile Include="DomainModels\Default\Wrappers\ZoneWrapper.cs" />
     <Compile Include="Settings\SettingsFactory.cs" />
-    <Compile Include="DomainModels\Factories\ModuleFactory.cs" />
     <Compile Include="DomainModels\Factories\PersistenceFactory.cs" />
     <Compile Include="DomainModels\Factories\SubzoneFactory.cs" />
     <Compile Include="DomainModels\Factories\WrapperFactory.cs" />

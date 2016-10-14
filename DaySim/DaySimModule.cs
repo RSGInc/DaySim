@@ -7,6 +7,7 @@
 
 using DaySim.AggregateLogsums;
 using DaySim.DomainModels.Factories;
+using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
@@ -14,142 +15,76 @@ using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
 using DaySim.Framework.Roster;
 using DaySim.Sampling;
-using Ninject.Modules;
+using SimpleInjector;
 
 namespace DaySim {
-	public sealed class DaySimModule : NinjectModule {
-		public override void Load() {
-			Bind<ImporterFactory>()
-				.ToSelf()
-				.InSingletonScope();
+	public static class DaySimModule {
+		public static void registerDependencies() {
+			Global.Container.Register<ImporterFactory>(Lifestyle.Singleton);
 
-			Bind<ExporterFactory>()
-				.ToSelf()
-				.InSingletonScope();
+			Global.Container.Register<ExporterFactory>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IParcel>>()
-				.To<PersistenceFactory<IParcel>>()
-				.InSingletonScope();
+            Global.Container.Register<IPersistenceFactory<IParcel>,PersistenceFactory<IParcel>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IParcelNode>>()
-				.To<PersistenceFactory<IParcelNode>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IParcelNode>,PersistenceFactory<IParcelNode>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IParkAndRideNode>>()
-				.To<PersistenceFactory<IParkAndRideNode>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IParkAndRideNode>,PersistenceFactory<IParkAndRideNode>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<ITransitStopArea>>()
-				.To<PersistenceFactory<ITransitStopArea>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<ITransitStopArea>,PersistenceFactory<ITransitStopArea>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IZone>>()
-				.To<PersistenceFactory<IZone>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IZone>,PersistenceFactory<IZone>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IHousehold>>()
-				.To<PersistenceFactory<IHousehold>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IHousehold>,PersistenceFactory<IHousehold>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IPerson>>()
-				.To<PersistenceFactory<IPerson>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IPerson>,PersistenceFactory<IPerson>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IHouseholdDay>>()
-				.To<PersistenceFactory<IHouseholdDay>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IHouseholdDay>,PersistenceFactory<IHouseholdDay>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IPersonDay>>()
-				.To<PersistenceFactory<IPersonDay>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IPersonDay>,PersistenceFactory<IPersonDay>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<ITour>>()
-				.To<PersistenceFactory<ITour>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<ITour>,PersistenceFactory<ITour>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<ITrip>>()
-				.To<PersistenceFactory<ITrip>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<ITrip>,PersistenceFactory<ITrip>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IJointTour>>()
-				.To<PersistenceFactory<IJointTour>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IJointTour>,PersistenceFactory<IJointTour>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IFullHalfTour>>()
-				.To<PersistenceFactory<IFullHalfTour>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IFullHalfTour>,PersistenceFactory<IFullHalfTour>>(Lifestyle.Singleton);
 
-			Bind<IPersistenceFactory<IPartialHalfTour>>()
-				.To<PersistenceFactory<IPartialHalfTour>>()
-				.InSingletonScope();
+			Global.Container.Register<IPersistenceFactory<IPartialHalfTour>,PersistenceFactory<IPartialHalfTour>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IParcelCreator>>()
-				.To<WrapperFactory<IParcelWrapper, IParcelCreator, IParcel>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IParcelCreator>,WrapperFactory<IParcelWrapper, IParcelCreator, IParcel>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IParcelNodeCreator>>()
-				.To<WrapperFactory<IParcelNodeWrapper, IParcelNodeCreator, IParcelNode>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IParcelNodeCreator>,WrapperFactory<IParcelNodeWrapper, IParcelNodeCreator, IParcelNode>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IParkAndRideNodeCreator>>()
-				.To<WrapperFactory<IParkAndRideNodeWrapper, IParkAndRideNodeCreator, IParkAndRideNode>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IParkAndRideNodeCreator>,WrapperFactory<IParkAndRideNodeWrapper, IParkAndRideNodeCreator, IParkAndRideNode>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<ITransitStopAreaCreator>>()
-				.To<WrapperFactory<ITransitStopAreaWrapper, ITransitStopAreaCreator, ITransitStopArea>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<ITransitStopAreaCreator>,WrapperFactory<ITransitStopAreaWrapper, ITransitStopAreaCreator, ITransitStopArea>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IZoneCreator>>()
-				.To<WrapperFactory<IZoneWrapper, IZoneCreator, IZone>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IZoneCreator>,WrapperFactory<IZoneWrapper, IZoneCreator, IZone>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IHouseholdCreator>>()
-				.To<WrapperFactory<IHouseholdWrapper, IHouseholdCreator, IHousehold>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IHouseholdCreator>,WrapperFactory<IHouseholdWrapper, IHouseholdCreator, IHousehold>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IPersonCreator>>()
-				.To<WrapperFactory<IPersonWrapper, IPersonCreator, IPerson>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IPersonCreator>,WrapperFactory<IPersonWrapper, IPersonCreator, IPerson>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IHouseholdDayCreator>>()
-				.To<WrapperFactory<IHouseholdDayWrapper, IHouseholdDayCreator, IHouseholdDay>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IHouseholdDayCreator>,WrapperFactory<IHouseholdDayWrapper, IHouseholdDayCreator, IHouseholdDay>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IPersonDayCreator>>()
-				.To<WrapperFactory<IPersonDayWrapper, IPersonDayCreator, IPersonDay>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IPersonDayCreator>,WrapperFactory<IPersonDayWrapper, IPersonDayCreator, IPersonDay>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<ITourCreator>>()
-				.To<WrapperFactory<ITourWrapper, ITourCreator, ITour>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<ITourCreator>,WrapperFactory<ITourWrapper, ITourCreator, ITour>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<ITripCreator>>()
-				.To<WrapperFactory<ITripWrapper, ITripCreator, ITrip>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<ITripCreator>,WrapperFactory<ITripWrapper, ITripCreator, ITrip>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IJointTourCreator>>()
-				.To<WrapperFactory<IJointTourWrapper, IJointTourCreator, IJointTour>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IJointTourCreator>,WrapperFactory<IJointTourWrapper, IJointTourCreator, IJointTour>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IFullHalfTourCreator>>()
-				.To<WrapperFactory<IFullHalfTourWrapper, IFullHalfTourCreator, IFullHalfTour>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IFullHalfTourCreator>,WrapperFactory<IFullHalfTourWrapper, IFullHalfTourCreator, IFullHalfTour>>(Lifestyle.Singleton);
 
-			Bind<IWrapperFactory<IPartialHalfTourCreator>>()
-				.To<WrapperFactory<IPartialHalfTourWrapper, IPartialHalfTourCreator, IPartialHalfTour>>()
-				.InSingletonScope();
+			Global.Container.Register<IWrapperFactory<IPartialHalfTourCreator>,WrapperFactory<IPartialHalfTourWrapper, IPartialHalfTourCreator, IPartialHalfTour>>(Lifestyle.Singleton);
 
-			Bind<SkimFileReaderFactory>()
-				.ToSelf()
-				.InSingletonScope();
+			Global.Container.Register<SkimFileReaderFactory>(Lifestyle.Singleton);
 
-			Bind<SamplingWeightsSettingsFactory>()
-				.ToSelf()
-				.InSingletonScope();
+			Global.Container.Register<SamplingWeightsSettingsFactory>(Lifestyle.Singleton);
 
-			Bind<AggregateLogsumsCalculatorFactory>()
-				.ToSelf()
-				.InSingletonScope();
+			Global.Container.Register<AggregateLogsumsCalculatorFactory>(Lifestyle.Singleton);
 		}
 	}
 }

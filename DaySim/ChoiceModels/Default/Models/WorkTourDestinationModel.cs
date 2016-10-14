@@ -20,7 +20,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.Sampling;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.ChoiceModels.Default.Models {
 	public class WorkTourDestinationModel : ChoiceModel {
@@ -117,7 +117,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 			ChoiceModelUtility.DrawRandomTourTimePeriods(tour, tourCategory);
 
-			var segment = Global.Kernel.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
+			var segment = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
 			var excludedParcel = person.UsualWorkParcel == null || person.UsualWorkParcelId == household.ResidenceParcelId || tour.DestinationPurpose != Global.Settings.Purposes.Work || tour.GetTourCategory() == Global.Settings.TourCategories.WorkBased ? null : person.UsualWorkParcel;
 			var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, tour.OriginParcel, excludedParcel, excludedParcel, choice);
 			var tourDestinationUtilities = new TourDestinationUtilities(tour, sampleSize, primaryFlag, secondaryFlag, fastestAvailableTimeOfDay, maxAvailableMinutes);

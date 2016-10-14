@@ -24,7 +24,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.Sampling;
-using Ninject;
+using SimpleInjector;
 using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
 using HouseholdWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdWrapper;
 using PersonDayWrapper = DaySim.DomainModels.Actum.Wrappers.PersonDayWrapper;
@@ -513,7 +513,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 			int destIndex = -1;
 			// destination component code from TourDestinationModel
 
-			var segment = Global.Kernel.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
+			var segment = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
 			if (destinationIsConstrained) sampleSize = 1;  // so that only the constrained destination ends up in the sample
 			var chosenDestination = choice == null ? null : choice.Destination;
 			var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, tour.OriginParcel, chosenDestination);

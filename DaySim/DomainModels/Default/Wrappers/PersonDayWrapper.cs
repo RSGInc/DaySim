@@ -16,7 +16,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Persisters;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.DomainModels.Default.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
@@ -38,7 +38,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_exporter =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IPersonDay>>()
 					.Exporter;
 
@@ -46,7 +46,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_personDayCreator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IPersonDayCreator>>()
 					.Creator;
 
@@ -54,13 +54,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_tourReader =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<ITour>>()
 					.Reader;
 
 			_tourCreator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<ITourCreator>>()
 					.Creator;
 
@@ -972,7 +972,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Kernel
+				.Container
 				.Get<IPersistenceFactory<IPersonDay>>()
 				.Close();
 		}

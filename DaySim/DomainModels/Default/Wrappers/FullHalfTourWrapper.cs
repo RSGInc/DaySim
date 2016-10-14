@@ -11,7 +11,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Persisters;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.DomainModels.Default.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
@@ -26,7 +26,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_exporter =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IFullHalfTour>>()
 					.Exporter;
 
@@ -208,7 +208,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Kernel
+				.Container
 				.Get<IPersistenceFactory<IFullHalfTour>>()
 				.Close();
 		}

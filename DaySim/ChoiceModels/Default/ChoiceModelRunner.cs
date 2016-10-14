@@ -16,7 +16,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
-using Ninject;
+using SimpleInjector;
 //using TransitPassOwnershipModel = DaySim.ChoiceModels.H.Models.TransitPassOwnershipModel;
 
 namespace DaySim.ChoiceModels.Default {
@@ -28,7 +28,7 @@ namespace DaySim.ChoiceModels.Default {
 		public ChoiceModelRunner(IHousehold household) {
 			_household =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IHouseholdCreator>>()
 					.Creator
 					.CreateWrapper(household);

@@ -18,7 +18,7 @@ using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
 using DaySim.Sampling;
-using Ninject;
+using SimpleInjector;
 using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
 using HouseholdWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdWrapper;
 using PersonDayWrapper = DaySim.DomainModels.Actum.Wrappers.PersonDayWrapper;
@@ -146,7 +146,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 			// time window in minutes for yet unmodeled portion of halftour, only consider persons on this trip
 			var availableWindow = timeWindow.AvailableWindow(destinationDepartureTime, Global.Settings.TimeDirections.Both);
 
-			var segment = Global.Kernel.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetIntermediateStopSegment(trip.DestinationPurpose, trip.Tour.Mode);
+			var segment = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetIntermediateStopSegment(trip.DestinationPurpose, trip.Tour.Mode);
 			var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, trip.Tour, trip, choice);
 			var intermediateStopLocationUtilities = new IntermediateStopLocationUtilities(trip, sampleSize, destinationDepartureTime, availableWindow);
 

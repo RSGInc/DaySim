@@ -22,7 +22,7 @@ using Daysim.Framework.DomainModels.Models;
 using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.Framework.Factories;
 using Daysim.Framework.Roster;
-using Ninject;
+using SimpleInjector;
 
 namespace Daysim.ChoiceModels.Actum.Models {
 	public class WorkTourModeModel : ChoiceModel {

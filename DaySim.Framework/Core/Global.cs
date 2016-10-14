@@ -14,7 +14,7 @@ using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Sampling;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.Framework.Core {
 	public static class Global {
@@ -24,7 +24,7 @@ namespace DaySim.Framework.Core {
         private const string PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "park_and_ride_" + SHADOW_PRICES_FILENAME;
         private const string ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILENAME;
 
-        public static IKernel Kernel { get; set; }
+        public static Container Container { get; set; }
 
 		public static Configuration Configuration { get; set; }
 
@@ -395,7 +395,7 @@ namespace DaySim.Framework.Core {
 
         public static void InitializeNodeIndex() {
 			var reader =
-				Kernel
+				Container
 					.Get<IPersistenceFactory<IParcelNode>>()
 					.Reader;
 

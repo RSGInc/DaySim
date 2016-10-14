@@ -16,7 +16,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
 using DaySim.Sampling;
-using Ninject;
+using SimpleInjector;
 //using System.IO;
 //using System.Runtime.Serialization.Formatters.Binary;
 //using System.Threading.Tasks;
@@ -145,7 +145,7 @@ namespace DaySim.ChoiceModels.H.Models {
 
 			ChoiceModelUtility.DrawRandomTourTimePeriods(tour, tourCategory);
 
-			var segment = Global.Kernel.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
+			var segment = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
 
 			var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, tour.OriginParcel, choice);
 			var tourDestinationUtilities = new TourDestinationUtilities(tour, sampleSize, secondaryFlag, personDay.GetIsWorkOrSchoolPattern().ToFlag(), personDay.GetIsOtherPattern().ToFlag(), fastestAvailableTimeOfDay, maxAvailableMinutes);

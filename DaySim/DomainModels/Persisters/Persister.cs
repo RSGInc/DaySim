@@ -12,25 +12,25 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Persisters;
 using DaySim.Framework.Persistence;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.DomainModels.Persisters {
 	public abstract class Persister<TModel> : IPersisterReader<TModel>, IPersisterImporter, IPersisterExporter, IDisposable where TModel : class, IModel, new() {
 		private readonly Lazy<Reader<TModel>> _reader = new Lazy<Reader<TModel>>(() =>
 			Global
-				.Kernel
+				.Container
 				.Get<Reader<TModel>>());
 
 		private readonly Lazy<IImporter> _importer = new Lazy<IImporter>(() =>
 			Global
-				.Kernel
+				.Container
 				.Get<ImporterFactory>()
 				.GetImporter<TModel>(Global.GetInputPath<TModel>(), Global.GetInputDelimiter<TModel>())
 			);
 
 		private readonly Lazy<IExporter<TModel>> _exporter = new Lazy<IExporter<TModel>>(() =>
 			Global
-				.Kernel
+				.Container
 				.Get<ExporterFactory>()
 				.GetExporter<TModel>(Global.GetOutputPath<TModel>(), Global.GetOutputDelimiter<TModel>())
 			);

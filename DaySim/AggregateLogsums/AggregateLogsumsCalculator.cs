@@ -19,7 +19,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.AggregateLogsums {
 	public sealed class AggregateLogsumsCalculator : IAggregateLogsumsCalculator {
@@ -286,7 +286,7 @@ namespace DaySim.AggregateLogsums {
 
 			var zoneReader =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IZone>>()
 					.Reader;
 
@@ -658,13 +658,13 @@ namespace DaySim.AggregateLogsums {
 
 			var parcelReader = 
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IParcel>>()
 					.Reader;
 
 			var parcelCreator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IParcelCreator>>()
 					.Creator;
 

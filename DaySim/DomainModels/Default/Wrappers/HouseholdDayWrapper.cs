@@ -14,7 +14,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Persisters;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.DomainModels.Default.Wrappers {
 	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
@@ -47,7 +47,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_exporter =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IHouseholdDay>>()
 					.Exporter;
 
@@ -55,7 +55,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_householdDayCreator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IHouseholdDayCreator>>()
 					.Creator;
 
@@ -63,13 +63,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_personDayReader =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IPersonDay>>()
 					.Reader;
 
 			_personDayCreator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IPersonDayCreator>>()
 					.Creator;
 
@@ -77,13 +77,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_jointTourReader =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IJointTour>>()
 					.Reader;
 
 			_jointTourCreator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IJointTourCreator>>()
 					.Creator;
 
@@ -91,13 +91,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_fullHalfTourReader =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IFullHalfTour>>()
 					.Reader;
 
 			_fullHalfTourCreator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IFullHalfTourCreator>>()
 					.Creator;
 
@@ -105,13 +105,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_partialHalfTourReader =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IPartialHalfTour>>()
 					.Reader;
 
 			_partialHalfTourCreator =
 				Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IPartialHalfTourCreator>>()
 					.Creator;
 
@@ -465,7 +465,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Kernel
+				.Container
 				.Get<IPersistenceFactory<IHouseholdDay>>()
 				.Close();
 		}

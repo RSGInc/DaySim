@@ -22,7 +22,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.ChoiceModels.H {
 	[UsedImplicitly]
@@ -33,7 +33,7 @@ namespace DaySim.ChoiceModels.H {
 		public ChoiceModelRunner(IHousehold household) {
 			_household =
 				(HouseholdWrapper) Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IHouseholdCreator>>()
 					.Creator
 					.CreateWrapper(household);

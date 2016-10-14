@@ -23,7 +23,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
-using Ninject;
+using SimpleInjector;
 using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
 using HouseholdWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdWrapper;
 using IntermediateStopGenerationModel = DaySim.ChoiceModels.Actum.Models.IntermediateStopGenerationModel;
@@ -45,7 +45,7 @@ namespace DaySim.ChoiceModels.Actum {
 		public ChoiceModelRunner(IHousehold household) {
 			_household =
 				(HouseholdWrapper) Global
-					.Kernel
+					.Container
 					.Get<IWrapperFactory<IHouseholdCreator>>()
 					.Creator
 					.CreateWrapper(household);

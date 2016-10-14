@@ -18,7 +18,7 @@ using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
-using Ninject;
+using SimpleInjector;
 using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
 using HouseholdWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdWrapper;
 using PersonDayWrapper = DaySim.DomainModels.Actum.Wrappers.PersonDayWrapper;
@@ -35,7 +35,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 		
 		private readonly ITourCreator _creator = 
 			Global
-			.Kernel
+			.Container
 			.Get<IWrapperFactory<ITourCreator>>()
 			.Creator;
 

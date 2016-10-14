@@ -16,74 +16,73 @@ namespace Daysim.DomainModels.LD {
 	[Factory(Factory.ModuleFactory, DataType = DataType.LD)]
 	public class ModelModule : NinjectModule {
 		public override void Load() {
-			Bind<Reader<Parcel>>()
+			Global.Container.Register<Reader<Parcel>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingParcelPath);
 
-			Bind<Reader<ParcelNode>>()
+			Global.Container.Register<Reader<ParcelNode>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingParcelNodePath);
 
-			Bind<Reader<ParkAndRideNode>>()
+			Global.Container.Register<Reader<ParkAndRideNode>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingParkAndRideNodePath);
 
-			Bind<Reader<TransitStopArea>>()
+			Global.Container.Register<Reader<TransitStopArea>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingTransitStopAreaPath);
 
-			Bind<Reader<Zone>>()
+			Global.Container.Register<Reader<Zone>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingZonePath);
 
-			Bind<Reader<Household>>()
+			Global.Container.Register<Reader<Household>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingHouseholdPath);
 
-			Bind<Reader<Person>>().
+			Global.Container.Register<Reader<Person>>().
 				ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingPersonPath);
 
-			Bind<Reader<HouseholdDay>>()
+			Global.Container.Register<Reader<HouseholdDay>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingHouseholdDayPath);
 
-			Bind<Reader<PersonDay>>()
+			Global.Container.Register<Reader<PersonDay>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingPersonDayPath);
 
-			Bind<Reader<Tour>>()
+			Global.Container.Register<Reader<Tour>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingTourPath);
 
-			Bind<Reader<Trip>>()
+			Global.Container.Register<Reader<Trip>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingTripPath);
 
-			Bind<Reader<JointTour>>()
+			Global.Container.Register<Reader<JointTour>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingJointTourPath);
 
-			Bind<Reader<FullHalfTour>>()
+			Global.Container.Register<Reader<FullHalfTour>>()
 				.ToSelf()
-				.InSingletonScope()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingFullHalfTourPath);
 
-			Bind<Reader<PartialHalfTour>>()
-				.ToSelf()
-				.InSingletonScope()
+			Global.Container.Register<Reader<PartialHalfTour>>()()
+				(Lifestyle.Singleton)
 				.WithConstructorArgument("path", Global.WorkingPartialHalfTourPath);
 		}
 	}

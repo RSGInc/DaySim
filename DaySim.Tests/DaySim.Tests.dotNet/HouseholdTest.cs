@@ -8,7 +8,7 @@ using Daysim.DomainModels.Shared;
 using Daysim.Framework.Core;
 using Daysim.Framework.DomainModels.Models;
 using Xunit;
-using Ninject;
+using SimpleInjector;
 
 namespace Daysim.Tests 
 {

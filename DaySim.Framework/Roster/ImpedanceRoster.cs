@@ -12,7 +12,7 @@ using System.Linq;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Exceptions;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.Framework.Roster {
 	public static class ImpedanceRoster {

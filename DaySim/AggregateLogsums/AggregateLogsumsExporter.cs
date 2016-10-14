@@ -10,7 +10,7 @@ using System.IO;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.AggregateLogsums {
 	public static class AggregateLogsumsExporter {
@@ -35,7 +35,7 @@ namespace DaySim.AggregateLogsums {
 			
 			var zoneReader =
 				Global
-					.Kernel
+					.Container
 					.Get<IPersistenceFactory<IZone>>()
 					.Reader;
 

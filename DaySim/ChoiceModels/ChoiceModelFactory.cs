@@ -19,7 +19,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
 using DaySim.ShadowPricing;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.ChoiceModels {
     public static class ChoiceModelFactory {
@@ -423,13 +423,13 @@ namespace DaySim.ChoiceModels {
         public static void LoadData() {
             var parcelReader =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IPersistenceFactory<IParcel>>()
                     .Reader;
 
             var parcelCreator =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IWrapperFactory<IParcelCreator>>()
                     .Creator;
 
@@ -437,7 +437,7 @@ namespace DaySim.ChoiceModels {
 
             var zoneReader =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IPersistenceFactory<IZone>>()
                     .Reader;
 

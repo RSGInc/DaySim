@@ -10,7 +10,7 @@ using DaySim.DomainModels.Factories;
 using DaySim.Framework.Core;
 using DaySim.Settings;
 using NDesk.Options;
-using Ninject;
+using SimpleInjector;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -112,8 +112,9 @@ namespace DaySim {
 
                 ParallelUtility.Init(Global.Configuration);
 
-                Global.Kernel = new StandardKernel(new DaySimModule());
+                Global.Container = new Container();
 
+                DaySimModule.registerDependencies();
                 //copy the configuration file into the output so we can tell if configuration changed before regression test called.
                 var archiveConfigurationFilePath = Global.GetOutputPath("archive_" + Path.GetFileName(_configurationPath));
                 archiveConfigurationFilePath.CreateDirectory(); //create output directory if needed
@@ -123,10 +124,12 @@ namespace DaySim {
                     throw new Exception("Region specific flag is set such as PSRC, DVRPC or Nashville. Use CustomizationDl instead to override behaviors");
                 }
 
+                modelModule.
+                ModuleFactory.registerDependencies();
                 var moduleFactory = new ModuleFactory(Global.Configuration);
                 var modelModule = moduleFactory.Create();
 
-                Global.Kernel.Load(modelModule);
+                Global.Container.Load(modelModule);
 
                 Engine.BeginProgram(_start, _end, _index);
                 //Engine.BeginTestMode();

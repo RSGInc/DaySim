@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using DaySim.Framework.Core;
 using DaySim.Framework.Exceptions;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.Framework.Roster {
 	public class ImpedanceRosterLoader 
@@ -256,7 +256,7 @@ namespace DaySim.Framework.Roster {
                     cache.Clear();
                     currentFileName = entry.Name;
                 }
-                IFileReaderCreator creator = Global.Kernel.Get<SkimFileReaderFactory>().GetFileReaderCreator(entry.FileType);
+                IFileReaderCreator creator = Global.Container.Get<SkimFileReaderFactory>().GetFileReaderCreator(entry.FileType);
 
 				/*switch (entry.FileType) {
 					case "text_ij":

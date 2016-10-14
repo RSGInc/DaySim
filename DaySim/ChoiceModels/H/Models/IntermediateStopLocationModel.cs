@@ -20,7 +20,7 @@ using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
 using DaySim.Sampling;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.ChoiceModels.H.Models {
 	public class IntermediateStopLocationModel : ChoiceModel{
@@ -143,7 +143,7 @@ namespace DaySim.ChoiceModels.H.Models {
 			// time window in minutes for yet unmodeled portion of halftour, only consider persons on this trip
 			var availableWindow = timeWindow.AvailableWindow(destinationDepartureTime, Global.Settings.TimeDirections.Both);
 
-			var segment = Global.Kernel.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetIntermediateStopSegment(trip.DestinationPurpose, trip.Tour.Mode);
+			var segment = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetIntermediateStopSegment(trip.DestinationPurpose, trip.Tour.Mode);
 			var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, trip.Tour, trip, choice);
 			var intermediateStopLocationUtilities = new IntermediateStopLocationUtilities(trip, sampleSize, destinationDepartureTime, availableWindow);
 

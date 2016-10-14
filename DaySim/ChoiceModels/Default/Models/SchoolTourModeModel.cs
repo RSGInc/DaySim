@@ -17,7 +17,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.ChoiceModels.Default.Models {
 	public class SchoolTourModeModel : ChoiceModel {
@@ -32,7 +32,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 		
 		private readonly ITourCreator _creator = 
 			Global
-			.Kernel
+			.Container
 			.Get<IWrapperFactory<ITourCreator>>()
 			.Creator;
 

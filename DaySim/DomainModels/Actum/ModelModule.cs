@@ -9,82 +9,39 @@ using DaySim.DomainModels.Actum.Models;
 using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
-using Ninject.Modules;
+using SimpleInjector;
 
 namespace DaySim.DomainModels.Actum {
-	[UsedImplicitly]
-	[Factory(Factory.ModuleFactory, DataType = DataType.Actum)]
-	public class ModelModule : NinjectModule {
-		public override void Load() {
-			Bind<Reader<Parcel>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingParcelPath);
+    public static class ModelModule {
+        public static void registerDependencies() {
 
-			Bind<Reader<ParcelNode>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingParcelNodePath);
+			Global.Container.RegisterSingleton<Reader<Parcel>>(new Reader<Parcel>(Global.WorkingParcelPath));
 
-			Bind<Reader<ParkAndRideNode>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingParkAndRideNodePath);
+			Global.Container.RegisterSingleton<Reader<ParcelNode>>(new Reader<ParcelNode>(Global.WorkingParcelNodePath));
 
-			Bind<Reader<TransitStopArea>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingTransitStopAreaPath);
+            Global.Container.RegisterSingleton<Reader<ParkAndRideNode>>(new Reader<ParkAndRideNode>(Global.WorkingParkAndRideNodePath));
 
-			Bind<Reader<Zone>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingZonePath);
+            Global.Container.RegisterSingleton<Reader<TransitStopArea>>(new Reader<TransitStopArea>(Global.WorkingTransitStopAreaPath));
 
-			Bind<Reader<Household>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingHouseholdPath);
+            Global.Container.RegisterSingleton<Reader<Zone>>(new Reader<Zone>(Global.WorkingZonePath));
 
-			Bind<Reader<Person>>().
-				ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingPersonPath);
+            Global.Container.RegisterSingleton<Reader<Household>>(new Reader<Household>(Global.WorkingHouseholdPath));
 
-			Bind<Reader<HouseholdDay>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingHouseholdDayPath);
+            Global.Container.RegisterSingleton<Reader<Person>>(new Reader<Person>(Global.WorkingPersonPath));
 
-			Bind<Reader<PersonDay>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingPersonDayPath);
+            Global.Container.RegisterSingleton<Reader<HouseholdDay>>(new Reader<HouseholdDay>(Global.WorkingHouseholdDayPath));
 
-			Bind<Reader<Tour>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingTourPath);
+            Global.Container.RegisterSingleton<Reader<PersonDay>>(new Reader<PersonDay>(Global.WorkingPersonDayPath));
 
-			Bind<Reader<Trip>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingTripPath);
+            Global.Container.RegisterSingleton<Reader<Tour>>(new Reader<Tour>(Global.WorkingTourPath));
 
-			Bind<Reader<JointTour>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingJointTourPath);
+            Global.Container.RegisterSingleton<Reader<Trip>>(new Reader<Trip>(Global.WorkingTripPath));
 
-			Bind<Reader<FullHalfTour>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingFullHalfTourPath);
+            Global.Container.RegisterSingleton<Reader<JointTour>>(new Reader<JointTour>(Global.WorkingJointTourPath));
 
-			Bind<Reader<PartialHalfTour>>()
-				.ToSelf()
-				.InSingletonScope()
-				.WithConstructorArgument("path", Global.WorkingPartialHalfTourPath);
+            Global.Container.RegisterSingleton<Reader<FullHalfTour>>(new Reader<FullHalfTour>(Global.WorkingFullHalfTourPath));
+
+            Global.Container.RegisterSingleton<Reader<PartialHalfTour>>(new Reader<PartialHalfTour>(Global.WorkingPartialHalfTourPath));
 		}
 	}
 }

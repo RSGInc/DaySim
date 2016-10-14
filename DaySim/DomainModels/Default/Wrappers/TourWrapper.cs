@@ -19,7 +19,7 @@ using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
-using Ninject;
+using SimpleInjector;
 
 namespace DaySim.DomainModels.Default.Wrappers {
     [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
@@ -36,13 +36,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             _exporter =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IPersistenceFactory<ITour>>()
                     .Exporter;
 
             _tourCreator =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IWrapperFactory<ITourCreator>>()
                     .Creator;
 
@@ -70,13 +70,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             _exporter =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IPersistenceFactory<ITour>>()
                     .Exporter;
 
             _tourCreator =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IWrapperFactory<ITourCreator>>()
                     .Creator;
 
@@ -100,13 +100,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             _exporter =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IPersistenceFactory<ITour>>()
                     .Exporter;
 
             _tourCreator =
                 Global
-                    .Kernel
+                    .Container
                     .Get<IWrapperFactory<ITourCreator>>()
                     .Creator;
 
@@ -867,7 +867,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Kernel
+				.Container
 				.Get<IPersistenceFactory<ITour>>()
 				.Close();
 		}
@@ -1019,13 +1019,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 				_tripReader =
 					Global
-						.Kernel
+						.Container
 						.Get<IPersistenceFactory<ITrip>>()
 						.Reader;
 
 				_tripWrapperCreator =
 					Global
-						.Kernel
+						.Container
 						.Get<IWrapperFactory<ITripCreator>>()
 						.Creator;
 			}

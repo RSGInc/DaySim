@@ -12,7 +12,7 @@ using Daysim.Framework.DomainModels.Models;
 using Daysim.Framework.DomainModels.Persisters;
 using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.Framework.Persistence;
-using Ninject;
+using SimpleInjector;
 
 namespace Daysim.Tests {
 	public class TestHouseholdDayWrapper : HouseholdDayWrapper

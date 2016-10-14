@@ -23,7 +23,7 @@ using Daysim.Framework.DomainModels.Wrappers;
 using Daysim.Framework.Exceptions;
 using Daysim.Framework.Factories;
 using Daysim.Framework.Roster;
-using Ninject;
+using SimpleInjector;
 using HouseholdDayWrapper = Daysim.DomainModels.LD.Wrappers.HouseholdDayWrapper;
 using HouseholdWrapper = Daysim.DomainModels.LD.Wrappers.HouseholdWrapper;
 using IntermediateStopGenerationModel = Daysim.ChoiceModels.LD.Models.IntermediateStopGenerationModel;
