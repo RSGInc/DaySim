@@ -45,8 +45,7 @@ namespace DaySim.ChoiceModels.Actum {
 		public ChoiceModelRunner(IHousehold household) {
 			_household =
 				(HouseholdWrapper) Global
-					.Container
-					.Get<IWrapperFactory<IHouseholdCreator>>()
+					.ContainerDaySim.GetInstance<IWrapperFactory<IHouseholdCreator>>()
 					.Creator
 					.CreateWrapper(household);
 		}

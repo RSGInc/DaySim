@@ -24,9 +24,10 @@ namespace DaySim.Framework.Core {
         private const string PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "park_and_ride_" + SHADOW_PRICES_FILENAME;
         private const string ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILENAME;
 
-        public static Container Container { get; set; }
+        public static Container ContainerWorkingPathReaders { get; } = new Container();
+        public static Container ContainerDaySim { get;  } = new Container();
 
-		public static Configuration Configuration { get; set; }
+        public static Configuration Configuration { get; set; }
 
 		public static ISettings Settings { get; set; }
 
@@ -395,8 +396,7 @@ namespace DaySim.Framework.Core {
 
         public static void InitializeNodeIndex() {
 			var reader =
-				Container
-					.Get<IPersistenceFactory<IParcelNode>>()
+				ContainerDaySim.GetInstance<IPersistenceFactory<IParcelNode>>()
 					.Reader;
 
 			NodeIndex = new Dictionary<int, int>();

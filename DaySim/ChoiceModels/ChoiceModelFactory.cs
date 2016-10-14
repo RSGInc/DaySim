@@ -260,7 +260,7 @@ namespace DaySim.ChoiceModels {
                 ThreadQueue = new ThreadQueue();
             }
 
-            //ExporterFactory = Global.Kernel.Get<ExporterFactory>();
+            //ExporterFactory = Global.Kernel.GetInstance<ExporterFactory>();
 
             // e.g. 30 minutes between each minute span
             SmallPeriodDuration = DayPeriod.SmallDayPeriods.First().Duration;
@@ -423,22 +423,21 @@ namespace DaySim.ChoiceModels {
         public static void LoadData() {
             var parcelReader =
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<IParcel>>()
+                    .ContainerDaySim.GetInstance<IPersistenceFactory<IParcel>>()
                     .Reader;
 
             var parcelCreator =
                 Global
-                    .Container
-                    .Get<IWrapperFactory<IParcelCreator>>()
+                    .ContainerDaySim
+                    .GetInstance<IWrapperFactory<IParcelCreator>>()
                     .Creator;
 
             Parcels = new Dictionary<int, IParcelWrapper>(parcelReader.Count);
 
             var zoneReader =
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<IZone>>()
+                    .ContainerDaySim
+                    .GetInstance<IPersistenceFactory<IZone>>()
                     .Reader;
 
             //			ZoneTotals = new Dictionary<int, ZoneTotals>(zoneReader.Count);

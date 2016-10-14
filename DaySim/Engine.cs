@@ -29,6 +29,7 @@ using SimpleInjector;
 
 using Timer = DaySim.Framework.Core.Timer;
 using System.Diagnostics;
+using DaySim.DomainModels.Default;
 
 namespace DaySim {
     public static class Engine {
@@ -65,6 +66,9 @@ namespace DaySim {
             BeginRunRawConversion();
 
             BeginImportData();
+
+            ModelModule.registerDependencies();
+
             BeginBuildIndexes();
 
             BeginLoadRoster();
@@ -156,165 +160,164 @@ namespace DaySim {
 
         private static void InitializePersistenceFactories() {
             Global
-                .Container
-                .Get<IPersistenceFactory<IParcel>>()
+                .ContainerDaySim.GetInstance<IPersistenceFactory<IParcel>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IParcelNode>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IParcelNode>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IParkAndRideNode>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IParkAndRideNode>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<ITransitStopArea>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITransitStopArea>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IZone>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IZone>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IHousehold>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IHousehold>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPerson>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPerson>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IHouseholdDay>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IHouseholdDay>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPersonDay>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPersonDay>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<ITour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITour>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<ITrip>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITrip>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IJointTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IJointTour>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IFullHalfTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IFullHalfTour>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPartialHalfTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPartialHalfTour>>()
                 .Initialize(Global.Configuration);
         }
 
         private static void InitializeWrapperFactories() {
             Global
-                .Container
-                .Get<IWrapperFactory<IParcelCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IParcelCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IParcelNodeCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IParcelNodeCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IParkAndRideNodeCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IParkAndRideNodeCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IZoneCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IZoneCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IHouseholdCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IHouseholdCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IPersonCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IPersonCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IHouseholdDayCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IHouseholdDayCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IPersonDayCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IPersonDayCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<ITourCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<ITourCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<ITripCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<ITripCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IJointTourCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IJointTourCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IFullHalfTourCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IFullHalfTourCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
-                .Container
-                .Get<IWrapperFactory<IPartialHalfTourCreator>>()
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IPartialHalfTourCreator>>()
                 .Initialize(Global.Configuration);
         }
 
         private static void InitializeSkimFactories() {
-            Global.Container.Get<SkimFileReaderFactory>().Register("text_ij", new TextIJSkimFileReaderCreator());
-            Global.Container.Get<SkimFileReaderFactory>().Register("visum-bin", new VisumSkimReaderCreator());
-            Global.Container.Get<SkimFileReaderFactory>().Register("bin", new BinarySkimFileReaderCreator());
-            Global.Container.Get<SkimFileReaderFactory>().Register("emme", new EMMEReaderCreator());
-            Global.Container.Get<SkimFileReaderFactory>().Register("hdf5", new HDF5ReaderCreator());
-            Global.Container.Get<SkimFileReaderFactory>().Register("cube", new CubeReaderCreator());
-            Global.Container.Get<SkimFileReaderFactory>().Register("transcad", new TranscadReaderCreator());
-            Global.Container.Get<SkimFileReaderFactory>().Register("omx", new OMXReaderCreator());
+            Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("text_ij", new TextIJSkimFileReaderCreator());
+            Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("visum-bin", new VisumSkimReaderCreator());
+            Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("bin", new BinarySkimFileReaderCreator());
+            Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("emme", new EMMEReaderCreator());
+            Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("hdf5", new HDF5ReaderCreator());
+            Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("cube", new CubeReaderCreator());
+            Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("transcad", new TranscadReaderCreator());
+            Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("omx", new OMXReaderCreator());
         }
 
         private static void InitializeSamplingFactories() {
-            Global.Container.Get<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettings", new SamplingWeightsSettings());
-            Global.Container.Get<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsSimple", new SamplingWeightsSettingsSimple());
-            Global.Container.Get<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsSACOG", new SamplingWeightsSettingsSACOG());
-            Global.Container.Get<SamplingWeightsSettingsFactory>().Initialize();
+            Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettings", new SamplingWeightsSettings());
+            Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsSimple", new SamplingWeightsSettingsSimple());
+            Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsSACOG", new SamplingWeightsSettingsSACOG());
+            Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Initialize();
         }
 
         private static void InitializeAggregateLogsumsFactories() {
-            Global.Container.Get<AggregateLogsumsCalculatorFactory>().Register("AggregateLogsumCalculator", new AggregateLogsumsCalculatorCreator());
-            Global.Container.Get<AggregateLogsumsCalculatorFactory>().Register("OtherAggregateLogsumCalculator", new OtherAggregateLogsumsCalculatorCreator());
-            Global.Container.Get<AggregateLogsumsCalculatorFactory>().Initialize();
+            Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().Register("AggregateLogsumCalculator", new AggregateLogsumsCalculatorCreator());
+            Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().Register("OtherAggregateLogsumCalculator", new OtherAggregateLogsumsCalculatorCreator());
+            Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().Initialize();
         }
 
         private static void InitializeOther() {
@@ -650,8 +653,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IParcel>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IParcel>>()
                 .Importer
                 .Import();
         }
@@ -662,8 +665,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IParcelNode>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IParcelNode>>()
                 .Importer
                 .Import();
         }
@@ -674,8 +677,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IParkAndRideNode>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IParkAndRideNode>>()
                 .Importer
                 .Import();
 
@@ -685,8 +688,8 @@ namespace DaySim {
 
             var parkAndRideNodeReader =
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<IParkAndRideNode>>()
+                    .ContainerDaySim
+                    .GetInstance<IPersistenceFactory<IParkAndRideNode>>()
                     .Reader;
 
             Global.ParkAndRideNodeMapping = new Dictionary<int, int>(parkAndRideNodeReader.Count);
@@ -707,8 +710,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<ITransitStopArea>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITransitStopArea>>()
                 .Importer
                 .Import();
         }
@@ -719,8 +722,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IZone>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IZone>>()
                 .Importer
                 .Import();
         }
@@ -731,8 +734,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IHousehold>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IHousehold>>()
                 .Importer
                 .Import();
         }
@@ -743,8 +746,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPerson>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPerson>>()
                 .Importer
                 .Import();
         }
@@ -755,8 +758,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IHouseholdDay>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IHouseholdDay>>()
                 .Importer
                 .Import();
         }
@@ -767,8 +770,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPersonDay>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPersonDay>>()
                 .Importer
                 .Import();
         }
@@ -779,8 +782,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<ITour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITour>>()
                 .Importer
                 .Import();
         }
@@ -791,8 +794,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<ITrip>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITrip>>()
                 .Importer
                 .Import();
         }
@@ -803,8 +806,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IJointTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IJointTour>>()
                 .Importer
                 .Import();
         }
@@ -815,8 +818,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IFullHalfTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IFullHalfTour>>()
                 .Importer
                 .Import();
         }
@@ -827,8 +830,8 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPartialHalfTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPartialHalfTour>>()
                 .Importer
                 .Import();
         }
@@ -845,15 +848,15 @@ namespace DaySim {
         private static void BuildIndexes() {
             if (Global.ParcelNodeIsEnabled) {
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<IParcelNode>>()
+                    .ContainerDaySim
+                    .GetInstance<IPersistenceFactory<IParcelNode>>()
                     .Reader
                     .BuildIndex("parcel_fk", "Id", "NodeId");
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPerson>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPerson>>()
                 .Reader
                 .BuildIndex("household_fk", "Id", "HouseholdId");
 
@@ -862,26 +865,26 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IHouseholdDay>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IHouseholdDay>>()
                 .Reader
                 .BuildIndex("household_fk", "Id", "HouseholdId");
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPersonDay>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPersonDay>>()
                 .Reader
                 .BuildIndex("household_day_fk", "Id", "HouseholdDayId");
 
             Global
-                .Container
-                .Get<IPersistenceFactory<ITour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITour>>()
                 .Reader
                 .BuildIndex("person_day_fk", "Id", "PersonDayId");
 
             Global
-                .Container
-                .Get<IPersistenceFactory<ITrip>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITrip>>()
                 .Reader
                 .BuildIndex("tour_fk", "Id", "TourId");
 
@@ -890,20 +893,20 @@ namespace DaySim {
             }
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IJointTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IJointTour>>()
                 .Reader
                 .BuildIndex("household_day_fk", "Id", "HouseholdDayId");
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IFullHalfTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IFullHalfTour>>()
                 .Reader
                 .BuildIndex("household_day_fk", "Id", "HouseholdDayId");
 
             Global
-                .Container
-                .Get<IPersistenceFactory<IPartialHalfTour>>()
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPartialHalfTour>>()
                 .Reader
                 .BuildIndex("household_day_fk", "Id", "HouseholdDayId");
         }
@@ -1218,8 +1221,8 @@ namespace DaySim {
         private static void LoadRoster() {
             var zoneReader =
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<IZone>>()
+                    .ContainerDaySim
+                    .GetInstance<IPersistenceFactory<IZone>>()
                     .Reader;
 
             var zoneMapping = new Dictionary<int, int>(zoneReader.Count);
@@ -1233,8 +1236,8 @@ namespace DaySim {
             if (Global.Configuration.ImportTransitStopAreas) {
                 var transitStopAreaReader =
                     Global
-                        .Container
-                        .Get<IPersistenceFactory<ITransitStopArea>>()
+                        .ContainerDaySim
+                        .GetInstance<IPersistenceFactory<ITransitStopArea>>()
                         .Reader;
 
                 Global.TransitStopAreaMapping = new Dictionary<int, int>(transitStopAreaReader.Count);
@@ -1249,8 +1252,8 @@ namespace DaySim {
             if (Global.Configuration.UseMicrozoneSkims) {
                 var microzoneReader =
                     Global
-                        .Container
-                        .Get<IPersistenceFactory<IParcel>>()
+                        .ContainerDaySim
+                        .GetInstance<IPersistenceFactory<IParcel>>()
                         .Reader;
 
                 Global.MicrozoneMapping = new Dictionary<int, int>(microzoneReader.Count);
@@ -1270,7 +1273,7 @@ namespace DaySim {
         private static void BeginCalculateAggregateLogsums(IRandomUtility randomUtility) {
             var timer = new Timer("Calculating aggregate logsums...");
 
-            var calculator = Global.Container.Get<AggregateLogsumsCalculatorFactory>().AggregateLogsumCalculatorCreator.Create();
+            var calculator = Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().AggregateLogsumCalculatorCreator.Create();
             calculator.Calculate(randomUtility);
 
             timer.Stop();
@@ -1340,8 +1343,8 @@ namespace DaySim {
             var current = 0;
             var total =
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<IHousehold>>()
+                    .ContainerDaySim
+                    .GetInstance<IPersistenceFactory<IHousehold>>()
                     .Reader
                     .Count;
 
@@ -1363,7 +1366,7 @@ namespace DaySim {
 
             var overallHouseholdIndex = 0;
             var addedHousehouldCounter = 0;
-            foreach (var household in Global.Container.Get<IPersistenceFactory<IHousehold>>().Reader) {
+            foreach (var household in Global.ContainerDaySim.GetInstance<IPersistenceFactory<IHousehold>>().Reader) {
                 var nextRandom = randomUtility.GetNext();  //always get next random, even if won't be used so behavior identical with DaySimController and usual 
                 if ((household.Id % Global.Configuration.HouseholdSamplingRateOneInX) == (Global.Configuration.HouseholdSamplingStartWithY - 1)) {
                     if (_start == -1 || _end == -1 || _index == -1 || overallHouseholdIndex.IsBetween(_start, _end)) {

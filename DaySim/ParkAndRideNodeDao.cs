@@ -25,14 +25,13 @@ namespace DaySim {
 		public ParkAndRideNodeDao() {
 			var reader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IParkAndRideNode>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IParkAndRideNode>>()
 					.Reader;
 
 			var creator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IParkAndRideNodeCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IParkAndRideNodeCreator>>()
 					.Creator;
 
 			var zoneIdKeys = new Dictionary<int, HashSet<int>>();

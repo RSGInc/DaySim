@@ -35,8 +35,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 		
 		private readonly ITourCreator _creator = 
 			Global
-			.Container
-			.Get<IWrapperFactory<ITourCreator>>()
+			.ContainerDaySim.GetInstance<IWrapperFactory<ITourCreator>>()
 			.Creator;
 
 		public override void RunInitialize(ICoefficientsReader reader = null) 
