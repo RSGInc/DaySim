@@ -43,8 +43,7 @@ namespace DaySim.Sampling {
 			
 			var zoneReader = 
 				Global
-					.Container
-					.Get<IPersistenceFactory<IZone>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
 					.Reader;
 
 			for (var segment = 0; segment < segmentCount; segment++) {

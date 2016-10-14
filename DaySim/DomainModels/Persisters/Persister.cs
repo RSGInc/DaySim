@@ -18,20 +18,19 @@ namespace DaySim.DomainModels.Persisters {
 	public abstract class Persister<TModel> : IPersisterReader<TModel>, IPersisterImporter, IPersisterExporter, IDisposable where TModel : class, IModel, new() {
 		private readonly Lazy<Reader<TModel>> _reader = new Lazy<Reader<TModel>>(() =>
 			Global
-				.Container
-				.Get<Reader<TModel>>());
+				.ContainerWorkingPathReaders.GetInstance<Reader<TModel>>());
 
 		private readonly Lazy<IImporter> _importer = new Lazy<IImporter>(() =>
 			Global
-				.Container
-				.Get<ImporterFactory>()
+				.ContainerDaySim
+				.GetInstance<ImporterFactory>()
 				.GetImporter<TModel>(Global.GetInputPath<TModel>(), Global.GetInputDelimiter<TModel>())
 			);
 
 		private readonly Lazy<IExporter<TModel>> _exporter = new Lazy<IExporter<TModel>>(() =>
 			Global
-				.Container
-				.Get<ExporterFactory>()
+				.ContainerDaySim
+				.GetInstance<ExporterFactory>()
 				.GetExporter<TModel>(Global.GetOutputPath<TModel>(), Global.GetOutputDelimiter<TModel>())
 			);
 

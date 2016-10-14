@@ -38,36 +38,35 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_exporter =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IHousehold>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IHousehold>>()
 					.Exporter;
 
 			// person fields
 
 			_personReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IPerson>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<IPerson>>()
 					.Reader;
 
 			_personCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IPersonCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IPersonCreator>>()
 					.Creator;
 
 			// household day fields
 
 			_householdDayReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IHouseholdDay>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<IHouseholdDay>>()
 					.Reader;
 
 			_householdDayCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IHouseholdDayCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IHouseholdDayCreator>>()
 					.Creator;
 
 			RandomUtility = new RandomUtility();
@@ -425,8 +424,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Container
-				.Get<IPersistenceFactory<IHousehold>>()
+				.ContainerDaySim
+				.GetInstance<IPersistenceFactory<IHousehold>>()
 				.Close();
 		}
 

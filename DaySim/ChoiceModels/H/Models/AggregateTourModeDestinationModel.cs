@@ -44,7 +44,7 @@ namespace DaySim.ChoiceModels.H.Models {
 			var zoneReader =
 				Global
 					.Kernel
-					.Get<IPersistenceFactory<IZone>>()
+					.GetInstance<IPersistenceFactory<IZone>>()
 					.Reader;
 
 			_eligibleZones = zoneReader.Where(z => z.DestinationEligible).ToDictionary(z => z.Id, z => z);
@@ -145,7 +145,7 @@ namespace DaySim.ChoiceModels.H.Models {
 
 			ChoiceModelUtility.DrawRandomTourTimePeriods(tour, tourCategory);
 
-			var segment = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
+			var segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
 
 			var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, tour.OriginParcel, choice);
 			var tourDestinationUtilities = new TourDestinationUtilities(tour, sampleSize, secondaryFlag, personDay.GetIsWorkOrSchoolPattern().ToFlag(), personDay.GetIsOtherPattern().ToFlag(), fastestAvailableTimeOfDay, maxAvailableMinutes);
@@ -335,13 +335,13 @@ namespace DaySim.ChoiceModels.H.Models {
 			var parcelReader = 
 				Global
 					.Kernel
-					.Get<IPersistenceFactory<IParcel>>()
+					.GetInstance<IPersistenceFactory<IParcel>>()
 					.Reader;
 
 			var parcelCreator =
 				Global
 					.Kernel
-					.Get<IWrapperFactory<IParcelCreator>>()
+					.GetInstance<IWrapperFactory<IParcelCreator>>()
 					.Creator;
 
 			foreach (var parcel in parcelReader) {

@@ -26,8 +26,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_exporter =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IPartialHalfTour>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IPartialHalfTour>>()
 					.Exporter;
 
 			// relations properties
@@ -208,8 +207,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Container
-				.Get<IPersistenceFactory<IPartialHalfTour>>()
+				.ContainerDaySim
+				.GetInstance<IPersistenceFactory<IPartialHalfTour>>()
 				.Close();
 		}
 

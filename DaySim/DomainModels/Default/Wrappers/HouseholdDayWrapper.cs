@@ -47,72 +47,71 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_exporter =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IHouseholdDay>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IHouseholdDay>>()
 					.Exporter;
 
 			// household day fields
 
 			_householdDayCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IHouseholdDayCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IHouseholdDayCreator>>()
 					.Creator;
 
 			// person day fields
 
 			_personDayReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IPersonDay>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<IPersonDay>>()
 					.Reader;
 
 			_personDayCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IPersonDayCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IPersonDayCreator>>()
 					.Creator;
 
 			// joint tour fields
 
 			_jointTourReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IJointTour>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<IJointTour>>()
 					.Reader;
 
 			_jointTourCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IJointTourCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IJointTourCreator>>()
 					.Creator;
 
 			// full half tour fields
 
 			_fullHalfTourReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IFullHalfTour>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<IFullHalfTour>>()
 					.Reader;
 
 			_fullHalfTourCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IFullHalfTourCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IFullHalfTourCreator>>()
 					.Creator;
 
 			// partial half tour fields
 
 			_partialHalfTourReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IPartialHalfTour>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<IPartialHalfTour>>()
 					.Reader;
 
 			_partialHalfTourCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IPartialHalfTourCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IPartialHalfTourCreator>>()
 					.Creator;
 
 			// relations properties
@@ -465,8 +464,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Container
-				.Get<IPersistenceFactory<IHouseholdDay>>()
+				.ContainerDaySim
+				.GetInstance<IPersistenceFactory<IHouseholdDay>>()
 				.Close();
 		}
 

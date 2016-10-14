@@ -37,20 +37,19 @@ namespace DaySim.Sampling {
 		private SamplingWeightsCalculator(string variableName, int mode, int pathType, double vot, int minute) {
 			var zoneReader = 
 				Global
-					.Container
-					.Get<IPersistenceFactory<IZone>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
 					.Reader;
 			
 			var parcelReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IParcel>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<IParcel>>()
 					.Reader;
 			
 			var parcelCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IParcelCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IParcelCreator>>()
 					.Creator;
 
 			_eligibleZones =
@@ -74,7 +73,7 @@ namespace DaySim.Sampling {
 			}
 
 			_zoneCount = zoneReader.Count;
-			_segmentCount = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.SizeFactors.GetLength(0);
+			_segmentCount = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.SizeFactors.GetLength(0);
 			_variableName = variableName;
 			_mode = mode;
 			_pathType = pathType;
@@ -120,8 +119,8 @@ namespace DaySim.Sampling {
 		}
 
 		private SegmentZone[] ComputeSegment(int segment) {
-			var sizeFactors = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.SizeFactors[segment];
-			var weightFactors = Global.Container.Get<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.WeightFactors[segment];
+			var sizeFactors = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.SizeFactors[segment];
+			var weightFactors = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.WeightFactors[segment];
 			var segmentZones = new SegmentZone[_zoneCount];
 
 			foreach (var parcel in _eligibleParcels) {

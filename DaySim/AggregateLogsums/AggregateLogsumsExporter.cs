@@ -35,8 +35,7 @@ namespace DaySim.AggregateLogsums {
 			
 			var zoneReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IZone>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
 					.Reader;
 
 			for (var purpose = Global.Settings.Purposes.HomeBasedComposite; purpose <= Global.Settings.Purposes.Social; purpose++) {

@@ -36,14 +36,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             _exporter =
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<ITour>>()
+                    .ContainerDaySim.GetInstance<IPersistenceFactory<ITour>>()
                     .Exporter;
 
             _tourCreator =
                 Global
-                    .Container
-                    .Get<IWrapperFactory<ITourCreator>>()
+                    .ContainerDaySim
+                    .GetInstance<IWrapperFactory<ITourCreator>>()
                     .Creator;
 
             // relations properties
@@ -70,14 +69,14 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             _exporter =
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<ITour>>()
+                    .ContainerDaySim
+                    .GetInstance<IPersistenceFactory<ITour>>()
                     .Exporter;
 
             _tourCreator =
                 Global
-                    .Container
-                    .Get<IWrapperFactory<ITourCreator>>()
+                    .ContainerDaySim
+                    .GetInstance<IWrapperFactory<ITourCreator>>()
                     .Creator;
 
             // relations properties
@@ -100,14 +99,14 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             _exporter =
                 Global
-                    .Container
-                    .Get<IPersistenceFactory<ITour>>()
+                    .ContainerDaySim
+                    .GetInstance<IPersistenceFactory<ITour>>()
                     .Exporter;
 
             _tourCreator =
                 Global
-                    .Container
-                    .Get<IWrapperFactory<ITourCreator>>()
+                    .ContainerDaySim
+                    .GetInstance<IWrapperFactory<ITourCreator>>()
                     .Creator;
 
             // relations properties
@@ -867,8 +866,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Container
-				.Get<IPersistenceFactory<ITour>>()
+				.ContainerDaySim
+				.GetInstance<IPersistenceFactory<ITour>>()
 				.Close();
 		}
 
@@ -1019,14 +1018,14 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 				_tripReader =
 					Global
-						.Container
-						.Get<IPersistenceFactory<ITrip>>()
+						.ContainerDaySim
+						.GetInstance<IPersistenceFactory<ITrip>>()
 						.Reader;
 
 				_tripWrapperCreator =
 					Global
-						.Container
-						.Get<IWrapperFactory<ITripCreator>>()
+						.ContainerDaySim
+						.GetInstance<IWrapperFactory<ITripCreator>>()
 						.Creator;
 			}
 

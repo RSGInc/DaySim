@@ -286,8 +286,7 @@ namespace DaySim.AggregateLogsums {
 
 			var zoneReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IZone>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
 					.Reader;
 
 			_eligibleZones = zoneReader.Where(z => z.DestinationEligible).ToDictionary(z => z.Id, z => z);
@@ -658,14 +657,14 @@ namespace DaySim.AggregateLogsums {
 
 			var parcelReader = 
 				Global
-					.Container
-					.Get<IPersistenceFactory<IParcel>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<IParcel>>()
 					.Reader;
 
 			var parcelCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IParcelCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IParcelCreator>>()
 					.Creator;
 
 			foreach (var parcel in parcelReader) {

@@ -32,8 +32,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_exporter =
 				Global
-					.Container
-					.Get<IPersistenceFactory<ITrip>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<ITrip>>()
 					.Exporter;
 
 			// relations properties
@@ -797,8 +796,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Container
-				.Get<IPersistenceFactory<ITrip>>()
+				.ContainerDaySim
+				.GetInstance<IPersistenceFactory<ITrip>>()
 				.Close();
 		}
 

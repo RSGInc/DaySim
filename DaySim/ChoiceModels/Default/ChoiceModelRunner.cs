@@ -28,8 +28,7 @@ namespace DaySim.ChoiceModels.Default {
 		public ChoiceModelRunner(IHousehold household) {
 			_household =
 				Global
-					.Container
-					.Get<IWrapperFactory<IHouseholdCreator>>()
+					.ContainerDaySim.GetInstance<IWrapperFactory<IHouseholdCreator>>()
 					.Creator
 					.CreateWrapper(household);
 		}

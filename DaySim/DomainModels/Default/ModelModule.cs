@@ -13,36 +13,38 @@ using SimpleInjector;
 
 namespace DaySim.DomainModels.Default {
 	public static class ModelModule {
-        public static void registerDependencies() {
+        public static void registerDependencies() {  
 
-            Global.Container.RegisterSingleton<Reader<Parcel>>(new Reader<Parcel>(Global.WorkingParcelPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Parcel>>(new Reader<Parcel>(Global.WorkingParcelPath));
 
-            Global.Container.RegisterSingleton<Reader<ParcelNode>>(new Reader<ParcelNode>(Global.WorkingParcelNodePath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<ParcelNode>>(new Reader<ParcelNode>(Global.WorkingParcelNodePath));
 
-            Global.Container.RegisterSingleton<Reader<ParkAndRideNode>>(new Reader<ParkAndRideNode>(Global.WorkingParkAndRideNodePath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<ParkAndRideNode>>(new Reader<ParkAndRideNode>(Global.WorkingParkAndRideNodePath));
 
 
-            Global.Container.RegisterSingleton<Reader<TransitStopArea>>(new Reader<TransitStopArea>(Global.WorkingTransitStopAreaPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<TransitStopArea>>(new Reader<TransitStopArea>(Global.WorkingTransitStopAreaPath));
 
-            Global.Container.RegisterSingleton<Reader<Zone>>(new Reader<Zone>(Global.WorkingZonePath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Zone>>(new Reader<Zone>(Global.WorkingZonePath));
 
-            Global.Container.RegisterSingleton<Reader<Household>>(new Reader<Household>(Global.WorkingHouseholdPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Household>>(new Reader<Household>(Global.WorkingHouseholdPath));
 
-            Global.Container.RegisterSingleton<Reader<Person>>(new Reader<Person>(Global.WorkingPersonPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Person>>(new Reader<Person>(Global.WorkingPersonPath));
 
-            Global.Container.RegisterSingleton<Reader<HouseholdDay>>(new Reader<HouseholdDay>(Global.WorkingHouseholdDayPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<HouseholdDay>>(new Reader<HouseholdDay>(Global.WorkingHouseholdDayPath));
 
-            Global.Container.RegisterSingleton<Reader<PersonDay>>(new Reader<PersonDay>(Global.WorkingPersonDayPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<PersonDay>>(new Reader<PersonDay>(Global.WorkingPersonDayPath));
 
-            Global.Container.RegisterSingleton<Reader<Tour>>(new Reader<Tour>(Global.WorkingTourPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Tour>>(new Reader<Tour>(Global.WorkingTourPath));
 
-            Global.Container.RegisterSingleton<Reader<Trip>>(new Reader<Trip>(Global.WorkingTripPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Trip>>(new Reader<Trip>(Global.WorkingTripPath));
 
-            Global.Container.RegisterSingleton<Reader<JointTour>>(new Reader<JointTour>(Global.WorkingJointTourPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<JointTour>>(new Reader<JointTour>(Global.WorkingJointTourPath));
 
-            Global.Container.RegisterSingleton<Reader<FullHalfTour>>(new Reader<FullHalfTour>(Global.WorkingFullHalfTourPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<FullHalfTour>>(new Reader<FullHalfTour>(Global.WorkingFullHalfTourPath));
 
-            Global.Container.RegisterSingleton<Reader<PartialHalfTour>>(new Reader<PartialHalfTour>(Global.WorkingPartialHalfTourPath));
+            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<PartialHalfTour>>(new Reader<PartialHalfTour>(Global.WorkingPartialHalfTourPath));
+
+            Global.ContainerWorkingPathReaders.Verify();
         }
     }
 }

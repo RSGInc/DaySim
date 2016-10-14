@@ -38,30 +38,29 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 			_exporter =
 				Global
-					.Container
-					.Get<IPersistenceFactory<IPersonDay>>()
+					.ContainerDaySim.GetInstance<IPersistenceFactory<IPersonDay>>()
 					.Exporter;
 
 			// person day fields
 
 			_personDayCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<IPersonDayCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<IPersonDayCreator>>()
 					.Creator;
 
 			// tour fields
 
 			_tourReader =
 				Global
-					.Container
-					.Get<IPersistenceFactory<ITour>>()
+					.ContainerDaySim
+					.GetInstance<IPersistenceFactory<ITour>>()
 					.Reader;
 
 			_tourCreator =
 				Global
-					.Container
-					.Get<IWrapperFactory<ITourCreator>>()
+					.ContainerDaySim
+					.GetInstance<IWrapperFactory<ITourCreator>>()
 					.Creator;
 
 			// relations properties
@@ -972,8 +971,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
 		public static void Close() {
 			Global
-				.Container
-				.Get<IPersistenceFactory<IPersonDay>>()
+				.ContainerDaySim
+				.GetInstance<IPersistenceFactory<IPersonDay>>()
 				.Close();
 		}
 

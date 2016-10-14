@@ -256,7 +256,7 @@ namespace DaySim.Framework.Roster {
                     cache.Clear();
                     currentFileName = entry.Name;
                 }
-                IFileReaderCreator creator = Global.Container.Get<SkimFileReaderFactory>().GetFileReaderCreator(entry.FileType);
+                IFileReaderCreator creator = Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().GetFileReaderCreator(entry.FileType);
 
 				/*switch (entry.FileType) {
 					case "text_ij":

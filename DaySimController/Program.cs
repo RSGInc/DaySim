@@ -9,7 +9,6 @@ using System;
 using DaySim;
 using DaySim.Framework.Core;
 using NDesk.Options;
-using SimpleInjector;
 
 namespace DaySimController {
 	public static class Program {
@@ -43,12 +42,7 @@ namespace DaySimController {
 			var configuration = configurationManager.Open();
 
 			Global.Configuration = configuration;
-
-			using (var daysimModule = new DaySimModule()) {
-				Global.Container = new StandardKernel(daysimModule);
-
-				Controller.BeginProgram();
-			}
+            Controller.BeginProgram();
 		}
 	}
 }
