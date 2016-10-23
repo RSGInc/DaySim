@@ -119,9 +119,35 @@ namespace DaySim {
                 archiveConfigurationFilePath.CreateDirectory(); //create output directory if needed
                 File.Copy(_configurationPath, archiveConfigurationFilePath, /* overwrite */ true);
 
-                if (Global.Configuration.PSRC || Global.Configuration.DVRPC || Global.Configuration.Nashville) {
-                    throw new Exception("Region specific flag is set such as PSRC, DVRPC or Nashville. Use CustomizationDl instead to override behaviors");
+                if (!string.IsNullOrEmpty(Global.Configuration.CustomizationDll)) {
+                    if (Global.Configuration.DVRPC || Global.Configuration.Nashville || Global.Configuration.PSRC || Global.Configuration.SFCTA) {
+                        throw new Exception("Region specific flag is set such as DVRPC, Nashville, PSRC or SFCTA but CustomizationDll is already set to: " + Global.Configuration.CustomizationDll);
+                    }
+                } else if (Global.Configuration.DVRPC) {
+                    Global.Configuration.CustomizationDll = "DVRPC.dll";
+                    if (Global.Configuration.Nashville || Global.Configuration.PSRC || Global.Configuration.SFCTA) {
+                        throw new Exception("More than one region specific flag such as DVRPC, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                    }
+                } else if (Global.Configuration.Nashville) {
+                    Global.Configuration.CustomizationDll = "Nashville.dll";
+                    if (Global.Configuration.DVRPC || Global.Configuration.PSRC || Global.Configuration.SFCTA) {
+                        throw new Exception("More than one region specific flag such as DVRPC, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                    }
+                } else if (Global.Configuration.PSRC) {
+                    Global.Configuration.CustomizationDll = "PSRC.dll";
+                    if (Global.Configuration.DVRPC || Global.Configuration.Nashville || Global.Configuration.SFCTA) {
+                        throw new Exception("More than one region specific flag such as DVRPC, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                    }
+                } else if (Global.Configuration.SFCTA) {
+                    Global.Configuration.CustomizationDll = "SFCTA.dll";
+                    if (Global.Configuration.DVRPC || Global.Configuration.Nashville || Global.Configuration.PSRC) {
+                        throw new Exception("More than one region specific flag such as DVRPC, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                    }
                 }
+
+
+
+
 
                 Engine.BeginProgram(_start, _end, _index);
                 //Engine.BeginTestMode();

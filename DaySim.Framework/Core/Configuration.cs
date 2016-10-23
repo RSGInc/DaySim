@@ -1360,12 +1360,16 @@ namespace DaySim.Framework.Core
 
         //new since 203
         [XmlAttribute]
-        public bool PSRC { get; set; }
-        [XmlAttribute]
         public bool DVRPC { get; set; }
-
         [XmlAttribute]
         public bool Nashville { get; set; }
+
+        [XmlAttribute]
+        public bool PSRC { get; set; }
+
+        [XmlAttribute]
+        public bool SFCTA { get; set; }
+
         //new since 203
         [XmlAttribute]
         public bool AvoidDisaggregateModeChoiceLogsums { get; set; }
