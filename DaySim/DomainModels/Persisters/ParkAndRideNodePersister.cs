@@ -10,7 +10,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Persisters {
-	[UsedImplicitly]
-	[Factory(Factory.PersistenceFactory, Category = Category.Persister)]
-	public class ParkAndRideNodePersister<TModel> : Persister<TModel> where TModel : class, IParkAndRideNode, new() {}
+    [UsedImplicitly]
+    [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
+    public class ParkAndRideNodePersister<TModel> : Persister<TModel> where TModel : class, IParkAndRideNode, new() { }
 }

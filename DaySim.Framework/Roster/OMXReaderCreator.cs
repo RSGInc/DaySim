@@ -8,17 +8,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DaySim.Framework.Roster 
-{
-	public class OMXReaderCreator  : IFileReaderCreator
-	{
-		#region IFileReaderCreator Members
+namespace DaySim.Framework.Roster {
+    public class OMXReaderCreator : IFileReaderCreator {
+        #region IFileReaderCreator Members
 
-		public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping)
-		{
-			return new OMXSkimFileReader(path, mapping);
-		}
+        public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping) {
+            return new OMXSkimFileReader(path, mapping);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

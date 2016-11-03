@@ -11,38 +11,38 @@ using DaySim.Framework.Core;
 using NDesk.Options;
 
 namespace DaySimController {
-	public static class Program {
-		private static string _configurationPath;
-		private static bool _showHelp;
+    public static class Program {
+        private static string _configurationPath;
+        private static bool _showHelp;
 
-		private static void Main(string[] args) {
-			var options = new OptionSet {
-				{"c|configuration=", "Path to configuration file", v => _configurationPath = v},
-				{"h|?|help", "Show help and syntax summary", v => _showHelp = v != null}
-			};
+        private static void Main(string[] args) {
+            var options = new OptionSet {
+                {"c|configuration=", "Path to configuration file", v => _configurationPath = v},
+                {"h|?|help", "Show help and syntax summary", v => _showHelp = v != null}
+            };
 
-			options.Parse(args);
+            options.Parse(args);
 
-			if (_showHelp) {
-				options.WriteOptionDescriptions(Console.Out);
+            if (_showHelp) {
+                options.WriteOptionDescriptions(Console.Out);
 
-				Console.WriteLine();
-				Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME);
+                Console.WriteLine();
+                Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME);
 
-				Console.WriteLine();
-				Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the same directory as the executable.", PrintFile.DEFAULT_PRINT_FILENAME);
+                Console.WriteLine();
+                Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the same directory as the executable.", PrintFile.DEFAULT_PRINT_FILENAME);
 
-				Console.WriteLine("Please press any key to exit");
-				Console.ReadKey();
+                Console.WriteLine("Please press any key to exit");
+                Console.ReadKey();
 
-				Environment.Exit(0);
-			}
+                Environment.Exit(0);
+            }
 
-			var configurationManager = new ConfigurationManagerRSG(_configurationPath);
-			var configuration = configurationManager.Open();
+            var configurationManager = new ConfigurationManagerRSG(_configurationPath);
+            var configuration = configurationManager.Open();
 
-			Global.Configuration = configuration;
+            Global.Configuration = configuration;
             Controller.BeginProgram();
-		}
-	}
+        }
+    }
 }

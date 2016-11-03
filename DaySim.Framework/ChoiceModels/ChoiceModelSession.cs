@@ -10,10 +10,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace DaySim.Framework.ChoiceModels
-{
-    public class ChoiceModelSession
-    {
+namespace DaySim.Framework.ChoiceModels {
+    public class ChoiceModelSession {
         private readonly LazyConcurrentDictionary<Type, IChoiceModel> choiceModelObjectsDictionary = new LazyConcurrentDictionary<Type, IChoiceModel>();
 
         public TChoiceModel Get<TChoiceModel>() where TChoiceModel : IChoiceModel {

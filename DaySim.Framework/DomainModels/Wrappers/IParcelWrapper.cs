@@ -10,142 +10,142 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.ShadowPricing;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-	public interface IParcelWrapper : IParcel {
-		#region flags/choice model/etc. properties
+    public interface IParcelWrapper : IParcel {
+        #region flags/choice model/etc. properties
 
-		double ShadowPriceForEmployment { get; set; }
+        double ShadowPriceForEmployment { get; set; }
 
-		double ShadowPriceForStudentsK12 { get; set; }
+        double ShadowPriceForStudentsK12 { get; set; }
 
-		double ShadowPriceForStudentsUniversity { get; set; }
+        double ShadowPriceForStudentsUniversity { get; set; }
 
-		double ExternalEmploymentTotal { get; set; }
+        double ExternalEmploymentTotal { get; set; }
 
-		double EmploymentDifference { get; set; }
+        double EmploymentDifference { get; set; }
 
-		double EmploymentPrediction { get; set; }
+        double EmploymentPrediction { get; set; }
 
-		double ExternalStudentsK12 { get; set; }
+        double ExternalStudentsK12 { get; set; }
 
-		double StudentsK12Difference { get; set; }
+        double StudentsK12Difference { get; set; }
 
-		double StudentsK12Prediction { get; set; }
+        double StudentsK12Prediction { get; set; }
 
-		double ExternalStudentsUniversity { get; set; }
+        double ExternalStudentsUniversity { get; set; }
 
-		double StudentsUniversityDifference { get; set; }
+        double StudentsUniversityDifference { get; set; }
 
-		double StudentsUniversityPrediction { get; set; }
+        double StudentsUniversityPrediction { get; set; }
 
-		int District { get; set; }
+        int District { get; set; }
 
-		int FirstPositionInStopAreaDistanceArray { get; set; }
+        int FirstPositionInStopAreaDistanceArray { get; set; }
 
-		int LastPositionInStopAreaDistanceArray { get; set; }
+        int LastPositionInStopAreaDistanceArray { get; set; }
 
-		bool StopAreaDistanceArrayPositionsSet { get; set; }
+        bool StopAreaDistanceArrayPositionsSet { get; set; }
 
-		#endregion
+        #endregion
 
-		#region wrapper methods
+        #region wrapper methods
 
-		int GetLandUseCode19();
+        int GetLandUseCode19();
 
-		double GetStudentsK12();
+        double GetStudentsK12();
 
-		double GetDistanceToTransit();
+        double GetDistanceToTransit();
 
-//		void SetFirstStopAreaDistanceIndex();
+        //		void SetFirstStopAreaDistanceIndex();
 
-//		void SetLastStopAreaDistanceIndex();
+        //		void SetLastStopAreaDistanceIndex();
 
-		double NetIntersectionDensity1();
+        double NetIntersectionDensity1();
 
-		double NetIntersectionDensity2();
+        double NetIntersectionDensity2();
 
-		double OpenSpaceDensity1();
+        double OpenSpaceDensity1();
 
-		double OpenSpaceDensity2();
+        double OpenSpaceDensity2();
 
-		double OpenSpaceMillionSqFtBuffer1();
+        double OpenSpaceMillionSqFtBuffer1();
 
-		double OpenSpaceMillionSqFtBuffer2();
+        double OpenSpaceMillionSqFtBuffer2();
 
-		double RetailEmploymentDensity1();
+        double RetailEmploymentDensity1();
 
-		double RetailEmploymentDensity2();
+        double RetailEmploymentDensity2();
 
-		double ServiceEmploymentDensity1();
+        double ServiceEmploymentDensity1();
 
-		double ServiceEmploymentDensity2();
+        double ServiceEmploymentDensity2();
 
-		double OfficeEmploymentDensity1();
+        double OfficeEmploymentDensity1();
 
-		double OfficeEmploymentDensity2();
+        double OfficeEmploymentDensity2();
 
-		double TotalEmploymentDensity1();
+        double TotalEmploymentDensity1();
 
-		double TotalEmploymentDensity2();
+        double TotalEmploymentDensity2();
 
-		double StudentEnrolmentDensity1();
+        double StudentEnrolmentDensity1();
 
-		double StudentEnrolmentDensity2();
+        double StudentEnrolmentDensity2();
 
-		double HouseholdDensity1();
+        double HouseholdDensity1();
 
-		double HouseholdDensity2();
+        double HouseholdDensity2();
 
-		double MixedUse2Index1();
+        double MixedUse2Index1();
 
-		double MixedUse2Index2();
+        double MixedUse2Index2();
 
-		double MixedUse3Index2();
+        double MixedUse3Index2();
 
-		double MixedUse4Index1();
+        double MixedUse4Index1();
 
-		double MixedUse4Index2();
+        double MixedUse4Index2();
 
-		int TransitAccessSegment();
+        int TransitAccessSegment();
 
-		double ParcelParkingPerTotalEmployment();
+        double ParcelParkingPerTotalEmployment();
 
-		double ParkingHourlyEmploymentCommercialMixInParcel();
+        double ParkingHourlyEmploymentCommercialMixInParcel();
 
-		double ParkingHourlyEmploymentCommercialMixBuffer1();
+        double ParkingHourlyEmploymentCommercialMixBuffer1();
 
-		double ParkingDailyEmploymentTotalMixInParcel();
+        double ParkingDailyEmploymentTotalMixInParcel();
 
-		double ParkingDailyEmploymentTotalMixBuffer1();
+        double ParkingDailyEmploymentTotalMixBuffer1();
 
-		double ParcelParkingPerFoodRetailServiceMedicalEmployment();
+        double ParcelParkingPerFoodRetailServiceMedicalEmployment();
 
-		double ZoneParkingPerTotalEmploymentAndK12UniversityStudents(IZoneTotals zoneTotals, double millionsSquareLengthUnits);
+        double ZoneParkingPerTotalEmploymentAndK12UniversityStudents(IZoneTotals zoneTotals, double millionsSquareLengthUnits);
 
-		double ZoneParkingPerFoodRetailServiceMedicalEmployment(double millionsSquareLengthUnits);
+        double ZoneParkingPerFoodRetailServiceMedicalEmployment(double millionsSquareLengthUnits);
 
-		double C34RatioBuffer1();
+        double C34RatioBuffer1();
 
-		double ParcelHouseholdsPerRetailServiceEmploymentBuffer2();
+        double ParcelHouseholdsPerRetailServiceEmploymentBuffer2();
 
-		double ParcelHouseholdsPerRetailServiceFoodEmploymentBuffer2();
+        double ParcelHouseholdsPerRetailServiceFoodEmploymentBuffer2();
 
-		double IntersectionDensity34Buffer2();
+        double IntersectionDensity34Buffer2();
 
-		double IntersectionDensity34Minus1Buffer2();
+        double IntersectionDensity34Minus1Buffer2();
 
-		double ParkingCostBuffer1(double parkingDuration);
+        double ParkingCostBuffer1(double parkingDuration);
 
-		double FoodRetailServiceMedicalLogBuffer1();
+        double FoodRetailServiceMedicalLogBuffer1();
 
-		double K8HighSchoolQtrMileLogBuffer1();
+        double K8HighSchoolQtrMileLogBuffer1();
 
-		int UsualWorkParcelFlag(int usualWorkParcelId);
+        int UsualWorkParcelFlag(int usualWorkParcelId);
 
-		int NotUsualWorkParcelFlag(int usualWorkParcelId);
+        int NotUsualWorkParcelFlag(int usualWorkParcelId);
 
-		int RuralFlag();
+        int RuralFlag();
 
-		void SetShadowPricing(Dictionary<int, IZone> zones, Dictionary<int, IShadowPriceParcel> shadowPrices);
+        void SetShadowPricing(Dictionary<int, IZone> zones, Dictionary<int, IShadowPriceParcel> shadowPrices);
 
         void AddEmploymentPrediction(double employmentPrediction);
 
@@ -153,12 +153,12 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
         void AddStudentsK12Prediction(double studentsK12Prediction);
 
-		double NodeToNodeDistance(IParcelWrapper destination);
+        double NodeToNodeDistance(IParcelWrapper destination);
 
-		double CircuityDistance(IParcelWrapper destination);
+        double CircuityDistance(IParcelWrapper destination);
 
-//		void SetFirstAndLastStopAreaDistanceIndexes();
+        //		void SetFirstAndLastStopAreaDistanceIndexes();
 
-		#endregion
-	}
+        #endregion
+    }
 }

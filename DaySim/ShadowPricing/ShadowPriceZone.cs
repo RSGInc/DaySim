@@ -7,35 +7,35 @@
 
 
 namespace DaySim.ShadowPricing {
-	public sealed class ShadowPriceZone {
-		/// <summary>
-		/// EMPTOTZW
-		/// </summary>
-		public double ExternalEmploymentTotal { get; set; }
+    public sealed class ShadowPriceZone {
+        /// <summary>
+        /// EMPTOTZW
+        /// </summary>
+        public double ExternalEmploymentTotal { get; set; }
 
-		/// <summary>
-		/// EMPPRD_Z
-		/// </summary>
-		public double EmploymentPrediction { get; set; }
+        /// <summary>
+        /// EMPPRD_Z
+        /// </summary>
+        public double EmploymentPrediction { get; set; }
 
-		/// <summary>
-		/// stuk12zw
-		/// </summary>
-		public double ExternalStudentsK12 { get; set; }
+        /// <summary>
+        /// stuk12zw
+        /// </summary>
+        public double ExternalStudentsK12 { get; set; }
 
-		/// <summary>
-		/// K12PRD_Z
-		/// </summary>
-		public double StudentsK12Prediction { get; set; }
+        /// <summary>
+        /// K12PRD_Z
+        /// </summary>
+        public double StudentsK12Prediction { get; set; }
 
-		/// <summary>
-		/// stuunizw
-		/// </summary>
-		public double ExternalUniversityStudents { get; set; }
+        /// <summary>
+        /// stuunizw
+        /// </summary>
+        public double ExternalUniversityStudents { get; set; }
 
-		/// <summary>
-		/// UNIPRD_Z
-		/// </summary>
-		public double StudentsUniversityPrediction { get; set; }
-	}
+        /// <summary>
+        /// UNIPRD_Z
+        /// </summary>
+        public double StudentsUniversityPrediction { get; set; }
+    }
 }

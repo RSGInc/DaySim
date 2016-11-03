@@ -9,9 +9,9 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.DomainModels.Creators {
-	public interface IFullHalfTourCreator : ICreator {
-		IFullHalfTour CreateModel();
+    public interface IFullHalfTourCreator : ICreator {
+        IFullHalfTour CreateModel();
 
-		IFullHalfTourWrapper CreateWrapper(IFullHalfTour fullHalfTour, IHouseholdDayWrapper householdDayWrapper);
-	}
+        IFullHalfTourWrapper CreateWrapper(IFullHalfTour fullHalfTour, IHouseholdDayWrapper householdDayWrapper);
+    }
 }

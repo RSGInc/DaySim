@@ -9,9 +9,9 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.DomainModels.Creators {
-	public interface ITransitStopAreaCreator : ICreator {
-		ITransitStopArea CreateModel();
+    public interface ITransitStopAreaCreator : ICreator {
+        ITransitStopArea CreateModel();
 
-		ITransitStopAreaWrapper CreateWrapper(ITransitStopArea transitStopArea);
-	}
+        ITransitStopAreaWrapper CreateWrapper(ITransitStopArea transitStopArea);
+    }
 }

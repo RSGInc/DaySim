@@ -9,7 +9,7 @@ using System;
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.Persistence {
-	public interface IExporter<in TModel> : IDisposable where TModel : IModel {
-		void Export(TModel model);
-	}
+    public interface IExporter<in TModel> : IDisposable where TModel : IModel {
+        void Export(TModel model);
+    }
 }

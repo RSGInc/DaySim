@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IDriverTypes {
-		int NotApplicable { get; }
-		
-		int Driver { get; }
-		
-		int Passenger { get; }
-	}
+    public interface IDriverTypes {
+        int NotApplicable { get; }
+
+        int Driver { get; }
+
+        int Passenger { get; }
+    }
 }

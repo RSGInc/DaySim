@@ -6,10 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Factories {
-	public enum ChoiceModelRunner {
-		Default,
-		Actum,
-		H,
-		LD
-	}
+    public enum ChoiceModelRunner {
+        Default,
+        Actum,
+        H,
+        LD
+    }
 }

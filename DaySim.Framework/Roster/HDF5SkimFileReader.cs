@@ -12,22 +12,18 @@ using System.Text;
 using DaySim.Framework.Core;
 using HDF5DotNet;
 
-namespace DaySim.Framework.Roster
-{
-    public class HDF5SkimFileReader : ISkimFileReader
-    {
+namespace DaySim.Framework.Roster {
+    public class HDF5SkimFileReader : ISkimFileReader {
         private readonly string _path;
         private Dictionary<int, int> _mapping;
         private UInt16[][] _matrix;
 
-        public HDF5SkimFileReader(string path, Dictionary<int, int> mapping)
-        {
+        public HDF5SkimFileReader(string path, Dictionary<int, int> mapping) {
             _path = path;
             _mapping = mapping;
         }
 
-        public SkimMatrix Read(string filename, int field, float scale)
-        {
+        public SkimMatrix Read(string filename, int field, float scale) {
             Console.WriteLine("Reading {0}", filename);
             int hdf5NameEnd = filename.IndexOf("/");
 
@@ -52,48 +48,38 @@ namespace DaySim.Framework.Roster
             // tazs in the mapping, ignore the values over the total number
             //of tazs in the mapping because these are not valid zones.
             _matrix = new ushort[numZones][];
-            for (var i = 0; i < numZones; i++)
-            {
+            for (var i = 0; i < numZones; i++) {
                 _matrix[i] = new ushort[numZones];
             }
 
             //leave as is for PSRC. Values are already scaled integers and matrices already condensed
-            if (Global.Configuration.HDF5SkimScaledAndCondensed)  {
+            if (Global.Configuration.HDF5SkimScaledAndCondensed) {
                 var dataArray = new UInt16[nRows, nCols];
                 var wrapArray = new H5Array<UInt16>(dataArray);
                 H5DataTypeId tid1 = H5D.getType(dataSet);
 
                 H5D.read(dataSet, tid1, wrapArray);
-                for (var i = 0; i < numZones; i++)
-                {
-                    for (var j = 0; j < numZones; j++)
-                    {
+                for (var i = 0; i < numZones; i++) {
+                    for (var j = 0; j < numZones; j++) {
                         _matrix[i][j] = (ushort)dataArray[i, j];
                     }
                 }
-            }
-            else {
+            } else {
                 var dataArray = new double[nRows, nCols];
                 var wrapArray = new H5Array<double>(dataArray);
                 H5DataTypeId tid1 = H5D.getType(dataSet);
 
                 H5D.read(dataSet, tid1, wrapArray);
 
-                for (var row = 0; row < nRows; row++)
-                {
-                    if (_mapping.ContainsKey(row + 1))
-                    {
-                        for (var col = 0; col < nCols; col++)
-                        {
-                            if (_mapping.ContainsKey(col + 1))
-                            {
+                for (var row = 0; row < nRows; row++) {
+                    if (_mapping.ContainsKey(row + 1)) {
+                        for (var col = 0; col < nCols; col++) {
+                            if (_mapping.ContainsKey(col + 1)) {
                                 var value = dataArray[row, col] * scale;
 
-                                if (value > 0)
-                                {
-                                    if (value > ushort.MaxValue - 1)
-                                    {
-                                        value = ushort.MaxValue -1;
+                                if (value > 0) {
+                                    if (value > ushort.MaxValue - 1) {
+                                        value = ushort.MaxValue - 1;
                                     }
 
                                     _matrix[_mapping[row + 1]][_mapping[col + 1]] = (ushort)value;
@@ -103,7 +89,7 @@ namespace DaySim.Framework.Roster
                     }
                 }
             }
-            
+
 
             var skimMatrix = new SkimMatrix(_matrix);
             return skimMatrix;

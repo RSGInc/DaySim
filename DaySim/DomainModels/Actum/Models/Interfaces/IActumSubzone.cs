@@ -8,5 +8,5 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
-	public interface IActumSubzone : ISubzone {}
+    public interface IActumSubzone : ISubzone { }
 }

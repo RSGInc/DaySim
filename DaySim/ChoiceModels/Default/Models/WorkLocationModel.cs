@@ -26,78 +26,76 @@ using SimpleInjector;
 
 
 namespace DaySim.ChoiceModels.Default.Models {
-	public class WorkLocationModel : ChoiceModel {
-		private const string CHOICE_MODEL_NAME = "WorkLocationModel";
-		private const int TOTAL_NESTED_ALTERNATIVES = 2;
-		private const int TOTAL_LEVELS = 2;
+    public class WorkLocationModel : ChoiceModel {
+        private const string CHOICE_MODEL_NAME = "WorkLocationModel";
+        private const int TOTAL_NESTED_ALTERNATIVES = 2;
+        private const int TOTAL_LEVELS = 2;
         // regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
         private const int THETA_PARAMETER = 98;
         private const int MAX_REGULAR_PARAMETER = 100;
-		private const int MaxDistrictNumber = 100;
-		private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
+        private const int MaxDistrictNumber = 100;
+        private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
         private const bool ESTIMATE_NESTED_MODEL = true;
 
-		public override void RunInitialize(ICoefficientsReader reader = null) {
-			int sampleSize = Global.Configuration.WorkLocationModelSampleSize;
-			Initialize(CHOICE_MODEL_NAME, Global.Configuration.WorkLocationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-		}
+        public override void RunInitialize(ICoefficientsReader reader = null) {
+            int sampleSize = Global.Configuration.WorkLocationModelSampleSize;
+            Initialize(CHOICE_MODEL_NAME, Global.Configuration.WorkLocationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
+        }
 
-		public void Run(IPersonWrapper person, int sampleSize) {
-			if (person == null) {
-				throw new ArgumentNullException("person");
-			}
+        public void Run(IPersonWrapper person, int sampleSize) {
+            if (person == null) {
+                throw new ArgumentNullException("person");
+            }
 
-			person.ResetRandom(0);
+            person.ResetRandom(0);
 
-			if (Global.Configuration.IsInEstimationMode) {
-				//	if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-				//		return;
-				//	}
-				if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
-					return;
-				}
-			}
+            if (Global.Configuration.IsInEstimationMode) {
+                //	if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+                //		return;
+                //	}
+                if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
+                    return;
+                }
+            }
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+            var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-				if (person.UsualWorkParcel == null) {
-					return;
-				}
+            if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+                if (person.UsualWorkParcel == null) {
+                    return;
+                }
 
-				var choseHome = person.UsualWorkParcelId == person.Household.ResidenceParcelId; // JLB 20120329 added these two lines
-				var chosenParcel = choseHome ? null : person.UsualWorkParcel;
+                var choseHome = person.UsualWorkParcelId == person.Household.ResidenceParcelId; // JLB 20120329 added these two lines
+                var chosenParcel = choseHome ? null : person.UsualWorkParcel;
 
-				//RunModel(choiceProbabilityCalculator, person, sampleSize, person.UsualWorkParcel);
-				RunModel(choiceProbabilityCalculator, person, sampleSize, chosenParcel, choseHome); // JLB 20120329 replaced above line
-				// when chosenParcel is null:
-				// DestinationSampler doesn't try to assign one of the sampled destinations as chosen
-				// choseHome is NOT null, and RunModel sets the oddball location as chosen
+                //RunModel(choiceProbabilityCalculator, person, sampleSize, person.UsualWorkParcel);
+                RunModel(choiceProbabilityCalculator, person, sampleSize, chosenParcel, choseHome); // JLB 20120329 replaced above line
+                // when chosenParcel is null:
+                // DestinationSampler doesn't try to assign one of the sampled destinations as chosen
+                // choseHome is NOT null, and RunModel sets the oddball location as chosen
 
-				choiceProbabilityCalculator.WriteObservation();
-			}
-			else {
-				RunModel(choiceProbabilityCalculator, person, sampleSize);
+                choiceProbabilityCalculator.WriteObservation();
+            } else {
+                RunModel(choiceProbabilityCalculator, person, sampleSize);
 
-				var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
-				var choice = (ParcelWrapper) chosenAlternative.Choice;
+                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
+                var choice = (ParcelWrapper)chosenAlternative.Choice;
 
-				person.UsualWorkParcelId = choice.Id;
-				person.UsualWorkParcel = choice;
-				person.UsualWorkZoneKey = ChoiceModelFactory.ZoneKeys[choice.ZoneId];
+                person.UsualWorkParcelId = choice.Id;
+                person.UsualWorkParcel = choice;
+                person.UsualWorkZoneKey = ChoiceModelFactory.ZoneKeys[choice.ZoneId];
 
-				var skimValue = ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 1, person.Household.ResidenceParcel, choice);
+                var skimValue = ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 1, person.Household.ResidenceParcel, choice);
 
-				person.AutoTimeToUsualWork = skimValue.Variable;
-				person.AutoDistanceToUsualWork = skimValue.BlendVariable;
+                person.AutoTimeToUsualWork = skimValue.Variable;
+                person.AutoDistanceToUsualWork = skimValue.BlendVariable;
 
-				person.SetWorkParcelPredictions();
-			}
-		}
+                person.SetWorkParcelPredictions();
+            }
+        }
 
-        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false)
-        {
+        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false) {
             var segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.Work, Global.Settings.TourPriorities.HomeBasedTour, Global.Settings.Modes.Sov, person.PersonType);
             var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, person.Household.ResidenceParcel, choice);
             var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
@@ -109,8 +107,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             //var alternative = choiceProbabilityCalculator.GetAlternative(countSampled, true);  
 
             // JLB 20120329 added third call parameter to idenitfy whether this alt is chosen or not
-            if (Global.Configuration.IsInEstimationMode && !ESTIMATE_NESTED_MODEL)
-            {
+            if (Global.Configuration.IsInEstimationMode && !ESTIMATE_NESTED_MODEL) {
                 return;
             }
             var alternative = choiceProbabilityCalculator.GetAlternative(sampleSize, true, choseHome);
@@ -125,8 +122,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(90, 100);  //old dummy size variable for oddball alt
 
             // OD shadow pricing - add for work at home
-            if (Global.Configuration.ShouldUseODShadowPricing && Global.Configuration.UseODShadowPricingForWorkAtHomeAlternative)
-            {
+            if (Global.Configuration.ShouldUseODShadowPricing && Global.Configuration.UseODShadowPricingForWorkAtHomeAlternative) {
                 var res = person.Household.ResidenceParcel.District;
                 var des = person.Household.ResidenceParcel.District;
                 //var first = res <= des? res : des;
@@ -138,16 +134,15 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             // set shadow price depending on persontype and add it to utility
             // we are using the sampling adjustment factor assuming that it is 1
-            if (Global.Configuration.ShouldUseShadowPricing && Global.Configuration.UseWorkShadowPricingForWorkAtHomeAlternative)
-            {
+            if (Global.Configuration.ShouldUseShadowPricing && Global.Configuration.UseWorkShadowPricingForWorkAtHomeAlternative) {
                 alternative.AddUtilityTerm(1, person.Household.ResidenceParcel.ShadowPriceForEmployment);
             }
 
             //make oddball alt unavailable and remove nesting for estimation of conditional MNL 
             alternative.AddNestedAlternative(sampleSize + 3, 1, THETA_PARAMETER);
-		}
+        }
 
-        protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) { 
+        protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) {
             //PSRC customization dll for example
             //Global.PrintFile.WriteLine("Generic Default WorkLocationModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
         }
@@ -155,25 +150,25 @@ namespace DaySim.ChoiceModels.Default.Models {
         private sealed class WorkLocationUtilities : ISamplingUtilities {
             private readonly WorkLocationModel _parentClass;
             private readonly IPersonWrapper _person;
-			private readonly int _sampleSize;
-			private readonly int _destinationArrivalTime;
-			private readonly int _destinationDepartureTime;
-			private readonly int[] _seedValues;
+            private readonly int _sampleSize;
+            private readonly int _destinationArrivalTime;
+            private readonly int _destinationDepartureTime;
+            private readonly int[] _seedValues;
 
-			public WorkLocationUtilities(WorkLocationModel parentClass, IPersonWrapper person, int sampleSize, int destinationArrivalTime, int destinationDepartureTime) {
+            public WorkLocationUtilities(WorkLocationModel parentClass, IPersonWrapper person, int sampleSize, int destinationArrivalTime, int destinationDepartureTime) {
                 _parentClass = parentClass;
                 _person = person;
-				_sampleSize = sampleSize;
-				_destinationArrivalTime = destinationArrivalTime;
-				_destinationDepartureTime = destinationDepartureTime;
-				_seedValues = ChoiceModelUtility.GetRandomSampling(_sampleSize, person.SeedValues[0]);
-			}
+                _sampleSize = sampleSize;
+                _destinationArrivalTime = destinationArrivalTime;
+                _destinationDepartureTime = destinationDepartureTime;
+                _seedValues = ChoiceModelUtility.GetRandomSampling(_sampleSize, person.SeedValues[0]);
+            }
 
-			public int[] SeedValues {
-				get { return _seedValues; }
-			}
+            public int[] SeedValues {
+                get { return _seedValues; }
+            }
 
-			public void SetUtilities(ISampleItem sampleItem, int sampleFrequency) {
+            public void SetUtilities(ISampleItem sampleItem, int sampleFrequency) {
                 if (sampleItem == null) {
                     throw new ArgumentNullException("sampleItem");
                 }
@@ -181,8 +176,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var alternative = sampleItem.Alternative;
 
                 //remove nesting for estimation of conditional MNL 
-                if (!Global.Configuration.IsInEstimationMode || ESTIMATE_NESTED_MODEL)
-                {
+                if (!Global.Configuration.IsInEstimationMode || ESTIMATE_NESTED_MODEL) {
                     alternative.AddNestedAlternative(_sampleSize + 2, 0, THETA_PARAMETER);
                 }
                 if (!alternative.Available) {
@@ -344,5 +338,5 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             }
         }
-	}
+    }
 }

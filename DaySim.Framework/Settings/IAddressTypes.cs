@@ -6,19 +6,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IAddressTypes {
-		int None { get; }
-		
-		int Home { get; }
-		
-		int UsualWorkplace { get; }
-		
-		int UsualSchool { get; }
-		
-		int Other { get; }
-		
-		int Missing { get; }
-		
-		int ChangeMode { get; }
-	}
+    public interface IAddressTypes {
+        int None { get; }
+
+        int Home { get; }
+
+        int UsualWorkplace { get; }
+
+        int UsualSchool { get; }
+
+        int Other { get; }
+
+        int Missing { get; }
+
+        int ChangeMode { get; }
+    }
 }

@@ -11,23 +11,23 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Persisters {
-	[UsedImplicitly]
-	[Factory(Factory.PersistenceFactory, Category = Category.Persister)]
-	public class TripPersister<TModel> : Persister<TModel> where TModel : class, ITrip, new() {
-		public override void Export(IModel model) {
-			base.Export(model);
+    [UsedImplicitly]
+    [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
+    public class TripPersister<TModel> : Persister<TModel> where TModel : class, ITrip, new() {
+        public override void Export(IModel model) {
+            base.Export(model);
 
-			ChoiceModelFactory.TripFileRecordsWritten++;
+            ChoiceModelFactory.TripFileRecordsWritten++;
 
-			var m = (TModel) model;
+            var m = (TModel)model;
 
-			ChoiceModelFactory.TripHalfTourCheckSum += m.Direction;
-			ChoiceModelFactory.TripDestinationPurposeCheckSum += m.DestinationPurpose;
-			ChoiceModelFactory.TripDestinationParcelCheckSum += m.DestinationParcelId;
-			ChoiceModelFactory.TripModeCheckSum += m.Mode;
-			ChoiceModelFactory.TripPathTypeCheckSum += m.PathType;
-			ChoiceModelFactory.TripDepartureTimeCheckSum += m.DepartureTime;
-			ChoiceModelFactory.TripArrivalTimeCheckSum += m.ArrivalTime;
-		}
-	}
+            ChoiceModelFactory.TripHalfTourCheckSum += m.Direction;
+            ChoiceModelFactory.TripDestinationPurposeCheckSum += m.DestinationPurpose;
+            ChoiceModelFactory.TripDestinationParcelCheckSum += m.DestinationParcelId;
+            ChoiceModelFactory.TripModeCheckSum += m.Mode;
+            ChoiceModelFactory.TripPathTypeCheckSum += m.PathType;
+            ChoiceModelFactory.TripDepartureTimeCheckSum += m.DepartureTime;
+            ChoiceModelFactory.TripArrivalTimeCheckSum += m.ArrivalTime;
+        }
+    }
 }

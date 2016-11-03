@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.DomainModels.Persisters {
-	public interface IPersisterImporter {
-		void Import();
-	}
+    public interface IPersisterImporter {
+        void Import();
+    }
 }

@@ -9,12 +9,10 @@ using System.Linq;
 using System.Text;
 
 namespace DaySim.Framework.Roster {
-	public class CubeReaderCreator : IFileReaderCreator 
-	{
-//		public ISkimFileReader CreateReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping)
-		public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping)
-		{
-			return new CubeSkimFileReader(path, mapping);
-		}
-	}
+    public class CubeReaderCreator : IFileReaderCreator {
+        //		public ISkimFileReader CreateReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping)
+        public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping) {
+            return new CubeSkimFileReader(path, mapping);
+        }
+    }
 }

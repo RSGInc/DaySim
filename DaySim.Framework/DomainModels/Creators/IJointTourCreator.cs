@@ -9,9 +9,9 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.DomainModels.Creators {
-	public interface IJointTourCreator : ICreator {
-		IJointTour CreateModel();
+    public interface IJointTourCreator : ICreator {
+        IJointTour CreateModel();
 
-		IJointTourWrapper CreateWrapper(IJointTour jointTour, IHouseholdDayWrapper householdDayWrapper);
-	}
+        IJointTourWrapper CreateWrapper(IJointTour jointTour, IHouseholdDayWrapper householdDayWrapper);
+    }
 }

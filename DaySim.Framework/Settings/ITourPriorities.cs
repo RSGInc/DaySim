@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface ITourPriorities {
-		int UsualLocation { get; }
-		
-		int HomeBasedTour { get; }
-		
-		int WorkBasedTour { get; }
-	}
+    public interface ITourPriorities {
+        int UsualLocation { get; }
+
+        int HomeBasedTour { get; }
+
+        int WorkBasedTour { get; }
+    }
 }

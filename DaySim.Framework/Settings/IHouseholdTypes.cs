@@ -6,21 +6,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IHouseholdTypes {
-		int IndividualWorkerStudent { get; }
-		
-		int IndividualNonworkerNonstudent { get; }
-		
-		int OneAdultWithChildren { get; }
-		
-		int TwoPlusWorkerStudentAdultsWithChildren { get; }
-		
-		int TwoPlusAdultsOnePlusWorkersStudentsWithChildren { get; }
-		
-		int TwoPlusWorkerStudentAdultsWithoutChildren { get; }
-		
-		int OnePlusWorkerStudentAdultsAndOnePlusNonworkerNonstudentAdultsWithoutChildren { get; }
-		
-		int TwoPlusNonworkerNonstudentAdultsWithoutChildren { get; }
-	}
+    public interface IHouseholdTypes {
+        int IndividualWorkerStudent { get; }
+
+        int IndividualNonworkerNonstudent { get; }
+
+        int OneAdultWithChildren { get; }
+
+        int TwoPlusWorkerStudentAdultsWithChildren { get; }
+
+        int TwoPlusAdultsOnePlusWorkersStudentsWithChildren { get; }
+
+        int TwoPlusWorkerStudentAdultsWithoutChildren { get; }
+
+        int OnePlusWorkerStudentAdultsAndOnePlusNonworkerNonstudentAdultsWithoutChildren { get; }
+
+        int TwoPlusNonworkerNonstudentAdultsWithoutChildren { get; }
+    }
 }

@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class TransitStopAreaCreator<TWrapper, TModel> : ITransitStopAreaCreator where TWrapper : ITransitStopAreaWrapper where TModel : ITransitStopArea, new() {
-		ITransitStopArea ITransitStopAreaCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class TransitStopAreaCreator<TWrapper, TModel> : ITransitStopAreaCreator where TWrapper : ITransitStopAreaWrapper where TModel : ITransitStopArea, new() {
+        ITransitStopArea ITransitStopAreaCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		ITransitStopAreaWrapper ITransitStopAreaCreator.CreateWrapper(ITransitStopArea transitStopArea) {
-			return CreateWrapper(transitStopArea);
-		}
+        ITransitStopAreaWrapper ITransitStopAreaCreator.CreateWrapper(ITransitStopArea transitStopArea) {
+            return CreateWrapper(transitStopArea);
+        }
 
-		private static TWrapper CreateWrapper(ITransitStopArea transitStopArea) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, transitStopArea);
+        private static TWrapper CreateWrapper(ITransitStopArea transitStopArea) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, transitStopArea);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }

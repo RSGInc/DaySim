@@ -9,9 +9,9 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.DomainModels.Creators {
-	public interface IZoneCreator : ICreator {
-		IZone CreateModel();
+    public interface IZoneCreator : ICreator {
+        IZone CreateModel();
 
-		IZoneWrapper CreateWrapper(IZone zone);
-	}
+        IZoneWrapper CreateWrapper(IZone zone);
+    }
 }

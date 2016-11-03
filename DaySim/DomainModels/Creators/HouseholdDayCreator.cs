@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class HouseholdDayCreator<TWrapper, TModel> : IHouseholdDayCreator where TWrapper : IHouseholdDayWrapper where TModel : IHouseholdDay, new() {
-		IHouseholdDay IHouseholdDayCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class HouseholdDayCreator<TWrapper, TModel> : IHouseholdDayCreator where TWrapper : IHouseholdDayWrapper where TModel : IHouseholdDay, new() {
+        IHouseholdDay IHouseholdDayCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		IHouseholdDayWrapper IHouseholdDayCreator.CreateWrapper(IHouseholdDay householdDay, IHouseholdWrapper householdWrapper) {
-			return CreateWrapper(householdDay, householdWrapper);
-		}
+        IHouseholdDayWrapper IHouseholdDayCreator.CreateWrapper(IHouseholdDay householdDay, IHouseholdWrapper householdWrapper) {
+            return CreateWrapper(householdDay, householdWrapper);
+        }
 
-		private static TWrapper CreateWrapper(IHouseholdDay householdDay, IHouseholdWrapper householdWrapper) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, householdDay, householdWrapper);
+        private static TWrapper CreateWrapper(IHouseholdDay householdDay, IHouseholdWrapper householdWrapper) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, householdDay, householdWrapper);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }

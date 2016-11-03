@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-	[Serializable]
-	public class InvalidParkAndRideZoneIdException : Exception {
-		public InvalidParkAndRideZoneIdException() : this("A park-and-ride zone has an ID of zero. Zero is a special case for skims meaning none or empty.") {}
+    [Serializable]
+    public class InvalidParkAndRideZoneIdException : Exception {
+        public InvalidParkAndRideZoneIdException() : this("A park-and-ride zone has an ID of zero. Zero is a special case for skims meaning none or empty.") { }
 
-		public InvalidParkAndRideZoneIdException(string message) : base(message) {}
+        public InvalidParkAndRideZoneIdException(string message) : base(message) { }
 
-		public InvalidParkAndRideZoneIdException(string message, Exception innerException) : base(message, innerException) {}
+        public InvalidParkAndRideZoneIdException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected InvalidParkAndRideZoneIdException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+        protected InvalidParkAndRideZoneIdException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
 }

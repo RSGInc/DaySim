@@ -13,13 +13,13 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
-	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-	public class JointTourWrapper : Default.Wrappers.JointTourWrapper, IActumJointTourWrapper {
-		private readonly IActumJointTour _jointTour;
+    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
+    public class JointTourWrapper : Default.Wrappers.JointTourWrapper, IActumJointTourWrapper {
+        private readonly IActumJointTour _jointTour;
 
-		[UsedImplicitly]
-		public JointTourWrapper(IJointTour jointTour, IHouseholdDayWrapper householdDayWrapper) : base(jointTour, householdDayWrapper) {
-			_jointTour = (IActumJointTour) jointTour;
-		}
-	}
+        [UsedImplicitly]
+        public JointTourWrapper(IJointTour jointTour, IHouseholdDayWrapper householdDayWrapper) : base(jointTour, householdDayWrapper) {
+            _jointTour = (IActumJointTour)jointTour;
+        }
+    }
 }

@@ -11,56 +11,54 @@ using System.IO;
 namespace DaySim.Framework.Core {
 
     //from http://stackoverflow.com/a/21867370/283973
-    public class CountingReader : StreamReader
-    {
+    public class CountingReader : StreamReader {
         private int _lineNumber = 0;
         public int LineNumber { get { return _lineNumber; } }
 
         public CountingReader(Stream stream) : base(stream) { }
 
-        public override string ReadLine()
-        {
+        public override string ReadLine() {
             _lineNumber++;
             return base.ReadLine();
         }
     }
 
     public sealed class Utility : IObservationItem {
-		public Utility(int position, int parameter, bool hasSizeVariable) {
-			PositionIndex = position;
-			Parameter = parameter;
-			HasSizeVariable = hasSizeVariable;
-		}
+        public Utility(int position, int parameter, bool hasSizeVariable) {
+            PositionIndex = position;
+            Parameter = parameter;
+            HasSizeVariable = hasSizeVariable;
+        }
 
-		public int PositionIndex { get; private set; }
+        public int PositionIndex { get; private set; }
 
-		public int Position {
-			get { return PositionIndex + 1; }
-		}
+        public int Position {
+            get { return PositionIndex + 1; }
+        }
 
-		public int Key { get; private set; }
+        public int Key { get; private set; }
 
-		public double Data { get; private set; }
+        public double Data { get; private set; }
 
-		public string Label {
-			get { return "par_" + Parameter; }
-		}
+        public string Label {
+            get { return "par_" + Parameter; }
+        }
 
-		public int Parameter { get; private set; }
+        public int Parameter { get; private set; }
 
-		public bool HasSizeVariable { get; private set; }
+        public bool HasSizeVariable { get; private set; }
 
-		public double TotalValue { get; set; }
+        public double TotalValue { get; set; }
 
-		public int TotalNonZeroOccurrences { get; set; }
+        public int TotalNonZeroOccurrences { get; set; }
 
-		public void Update(int key, double value) {
-			if (Key != key) {
-				Data = 0;
-			}
+        public void Update(int key, double value) {
+            if (Key != key) {
+                Data = 0;
+            }
 
-			Key = key;
-			Data += value;
-		}
-	}
+            Key = key;
+            Data += value;
+        }
+    }
 }

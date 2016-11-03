@@ -6,53 +6,53 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IModes {
-		int TotalModes { get; }
+    public interface IModes {
+        int TotalModes { get; }
 
-		int MaxMode { get; }
-		
-		int None { get; }
-		
-		int Walk { get; }
-		
-		int Bike { get; }
-		
-		int Sov { get; }
-		
-		int Hov2 { get; }
-		
-		int Hov3 { get; }
-		
-		int Transit { get; }
-		
-		int ParkAndRide { get; }
-		
-		int SchoolBus { get; }
+        int MaxMode { get; }
+
+        int None { get; }
+
+        int Walk { get; }
+
+        int Bike { get; }
+
+        int Sov { get; }
+
+        int Hov2 { get; }
+
+        int Hov3 { get; }
+
+        int Transit { get; }
+
+        int ParkAndRide { get; }
+
+        int SchoolBus { get; }
 
         int PaidRideShare { get; }
 
         int Other { get; }
-		
-		int HovDriver { get; }
-		
-		int HovPassenger { get; }
 
-		int KissAndRide { get; }
+        int HovDriver { get; }
 
-		int CarParkRideWalk { get; }
+        int HovPassenger { get; }
 
-		int CarKissRideWalk { get; }
+        int KissAndRide { get; }
 
-		int CarParkRideBike { get; }
+        int CarParkRideWalk { get; }
 
-		int WalkRideBike { get; }
+        int CarKissRideWalk { get; }
 
-		int BikeParkRideWalk { get; }
-	
-		int BikeParkRideBike { get; }
-	
-		int BikeOnTransit { get; }
-	
-	
-	}
+        int CarParkRideBike { get; }
+
+        int WalkRideBike { get; }
+
+        int BikeParkRideWalk { get; }
+
+        int BikeParkRideBike { get; }
+
+        int BikeOnTransit { get; }
+
+
+    }
 }

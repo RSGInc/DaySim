@@ -15,103 +15,103 @@ using DaySim.Framework.Persistence;
 using SimpleInjector;
 
 namespace DaySim.DomainModels.Persisters {
-	public abstract class Persister<TModel> : IPersisterReader<TModel>, IPersisterImporter, IPersisterExporter, IDisposable where TModel : class, IModel, new() {
-		private readonly Lazy<Reader<TModel>> _reader = new Lazy<Reader<TModel>>(() =>
-			Global
-				.ContainerWorkingPathReaders.GetInstance<Reader<TModel>>());
+    public abstract class Persister<TModel> : IPersisterReader<TModel>, IPersisterImporter, IPersisterExporter, IDisposable where TModel : class, IModel, new() {
+        private readonly Lazy<Reader<TModel>> _reader = new Lazy<Reader<TModel>>(() =>
+            Global
+                .ContainerWorkingPathReaders.GetInstance<Reader<TModel>>());
 
-		private readonly Lazy<IImporter> _importer = new Lazy<IImporter>(() =>
-			Global
-				.ContainerDaySim
-				.GetInstance<ImporterFactory>()
-				.GetImporter<TModel>(Global.GetInputPath<TModel>(), Global.GetInputDelimiter<TModel>())
-			);
+        private readonly Lazy<IImporter> _importer = new Lazy<IImporter>(() =>
+            Global
+                .ContainerDaySim
+                .GetInstance<ImporterFactory>()
+                .GetImporter<TModel>(Global.GetInputPath<TModel>(), Global.GetInputDelimiter<TModel>())
+            );
 
-		private readonly Lazy<IExporter<TModel>> _exporter = new Lazy<IExporter<TModel>>(() =>
-			Global
-				.ContainerDaySim
-				.GetInstance<ExporterFactory>()
-				.GetExporter<TModel>(Global.GetOutputPath<TModel>(), Global.GetOutputDelimiter<TModel>())
-			);
+        private readonly Lazy<IExporter<TModel>> _exporter = new Lazy<IExporter<TModel>>(() =>
+            Global
+                .ContainerDaySim
+                .GetInstance<ExporterFactory>()
+                .GetExporter<TModel>(Global.GetOutputPath<TModel>(), Global.GetOutputDelimiter<TModel>())
+            );
 
-		private readonly Lazy<Hdf5Exporter<TModel>> _hdf5Exporter = new Lazy<Hdf5Exporter<TModel>>(() => new Hdf5Exporter<TModel>());
+        private readonly Lazy<Hdf5Exporter<TModel>> _hdf5Exporter = new Lazy<Hdf5Exporter<TModel>>(() => new Hdf5Exporter<TModel>());
 
-		public int Count {
-			get {
-				return
-					_reader
-						.Value
-						.Count;
-			}
-		}
+        public int Count {
+            get {
+                return
+                    _reader
+                        .Value
+                        .Count;
+            }
+        }
 
-		public TModel Seek(int id) {
-			return
-				_reader
-					.Value
-					.Seek(id);
-		}
+        public TModel Seek(int id) {
+            return
+                _reader
+                    .Value
+                    .Seek(id);
+        }
 
-		public IEnumerable<TModel> Seek(int id, string indexName) {
-			return
-				_reader
-					.Value
-					.Seek(id, indexName);
-		}
+        public IEnumerable<TModel> Seek(int id, string indexName) {
+            return
+                _reader
+                    .Value
+                    .Seek(id, indexName);
+        }
 
-		public void BuildIndex(string indexName, string idName, string parentIdName) {
-			_reader
-				.Value
-				.BuildIndex(indexName, idName, parentIdName);
-		}
+        public void BuildIndex(string indexName, string idName, string parentIdName) {
+            _reader
+                .Value
+                .BuildIndex(indexName, idName, parentIdName);
+        }
 
-		IEnumerator<TModel> IEnumerable<TModel>.GetEnumerator() {
-			return (IEnumerator<TModel>) GetEnumerator();
-		}
+        IEnumerator<TModel> IEnumerable<TModel>.GetEnumerator() {
+            return (IEnumerator<TModel>)GetEnumerator();
+        }
 
-		public IEnumerator GetEnumerator() {
-			return
-				_reader
-					.Value
-					.GetEnumerator();
-		}
+        public IEnumerator GetEnumerator() {
+            return
+                _reader
+                    .Value
+                    .GetEnumerator();
+        }
 
-		public void Import() {
-			var message = string.Format("Importing {0} domain models...", typeof (TModel).Name);
+        public void Import() {
+            var message = string.Format("Importing {0} domain models...", typeof(TModel).Name);
 
-			_importer
-				.Value
-				.BeginImport(Global.GetWorkingPath<TModel>(), message);
-		}
+            _importer
+                .Value
+                .BeginImport(Global.GetWorkingPath<TModel>(), message);
+        }
 
-		public virtual void Export(IModel model) {
-			var m = (TModel) model;
+        public virtual void Export(IModel model) {
+            var m = (TModel)model;
 
-			_exporter
-				.Value
-				.Export(m);
+            _exporter
+                .Value
+                .Export(m);
 
-			if (!Global.Configuration.WriteTripsToHDF5) {
-				return;
-			}
+            if (!Global.Configuration.WriteTripsToHDF5) {
+                return;
+            }
 
-			_hdf5Exporter
-				.Value
-				.Export(m);
-		}
+            _hdf5Exporter
+                .Value
+                .Export(m);
+        }
 
-		public void Dispose() {
-			if (Global.Configuration.WriteTripsToHDF5 && _hdf5Exporter != null) {
-				_hdf5Exporter
-					.Value
-					.Flush();
-			}
+        public void Dispose() {
+            if (Global.Configuration.WriteTripsToHDF5 && _hdf5Exporter != null) {
+                _hdf5Exporter
+                    .Value
+                    .Flush();
+            }
 
-			if (_exporter != null) {
-				_exporter
-					.Value
-					.Dispose();
-			}
-		}
-	}
+            if (_exporter != null) {
+                _exporter
+                    .Value
+                    .Dispose();
+            }
+        }
+    }
 }

@@ -8,17 +8,17 @@
 using System.Runtime.InteropServices;
 
 namespace DaySim.Framework.Persistence {
-	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-	public sealed class Element {
-		public Element() {}
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public sealed class Element {
+        public Element() { }
 
-		public Element(int id, long position) {
-			Id = id;
-			Position = position;
-		}
+        public Element(int id, long position) {
+            Id = id;
+            Position = position;
+        }
 
-		public int Id { get; set; }
+        public int Id { get; set; }
 
-		public long Position { get; set; }
-	}
+        public long Position { get; set; }
+    }
 }

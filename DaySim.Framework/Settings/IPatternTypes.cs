@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IPatternTypes {
-		int Mandatory { get; }
-		
-		int Optional { get; }
-		
-		int Home { get; }
-	}
+    public interface IPatternTypes {
+        int Mandatory { get; }
+
+        int Optional { get; }
+
+        int Home { get; }
+    }
 }

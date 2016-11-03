@@ -12,33 +12,33 @@ using DaySim.Framework.DomainModels.Persisters;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Factories {
-	public class PersistenceFactory<TModel> : IPersistenceFactory<TModel> where TModel : IModel {
-		private IDisposable _persister;
+    public class PersistenceFactory<TModel> : IPersistenceFactory<TModel> where TModel : IModel {
+        private IDisposable _persister;
 
-		public IPersisterReader<TModel> Reader { get; private set; }
+        public IPersisterReader<TModel> Reader { get; private set; }
 
-		public IPersisterImporter Importer { get; private set; }
+        public IPersisterImporter Importer { get; private set; }
 
-		public IPersisterExporter Exporter { get; private set; }
+        public IPersisterExporter Exporter { get; private set; }
 
-		public void Initialize(Configuration configuration) {
-			var helper = new FactoryHelper(configuration);
+        public void Initialize(Configuration configuration) {
+            var helper = new FactoryHelper(configuration);
 
-			var type1 = helper.Persistence.GetModelType<TModel>();
-			var type2 = helper.Persistence.GetPersisterType<TModel>();
+            var type1 = helper.Persistence.GetModelType<TModel>();
+            var type2 = helper.Persistence.GetPersisterType<TModel>();
 
-			var args = new[] {type1};
-			var constructed = type2.MakeGenericType(args);
+            var args = new[] { type1 };
+            var constructed = type2.MakeGenericType(args);
 
-			_persister = (IDisposable) Activator.CreateInstance(constructed);
+            _persister = (IDisposable)Activator.CreateInstance(constructed);
 
-			Reader = (IPersisterReader<TModel>) _persister;
-			Importer = (IPersisterImporter) _persister;
-			Exporter = (IPersisterExporter) _persister;
-		}
+            Reader = (IPersisterReader<TModel>)_persister;
+            Importer = (IPersisterImporter)_persister;
+            Exporter = (IPersisterExporter)_persister;
+        }
 
-		public void Close() {
-			_persister.Dispose();
-		}
-	}
+        public void Close() {
+            _persister.Dispose();
+        }
+    }
 }

@@ -10,17 +10,17 @@ using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 
 namespace DaySim.Settings {
-	public class SettingsFactory {
-		private readonly Type _type;
+    public class SettingsFactory {
+        private readonly Type _type;
 
-		public SettingsFactory(Configuration configuration) {
-			var helper = new FactoryHelper(configuration);
+        public SettingsFactory(Configuration configuration) {
+            var helper = new FactoryHelper(configuration);
 
-			_type = helper.Settings.GetSettingsType();
-		}
+            _type = helper.Settings.GetSettingsType();
+        }
 
-		public ISettings Create() {
-			return (ISettings) Activator.CreateInstance(_type);
-		}
-	}
+        public ISettings Create() {
+            return (ISettings)Activator.CreateInstance(_type);
+        }
+    }
 }

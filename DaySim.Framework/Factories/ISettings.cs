@@ -8,63 +8,63 @@
 using DaySim.Framework.Settings;
 
 namespace DaySim.Framework.Factories {
-	public interface ISettings {
-		double LengthUnitsPerFoot { get; }
+    public interface ISettings {
+        double LengthUnitsPerFoot { get; }
 
-		double DistanceUnitsPerMile { get; }
+        double DistanceUnitsPerMile { get; }
 
-		double MonetaryUnitsPerDollar { get; }
+        double MonetaryUnitsPerDollar { get; }
 
-		bool UseJointTours { get; }
+        bool UseJointTours { get; }
 
-		int OutOfRegionParcelId { get; }
+        int OutOfRegionParcelId { get; }
 
-		double GeneralizedTimeUnavailable { get; }
+        double GeneralizedTimeUnavailable { get; }
 
-		int NumberOfRandomSeeds { get; }
+        int NumberOfRandomSeeds { get; }
 
-		IDestinationScales DestinationScales { get; set;  }
+        IDestinationScales DestinationScales { get; set; }
 
-		IPersonTypes PersonTypes { get; set; }
+        IPersonTypes PersonTypes { get; set; }
 
-		IPatternTypes PatternTypes { get; set; }
+        IPatternTypes PatternTypes { get; set; }
 
-		IPurposes Purposes { get; set; }
+        IPurposes Purposes { get; set; }
 
-		ITourCategories TourCategories { get; set; }
- 
-		ITourPriorities TourPriorities { get; set; }
+        ITourCategories TourCategories { get; set; }
 
-		IModes Modes { get; set; }
+        ITourPriorities TourPriorities { get; set; }
 
-		IDriverTypes DriverTypes { get; set; }
+        IModes Modes { get; set; }
 
-		IPathTypes PathTypes { get; set; }
+        IDriverTypes DriverTypes { get; set; }
 
-		IVotGroups VotGroups { get; set; }
+        IPathTypes PathTypes { get; set; }
 
-		ITimeDirections TimeDirections { get; set; }
+        IVotGroups VotGroups { get; set; }
 
-		ITourDirections TourDirections { get; set; }
+        ITimeDirections TimeDirections { get; set; }
 
-		IPersonGenders PersonGenders { get; set; }
+        ITourDirections TourDirections { get; set; }
 
-		ITransitAccesses TransitAccesses { get; set; }
+        IPersonGenders PersonGenders { get; set; }
 
-		IVotALSegments VotALSegments { get; set; }
+        ITransitAccesses TransitAccesses { get; set; }
 
-		ICarOwnerships CarOwnerships { get; set; }
+        IVotALSegments VotALSegments { get; set; }
 
-		IAddressTypes AddressTypes { get; set; }
+        ICarOwnerships CarOwnerships { get; set; }
 
-		IValueOfTimes ValueOfTimes { get; set; }
+        IAddressTypes AddressTypes { get; set; }
 
-		IModels Models { get; set; }
+        IValueOfTimes ValueOfTimes { get; set; }
 
-		ITimes Times { get; set; }
+        IModels Models { get; set; }
 
-		IHouseholdTypes HouseholdTypes { get; set; }
+        ITimes Times { get; set; }
 
-		IMaxInputs MaxInputs { get; set; }
-	}
+        IHouseholdTypes HouseholdTypes { get; set; }
+
+        IMaxInputs MaxInputs { get; set; }
+    }
 }

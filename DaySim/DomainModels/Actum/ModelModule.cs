@@ -15,9 +15,9 @@ namespace DaySim.DomainModels.Actum {
     public static class ModelModule {
         public static void registerDependencies() {
 
-			Global.ContainerDaySim.RegisterSingleton<Reader<Parcel>>(new Reader<Parcel>(Global.WorkingParcelPath));
+            Global.ContainerDaySim.RegisterSingleton<Reader<Parcel>>(new Reader<Parcel>(Global.WorkingParcelPath));
 
-			Global.ContainerDaySim.RegisterSingleton<Reader<ParcelNode>>(new Reader<ParcelNode>(Global.WorkingParcelNodePath));
+            Global.ContainerDaySim.RegisterSingleton<Reader<ParcelNode>>(new Reader<ParcelNode>(Global.WorkingParcelNodePath));
 
             Global.ContainerDaySim.RegisterSingleton<Reader<ParkAndRideNode>>(new Reader<ParkAndRideNode>(Global.WorkingParkAndRideNodePath));
 
@@ -42,6 +42,6 @@ namespace DaySim.DomainModels.Actum {
             Global.ContainerDaySim.RegisterSingleton<Reader<FullHalfTour>>(new Reader<FullHalfTour>(Global.WorkingFullHalfTourPath));
 
             Global.ContainerDaySim.RegisterSingleton<Reader<PartialHalfTour>>(new Reader<PartialHalfTour>(Global.WorkingPartialHalfTourPath));
-		}
-	}
+        }
+    }
 }

@@ -506,7 +506,7 @@ public partial class alglib {
             double r = 0;
             lock (rndobject) {
 #if DEBUG
-ParallelUtility.countLocks("rndobject");
+                ParallelUtility.countLocks("rndobject");
 #endif
 
                 r = rndobject.NextDouble();
@@ -517,7 +517,7 @@ ParallelUtility.countLocks("rndobject");
             int r = 0;
             lock (rndobject) {
 #if DEBUG
-ParallelUtility.countLocks("rndobject");
+                ParallelUtility.countLocks("rndobject");
 #endif
 
                 r = rndobject.Next(N);

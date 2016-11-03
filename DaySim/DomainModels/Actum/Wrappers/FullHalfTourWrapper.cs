@@ -13,13 +13,13 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
-	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-	public class FullHalfTourWrapper : Default.Wrappers.FullHalfTourWrapper, IActumFullHalfTourWrapper {
-		private readonly IActumFullHalfTour _fullHalfTour;
+    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
+    public class FullHalfTourWrapper : Default.Wrappers.FullHalfTourWrapper, IActumFullHalfTourWrapper {
+        private readonly IActumFullHalfTour _fullHalfTour;
 
-		[UsedImplicitly]
-		public FullHalfTourWrapper(IFullHalfTour fullHalfTour, IHouseholdDayWrapper householdDayWrapper) : base(fullHalfTour, householdDayWrapper) {
-			_fullHalfTour = (IActumFullHalfTour) fullHalfTour;
-		}
-	}
+        [UsedImplicitly]
+        public FullHalfTourWrapper(IFullHalfTour fullHalfTour, IHouseholdDayWrapper householdDayWrapper) : base(fullHalfTour, householdDayWrapper) {
+            _fullHalfTour = (IActumFullHalfTour)fullHalfTour;
+        }
+    }
 }

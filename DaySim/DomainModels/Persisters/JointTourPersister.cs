@@ -11,13 +11,13 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Persisters {
-	[UsedImplicitly]
-	[Factory(Factory.PersistenceFactory, Category = Category.Persister)]
-	public class JointTourPersister<TModel> : Persister<TModel> where TModel : class, IJointTour, new() {
-		public override void Export(IModel model) {
-			base.Export(model);
+    [UsedImplicitly]
+    [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
+    public class JointTourPersister<TModel> : Persister<TModel> where TModel : class, IJointTour, new() {
+        public override void Export(IModel model) {
+            base.Export(model);
 
-			ChoiceModelFactory.JointTourFileRecordsWritten++;
-		}
-	}
+            ChoiceModelFactory.JointTourFileRecordsWritten++;
+        }
+    }
 }

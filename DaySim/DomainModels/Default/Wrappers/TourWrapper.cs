@@ -581,8 +581,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 HalfTourFromOrigin = new HalfTour(this);
 
                 HalfTourFromOrigin.SetTrips(direction);
-            }
-            else if (direction == Global.Settings.TourDirections.DestinationToOrigin) {
+            } else if (direction == Global.Settings.TourDirections.DestinationToOrigin) {
                 HalfTourFromDestination = new HalfTour(this);
 
                 HalfTourFromDestination.SetTrips(direction);
@@ -603,8 +602,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                         timeWindow.IncorporateAnotherTimeWindow(tInJoint.PersonDay.TimeWindow);
                     }
                 }
-            }
-            else if (FullHalfTour1Sequence > 0 || FullHalfTour2Sequence > 0) {
+            } else if (FullHalfTour1Sequence > 0 || FullHalfTour2Sequence > 0) {
                 if (FullHalfTour1Sequence > 0) {
                     foreach (var pDay in householdDay.PersonDays) {
                         var tInJoint =
@@ -634,11 +632,9 @@ namespace DaySim.DomainModels.Default.Wrappers {
                         timeWindow.IncorporateAnotherTimeWindow(tInJoint.PersonDay.TimeWindow);
                     }
                 }
-            }
-            else if (ParentTour == null) {
+            } else if (ParentTour == null) {
                 timeWindow.IncorporateAnotherTimeWindow(PersonDay.TimeWindow);
-            }
-            else {
+            } else {
                 timeWindow.IncorporateAnotherTimeWindow(ParentTour.TimeWindow);
             }
 
@@ -662,449 +658,445 @@ namespace DaySim.DomainModels.Default.Wrappers {
         }
 
         public virtual void UpdateTourValues() {
-            if ((Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldOutputStandardFilesInEstimationMode) || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) { 
+            if ((Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldOutputStandardFilesInEstimationMode) || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) {
                 return;
-			}
-            if (Global.Configuration.IsInEstimationMode && 
-                (OriginParcel == null || DestinationParcel == null || DestinationArrivalTime < 0 || DestinationArrivalTime >= Global.Settings.Times.MinutesInADay || DestinationDepartureTime < 0 || DestinationDepartureTime >= Global.Settings.Times.MinutesInADay))    {
+            }
+            if (Global.Configuration.IsInEstimationMode &&
+                (OriginParcel == null || DestinationParcel == null || DestinationArrivalTime < 0 || DestinationArrivalTime >= Global.Settings.Times.MinutesInADay || DestinationDepartureTime < 0 || DestinationDepartureTime >= Global.Settings.Times.MinutesInADay)) {
                 return;
             }
 
             IEnumerable<IPathTypeModel> pathTypeModels =
-			PathTypeModelFactory.Singleton
-				.Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
-			
-			var autoPathRoundTrip =		pathTypeModels.First();
+            PathTypeModelFactory.Singleton
+                .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
 
-			AutoTimeOneWay = autoPathRoundTrip.PathTime / 2.0;
-			AutoCostOneWay = autoPathRoundTrip.PathCost / 2.0;
-			AutoDistanceOneWay = autoPathRoundTrip.PathDistance / 2.0;
+            var autoPathRoundTrip = pathTypeModels.First();
 
-			if (Global.Configuration.IsInEstimationMode || HalfTourFromOrigin == null || HalfTourFromDestination == null) {
-				return;
-			}
+            AutoTimeOneWay = autoPathRoundTrip.PathTime / 2.0;
+            AutoCostOneWay = autoPathRoundTrip.PathCost / 2.0;
+            AutoDistanceOneWay = autoPathRoundTrip.PathDistance / 2.0;
 
-			var trips =
-				HalfTourFromOrigin
-					.Trips
-					.Union(HalfTourFromDestination.Trips)
-					.ToList();
+            if (Global.Configuration.IsInEstimationMode || HalfTourFromOrigin == null || HalfTourFromDestination == null) {
+                return;
+            }
 
-			for (var i = 0; i < trips.Count; i++) {
-				// sets the driver or passenger flag for each trip
-				trips[i].SetDriverOrPassenger(trips);
+            var trips =
+                HalfTourFromOrigin
+                    .Trips
+                    .Union(HalfTourFromDestination.Trips)
+                    .ToList();
 
-				// sets the activity end time for each trip
-				if (trips[i].IsHalfTourFromOrigin) {
-					// for trips to intermediate stops on first half tour, use "arrival" time at stop
-					if (i > 0) {
-						trips[i].SetActivityEndTime(trips[i - 1].ArrivalTime);
-					}
-						// for trip to primary destination on tours without subtours, use departure time from prim.dest.
-					else if (Subtours == null || Subtours.Count == 0) {
-						trips[i].SetActivityEndTime(DestinationDepartureTime);
-					}
-						// for trip to primary destination on tours with subtours, use departure time for first subtour
-					else {
-						var nextDepartureTime = Global.Settings.Times.MinutesInADay;
+            for (var i = 0; i < trips.Count; i++) {
+                // sets the driver or passenger flag for each trip
+                trips[i].SetDriverOrPassenger(trips);
 
-						foreach (var subtour in Subtours) {
-							if (subtour != null && subtour.OriginDepartureTime > trips[i].DepartureTime && subtour.OriginDepartureTime < nextDepartureTime) {
-								nextDepartureTime = subtour.OriginDepartureTime;
-							}
-						}
+                // sets the activity end time for each trip
+                if (trips[i].IsHalfTourFromOrigin) {
+                    // for trips to intermediate stops on first half tour, use "arrival" time at stop
+                    if (i > 0) {
+                        trips[i].SetActivityEndTime(trips[i - 1].ArrivalTime);
+                    }
+                    // for trip to primary destination on tours without subtours, use departure time from prim.dest.
+                    else if (Subtours == null || Subtours.Count == 0) {
+                        trips[i].SetActivityEndTime(DestinationDepartureTime);
+                    }
+                    // for trip to primary destination on tours with subtours, use departure time for first subtour
+                    else {
+                        var nextDepartureTime = Global.Settings.Times.MinutesInADay;
 
-						trips[i].SetActivityEndTime(nextDepartureTime);
-					}
-				}
-				else {
-					//second half tour
-					// for trips to intermediate stops on second half tour, use departure time from stop
-					if (i < trips.Count - 1) {
-						trips[i].SetActivityEndTime(trips[i + 1].DepartureTime);
-					}
-						// if a home-based tour, look for start of next home-based tour}
-					else if (ParentTour == null) {
-						var nextDepartureTime = Global.Settings.Times.MinutesInADay;
+                        foreach (var subtour in Subtours) {
+                            if (subtour != null && subtour.OriginDepartureTime > trips[i].DepartureTime && subtour.OriginDepartureTime < nextDepartureTime) {
+                                nextDepartureTime = subtour.OriginDepartureTime;
+                            }
+                        }
 
-						foreach (var otherTour in PersonDay.Tours) {
-							if (otherTour != null && otherTour != this
-							    && otherTour.OriginDepartureTime > trips[i].ArrivalTime
-							    && otherTour.OriginDepartureTime < nextDepartureTime) {
-								nextDepartureTime = otherTour.OriginDepartureTime;
-							}
-						}
+                        trips[i].SetActivityEndTime(nextDepartureTime);
+                    }
+                } else {
+                    //second half tour
+                    // for trips to intermediate stops on second half tour, use departure time from stop
+                    if (i < trips.Count - 1) {
+                        trips[i].SetActivityEndTime(trips[i + 1].DepartureTime);
+                    }
+                    // if a home-based tour, look for start of next home-based tour}
+                    else if (ParentTour == null) {
+                        var nextDepartureTime = Global.Settings.Times.MinutesInADay;
 
-						trips[i].SetActivityEndTime(nextDepartureTime);
-					}
-						// otherwise, a subtour - look for other subtours, else departure from the parent tour dest.
-					else {
-						var nextDepartureTime = ParentTour.DestinationDepartureTime;
-						foreach (var otherSubtour in ParentTour.Subtours) {
-							if (otherSubtour != null && otherSubtour != this && otherSubtour.OriginDepartureTime > trips[i].ArrivalTime && otherSubtour.OriginDepartureTime < nextDepartureTime) {
-								nextDepartureTime = otherSubtour.OriginDepartureTime;
-							}
-						}
+                        foreach (var otherTour in PersonDay.Tours) {
+                            if (otherTour != null && otherTour != this
+                                && otherTour.OriginDepartureTime > trips[i].ArrivalTime
+                                && otherTour.OriginDepartureTime < nextDepartureTime) {
+                                nextDepartureTime = otherTour.OriginDepartureTime;
+                            }
+                        }
 
-						trips[i].SetActivityEndTime(nextDepartureTime);
-					}
-				}
-			}
-		}
+                        trips[i].SetActivityEndTime(nextDepartureTime);
+                    }
+                    // otherwise, a subtour - look for other subtours, else departure from the parent tour dest.
+                    else {
+                        var nextDepartureTime = ParentTour.DestinationDepartureTime;
+                        foreach (var otherSubtour in ParentTour.Subtours) {
+                            if (otherSubtour != null && otherSubtour != this && otherSubtour.OriginDepartureTime > trips[i].ArrivalTime && otherSubtour.OriginDepartureTime < nextDepartureTime) {
+                                nextDepartureTime = otherSubtour.OriginDepartureTime;
+                            }
+                        }
 
-		public virtual ITourWrapper CreateSubtour(int originAddressType, int originParcelId, int originZoneKey, int destinationPurpose) {
-			TotalSubtours++;
+                        trips[i].SetActivityEndTime(nextDepartureTime);
+                    }
+                }
+            }
+        }
 
-			var model = _tourCreator.CreateModel();
+        public virtual ITourWrapper CreateSubtour(int originAddressType, int originParcelId, int originZoneKey, int destinationPurpose) {
+            TotalSubtours++;
 
-			model.Id = PersonDayId * 10 + PersonDay.GetNextTourSequence();
-			model.PersonId = PersonId;
-			model.PersonDayId = PersonDayId;
-			model.HouseholdId = HouseholdId;
-			model.PersonSequence = PersonSequence;
-			model.Day = Day;
-			model.Sequence = PersonDay.GetCurrentTourSequence();
-			model.OriginAddressType = originAddressType;
-			model.OriginParcelId = originParcelId;
-			model.OriginZoneKey = originZoneKey;
-			model.DestinationPurpose = destinationPurpose;
-			model.OriginDepartureTime = 180;
-			model.DestinationArrivalTime = 180;
-			model.DestinationDepartureTime = 180;
-			model.OriginArrivalTime = 180;
-			model.PathType = 1;
-			model.ExpansionFactor = Household.ExpansionFactor;
+            var model = _tourCreator.CreateModel();
 
-			return _tourCreator.CreateWrapper(model, this, destinationPurpose, false);
-		}
+            model.Id = PersonDayId * 10 + PersonDay.GetNextTourSequence();
+            model.PersonId = PersonId;
+            model.PersonDayId = PersonDayId;
+            model.HouseholdId = HouseholdId;
+            model.PersonSequence = PersonSequence;
+            model.Day = Day;
+            model.Sequence = PersonDay.GetCurrentTourSequence();
+            model.OriginAddressType = originAddressType;
+            model.OriginParcelId = originParcelId;
+            model.OriginZoneKey = originZoneKey;
+            model.DestinationPurpose = destinationPurpose;
+            model.OriginDepartureTime = 180;
+            model.DestinationArrivalTime = 180;
+            model.DestinationDepartureTime = 180;
+            model.OriginArrivalTime = 180;
+            model.PathType = 1;
+            model.ExpansionFactor = Household.ExpansionFactor;
 
-		public virtual IHalfTour GetHalfTour(int direction) {
-			if (direction == Global.Settings.TourDirections.OriginToDestination) {
-				// the half-tour from the origin to destination
-				return HalfTourFromOrigin;
-			}
-			else if (direction == Global.Settings.TourDirections.DestinationToOrigin) {
-				// the half-tour from the destination to origin
-				return HalfTourFromDestination;
-			}
-			else {
-				throw new InvalidTourDirectionException();
-			}
-		}
+            return _tourCreator.CreateWrapper(model, this, destinationPurpose, false);
+        }
 
-		public virtual ITourModeImpedance[] GetTourModeImpedances() {
-			var modeImpedances = new ITourModeImpedance[DayPeriod.SmallDayPeriods.Length];
+        public virtual IHalfTour GetHalfTour(int direction) {
+            if (direction == Global.Settings.TourDirections.OriginToDestination) {
+                // the half-tour from the origin to destination
+                return HalfTourFromOrigin;
+            } else if (direction == Global.Settings.TourDirections.DestinationToOrigin) {
+                // the half-tour from the destination to origin
+                return HalfTourFromDestination;
+            } else {
+                throw new InvalidTourDirectionException();
+            }
+        }
 
-			var availableMinutes =
-				IsHomeBasedTour
-					? PersonDay.TimeWindow
-					: ParentTour.TimeWindow;
+        public virtual ITourModeImpedance[] GetTourModeImpedances() {
+            var modeImpedances = new ITourModeImpedance[DayPeriod.SmallDayPeriods.Length];
 
-			for (var i = 0; i < DayPeriod.SmallDayPeriods.Length; i++) {
-				var period = DayPeriod.SmallDayPeriods[i];
-				var modeImpedance = GetTourModeImpedance(period.Middle);
+            var availableMinutes =
+                IsHomeBasedTour
+                    ? PersonDay.TimeWindow
+                    : ParentTour.TimeWindow;
 
-				modeImpedances[i] = modeImpedance;
+            for (var i = 0; i < DayPeriod.SmallDayPeriods.Length; i++) {
+                var period = DayPeriod.SmallDayPeriods[i];
+                var modeImpedance = GetTourModeImpedance(period.Middle);
 
-				modeImpedance.AdjacentMinutesBefore = availableMinutes.AdjacentAvailableMinutesBefore(period.Start) / ChoiceModelFactory.SmallPeriodDuration;
-				modeImpedance.MaxMinutesBefore = availableMinutes.MaxAvailableMinutesBefore(period.Start) / ChoiceModelFactory.SmallPeriodDuration;
-				modeImpedance.TotalMinutesBefore = availableMinutes.TotalAvailableMinutesBefore(period.Start) / ChoiceModelFactory.SmallPeriodDuration;
+                modeImpedances[i] = modeImpedance;
 
-				modeImpedance.AdjacentMinutesAfter = availableMinutes.AdjacentAvailableMinutesAfter(period.End) / ChoiceModelFactory.SmallPeriodDuration;
-				modeImpedance.MaxMinutesAfter = availableMinutes.MaxAvailableMinutesAfter(period.End) / ChoiceModelFactory.SmallPeriodDuration;
-				modeImpedance.TotalMinutesAfter = availableMinutes.TotalAvailableMinutesAfter(period.End) / ChoiceModelFactory.SmallPeriodDuration;
-			}
+                modeImpedance.AdjacentMinutesBefore = availableMinutes.AdjacentAvailableMinutesBefore(period.Start) / ChoiceModelFactory.SmallPeriodDuration;
+                modeImpedance.MaxMinutesBefore = availableMinutes.MaxAvailableMinutesBefore(period.Start) / ChoiceModelFactory.SmallPeriodDuration;
+                modeImpedance.TotalMinutesBefore = availableMinutes.TotalAvailableMinutesBefore(period.Start) / ChoiceModelFactory.SmallPeriodDuration;
 
-			return modeImpedances;
-		}
+                modeImpedance.AdjacentMinutesAfter = availableMinutes.AdjacentAvailableMinutesAfter(period.End) / ChoiceModelFactory.SmallPeriodDuration;
+                modeImpedance.MaxMinutesAfter = availableMinutes.MaxAvailableMinutesAfter(period.End) / ChoiceModelFactory.SmallPeriodDuration;
+                modeImpedance.TotalMinutesAfter = availableMinutes.TotalAvailableMinutesAfter(period.End) / ChoiceModelFactory.SmallPeriodDuration;
+            }
 
-		public virtual void SetParentTourSequence(int parentTourSequence) {
-			ParentTourSequence = parentTourSequence;
-		}
+            return modeImpedances;
+        }
 
-		public virtual void SetParkAndRideStay() {
-			if (!Global.ParkAndRideNodeIsEnabled || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode) {
-				return;
-			}
+        public virtual void SetParentTourSequence(int parentTourSequence) {
+            ParentTourSequence = parentTourSequence;
+        }
 
-			var arrivalTime =
-				HalfTourFromOrigin
-					.Trips
-					.First(x => x.OriginPurpose == Global.Settings.Purposes.ChangeMode)
-					.DepartureTime;
+        public virtual void SetParkAndRideStay() {
+            if (!Global.ParkAndRideNodeIsEnabled || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode) {
+                return;
+            }
 
-			var mode =
-				HalfTourFromOrigin
-					.Trips
-					.First(x => x.OriginPurpose == Global.Settings.Purposes.ChangeMode)
-					.Mode;
+            var arrivalTime =
+                HalfTourFromOrigin
+                    .Trips
+                    .First(x => x.OriginPurpose == Global.Settings.Purposes.ChangeMode)
+                    .DepartureTime;
 
-			var departureTime =
-				HalfTourFromDestination
-					.Trips
-					.First(x => x.OriginPurpose == Global.Settings.Purposes.ChangeMode)
-					.DepartureTime;
+            var mode =
+                HalfTourFromOrigin
+                    .Trips
+                    .First(x => x.OriginPurpose == Global.Settings.Purposes.ChangeMode)
+                    .Mode;
 
-			var parkAndRideLoad =
-				ChoiceModelFactory
-					.ParkAndRideNodeDao
-					.Get(ParkAndRideNodeId)
-					.ParkAndRideLoad;
+            var departureTime =
+                HalfTourFromDestination
+                    .Trips
+                    .First(x => x.OriginPurpose == Global.Settings.Purposes.ChangeMode)
+                    .DepartureTime;
 
-			for (var minute = arrivalTime; minute < departureTime; minute++) {
-				parkAndRideLoad[minute] += Household.ExpansionFactor / (mode == Global.Settings.Modes.Hov3 ? 3 : mode == Global.Settings.Modes.Hov2 ? 2 : 1);
-			}
-		}
+            var parkAndRideLoad =
+                ChoiceModelFactory
+                    .ParkAndRideNodeDao
+                    .Get(ParkAndRideNodeId)
+                    .ParkAndRideLoad;
 
-		#endregion
+            for (var minute = arrivalTime; minute < departureTime; minute++) {
+                parkAndRideLoad[minute] += Household.ExpansionFactor / (mode == Global.Settings.Modes.Hov3 ? 3 : mode == Global.Settings.Modes.Hov2 ? 2 : 1);
+            }
+        }
 
-		#region init/utility/export methods
+        #endregion
 
-		public void Export() {
-			_exporter.Export(_tour);
-		}
+        #region init/utility/export methods
 
-		public static void Close() {
-			Global
-				.ContainerDaySim
-				.GetInstance<IPersistenceFactory<ITour>>()
-				.Close();
-		}
+        public void Export() {
+            _exporter.Export(_tour);
+        }
 
-		public override string ToString() {
-			var builder = new StringBuilder();
+        public static void Close() {
+            Global
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<ITour>>()
+                .Close();
+        }
 
-			builder
-				.AppendLine(string.Format("Tour ID: {0}, Person Day ID: {1}, Person ID: {2}",
-					Id,
-					PersonDayId,
-					PersonId));
+        public override string ToString() {
+            var builder = new StringBuilder();
 
-			builder
-				.AppendLine(string.Format("Household ID: {0}, Person Sequence: {1}, Day: {2}, Sequence: {3}, Parent Tour Sequence: {4}",
-					HouseholdId,
-					PersonSequence,
-					Day,
-					Sequence,
-					ParentTourSequence));
+            builder
+                .AppendLine(string.Format("Tour ID: {0}, Person Day ID: {1}, Person ID: {2}",
+                    Id,
+                    PersonDayId,
+                    PersonId));
 
-			builder
-				.AppendLine(string.Format("Destination Parcel ID: {0}, Destination Zone Key: {1}, Destination Address Type: {2}, Destination Purpose: {3}, Mode: {4}, Destination Arrival Time: {5}, Destination Departure Time: {6}",
-					DestinationParcelId,
-					DestinationZoneKey,
-					DestinationAddressType,
-					DestinationPurpose,
-					Mode,
-					DestinationArrivalTime,
-					DestinationDepartureTime));
+            builder
+                .AppendLine(string.Format("Household ID: {0}, Person Sequence: {1}, Day: {2}, Sequence: {3}, Parent Tour Sequence: {4}",
+                    HouseholdId,
+                    PersonSequence,
+                    Day,
+                    Sequence,
+                    ParentTourSequence));
 
-			return builder.ToString();
-		}
+            builder
+                .AppendLine(string.Format("Destination Parcel ID: {0}, Destination Zone Key: {1}, Destination Address Type: {2}, Destination Purpose: {3}, Mode: {4}, Destination Arrival Time: {5}, Destination Departure Time: {6}",
+                    DestinationParcelId,
+                    DestinationZoneKey,
+                    DestinationAddressType,
+                    DestinationPurpose,
+                    Mode,
+                    DestinationArrivalTime,
+                    DestinationDepartureTime));
 
-		private void SetParcelRelationships(ITour tour) {
-			IParcelWrapper originParcel;
+            return builder.ToString();
+        }
 
-			if (tour.OriginParcelId != Constants.DEFAULT_VALUE && ChoiceModelFactory.Parcels.TryGetValue(tour.OriginParcelId, out originParcel)) {
-				OriginParcel = originParcel;
-			}
+        private void SetParcelRelationships(ITour tour) {
+            IParcelWrapper originParcel;
 
-			IParcelWrapper destinationParcel;
+            if (tour.OriginParcelId != Constants.DEFAULT_VALUE && ChoiceModelFactory.Parcels.TryGetValue(tour.OriginParcelId, out originParcel)) {
+                OriginParcel = originParcel;
+            }
 
-			if (tour.DestinationParcelId != Constants.DEFAULT_VALUE && ChoiceModelFactory.Parcels.TryGetValue(tour.DestinationParcelId, out destinationParcel)) {
-				DestinationParcel = destinationParcel;
-			}
-		}
+            IParcelWrapper destinationParcel;
 
-		private void SetValueOfTimeCoefficients(int purpose, bool suppressRandomVOT) {
-			var randomVot = !Global.Configuration.IsInEstimationMode && Global.Configuration.UseRandomVotDistribution && !suppressRandomVOT;
+            if (tour.DestinationParcelId != Constants.DEFAULT_VALUE && ChoiceModelFactory.Parcels.TryGetValue(tour.DestinationParcelId, out destinationParcel)) {
+                DestinationParcel = destinationParcel;
+            }
+        }
 
-			var income =
-				Household.Income < 0
-					? Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel
-					: Household.Income; // missing converted to 30K
+        private void SetValueOfTimeCoefficients(int purpose, bool suppressRandomVOT) {
+            var randomVot = !Global.Configuration.IsInEstimationMode && Global.Configuration.UseRandomVotDistribution && !suppressRandomVOT;
 
-			var incomeMultiple = Math.Min(Math.Max(income / Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel, Global.Coefficients_CostCoefficientIncomeMultipleMinimum), Global.Coefficients_CostCoefficientIncomeMultipleMaximum); // ranges for extreme values
+            var income =
+                Household.Income < 0
+                    ? Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel
+                    : Household.Income; // missing converted to 30K
 
-			var incomePower =
-				purpose == Global.Settings.Purposes.Work
-					? Global.Configuration.Coefficients_CostCoefficientIncomePower_Work
-					: Global.Configuration.Coefficients_CostCoefficientIncomePower_Other;
+            var incomeMultiple = Math.Min(Math.Max(income / Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel, Global.Coefficients_CostCoefficientIncomeMultipleMinimum), Global.Coefficients_CostCoefficientIncomeMultipleMaximum); // ranges for extreme values
 
-			var costCoefficient = Global.Coefficients_BaseCostCoefficientPerMonetaryUnit / Math.Pow(incomeMultiple, incomePower);
+            var incomePower =
+                purpose == Global.Settings.Purposes.Work
+                    ? Global.Configuration.Coefficients_CostCoefficientIncomePower_Work
+                    : Global.Configuration.Coefficients_CostCoefficientIncomePower_Other;
 
-			CostCoefficient = costCoefficient;
+            var costCoefficient = Global.Coefficients_BaseCostCoefficientPerMonetaryUnit / Math.Pow(incomeMultiple, incomePower);
 
-			const double minimumTimeCoef = 0.001;
-			const double maximumTimeCoef = 1.000;
+            CostCoefficient = costCoefficient;
 
-			var mean =
-				purpose == Global.Settings.Purposes.Work
-					? Global.Configuration.Coefficients_MeanTimeCoefficient_Work
-					: Global.Configuration.Coefficients_MeanTimeCoefficient_Other;
+            const double minimumTimeCoef = 0.001;
+            const double maximumTimeCoef = 1.000;
 
-			double timeCoefficient;
+            var mean =
+                purpose == Global.Settings.Purposes.Work
+                    ? Global.Configuration.Coefficients_MeanTimeCoefficient_Work
+                    : Global.Configuration.Coefficients_MeanTimeCoefficient_Other;
 
-			if (randomVot) {
-				if (Global.Configuration.ShouldSynchronizeRandomSeed && PersonDay != null) {
-					PersonDay.ResetRandom(10 + Sequence - 1);
-				}
+            double timeCoefficient;
 
-				var coefficient =
-					purpose == Global.Settings.Purposes.Work
-						? Global.Configuration.Coefficients_StdDeviationTimeCoefficient_Work
-						: Global.Configuration.Coefficients_StdDeviationTimeCoefficient_Other;
+            if (randomVot) {
+                if (Global.Configuration.ShouldSynchronizeRandomSeed && PersonDay != null) {
+                    PersonDay.ResetRandom(10 + Sequence - 1);
+                }
 
-				var sDev = Math.Abs(mean * coefficient);
+                var coefficient =
+                    purpose == Global.Settings.Purposes.Work
+                        ? Global.Configuration.Coefficients_StdDeviationTimeCoefficient_Work
+                        : Global.Configuration.Coefficients_StdDeviationTimeCoefficient_Other;
 
-				timeCoefficient = -1.0 * Math.Min(maximumTimeCoef, Math.Max(minimumTimeCoef, Household.RandomUtility.LogNormal(-1.0 * mean, sDev))); // converted to positive and back to negative
+                var sDev = Math.Abs(mean * coefficient);
 
-				if (timeCoefficient.AlmostEquals(0)) {
-					throw new InvalidTimeCoefficientException(string.Format("The time coefficient is invalid where randomVot is true for mean: {0}, sDev: {1}.", mean, sDev));
-				}
-			}
-			else {
-				timeCoefficient = mean;
+                timeCoefficient = -1.0 * Math.Min(maximumTimeCoef, Math.Max(minimumTimeCoef, Household.RandomUtility.LogNormal(-1.0 * mean, sDev))); // converted to positive and back to negative
 
-				if (timeCoefficient.AlmostEquals(0)) {
-					throw new InvalidTimeCoefficientException(string.Format("The time coefficient is invalid where randomVot is false for mean: {0}.", mean));
-				}
-			}
+                if (timeCoefficient.AlmostEquals(0)) {
+                    throw new InvalidTimeCoefficientException(string.Format("The time coefficient is invalid where randomVot is true for mean: {0}, sDev: {1}.", mean, sDev));
+                }
+            } else {
+                timeCoefficient = mean;
 
-			TimeCoefficient = timeCoefficient;
+                if (timeCoefficient.AlmostEquals(0)) {
+                    throw new InvalidTimeCoefficientException(string.Format("The time coefficient is invalid where randomVot is false for mean: {0}.", mean));
+                }
+            }
 
-			//			if (randomVot) {
-			//				var vot = (60 * timeCoefficient) / costCoefficient;
-			//				Global.PrintFile.WriteLine("Value of time is {0}",vot);
-			//			}
-		}
+            TimeCoefficient = timeCoefficient;
 
-		private ITourModeImpedance GetTourModeImpedance(int minute) {
-			var modeImpedance = new TourModeImpedance();
+            //			if (randomVot) {
+            //				var vot = (60 * timeCoefficient) / costCoefficient;
+            //				Global.PrintFile.WriteLine("Value of time is {0}",vot);
+            //			}
+        }
 
-			var useMode =
-				Mode ==
-				Global.Settings.Modes.SchoolBus
-					? Global.Settings.Modes.Hov3
-					: Mode;
+        private ITourModeImpedance GetTourModeImpedance(int minute) {
+            var modeImpedance = new TourModeImpedance();
+
+            var useMode =
+                Mode ==
+                Global.Settings.Modes.SchoolBus
+                    ? Global.Settings.Modes.Hov3
+                    : Mode;
 
             IEnumerable<IPathTypeModel> pathTypeModels =
                 PathTypeModelFactory.Singleton
                     .Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
             var pathTypeFromOrigin = pathTypeModels.First();
 
-            pathTypeModels = 
-				PathTypeModelFactory.Singleton
-					.Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
+            pathTypeModels =
+                PathTypeModelFactory.Singleton
+                    .Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
             var pathTypeFromDestination = pathTypeModels.First();
 
-			modeImpedance.GeneralizedTimeFromOrigin = pathTypeFromOrigin.GeneralizedTimeLogsum;
-			modeImpedance.GeneralizedTimeFromDestination = pathTypeFromDestination.GeneralizedTimeLogsum;
+            modeImpedance.GeneralizedTimeFromOrigin = pathTypeFromOrigin.GeneralizedTimeLogsum;
+            modeImpedance.GeneralizedTimeFromDestination = pathTypeFromDestination.GeneralizedTimeLogsum;
 
-			return modeImpedance;
-		}
+            return modeImpedance;
+        }
 
-		#endregion
+        #endregion
 
-		public sealed class HalfTour : IHalfTour {
-			private readonly TourWrapper _t;
+        public sealed class HalfTour : IHalfTour {
+            private readonly TourWrapper _t;
 
-			private readonly IPersisterReader<ITrip> _tripReader;
-			private readonly ITripCreator _tripWrapperCreator;
+            private readonly IPersisterReader<ITrip> _tripReader;
+            private readonly ITripCreator _tripWrapperCreator;
 
-			public HalfTour(TourWrapper tour) {
-				_t = tour;
+            public HalfTour(TourWrapper tour) {
+                _t = tour;
 
-				// trip fields
+                // trip fields
 
-				_tripReader =
-					Global
-						.ContainerDaySim
-						.GetInstance<IPersistenceFactory<ITrip>>()
-						.Reader;
+                _tripReader =
+                    Global
+                        .ContainerDaySim
+                        .GetInstance<IPersistenceFactory<ITrip>>()
+                        .Reader;
 
-				_tripWrapperCreator =
-					Global
-						.ContainerDaySim
-						.GetInstance<IWrapperFactory<ITripCreator>>()
-						.Creator;
-			}
+                _tripWrapperCreator =
+                    Global
+                        .ContainerDaySim
+                        .GetInstance<IWrapperFactory<ITripCreator>>()
+                        .Creator;
+            }
 
-			public List<ITripWrapper> Trips { get; private set; }
+            public List<ITripWrapper> Trips { get; private set; }
 
-			public int SimulatedTrips { get; set; }
+            public int SimulatedTrips { get; set; }
 
-			public int OneSimulatedTripFlag {
-				get { return (SimulatedTrips == 1).ToFlag(); }
-			}
+            public int OneSimulatedTripFlag {
+                get { return (SimulatedTrips == 1).ToFlag(); }
+            }
 
-			public int TwoSimulatedTripsFlag {
-				get { return (SimulatedTrips == 2).ToFlag(); }
-			}
+            public int TwoSimulatedTripsFlag {
+                get { return (SimulatedTrips == 2).ToFlag(); }
+            }
 
-			public int ThreeSimulatedTripsFlag {
-				get { return (SimulatedTrips == 3).ToFlag(); }
-			}
+            public int ThreeSimulatedTripsFlag {
+                get { return (SimulatedTrips == 3).ToFlag(); }
+            }
 
-			public int FourSimulatedTripsFlag {
-				get { return (SimulatedTrips == 4).ToFlag(); }
-			}
+            public int FourSimulatedTripsFlag {
+                get { return (SimulatedTrips == 4).ToFlag(); }
+            }
 
-			public int FiveSimulatedTripsFlag {
-				get { return (SimulatedTrips == 5).ToFlag(); }
-			}
+            public int FiveSimulatedTripsFlag {
+                get { return (SimulatedTrips == 5).ToFlag(); }
+            }
 
-			public int FivePlusSimulatedTripsFlag {
-				get { return (SimulatedTrips >= 5).ToFlag(); }
-			}
+            public int FivePlusSimulatedTripsFlag {
+                get { return (SimulatedTrips >= 5).ToFlag(); }
+            }
 
-			public void SetTrips(int direction) {
-				Trips =
-					Global.Configuration.IsInEstimationMode
-						? GetTripSurveyData(direction)
-						: GetTripSimulatedData(direction, 0);
-			}
+            public void SetTrips(int direction) {
+                Trips =
+                    Global.Configuration.IsInEstimationMode
+                        ? GetTripSurveyData(direction)
+                        : GetTripSimulatedData(direction, 0);
+            }
 
-			private List<ITripWrapper> GetTripSurveyData(int direction) {
-				var tripsForTours = LoadTripsFromFile().ToList();
-				var data =
-					tripsForTours
-						.Where(trip => trip.Direction == direction)
-						.Select(trip =>
-							_tripWrapperCreator
-								.CreateWrapper(trip, _t, this))
-						.ToList();
+            private List<ITripWrapper> GetTripSurveyData(int direction) {
+                var tripsForTours = LoadTripsFromFile().ToList();
+                var data =
+                    tripsForTours
+                        .Where(trip => trip.Direction == direction)
+                        .Select(trip =>
+                            _tripWrapperCreator
+                                .CreateWrapper(trip, _t, this))
+                        .ToList();
 
-				return
-					direction == Global.Settings.TourDirections.OriginToDestination
-						? data.Invert()
-						: data;
-			}
+                return
+                    direction == Global.Settings.TourDirections.OriginToDestination
+                        ? data.Invert()
+                        : data;
+            }
 
-			private List<ITripWrapper> GetTripSimulatedData(int direction, int sequence) {
-				return new List<ITripWrapper> {
-					CreateTrip(direction, sequence, true)
-				};
-			}
+            private List<ITripWrapper> GetTripSimulatedData(int direction, int sequence) {
+                return new List<ITripWrapper> {
+                    CreateTrip(direction, sequence, true)
+                };
+            }
 
-			private IEnumerable<ITrip> LoadTripsFromFile() {
-				return
-					_tripReader
-						.Seek(_t._tour.Id, "tour_fk");
-			}
+            private IEnumerable<ITrip> LoadTripsFromFile() {
+                return
+                    _tripReader
+                        .Seek(_t._tour.Id, "tour_fk");
+            }
 
-			private ITripWrapper CreateTrip(int direction, int sequence, bool isToTourOrigin) {
-				return
-					_tripWrapperCreator
-						.CreateWrapper(_t, _t._tour.Id * 100 + 50 * (direction - 1) + sequence + 1, direction, sequence, isToTourOrigin, this);
-			}
+            private ITripWrapper CreateTrip(int direction, int sequence, bool isToTourOrigin) {
+                return
+                    _tripWrapperCreator
+                        .CreateWrapper(_t, _t._tour.Id * 100 + 50 * (direction - 1) + sequence + 1, direction, sequence, isToTourOrigin, this);
+            }
 
-			public ITripWrapper CreateNextTrip(ITripWrapper trip, int intermediateStopPurpose, int destinationPurpose) {
-				_t.PersonDay.IncrementSimulatedStops(intermediateStopPurpose);
+            public ITripWrapper CreateNextTrip(ITripWrapper trip, int intermediateStopPurpose, int destinationPurpose) {
+                _t.PersonDay.IncrementSimulatedStops(intermediateStopPurpose);
 
-				return
-					_tripWrapperCreator
-						.CreateWrapper(_t, trip, trip.Id + 1, intermediateStopPurpose, destinationPurpose, this);
-			}
-		}
-	}
+                return
+                    _tripWrapperCreator
+                        .CreateWrapper(_t, trip, trip.Id + 1, intermediateStopPurpose, destinationPurpose, this);
+            }
+        }
+    }
 }

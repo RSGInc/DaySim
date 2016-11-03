@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-	[Serializable]
-	public class MissingShortDistanceCircuityMeasuresException : Exception {
-		public MissingShortDistanceCircuityMeasuresException() : this("The configuration file is set to use short distance circuity measures but the data is missing from the parcel input.") {}
+    [Serializable]
+    public class MissingShortDistanceCircuityMeasuresException : Exception {
+        public MissingShortDistanceCircuityMeasuresException() : this("The configuration file is set to use short distance circuity measures but the data is missing from the parcel input.") { }
 
-		public MissingShortDistanceCircuityMeasuresException(string message) : base(message) {}
+        public MissingShortDistanceCircuityMeasuresException(string message) : base(message) { }
 
-		public MissingShortDistanceCircuityMeasuresException(string message, Exception innerException) : base(message, innerException) {}
+        public MissingShortDistanceCircuityMeasuresException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected MissingShortDistanceCircuityMeasuresException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+        protected MissingShortDistanceCircuityMeasuresException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
 }

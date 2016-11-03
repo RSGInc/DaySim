@@ -8,5 +8,5 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-	public interface ITransitStopAreaWrapper : ITransitStopArea {}
+    public interface ITransitStopAreaWrapper : ITransitStopArea { }
 }

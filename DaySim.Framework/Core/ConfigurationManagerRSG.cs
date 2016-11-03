@@ -15,19 +15,15 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace DaySim.Framework.Core
-{
-    public class ConfigurationManagerRSG
-    {
+namespace DaySim.Framework.Core {
+    public class ConfigurationManagerRSG {
         public const string DEFAULT_CONFIGURATION_NAME = "Configuration.xml";
 
         private readonly FileInfo _file;
         private readonly string _extension;
 
-        public ConfigurationManagerRSG(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
+        public ConfigurationManagerRSG(string path) {
+            if (string.IsNullOrEmpty(path)) {
                 string directoryName = GetExecutingAssemblyLocation();
 
                 path =
@@ -44,38 +40,31 @@ namespace DaySim.Framework.Core
                     .ToLower();
         }
 
-        public static string GetExecutingAssemblyLocation()
-        {
+        public static string GetExecutingAssemblyLocation() {
             var location = Assembly.GetExecutingAssembly().Location;
             var directoryName = Path.GetDirectoryName(location);
             return directoryName;
         }
 
-        public class Group
-        {
+        public class Group {
             public string GroupName;
         }
 
 
-        private void Serializer_UnknownAttribute(object sender, XmlAttributeEventArgs e)
-        {
+        private void Serializer_UnknownAttribute(object sender, XmlAttributeEventArgs e) {
             Console.Error.WriteLine("WARNING - Unknown attribute: \t" + e.Attr.Name + " " + e.Attr.InnerXml + "\t LineNumber: " + e.LineNumber + "\t LinePosition: " + e.LinePosition);
         }
 
-        public Configuration Open()
-        {
-            using (var stream = _file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                if (_extension == ".xml")
-                {
+        public Configuration Open() {
+            using (var stream = _file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                if (_extension == ".xml") {
                     var serializer = new XmlSerializer(typeof(Configuration));
                     // Add a delegate to handle unknown element events.
                     serializer.UnknownAttribute += new XmlAttributeEventHandler(Serializer_UnknownAttribute);
                     return (Configuration)serializer.Deserialize(stream);
                 }
 
-                if (_extension == ".properties")
-                {
+                if (_extension == ".properties") {
                     return Deserialize(stream);
                 }
             }
@@ -83,24 +72,20 @@ namespace DaySim.Framework.Core
             return null;
         }
 
-        public void Write(Configuration configuration, PrintFile printFile)
-        {
+        public void Write(Configuration configuration, PrintFile printFile) {
             var properties = typeof(Configuration).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            if (_extension == ".xml")
-            {
+            if (_extension == ".xml") {
                 WriteFromXml(printFile, properties);
             }
 
-            if (_extension == ".properties")
-            {
+            if (_extension == ".properties") {
                 WriteFromProperties(printFile, properties);
             }
 
             var list =
                 properties
-                    .Select(property =>
-                    {
+                    .Select(property => {
                         var value = property.GetValue(configuration, null);
 
                         var metadata =
@@ -116,26 +101,19 @@ namespace DaySim.Framework.Core
 
                         string format;
 
-                        if (value == null)
-                        {
+                        if (value == null) {
                             format = string.Empty;
-                        }
-                        else
-                        {
-                            if (value is char)
-                            {
+                        } else {
+                            if (value is char) {
                                 var b = (byte)(char)value;
 
                                 format = string.Format("{0} - {1}", b, AsciiTable.GetDescription(b));
-                            }
-                            else
-                            {
+                            } else {
                                 format = value.ToString().Trim();
                             }
                         }
 
-                        return new
-                        {
+                        return new {
                             property.Name,
                             Value = format,
                             Description = description
@@ -153,8 +131,7 @@ namespace DaySim.Framework.Core
                     .Select(x => x.Value.Length)
                     .Max();
 
-            foreach (var property in list)
-            {
+            foreach (var property in list) {
                 printFile
                     .WriteLine("{0}> {1} // {2}.",
                         property.Name.PadLeft(maxKeyLength),
@@ -165,10 +142,8 @@ namespace DaySim.Framework.Core
             printFile.WriteLine();
         }
 
-        private void WriteFromXml(PrintFile printFile, PropertyInfo[] properties)
-        {
-            using (var stream = _file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
+        private void WriteFromXml(PrintFile printFile, PropertyInfo[] properties) {
+            using (var stream = _file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
                 var document = XDocument.Load(stream);
 
                 var attributes =
@@ -187,24 +162,21 @@ namespace DaySim.Framework.Core
 
         private void WriteFromProperties(PrintFile printFile, PropertyInfo[] properties) { }
 
-        private static void WriteUnusedProperties(PrintFile printFile, IEnumerable<PropertyInfo> properties, IEnumerable<string> attributes)
-        {
+        private static void WriteUnusedProperties(PrintFile printFile, IEnumerable<PropertyInfo> properties, IEnumerable<string> attributes) {
             var list =
                 properties
                     .Where(property => attributes.All(x => x != property.Name))
                     .Select(property => property.Name)
                     .ToList();
 
-            if (list.Count == 0)
-            {
+            if (list.Count == 0) {
                 return;
             }
 
             printFile.WriteLine("The following properties in the configuration file were not set:");
             printFile.IncrementIndent();
 
-            foreach (var item in list)
-            {
+            foreach (var item in list) {
                 printFile.WriteLine("* {0}", item);
             }
 
@@ -212,23 +184,20 @@ namespace DaySim.Framework.Core
             printFile.WriteLine();
         }
 
-        private static void WriteInvalidAttributes(PrintFile printFile, IEnumerable<PropertyInfo> properties, IEnumerable<string> attributes)
-        {
+        private static void WriteInvalidAttributes(PrintFile printFile, IEnumerable<PropertyInfo> properties, IEnumerable<string> attributes) {
             var list =
                 attributes
                     .Where(attribute => attribute != "xsd" && attribute != "xsi" && properties.All(x => x.Name != attribute))
                     .ToList();
 
-            if (list.Count == 0)
-            {
+            if (list.Count == 0) {
                 return;
             }
 
             printFile.WriteLine("The following attributes in the configuration file are invalid:");
             printFile.IncrementIndent();
 
-            foreach (var item in list)
-            {
+            foreach (var item in list) {
                 printFile.WriteLine("* {0}", item);
             }
 
@@ -236,32 +205,27 @@ namespace DaySim.Framework.Core
             printFile.WriteLine();
         }
 
-        private static Configuration Deserialize(Stream stream)
-        {
+        private static Configuration Deserialize(Stream stream) {
             var configuration = new Configuration();
             var type1 = configuration.GetType();
             var keys = new List<string>();
             var number = 0;
 
-            using (var reader = new CountingReader(stream))
-            {
+            using (var reader = new CountingReader(stream)) {
                 string line;
 
-                while ((line = reader.ReadLine()) != null)
-                {
+                while ((line = reader.ReadLine()) != null) {
                     line = line.Trim();
                     number++;
 
-                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
-                    {
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) {
                         continue;
                     }
 
                     var key = line.Split('=')[0].Trim();
                     var value = string.Join("=", line.Split('=').Skip(1).ToArray()).Trim();
 
-                    if (!CodeGenerator.IsValidLanguageIndependentIdentifier(key))
-                    {
+                    if (!CodeGenerator.IsValidLanguageIndependentIdentifier(key)) {
                         var builder = new StringBuilder();
 
                         builder
@@ -272,8 +236,7 @@ namespace DaySim.Framework.Core
                         throw new Exception(builder.ToString());
                     }
 
-                    if (keys.Contains(key))
-                    {
+                    if (keys.Contains(key)) {
                         var builder = new StringBuilder();
 
                         builder
@@ -288,39 +251,27 @@ namespace DaySim.Framework.Core
 
                     var property = type1.GetProperty(key, BindingFlags.Public | BindingFlags.Instance);
 
-                    if (property == null)
-                    {
+                    if (property == null) {
                         continue;
                     }
 
                     var type2 = property.PropertyType;
 
-                    try
-                    {
-                        if (type2 == typeof(char))
-                        {
+                    try {
+                        if (type2 == typeof(char)) {
                             var b = Convert.ChangeType(value, typeof(byte));
 
                             property.SetValue(configuration, Convert.ChangeType(b, type2), null);
-                        }
-                        else if (type2.IsEnum)
-                        {
-                            if (type2 == typeof(Configuration.NodeDistanceReaderTypes))
-                            {
+                        } else if (type2.IsEnum) {
+                            if (type2 == typeof(Configuration.NodeDistanceReaderTypes)) {
                                 property.SetValue(configuration, (Configuration.NodeDistanceReaderTypes)Enum.Parse(typeof(Configuration.NodeDistanceReaderTypes), value), null);
-                            }
-                            else
-                            {
+                            } else {
                                 throw new Exception("Unhandled enum type in configuration parsing '" + key + "' of type '" + type2.FullName + "'.");
                             }
-                        }
-                        else
-                        {  //some other type?
+                        } else {  //some other type?
                             property.SetValue(configuration, Convert.ChangeType(value, type2), null);
                         }
-                    }
-                    catch
-                    {
+                    } catch {
                         var builder = new StringBuilder();
 
                         builder

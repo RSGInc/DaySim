@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IPersonGenders {
-		int Male { get; }
+    public interface IPersonGenders {
+        int Male { get; }
 
-		int Female { get; }
-	}
+        int Female { get; }
+    }
 }

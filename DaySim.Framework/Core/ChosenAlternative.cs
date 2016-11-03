@@ -7,24 +7,24 @@
 
 
 namespace DaySim.Framework.Core {
-	public sealed class ChosenAlternative : IObservationItem {
-		public ChosenAlternative(int position) {
-			PositionIndex = position;
-		}
+    public sealed class ChosenAlternative : IObservationItem {
+        public ChosenAlternative(int position) {
+            PositionIndex = position;
+        }
 
-		public int PositionIndex { get; private set; }
+        public int PositionIndex { get; private set; }
 
-		public int Position {
-			get { return PositionIndex + 1; }
-		}
+        public int Position {
+            get { return PositionIndex + 1; }
+        }
 
-		public int Key { get; private set; }
+        public int Key { get; private set; }
 
-		public double Data { get; private set; }
+        public double Data { get; private set; }
 
-		public void Update(int key, int alternativeId) {
-			Key = key;
-			Data = alternativeId;
-		}
-	}
+        public void Update(int key, int alternativeId) {
+            Key = key;
+            Data = alternativeId;
+        }
+    }
 }

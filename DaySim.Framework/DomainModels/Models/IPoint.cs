@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.DomainModels.Models {
-	public interface IPoint : IZoneItem {
-		int XCoordinate { get; set; }
+    public interface IPoint : IZoneItem {
+        int XCoordinate { get; set; }
 
-		int YCoordinate { get; set; }
-	}
+        int YCoordinate { get; set; }
+    }
 }

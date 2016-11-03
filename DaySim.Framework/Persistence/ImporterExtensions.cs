@@ -8,13 +8,13 @@
 using DaySim.Framework.Core;
 
 namespace DaySim.Framework.Persistence {
-	public static class ImporterExtensions {
-		public static void BeginImport(this IImporter importer, string path, string message) {
-			var timer = new Timer(message);
+    public static class ImporterExtensions {
+        public static void BeginImport(this IImporter importer, string path, string message) {
+            var timer = new Timer(message);
 
-			importer.Import(path);
+            importer.Import(path);
 
-			timer.Stop();
-		}
-	}
+            timer.Stop();
+        }
+    }
 }

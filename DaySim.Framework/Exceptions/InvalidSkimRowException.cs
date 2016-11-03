@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-	[Serializable]
-	public class InvalidSkimRowException : Exception {
-		public InvalidSkimRowException() : this("Error parsing row.") {}
+    [Serializable]
+    public class InvalidSkimRowException : Exception {
+        public InvalidSkimRowException() : this("Error parsing row.") { }
 
-		public InvalidSkimRowException(string message) : base(message) {}
+        public InvalidSkimRowException(string message) : base(message) { }
 
-		public InvalidSkimRowException(string message, Exception innerException) : base(message, innerException) {}
+        public InvalidSkimRowException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected InvalidSkimRowException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+        protected InvalidSkimRowException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
 }

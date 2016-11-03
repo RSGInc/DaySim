@@ -13,92 +13,92 @@ using System.Linq;
 using DaySim.Framework.Core;
 
 namespace DaySim.Framework.Coefficients {
-	public class CoefficientsReader : ICoefficientsReader {
-		public virtual ICoefficient[] Read(string path, out string title, out ICoefficient sizeFunctionMultiplier, out ICoefficient nestCoefficient) {
-			title = null;
-			sizeFunctionMultiplier = null;
-			nestCoefficient = null;
+    public class CoefficientsReader : ICoefficientsReader {
+        public virtual ICoefficient[] Read(string path, out string title, out ICoefficient sizeFunctionMultiplier, out ICoefficient nestCoefficient) {
+            title = null;
+            sizeFunctionMultiplier = null;
+            nestCoefficient = null;
 
-			var coefficients = new Dictionary<int, Coefficient>();
-			var file = new FileInfo(path);
-			var baseSizeVariableFound = false;
+            var coefficients = new Dictionary<int, Coefficient>();
+            var file = new FileInfo(path);
+            var baseSizeVariableFound = false;
 
-			using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
-				string line;
+            using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+                string line;
 
-				while ((line = reader.ReadLine()) != null) {
-					if (line.Trim() == "END") {
-						break;
-					}
+                while ((line = reader.ReadLine()) != null) {
+                    if (line.Trim() == "END") {
+                        break;
+                    }
 
-					if (string.IsNullOrEmpty(title)) {
-						title = line;
-					}
-				}
+                    if (string.IsNullOrEmpty(title)) {
+                        title = line;
+                    }
+                }
 
-				while ((line = reader.ReadLine()) != null) {
-					if (line.Trim() == "-1") {
-						break;
-					}
+                while ((line = reader.ReadLine()) != null) {
+                    if (line.Trim() == "-1") {
+                        break;
+                    }
 
-					var tokens = line.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+                    var tokens = line.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-					if (tokens.Length < 1) {
-						continue;
-					}
+                    if (tokens.Length < 1) {
+                        continue;
+                    }
 
-					int parameter;
+                    int parameter;
 
-					int.TryParse(tokens[0], out parameter);
+                    int.TryParse(tokens[0], out parameter);
 
-					var label = tokens[1].Trim();
-					var constraint = tokens[2];
+                    var label = tokens[1].Trim();
+                    var constraint = tokens[2];
 
-					double coefficientValue;
+                    double coefficientValue;
 
-					double.TryParse(tokens[3], out coefficientValue);
+                    double.TryParse(tokens[3], out coefficientValue);
 
-					var coefficient = new Coefficient {
-						Parameter = parameter,
-						Label = label,
-						Constraint = constraint,
-						Value = coefficientValue,
-						IsSizeVariable = label.StartsWith("Gamm"),
-						IsParFixed = constraint.ToLower() == "t" || constraint.ToLower() == "c",
-						IsSizeFunctionMultiplier = label.StartsWith("LSM_"),
-						IsNestCoefficient = label.StartsWith("Nest")
-					};
+                    var coefficient = new Coefficient {
+                        Parameter = parameter,
+                        Label = label,
+                        Constraint = constraint,
+                        Value = coefficientValue,
+                        IsSizeVariable = label.StartsWith("Gamm"),
+                        IsParFixed = constraint.ToLower() == "t" || constraint.ToLower() == "c",
+                        IsSizeFunctionMultiplier = label.StartsWith("LSM_"),
+                        IsNestCoefficient = label.StartsWith("Nest")
+                    };
 
-					if (coefficient.IsSizeFunctionMultiplier) {
-						sizeFunctionMultiplier = coefficient;
-					}
+                    if (coefficient.IsSizeFunctionMultiplier) {
+                        sizeFunctionMultiplier = coefficient;
+                    }
 
-					if (coefficient.IsNestCoefficient) {
-						nestCoefficient = coefficient;
-					}
+                    if (coefficient.IsNestCoefficient) {
+                        nestCoefficient = coefficient;
+                    }
 
-					if (!baseSizeVariableFound && coefficient.IsSizeVariable && coefficient.IsParFixed && coefficient.Value.AlmostEquals(0)) {
-						baseSizeVariableFound = true;
+                    if (!baseSizeVariableFound && coefficient.IsSizeVariable && coefficient.IsParFixed && coefficient.Value.AlmostEquals(0)) {
+                        baseSizeVariableFound = true;
 
-						coefficient.IsBaseSizeVariable = true;
-					}
+                        coefficient.IsBaseSizeVariable = true;
+                    }
 
-					coefficients.Add(parameter, coefficient);
-				}
-			}
+                    coefficients.Add(parameter, coefficient);
+                }
+            }
 
-			var max = coefficients.Values.Max(c => c.Parameter) + 1;
-			var array = new Coefficient[max];
+            var max = coefficients.Values.Max(c => c.Parameter) + 1;
+            var array = new Coefficient[max];
 
-			for (var i = 0; i <= max; i++) {
-				Coefficient coefficient;
+            for (var i = 0; i <= max; i++) {
+                Coefficient coefficient;
 
-				if (coefficients.TryGetValue(i, out coefficient)) {
-					array[i] = coefficient;
-				}
-			}
+                if (coefficients.TryGetValue(i, out coefficient)) {
+                    array[i] = coefficient;
+                }
+            }
 
-			return array;
-		}
-	}
+            return array;
+        }
+    }
 }

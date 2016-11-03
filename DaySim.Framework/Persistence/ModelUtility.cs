@@ -9,27 +9,26 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 namespace DaySim.Framework.Persistence {
-	public static class ModelUtility {
-		public static FileInfo GetIndexFile(string path) {
-			var directoryName = Path.GetDirectoryName(path);
-			var filename = Path.GetFileNameWithoutExtension(path) + ".pk";
-			var indexPath = directoryName == null ? filename : Path.Combine(directoryName, filename);
+    public static class ModelUtility {
+        public static FileInfo GetIndexFile(string path) {
+            var directoryName = Path.GetDirectoryName(path);
+            var filename = Path.GetFileNameWithoutExtension(path) + ".pk";
+            var indexPath = directoryName == null ? filename : Path.Combine(directoryName, filename);
 
-			return new FileInfo(indexPath);
-		}
+            return new FileInfo(indexPath);
+        }
 
-		public static TModel PtrToStructure<TModel>(ref byte[] buffer) {
-			var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+        public static TModel PtrToStructure<TModel>(ref byte[] buffer) {
+            var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 
-			try {
-				var ptr = handle.AddrOfPinnedObject();
-				var model = (TModel) Marshal.PtrToStructure(ptr, typeof (TModel));
+            try {
+                var ptr = handle.AddrOfPinnedObject();
+                var model = (TModel)Marshal.PtrToStructure(ptr, typeof(TModel));
 
-				return model;
-			}
-			finally {
-				handle.Free();
-			}
-		}
-	}
+                return model;
+            } finally {
+                handle.Free();
+            }
+        }
+    }
 }

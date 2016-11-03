@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Persistence {
-	public interface ISavable {
-		void Save();
-	}
+    public interface ISavable {
+        void Save();
+    }
 }

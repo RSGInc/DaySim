@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IDestinationScales {
-		int Parcel { get; }
+    public interface IDestinationScales {
+        int Parcel { get; }
 
-		int MicroZone { get; }
+        int MicroZone { get; }
 
-		int Zone { get; }
-	}
+        int Zone { get; }
+    }
 }

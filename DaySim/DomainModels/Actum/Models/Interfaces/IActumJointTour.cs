@@ -8,5 +8,5 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
-	public interface IActumJointTour : IJointTour {}
+    public interface IActumJointTour : IJointTour { }
 }

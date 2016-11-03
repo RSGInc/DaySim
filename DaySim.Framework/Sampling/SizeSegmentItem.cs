@@ -8,18 +8,18 @@
 using System.Runtime.InteropServices;
 
 namespace DaySim.Framework.Sampling {
-	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-	public struct SizeSegmentItem {
-		public SizeSegmentItem(int sequence, int id, double value) : this() {
-			Sequence = sequence;
-			Id = id;
-			Value = value;
-		}
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public struct SizeSegmentItem {
+        public SizeSegmentItem(int sequence, int id, double value) : this() {
+            Sequence = sequence;
+            Id = id;
+            Value = value;
+        }
 
-		public int Sequence { get; private set; }
+        public int Sequence { get; private set; }
 
-		public int Id { get; private set; }
+        public int Id { get; private set; }
 
-		public double Value { get; private set; }
-	}
+        public double Value { get; private set; }
+    }
 }

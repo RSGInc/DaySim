@@ -12,37 +12,37 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
-	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-	public class HouseholdWrapper : Default.Wrappers.HouseholdWrapper, IActumHouseholdWrapper {
-		private readonly IActumHousehold _household;
+    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
+    public class HouseholdWrapper : Default.Wrappers.HouseholdWrapper, IActumHouseholdWrapper {
+        private readonly IActumHousehold _household;
 
-		[UsedImplicitly]
-		public HouseholdWrapper(IHousehold household) : base(household) {
-			_household = (IActumHousehold) household;
-		}
+        [UsedImplicitly]
+        public HouseholdWrapper(IHousehold household) : base(household) {
+            _household = (IActumHousehold)household;
+        }
 
-		#region domain model properies
+        #region domain model properies
 
-		public int MunicipalCode {
-			get { return _household.MunicipalCode; }
-			set { _household.MunicipalCode = value; }
-		}
+        public int MunicipalCode {
+            get { return _household.MunicipalCode; }
+            set { _household.MunicipalCode = value; }
+        }
 
-		public double StationDistance {
-			get { return _household.StationDistance; }
-			set { _household.StationDistance = value; }
-		}
+        public double StationDistance {
+            get { return _household.StationDistance; }
+            set { _household.StationDistance = value; }
+        }
 
-		public int ParkingAvailability {
-			get { return _household.ParkingAvailability; }
-			set { _household.ParkingAvailability = value; }
-		}
+        public int ParkingAvailability {
+            get { return _household.ParkingAvailability; }
+            set { _household.ParkingAvailability = value; }
+        }
 
-		public int InternetPaymentMethod {
-			get { return _household.InternetPaymentMethod; }
-			set { _household.InternetPaymentMethod = value; }
-		}
+        public int InternetPaymentMethod {
+            get { return _household.InternetPaymentMethod; }
+            set { _household.InternetPaymentMethod = value; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

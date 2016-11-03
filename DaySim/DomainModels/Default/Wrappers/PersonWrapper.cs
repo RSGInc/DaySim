@@ -356,109 +356,108 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
         public virtual void UpdatePersonValues() {
             if ((!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) && Household.ResidenceParcel != null && UsualWorkParcel != null) {
-				IEnumerable<IPathTypeModel> pathTypeModels =
-					PathTypeModelFactory.Singleton
-						.Run(Household.RandomUtility, Household.ResidenceParcel, UsualWorkParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.FivePM, Global.Settings.Purposes.Work, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Work, true, 1, 0.0, false, Global.Settings.Modes.Sov);
-				
-				var	autoPathRoundTrip = pathTypeModels.First();
+                IEnumerable<IPathTypeModel> pathTypeModels =
+                    PathTypeModelFactory.Singleton
+                        .Run(Household.RandomUtility, Household.ResidenceParcel, UsualWorkParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.FivePM, Global.Settings.Purposes.Work, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Work, true, 1, 0.0, false, Global.Settings.Modes.Sov);
 
-				AutoTimeToUsualWork = autoPathRoundTrip.PathTime / 2.0;
-				AutoDistanceToUsualWork = autoPathRoundTrip.PathDistance / 2.0;
-			}
+                var autoPathRoundTrip = pathTypeModels.First();
 
-			if ((!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) && Household.ResidenceParcel != null && UsualSchoolParcel != null) {
-				IEnumerable<IPathTypeModel> pathTypeModels =
-					PathTypeModelFactory.Singleton
-						.Run(Household.RandomUtility, Household.ResidenceParcel, UsualSchoolParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.ThreePM, Global.Settings.Purposes.School, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Other, true, 1, 0.0, false, Global.Settings.Modes.Sov);
-				
-				var autoPathRoundTrip = pathTypeModels.First();
+                AutoTimeToUsualWork = autoPathRoundTrip.PathTime / 2.0;
+                AutoDistanceToUsualWork = autoPathRoundTrip.PathDistance / 2.0;
+            }
 
-				AutoTimeToUsualSchool = autoPathRoundTrip.PathTime / 2.0;
-				AutoDistanceToUsualSchool = autoPathRoundTrip.PathDistance / 2.0;
-			}
-		}
+            if ((!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) && Household.ResidenceParcel != null && UsualSchoolParcel != null) {
+                IEnumerable<IPathTypeModel> pathTypeModels =
+                    PathTypeModelFactory.Singleton
+                        .Run(Household.RandomUtility, Household.ResidenceParcel, UsualSchoolParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.ThreePM, Global.Settings.Purposes.School, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Other, true, 1, 0.0, false, Global.Settings.Modes.Sov);
 
-		public virtual void SetWorkParcelPredictions() {
-			if (UsualWorkParcelId != Constants.DEFAULT_VALUE && UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
+                var autoPathRoundTrip = pathTypeModels.First();
+
+                AutoTimeToUsualSchool = autoPathRoundTrip.PathTime / 2.0;
+                AutoDistanceToUsualSchool = autoPathRoundTrip.PathDistance / 2.0;
+            }
+        }
+
+        public virtual void SetWorkParcelPredictions() {
+            if (UsualWorkParcelId != Constants.DEFAULT_VALUE && UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
                 UsualWorkParcel.AddEmploymentPrediction(Household.ExpansionFactor);
-			}
-		}
+            }
+        }
 
-		public virtual void SetSchoolParcelPredictions() {
-			if (UsualSchoolParcelId == Constants.DEFAULT_VALUE || UsualSchoolParcelId == Global.Settings.OutOfRegionParcelId) {
-				return;
-			}
+        public virtual void SetSchoolParcelPredictions() {
+            if (UsualSchoolParcelId == Constants.DEFAULT_VALUE || UsualSchoolParcelId == Global.Settings.OutOfRegionParcelId) {
+                return;
+            }
 
-			if (IsAdult) {
-				UsualSchoolParcel.AddStudentsUniversityPrediction(Household.ExpansionFactor);
-			}
-			else {
-				UsualSchoolParcel.AddStudentsK12Prediction(Household.ExpansionFactor);
-			}
-		}
+            if (IsAdult) {
+                UsualSchoolParcel.AddStudentsUniversityPrediction(Household.ExpansionFactor);
+            } else {
+                UsualSchoolParcel.AddStudentsK12Prediction(Household.ExpansionFactor);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region init/utility/export methods
+        #region init/utility/export methods
 
-		public void Export() {
-			_exporter.Export(_person);
-		}
+        public void Export() {
+            _exporter.Export(_person);
+        }
 
-		public static void Close() {
-			Global
-				.ContainerDaySim
-				.GetInstance<IPersistenceFactory<IPerson>>()
-				.Close();
-		}
+        public static void Close() {
+            Global
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IPerson>>()
+                .Close();
+        }
 
-		public override string ToString() {
-			var builder = new StringBuilder();
+        public override string ToString() {
+            var builder = new StringBuilder();
 
-			builder
-				.AppendLine(string.Format("Person ID: {0}",
-					Id));
+            builder
+                .AppendLine(string.Format("Person ID: {0}",
+                    Id));
 
-			builder
-				.AppendLine(string.Format("Household ID: {0}, Sequence: {1}",
-					HouseholdId,
-					Sequence));
+            builder
+                .AppendLine(string.Format("Household ID: {0}, Sequence: {1}",
+                    HouseholdId,
+                    Sequence));
 
-			builder
-				.AppendLine(string.Format("Usual Work Parcel ID: {0}, Usual Work Zone Key: {1}, Auto Distance To Usual Work: {2}, Auto Time To Usual Work: {3}",
-					UsualWorkParcelId,
-					UsualWorkZoneKey,
-					AutoDistanceToUsualWork,
-					AutoTimeToUsualWork));
+            builder
+                .AppendLine(string.Format("Usual Work Parcel ID: {0}, Usual Work Zone Key: {1}, Auto Distance To Usual Work: {2}, Auto Time To Usual Work: {3}",
+                    UsualWorkParcelId,
+                    UsualWorkZoneKey,
+                    AutoDistanceToUsualWork,
+                    AutoTimeToUsualWork));
 
-			builder
-				.AppendLine(string.Format("Usual School Parcel ID: {0}, Usual School Zone Key: {1}, Auto Distance To Usual School: {2}, Auto Time To Usual School: {3}",
-					UsualSchoolParcelId,
-					UsualSchoolZoneKey,
-					AutoDistanceToUsualSchool,
-					AutoTimeToUsualSchool));
+            builder
+                .AppendLine(string.Format("Usual School Parcel ID: {0}, Usual School Zone Key: {1}, Auto Distance To Usual School: {2}, Auto Time To Usual School: {3}",
+                    UsualSchoolParcelId,
+                    UsualSchoolZoneKey,
+                    AutoDistanceToUsualSchool,
+                    AutoTimeToUsualSchool));
 
-			return builder.ToString();
-		}
+            return builder.ToString();
+        }
 
-		private void SetParcelRelationships() {
-			IParcelWrapper usualWorkParcel;
+        private void SetParcelRelationships() {
+            IParcelWrapper usualWorkParcel;
 
-			if (UsualWorkParcelId != Constants.DEFAULT_VALUE && ChoiceModelFactory.Parcels.TryGetValue(UsualWorkParcelId, out usualWorkParcel)) {
-				UsualWorkParcel = usualWorkParcel;
-			}
+            if (UsualWorkParcelId != Constants.DEFAULT_VALUE && ChoiceModelFactory.Parcels.TryGetValue(UsualWorkParcelId, out usualWorkParcel)) {
+                UsualWorkParcel = usualWorkParcel;
+            }
 
-			IParcelWrapper usualSchoolParcel;
+            IParcelWrapper usualSchoolParcel;
 
-			if (UsualSchoolParcelId != Constants.DEFAULT_VALUE && ChoiceModelFactory.Parcels.TryGetValue(UsualSchoolParcelId, out usualSchoolParcel)) {
-				UsualSchoolParcel = usualSchoolParcel;
-			}
-		}
+            if (UsualSchoolParcelId != Constants.DEFAULT_VALUE && ChoiceModelFactory.Parcels.TryGetValue(UsualSchoolParcelId, out usualSchoolParcel)) {
+                UsualSchoolParcel = usualSchoolParcel;
+            }
+        }
 
-		private void SetExpansionFactor() {
+        private void SetExpansionFactor() {
             ExpansionFactor = Household.ExpansionFactor * Global.Configuration.HouseholdSamplingRateOneInX;
-		}
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

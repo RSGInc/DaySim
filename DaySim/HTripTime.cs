@@ -14,171 +14,166 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
 
 namespace DaySim {
-	public sealed class HTripTime {
-		public const int TOTAL_TRIP_TIMES = DayPeriod.H_SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES;
+    public sealed class HTripTime {
+        public const int TOTAL_TRIP_TIMES = DayPeriod.H_SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES;
 
-		private HTripTime(int index, MinuteSpan departurePeriod) {
-			Index = index;
-			DeparturePeriod = departurePeriod;
-		}
+        private HTripTime(int index, MinuteSpan departurePeriod) {
+            Index = index;
+            DeparturePeriod = departurePeriod;
+        }
 
-		public HTripTime(int departureTime) {
-			FindPeriod(departureTime);
-		}
+        public HTripTime(int departureTime) {
+            FindPeriod(departureTime);
+        }
 
-		public int Index { get; private set; }
+        public int Index { get; private set; }
 
-		public MinuteSpan DeparturePeriod { get; private set; }
+        public MinuteSpan DeparturePeriod { get; private set; }
 
-		public static HTripTime[][] Times { get; private set; }
-		
-		public bool Available;
+        public static HTripTime[][] Times { get; private set; }
 
-		public IPathTypeModel ModeLOS;
+        public bool Available;
 
-		int EarliestFeasibleDepatureTime;
+        public IPathTypeModel ModeLOS;
 
-		int LatestFeasibleDepartureTime;
+        int EarliestFeasibleDepatureTime;
 
-		private void FindPeriod(int departureTime) {
-			foreach (var period in DayPeriod.HSmallDayPeriods.Where(period => departureTime.IsBetween(period.Start, period.End))) {
-				DeparturePeriod = period;
-			}
-			
-			foreach (
-				var time in Times[ParallelUtility.threadLocalAssignedIndex.Value].Where(time => time.DeparturePeriod == DeparturePeriod))
-			{
-				Index = time.Index;
+        int LatestFeasibleDepartureTime;
 
-				break;
-			}
-		}
+        private void FindPeriod(int departureTime) {
+            foreach (var period in DayPeriod.HSmallDayPeriods.Where(period => departureTime.IsBetween(period.Start, period.End))) {
+                DeparturePeriod = period;
+            }
 
-		public int GetRandomFeasibleMinute(ITripWrapper trip, HTripTime time) {
-			if (trip == null || time == null) {
-				throw new ArgumentNullException("trip time");
-			}
+            foreach (
+                var time in Times[ParallelUtility.threadLocalAssignedIndex.Value].Where(time => time.DeparturePeriod == DeparturePeriod)) {
+                Index = time.Index;
 
-			var timeWindow = trip.Tour.ParentTour == null ? trip.Tour.PersonDay.TimeWindow : trip.Tour.ParentTour.TimeWindow;
-			var departureTime = timeWindow.GetAvailableMinute(trip.Household.RandomUtility, time.EarliestFeasibleDepatureTime, time.LatestFeasibleDepartureTime);
+                break;
+            }
+        }
 
-			//if (departureTime == Constants.DEFAULT_VALUE) {
-			//	throw new InvalidDepartureTimeException();
-			//}
+        public int GetRandomFeasibleMinute(ITripWrapper trip, HTripTime time) {
+            if (trip == null || time == null) {
+                throw new ArgumentNullException("trip time");
+            }
 
-			return departureTime;
-		}
+            var timeWindow = trip.Tour.ParentTour == null ? trip.Tour.PersonDay.TimeWindow : trip.Tour.ParentTour.TimeWindow;
+            var departureTime = timeWindow.GetAvailableMinute(trip.Household.RandomUtility, time.EarliestFeasibleDepatureTime, time.LatestFeasibleDepartureTime);
 
-		public static void InitializeTripTimes() {
-				if (Times != null)
-				{
-					return;
-				}
+            //if (departureTime == Constants.DEFAULT_VALUE) {
+            //	throw new InvalidDepartureTimeException();
+            //}
 
-				
-				Times = new HTripTime[ParallelUtility.NThreads][];
-				for (int i = 0; i < ParallelUtility.NThreads; i++)
-				{
-					Times[i] = new HTripTime[TOTAL_TRIP_TIMES];
-					var alternativeIndex = 0;
+            return departureTime;
+        }
 
-					foreach (var minuteSpan in DayPeriod.HSmallDayPeriods)
-					{
-						var time = new HTripTime(alternativeIndex, minuteSpan);
-
-						Times[i][alternativeIndex++] = time;
-					}
-				}
-		}
-
-		public static void SetTimeImpedances(ITripWrapper trip) {
-
-			foreach (var time in Times[ParallelUtility.threadLocalAssignedIndex.Value]) {
-				SetTimeImpedanceAndWindow(trip, time);
-			}
-		}
-
-		public static void SetTimeImpedanceAndWindow(ITripWrapper trip, HTripTime time) {
-			
-			var tour = trip.Tour;
-			var alternativeIndex = time.Index;
-			var period = time.DeparturePeriod;
-
-			// set mode LOS and mode availability
-			if (period.End < trip.EarliestDepartureTime || period.Start > trip.LatestDepartureTime) {
-				time.Available = false;
-			}
-			else {
-				var pathMode = (trip.Mode >= Global.Settings.Modes.SchoolBus - 1) ? Global.Settings.Modes.Hov3 : trip.Mode;
-
-				IEnumerable<IPathTypeModel> pathTypeModels =
-									PathTypeModelFactory.Singleton.Run(
-									trip.Household.RandomUtility,
-									trip.IsHalfTourFromOrigin ? trip.DestinationParcel : trip.OriginParcel,
-									trip.IsHalfTourFromOrigin ? trip.OriginParcel : trip.DestinationParcel,
-									period.Middle,
-									0,
-									tour.DestinationPurpose,
-									tour.CostCoefficient,
-									tour.TimeCoefficient,
-									tour.Person.IsDrivingAge,
-									tour.Household.VehiclesAvailable,
-									tour.Person.GetTransitFareDiscountFraction(),
-									true,
-									pathMode);
-
-				var pathTypeModel = pathTypeModels.First(x => x.Mode == pathMode);
-
-				time.Available = pathTypeModel.Available;
-				time.ModeLOS = pathTypeModel;
-
-				//set the feasible window within the small period, accounting for travel time, and recheck availability
-				if (time.Available) {
-
-					time.EarliestFeasibleDepatureTime = Math.Max(period.Start,
-							trip.IsHalfTourFromOrigin
-							//JLB 20130723 replace next line
-							//? trip.ArrivalTimeLimit + - (int) (time.ModeLOS.PathTime + 0.5)
-							? trip.ArrivalTimeLimit + (int) (time.ModeLOS.PathTime + 0.5)
-							: trip.EarliestDepartureTime);
-
-					time.LatestFeasibleDepartureTime = Math.Min(period.End,
-							trip.IsHalfTourFromOrigin
-							? trip.LatestDepartureTime
-							: trip.ArrivalTimeLimit - (int) (time.ModeLOS.PathTime + 0.5));
-					
-					time.Available = time.EarliestFeasibleDepatureTime < time.LatestFeasibleDepartureTime;
-				}
-			}
-		}
+        public static void InitializeTripTimes() {
+            if (Times != null) {
+                return;
+            }
 
 
-		public bool Equals(HTripTime other) {
-			if (ReferenceEquals(null, other)) {
-				return false;
-			}
+            Times = new HTripTime[ParallelUtility.NThreads][];
+            for (int i = 0; i < ParallelUtility.NThreads; i++) {
+                Times[i] = new HTripTime[TOTAL_TRIP_TIMES];
+                var alternativeIndex = 0;
 
-			if (ReferenceEquals(this, other)) {
-				return true;
-			}
+                foreach (var minuteSpan in DayPeriod.HSmallDayPeriods) {
+                    var time = new HTripTime(alternativeIndex, minuteSpan);
 
-			return other.Index == Index;
-		}
+                    Times[i][alternativeIndex++] = time;
+                }
+            }
+        }
 
-		public override bool Equals(object obj) {
-			if (ReferenceEquals(null, obj)) {
-				return false;
-			}
+        public static void SetTimeImpedances(ITripWrapper trip) {
 
-			if (ReferenceEquals(this, obj)) {
-				return true;
-			}
+            foreach (var time in Times[ParallelUtility.threadLocalAssignedIndex.Value]) {
+                SetTimeImpedanceAndWindow(trip, time);
+            }
+        }
 
-			return obj is HTripTime && Equals((HTripTime) obj);
-		}
+        public static void SetTimeImpedanceAndWindow(ITripWrapper trip, HTripTime time) {
 
-		public override int GetHashCode() {
-			return Index;
-		}
-	}
+            var tour = trip.Tour;
+            var alternativeIndex = time.Index;
+            var period = time.DeparturePeriod;
+
+            // set mode LOS and mode availability
+            if (period.End < trip.EarliestDepartureTime || period.Start > trip.LatestDepartureTime) {
+                time.Available = false;
+            } else {
+                var pathMode = (trip.Mode >= Global.Settings.Modes.SchoolBus - 1) ? Global.Settings.Modes.Hov3 : trip.Mode;
+
+                IEnumerable<IPathTypeModel> pathTypeModels =
+                                    PathTypeModelFactory.Singleton.Run(
+                                    trip.Household.RandomUtility,
+                                    trip.IsHalfTourFromOrigin ? trip.DestinationParcel : trip.OriginParcel,
+                                    trip.IsHalfTourFromOrigin ? trip.OriginParcel : trip.DestinationParcel,
+                                    period.Middle,
+                                    0,
+                                    tour.DestinationPurpose,
+                                    tour.CostCoefficient,
+                                    tour.TimeCoefficient,
+                                    tour.Person.IsDrivingAge,
+                                    tour.Household.VehiclesAvailable,
+                                    tour.Person.GetTransitFareDiscountFraction(),
+                                    true,
+                                    pathMode);
+
+                var pathTypeModel = pathTypeModels.First(x => x.Mode == pathMode);
+
+                time.Available = pathTypeModel.Available;
+                time.ModeLOS = pathTypeModel;
+
+                //set the feasible window within the small period, accounting for travel time, and recheck availability
+                if (time.Available) {
+
+                    time.EarliestFeasibleDepatureTime = Math.Max(period.Start,
+                            trip.IsHalfTourFromOrigin
+                            //JLB 20130723 replace next line
+                            //? trip.ArrivalTimeLimit + - (int) (time.ModeLOS.PathTime + 0.5)
+                            ? trip.ArrivalTimeLimit + (int)(time.ModeLOS.PathTime + 0.5)
+                            : trip.EarliestDepartureTime);
+
+                    time.LatestFeasibleDepartureTime = Math.Min(period.End,
+                            trip.IsHalfTourFromOrigin
+                            ? trip.LatestDepartureTime
+                            : trip.ArrivalTimeLimit - (int)(time.ModeLOS.PathTime + 0.5));
+
+                    time.Available = time.EarliestFeasibleDepatureTime < time.LatestFeasibleDepartureTime;
+                }
+            }
+        }
+
+
+        public bool Equals(HTripTime other) {
+            if (ReferenceEquals(null, other)) {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other)) {
+                return true;
+            }
+
+            return other.Index == Index;
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj)) {
+                return true;
+            }
+
+            return obj is HTripTime && Equals((HTripTime)obj);
+        }
+
+        public override int GetHashCode() {
+            return Index;
+        }
+    }
 }

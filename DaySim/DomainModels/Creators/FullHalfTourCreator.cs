@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class FullHalfTourCreator<TWrapper, TModel> : IFullHalfTourCreator where TWrapper : IFullHalfTourWrapper where TModel : IFullHalfTour, new() {
-		IFullHalfTour IFullHalfTourCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class FullHalfTourCreator<TWrapper, TModel> : IFullHalfTourCreator where TWrapper : IFullHalfTourWrapper where TModel : IFullHalfTour, new() {
+        IFullHalfTour IFullHalfTourCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		IFullHalfTourWrapper IFullHalfTourCreator.CreateWrapper(IFullHalfTour fullHalfTour, IHouseholdDayWrapper householdDayWrapper) {
-			return CreateWrapper(fullHalfTour, householdDayWrapper);
-		}
+        IFullHalfTourWrapper IFullHalfTourCreator.CreateWrapper(IFullHalfTour fullHalfTour, IHouseholdDayWrapper householdDayWrapper) {
+            return CreateWrapper(fullHalfTour, householdDayWrapper);
+        }
 
-		private static TWrapper CreateWrapper(IFullHalfTour fullHalfTour, IHouseholdDayWrapper householdDayWrapper) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, fullHalfTour, householdDayWrapper);
+        private static TWrapper CreateWrapper(IFullHalfTour fullHalfTour, IHouseholdDayWrapper householdDayWrapper) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, fullHalfTour, householdDayWrapper);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }

@@ -2,12 +2,9 @@
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Core;
 
-namespace DaySim.ChoiceModels.Default.Models
-{
-    class SFCTA_WorkLocationModel : WorkLocationModel
-    {
-        protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel)
-        {
+namespace DaySim.ChoiceModels.Default.Models {
+    class SFCTA_WorkLocationModel : WorkLocationModel {
+        protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) {
             var homedist = _person.Household.ResidenceParcel.District;
             var zonedist = destinationParcel.District;
 

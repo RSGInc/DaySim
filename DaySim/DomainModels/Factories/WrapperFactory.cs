@@ -12,20 +12,20 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Factories {
-	public class WrapperFactory<TWrapper, TCreator, TModel> : IWrapperFactory<TCreator> where TCreator : ICreator where TModel : IModel {
-		public TCreator Creator { get; private set; }
+    public class WrapperFactory<TWrapper, TCreator, TModel> : IWrapperFactory<TCreator> where TCreator : ICreator where TModel : IModel {
+        public TCreator Creator { get; private set; }
 
-		public void Initialize(Configuration configuration) {
-			var helper = new FactoryHelper(configuration);
+        public void Initialize(Configuration configuration) {
+            var helper = new FactoryHelper(configuration);
 
-			var type1 = helper.Wrapper.GetWrapperType<TWrapper>();
-			var type2 = helper.Wrapper.GetCreatorType<TWrapper>();
-			var type3 = helper.Persistence.GetModelType<TModel>();
+            var type1 = helper.Wrapper.GetWrapperType<TWrapper>();
+            var type2 = helper.Wrapper.GetCreatorType<TWrapper>();
+            var type3 = helper.Persistence.GetModelType<TModel>();
 
-			var args = new[] {type1, type3};
-			var constructed = type2.MakeGenericType(args);
+            var args = new[] { type1, type3 };
+            var constructed = type2.MakeGenericType(args);
 
-			Creator = (TCreator) Activator.CreateInstance(constructed);
-		}
-	}
+            Creator = (TCreator)Activator.CreateInstance(constructed);
+        }
+    }
 }

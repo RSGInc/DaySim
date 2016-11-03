@@ -9,9 +9,9 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.DomainModels.Creators {
-	public interface IParcelCreator : ICreator {
-		IParcel CreateModel();
+    public interface IParcelCreator : ICreator {
+        IParcel CreateModel();
 
-		IParcelWrapper CreateWrapper(IParcel parcel);
-	}
+        IParcelWrapper CreateWrapper(IParcel parcel);
+    }
 }

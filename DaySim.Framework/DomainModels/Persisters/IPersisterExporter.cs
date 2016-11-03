@@ -8,7 +8,7 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.DomainModels.Persisters {
-	public interface IPersisterExporter {
-		void Export(IModel model);
-	}
+    public interface IPersisterExporter {
+        void Export(IModel model);
+    }
 }

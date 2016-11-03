@@ -10,13 +10,13 @@ using System.Linq;
 using System.Text;
 
 namespace DaySim.Framework.Roster {
-	public class TextIJSkimFileReaderCreator : IFileReaderCreator
-//	public class TextIJSkimFileReaderCreator
-	{
-//		public ISkimFileReader CreateReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping)
-		public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping) // 20150703 JLB
-		{
-			return new TextIJSkimFileReader(cache, path, mapping);
-		}
-	}
+    public class TextIJSkimFileReaderCreator : IFileReaderCreator
+    //	public class TextIJSkimFileReaderCreator
+    {
+        //		public ISkimFileReader CreateReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping)
+        public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping) // 20150703 JLB
+        {
+            return new TextIJSkimFileReader(cache, path, mapping);
+        }
+    }
 }

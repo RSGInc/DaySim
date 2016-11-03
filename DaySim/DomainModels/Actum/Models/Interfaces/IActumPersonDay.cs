@@ -8,21 +8,21 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
-	public interface IActumPersonDay : IPersonDay {
-		int WorkHomeAllDay { get; set; }
+    public interface IActumPersonDay : IPersonDay {
+        int WorkHomeAllDay { get; set; }
 
-		int MinutesStudiedHome { get; set; }
+        int MinutesStudiedHome { get; set; }
 
-		int DiaryWeekday { get; set; }
+        int DiaryWeekday { get; set; }
 
-		int DiaryDaytype { get; set; }
+        int DiaryDaytype { get; set; }
 
-		int DayStartPurpose { get; set; }
+        int DayStartPurpose { get; set; }
 
-		int DayJourneyType { get; set; }
+        int DayJourneyType { get; set; }
 
-		int BusinessTours { get; set; }
+        int BusinessTours { get; set; }
 
-		int BusinessStops { get; set; }
-	}
+        int BusinessStops { get; set; }
+    }
 }

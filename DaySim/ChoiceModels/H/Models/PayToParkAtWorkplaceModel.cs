@@ -13,83 +13,81 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.H.Models {
-	public class PayToParkAtWorkplaceModel : ChoiceModel {
-		private const string CHOICE_MODEL_NAME = "HPayToParkAtWorkplaceModel";
-		private const int TOTAL_ALTERNATIVES = 2;
-		private const int TOTAL_NESTED_ALTERNATIVES = 0;
-		private const int TOTAL_LEVELS = 1;
-		private const int MAX_PARAMETER = 99;
-		
-		public override void RunInitialize(ICoefficientsReader reader = null) 
-		{
-			Initialize(CHOICE_MODEL_NAME, Global.Configuration.PayToParkAtWorkplaceModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-		}
+    public class PayToParkAtWorkplaceModel : ChoiceModel {
+        private const string CHOICE_MODEL_NAME = "HPayToParkAtWorkplaceModel";
+        private const int TOTAL_ALTERNATIVES = 2;
+        private const int TOTAL_NESTED_ALTERNATIVES = 0;
+        private const int TOTAL_LEVELS = 1;
+        private const int MAX_PARAMETER = 99;
 
-		public void Run(IPersonWrapper person) {
-			if (person == null) {
-				throw new ArgumentNullException("person");
-			}
+        public override void RunInitialize(ICoefficientsReader reader = null) {
+            Initialize(CHOICE_MODEL_NAME, Global.Configuration.PayToParkAtWorkplaceModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
+        }
 
-			person.ResetRandom(2);
+        public void Run(IPersonWrapper person) {
+            if (person == null) {
+                throw new ArgumentNullException("person");
+            }
 
-			if (Global.Configuration.IsInEstimationMode) {
-				if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-					return;
-				}
-			}
+            person.ResetRandom(2);
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+            if (Global.Configuration.IsInEstimationMode) {
+                if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+                    return;
+                }
+            }
 
-			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-				if (person.PaidParkingAtWorkplace < 0 || person.PaidParkingAtWorkplace > 1) {
-					return;
-				}
+            var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-				RunModel(choiceProbabilityCalculator, person, person.PaidParkingAtWorkplace);
+            if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+                if (person.PaidParkingAtWorkplace < 0 || person.PaidParkingAtWorkplace > 1) {
+                    return;
+                }
 
-				choiceProbabilityCalculator.WriteObservation();
-			}
-			else {
-				RunModel(choiceProbabilityCalculator, person);
+                RunModel(choiceProbabilityCalculator, person, person.PaidParkingAtWorkplace);
 
-				var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
-				var choice = (int) chosenAlternative.Choice;
+                choiceProbabilityCalculator.WriteObservation();
+            } else {
+                RunModel(choiceProbabilityCalculator, person);
 
-				person.PaidParkingAtWorkplace = choice;
-			}
-		}
+                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
+                var choice = (int)chosenAlternative.Choice;
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
-			// 0 No paid parking at work
+                person.PaidParkingAtWorkplace = choice;
+            }
+        }
 
-			var alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
+        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
+            // 0 No paid parking at work
 
-			alternative.Choice = 0;
+            var alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
 
-			alternative.AddUtilityTerm(1, 0.0);
+            alternative.Choice = 0;
 
-			// 1 Paid parking at work
+            alternative.AddUtilityTerm(1, 0.0);
 
-			alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
+            // 1 Paid parking at work
 
-			alternative.Choice = 1;
+            alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
 
-			alternative.AddUtilityTerm(1, 1.0);
-			alternative.AddUtilityTerm(2, person.IsPartTimeWorker.ToFlag());
-			alternative.AddUtilityTerm(3, person.IsNotFullOrPartTimeWorker.ToFlag());
-			alternative.AddUtilityTerm(4, Math.Max(1, person.Household.Income) / 1000.0);
-			alternative.AddUtilityTerm(5, person.Household.HasMissingIncome.ToFlag());
-			alternative.AddUtilityTerm(6, Math.Log(person.UsualWorkParcel.EmploymentTotalBuffer1 + 1.0));
-			alternative.AddUtilityTerm(7, Math.Log((person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer1 + 1.0) / (person.UsualWorkParcel.EmploymentTotalBuffer1 + 1.0)));
-			alternative.AddUtilityTerm(8, person.UsualWorkParcel.ParkingOffStreetPaidDailyPriceBuffer1);
-			alternative.AddUtilityTerm(9, person.UsualWorkParcel.EmploymentGovernmentBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
-//			alternative.AddUtility(10, person.UsualWorkParcel.EmploymentOfficeBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
-//			alternative.AddUtility(11, (person.UsualWorkParcel.EmploymentRetailBuffer1
-//				                        +person.UsualWorkParcel.EmploymentFoodBuffer1) / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
-			alternative.AddUtilityTerm(12, person.UsualWorkParcel.EmploymentEducationBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
-//			alternative.AddUtility(13, person.UsualWorkParcel.EmploymentIndustrialBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
-//			alternative.AddUtility(14, person.UsualWorkParcel.EmploymentMedicalBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
-//			alternative.AddUtility(15, person.UsualWorkParcel.EmploymentServiceBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
-		}
-	}
+            alternative.Choice = 1;
+
+            alternative.AddUtilityTerm(1, 1.0);
+            alternative.AddUtilityTerm(2, person.IsPartTimeWorker.ToFlag());
+            alternative.AddUtilityTerm(3, person.IsNotFullOrPartTimeWorker.ToFlag());
+            alternative.AddUtilityTerm(4, Math.Max(1, person.Household.Income) / 1000.0);
+            alternative.AddUtilityTerm(5, person.Household.HasMissingIncome.ToFlag());
+            alternative.AddUtilityTerm(6, Math.Log(person.UsualWorkParcel.EmploymentTotalBuffer1 + 1.0));
+            alternative.AddUtilityTerm(7, Math.Log((person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer1 + 1.0) / (person.UsualWorkParcel.EmploymentTotalBuffer1 + 1.0)));
+            alternative.AddUtilityTerm(8, person.UsualWorkParcel.ParkingOffStreetPaidDailyPriceBuffer1);
+            alternative.AddUtilityTerm(9, person.UsualWorkParcel.EmploymentGovernmentBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
+            //			alternative.AddUtility(10, person.UsualWorkParcel.EmploymentOfficeBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
+            //			alternative.AddUtility(11, (person.UsualWorkParcel.EmploymentRetailBuffer1
+            //				                        +person.UsualWorkParcel.EmploymentFoodBuffer1) / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
+            alternative.AddUtilityTerm(12, person.UsualWorkParcel.EmploymentEducationBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
+            //			alternative.AddUtility(13, person.UsualWorkParcel.EmploymentIndustrialBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
+            //			alternative.AddUtility(14, person.UsualWorkParcel.EmploymentMedicalBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
+            //			alternative.AddUtility(15, person.UsualWorkParcel.EmploymentServiceBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
+        }
+    }
 }

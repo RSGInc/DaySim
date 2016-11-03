@@ -10,137 +10,137 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-	public interface ITripWrapper : ITrip {
-		#region relations properties
+    public interface ITripWrapper : ITrip {
+        #region relations properties
 
-		IHouseholdWrapper Household { get; set; }
+        IHouseholdWrapper Household { get; set; }
 
-		IPersonWrapper Person { get; set; }
+        IPersonWrapper Person { get; set; }
 
-		IPersonDayWrapper PersonDay { get; set; }
+        IPersonDayWrapper PersonDay { get; set; }
 
-		ITourWrapper Tour { get; set; }
+        ITourWrapper Tour { get; set; }
 
-		IHalfTour HalfTour { get; set; }
+        IHalfTour HalfTour { get; set; }
 
-		IParcelWrapper OriginParcel { get; set; }
+        IParcelWrapper OriginParcel { get; set; }
 
-		IParcelWrapper DestinationParcel { get; set; }
+        IParcelWrapper DestinationParcel { get; set; }
 
-		#endregion
+        #endregion
 
-		#region flags/choice model/etc. properties
+        #region flags/choice model/etc. properties
 
-		int EarliestDepartureTime { get; set; }
+        int EarliestDepartureTime { get; set; }
 
-		int LatestDepartureTime { get; set; }
+        int LatestDepartureTime { get; set; }
 
-		int ArrivalTimeLimit { get; set; }
+        int ArrivalTimeLimit { get; set; }
 
-		bool IsHalfTourFromOrigin { get; set; }
+        bool IsHalfTourFromOrigin { get; set; }
 
-		bool IsToTourOrigin { get; set; }
+        bool IsToTourOrigin { get; set; }
 
-		bool IsMissingData { get; set; }
+        bool IsMissingData { get; set; }
 
-		#endregion
+        #endregion
 
-		#region wrapper methods
+        #region wrapper methods
 
-		bool IsNoneOrHomePurposeByOrigin();
+        bool IsNoneOrHomePurposeByOrigin();
 
-		bool IsWorkPurposeByOrigin();
+        bool IsWorkPurposeByOrigin();
 
-		bool IsEscortPurposeByOrigin();
+        bool IsEscortPurposeByOrigin();
 
-		bool IsNoneOrHomePurposeByDestination();
+        bool IsNoneOrHomePurposeByDestination();
 
-		bool IsWorkPurposeByDestination();
+        bool IsWorkPurposeByDestination();
 
-		bool IsEscortPurposeByDestination();
+        bool IsEscortPurposeByDestination();
 
-		bool IsWorkDestinationPurpose();
+        bool IsWorkDestinationPurpose();
 
-		bool IsSchoolDestinationPurpose();
+        bool IsSchoolDestinationPurpose();
 
-		bool IsEscortDestinationPurpose();
+        bool IsEscortDestinationPurpose();
 
-		bool IsPersonalBusinessDestinationPurpose();
+        bool IsPersonalBusinessDestinationPurpose();
 
-		bool IsShoppingDestinationPurpose();
+        bool IsShoppingDestinationPurpose();
 
-		bool IsMealDestinationPurpose();
+        bool IsMealDestinationPurpose();
 
-		bool IsSocialDestinationPurpose();
+        bool IsSocialDestinationPurpose();
 
-		bool IsRecreationDestinationPurpose();
+        bool IsRecreationDestinationPurpose();
 
-		bool IsMedicalDestinationPurpose();
+        bool IsMedicalDestinationPurpose();
 
-		bool IsPersonalBusinessOrMedicalDestinationPurpose();
+        bool IsPersonalBusinessOrMedicalDestinationPurpose();
 
-		bool IsWorkOrSchoolDestinationPurpose();
+        bool IsWorkOrSchoolDestinationPurpose();
 
-		bool IsPersonalReasonsDestinationPurpose();
+        bool IsPersonalReasonsDestinationPurpose();
 
-		bool IsSchoolOriginPurpose();
+        bool IsSchoolOriginPurpose();
 
-		bool IsEscortOriginPurpose();
+        bool IsEscortOriginPurpose();
 
-		bool IsShoppingOriginPurpose();
+        bool IsShoppingOriginPurpose();
 
-		bool IsPersonalBusinessOriginPurpose();
+        bool IsPersonalBusinessOriginPurpose();
 
-		bool IsMealOriginPurpose();
+        bool IsMealOriginPurpose();
 
-		bool IsSocialOriginPurpose();
+        bool IsSocialOriginPurpose();
 
-		bool UsesSovOrHovModes();
+        bool UsesSovOrHovModes();
 
-		bool IsWalkMode();
+        bool IsWalkMode();
 
-		bool IsBikeMode();
+        bool IsBikeMode();
 
-		bool IsSovMode();
+        bool IsSovMode();
 
-		bool IsHov2Mode();
+        bool IsHov2Mode();
 
-		bool IsHov3Mode();
+        bool IsHov3Mode();
 
-		bool IsTransitMode();
+        bool IsTransitMode();
 
-		bool IsBeforeMandatoryDestination();
+        bool IsBeforeMandatoryDestination();
 
-		ITripWrapper GetPreviousTrip();
+        ITripWrapper GetPreviousTrip();
 
-		ITripWrapper GetNextTrip();
+        ITripWrapper GetNextTrip();
 
-		int GetStartTime();
+        int GetStartTime();
 
-		void SetDriverOrPassenger(List<ITripWrapper> trips);
+        void SetDriverOrPassenger(List<ITripWrapper> trips);
 
-		void UpdateTripValues();
+        void UpdateTripValues();
 
-		void HUpdateTripValues();
+        void HUpdateTripValues();
 
-		void Invert(int sequence);
+        void Invert(int sequence);
 
-		ITripModeImpedance[] GetTripModeImpedances();
+        ITripModeImpedance[] GetTripModeImpedances();
 
-		void SetActivityEndTime(int activityEndTime);
+        void SetActivityEndTime(int activityEndTime);
 
-		void SetOriginAddressType(int originAddressType);
+        void SetOriginAddressType(int originAddressType);
 
-		void SetTourSequence(int tourSequence);
+        void SetTourSequence(int tourSequence);
 
-		void SetTripValueOfTime();
+        void SetTripValueOfTime();
 
-		#endregion
+        #endregion
 
-		#region init/utility/export methods
+        #region init/utility/export methods
 
-		void Export();
+        void Export();
 
-		#endregion
-	}
+        #endregion
+    }
 }

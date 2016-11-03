@@ -22,8 +22,7 @@ using SimpleInjector;
 using System.Collections.Generic;
 
 namespace DaySim.ChoiceModels.H.Models {
-	public class SchoolLocationModel : ChoiceModel
-    {
+    public class SchoolLocationModel : ChoiceModel {
         private const string CHOICE_MODEL_NAME = "HSchoolLocationModel";
         private const int TOTAL_NESTED_ALTERNATIVES = 2;
         private const int TOTAL_LEVELS = 2;
@@ -34,7 +33,7 @@ namespace DaySim.ChoiceModels.H.Models {
         {
             {"1515", 0.82},
             {"611611", 0.88},
-			{"12141214", 0.56},
+            {"12141214", 0.56},
             {"15181518", 0.66},
             {"15611", 0.33},
             {"6111218", 0.22},
@@ -44,35 +43,28 @@ namespace DaySim.ChoiceModels.H.Models {
         //the probability the siblings in the same hh of this age go to the same school.
 
 
-        public override void RunInitialize(ICoefficientsReader reader = null)
-        {
+        public override void RunInitialize(ICoefficientsReader reader = null) {
             int sampleSize = Global.Configuration.SchoolLocationModelSampleSize;
             Initialize(CHOICE_MODEL_NAME, Global.Configuration.SchoolLocationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
         }
 
-        public void Run(IPersonWrapper person, int sampleSize)
-        {
-            if (person == null)
-            {
+        public void Run(IPersonWrapper person, int sampleSize) {
+            if (person == null) {
                 throw new ArgumentNullException("person");
             }
 
             person.ResetRandom(1);
 
-            if (Global.Configuration.IsInEstimationMode)
-            {
-                if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME)
-                {
+            if (Global.Configuration.IsInEstimationMode) {
+                if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
                     return;
                 }
             }
 
             var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-            if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode)
-            {
-                if (person.UsualSchoolParcel == null)
-                {
+            if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+                if (person.UsualSchoolParcel == null) {
                     return;
                 }
 
@@ -86,18 +78,14 @@ namespace DaySim.ChoiceModels.H.Models {
                 // choseHome is NOT null, and RunModel sets the oddball location as chosen
 
                 choiceProbabilityCalculator.WriteObservation();
-            }
-            else
-            {
+            } else {
 
-                if (person.Household.HouseholdTotals.AllStudents > 1)
-                {
+                if (person.Household.HouseholdTotals.AllStudents > 1) {
                     //determine if student goes to the same school as a sibling
                     SiblingModel(person, person.Household.RandomUtility);
                 }
 
-                if (!(person.UsualSchoolParcelId > 0))
-                {
+                if (!(person.UsualSchoolParcelId > 0)) {
                     RunModel(choiceProbabilityCalculator, person, sampleSize);
 
                     var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
@@ -117,8 +105,7 @@ namespace DaySim.ChoiceModels.H.Models {
             }
         }
 
-        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false)
-        {
+        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false) {
             var segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.School, Global.Settings.TourPriorities.UsualLocation, Global.Settings.Modes.Sov, person.PersonType);
             var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, person.Household.ResidenceParcel, choice);
             var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
@@ -144,16 +131,14 @@ namespace DaySim.ChoiceModels.H.Models {
             alternative.AddNestedAlternative(sampleSize + 3, 1, 99);
         }
 
-        private sealed class SchoolLocationUtilities : ISamplingUtilities
-        {
+        private sealed class SchoolLocationUtilities : ISamplingUtilities {
             private readonly IPersonWrapper _person;
             private readonly int _sampleSize;
             private readonly int _destinationArrivalTime;
             private readonly int _destinationDepartureTime;
             private readonly int[] _seedValues;
 
-            public SchoolLocationUtilities(IPersonWrapper person, int sampleSize, int destinationArrivalTime, int destinationDepartureTime)
-            {
+            public SchoolLocationUtilities(IPersonWrapper person, int sampleSize, int destinationArrivalTime, int destinationDepartureTime) {
                 _person = person;
                 _sampleSize = sampleSize;
                 _destinationArrivalTime = destinationArrivalTime;
@@ -161,22 +146,18 @@ namespace DaySim.ChoiceModels.H.Models {
                 _seedValues = ChoiceModelUtility.GetRandomSampling(_sampleSize, person.SeedValues[1]);
             }
 
-            public int[] SeedValues
-            {
+            public int[] SeedValues {
                 get { return _seedValues; }
             }
 
-            public void SetUtilities(ISampleItem sampleItem, int sampleFrequency)
-            {
-                if (sampleItem == null)
-                {
+            public void SetUtilities(ISampleItem sampleItem, int sampleFrequency) {
+                if (sampleItem == null) {
                     throw new ArgumentNullException("sampleItem");
                 }
 
                 var alternative = sampleItem.Alternative;
 
-                if (!alternative.Available)
-                {
+                if (!alternative.Available) {
                     return;
                 }
 
@@ -339,58 +320,40 @@ namespace DaySim.ChoiceModels.H.Models {
             }
         }
 
-        public void SiblingModel(IPersonWrapper person, IRandomUtility random)
-        {
+        public void SiblingModel(IPersonWrapper person, IRandomUtility random) {
 
             string ageGroup1 = "0";
             string ageGroup2 = "0";
             double thisPr = 0.0;
 
-            if (person.Age < 6)
-            {
+            if (person.Age < 6) {
                 ageGroup1 = "15";
-            }
-            else if (person.Age < 12)
-            {
+            } else if (person.Age < 12) {
                 ageGroup1 = "611";
-            }
-            else if (person.Age < 14)
-            {
+            } else if (person.Age < 14) {
                 ageGroup1 = "1214";
-            }
-            else if (person.Age <= 18)
-            {
+            } else if (person.Age <= 18) {
                 ageGroup1 = "1518";
             }
 
-            foreach (PersonWrapper otherStu in person.Household.Persons)
-            {
-                if (otherStu.UsualSchoolParcelId > 0)
-                {
-                    if (otherStu.Age < 6)
-                    {
+            foreach (PersonWrapper otherStu in person.Household.Persons) {
+                if (otherStu.UsualSchoolParcelId > 0) {
+                    if (otherStu.Age < 6) {
                         ageGroup2 = "15";
-                    }
-                    else if (otherStu.Age < 12)
-                    {
+                    } else if (otherStu.Age < 12) {
                         ageGroup2 = "611";
                     }
-                    if (otherStu.Age < 14)
-                    {
+                    if (otherStu.Age < 14) {
                         ageGroup2 = "1214";
-                    }
-                    else if (otherStu.Age <= 18)
-                    {
+                    } else if (otherStu.Age <= 18) {
                         ageGroup2 = "1518";
                     }
 
-                    if (prMatch.ContainsKey(ageGroup1 + ageGroup2))
-                    {
+                    if (prMatch.ContainsKey(ageGroup1 + ageGroup2)) {
                         thisPr = prMatch[ageGroup1 + ageGroup2];
                     }
 
-                    if (random.Uniform01() < thisPr)
-                    {
+                    if (random.Uniform01() < thisPr) {
                         person.UsualSchoolParcelId = otherStu.UsualSchoolParcelId;
                         person.UsualSchoolParcel = otherStu.UsualSchoolParcel;
                         person.UsualSchoolZoneKey = ChoiceModelFactory.ZoneKeys[person.UsualSchoolParcel.ZoneId];

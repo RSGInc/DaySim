@@ -16,109 +16,109 @@ using DaySim.Framework.Sampling;
 using SimpleInjector;
 
 namespace DaySim.Sampling {
-	public static class SamplingWeightsExporter {
-		public static void Export(string path) {
-			BeginRunExport(path);
-		}
+    public static class SamplingWeightsExporter {
+        public static void Export(string path) {
+            BeginRunExport(path);
+        }
 
-		private static void BeginRunExport(string path) {
-			Global.PrintFile.WriteLine("Output files:");
-			Global.PrintFile.IncrementIndent();
+        private static void BeginRunExport(string path) {
+            Global.PrintFile.WriteLine("Output files:");
+            Global.PrintFile.IncrementIndent();
 
-			RunExport(path);
+            RunExport(path);
 
-			Global.PrintFile.DecrementIndent();
-		}
+            Global.PrintFile.DecrementIndent();
+        }
 
-		private static void RunExport(string path) {
-			var directory = Path.GetDirectoryName(path);
+        private static void RunExport(string path) {
+            var directory = Path.GetDirectoryName(path);
 
-			if (directory == null) {
-				return;
-			}
+            if (directory == null) {
+                return;
+            }
 
-			var filename = Path.GetFileNameWithoutExtension(path);
-			var extension = Path.GetExtension(path);
-			var segmentCount = Global.SegmentZones.GetLength(0);
-			
-			var zoneReader = 
-				Global
-					.ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
-					.Reader;
+            var filename = Path.GetFileNameWithoutExtension(path);
+            var extension = Path.GetExtension(path);
+            var segmentCount = Global.SegmentZones.GetLength(0);
 
-			for (var segment = 0; segment < segmentCount; segment++) {
-				var file = new FileInfo(Path.Combine(directory, string.Format("{0}.{1}{2}", filename, segment, extension)));
+            var zoneReader =
+                Global
+                    .ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
+                    .Reader;
 
-				using (var writer = new StreamWriter(file.Open(FileMode.Create, FileAccess.Write, FileShare.Read))) {
-					var segmentZones = Global.SegmentZones[segment];
-					var zoneCount = segmentZones.GetLength(0);
+            for (var segment = 0; segment < segmentCount; segment++) {
+                var file = new FileInfo(Path.Combine(directory, string.Format("{0}.{1}{2}", filename, segment, extension)));
 
-					var sizesFile = new FileInfo(Path.Combine(directory, string.Format("{0}.{1}.sizes{2}", filename, segment, extension)));
-					var sizesWriter = new StreamWriter(sizesFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read));
+                using (var writer = new StreamWriter(file.Open(FileMode.Create, FileAccess.Write, FileShare.Read))) {
+                    var segmentZones = Global.SegmentZones[segment];
+                    var zoneCount = segmentZones.GetLength(0);
 
-					var weightsFile = new FileInfo(Path.Combine(directory, string.Format("{0}.{1}.weights{2}", filename, segment, extension)));
-					var weightsWriter = new StreamWriter(weightsFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read));
+                    var sizesFile = new FileInfo(Path.Combine(directory, string.Format("{0}.{1}.sizes{2}", filename, segment, extension)));
+                    var sizesWriter = new StreamWriter(sizesFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read));
 
-					for (var zoneId = 0; zoneId < zoneCount; zoneId++) {
-						var segmentZone = segmentZones[zoneId];
+                    var weightsFile = new FileInfo(Path.Combine(directory, string.Format("{0}.{1}.weights{2}", filename, segment, extension)));
+                    var weightsWriter = new StreamWriter(weightsFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read));
 
-						if (segmentZone == null) {
-							continue;
-						}
+                    for (var zoneId = 0; zoneId < zoneCount; zoneId++) {
+                        var segmentZone = segmentZones[zoneId];
 
-						var zone = zoneReader.Seek(zoneId);
+                        if (segmentZone == null) {
+                            continue;
+                        }
 
-						writer.Write(zone.Key);
-						writer.Write("\t");
-						writer.Write(segmentZone.TotalSize.ToString("f7"));
-						writer.Write("\t");
-						writer.Write(segmentZone.TotalWeight.ToString("f7"));
-						writer.WriteLine();
+                        var zone = zoneReader.Seek(zoneId);
 
-						ExportRankedSizes(sizesWriter, zone.Key, segmentZone.RankedSizes);
-						ExportRankedWeights(weightsWriter, zone.Key, zoneReader, segmentZone.RankedWeights);
+                        writer.Write(zone.Key);
+                        writer.Write("\t");
+                        writer.Write(segmentZone.TotalSize.ToString("f7"));
+                        writer.Write("\t");
+                        writer.Write(segmentZone.TotalWeight.ToString("f7"));
+                        writer.WriteLine();
 
-						sizesWriter.Flush();
-						weightsWriter.Flush();
-					}
+                        ExportRankedSizes(sizesWriter, zone.Key, segmentZone.RankedSizes);
+                        ExportRankedWeights(weightsWriter, zone.Key, zoneReader, segmentZone.RankedWeights);
 
-					sizesWriter.Dispose();
-					weightsWriter.Dispose();
-				}
+                        sizesWriter.Flush();
+                        weightsWriter.Flush();
+                    }
 
-				Global.PrintFile.WriteFileInfo(file, true);
-			}
-		}
+                    sizesWriter.Dispose();
+                    weightsWriter.Dispose();
+                }
 
-		private static void ExportRankedSizes(TextWriter writer, int key, IEnumerable<SizeSegmentItem> segmentItems) {
-			foreach (var segmentItem in segmentItems) {
-				writer.Write(key);
-				writer.Write("\t");
+                Global.PrintFile.WriteFileInfo(file, true);
+            }
+        }
 
-				writer.Write(segmentItem.Id);
-				writer.Write("\t");
+        private static void ExportRankedSizes(TextWriter writer, int key, IEnumerable<SizeSegmentItem> segmentItems) {
+            foreach (var segmentItem in segmentItems) {
+                writer.Write(key);
+                writer.Write("\t");
 
-				writer.Write(segmentItem.Sequence);
-				writer.Write("\t");
+                writer.Write(segmentItem.Id);
+                writer.Write("\t");
 
-				writer.Write(segmentItem.Value.ToString("f7"));
-				writer.WriteLine();
-			}
-		}
+                writer.Write(segmentItem.Sequence);
+                writer.Write("\t");
 
-		private static void ExportRankedWeights(TextWriter writer, int key, IPersisterReader<IZone> zoneReader, IEnumerable<WeightSegmentItem> segmentItems) {
-			foreach (var segmentItem in segmentItems) {
-				var zone = zoneReader.Seek(segmentItem.Id);
+                writer.Write(segmentItem.Value.ToString("f7"));
+                writer.WriteLine();
+            }
+        }
 
-				writer.Write(key);
-				writer.Write("\t");
+        private static void ExportRankedWeights(TextWriter writer, int key, IPersisterReader<IZone> zoneReader, IEnumerable<WeightSegmentItem> segmentItems) {
+            foreach (var segmentItem in segmentItems) {
+                var zone = zoneReader.Seek(segmentItem.Id);
 
-				writer.Write(zone.Key);
-				writer.Write("\t");
+                writer.Write(key);
+                writer.Write("\t");
 
-				writer.Write(segmentItem.Value.ToString("f7"));
-				writer.WriteLine();
-			}
-		}
-	}
+                writer.Write(zone.Key);
+                writer.Write("\t");
+
+                writer.Write(segmentItem.Value.ToString("f7"));
+                writer.WriteLine();
+            }
+        }
+    }
 }

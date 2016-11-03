@@ -6,68 +6,68 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Core {
-	public sealed class RandomUniform01 : IRandomUniform01 {
-		private readonly object _randomUniform01Lock = new object();
-		private readonly object _randomUniform01ResetLock = new object();
-		private int _randseed;
-		private int _randSy;
-		private int _randSz;
+    public sealed class RandomUniform01 : IRandomUniform01 {
+        private readonly object _randomUniform01Lock = new object();
+        private readonly object _randomUniform01ResetLock = new object();
+        private int _randseed;
+        private int _randSy;
+        private int _randSz;
 
-		public RandomUniform01(int randseed = 1) {
-			lock (_randomUniform01ResetLock) {
+        public RandomUniform01(int randseed = 1) {
+            lock (_randomUniform01ResetLock) {
 #if DEBUG
-ParallelUtility.countLocks("_randomUniform01ResetLock");
+                ParallelUtility.countLocks("_randomUniform01ResetLock");
 #endif
 
-				ResetUniform01(randseed);
-			}
-		}
+                ResetUniform01(randseed);
+            }
+        }
 
-		public double Uniform01() {
-		 lock (_randomUniform01Lock) {
+        public double Uniform01() {
+            lock (_randomUniform01Lock) {
 #if DEBUG
-ParallelUtility.countLocks("_randomUniform01Lock");
+                ParallelUtility.countLocks("_randomUniform01Lock");
 #endif
 
-			var r = _randseed / 177;
-			var s = _randseed - 177 * r;
+                var r = _randseed / 177;
+                var s = _randseed - 177 * r;
 
-			_randseed = 171 * s - 2 * r;
+                _randseed = 171 * s - 2 * r;
 
-			if (_randseed < 0) {
-				_randseed += 30269;
-			}
+                if (_randseed < 0) {
+                    _randseed += 30269;
+                }
 
-			r = _randSy / 176;
-			s = _randSy - 176 * r;
+                r = _randSy / 176;
+                s = _randSy - 176 * r;
 
-			_randSy = 172 * s - 35 * r;
+                _randSy = 172 * s - 35 * r;
 
-			if (_randSy < 0) {
-				_randSy += 30307;
-			}
+                if (_randSy < 0) {
+                    _randSy += 30307;
+                }
 
-			r = _randSz / 178;
-			s = _randSz - 178 * r;
+                r = _randSz / 178;
+                s = _randSz - 178 * r;
 
-			_randSz = 170 * s - 63 * r;
+                _randSz = 170 * s - 63 * r;
 
-			if (_randSz < 0) {
-				_randSz += 30323;
-			}
+                if (_randSz < 0) {
+                    _randSz += 30323;
+                }
 
-			var f = _randseed / 30269D + _randSy / 30307D + _randSz / 30323D;
+                var f = _randseed / 30269D + _randSy / 30307D + _randSz / 30323D;
 
-			f = f - (int) f;
+                f = f - (int)f;
 
-			return f;
-		 }
-		}
+                return f;
+            }
+        }
 
-		public void ResetUniform01(int randomSeed = 1) {
-			_randseed = randomSeed & 0xffff;
-			_randSy = 10000;
-			_randSz = 3000;
-		}
-	}
+        public void ResetUniform01(int randomSeed = 1) {
+            _randseed = randomSeed & 0xffff;
+            _randSy = 10000;
+            _randSz = 3000;
+        }
+    }
 }

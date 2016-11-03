@@ -7,43 +7,43 @@
 using System.IO;
 
 namespace DaySim.Framework.Core {
-	public static class EngineExtensions {
-		public static void CreateDirectory(this string path) {
-			CreateDirectory(new FileInfo(path));
-		}
+    public static class EngineExtensions {
+        public static void CreateDirectory(this string path) {
+            CreateDirectory(new FileInfo(path));
+        }
 
-		public static void CreateDirectory(this FileInfo file) {
-			if (file == null) {
-				return;
-			}
+        public static void CreateDirectory(this FileInfo file) {
+            if (file == null) {
+                return;
+            }
 
-			CreateDirectory(file.Directory);
-		}
+            CreateDirectory(file.Directory);
+        }
 
-		public static void CreateDirectory(this DirectoryInfo directory) {
-			if (directory == null) {
-				return;
-			}
+        public static void CreateDirectory(this DirectoryInfo directory) {
+            if (directory == null) {
+                return;
+            }
 
-			if (directory.Exists) {
-				return;
-			}
+            if (directory.Exists) {
+                return;
+            }
 
-			directory.Create();
-			
-			if (Global.PrintFile != null) {
-				Global.PrintFile.WriteLine(@"The directory ""{0}"" did not exist and has been created.", directory.FullName);
-			}
-		}
+            directory.Create();
 
-		public static string ToIndexedPath(this string path, int index) {
-			if (string.IsNullOrEmpty(path)) {
-				return null;
-			}
+            if (Global.PrintFile != null) {
+                Global.PrintFile.WriteLine(@"The directory ""{0}"" did not exist and has been created.", directory.FullName);
+            }
+        }
 
-			var extension = "." + index + Path.GetExtension(path);
+        public static string ToIndexedPath(this string path, int index) {
+            if (string.IsNullOrEmpty(path)) {
+                return null;
+            }
 
-			return Path.GetDirectoryName(path) + @"\" + Path.GetFileNameWithoutExtension(path) + extension;
-		}
-	}
+            var extension = "." + index + Path.GetExtension(path);
+
+            return Path.GetDirectoryName(path) + @"\" + Path.GetFileNameWithoutExtension(path) + extension;
+        }
+    }
 }

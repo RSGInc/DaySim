@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-	[Serializable]
-	public class InvalidCombinationException : Exception {
-		public InvalidCombinationException() : this("The combination of mode and path type is invalid. Please adjust the roster accordingly.") {}
+    [Serializable]
+    public class InvalidCombinationException : Exception {
+        public InvalidCombinationException() : this("The combination of mode and path type is invalid. Please adjust the roster accordingly.") { }
 
-		public InvalidCombinationException(string message) : base(message) {}
+        public InvalidCombinationException(string message) : base(message) { }
 
-		public InvalidCombinationException(string message, Exception innerException) : base(message, innerException) {}
+        public InvalidCombinationException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected InvalidCombinationException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+        protected InvalidCombinationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
 }

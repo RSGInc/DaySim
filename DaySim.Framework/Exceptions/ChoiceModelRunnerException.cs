@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-	[Serializable]
-	public class ChoiceModelRunnerException : Exception {
-		public ChoiceModelRunnerException() : this("An error occurred in ChoiceModelRunner.") {}
+    [Serializable]
+    public class ChoiceModelRunnerException : Exception {
+        public ChoiceModelRunnerException() : this("An error occurred in ChoiceModelRunner.") { }
 
-		public ChoiceModelRunnerException(string message) : base(message) {}
+        public ChoiceModelRunnerException(string message) : base(message) { }
 
-		public ChoiceModelRunnerException(string message, Exception innerException) : base(message, innerException) {}
+        public ChoiceModelRunnerException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected ChoiceModelRunnerException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+        protected ChoiceModelRunnerException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
 }

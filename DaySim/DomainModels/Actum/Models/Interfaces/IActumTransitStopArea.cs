@@ -8,10 +8,10 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
-	public interface IActumTransitStopArea : ITransitStopArea {
+    public interface IActumTransitStopArea : ITransitStopArea {
 
-		//string TerminalName  { get; set; }
-		int Microzone { get; set; }
-		int BikeOnBoardTerminal { get; set; }
-	}
+        //string TerminalName  { get; set; }
+        int Microzone { get; set; }
+        int BikeOnBoardTerminal { get; set; }
+    }
 }

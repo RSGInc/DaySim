@@ -10,46 +10,46 @@ using System.Linq;
 using DaySim.Framework.Core;
 
 namespace DaySim.Framework.Factories {
-	public abstract class TypeLocator {
-		protected TypeLocator(Configuration configuration) {
-			ChoiceModelRunner = GetChoiceModelRunner(configuration.ChoiceModelRunner);
-			DataType = GetDataType(configuration.DataType);
-		}
+    public abstract class TypeLocator {
+        protected TypeLocator(Configuration configuration) {
+            ChoiceModelRunner = GetChoiceModelRunner(configuration.ChoiceModelRunner);
+            DataType = GetDataType(configuration.DataType);
+        }
 
-		protected ChoiceModelRunner ChoiceModelRunner { get; private set; }
+        protected ChoiceModelRunner ChoiceModelRunner { get; private set; }
 
-		protected DataType DataType { get; private set; }
+        protected DataType DataType { get; private set; }
 
-		private static ChoiceModelRunner GetChoiceModelRunner(string choiceModelRunner) {
-			ChoiceModelRunner result;
+        private static ChoiceModelRunner GetChoiceModelRunner(string choiceModelRunner) {
+            ChoiceModelRunner result;
 
-			if (Enum.TryParse(choiceModelRunner, out result)) {
-				return result;
-			}
+            if (Enum.TryParse(choiceModelRunner, out result)) {
+                return result;
+            }
 
-			var values =
-				Enum
-					.GetValues(typeof (ChoiceModelRunner))
-					.Cast<ChoiceModelRunner>()
-					.ToList();
+            var values =
+                Enum
+                    .GetValues(typeof(ChoiceModelRunner))
+                    .Cast<ChoiceModelRunner>()
+                    .ToList();
 
-			throw new Exception(string.Format("Unable to determine type. The choice model runner set to \"{0}\" is not valid. Valid values are {1}", choiceModelRunner, string.Join(", ", values)));
-		}
+            throw new Exception(string.Format("Unable to determine type. The choice model runner set to \"{0}\" is not valid. Valid values are {1}", choiceModelRunner, string.Join(", ", values)));
+        }
 
-		private static DataType GetDataType(string dataType) {
-			DataType result;
+        private static DataType GetDataType(string dataType) {
+            DataType result;
 
-			if (Enum.TryParse(dataType, out result)) {
-				return result;
-			}
+            if (Enum.TryParse(dataType, out result)) {
+                return result;
+            }
 
-			var values =
-				Enum
-					.GetValues(typeof (DataType))
-					.Cast<DataType>()
-					.ToList();
+            var values =
+                Enum
+                    .GetValues(typeof(DataType))
+                    .Cast<DataType>()
+                    .ToList();
 
-			throw new Exception(string.Format("Unable to determine type. The data type set to \"{0}\" is not valid. Valid values are {1}", dataType, string.Join(", ", values)));
-		}
-	}
+            throw new Exception(string.Format("Unable to determine type. The data type set to \"{0}\" is not valid. Valid values are {1}", dataType, string.Join(", ", values)));
+        }
+    }
 }

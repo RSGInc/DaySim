@@ -6,45 +6,45 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.DomainModels.Models {
-	public interface IHousehold : IModel {
-		double FractionWorkersWithJobsOutsideRegion { get; set; }
+    public interface IHousehold : IModel {
+        double FractionWorkersWithJobsOutsideRegion { get; set; }
 
-		int Size { get; set; }
+        int Size { get; set; }
 
-		int VehiclesAvailable { get; set; }
+        int VehiclesAvailable { get; set; }
 
-		int Workers { get; set; }
+        int Workers { get; set; }
 
-		int FulltimeWorkers { get; set; }
+        int FulltimeWorkers { get; set; }
 
-		int PartTimeWorkers { get; set; }
+        int PartTimeWorkers { get; set; }
 
-		int RetiredAdults { get; set; }
+        int RetiredAdults { get; set; }
 
-		int OtherAdults { get; set; }
+        int OtherAdults { get; set; }
 
-		int CollegeStudents { get; set; }
+        int CollegeStudents { get; set; }
 
-		int HighSchoolStudents { get; set; }
+        int HighSchoolStudents { get; set; }
 
-		int KidsBetween5And15 { get; set; }
+        int KidsBetween5And15 { get; set; }
 
-		int KidsBetween0And4 { get; set; }
+        int KidsBetween0And4 { get; set; }
 
-		int Income { get; set; }
+        int Income { get; set; }
 
-		int OwnOrRent { get; set; }
+        int OwnOrRent { get; set; }
 
-		int ResidenceType { get; set; }
+        int ResidenceType { get; set; }
 
-		int ResidenceParcelId { get; set; }
+        int ResidenceParcelId { get; set; }
 
-		int ResidenceZoneId { get; set; }
+        int ResidenceZoneId { get; set; }
 
-		int ResidenceZoneKey { get; set; }
+        int ResidenceZoneKey { get; set; }
 
-		double ExpansionFactor { get; set; }
+        double ExpansionFactor { get; set; }
 
-		int SampleType { get; set; }
-	}
+        int SampleType { get; set; }
+    }
 }

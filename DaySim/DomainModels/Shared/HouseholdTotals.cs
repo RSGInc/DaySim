@@ -8,47 +8,47 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Shared {
-	public sealed class HouseholdTotals : IHouseholdTotals {
-		public int FulltimeWorkers { get; set; }
+    public sealed class HouseholdTotals : IHouseholdTotals {
+        public int FulltimeWorkers { get; set; }
 
-		public int PartTimeWorkers { get; set; }
+        public int PartTimeWorkers { get; set; }
 
-		public int RetiredAdults { get; set; }
+        public int RetiredAdults { get; set; }
 
-		public int NonworkingAdults { get; set; }
+        public int NonworkingAdults { get; set; }
 
-		public int UniversityStudents { get; set; }
+        public int UniversityStudents { get; set; }
 
-		public int DrivingAgeStudents { get; set; }
+        public int DrivingAgeStudents { get; set; }
 
-		public int ChildrenAge5Through15 { get; set; }
+        public int ChildrenAge5Through15 { get; set; }
 
-		public int ChildrenUnder5 { get; set; }
+        public int ChildrenUnder5 { get; set; }
 
-		public int ChildrenUnder16 { get; set; }
+        public int ChildrenUnder16 { get; set; }
 
-		public int Adults { get; set; }
+        public int Adults { get; set; }
 
-		public int DrivingAgeMembers { get; set; }
+        public int DrivingAgeMembers { get; set; }
 
-		public int WorkersPlusStudents { get; set; }
+        public int WorkersPlusStudents { get; set; }
 
-		public int FullAndPartTimeWorkers { get; set; }
+        public int FullAndPartTimeWorkers { get; set; }
 
-		public int AllWorkers { get; set; }
+        public int AllWorkers { get; set; }
 
-		public int AllStudents { get; set; }
+        public int AllStudents { get; set; }
 
-		public double PartTimeWorkersPerDrivingAgeMembers { get; set; }
+        public double PartTimeWorkersPerDrivingAgeMembers { get; set; }
 
-		public double RetiredAdultsPerDrivingAgeMembers { get; set; }
+        public double RetiredAdultsPerDrivingAgeMembers { get; set; }
 
-		public double UniversityStudentsPerDrivingAgeMembers { get; set; }
+        public double UniversityStudentsPerDrivingAgeMembers { get; set; }
 
-		public double DrivingAgeStudentsPerDrivingAgeMembers { get; set; }
+        public double DrivingAgeStudentsPerDrivingAgeMembers { get; set; }
 
-		public double ChildrenUnder5PerDrivingAgeMembers { get; set; }
+        public double ChildrenUnder5PerDrivingAgeMembers { get; set; }
 
-		public double HomeBasedPersonsPerDrivingAgeMembers { get; set; }
-	}
+        public double HomeBasedPersonsPerDrivingAgeMembers { get; set; }
+    }
 }

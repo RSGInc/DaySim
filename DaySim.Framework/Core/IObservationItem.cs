@@ -7,11 +7,11 @@
 
 
 namespace DaySim.Framework.Core {
-	public interface IObservationItem {
-		int PositionIndex { get; }
+    public interface IObservationItem {
+        int PositionIndex { get; }
 
-		int Key { get; }
+        int Key { get; }
 
-		double Data { get; }
-	}
+        double Data { get; }
+    }
 }

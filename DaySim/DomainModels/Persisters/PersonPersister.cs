@@ -11,20 +11,20 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Persisters {
-	[UsedImplicitly]
-	[Factory(Factory.PersistenceFactory, Category = Category.Persister)]
-	public class PersonPersister<TModel> : Persister<TModel> where TModel : class, IPerson, new() {
-		public override void Export(IModel model) {
-			base.Export(model);
+    [UsedImplicitly]
+    [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
+    public class PersonPersister<TModel> : Persister<TModel> where TModel : class, IPerson, new() {
+        public override void Export(IModel model) {
+            base.Export(model);
 
-			ChoiceModelFactory.PersonFileRecordsWritten++;
+            ChoiceModelFactory.PersonFileRecordsWritten++;
 
-			var m = (TModel) model;
+            var m = (TModel)model;
 
-			ChoiceModelFactory.PersonUsualWorkParcelCheckSum += m.UsualWorkParcelId;
-			ChoiceModelFactory.PersonUsualSchoolParcelCheckSum += m.UsualSchoolParcelId;
-			ChoiceModelFactory.PersonTransitPassOwnershipCheckSum += m.TransitPassOwnership;
-			ChoiceModelFactory.PersonPaidParkingAtWorkCheckSum += m.PaidParkingAtWorkplace;
-		}
-	}
+            ChoiceModelFactory.PersonUsualWorkParcelCheckSum += m.UsualWorkParcelId;
+            ChoiceModelFactory.PersonUsualSchoolParcelCheckSum += m.UsualSchoolParcelId;
+            ChoiceModelFactory.PersonTransitPassOwnershipCheckSum += m.TransitPassOwnership;
+            ChoiceModelFactory.PersonPaidParkingAtWorkCheckSum += m.PaidParkingAtWorkplace;
+        }
+    }
 }

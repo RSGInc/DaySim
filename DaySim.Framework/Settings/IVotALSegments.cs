@@ -6,29 +6,29 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IVotALSegments {
-		int TotalVotALSegments { get; }
+    public interface IVotALSegments {
+        int TotalVotALSegments { get; }
 
-		int Low { get; }
-		
-		int Medium { get; }
-		
-		int High { get; }
-		
-		int IncomeLowMedium { get; }
-		
-		int IncomeMediumHigh { get; }
-		
-		double VotLowMedium { get; }
-		
-		double VotMediumHigh { get; }
-		
-		double TimeCoefficient { get; }
-		
-		double CostCoefficientLow { get; }
-		
-		double CostCoefficientMedium { get; }
-		
-		double CostCoefficientHigh { get; }
-	}
+        int Low { get; }
+
+        int Medium { get; }
+
+        int High { get; }
+
+        int IncomeLowMedium { get; }
+
+        int IncomeMediumHigh { get; }
+
+        double VotLowMedium { get; }
+
+        double VotMediumHigh { get; }
+
+        double TimeCoefficient { get; }
+
+        double CostCoefficientLow { get; }
+
+        double CostCoefficientMedium { get; }
+
+        double CostCoefficientHigh { get; }
+    }
 }

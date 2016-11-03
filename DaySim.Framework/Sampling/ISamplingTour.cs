@@ -9,7 +9,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Persistence;
 
 namespace DaySim.Framework.Sampling {
-	public interface ISamplingTour {
-		IParcel OriginParcel { get; }
-	}
+    public interface ISamplingTour {
+        IParcel OriginParcel { get; }
+    }
 }

@@ -8,20 +8,20 @@
 using System;
 
 namespace DaySim.Framework.Factories {
-	[AttributeUsage(AttributeTargets.Class)]
-	public class FactoryAttribute : Attribute {
-		public FactoryAttribute(Factory factory) {
-			Factory = factory;
+    [AttributeUsage(AttributeTargets.Class)]
+    public class FactoryAttribute : Attribute {
+        public FactoryAttribute(Factory factory) {
+            Factory = factory;
 
-			DataType = DataType.Default;
-		}
+            DataType = DataType.Default;
+        }
 
-		public Factory Factory { get; private set; }
+        public Factory Factory { get; private set; }
 
-		public DataType DataType { get; set; }
+        public DataType DataType { get; set; }
 
-		public ChoiceModelRunner ChoiceModelRunner { get; set; }
+        public ChoiceModelRunner ChoiceModelRunner { get; set; }
 
-		public Category Category { get; set; }
-	}
+        public Category Category { get; set; }
+    }
 }

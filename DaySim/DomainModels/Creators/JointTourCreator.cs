@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class JointTourCreator<TWrapper, TModel> : IJointTourCreator where TWrapper : IJointTourWrapper where TModel : IJointTour, new() {
-		IJointTour IJointTourCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class JointTourCreator<TWrapper, TModel> : IJointTourCreator where TWrapper : IJointTourWrapper where TModel : IJointTour, new() {
+        IJointTour IJointTourCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		IJointTourWrapper IJointTourCreator.CreateWrapper(IJointTour jointTour, IHouseholdDayWrapper householdDayWrapper) {
-			return CreateWrapper(jointTour, householdDayWrapper);
-		}
+        IJointTourWrapper IJointTourCreator.CreateWrapper(IJointTour jointTour, IHouseholdDayWrapper householdDayWrapper) {
+            return CreateWrapper(jointTour, householdDayWrapper);
+        }
 
-		private static TWrapper CreateWrapper(IJointTour jointTour, IHouseholdDayWrapper householdDayWrapper) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, jointTour, householdDayWrapper);
+        private static TWrapper CreateWrapper(IJointTour jointTour, IHouseholdDayWrapper householdDayWrapper) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, jointTour, householdDayWrapper);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }

@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Core {
-	public static class Constants {
-		public const double EPSILON = 1E-40;
-		public const double HUGE = 1E40;
-		public const int DEFAULT_VALUE = -1;
-	}
+    public static class Constants {
+        public const double EPSILON = 1E-40;
+        public const double HUGE = 1E40;
+        public const int DEFAULT_VALUE = -1;
+    }
 }

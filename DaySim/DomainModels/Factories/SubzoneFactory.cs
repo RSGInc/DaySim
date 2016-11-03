@@ -11,17 +11,17 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Factories {
-	public class SubzoneFactory {
-		private readonly Type _type;
+    public class SubzoneFactory {
+        private readonly Type _type;
 
-		public SubzoneFactory(Configuration configuration) {
-			var helper = new FactoryHelper(configuration);
+        public SubzoneFactory(Configuration configuration) {
+            var helper = new FactoryHelper(configuration);
 
-			_type = helper.Subzone.GetSubzoneType();
-		}
+            _type = helper.Subzone.GetSubzoneType();
+        }
 
-		public ISubzone Create(int sequence) {
-			return (ISubzone) Activator.CreateInstance(_type, sequence);
-		}
-	}
+        public ISubzone Create(int sequence) {
+            return (ISubzone)Activator.CreateInstance(_type, sequence);
+        }
+    }
 }

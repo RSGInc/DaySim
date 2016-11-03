@@ -6,35 +6,35 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IPurposes {
-		int TotalPurposes { get; }
-		
-		int NoneOrHome { get; }
-		
-		int Work { get; }
-		
-		int HomeBasedComposite { get; }
-		
-		int School { get; }
-		
-		int WorkBased { get; }
-		
-		int Escort { get; }
-		
-		int PersonalBusiness { get; }
-		
-		int Shopping { get; }
-		
-		int Meal { get; }
-		
-		int Social { get; }
-		
-		int Recreation { get; }
-		
-		int Medical { get; }
-		
-		int ChangeMode { get; }
-		
-		int Business { get; }
-	}
+    public interface IPurposes {
+        int TotalPurposes { get; }
+
+        int NoneOrHome { get; }
+
+        int Work { get; }
+
+        int HomeBasedComposite { get; }
+
+        int School { get; }
+
+        int WorkBased { get; }
+
+        int Escort { get; }
+
+        int PersonalBusiness { get; }
+
+        int Shopping { get; }
+
+        int Meal { get; }
+
+        int Social { get; }
+
+        int Recreation { get; }
+
+        int Medical { get; }
+
+        int ChangeMode { get; }
+
+        int Business { get; }
+    }
 }

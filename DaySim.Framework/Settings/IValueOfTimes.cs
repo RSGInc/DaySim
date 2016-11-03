@@ -6,13 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-	public interface IValueOfTimes {
-		int Low { get; }
-		
-		int Medium { get; }
-		
-		int High { get; }
-		
-		double DefaultVot { get; }
-	}
+    public interface IValueOfTimes {
+        int Low { get; }
+
+        int Medium { get; }
+
+        int High { get; }
+
+        double DefaultVot { get; }
+    }
 }

@@ -11,18 +11,18 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Persisters {
-	[UsedImplicitly]
-	[Factory(Factory.PersistenceFactory, Category = Category.Persister)]
-	public class PersonDayPersister<TModel> : Persister<TModel> where TModel : class, IPersonDay, new() {
-		public override void Export(IModel model) {
-			base.Export(model);
+    [UsedImplicitly]
+    [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
+    public class PersonDayPersister<TModel> : Persister<TModel> where TModel : class, IPersonDay, new() {
+        public override void Export(IModel model) {
+            base.Export(model);
 
-			ChoiceModelFactory.PersonDayFileRecordsWritten++;
+            ChoiceModelFactory.PersonDayFileRecordsWritten++;
 
-			var m = (TModel) model;
+            var m = (TModel)model;
 
-			ChoiceModelFactory.PersonDayHomeBasedToursCheckSum += m.HomeBasedTours;
-			ChoiceModelFactory.PersonDayWorkBasedToursCheckSum += m.WorkBasedTours;
-		}
-	}
+            ChoiceModelFactory.PersonDayHomeBasedToursCheckSum += m.HomeBasedTours;
+            ChoiceModelFactory.PersonDayWorkBasedToursCheckSum += m.WorkBasedTours;
+        }
+    }
 }

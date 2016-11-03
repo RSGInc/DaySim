@@ -14,10 +14,9 @@ namespace DaySim.PathTypeModels {
         private static Type ModelType { get; set; }
         public static IPathTypeModel Singleton { get; private set; }
 
-        public static IPathTypeModel New(object[] args)
-        {
+        public static IPathTypeModel New(object[] args) {
             //this version of CreateInstance will call the constructor that best matches the signature of the args
-            return (IPathTypeModel) Activator.CreateInstance(ModelType, args);
+            return (IPathTypeModel)Activator.CreateInstance(ModelType, args);
         }
 
         static PathTypeModelFactory() {
@@ -58,7 +57,7 @@ namespace DaySim.PathTypeModels {
 
             ModelType = Global.Configuration.getAssignableObjectType(typeof(PathTypeModel));
 
-           Singleton = New(new object[] { });
+            Singleton = New(new object[] { });
         }   //end PathTypeModelFactory
     }   //end class
 }   //end namespace

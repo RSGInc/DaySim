@@ -16,54 +16,52 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Default.Models {
-	public class TransitPassOwnershipModel : ChoiceModel {
-		private const string CHOICE_MODEL_NAME = "TransitPassOwnershipModel";
-		private const int TOTAL_ALTERNATIVES = 2;
-		private const int TOTAL_NESTED_ALTERNATIVES = 0;
-		private const int TOTAL_LEVELS = 1;
-		private const int MAX_PARAMETER = 99;
+    public class TransitPassOwnershipModel : ChoiceModel {
+        private const string CHOICE_MODEL_NAME = "TransitPassOwnershipModel";
+        private const int TOTAL_ALTERNATIVES = 2;
+        private const int TOTAL_NESTED_ALTERNATIVES = 0;
+        private const int TOTAL_LEVELS = 1;
+        private const int MAX_PARAMETER = 99;
 
-		public override void RunInitialize(ICoefficientsReader reader = null) 
-		{
-			Initialize(CHOICE_MODEL_NAME, Global.Configuration.TransitPassOwnershipModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-		}
+        public override void RunInitialize(ICoefficientsReader reader = null) {
+            Initialize(CHOICE_MODEL_NAME, Global.Configuration.TransitPassOwnershipModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
+        }
 
-		public void Run(IPersonWrapper person) {
-			if (person == null) {
-				throw new ArgumentNullException("person");
-			}
+        public void Run(IPersonWrapper person) {
+            if (person == null) {
+                throw new ArgumentNullException("person");
+            }
 
-			person.ResetRandom(3);
+            person.ResetRandom(3);
 
-			if (Global.Configuration.IsInEstimationMode) {
-				if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-					return;
-				}
-			}
+            if (Global.Configuration.IsInEstimationMode) {
+                if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+                    return;
+                }
+            }
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+            var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+            if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
                 if (person.TransitPassOwnership > 1) { person.TransitPassOwnership = 1; }  //recoding to allow for multiple types of transit passes for codes >0
-				if (person.TransitPassOwnership < 0 || person.TransitPassOwnership > 1) {
-					return;
-				}
+                if (person.TransitPassOwnership < 0 || person.TransitPassOwnership > 1) {
+                    return;
+                }
 
-				RunModel(choiceProbabilityCalculator, person, person.TransitPassOwnership);
+                RunModel(choiceProbabilityCalculator, person, person.TransitPassOwnership);
 
-				choiceProbabilityCalculator.WriteObservation();
-			}
-			else {
-				RunModel(choiceProbabilityCalculator, person);
+                choiceProbabilityCalculator.WriteObservation();
+            } else {
+                RunModel(choiceProbabilityCalculator, person);
 
-				var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
-				var choice = (int) chosenAlternative.Choice;
+                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
+                var choice = (int)chosenAlternative.Choice;
 
-				person.TransitPassOwnership = choice;
-			}
-		}
+                person.TransitPassOwnership = choice;
+            }
+        }
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
+        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
 
             var homeParcel = person.Household.ResidenceParcel;
             var workParcel = person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel;
@@ -76,30 +74,26 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             var homeTranDist = 99.0;
 
-            if (homeParcel.GetDistanceToTransit() >= 0.0001 && homeParcel.GetDistanceToTransit() <= maxTranDist)
-            {
+            if (homeParcel.GetDistanceToTransit() >= 0.0001 && homeParcel.GetDistanceToTransit() <= maxTranDist) {
                 homeTranDist = homeParcel.GetDistanceToTransit();
             }
 
             var workTranDist = 99.0;
 
-            if (!workParcelMissing && workParcel.GetDistanceToTransit() >= 0.0001 && workParcel.GetDistanceToTransit() <= maxTranDist)
-            {
+            if (!workParcelMissing && workParcel.GetDistanceToTransit() >= 0.0001 && workParcel.GetDistanceToTransit() <= maxTranDist) {
                 workTranDist = workParcel.GetDistanceToTransit();
             }
 
             var schoolTranDist = 99.0;
 
-            if (!schoolParcelMissing && schoolParcel.GetDistanceToTransit() >= 0.0001 && schoolParcel.GetDistanceToTransit() <= maxTranDist)
-            {
+            if (!schoolParcelMissing && schoolParcel.GetDistanceToTransit() >= 0.0001 && schoolParcel.GetDistanceToTransit() <= maxTranDist) {
                 schoolTranDist = schoolParcel.GetDistanceToTransit();
             }
 
             var workGenTimeNoPass = -99.0;
             var workGenTimeWithPass = -99.0;
 
-            if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist)
-            {
+            if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
                 IEnumerable<IPathTypeModel> pathTypeModels = PathTypeModelFactory.Singleton.Run(
                     person.Household.RandomUtility,
@@ -143,8 +137,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             //			double schoolGenTimeNoPass = -99.0;
             var schoolGenTimeWithPass = -99.0;
 
-            if (!schoolParcelMissing && schoolTranDist < maxTranDist && homeTranDist < maxTranDist)
-            {
+            if (!schoolParcelMissing && schoolTranDist < maxTranDist && homeTranDist < maxTranDist) {
                 //				schoolGenTimeNoPass = path.GeneralizedTimeLogsum;
                 IEnumerable<IPathTypeModel> pathTypeModels =
                   PathTypeModelFactory.Singleton.Run(

@@ -10,18 +10,15 @@ using System.Linq;
 using System.Text;
 
 namespace DaySim.Framework.Roster {
-	public class SkimFileReaderFactory
-	{
-		private readonly Dictionary<string, IFileReaderCreator> _fileReaderCreators = new Dictionary<string, IFileReaderCreator>();
+    public class SkimFileReaderFactory {
+        private readonly Dictionary<string, IFileReaderCreator> _fileReaderCreators = new Dictionary<string, IFileReaderCreator>();
 
-		public void Register(string key, IFileReaderCreator creator)
-		{
-			_fileReaderCreators[key] = creator;
-		}
+        public void Register(string key, IFileReaderCreator creator) {
+            _fileReaderCreators[key] = creator;
+        }
 
-		public IFileReaderCreator GetFileReaderCreator(string key)
-		{
-			return _fileReaderCreators[key];
-		}
-	}
+        public IFileReaderCreator GetFileReaderCreator(string key) {
+            return _fileReaderCreators[key];
+        }
+    }
 }

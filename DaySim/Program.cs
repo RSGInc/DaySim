@@ -113,7 +113,7 @@ namespace DaySim {
 
                 ParallelUtility.Init(Global.Configuration);
 
-                 DaySimModule.registerDependencies();
+                DaySimModule.registerDependencies();
                 //copy the configuration file into the output so we can tell if configuration changed before regression test called.
                 var archiveConfigurationFilePath = Global.GetOutputPath("archive_" + Path.GetFileName(_configurationPath));
                 archiveConfigurationFilePath.CreateDirectory(); //create output directory if needed

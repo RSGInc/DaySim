@@ -11,69 +11,63 @@ using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 
 namespace DaySim.Framework.ChoiceModels {
-	public sealed class ChoiceProbabilityFactory {
-		private readonly string _title;
-		private readonly ICoefficient _sizeFunctionMultiplier;
-		private readonly ICoefficient[] _coefficients;
-		private readonly bool _modelIsInEstimationMode;
-		private readonly int _totalAlternatives;
-		private readonly int _totalNestedAlternatives;
-		private readonly int _totalLevels;
-		private readonly int _totalUtilities;
+    public sealed class ChoiceProbabilityFactory {
+        private readonly string _title;
+        private readonly ICoefficient _sizeFunctionMultiplier;
+        private readonly ICoefficient[] _coefficients;
+        private readonly bool _modelIsInEstimationMode;
+        private readonly int _totalAlternatives;
+        private readonly int _totalNestedAlternatives;
+        private readonly int _totalLevels;
+        private readonly int _totalUtilities;
 
-		private ChoiceProbabilityCalculator _choiceProbabilityCalculator;
+        private ChoiceProbabilityCalculator _choiceProbabilityCalculator;
 
-		public ChoiceProbabilityFactory(string coefficientsPath, bool modelIsInEstimationMode, int totalAlternatives, int totalNestedAlternatives, int totalLevels, int maxParameter, ICoefficientsReader reader = null)
-		{
-			ICoefficientsReader coefficientsReader = null;
-			if (reader != null)
-				coefficientsReader = reader;
-			if (reader == null)
-			{
-				var file = new FileInfo(coefficientsPath);
+        public ChoiceProbabilityFactory(string coefficientsPath, bool modelIsInEstimationMode, int totalAlternatives, int totalNestedAlternatives, int totalLevels, int maxParameter, ICoefficientsReader reader = null) {
+            ICoefficientsReader coefficientsReader = null;
+            if (reader != null)
+                coefficientsReader = reader;
+            if (reader == null) {
+                var file = new FileInfo(coefficientsPath);
 
-				if (file.Exists)
-				{
-					coefficientsReader = new CoefficientsReader();
-					
-				}
-			}
-			if (coefficientsReader == null)
-			{
-				
-			}
+                if (file.Exists) {
+                    coefficientsReader = new CoefficientsReader();
 
-			if (coefficientsReader != null)
-			{
-				ICoefficient nestCoefficient;
+                }
+            }
+            if (coefficientsReader == null) {
 
-				_coefficients = coefficientsReader.Read(coefficientsPath, out _title, out _sizeFunctionMultiplier,
-				                                        out nestCoefficient);
-			}
-			_modelIsInEstimationMode = modelIsInEstimationMode;
-			_totalAlternatives = totalAlternatives;
-			_totalNestedAlternatives = totalNestedAlternatives;
-			_totalLevels = totalLevels;
-			_totalUtilities = maxParameter + 1;
-		}
+            }
 
-		public ChoiceProbabilityCalculator GetChoiceProbabilityCalculator(int key, bool nested = false) {
-			ChoiceProbabilityCalculator choiceProbabilityCalculator;
+            if (coefficientsReader != null) {
+                ICoefficient nestCoefficient;
 
-			if (nested) {
-				choiceProbabilityCalculator = new ChoiceProbabilityCalculator(_modelIsInEstimationMode, _coefficients, _sizeFunctionMultiplier, _title, _totalAlternatives, _totalNestedAlternatives, _totalLevels, _totalUtilities, (_totalAlternatives * _totalUtilities) + 1);
-			}
-			else {
-				if (_choiceProbabilityCalculator == null) {
-					_choiceProbabilityCalculator = new ChoiceProbabilityCalculator(_modelIsInEstimationMode, _coefficients, _sizeFunctionMultiplier, _title, _totalAlternatives, _totalNestedAlternatives, _totalLevels, _totalUtilities, (_totalAlternatives * _totalUtilities) + 1);
-				}
+                _coefficients = coefficientsReader.Read(coefficientsPath, out _title, out _sizeFunctionMultiplier,
+                                                        out nestCoefficient);
+            }
+            _modelIsInEstimationMode = modelIsInEstimationMode;
+            _totalAlternatives = totalAlternatives;
+            _totalNestedAlternatives = totalNestedAlternatives;
+            _totalLevels = totalLevels;
+            _totalUtilities = maxParameter + 1;
+        }
 
-				choiceProbabilityCalculator = _choiceProbabilityCalculator;
-			}
+        public ChoiceProbabilityCalculator GetChoiceProbabilityCalculator(int key, bool nested = false) {
+            ChoiceProbabilityCalculator choiceProbabilityCalculator;
 
-			choiceProbabilityCalculator.StartObservation(key);
+            if (nested) {
+                choiceProbabilityCalculator = new ChoiceProbabilityCalculator(_modelIsInEstimationMode, _coefficients, _sizeFunctionMultiplier, _title, _totalAlternatives, _totalNestedAlternatives, _totalLevels, _totalUtilities, (_totalAlternatives * _totalUtilities) + 1);
+            } else {
+                if (_choiceProbabilityCalculator == null) {
+                    _choiceProbabilityCalculator = new ChoiceProbabilityCalculator(_modelIsInEstimationMode, _coefficients, _sizeFunctionMultiplier, _title, _totalAlternatives, _totalNestedAlternatives, _totalLevels, _totalUtilities, (_totalAlternatives * _totalUtilities) + 1);
+                }
 
-			return choiceProbabilityCalculator;
-		}
-	}
+                choiceProbabilityCalculator = _choiceProbabilityCalculator;
+            }
+
+            choiceProbabilityCalculator.StartObservation(key);
+
+            return choiceProbabilityCalculator;
+        }
+    }
 }

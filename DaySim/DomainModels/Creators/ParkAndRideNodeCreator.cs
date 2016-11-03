@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class ParkAndRideNodeCreator<TWrapper, TModel> : IParkAndRideNodeCreator where TWrapper : IParkAndRideNodeWrapper where TModel : IParkAndRideNode, new() {
-		IParkAndRideNode IParkAndRideNodeCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class ParkAndRideNodeCreator<TWrapper, TModel> : IParkAndRideNodeCreator where TWrapper : IParkAndRideNodeWrapper where TModel : IParkAndRideNode, new() {
+        IParkAndRideNode IParkAndRideNodeCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		IParkAndRideNodeWrapper IParkAndRideNodeCreator.CreateWrapper(IParkAndRideNode parkAndRideNode) {
-			return CreateWrapper(parkAndRideNode);
-		}
+        IParkAndRideNodeWrapper IParkAndRideNodeCreator.CreateWrapper(IParkAndRideNode parkAndRideNode) {
+            return CreateWrapper(parkAndRideNode);
+        }
 
-		private static TWrapper CreateWrapper(IParkAndRideNode parkAndRideNode) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, parkAndRideNode);
+        private static TWrapper CreateWrapper(IParkAndRideNode parkAndRideNode) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, parkAndRideNode);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }

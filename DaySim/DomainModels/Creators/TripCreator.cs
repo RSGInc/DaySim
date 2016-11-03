@@ -13,99 +13,99 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class TripCreator<TWrapper, TModel> : ITripCreator where TWrapper : ITripWrapper where TModel : ITrip, new() {
-		ITrip ITripCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class TripCreator<TWrapper, TModel> : ITripCreator where TWrapper : ITripWrapper where TModel : ITrip, new() {
+        ITrip ITripCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		ITripWrapper ITripCreator.CreateWrapper(ITrip trip, ITourWrapper tourWrapper, IHalfTour halfTour) {
-			return CreateWrapper(trip, tourWrapper, halfTour);
-		}
+        ITripWrapper ITripCreator.CreateWrapper(ITrip trip, ITourWrapper tourWrapper, IHalfTour halfTour) {
+            return CreateWrapper(trip, tourWrapper, halfTour);
+        }
 
-		private static TWrapper CreateWrapper(ITrip trip, ITourWrapper tourWrapper, IHalfTour halfTour) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, trip, tourWrapper, halfTour);
+        private static TWrapper CreateWrapper(ITrip trip, ITourWrapper tourWrapper, IHalfTour halfTour) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, trip, tourWrapper, halfTour);
 
-			return (TWrapper) instance;
-		}
+            return (TWrapper)instance;
+        }
 
-		ITripWrapper ITripCreator.CreateWrapper(ITourWrapper tourWrapper, int nextTripId, int direction, int sequence, bool isToTourOrigin, IHalfTour halfTour) {
-			return CreateWrapper(tourWrapper, nextTripId, direction, sequence, isToTourOrigin, halfTour);
-		}
+        ITripWrapper ITripCreator.CreateWrapper(ITourWrapper tourWrapper, int nextTripId, int direction, int sequence, bool isToTourOrigin, IHalfTour halfTour) {
+            return CreateWrapper(tourWrapper, nextTripId, direction, sequence, isToTourOrigin, halfTour);
+        }
 
-		private static TWrapper CreateWrapper(ITourWrapper tourWrapper, int nextTripId, int direction, int sequence, bool isToTourOrigin, IHalfTour halfTour) {
-			var t = new TModel {
-				Id = nextTripId,
-				TourId = tourWrapper.Id,
-				HouseholdId = tourWrapper.HouseholdId,
-				PersonSequence = tourWrapper.PersonSequence,
-				Day = tourWrapper.Day,
-				Direction = direction,
-				Sequence = sequence + 1,
-				OriginAddressType = tourWrapper.DestinationAddressType,
-				OriginParcelId = tourWrapper.DestinationParcelId,
-				OriginZoneKey = tourWrapper.DestinationZoneKey,
-				OriginPurpose = tourWrapper.DestinationPurpose,
-				DestinationAddressType = tourWrapper.OriginAddressType,
-				DestinationParcelId = tourWrapper.OriginParcelId,
-				DestinationZoneKey = tourWrapper.OriginZoneKey,
-				DestinationPurpose =
-					tourWrapper.IsHomeBasedTour
-						? Global.Settings.Purposes.NoneOrHome
-						: Global.Settings.Purposes.Work,
-				DepartureTime = 180,
-				ArrivalTime = 180,
-				PathType = 1,
-				ExpansionFactor = tourWrapper.Household.ExpansionFactor,
-			};
+        private static TWrapper CreateWrapper(ITourWrapper tourWrapper, int nextTripId, int direction, int sequence, bool isToTourOrigin, IHalfTour halfTour) {
+            var t = new TModel {
+                Id = nextTripId,
+                TourId = tourWrapper.Id,
+                HouseholdId = tourWrapper.HouseholdId,
+                PersonSequence = tourWrapper.PersonSequence,
+                Day = tourWrapper.Day,
+                Direction = direction,
+                Sequence = sequence + 1,
+                OriginAddressType = tourWrapper.DestinationAddressType,
+                OriginParcelId = tourWrapper.DestinationParcelId,
+                OriginZoneKey = tourWrapper.DestinationZoneKey,
+                OriginPurpose = tourWrapper.DestinationPurpose,
+                DestinationAddressType = tourWrapper.OriginAddressType,
+                DestinationParcelId = tourWrapper.OriginParcelId,
+                DestinationZoneKey = tourWrapper.OriginZoneKey,
+                DestinationPurpose =
+                    tourWrapper.IsHomeBasedTour
+                        ? Global.Settings.Purposes.NoneOrHome
+                        : Global.Settings.Purposes.Work,
+                DepartureTime = 180,
+                ArrivalTime = 180,
+                PathType = 1,
+                ExpansionFactor = tourWrapper.Household.ExpansionFactor,
+            };
 
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, t, tourWrapper, halfTour);
-			var wrapper = (TWrapper) instance;
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, t, tourWrapper, halfTour);
+            var wrapper = (TWrapper)instance;
 
-			wrapper.IsToTourOrigin = isToTourOrigin;
+            wrapper.IsToTourOrigin = isToTourOrigin;
 
-			return wrapper;
-		}
+            return wrapper;
+        }
 
-		ITripWrapper ITripCreator.CreateWrapper(ITourWrapper tourWrapper, ITripWrapper trip, int nextTripId, int intermediateStopPurpose, int destinationPurpose, IHalfTour halfTour) {
-			return CreateWrapper(tourWrapper, trip, nextTripId, intermediateStopPurpose, destinationPurpose, halfTour);
-		}
+        ITripWrapper ITripCreator.CreateWrapper(ITourWrapper tourWrapper, ITripWrapper trip, int nextTripId, int intermediateStopPurpose, int destinationPurpose, IHalfTour halfTour) {
+            return CreateWrapper(tourWrapper, trip, nextTripId, intermediateStopPurpose, destinationPurpose, halfTour);
+        }
 
-		private static TWrapper CreateWrapper(ITourWrapper tourWrapper, ITripWrapper trip, int nextTripId, int intermediateStopPurpose, int destinationPurpose, IHalfTour halfTour) {
-			var t = new TModel {
-				Id = nextTripId,
-				TourId = tourWrapper.Id,
-				HouseholdId = tourWrapper.HouseholdId,
-				PersonSequence = tourWrapper.PersonSequence,
-				Day = tourWrapper.Day,
-				Direction = trip.Direction,
-				Sequence = trip.Sequence + 1,
-				DestinationAddressType = trip.DestinationAddressType,
-				DestinationParcelId = trip.DestinationParcelId,
-				DestinationZoneKey = trip.DestinationZoneKey,
-				OriginAddressType = trip.DestinationAddressType,
-				OriginPurpose = intermediateStopPurpose,
-				DestinationPurpose = destinationPurpose,
-				DepartureTime = 180,
-				ArrivalTime = 180,
-				PathType = 1,
-				ExpansionFactor = tourWrapper.Household.ExpansionFactor
-			};
+        private static TWrapper CreateWrapper(ITourWrapper tourWrapper, ITripWrapper trip, int nextTripId, int intermediateStopPurpose, int destinationPurpose, IHalfTour halfTour) {
+            var t = new TModel {
+                Id = nextTripId,
+                TourId = tourWrapper.Id,
+                HouseholdId = tourWrapper.HouseholdId,
+                PersonSequence = tourWrapper.PersonSequence,
+                Day = tourWrapper.Day,
+                Direction = trip.Direction,
+                Sequence = trip.Sequence + 1,
+                DestinationAddressType = trip.DestinationAddressType,
+                DestinationParcelId = trip.DestinationParcelId,
+                DestinationZoneKey = trip.DestinationZoneKey,
+                OriginAddressType = trip.DestinationAddressType,
+                OriginPurpose = intermediateStopPurpose,
+                DestinationPurpose = destinationPurpose,
+                DepartureTime = 180,
+                ArrivalTime = 180,
+                PathType = 1,
+                ExpansionFactor = tourWrapper.Household.ExpansionFactor
+            };
 
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, t, tourWrapper, halfTour);
-			var wrapper = (TWrapper) instance;
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, t, tourWrapper, halfTour);
+            var wrapper = (TWrapper)instance;
 
-			wrapper.IsToTourOrigin = trip.IsToTourOrigin;
+            wrapper.IsToTourOrigin = trip.IsToTourOrigin;
 
-			return wrapper;
-		}
-	}
+            return wrapper;
+        }
+    }
 }

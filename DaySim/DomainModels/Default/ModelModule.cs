@@ -12,8 +12,8 @@ using DaySim.Framework.Persistence;
 using SimpleInjector;
 
 namespace DaySim.DomainModels.Default {
-	public static class ModelModule {
-        public static void registerDependencies() {  
+    public static class ModelModule {
+        public static void registerDependencies() {
 
             Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Parcel>>(new Reader<Parcel>(Global.WorkingParcelPath));
 

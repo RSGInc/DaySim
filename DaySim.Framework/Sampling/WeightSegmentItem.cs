@@ -8,15 +8,15 @@
 using System.Runtime.InteropServices;
 
 namespace DaySim.Framework.Sampling {
-	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-	public struct WeightSegmentItem {
-		public WeightSegmentItem(int id, double value) : this() {
-			Id = id;
-			Value = value;
-		}
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public struct WeightSegmentItem {
+        public WeightSegmentItem(int id, double value) : this() {
+            Id = id;
+            Value = value;
+        }
 
-		public int Id { get; private set; }
+        public int Id { get; private set; }
 
-		public double Value { get; private set; }
-	}
+        public double Value { get; private set; }
+    }
 }

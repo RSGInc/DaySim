@@ -16,256 +16,237 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.Default.Models {
-	public class PersonExactNumberOfToursModel : ChoiceModel {
-		private const string CHOICE_MODEL_NAME = "PersonExactNumberOfToursModel";
-		private const int TOTAL_ALTERNATIVES = 3;
-		private const int TOTAL_NESTED_ALTERNATIVES = 0;
-		private const int TOTAL_LEVELS = 1;
-		private const int MAX_PARAMETER = 753;
+    public class PersonExactNumberOfToursModel : ChoiceModel {
+        private const string CHOICE_MODEL_NAME = "PersonExactNumberOfToursModel";
+        private const int TOTAL_ALTERNATIVES = 3;
+        private const int TOTAL_NESTED_ALTERNATIVES = 0;
+        private const int TOTAL_LEVELS = 1;
+        private const int MAX_PARAMETER = 753;
 
-		public override void RunInitialize(ICoefficientsReader reader = null) 
-		{
-			Initialize(CHOICE_MODEL_NAME, Global.Configuration.PersonExactNumberOfToursModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-		}
+        public override void RunInitialize(ICoefficientsReader reader = null) {
+            Initialize(CHOICE_MODEL_NAME, Global.Configuration.PersonExactNumberOfToursModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
+        }
 
-		public void Run(IPersonDayWrapper personDay, int purpose) {
-			if (personDay == null) {
-				throw new ArgumentNullException("personDay");
-			}
+        public void Run(IPersonDayWrapper personDay, int purpose) {
+            if (personDay == null) {
+                throw new ArgumentNullException("personDay");
+            }
 
-			
-			personDay.ResetRandom(890 + purpose);
 
-			if (Global.Configuration.IsInEstimationMode) {
-				if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
-					return;
-				}
-			}
+            personDay.ResetRandom(890 + purpose);
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator((personDay.Id * 397) ^ purpose);
+            if (Global.Configuration.IsInEstimationMode) {
+                if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
+                    return;
+                }
+            }
 
-			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-				int tours;
+            var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator((personDay.Id * 397) ^ purpose);
 
-				if (purpose == Global.Settings.Purposes.Work) {
-					tours = personDay.WorkTours;
-				}
-				else if (purpose == Global.Settings.Purposes.School) {
-					tours = personDay.SchoolTours;
-				}
-				else if (purpose == Global.Settings.Purposes.Escort) {
-					tours = personDay.EscortTours;
-				}
-				else if (purpose == Global.Settings.Purposes.PersonalBusiness) {
-					tours = personDay.PersonalBusinessTours;
-				}
-				else if (purpose == Global.Settings.Purposes.Shopping) {
-					tours = personDay.ShoppingTours;
-				}
-				else if (purpose == Global.Settings.Purposes.Meal) {
-					tours = personDay.MealTours;
-				}
-				else if (purpose == Global.Settings.Purposes.Social) {
-					tours = personDay.SocialTours;
-				}
-				else {
-					tours = Constants.DEFAULT_VALUE;
-				}
+            if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+                int tours;
 
-				RunModel(choiceProbabilityCalculator, personDay, purpose, tours);
+                if (purpose == Global.Settings.Purposes.Work) {
+                    tours = personDay.WorkTours;
+                } else if (purpose == Global.Settings.Purposes.School) {
+                    tours = personDay.SchoolTours;
+                } else if (purpose == Global.Settings.Purposes.Escort) {
+                    tours = personDay.EscortTours;
+                } else if (purpose == Global.Settings.Purposes.PersonalBusiness) {
+                    tours = personDay.PersonalBusinessTours;
+                } else if (purpose == Global.Settings.Purposes.Shopping) {
+                    tours = personDay.ShoppingTours;
+                } else if (purpose == Global.Settings.Purposes.Meal) {
+                    tours = personDay.MealTours;
+                } else if (purpose == Global.Settings.Purposes.Social) {
+                    tours = personDay.SocialTours;
+                } else {
+                    tours = Constants.DEFAULT_VALUE;
+                }
 
-				choiceProbabilityCalculator.WriteObservation();
-			}
-			else {
-				RunModel(choiceProbabilityCalculator, personDay, purpose);
+                RunModel(choiceProbabilityCalculator, personDay, purpose, tours);
 
-				var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(personDay.Household.RandomUtility);
-				var choice = (int) chosenAlternative.Choice;
+                choiceProbabilityCalculator.WriteObservation();
+            } else {
+                RunModel(choiceProbabilityCalculator, personDay, purpose);
 
-				personDay.HomeBasedTours += choice;
+                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(personDay.Household.RandomUtility);
+                var choice = (int)chosenAlternative.Choice;
 
-				if (purpose == Global.Settings.Purposes.Work) {
-					personDay.WorkTours = choice;
-				}
-				else if (purpose == Global.Settings.Purposes.School) {
-					personDay.SchoolTours = choice;
-				}
-				else if (purpose == Global.Settings.Purposes.Escort) {
-					personDay.EscortTours = choice;
-				}
-				else if (purpose == Global.Settings.Purposes.PersonalBusiness) {
-					personDay.PersonalBusinessTours = choice;
-				}
-				else if (purpose == Global.Settings.Purposes.Shopping) {
-					personDay.ShoppingTours = choice;
-				}
-				else if (purpose == Global.Settings.Purposes.Meal) {
-					personDay.MealTours = choice;
-				}
-				else if (purpose == Global.Settings.Purposes.Social) {
-					personDay.SocialTours = choice;
-				}
-			}
-		}
+                personDay.HomeBasedTours += choice;
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonDayWrapper personDay, int purpose, int choice = Constants.DEFAULT_VALUE) {
-			var household = personDay.Household;
-			var residenceParcel = household.ResidenceParcel;
-			var person = personDay.Person;
+                if (purpose == Global.Settings.Purposes.Work) {
+                    personDay.WorkTours = choice;
+                } else if (purpose == Global.Settings.Purposes.School) {
+                    personDay.SchoolTours = choice;
+                } else if (purpose == Global.Settings.Purposes.Escort) {
+                    personDay.EscortTours = choice;
+                } else if (purpose == Global.Settings.Purposes.PersonalBusiness) {
+                    personDay.PersonalBusinessTours = choice;
+                } else if (purpose == Global.Settings.Purposes.Shopping) {
+                    personDay.ShoppingTours = choice;
+                } else if (purpose == Global.Settings.Purposes.Meal) {
+                    personDay.MealTours = choice;
+                } else if (purpose == Global.Settings.Purposes.Social) {
+                    personDay.SocialTours = choice;
+                }
+            }
+        }
 
-			var carsPerDriver = household.GetCarsPerDriver();
-			var mixedDensity = residenceParcel.ParcelHouseholdsPerRetailServiceFoodEmploymentBuffer2();
-			var intersectionDensity = residenceParcel.IntersectionDensity34Minus1Buffer2();
+        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonDayWrapper personDay, int purpose, int choice = Constants.DEFAULT_VALUE) {
+            var household = personDay.Household;
+            var residenceParcel = household.ResidenceParcel;
+            var person = personDay.Person;
 
-			double purposeLogsum;
+            var carsPerDriver = household.GetCarsPerDriver();
+            var mixedDensity = residenceParcel.ParcelHouseholdsPerRetailServiceFoodEmploymentBuffer2();
+            var intersectionDensity = residenceParcel.IntersectionDensity34Minus1Buffer2();
 
-			if (purpose == Global.Settings.Purposes.Work) {
-				if (person.UsualWorkParcel == null || person.UsualWorkParcelId == household.ResidenceParcelId) {
-						purposeLogsum = 0;
-					}
-					else {
-						var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
-						var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
-						var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(personDay, residenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
+            double purposeLogsum;
 
-						purposeLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
-					}
-			}
-			else if (purpose == Global.Settings.Purposes.School) {
-				if (person.UsualSchoolParcel == null || person.UsualSchoolParcelId == household.ResidenceParcelId) {
-					purposeLogsum = 0;
-				}
-				else {
-					var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
-					var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.SchoolTourModeModel);
-					var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeModel>().RunNested(personDay, residenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
+            if (purpose == Global.Settings.Purposes.Work) {
+                if (person.UsualWorkParcel == null || person.UsualWorkParcelId == household.ResidenceParcelId) {
+                    purposeLogsum = 0;
+                } else {
+                    var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
+                    var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
+                    var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(personDay, residenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
 
-					purposeLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
-				}
-			}
-			else {
-				var carOwnership = person.GetCarOwnershipSegment();
-				var votSegment = person.Household.GetVotALSegment();
-				var transitAccess = residenceParcel.TransitAccessSegment();
+                    purposeLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
+                }
+            } else if (purpose == Global.Settings.Purposes.School) {
+                if (person.UsualSchoolParcel == null || person.UsualSchoolParcelId == household.ResidenceParcelId) {
+                    purposeLogsum = 0;
+                } else {
+                    var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
+                    var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.SchoolTourModeModel);
+                    var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeModel>().RunNested(personDay, residenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable);
 
-				purposeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][purpose][carOwnership][votSegment][transitAccess];
-			}
+                    purposeLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
+                }
+            } else {
+                var carOwnership = person.GetCarOwnershipSegment();
+                var votSegment = person.Household.GetVotALSegment();
+                var transitAccess = residenceParcel.TransitAccessSegment();
 
-			// 1 TOUR
+                purposeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][purpose][carOwnership][votSegment][transitAccess];
+            }
 
-			var alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 1);
+            // 1 TOUR
 
-			alternative.Choice = 1;
+            var alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 1);
 
-			alternative.AddUtilityTerm(1, purpose);
+            alternative.Choice = 1;
 
-			// 2 TOURS
+            alternative.AddUtilityTerm(1, purpose);
 
-			alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 2);
+            // 2 TOURS
 
-			const int two = 2;
-			alternative.Choice = two;
+            alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 2);
 
-			alternative.AddUtilityTerm(100 * purpose + 1, person.IsFulltimeWorker.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 2, person.IsPartTimeWorker.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 3, person.IsRetiredAdult.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 4, person.IsNonworkingAdult.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 5, person.IsUniversityStudent.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 6, person.IsDrivingAgeStudent.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 7, person.IsChildAge5Through15.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 8, person.IsChildUnder5.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 9, household.Has0To25KIncome.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 10, household.Has25To45KIncome.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 11, household.Has75KPlusIncome.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 12, carsPerDriver);
-			alternative.AddUtilityTerm(100 * purpose + 13, person.IsOnlyAdult().ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 14, person.IsOnlyFullOrPartTimeWorker().ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 15, 0);
-			alternative.AddUtilityTerm(100 * purpose + 16, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * (!household.HasChildrenUnder16).ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 17, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 18, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 19, person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 20, person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 21, person.AgeIsBetween18And25.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 22, person.AgeIsBetween26And35.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 23, person.AgeIsBetween51And65.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 24, person.WorksAtHome.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 25, mixedDensity);
-			alternative.AddUtilityTerm(100 * purpose + 26, intersectionDensity);
-			alternative.AddUtilityTerm(100 * purpose + 31, personDay.WorkTours);
-			alternative.AddUtilityTerm(100 * purpose + 32, personDay.SchoolTours);
-			alternative.AddUtilityTerm(100 * purpose + 33, personDay.EscortTours);
-			alternative.AddUtilityTerm(100 * purpose + 34, personDay.PersonalBusinessTours);
-			alternative.AddUtilityTerm(100 * purpose + 35, personDay.ShoppingTours);
-			alternative.AddUtilityTerm(100 * purpose + 36, personDay.MealTours);
-			alternative.AddUtilityTerm(100 * purpose + 37, personDay.SocialTours);
-			alternative.AddUtilityTerm(100 * purpose + 41, personDay.WorkStops);
+            const int two = 2;
+            alternative.Choice = two;
 
-			if (purpose <= Global.Settings.Purposes.Escort) {
-				alternative.AddUtilityTerm(100 * purpose + 42, personDay.SchoolStops);
-			}
+            alternative.AddUtilityTerm(100 * purpose + 1, person.IsFulltimeWorker.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 2, person.IsPartTimeWorker.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 3, person.IsRetiredAdult.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 4, person.IsNonworkingAdult.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 5, person.IsUniversityStudent.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 6, person.IsDrivingAgeStudent.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 7, person.IsChildAge5Through15.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 8, person.IsChildUnder5.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 9, household.Has0To25KIncome.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 10, household.Has25To45KIncome.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 11, household.Has75KPlusIncome.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 12, carsPerDriver);
+            alternative.AddUtilityTerm(100 * purpose + 13, person.IsOnlyAdult().ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 14, person.IsOnlyFullOrPartTimeWorker().ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 15, 0);
+            alternative.AddUtilityTerm(100 * purpose + 16, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * (!household.HasChildrenUnder16).ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 17, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 18, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 19, person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 20, person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 21, person.AgeIsBetween18And25.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 22, person.AgeIsBetween26And35.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 23, person.AgeIsBetween51And65.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 24, person.WorksAtHome.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 25, mixedDensity);
+            alternative.AddUtilityTerm(100 * purpose + 26, intersectionDensity);
+            alternative.AddUtilityTerm(100 * purpose + 31, personDay.WorkTours);
+            alternative.AddUtilityTerm(100 * purpose + 32, personDay.SchoolTours);
+            alternative.AddUtilityTerm(100 * purpose + 33, personDay.EscortTours);
+            alternative.AddUtilityTerm(100 * purpose + 34, personDay.PersonalBusinessTours);
+            alternative.AddUtilityTerm(100 * purpose + 35, personDay.ShoppingTours);
+            alternative.AddUtilityTerm(100 * purpose + 36, personDay.MealTours);
+            alternative.AddUtilityTerm(100 * purpose + 37, personDay.SocialTours);
+            alternative.AddUtilityTerm(100 * purpose + 41, personDay.WorkStops);
 
-			alternative.AddUtilityTerm(100 * purpose + 43, personDay.EscortStops);
-			alternative.AddUtilityTerm(100 * purpose + 44, personDay.PersonalBusinessStops);
-			alternative.AddUtilityTerm(100 * purpose + 45, personDay.ShoppingStops);
-			alternative.AddUtilityTerm(100 * purpose + 46, personDay.MealStops);
-			alternative.AddUtilityTerm(100 * purpose + 47, personDay.SocialStops);
-			alternative.AddUtilityTerm(100 * purpose + 50 + two, 1); // ASC
-			alternative.AddUtilityTerm(100 * purpose + 23 + 2 * two, purposeLogsum); // accessibility effect has different coefficient for 2 and 3+
+            if (purpose <= Global.Settings.Purposes.Escort) {
+                alternative.AddUtilityTerm(100 * purpose + 42, personDay.SchoolStops);
+            }
 
-			// 3+ TOURS
+            alternative.AddUtilityTerm(100 * purpose + 43, personDay.EscortStops);
+            alternative.AddUtilityTerm(100 * purpose + 44, personDay.PersonalBusinessStops);
+            alternative.AddUtilityTerm(100 * purpose + 45, personDay.ShoppingStops);
+            alternative.AddUtilityTerm(100 * purpose + 46, personDay.MealStops);
+            alternative.AddUtilityTerm(100 * purpose + 47, personDay.SocialStops);
+            alternative.AddUtilityTerm(100 * purpose + 50 + two, 1); // ASC
+            alternative.AddUtilityTerm(100 * purpose + 23 + 2 * two, purposeLogsum); // accessibility effect has different coefficient for 2 and 3+
 
-			alternative = choiceProbabilityCalculator.GetAlternative(2, true, choice == 3);
+            // 3+ TOURS
 
-			const int three = 3;
-			alternative.Choice = three;
+            alternative = choiceProbabilityCalculator.GetAlternative(2, true, choice == 3);
 
-			alternative.AddUtilityTerm(100 * purpose + 1, person.IsFulltimeWorker.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 2, person.IsPartTimeWorker.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 3, person.IsRetiredAdult.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 4, person.IsNonworkingAdult.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 5, person.IsUniversityStudent.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 6, person.IsDrivingAgeStudent.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 7, person.IsChildAge5Through15.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 8, person.IsChildUnder5.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 9, household.Has0To25KIncome.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 10, household.Has25To45KIncome.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 11, household.Has75KPlusIncome.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 12, carsPerDriver);
-			alternative.AddUtilityTerm(100 * purpose + 13, person.IsOnlyAdult().ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 14, person.IsOnlyFullOrPartTimeWorker().ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 15, 0);
-			alternative.AddUtilityTerm(100 * purpose + 16, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * (!household.HasChildrenUnder16).ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 17, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 18, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 19, person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 20, person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 21, person.AgeIsBetween18And25.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 22, person.AgeIsBetween26And35.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 23, person.AgeIsBetween51And65.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 24, person.WorksAtHome.ToFlag());
-			alternative.AddUtilityTerm(100 * purpose + 25, mixedDensity);
-			alternative.AddUtilityTerm(100 * purpose + 26, intersectionDensity);
-			alternative.AddUtilityTerm(100 * purpose + 31, personDay.WorkTours);
-			alternative.AddUtilityTerm(100 * purpose + 32, personDay.SchoolTours);
-			alternative.AddUtilityTerm(100 * purpose + 33, personDay.EscortTours);
-			alternative.AddUtilityTerm(100 * purpose + 34, personDay.PersonalBusinessTours);
-			alternative.AddUtilityTerm(100 * purpose + 35, personDay.ShoppingTours);
-			alternative.AddUtilityTerm(100 * purpose + 36, personDay.MealTours);
-			alternative.AddUtilityTerm(100 * purpose + 37, personDay.SocialTours);
-			alternative.AddUtilityTerm(100 * purpose + 41, personDay.WorkStops);
+            const int three = 3;
+            alternative.Choice = three;
 
-			if (purpose <= Global.Settings.Purposes.Escort) {
-				alternative.AddUtilityTerm(100 * purpose + 42, personDay.SchoolStops);
-			}
+            alternative.AddUtilityTerm(100 * purpose + 1, person.IsFulltimeWorker.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 2, person.IsPartTimeWorker.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 3, person.IsRetiredAdult.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 4, person.IsNonworkingAdult.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 5, person.IsUniversityStudent.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 6, person.IsDrivingAgeStudent.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 7, person.IsChildAge5Through15.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 8, person.IsChildUnder5.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 9, household.Has0To25KIncome.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 10, household.Has25To45KIncome.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 11, household.Has75KPlusIncome.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 12, carsPerDriver);
+            alternative.AddUtilityTerm(100 * purpose + 13, person.IsOnlyAdult().ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 14, person.IsOnlyFullOrPartTimeWorker().ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 15, 0);
+            alternative.AddUtilityTerm(100 * purpose + 16, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * (!household.HasChildrenUnder16).ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 17, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 18, person.IsFemale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 19, person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 20, person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 21, person.AgeIsBetween18And25.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 22, person.AgeIsBetween26And35.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 23, person.AgeIsBetween51And65.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 24, person.WorksAtHome.ToFlag());
+            alternative.AddUtilityTerm(100 * purpose + 25, mixedDensity);
+            alternative.AddUtilityTerm(100 * purpose + 26, intersectionDensity);
+            alternative.AddUtilityTerm(100 * purpose + 31, personDay.WorkTours);
+            alternative.AddUtilityTerm(100 * purpose + 32, personDay.SchoolTours);
+            alternative.AddUtilityTerm(100 * purpose + 33, personDay.EscortTours);
+            alternative.AddUtilityTerm(100 * purpose + 34, personDay.PersonalBusinessTours);
+            alternative.AddUtilityTerm(100 * purpose + 35, personDay.ShoppingTours);
+            alternative.AddUtilityTerm(100 * purpose + 36, personDay.MealTours);
+            alternative.AddUtilityTerm(100 * purpose + 37, personDay.SocialTours);
+            alternative.AddUtilityTerm(100 * purpose + 41, personDay.WorkStops);
 
-			alternative.AddUtilityTerm(100 * purpose + 43, personDay.EscortStops);
-			alternative.AddUtilityTerm(100 * purpose + 44, personDay.PersonalBusinessStops);
-			alternative.AddUtilityTerm(100 * purpose + 45, personDay.ShoppingStops);
-			alternative.AddUtilityTerm(100 * purpose + 46, personDay.MealStops);
-			alternative.AddUtilityTerm(100 * purpose + 47, personDay.SocialStops);
-			alternative.AddUtilityTerm(100 * purpose + 50 + three, 1); // ASC
-			alternative.AddUtilityTerm(100 * purpose + 23 + 2 * three, purposeLogsum); // accessibility effect has different coefficient for 2 and 3+
-		}
-	}
+            if (purpose <= Global.Settings.Purposes.Escort) {
+                alternative.AddUtilityTerm(100 * purpose + 42, personDay.SchoolStops);
+            }
+
+            alternative.AddUtilityTerm(100 * purpose + 43, personDay.EscortStops);
+            alternative.AddUtilityTerm(100 * purpose + 44, personDay.PersonalBusinessStops);
+            alternative.AddUtilityTerm(100 * purpose + 45, personDay.ShoppingStops);
+            alternative.AddUtilityTerm(100 * purpose + 46, personDay.MealStops);
+            alternative.AddUtilityTerm(100 * purpose + 47, personDay.SocialStops);
+            alternative.AddUtilityTerm(100 * purpose + 50 + three, 1); // ASC
+            alternative.AddUtilityTerm(100 * purpose + 23 + 2 * three, purposeLogsum); // accessibility effect has different coefficient for 2 and 3+
+        }
+    }
 }

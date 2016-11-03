@@ -9,60 +9,60 @@ using System.IO;
 using DaySim.Framework.Core;
 
 namespace DaySimController {
-	public class RemoteMachine {
-		public string Name { get; private set; }
+    public class RemoteMachine {
+        public string Name { get; private set; }
 
-		public string CurrentDirectory { get; private set; }
+        public string CurrentDirectory { get; private set; }
 
-		public string Filename { get; private set; }
+        public string Filename { get; private set; }
 
-		public string Arguments { get; private set; }
+        public string Arguments { get; private set; }
 
-		public string CommandLine { get; private set; }
+        public string CommandLine { get; private set; }
 
-		public string ConfigurationPath { get; private set; }
-		
-		public string PrintFilePath { get; private set; }
+        public string ConfigurationPath { get; private set; }
 
-		public static List<RemoteMachine> GetAll() {
-			var entries = Global.Configuration.RemoteMachines.Split(',');
-			var machines = new List<RemoteMachine>();
+        public string PrintFilePath { get; private set; }
 
-			foreach (var entry in entries) {
-				var tokens = entry.Split('|');
+        public static List<RemoteMachine> GetAll() {
+            var entries = Global.Configuration.RemoteMachines.Split(',');
+            var machines = new List<RemoteMachine>();
 
-				var machine = new RemoteMachine {
-					Name = tokens[0], 
-					CurrentDirectory = Path.GetDirectoryName(tokens[1]), 
-					Filename = tokens[1],
-					CommandLine = tokens[1]
-				};
+            foreach (var entry in entries) {
+                var tokens = entry.Split('|');
 
-				for (var i = 2; i < tokens.Length; i++) {
-					machine.Arguments += ((i == 2 ? null : " ") + tokens[i]);
-					machine.CommandLine += (" " + tokens[i]);
+                var machine = new RemoteMachine {
+                    Name = tokens[0],
+                    CurrentDirectory = Path.GetDirectoryName(tokens[1]),
+                    Filename = tokens[1],
+                    CommandLine = tokens[1]
+                };
 
-					if (tokens[i].StartsWith("/c=")) {
-						machine.ConfigurationPath = tokens[i].Substring(3);
-					}
+                for (var i = 2; i < tokens.Length; i++) {
+                    machine.Arguments += ((i == 2 ? null : " ") + tokens[i]);
+                    machine.CommandLine += (" " + tokens[i]);
 
-					if (tokens[i].StartsWith("/p=")) {
-						machine.PrintFilePath= tokens[i].Substring(3);
-					}
-				}
+                    if (tokens[i].StartsWith("/c=")) {
+                        machine.ConfigurationPath = tokens[i].Substring(3);
+                    }
 
-				if (string.IsNullOrEmpty(machine.ConfigurationPath)) {
-					machine.ConfigurationPath = machine.CurrentDirectory + @"\" + ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME;
-				}
+                    if (tokens[i].StartsWith("/p=")) {
+                        machine.PrintFilePath = tokens[i].Substring(3);
+                    }
+                }
 
-				if (string.IsNullOrEmpty(machine.PrintFilePath)) {
-					machine.PrintFilePath = machine.CurrentDirectory + @"\" + DaySim.Framework.Core.PrintFile.DEFAULT_PRINT_FILENAME;
-				}
+                if (string.IsNullOrEmpty(machine.ConfigurationPath)) {
+                    machine.ConfigurationPath = machine.CurrentDirectory + @"\" + ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME;
+                }
 
-				machines.Add(machine);
-			}
+                if (string.IsNullOrEmpty(machine.PrintFilePath)) {
+                    machine.PrintFilePath = machine.CurrentDirectory + @"\" + DaySim.Framework.Core.PrintFile.DEFAULT_PRINT_FILENAME;
+                }
 
-			return machines;
-		}
-	}
+                machines.Add(machine);
+            }
+
+            return machines;
+        }
+    }
 }

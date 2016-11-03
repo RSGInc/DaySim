@@ -11,25 +11,25 @@ using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
 
 namespace DaySim.DomainModels.Default.Models {
-	[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-	[Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Default)]
-	public sealed class TransitStopArea : ITransitStopArea {
-		[ColumnName("id")]
-		public int Id { get; set; }
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Default)]
+    public sealed class TransitStopArea : ITransitStopArea {
+        [ColumnName("id")]
+        public int Id { get; set; }
 
-		[ColumnName("taz")]
-		public int Key { get; set; }
+        [ColumnName("taz")]
+        public int Key { get; set; }
 
-		//[ColumnName("Dest_eligible")]
-		//public bool DestinationEligible { get; set; }
+        //[ColumnName("Dest_eligible")]
+        //public bool DestinationEligible { get; set; }
 
-		//[ColumnName("External")]
-		//public bool External { get; set; }
+        //[ColumnName("External")]
+        //public bool External { get; set; }
 
-		[ColumnName("xcoord")]
-		public int XCoordinate { get; set; }
+        [ColumnName("xcoord")]
+        public int XCoordinate { get; set; }
 
-		[ColumnName("ycoord")]
-		public int YCoordinate { get; set; }
-	}
+        [ColumnName("ycoord")]
+        public int YCoordinate { get; set; }
+    }
 }

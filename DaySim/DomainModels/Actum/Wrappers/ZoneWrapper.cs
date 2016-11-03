@@ -11,12 +11,12 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
-	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-	public class ZoneWrapper : Default.Wrappers.ZoneWrapper, IActumZoneWrapper {
-		private readonly IActumZone _zone;
+    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
+    public class ZoneWrapper : Default.Wrappers.ZoneWrapper, IActumZoneWrapper {
+        private readonly IActumZone _zone;
 
-		public ZoneWrapper(IZone zone) : base(zone) {
-			_zone = (IActumZone) zone;
-		}
-	}
+        public ZoneWrapper(IZone zone) : base(zone) {
+            _zone = (IActumZone)zone;
+        }
+    }
 }

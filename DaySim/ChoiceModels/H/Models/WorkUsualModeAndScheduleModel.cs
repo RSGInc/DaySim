@@ -16,92 +16,90 @@ using DaySim.Framework.Factories;
 using SimpleInjector;
 
 namespace DaySim.ChoiceModels.H.Models {
-	public class WorkUsualModeAndScheduleModel : ChoiceModel {
-		private const string CHOICE_MODEL_NAME = "HWorkUsualModeAndScheduleModel";
-		private const int TOTAL_NESTED_ALTERNATIVES = 4;
-		private const int TOTAL_LEVELS = 2;
-		private const int MAX_PARAMETER = 199;
-		private const int THETA_PARAMETER = 99;
+    public class WorkUsualModeAndScheduleModel : ChoiceModel {
+        private const string CHOICE_MODEL_NAME = "HWorkUsualModeAndScheduleModel";
+        private const int TOTAL_NESTED_ALTERNATIVES = 4;
+        private const int TOTAL_LEVELS = 2;
+        private const int MAX_PARAMETER = 199;
+        private const int THETA_PARAMETER = 99;
 
-		private readonly int[] _nestedAlternativeIds = new[] {0, 19, 19, 20, 21, 21, 22, 22, 0};
-		private readonly int[] _nestedAlternativeIndexes = new[] {0, 0, 0, 1, 2, 2, 3, 3, 0};
-		
-		private readonly ITourCreator _creator = 
-			Global
-			.ContainerDaySim.GetInstance<IWrapperFactory<ITourCreator>>()
-			.Creator;
-		
-		public override void RunInitialize(ICoefficientsReader reader = null)
-		{
-			Initialize(CHOICE_MODEL_NAME, Global.Configuration.WorkTourModeModelCoefficients, Global.Settings.Modes.TotalModes, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-		}
+        private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 22, 0 };
+        private readonly int[] _nestedAlternativeIndexes = new[] { 0, 0, 0, 1, 2, 2, 3, 3, 0 };
 
-		public void Run(IPersonWrapper person) {
-			if (person == null) {
-				throw new ArgumentNullException("person");
-			}
-			
-			person.ResetRandom(5);
+        private readonly ITourCreator _creator =
+            Global
+            .ContainerDaySim.GetInstance<IWrapperFactory<ITourCreator>>()
+            .Creator;
 
-			if (Global.Configuration.IsInEstimationMode) {
-				if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
-					return;
-				}
-	
-				var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+        public override void RunInitialize(ICoefficientsReader reader = null) {
+            Initialize(CHOICE_MODEL_NAME, Global.Configuration.WorkTourModeModelCoefficients, Global.Settings.Modes.TotalModes, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
+        }
 
-				RunModel(choiceProbabilityCalculator, person);
+        public void Run(IPersonWrapper person) {
+            if (person == null) {
+                throw new ArgumentNullException("person");
+            }
 
-				choiceProbabilityCalculator.WriteObservation();
-			}
-			else {
+            person.ResetRandom(5);
 
-				var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+            if (Global.Configuration.IsInEstimationMode) {
+                if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
+                    return;
+                }
 
-				RunModel(choiceProbabilityCalculator, person);
+                var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-				var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
+                RunModel(choiceProbabilityCalculator, person);
 
-				if (chosenAlternative == null) {
-					Global.PrintFile.WriteNoAlternativesAvailableWarning(CHOICE_MODEL_NAME, "Run", person.Id);
-					return;
-				}
+                choiceProbabilityCalculator.WriteObservation();
+            } else {
 
-				var choice = (int) chosenAlternative.Choice;
+                var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
-			}
-		}
+                RunModel(choiceProbabilityCalculator, person);
+
+                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
+
+                if (chosenAlternative == null) {
+                    Global.PrintFile.WriteNoAlternativesAvailableWarning(CHOICE_MODEL_NAME, "Run", person.Id);
+                    return;
+                }
+
+                var choice = (int)chosenAlternative.Choice;
+
+            }
+        }
 
 
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person) {
-			
-			var household = person.Household;
-			var householdTotals = household.HouseholdTotals;
+        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person) {
 
-			// household inputs
-			var childrenUnder5 = householdTotals.ChildrenUnder5;
-			var childrenAge5Through15 = householdTotals.ChildrenAge5Through15;
-			var nonworkingAdults = householdTotals.NonworkingAdults;
-			var retiredAdults = householdTotals.RetiredAdults;
-			var onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
-			var twoPersonHouseholdFlag = household.IsTwoPersonHousehold.ToFlag();
-			var income0To25KFlag = household.Has0To25KIncome.ToFlag();
+            var household = person.Household;
+            var householdTotals = household.HouseholdTotals;
 
-			// person inputs
-			var maleFlag = person.IsMale.ToFlag();
-			var ageBetween51And98Flag = person.AgeIsBetween51And98.ToFlag();
+            // household inputs
+            var childrenUnder5 = householdTotals.ChildrenUnder5;
+            var childrenAge5Through15 = householdTotals.ChildrenAge5Through15;
+            var nonworkingAdults = householdTotals.NonworkingAdults;
+            var retiredAdults = householdTotals.RetiredAdults;
+            var onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
+            var twoPersonHouseholdFlag = household.IsTwoPersonHousehold.ToFlag();
+            var income0To25KFlag = household.Has0To25KIncome.ToFlag();
 
-			var originParcel = household.ResidenceParcel;
-			var destinationParcel = person.UsualWorkParcel;
-			var parkingDuration = ChoiceModelUtility.GetParkingDuration(person.IsFulltimeWorker);
-			// parking at work is free if no paid parking at work and tour goes to usual workplace
-			var destinationParkingCost = (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel && person.PaidParkingAtWorkplace == 0) ? 0.0 : destinationParcel.ParkingCostBuffer1(parkingDuration);
-						
-			var income = household.Income < 0 ? Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel : household.Income; // missing converted to 30K
-			var incomeMultiple = Math.Min(Math.Max(income / Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel, .1), 10); // ranges for extreme values
-			var incomePower = Global.Configuration.Coefficients_CostCoefficientIncomePower_Work;
+            // person inputs
+            var maleFlag = person.IsMale.ToFlag();
+            var ageBetween51And98Flag = person.AgeIsBetween51And98.ToFlag();
 
-			var costCoefficient = Global.Coefficients_BaseCostCoefficientPerMonetaryUnit / Math.Pow(incomeMultiple, incomePower);
+            var originParcel = household.ResidenceParcel;
+            var destinationParcel = person.UsualWorkParcel;
+            var parkingDuration = ChoiceModelUtility.GetParkingDuration(person.IsFulltimeWorker);
+            // parking at work is free if no paid parking at work and tour goes to usual workplace
+            var destinationParkingCost = (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel && person.PaidParkingAtWorkplace == 0) ? 0.0 : destinationParcel.ParkingCostBuffer1(parkingDuration);
+
+            var income = household.Income < 0 ? Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel : household.Income; // missing converted to 30K
+            var incomeMultiple = Math.Min(Math.Max(income / Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel, .1), 10); // ranges for extreme values
+            var incomePower = Global.Configuration.Coefficients_CostCoefficientIncomePower_Work;
+
+            var costCoefficient = Global.Coefficients_BaseCostCoefficientPerMonetaryUnit / Math.Pow(incomeMultiple, incomePower);
             /*
                         var pathTypeModels =
                             PathTypeModelFactory.Model.RunAll(
@@ -254,5 +252,5 @@ namespace DaySim.ChoiceModels.H.Models {
                         }
             */
         }
- 	}
+    }
 }

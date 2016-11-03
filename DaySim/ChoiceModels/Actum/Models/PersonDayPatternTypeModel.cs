@@ -19,46 +19,42 @@ using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
-	public class PersonDayPatternTypeModel : ChoiceModel {
-		private const string CHOICE_MODEL_NAME = "ActumPersonDayPatternTypeModel";
-		private const int TOTAL_ALTERNATIVES = 3;
-		private const int TOTAL_NESTED_ALTERNATIVES = 0;
-		private const int TOTAL_LEVELS = 1;
-		private const int MAX_PARAMETER = 60;
+    public class PersonDayPatternTypeModel : ChoiceModel {
+        private const string CHOICE_MODEL_NAME = "ActumPersonDayPatternTypeModel";
+        private const int TOTAL_ALTERNATIVES = 3;
+        private const int TOTAL_NESTED_ALTERNATIVES = 0;
+        private const int TOTAL_LEVELS = 1;
+        private const int MAX_PARAMETER = 60;
 
-		public override void RunInitialize(ICoefficientsReader reader = null)
-		{
-			Initialize(CHOICE_MODEL_NAME, Global.Configuration.PersonDayPatternTypeModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-		}
+        public override void RunInitialize(ICoefficientsReader reader = null) {
+            Initialize(CHOICE_MODEL_NAME, Global.Configuration.PersonDayPatternTypeModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
+        }
 
-		public void Run(PersonDayWrapper personDay, HouseholdDayWrapper householdDay) {
-			if (personDay == null) {
-				throw new ArgumentNullException("personDay");
-			}
+        public void Run(PersonDayWrapper personDay, HouseholdDayWrapper householdDay) {
+            if (personDay == null) {
+                throw new ArgumentNullException("personDay");
+            }
 
-			personDay.Person.ResetRandom(903);
+            personDay.Person.ResetRandom(903);
 
-			int choice = 0;
+            int choice = 0;
 
-			if (Global.Configuration.IsInEstimationMode) {
-				if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
-					return;
-				}
-			}
+            if (Global.Configuration.IsInEstimationMode) {
+                if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
+                    return;
+                }
+            }
 
-			var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(personDay.Person.Id * 10 + personDay.Day);
+            var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(personDay.Person.Id * 10 + personDay.Day);
 
-			if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+            if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
-				choice = personDay.PatternType;
+                choice = personDay.PatternType;
 
-				RunModel(choiceProbabilityCalculator, personDay, householdDay, choice);
+                RunModel(choiceProbabilityCalculator, personDay, householdDay, choice);
 
-				choiceProbabilityCalculator.WriteObservation();
-			} 
-
-             else if (Global.Configuration.TestEstimationModelInApplicationMode)
-            {
+                choiceProbabilityCalculator.WriteObservation();
+            } else if (Global.Configuration.TestEstimationModelInApplicationMode) {
                 Global.Configuration.IsInEstimationMode = false;
 
                 //choice = personDay.PatternType;
@@ -71,77 +67,73 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
                 //var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(householdDay.Household.RandomUtility, householdDay.Household.Id, choice);
 
-                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(householdDay.Household.RandomUtility, personDay.Id, personDay.PatternType-1);   
+                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(householdDay.Household.RandomUtility, personDay.Id, personDay.PatternType - 1);
 
                 Global.Configuration.IsInEstimationMode = true;
+            } else {
+                RunModel(choiceProbabilityCalculator, personDay, householdDay);
+
+                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(householdDay.Household.RandomUtility);
+                choice = (int)chosenAlternative.Choice;
+
+                personDay.PatternType = choice;
+
+            }
+        }
+
+        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int choice = Constants.DEFAULT_VALUE) {
+            var household = personDay.Household;
+            var person = personDay.Person;
+
+            IEnumerable<PersonDayWrapper> personTypeOrderedPersonDays = householdDay.PersonDays.OrderBy(p => p.Person.PersonType).ToList().Cast<PersonDayWrapper>();
+            int mandatoryCount = 0;
+            int nonMandatoryCount = 0;
+            int homeCount = 0;
+            int i = 0;
+            foreach (PersonDayWrapper pDay in personTypeOrderedPersonDays) {
+                i++;
+                if (i <= 5) {
+                    if (pDay.PatternType == Global.Settings.PatternTypes.Mandatory) { mandatoryCount++; } else if (pDay.PatternType == Global.Settings.PatternTypes.Optional) { nonMandatoryCount++; } else { homeCount++; }
+                }
             }
 
-			else {
-				RunModel(choiceProbabilityCalculator, personDay, householdDay);
-
-				var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(householdDay.Household.RandomUtility);
-				choice = (int) chosenAlternative.Choice;
-
-				personDay.PatternType = choice;
-
-			}
-		}
-
-		private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int choice = Constants.DEFAULT_VALUE) {
-			var household = personDay.Household;
-			var person = personDay.Person;
-
-			IEnumerable<PersonDayWrapper> personTypeOrderedPersonDays = householdDay.PersonDays.OrderBy(p => p.Person.PersonType).ToList().Cast<PersonDayWrapper>();
-			int mandatoryCount = 0;
-			int nonMandatoryCount = 0;
-			int homeCount = 0;
-			int i = 0;
-			foreach (PersonDayWrapper pDay in personTypeOrderedPersonDays) {
-				i++;
-				if (i <= 5) {
-					if (pDay.PatternType == Global.Settings.PatternTypes.Mandatory) { mandatoryCount++; }
-					else if (pDay.PatternType == Global.Settings.PatternTypes.Optional) { nonMandatoryCount++; }
-					else { homeCount++; }
-				}
-			}
-
-			bool mandatoryAvailableFlag = true;
-			if (personDay.Person.IsNonworkingAdult || personDay.Person.IsRetiredAdult ||
-				(!personDay.Person.IsWorker && !personDay.Person.IsStudent) ||
-				(!Global.Configuration.IsInEstimationMode && !personDay.Person.IsWorker && personDay.Person.UsualSchoolParcel == null)
-				) {
-				mandatoryAvailableFlag = false;
-			}
+            bool mandatoryAvailableFlag = true;
+            if (personDay.Person.IsNonworkingAdult || personDay.Person.IsRetiredAdult ||
+                (!personDay.Person.IsWorker && !personDay.Person.IsStudent) ||
+                (!Global.Configuration.IsInEstimationMode && !personDay.Person.IsWorker && personDay.Person.UsualSchoolParcel == null)
+                ) {
+                mandatoryAvailableFlag = false;
+            }
 
 
-			var carOwnership =
-							household.VehiclesAvailable == 0
-								 ? Global.Settings.CarOwnerships.NoCars
-								 : household.VehiclesAvailable < household.HouseholdTotals.DrivingAgeMembers
-									  ? Global.Settings.CarOwnerships.LtOneCarPerAdult
-									  : Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult;
+            var carOwnership =
+                            household.VehiclesAvailable == 0
+                                 ? Global.Settings.CarOwnerships.NoCars
+                                 : household.VehiclesAvailable < household.HouseholdTotals.DrivingAgeMembers
+                                      ? Global.Settings.CarOwnerships.LtOneCarPerAdult
+                                      : Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult;
 
             var noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
             var carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
 
-			var votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
-			var transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
-			var personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
-				 [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
-			var shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
-				 [Global.Settings.Purposes.Shopping][carOwnership][votALSegment][transitAccessSegment];
-			var mealAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
-				 [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
-			var socialAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
-				 [Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
-			//var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
-			var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
+            var votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
+            var transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+            var personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+                 [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
+            var shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+                 [Global.Settings.Purposes.Shopping][carOwnership][votALSegment][transitAccessSegment];
+            var mealAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+                 [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
+            var socialAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+                 [Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
+            //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
+            var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
 
 
 
-			// Pattern Type Mandatory on tour (at least one work or school tour)
-			var alternative = choiceProbabilityCalculator.GetAlternative(0, mandatoryAvailableFlag, choice == 1);
-			alternative.Choice = 1;
+            // Pattern Type Mandatory on tour (at least one work or school tour)
+            var alternative = choiceProbabilityCalculator.GetAlternative(0, mandatoryAvailableFlag, choice == 1);
+            alternative.Choice = 1;
 
             alternative.AddUtilityTerm(1, 1);
 
@@ -168,7 +160,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(15, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
             alternative.AddUtilityTerm(16, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
 
-				//alternative.AddUtilityTerm(17, compositeLogsum); //GV: logsum for mandatory 
+            //alternative.AddUtilityTerm(17, compositeLogsum); //GV: logsum for mandatory 
 
             //alternative.AddUtilityTerm(17, (householdDay.Household.Income >= 300000 && householdDay.Household.Income < 600000).ToFlag()); //GV; 16. april 2013, not significant
             //alternative.AddUtilityTerm(18, (householdDay.Household.Income >= 600000 && householdDay.Household.Income < 900000).ToFlag()); //GV; 16. april 2013, not significant
@@ -204,14 +196,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(31, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
             alternative.AddUtilityTerm(32, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
 
-			   //alternative.AddUtilityTerm(33, compositeLogsum); //GV: logsum for non-mandatory 
-			
+            //alternative.AddUtilityTerm(33, compositeLogsum); //GV: logsum for non-mandatory 
+
             //alternative.AddUtilityTerm(33, (householdDay.Household.Income >= 300000 && householdDay.Household.Income < 600000).ToFlag()); //GV; 16. april 2013, not significant
             //alternative.AddUtilityTerm(34, (householdDay.Household.Income >= 600000 && householdDay.Household.Income < 900000).ToFlag()); //GV; 16. april 2013, not significant
             //alternative.AddUtilityTerm(35, (householdDay.Household.Income >= 900000).ToFlag()); //GV; 16. april 2013, not significant
 
             alternative.AddUtilityTerm(36, householdDay.PrimaryPriorityTimeFlag);
-				   
+
 
             //alternative.AddUtilityTerm(24, person.IsChildUnder5.ToFlag());
             //alternative.AddUtilityTerm(25, person.IsNonworkingAdult.ToFlag());
@@ -228,6 +220,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
             //alternative.AddUtilityTerm(54, (homeCount > 0)? 1 : 0); //GV: can be estimated but the valus is huge 
 
-		}
-	}
+        }
+    }
 }

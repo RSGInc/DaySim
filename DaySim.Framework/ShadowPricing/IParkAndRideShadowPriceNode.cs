@@ -6,15 +6,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.ShadowPricing {
-	public interface IParkAndRideShadowPriceNode {
-		int NodeId { get; set; }
+    public interface IParkAndRideShadowPriceNode {
+        int NodeId { get; set; }
 
-		double[] ShadowPriceDifference { get; set; }
+        double[] ShadowPriceDifference { get; set; }
 
-		double[] ShadowPrice { get; set; }
+        double[] ShadowPrice { get; set; }
 
-		double[] ExogenousLoad { get; set; }
+        double[] ExogenousLoad { get; set; }
 
-		double[] ParkAndRideLoad { get; set; }
-	}
+        double[] ParkAndRideLoad { get; set; }
+    }
 }

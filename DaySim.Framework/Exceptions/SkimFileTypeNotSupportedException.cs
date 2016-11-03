@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-	[Serializable]
-	public class SkimFileTypeNotSupportedException : Exception {
-		public SkimFileTypeNotSupportedException() : this("The specified skim file type is not supported.") {}
+    [Serializable]
+    public class SkimFileTypeNotSupportedException : Exception {
+        public SkimFileTypeNotSupportedException() : this("The specified skim file type is not supported.") { }
 
-		public SkimFileTypeNotSupportedException(string message) : base(message) {}
+        public SkimFileTypeNotSupportedException(string message) : base(message) { }
 
-		public SkimFileTypeNotSupportedException(string message, Exception innerException) : base(message, innerException) {}
+        public SkimFileTypeNotSupportedException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected SkimFileTypeNotSupportedException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+        protected SkimFileTypeNotSupportedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
 }

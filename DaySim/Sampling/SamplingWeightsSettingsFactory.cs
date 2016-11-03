@@ -10,22 +10,19 @@ using System.Collections.Generic;
 using DaySim.Framework.Core;
 
 namespace DaySim.Sampling {
-	public class SamplingWeightsSettingsFactory 
-	{
-		private readonly string _key = Global.SamplingWeightsSettingsType;
+    public class SamplingWeightsSettingsFactory {
+        private readonly string _key = Global.SamplingWeightsSettingsType;
 
-		public ISamplingWeightsSettings SamplingWeightsSettings { get; private set; }
+        public ISamplingWeightsSettings SamplingWeightsSettings { get; private set; }
 
-		private readonly Dictionary<String, ISamplingWeightsSettings> _settings = new Dictionary<string, ISamplingWeightsSettings>(); 
+        private readonly Dictionary<String, ISamplingWeightsSettings> _settings = new Dictionary<string, ISamplingWeightsSettings>();
 
-		public void Register(String key, ISamplingWeightsSettings value)
-		{
-			_settings.Add(key, value);
-		}
+        public void Register(String key, ISamplingWeightsSettings value) {
+            _settings.Add(key, value);
+        }
 
-		public void Initialize()
-		{
-			SamplingWeightsSettings = _settings[_key];
-		}
-	}
+        public void Initialize() {
+            SamplingWeightsSettings = _settings[_key];
+        }
+    }
 }

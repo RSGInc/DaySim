@@ -15,76 +15,76 @@ using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
-	[Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-	public class HouseholdDayWrapper : Default.Wrappers.HouseholdDayWrapper, IActumHouseholdDayWrapper {
-		private IActumHouseholdDay _householdDay;
+    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
+    public class HouseholdDayWrapper : Default.Wrappers.HouseholdDayWrapper, IActumHouseholdDayWrapper {
+        private IActumHouseholdDay _householdDay;
 
-		[UsedImplicitly]
-		public HouseholdDayWrapper(IHouseholdDay householdDay, IHouseholdWrapper householdWrapper) : base(householdDay, householdWrapper) {
-			_householdDay = (IActumHouseholdDay) householdDay;
-		}
+        [UsedImplicitly]
+        public HouseholdDayWrapper(IHouseholdDay householdDay, IHouseholdWrapper householdWrapper) : base(householdDay, householdWrapper) {
+            _householdDay = (IActumHouseholdDay)householdDay;
+        }
 
-		#region domain model properies
+        #region domain model properies
 
-		public int SharedActivityHomeStays {
-			get { return _householdDay.SharedActivityHomeStays; }
-			set { _householdDay.SharedActivityHomeStays = value; }
-		}
+        public int SharedActivityHomeStays {
+            get { return _householdDay.SharedActivityHomeStays; }
+            set { _householdDay.SharedActivityHomeStays = value; }
+        }
 
-		public int NumberInLargestSharedHomeStay {
-			get { return _householdDay.NumberInLargestSharedHomeStay; }
-			set { _householdDay.NumberInLargestSharedHomeStay = value; }
-		}
+        public int NumberInLargestSharedHomeStay {
+            get { return _householdDay.NumberInLargestSharedHomeStay; }
+            set { _householdDay.NumberInLargestSharedHomeStay = value; }
+        }
 
-		public int StartingMinuteSharedHomeStay {
-			get { return _householdDay.StartingMinuteSharedHomeStay; }
-			set { _householdDay.StartingMinuteSharedHomeStay = value; }
-		}
+        public int StartingMinuteSharedHomeStay {
+            get { return _householdDay.StartingMinuteSharedHomeStay; }
+            set { _householdDay.StartingMinuteSharedHomeStay = value; }
+        }
 
-		public int DurationMinutesSharedHomeStay {
-			get { return _householdDay.DurationMinutesSharedHomeStay; }
-			set { _householdDay.DurationMinutesSharedHomeStay = value; }
-		}
+        public int DurationMinutesSharedHomeStay {
+            get { return _householdDay.DurationMinutesSharedHomeStay; }
+            set { _householdDay.DurationMinutesSharedHomeStay = value; }
+        }
 
-		public int AdultsInSharedHomeStay {
-			get { return _householdDay.AdultsInSharedHomeStay; }
-			set { _householdDay.AdultsInSharedHomeStay = value; }
-		}
+        public int AdultsInSharedHomeStay {
+            get { return _householdDay.AdultsInSharedHomeStay; }
+            set { _householdDay.AdultsInSharedHomeStay = value; }
+        }
 
-		public int ChildrenInSharedHomeStay {
-			get { return _householdDay.ChildrenInSharedHomeStay; }
-			set { _householdDay.ChildrenInSharedHomeStay = value; }
-		}
+        public int ChildrenInSharedHomeStay {
+            get { return _householdDay.ChildrenInSharedHomeStay; }
+            set { _householdDay.ChildrenInSharedHomeStay = value; }
+        }
 
-		public int PrimaryPriorityTimeFlag {
-			get { return _householdDay.PrimaryPriorityTimeFlag; }
-			set { _householdDay.PrimaryPriorityTimeFlag = value; }
-		}
+        public int PrimaryPriorityTimeFlag {
+            get { return _householdDay.PrimaryPriorityTimeFlag; }
+            set { _householdDay.PrimaryPriorityTimeFlag = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region flags, choice model properties, etc.
+        #region flags, choice model properties, etc.
 
-		public int JointTourFlag {
-			get; set;
-		}
-	
-		#endregion
+        public int JointTourFlag {
+            get; set;
+        }
 
-		#region init/utility/export methods
+        #endregion
 
-		protected override IHouseholdDay ResetHouseholdDay() {
-			_householdDay = new HouseholdDay {
-				Id = Id,
-				HouseholdId = HouseholdId,
-				Day = Day,
-				DayOfWeek = DayOfWeek,
-				ExpansionFactor = ExpansionFactor
-			};
+        #region init/utility/export methods
 
-			return _householdDay;
-		}
+        protected override IHouseholdDay ResetHouseholdDay() {
+            _householdDay = new HouseholdDay {
+                Id = Id,
+                HouseholdId = HouseholdId,
+                Day = Day,
+                DayOfWeek = DayOfWeek,
+                ExpansionFactor = ExpansionFactor
+            };
 
-		#endregion
-	}
+            return _householdDay;
+        }
+
+        #endregion
+    }
 }

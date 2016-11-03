@@ -8,257 +8,244 @@ using DaySim.Framework.Exceptions;
 using SimpleInjector;
 
 namespace DaySim.Framework.Roster {
-	public class ImpedanceRosterLoader 
-	{
+    public class ImpedanceRosterLoader {
 
-		private string _path;
+        private string _path;
 
-		public int[] VariableKeys { get; protected set; }
-		public int[] MatrixKeys { get; protected set; }
-		public bool[][] PossibleCombinations { get; protected set; }
-		public bool[][] ActualCombinations { get; protected set; }
-		public RosterEntry[][][][][] RosterEntries { get; protected set; }
-		public List<ImpedanceRoster.VotRange> VotRanges { get; protected set; }
-		public SkimMatrix[] SkimMatrices { get; set; }
+        public int[] VariableKeys { get; protected set; }
+        public int[] MatrixKeys { get; protected set; }
+        public bool[][] PossibleCombinations { get; protected set; }
+        public bool[][] ActualCombinations { get; protected set; }
+        public RosterEntry[][][][][] RosterEntries { get; protected set; }
+        public List<ImpedanceRoster.VotRange> VotRanges { get; protected set; }
+        public SkimMatrix[] SkimMatrices { get; set; }
 
-		public virtual void LoadRosterCombinations() {
-			var file = Global.GetInputPath(Global.Configuration.RosterCombinationsPath).ToFile();
+        public virtual void LoadRosterCombinations() {
+            var file = Global.GetInputPath(Global.Configuration.RosterCombinationsPath).ToFile();
 
-			Global.PrintFile.WriteFileInfo(file, true);
+            Global.PrintFile.WriteFileInfo(file, true);
 
-			PossibleCombinations = new bool[Global.Settings.Modes.TotalModes][];
-			ActualCombinations = new bool[Global.Settings.Modes.TotalModes][];
+            PossibleCombinations = new bool[Global.Settings.Modes.TotalModes][];
+            ActualCombinations = new bool[Global.Settings.Modes.TotalModes][];
 
-			for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
-				PossibleCombinations[mode] = new bool[Global.Settings.PathTypes.TotalPathTypes];
-				ActualCombinations[mode] = new bool[Global.Settings.PathTypes.TotalPathTypes];
-			}
+            for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
+                PossibleCombinations[mode] = new bool[Global.Settings.PathTypes.TotalPathTypes];
+                ActualCombinations[mode] = new bool[Global.Settings.PathTypes.TotalPathTypes];
+            }
 
-			using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
-				string line;
+            using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+                string line;
 
-				while ((line = reader.ReadLine()) != null) {
-					if (line.StartsWith("#")) {
-						continue;
-					}
+                while ((line = reader.ReadLine()) != null) {
+                    if (line.StartsWith("#")) {
+                        continue;
+                    }
 
-					var tokens = line.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
+                    var tokens = line.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
 
-					if (tokens.Length == 0) {
-						continue;
-					}
+                    if (tokens.Length == 0) {
+                        continue;
+                    }
 
-					int pathType;
+                    int pathType;
 
-					switch (tokens[0]) {
-						case "full-network":
-							pathType = Global.Settings.PathTypes.FullNetwork;
+                    switch (tokens[0]) {
+                        case "full-network":
+                            pathType = Global.Settings.PathTypes.FullNetwork;
 
-							break;
-						case "no-tolls":
-							pathType = Global.Settings.PathTypes.NoTolls;
+                            break;
+                        case "no-tolls":
+                            pathType = Global.Settings.PathTypes.NoTolls;
 
-							break;
-						case "local-bus":
-							pathType = Global.Settings.PathTypes.LocalBus;
+                            break;
+                        case "local-bus":
+                            pathType = Global.Settings.PathTypes.LocalBus;
 
-							break;
-						case "light-rail":
-							pathType = Global.Settings.PathTypes.LightRail;
+                            break;
+                        case "light-rail":
+                            pathType = Global.Settings.PathTypes.LightRail;
 
-							break;
-						case "premium-bus":
-							pathType = Global.Settings.PathTypes.PremiumBus;
+                            break;
+                        case "premium-bus":
+                            pathType = Global.Settings.PathTypes.PremiumBus;
 
-							break;
-						case "commuter-rail":
-							pathType = Global.Settings.PathTypes.CommuterRail;
+                            break;
+                        case "commuter-rail":
+                            pathType = Global.Settings.PathTypes.CommuterRail;
 
-							break;
-						case "ferry":
-							pathType = Global.Settings.PathTypes.Ferry;
+                            break;
+                        case "ferry":
+                            pathType = Global.Settings.PathTypes.Ferry;
 
-							break;
-						default:
-							throw new InvalidPathTypeException(string.Format("The value of \"{0}\" used for path type is invalid. Please adjust the roster accordingly.", tokens[0]));
-					}
+                            break;
+                        default:
+                            throw new InvalidPathTypeException(string.Format("The value of \"{0}\" used for path type is invalid. Please adjust the roster accordingly.", tokens[0]));
+                    }
 
-					for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
-						PossibleCombinations[mode][pathType] = bool.Parse(tokens[mode]);
-					}
-				}
-			}
-		}
+                    for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
+                        PossibleCombinations[mode][pathType] = bool.Parse(tokens[mode]);
+                    }
+                }
+            }
+        }
 
-		public virtual IEnumerable<RosterEntry> LoadRoster(string filename, bool checkCombination = true) {
-			var file = filename.ToFile();
+        public virtual IEnumerable<RosterEntry> LoadRoster(string filename, bool checkCombination = true) {
+            var file = filename.ToFile();
 
-			Global.PrintFile.WriteFileInfo(file, true);
+            Global.PrintFile.WriteFileInfo(file, true);
 
-			_path = file.DirectoryName;
+            _path = file.DirectoryName;
 
-			var entries = new List<RosterEntry>();
+            var entries = new List<RosterEntry>();
 
-			using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
-				string line;
+            using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+                string line;
 
-				while ((line = reader.ReadLine()) != null)
-				{
-					if (line.StartsWith("#"))
-					{
-						continue;
-					}
+                while ((line = reader.ReadLine()) != null) {
+                    if (line.StartsWith("#")) {
+                        continue;
+                    }
 
-					var tokens = line.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
+                    var tokens = line.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
 
-					if (tokens.Length == 0)
-					{
-						continue;
-					}
+                    if (tokens.Length == 0) {
+                        continue;
+                    }
 
-					var entry = new RosterEntry
-						            {
-							            Variable = tokens[0].Clean(),
-							            Mode = tokens[1].ToMode(),
-							            PathType = tokens[2].ToPathType(),
-							            VotGroup = tokens[3].ToVotGroup(),
-							            StartMinute = int.Parse(tokens[4]).ToMinutesAfter3AM(),
-							            EndMinute = int.Parse(tokens[5]).ToMinutesAfter3AM(),
-							            Length = tokens[6].Clean(),
-							            FileType = tokens[7].Clean(),
-							            Name = tokens[8],
-							            Field = int.Parse(tokens[9]),
-							            Transpose = bool.Parse(tokens[10]),
-							            BlendVariable = tokens[11].Clean(),
-							            BlendPathType = tokens[12].ToPathType(),
-							            Factor = tokens[13].ToFactor(),
-							            Scaling = ParseScaling(tokens[14])
-						            };
+                    var entry = new RosterEntry {
+                        Variable = tokens[0].Clean(),
+                        Mode = tokens[1].ToMode(),
+                        PathType = tokens[2].ToPathType(),
+                        VotGroup = tokens[3].ToVotGroup(),
+                        StartMinute = int.Parse(tokens[4]).ToMinutesAfter3AM(),
+                        EndMinute = int.Parse(tokens[5]).ToMinutesAfter3AM(),
+                        Length = tokens[6].Clean(),
+                        FileType = tokens[7].Clean(),
+                        Name = tokens[8],
+                        Field = int.Parse(tokens[9]),
+                        Transpose = bool.Parse(tokens[10]),
+                        BlendVariable = tokens[11].Clean(),
+                        BlendPathType = tokens[12].ToPathType(),
+                        Factor = tokens[13].ToFactor(),
+                        Scaling = ParseScaling(tokens[14])
+                    };
 
-					if (checkCombination)
-					{
-						if (!IsPossibleCombination(entry.Mode, entry.PathType))
-						{
-							throw new InvalidCombinationException(
-								string.Format(
-									"The combination of mode: {0} and path type: {1} is invalid. Please adjust the roster accordingly.", entry.Mode,
-									entry.PathType));
-						}
+                    if (checkCombination) {
+                        if (!IsPossibleCombination(entry.Mode, entry.PathType)) {
+                            throw new InvalidCombinationException(
+                                string.Format(
+                                    "The combination of mode: {0} and path type: {1} is invalid. Please adjust the roster accordingly.", entry.Mode,
+                                    entry.PathType));
+                        }
 
-						ActualCombinations[entry.Mode][entry.PathType] = true;
-					}
+                        ActualCombinations[entry.Mode][entry.PathType] = true;
+                    }
 
-					entries.Add(entry);
-				}
-			}
-			
-			return entries;
-		}
+                    entries.Add(entry);
+                }
+            }
 
-		public virtual void ProcessEntries(IEnumerable<RosterEntry> entries)
-		{
-			VariableKeys = entries.Select(x => x.Variable.GetHashCode()).Distinct().OrderBy(x => x).ToArray();
-			MatrixKeys = entries.Select(x => x.MatrixKey).Distinct().OrderBy(x => x).ToArray();
+            return entries;
+        }
 
-			foreach (var entry in entries) {
-				entry.VariableIndex = GetVariableIndex(entry.Variable);
-				entry.MatrixIndex = MatrixKeys.GetIndex(entry.MatrixKey);
-			}
+        public virtual void ProcessEntries(IEnumerable<RosterEntry> entries) {
+            VariableKeys = entries.Select(x => x.Variable.GetHashCode()).Distinct().OrderBy(x => x).ToArray();
+            MatrixKeys = entries.Select(x => x.MatrixKey).Distinct().OrderBy(x => x).ToArray();
 
-			RosterEntries = new RosterEntry[VariableKeys.Length][][][][];
+            foreach (var entry in entries) {
+                entry.VariableIndex = GetVariableIndex(entry.Variable);
+                entry.MatrixIndex = MatrixKeys.GetIndex(entry.MatrixKey);
+            }
 
-			for (var variableIndex = 0; variableIndex < VariableKeys.Length; variableIndex++) {
-				RosterEntries[variableIndex] = new RosterEntry[Global.Settings.Modes.TotalModes][][][]; // Initialize the mode array
+            RosterEntries = new RosterEntry[VariableKeys.Length][][][][];
 
-				for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
-					RosterEntries[variableIndex][mode] = new RosterEntry[Global.Settings.PathTypes.TotalPathTypes][][]; // Initialize the path type array
+            for (var variableIndex = 0; variableIndex < VariableKeys.Length; variableIndex++) {
+                RosterEntries[variableIndex] = new RosterEntry[Global.Settings.Modes.TotalModes][][][]; // Initialize the mode array
 
-					for (var pathType = Global.Settings.PathTypes.FullNetwork; pathType < Global.Settings.PathTypes.TotalPathTypes; pathType++) {
-						RosterEntries[variableIndex][mode][pathType] = new RosterEntry[Global.Settings.VotGroups.TotalVotGroups][]; // Initialize the vot groups
+                for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
+                    RosterEntries[variableIndex][mode] = new RosterEntry[Global.Settings.PathTypes.TotalPathTypes][][]; // Initialize the path type array
 
-						for (var votGroup = Global.Settings.VotGroups.VeryLow; votGroup < Global.Settings.VotGroups.TotalVotGroups; votGroup++) {
-							RosterEntries[variableIndex][mode][pathType][votGroup] = new RosterEntry[Global.Settings.Times.MinutesInADay + 1]; // Initialize the minute array	
-						}
-					}
-				}
-			}
+                    for (var pathType = Global.Settings.PathTypes.FullNetwork; pathType < Global.Settings.PathTypes.TotalPathTypes; pathType++) {
+                        RosterEntries[variableIndex][mode][pathType] = new RosterEntry[Global.Settings.VotGroups.TotalVotGroups][]; // Initialize the vot groups
 
-			foreach (var entry in entries) {
-				var startMinute = entry.StartMinute;
-				var endMinute = entry.EndMinute;
+                        for (var votGroup = Global.Settings.VotGroups.VeryLow; votGroup < Global.Settings.VotGroups.TotalVotGroups; votGroup++) {
+                            RosterEntries[variableIndex][mode][pathType][votGroup] = new RosterEntry[Global.Settings.Times.MinutesInADay + 1]; // Initialize the minute array	
+                        }
+                    }
+                }
+            }
 
-				// if roster entry for vot group is any or all or default, apply it to all vot groups
-				var lowestVotGroup = entry.VotGroup == Global.Settings.VotGroups.Default ? Global.Settings.VotGroups.VeryLow : entry.VotGroup;
-				var highestVotGroup = entry.VotGroup == Global.Settings.VotGroups.Default ? Global.Settings.VotGroups.VeryHigh : entry.VotGroup;
+            foreach (var entry in entries) {
+                var startMinute = entry.StartMinute;
+                var endMinute = entry.EndMinute;
 
-				for (var votGroup = lowestVotGroup; votGroup <= highestVotGroup; votGroup++) {
-					if (startMinute > endMinute) {
-						for (var minute = 1; minute <= endMinute; minute++) {
-							RosterEntries[entry.VariableIndex][entry.Mode][entry.PathType][votGroup][minute] = entry;
-						}
+                // if roster entry for vot group is any or all or default, apply it to all vot groups
+                var lowestVotGroup = entry.VotGroup == Global.Settings.VotGroups.Default ? Global.Settings.VotGroups.VeryLow : entry.VotGroup;
+                var highestVotGroup = entry.VotGroup == Global.Settings.VotGroups.Default ? Global.Settings.VotGroups.VeryHigh : entry.VotGroup;
 
-						for (var minute = startMinute; minute <= Global.Settings.Times.MinutesInADay; minute++) {
-							RosterEntries[entry.VariableIndex][entry.Mode][entry.PathType][votGroup][minute] = entry;
-						}
-					}
-					else {
-						for (var minute = startMinute; minute <= endMinute; minute++) {
-							RosterEntries[entry.VariableIndex][entry.Mode][entry.PathType][votGroup][minute] = entry;
-						}
-					}
-				}
-			}
+                for (var votGroup = lowestVotGroup; votGroup <= highestVotGroup; votGroup++) {
+                    if (startMinute > endMinute) {
+                        for (var minute = 1; minute <= endMinute; minute++) {
+                            RosterEntries[entry.VariableIndex][entry.Mode][entry.PathType][votGroup][minute] = entry;
+                        }
 
-			VotRanges = ImpedanceRoster.GetVotRanges();
-		}
+                        for (var minute = startMinute; minute <= Global.Settings.Times.MinutesInADay; minute++) {
+                            RosterEntries[entry.VariableIndex][entry.Mode][entry.PathType][votGroup][minute] = entry;
+                        }
+                    } else {
+                        for (var minute = startMinute; minute <= endMinute; minute++) {
+                            RosterEntries[entry.VariableIndex][entry.Mode][entry.PathType][votGroup][minute] = entry;
+                        }
+                    }
+                }
+            }
 
-		private int GetVariableIndex(string variable) {
-			var variableIndex = VariableKeys.GetIndex(variable);
+            VotRanges = ImpedanceRoster.GetVotRanges();
+        }
 
-			if (variableIndex == -1) {
-				throw new VariableNotFoundException(string.Format("The variable \"{0}\" was not found in the roster configuration file. Please correct the problem and run the program again.", variable));
-			}
+        private int GetVariableIndex(string variable) {
+            var variableIndex = VariableKeys.GetIndex(variable);
 
-			return variableIndex;
-		}
+            if (variableIndex == -1) {
+                throw new VariableNotFoundException(string.Format("The variable \"{0}\" was not found in the roster configuration file. Please correct the problem and run the program again.", variable));
+            }
 
-		private double ParseScaling(string s)
-		{
-			bool scale;
-			if (bool.TryParse(s, out scale))
-			{
-				if (scale)
-					return 100;
-				return 1;
-			}
-			return double.Parse(s);
-		}
+            return variableIndex;
+        }
 
-		public bool IsPossibleCombination(int mode, int pathType) {
-			return PossibleCombinations[mode][pathType];
-		}
+        private double ParseScaling(string s) {
+            bool scale;
+            if (bool.TryParse(s, out scale)) {
+                if (scale)
+                    return 100;
+                return 1;
+            }
+            return double.Parse(s);
+        }
 
-		
-		public virtual void LoadSkimMatrices(IEnumerable<RosterEntry> entries, Dictionary<int, int> zoneMapping, Dictionary<int, int> transitStopAreaMapping, Dictionary<int, int> microzoneMapping) {
-			SkimMatrices = new SkimMatrix[MatrixKeys.Length];
+        public bool IsPossibleCombination(int mode, int pathType) {
+            return PossibleCombinations[mode][pathType];
+        }
 
-//			var cache = new Dictionary<string, List<float[]>>();
-			var cache = new Dictionary<string, List<double[]>>(); // 20150703 JLB
+
+        public virtual void LoadSkimMatrices(IEnumerable<RosterEntry> entries, Dictionary<int, int> zoneMapping, Dictionary<int, int> transitStopAreaMapping, Dictionary<int, int> microzoneMapping) {
+            SkimMatrices = new SkimMatrix[MatrixKeys.Length];
+
+            //			var cache = new Dictionary<string, List<float[]>>();
+            var cache = new Dictionary<string, List<double[]>>(); // 20150703 JLB
 
             var currentFileName = "";
-            foreach (var entry in entries.Where(x => x.FileType != null).Select(x => new { x.Name, x.Field, x.FileType, x.MatrixIndex, x.Scaling, x.Length }).Distinct().OrderBy(x => x.Name))
-            {
+            foreach (var entry in entries.Where(x => x.FileType != null).Select(x => new { x.Name, x.Field, x.FileType, x.MatrixIndex, x.Scaling, x.Length }).Distinct().OrderBy(x => x.Name)) {
                 ISkimFileReader skimFileReader = null;
 
                 //Issue #40 -- caching is to prevent same file from being read in multiple times. Can clear cache when we change files since group by name
-                if (!entry.Name.Equals(currentFileName))
-                {
+                if (!entry.Name.Equals(currentFileName)) {
                     cache.Clear();
                     currentFileName = entry.Name;
                 }
                 IFileReaderCreator creator = Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().GetFileReaderCreator(entry.FileType);
 
-				/*switch (entry.FileType) {
+                /*switch (entry.FileType) {
 					case "text_ij":
 						skimFileReader = new TextIJSkimFileReader(cache, _path, mapping);
 						break;
@@ -267,41 +254,40 @@ namespace DaySim.Framework.Roster {
 						break;
 				}*/
 
-				if (creator == null) {
-					if (entry.FileType == "deferred") {
-						continue;
-					}
+                if (creator == null) {
+                    if (entry.FileType == "deferred") {
+                        continue;
+                    }
 
-					throw new SkimFileTypeNotSupportedException(string.Format("The specified skim file type of \"{0}\" is not supported.", entry.FileType));
-				}
-				Dictionary<int, int> mapping = zoneMapping;
+                    throw new SkimFileTypeNotSupportedException(string.Format("The specified skim file type of \"{0}\" is not supported.", entry.FileType));
+                }
+                Dictionary<int, int> mapping = zoneMapping;
 
-				bool useTransitStopAreaMapping = (entry.Length == "transitstop");
-				if (useTransitStopAreaMapping)
-					mapping = transitStopAreaMapping;
+                bool useTransitStopAreaMapping = (entry.Length == "transitstop");
+                if (useTransitStopAreaMapping)
+                    mapping = transitStopAreaMapping;
 
-				bool useMicrozoneMapping = (entry.Length == "microzone");
-				if (useMicrozoneMapping)
-					mapping = microzoneMapping;
-		
-				skimFileReader = creator.CreateReader(cache, _path, mapping);
+                bool useMicrozoneMapping = (entry.Length == "microzone");
+                if (useMicrozoneMapping)
+                    mapping = microzoneMapping;
 
-				var skimMatrix = skimFileReader.Read(entry.Name, entry.Field, (float)entry.Scaling);
+                skimFileReader = creator.CreateReader(cache, _path, mapping);
 
-				SkimMatrices[entry.MatrixIndex] = skimMatrix;
-			}
+                var skimMatrix = skimFileReader.Read(entry.Name, entry.Field, (float)entry.Scaling);
 
-			foreach (
-				var entry in
-					entries.Where(x => x.FileType == null)
-					       .Select(x => new {x.Name, x.Field, x.FileType, x.MatrixIndex, x.Scaling, x.Length})
-					       .Distinct()
-					       .OrderBy(x => x.Name))
-			{
-				var skimMatrix = new SkimMatrix(null);
-				SkimMatrices[entry.MatrixIndex] = skimMatrix;
-			}
+                SkimMatrices[entry.MatrixIndex] = skimMatrix;
+            }
 
-		}
-	}
+            foreach (
+                var entry in
+                    entries.Where(x => x.FileType == null)
+                           .Select(x => new { x.Name, x.Field, x.FileType, x.MatrixIndex, x.Scaling, x.Length })
+                           .Distinct()
+                           .OrderBy(x => x.Name)) {
+                var skimMatrix = new SkimMatrix(null);
+                SkimMatrices[entry.MatrixIndex] = skimMatrix;
+            }
+
+        }
+    }
 }

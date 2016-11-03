@@ -9,9 +9,9 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.DomainModels.Creators {
-	public interface IPersonCreator : ICreator {
-		IPerson CreateModel();
+    public interface IPersonCreator : ICreator {
+        IPerson CreateModel();
 
-		IPersonWrapper CreateWrapper(IPerson person, IHouseholdWrapper householdWrapper);
-	}
+        IPersonWrapper CreateWrapper(IPerson person, IHouseholdWrapper householdWrapper);
+    }
 }

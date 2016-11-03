@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class ParcelCreator<TWrapper, TModel> : IParcelCreator where TWrapper : IParcelWrapper where TModel : IParcel, new() {
-		IParcel IParcelCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class ParcelCreator<TWrapper, TModel> : IParcelCreator where TWrapper : IParcelWrapper where TModel : IParcel, new() {
+        IParcel IParcelCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		IParcelWrapper IParcelCreator.CreateWrapper(IParcel parcel) {
-			return CreateWrapper(parcel);
-		}
+        IParcelWrapper IParcelCreator.CreateWrapper(IParcel parcel) {
+            return CreateWrapper(parcel);
+        }
 
-		private static TWrapper CreateWrapper(IParcel parcel) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, parcel);
+        private static TWrapper CreateWrapper(IParcel parcel) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, parcel);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }

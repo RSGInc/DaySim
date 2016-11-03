@@ -9,13 +9,13 @@ using System.Collections.Generic;
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.DomainModels.Persisters {
-	public interface IPersisterReader<out TModel> : IEnumerable<TModel> where TModel : IModel {
-		int Count { get; }
+    public interface IPersisterReader<out TModel> : IEnumerable<TModel> where TModel : IModel {
+        int Count { get; }
 
-		TModel Seek(int id);
+        TModel Seek(int id);
 
-		IEnumerable<TModel> Seek(int id, string indexName);
+        IEnumerable<TModel> Seek(int id, string indexName);
 
-		void BuildIndex(string indexName, string idName, string parentIdName);
-	}
+        void BuildIndex(string indexName, string idName, string parentIdName);
+    }
 }

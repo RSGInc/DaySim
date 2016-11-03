@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class ParcelNodeCreator<TWrapper, TModel> : IParcelNodeCreator where TWrapper : IParcelNodeWrapper where TModel : IParcelNode, new() {
-		IParcelNode IParcelNodeCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class ParcelNodeCreator<TWrapper, TModel> : IParcelNodeCreator where TWrapper : IParcelNodeWrapper where TModel : IParcelNode, new() {
+        IParcelNode IParcelNodeCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		IParcelNodeWrapper IParcelNodeCreator.CreateWrapper(IParcelNode parcelNode) {
-			return CreateWrapper(parcelNode);
-		}
+        IParcelNodeWrapper IParcelNodeCreator.CreateWrapper(IParcelNode parcelNode) {
+            return CreateWrapper(parcelNode);
+        }
 
-		private static TWrapper CreateWrapper(IParcelNode parcelNode) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, parcelNode);
+        private static TWrapper CreateWrapper(IParcelNode parcelNode) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, parcelNode);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }

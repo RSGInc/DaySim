@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class HouseholdCreator<TWrapper, TModel> : IHouseholdCreator where TWrapper : IHouseholdWrapper where TModel : IHousehold, new() {
-		IHousehold IHouseholdCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class HouseholdCreator<TWrapper, TModel> : IHouseholdCreator where TWrapper : IHouseholdWrapper where TModel : IHousehold, new() {
+        IHousehold IHouseholdCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		IHouseholdWrapper IHouseholdCreator.CreateWrapper(IHousehold household) {
-			return CreateWrapper(household);
-		}
+        IHouseholdWrapper IHouseholdCreator.CreateWrapper(IHousehold household) {
+            return CreateWrapper(household);
+        }
 
-		private static TWrapper CreateWrapper(IHousehold household) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, household);
+        private static TWrapper CreateWrapper(IHousehold household) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, household);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }

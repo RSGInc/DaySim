@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-	[Serializable]
-	public class PersonModelException : Exception {
-		public PersonModelException() : this("Error running person models.") {}
+    [Serializable]
+    public class PersonModelException : Exception {
+        public PersonModelException() : this("Error running person models.") { }
 
-		public PersonModelException(string message) : base(message) {}
+        public PersonModelException(string message) : base(message) { }
 
-		public PersonModelException(string message, Exception innerException) : base(message, innerException) {}
+        public PersonModelException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected PersonModelException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+        protected PersonModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
 }

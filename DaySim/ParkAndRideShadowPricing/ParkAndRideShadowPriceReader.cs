@@ -12,33 +12,25 @@ using System.IO;
 using DaySim.Framework.Core;
 using DaySim.Framework.ShadowPricing;
 
-namespace DaySim.ParkAndRideShadowPricing
-{
-    public static class ParkAndRideShadowPriceReader
-    {
-        public static Dictionary<int, IParkAndRideShadowPriceNode> ReadParkAndRideShadowPrices()
-        {
+namespace DaySim.ParkAndRideShadowPricing {
+    public static class ParkAndRideShadowPriceReader {
+        public static Dictionary<int, IParkAndRideShadowPriceNode> ReadParkAndRideShadowPrices() {
             var shadowPrices = new Dictionary<int, IParkAndRideShadowPriceNode>();
             var shadowPriceFile = new FileInfo(Global.ParkAndRideShadowPricesPath);
 
-            if (!Global.ParkAndRideNodeIsEnabled || !shadowPriceFile.Exists || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode)
-            {
+            if (!Global.ParkAndRideNodeIsEnabled || !shadowPriceFile.Exists || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode) {
                 return shadowPrices;
             }
 
-            using (var reader = new CountingReader(shadowPriceFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
-            {
+            using (var reader = new CountingReader(shadowPriceFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
                 reader.ReadLine();
 
                 string line = null;
-                try
-                {
-                    while ((line = reader.ReadLine()) != null)
-                    {
+                try {
+                    while ((line = reader.ReadLine()) != null) {
                         var tokens = line.Split(new[] { Global.Configuration.ParkAndRideShadowPriceDelimiter }, StringSplitOptions.RemoveEmptyEntries);
 
-                        var shadowPriceNode = new ParkAndRideShadowPriceNode
-                        {
+                        var shadowPriceNode = new ParkAndRideShadowPriceNode {
                             NodeId = Convert.ToInt32(tokens[0]),
                         };
 
@@ -47,8 +39,7 @@ namespace DaySim.ParkAndRideShadowPricing
                         shadowPriceNode.ExogenousLoad = new double[Global.Settings.Times.MinutesInADay];
                         shadowPriceNode.ParkAndRideLoad = new double[Global.Settings.Times.MinutesInADay];
 
-                        for (var i = 1; i <= Global.Settings.Times.MinutesInADay; i++)
-                        {
+                        for (var i = 1; i <= Global.Settings.Times.MinutesInADay; i++) {
                             shadowPriceNode.ShadowPriceDifference[i - 1] = Convert.ToDouble(tokens[i]);
                             shadowPriceNode.ShadowPrice[i - 1] = Convert.ToDouble(tokens[Global.Settings.Times.MinutesInADay + i]);
                             shadowPriceNode.ExogenousLoad[i - 1] = Convert.ToDouble(tokens[2 * Global.Settings.Times.MinutesInADay + i]);
@@ -57,9 +48,7 @@ namespace DaySim.ParkAndRideShadowPricing
 
                         shadowPrices.Add(shadowPriceNode.NodeId, shadowPriceNode);
                     }
-                }
-                catch (FormatException e)
-                {
+                } catch (FormatException e) {
                     throw new Exception("Format problem in file '" + shadowPriceFile.FullName + "' at line " + reader.LineNumber + " with content '" + line + "'.", e);
                 }
 

@@ -8,13 +8,13 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
-	public interface IActumHousehold : IHousehold {
-		int MunicipalCode { get; set; }
+    public interface IActumHousehold : IHousehold {
+        int MunicipalCode { get; set; }
 
-		double StationDistance { get; set; }
+        double StationDistance { get; set; }
 
-		int ParkingAvailability { get; set; }
+        int ParkingAvailability { get; set; }
 
-		int InternetPaymentMethod { get; set; }
-	}
+        int InternetPaymentMethod { get; set; }
+    }
 }

@@ -8,5 +8,5 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-	public interface IParcelNodeWrapper : IParcelNode {}
+    public interface IParcelNodeWrapper : IParcelNode { }
 }

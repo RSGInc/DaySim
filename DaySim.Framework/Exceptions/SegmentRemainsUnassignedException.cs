@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-	[Serializable]
-	public class SegmentRemainsUnassignedException : Exception {
-		public SegmentRemainsUnassignedException() : this("Segment remains unassigned.") {}
+    [Serializable]
+    public class SegmentRemainsUnassignedException : Exception {
+        public SegmentRemainsUnassignedException() : this("Segment remains unassigned.") { }
 
-		public SegmentRemainsUnassignedException(string message) : base(message) {}
+        public SegmentRemainsUnassignedException(string message) : base(message) { }
 
-		public SegmentRemainsUnassignedException(string message, Exception innerException) : base(message, innerException) {}
+        public SegmentRemainsUnassignedException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected SegmentRemainsUnassignedException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+        protected SegmentRemainsUnassignedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
 }

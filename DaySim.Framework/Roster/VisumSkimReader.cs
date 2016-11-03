@@ -6,31 +6,25 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
-namespace DaySim.Framework.Roster
-{
-    class VisumSkimReader : ISkimFileReader
-    {
+namespace DaySim.Framework.Roster {
+    class VisumSkimReader : ISkimFileReader {
         private readonly string _path;
         private readonly Dictionary<int, int> _mapping;
 
-        public VisumSkimReader(string path, Dictionary<int, int> mapping)
-        {
+        public VisumSkimReader(string path, Dictionary<int, int> mapping) {
             _path = path;
             _mapping = mapping;
         }
 
-        public SkimMatrix Read(string filename, int field, float scale)
-        {
+        public SkimMatrix Read(string filename, int field, float scale) {
             var count = _mapping.Count;
             var matrix = new ushort[count][];
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 matrix[i] = new ushort[count];
             }
 
-            if (filename == "null")
-            {
+            if (filename == "null") {
                 return new SkimMatrix(matrix);
             }
 
@@ -39,14 +33,12 @@ namespace DaySim.Framework.Roster
             Console.WriteLine("Loading skim file: {0}, field: {1}.", file.Name, field);
             Global.PrintFile.WriteFileInfo(file, true);
 
-            if (!file.Exists)
-            {
+            if (!file.Exists) {
                 throw new FileNotFoundException(string.Format("The skim file {0} could not be found.", file.FullName));
             }
-                       
 
-            using (var b = new BinaryReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
-            {
+
+            using (var b = new BinaryReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
                 var position = 0L;
                 var length = b.BaseStream.Length;
 
@@ -74,57 +66,43 @@ namespace DaySim.Framework.Roster
                 int binflag = 101;
                 //Check rounding procedure
                 byte d = b.ReadByte();
-                if (d == '\x01')
-                {
+                if (d == '\x01') {
                     binflag = 1;
-                }
-                else if (d == '\x00')
-                {
+                } else if (d == '\x00') {
                     binflag = 0;
-                }
-                else
-                {
+                } else {
                     Console.WriteLine("Binary flag is missing!");
                 }
                 int[] zonenums;
                 int[] zonenumscol;
 
-                if (idv == "$BI")
-                {   //Matrix type - BI 
+                if (idv == "$BI") {   //Matrix type - BI 
                     zonenums = new int[rows * 2];
-                    for (int z = 0; z < rows * 2; z++)
-                    {
+                    for (int z = 0; z < rows * 2; z++) {
                         zonenums[z] = b.ReadInt32();
                     }
-                }
-                else
-                {   // Matrix type not BI.. 
+                } else {   // Matrix type not BI.. 
                     //Number of columns
                     int colnumber = b.ReadInt32();
                     zonenums = new int[rows];
                     //Read zone numbers
-                    for (int z = 0; z < rows; z++)
-                    {
+                    for (int z = 0; z < rows; z++) {
                         zonenums[z] = b.ReadInt32();
                         //Console.WriteLine(zonenums[z].ToString());
                     }
                     //Read zone numbers on columns
                     zonenumscol = new int[rows];
-                    for (int z = 0; z < rows; z++)
-                    {
+                    for (int z = 0; z < rows; z++) {
                         zonenumscol[z] = b.ReadInt32();
                         //Console.WriteLine(zonenumscol[z].ToString());
                     }
-                    if (idv == "$BK")
-                    {   //Read the row and column names...
+                    if (idv == "$BK") {   //Read the row and column names...
                         int itemleng;
                         string zonename;
-                        for (int z = 0; z < colnumber * 2; z++)
-                        {
+                        for (int z = 0; z < colnumber * 2; z++) {
                             itemleng = b.ReadInt32();
                             //Console.WriteLine(itemleng.ToString());
-                            if (itemleng > 0)
-                            {
+                            if (itemleng > 0) {
                                 zonename = new string(b.ReadChars(itemleng * 2));
                                 //Console.WriteLine(zonename);
 
@@ -136,28 +114,23 @@ namespace DaySim.Framework.Roster
                 //Check if all values are zero (null matrix)
                 d = b.ReadByte();
 
-                if (d == '\x01')
-                {
+                if (d == '\x01') {
                     binflag = 1; //this var is not really needed.. but used just for clarity
                     //Console.WriteLine("This is a zero matrix!");
-                }
-                else if (d == '\x00')
-                {
+                } else if (d == '\x00') {
                     binflag = 0;
                     double diagsum = b.ReadDouble();
                     Console.WriteLine("Diagonal sum: " + diagsum.ToString());
                     //Variable for compressed length 
                     int compresslength;
 
-                    for (int vl = 0; vl < rows; vl++)
-                    {
+                    for (int vl = 0; vl < rows; vl++) {
                         //Get length of compressed bytes
                         compresslength = b.ReadInt32();
                         //Create memory streams for reading the zipped data and to store inflated data
                         using (MemoryStream inStream = new MemoryStream(b.ReadBytes(compresslength)))
                         using (MemoryStream decompressedFileStream = new MemoryStream())
-                        using (DeflateStream decompressionStream = new DeflateStream(inStream, CompressionMode.Decompress))
-                        {
+                        using (DeflateStream decompressionStream = new DeflateStream(inStream, CompressionMode.Decompress)) {
                             //Why?
                             //Because DelfateStream is same as zlib but zlib has two extra bytes as headers so we pop those                                       
                             inStream.ReadByte();
@@ -167,20 +140,16 @@ namespace DaySim.Framework.Roster
                             decompressedFileStream.Position = 0;
                             var sr = new BinaryReader(decompressedFileStream);
                             //Console.Write("Matrix values for row " + vl.ToString() + " >> ");
-                            for (int vi = 0; vi < rows; vi++)
-                            {
+                            for (int vi = 0; vi < rows; vi++) {
                                 double rawValue = sr.ReadDouble() * scale;
-                                
-                                if (vi == vl && rawValue / scale > 999990)  {
+
+                                if (vi == vl && rawValue / scale > 999990) {
                                     rawValue = 0;
                                 }
-                                
-                                if (rawValue > ushort.MaxValue -1)
-                                {
-                                    rawValue = ushort.MaxValue -1;
-                                }
-                                else if (rawValue < 0)
-                                {
+
+                                if (rawValue > ushort.MaxValue - 1) {
+                                    rawValue = ushort.MaxValue - 1;
+                                } else if (rawValue < 0) {
                                     rawValue = 0;
                                 }
 

@@ -13,26 +13,26 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Creators {
-	[UsedImplicitly]
-	[Factory(Factory.WrapperFactory, Category = Category.Creator)]
-	public class PartialHalfTourCreator<TWrapper, TModel> : IPartialHalfTourCreator where TWrapper : IPartialHalfTourWrapper where TModel : IPartialHalfTour, new() {
-		IPartialHalfTour IPartialHalfTourCreator.CreateModel() {
-			return CreateModel();
-		}
+    [UsedImplicitly]
+    [Factory(Factory.WrapperFactory, Category = Category.Creator)]
+    public class PartialHalfTourCreator<TWrapper, TModel> : IPartialHalfTourCreator where TWrapper : IPartialHalfTourWrapper where TModel : IPartialHalfTour, new() {
+        IPartialHalfTour IPartialHalfTourCreator.CreateModel() {
+            return CreateModel();
+        }
 
-		private static TModel CreateModel() {
-			return new TModel();
-		}
+        private static TModel CreateModel() {
+            return new TModel();
+        }
 
-		IPartialHalfTourWrapper IPartialHalfTourCreator.CreateWrapper(IPartialHalfTour partialHalfTour, IHouseholdDayWrapper householdDayWrapper) {
-			return CreateWrapper(partialHalfTour, householdDayWrapper);
-		}
+        IPartialHalfTourWrapper IPartialHalfTourCreator.CreateWrapper(IPartialHalfTour partialHalfTour, IHouseholdDayWrapper householdDayWrapper) {
+            return CreateWrapper(partialHalfTour, householdDayWrapper);
+        }
 
-		private static TWrapper CreateWrapper(IPartialHalfTour partialHalfTour, IHouseholdDayWrapper householdDayWrapper) {
-			var type = typeof (TWrapper);
-			var instance = Activator.CreateInstance(type, partialHalfTour, householdDayWrapper);
+        private static TWrapper CreateWrapper(IPartialHalfTour partialHalfTour, IHouseholdDayWrapper householdDayWrapper) {
+            var type = typeof(TWrapper);
+            var instance = Activator.CreateInstance(type, partialHalfTour, householdDayWrapper);
 
-			return (TWrapper) instance;
-		}
-	}
+            return (TWrapper)instance;
+        }
+    }
 }
