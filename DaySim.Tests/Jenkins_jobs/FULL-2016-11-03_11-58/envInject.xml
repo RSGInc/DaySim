@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<org.jenkinsci.plugins.envinject.EnvInjectNodeProperty_-EnvInjectNodePropertyDescriptor plugin="envinject@1.92.1">
+  <envInjectGlobalPasswordEntries>
+    <org.jenkinsci.plugins.envinject.EnvInjectGlobalPasswordEntry>
+      <name>PeterVermont</name>
+      <value>ZHGDWCKB8mjJjjd//0q8ZyUf+wMlJ5Q8tBhCry9EieA=</value>
+    </org.jenkinsci.plugins.envinject.EnvInjectGlobalPasswordEntry>
+  </envInjectGlobalPasswordEntries>
+</org.jenkinsci.plugins.envinject.EnvInjectNodeProperty_-EnvInjectNodePropertyDescriptor>
