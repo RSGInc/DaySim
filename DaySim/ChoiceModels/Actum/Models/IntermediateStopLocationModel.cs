@@ -140,7 +140,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             var availableWindow = timeWindow.AvailableWindow(destinationDepartureTime, Global.Settings.TimeDirections.Both);
 
             var segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetIntermediateStopSegment(trip.DestinationPurpose, trip.Tour.Mode);
-            var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, trip.Tour, trip, choice);
+            var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, trip.Tour, trip);
             var intermediateStopLocationUtilities = new IntermediateStopLocationUtilities(trip, sampleSize, destinationDepartureTime, availableWindow);
 
             //#if TRACE

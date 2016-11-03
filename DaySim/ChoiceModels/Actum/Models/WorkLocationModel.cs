@@ -87,7 +87,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false) {
             var segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.Work, Global.Settings.TourPriorities.HomeBasedTour, Global.Settings.Modes.Sov, person.PersonType);
-            var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, person.Household.ResidenceParcel, choice);
+            var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, person.Household.ResidenceParcel);
             var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
             var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
             var workLocationUtilites = new WorkLocationUtilities(person, sampleSize, destinationArrivalTime, destinationDepartureTime);

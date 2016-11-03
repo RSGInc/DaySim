@@ -493,7 +493,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             var segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
             if (destinationIsConstrained) sampleSize = 1;  // so that only the constrained destination ends up in the sample
             var chosenDestination = choice == null ? null : choice.Destination;
-            var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, tour.OriginParcel, chosenDestination);
+            var destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, chosenDestination, tour.OriginParcel);
             var tourDestinationUtilities = new TourDestinationUtilities(tour, sampleSize, secondaryFlag, personDay.GetIsWorkOrSchoolPattern().ToFlag(), personDay.GetIsOtherPattern().ToFlag(), fastestAvailableTimeOfDay, maxAvailableMinutes);
             // get destination sample and perform code that used to be in SetUtilities below
             var sampleItems = destinationSampler.SampleAndReturnTourDestinations(tourDestinationUtilities);

@@ -12,6 +12,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DaySim.Framework.Sampling {
@@ -39,13 +40,26 @@ namespace DaySim.Framework.Sampling {
 
         private readonly int _sampleSize;
 
-        private int _alternativeIndex;
+        private readonly int _segmentZonesIndex;
 
-        public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segment, int sampleSize, ITourWrapper tour, ITripWrapper trip, IParcel chosenParcel) {
+        private int _alternativeIndex;
+        private const int NULL_DESTINATION_WARNING = 1000000;
+        private const int NULL_DESTINATION_ERROR = NULL_DESTINATION_WARNING * 10;   //MUST BE A MULTIPLE OF NULL_DESTINATION_WARNING
+
+        private DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segmentZonesIndex, int sampleSize, IParcel chosenParcel) {
             _choiceProbabilityCalculator = choiceProbabilityCalculator;
-            _segmentZones = Global.SegmentZones[segment];
+            _segmentZonesIndex = segmentZonesIndex;
+            _segmentZones = Global.SegmentZones[_segmentZonesIndex];
             _sampleSize = sampleSize;
 
+            if (chosenParcel != null) {
+                _chosenParcel = chosenParcel;
+                _chosenSegmentZone = _segmentZones[chosenParcel.ZoneId];
+            }
+
+        }
+
+        public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segmentZonesIndex, int sampleSize, IParcel chosenParcel, ITourWrapper tour, ITripWrapper trip) : this(choiceProbabilityCalculator, segmentZonesIndex, sampleSize, chosenParcel) {
             _tourOriginParcel = tour.OriginParcel;
             _tourOriginSegmentZone = _segmentZones[_tourOriginParcel.ZoneId];
 
@@ -56,46 +70,23 @@ namespace DaySim.Framework.Sampling {
 
             }
 
-            if (chosenParcel != null) {
-                _chosenParcel = chosenParcel;
-                _chosenSegmentZone = _segmentZones[chosenParcel.ZoneId];
-            }
-
             if (_choiceProbabilityCalculator.ModelIsInEstimationMode && chosenParcel == null) {
                 throw new ChosenParcelNotSetInEstimationModeException();
             }
         }
 
-        //		public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segment, int sampleSize, IParcel originParcel, IParcel excludedParcel, IParcel chosenParcel) {
-        //			_choiceProbabilityCalculator = choiceProbabilityCalculator;
-        //			_segmentZones = Global.SegmentZones[segment];
-        //			_sampleSize = sampleSize;
-        //
-        //			_originParcel = originParcel;
-        //			_originSegmentZone = _segmentZones[originParcel.ZoneId];
-        //
-        //			if (excludedParcel != null) {
-        //				_excludedParcel = excludedParcel;
-        //				_excludedSegmentZone = _segmentZones[excludedParcel.ZoneId];
-        //			}
-        //
-        //			if (chosenParcel != null) {
-        //				_chosenParcel = chosenParcel;
-        //				_chosenSegmentZone = _segmentZones[chosenParcel.ZoneId];
-        //			}
-        //
-        //			if (_choiceProbabilityCalculator.ModelIsInEstimationMode && chosenParcel == null) {
-        //				throw new ChosenParcelNotSetInEstimationModeException();
-        //			}
-        //		}
 
-        public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segment, int sampleSize, IParcel originParcel, IParcel excludedParcel, IParcel usualParcel, IParcel chosenParcel) {
-            _choiceProbabilityCalculator = choiceProbabilityCalculator;
-            _segmentZones = Global.SegmentZones[segment];
-            _sampleSize = sampleSize;
-
+        public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segmentZonesIndex, int sampleSize, IParcel chosenParcel, IParcel originParcel) : this(choiceProbabilityCalculator, segmentZonesIndex, sampleSize, chosenParcel) {
             _originParcel = originParcel;
             _originSegmentZone = _segmentZones[originParcel.ZoneId];
+
+            //JLB 20120329 removed these lines because usual work location model doesn't set a sampled dest to chosen when it is the residence location
+            //			if (_choiceProbabilityCalculator.ModelIsInEstimationMode && chosenParcel == null) {
+            //				throw new ChosenParcelNotSetInEstimationModeException();
+            //			}
+        }
+
+        public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segmentZonesIndex, int sampleSize, IParcel chosenParcel, IParcel originParcel, IParcel excludedParcel, IParcel usualParcel) : this(choiceProbabilityCalculator, segmentZonesIndex, sampleSize, chosenParcel, originParcel) {
 
             if (excludedParcel != null) {
                 _excludedParcel = excludedParcel;
@@ -106,35 +97,12 @@ namespace DaySim.Framework.Sampling {
                 _usualParcel = usualParcel;
                 _usualSegmentZone = _segmentZones[usualParcel.ZoneId];
             }
-
-            if (chosenParcel != null) {
-                _chosenParcel = chosenParcel;
-                _chosenSegmentZone = _segmentZones[chosenParcel.ZoneId];
-            }
-
             if (_choiceProbabilityCalculator.ModelIsInEstimationMode && chosenParcel == null) {
                 throw new ChosenParcelNotSetInEstimationModeException();
             }
         }
 
-        public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segment, int sampleSize, IParcel originParcel, IParcel chosenParcel) {
-            _choiceProbabilityCalculator = choiceProbabilityCalculator;
-            _segmentZones = Global.SegmentZones[segment];
-            _sampleSize = sampleSize;
 
-            _originParcel = originParcel;
-            _originSegmentZone = _segmentZones[originParcel.ZoneId];
-
-            if (chosenParcel != null) {
-                _chosenParcel = chosenParcel;
-                _chosenSegmentZone = _segmentZones[chosenParcel.ZoneId];
-            }
-
-            //JLB 20120329 removed these lines because usual work location model doesn't set a sampled dest to chosen when it is the residence location
-            //			if (_choiceProbabilityCalculator.ModelIsInEstimationMode && chosenParcel == null) {
-            //				throw new ChosenParcelNotSetInEstimationModeException();
-            //			}
-        }
 
         public int SampleTourDestinations(ISamplingUtilities samplingUtilities) {
             var sampleItems = new TourSampleItem[_sampleSize];
@@ -144,14 +112,25 @@ namespace DaySim.Framework.Sampling {
 
                 var randomUniform01 = new RandomUniform01(samplingUtilities.SeedValues[i]);
 
+                int nullDestinationCounter = 0;
                 // draw repeatedly until a sample item is drawn
                 do {
                     sampleItem = GetDestination<TourSampleItem>(randomUniform01, _originParcel, _originSegmentZone, _excludedParcel, _excludedSegmentZone);
                     if (sampleItem != null) {
                         sampleItems[i] = sampleItem;
-                    }
+                    } else {
+                        ++nullDestinationCounter;
+                        if ((nullDestinationCounter % NULL_DESTINATION_WARNING) == 0) {
+                            OutputDebugForFailedDestination
+                                (samplingUtilities, sampleItem, randomUniform01, nullDestinationCounter);
+                            if (nullDestinationCounter >= NULL_DESTINATION_ERROR) {
+                                throw new Exception(OutputDebugForFailedDestination
+                                (samplingUtilities, sampleItem, randomUniform01, nullDestinationCounter));
+                            }
+                        }
+                    }   //end else got null returned
                 } while (sampleItem == null);
-            }
+            }   //end loop for _sampleSize
 
             var sample = new Dictionary<TourSampleItem, int>();
 
@@ -201,6 +180,27 @@ namespace DaySim.Framework.Sampling {
             return sample.Count;
         }
 
+        private string OutputDebugForFailedDestination(ISamplingUtilities samplingUtilities, TourSampleItem sampleItem, RandomUniform01 randomUniform01, int nullDestinationCounter) {
+            string errorMessage = "GetDestination<TourSampleItem> returned null " + nullDestinationCounter + ""
+                + " times."
+                + " _originParcel.Id:" + _originParcel.Id
+                 + " _originParcel.ZoneId:" + _originParcel.ZoneId
+                + " _originParcel.ZoneKey: " + _originParcel.ZoneKey
+                + " _originSegmentZone.Id: " + _originSegmentZone.Id
+                + " _originSegmentZone.Key: " + _originSegmentZone.Key
+                + " _originSegmentZone.TotalWeight: " + _originSegmentZone.TotalWeight
+                + " _excludedParcel.Id:" + _excludedParcel.Id
+                 + " _excludedParcel.ZoneId:" + _excludedParcel.ZoneId
+                + " _excludedParcel.ZoneKey: " + _excludedParcel.ZoneKey
+                + " _excludedSegmentZone.Id: " + _excludedSegmentZone.Id
+                + " _excludedSegmentZone.Key: " + _excludedSegmentZone.Key
+                + " _excludedSegmentZone.TotalWeight: " + _excludedSegmentZone.TotalWeight
+                + " _segmentZonesIndex (used in DestinationSampler constructor to _segmentZones = Global.SegmentZones[_segmentZonesIndex]: " + _segmentZonesIndex
+            + " samplingUtilities: " + Newtonsoft.Json.JsonConvert.SerializeObject(samplingUtilities);
+            Global.PrintFile.WriteLine(errorMessage, /* writeToConsole */ true);
+            return errorMessage;
+        }
+
         public Dictionary<TourSampleItem, int> SampleAndReturnTourDestinations(ISamplingUtilities samplingUtilities) {
             var sampleItems = new TourSampleItem[_sampleSize];
 
@@ -208,16 +208,22 @@ namespace DaySim.Framework.Sampling {
                 TourSampleItem sampleItem;
 
                 var randomUniform01 = new RandomUniform01(samplingUtilities.SeedValues[i]);
-
+                int nullDestinationCounter = 0;
                 // draw repeatedly until a sample item is drawn
                 do {
                     sampleItem = GetDestination<TourSampleItem>(randomUniform01, _originParcel, _originSegmentZone, _excludedParcel, _excludedSegmentZone);
                     if (sampleItem != null) {
-                        sampleItems[i] = sampleItem;
-                    }
+                        if ((nullDestinationCounter % NULL_DESTINATION_WARNING) == 0) {
+                            OutputDebugForFailedDestination
+                                (samplingUtilities, sampleItem, randomUniform01, nullDestinationCounter);
+                            if (nullDestinationCounter >= NULL_DESTINATION_ERROR) {
+                                throw new Exception(OutputDebugForFailedDestination
+                                (samplingUtilities, sampleItem, randomUniform01, nullDestinationCounter));
+                            }
+                        }
+                    }   //end else got null returned
                 } while (sampleItem == null);
-            }
-
+            }   //end loop for _sampleSize
             var sample = new Dictionary<TourSampleItem, int>();
 
             bool skipChoiceProbabilityCalculator = true;
@@ -438,7 +444,7 @@ namespace DaySim.Framework.Sampling {
         }
 
         //private sealed class TourSampleItem : SampleItem {
-        public class TourSampleItem : SampleItem {
+        public class TourSampleItem: SampleItem {
             private double _weightFromOrigin;
             private double _totalWeightFromOrigin;
 
@@ -497,7 +503,7 @@ namespace DaySim.Framework.Sampling {
             }
         }
 
-        private sealed class IntermediateStopSampleItem : SampleItem {
+        private sealed class IntermediateStopSampleItem: SampleItem {
             private double _tourWeightFromOrigin;
             private double _totalTourWeightFromOrigin;
             private double _tripWeightFromOrigin;
@@ -560,7 +566,7 @@ namespace DaySim.Framework.Sampling {
         }
 
         //private abstract class SampleItem : ISampleItem {
-        public abstract class SampleItem : ISampleItem {
+        public abstract class SampleItem: ISampleItem {
             public int ParcelId { get; protected set; }
 
             protected double SizeFromDestination { get; set; }
