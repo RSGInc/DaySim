@@ -13,6 +13,7 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
 using System;
@@ -59,15 +60,14 @@ namespace DaySim.ChoiceModels.H {
             }
 
 #if RELEASE
-			try {
+            try {
 #endif
-            ChoiceModelFactory.TotalTimesHouseholdModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-            RunHouseholdModelSuite(_household);
+                ChoiceModelFactory.TotalTimesHouseholdModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                RunHouseholdModelSuite(_household);
 #if RELEASE
-			}
-			catch (Exception e) {
-				throw new HouseholdModelException(string.Format("Error running household models for {0}.", _household), e);
-			}
+            } catch (Exception e) {
+                throw new HouseholdModelException(string.Format("Error running household models for {0}.", _household), e);
+            }
 #endif
         }
 
@@ -78,15 +78,14 @@ namespace DaySim.ChoiceModels.H {
 
             foreach (var person in _household.Persons) {
 #if RELEASE
-				try {
+                try {
 #endif
-                ChoiceModelFactory.TotalTimesPersonModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-                RunPersonModelSuite(person);
+                    ChoiceModelFactory.TotalTimesPersonModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                    RunPersonModelSuite(person);
 #if RELEASE
-				}
-				catch (Exception e) {
-					throw new PersonModelException(string.Format("Error running person models for {0}.", person), e);
-				}
+                } catch (Exception e) {
+                    throw new PersonModelException(string.Format("Error running person models for {0}.", person), e);
+                }
 #endif
             }
         }
@@ -100,77 +99,76 @@ namespace DaySim.ChoiceModels.H {
 
             foreach (HouseholdDayWrapper householdDay in _household.HouseholdDays) {
 #if RELEASE
-				try {
+                try {
 #endif
-                ChoiceModelFactory.TotalHouseholdDays[ParallelUtility.threadLocalAssignedIndex.Value]++;  //TODO:  John M.  This replaces TotalPersonDays, but TotalPersonDays is used in Engine, so that code probably needs to be patched
-                var simulatedAnInvalidHouseholdDay = false;
+                    ChoiceModelFactory.TotalHouseholdDays[ParallelUtility.threadLocalAssignedIndex.Value]++;  //TODO:  John M.  This replaces TotalPersonDays, but TotalPersonDays is used in Engine, so that code probably needs to be patched
+                    var simulatedAnInvalidHouseholdDay = false;
 
-                while (!householdDay.IsValid && (!Global.Configuration.IsInEstimationMode || !simulatedAnInvalidHouseholdDay)) { //don't retry household in estimation mode
+                    while (!householdDay.IsValid && (!Global.Configuration.IsInEstimationMode || !simulatedAnInvalidHouseholdDay)) { //don't retry household in estimation mode
 
-                    if (Global.Configuration.InvalidAttemptsBeforeContinue > 0 && householdDay.AttemptedSimulations > Global.Configuration.InvalidAttemptsBeforeContinue) {
-                        Global.PrintFile.WriteLine("***** Household day for household {0} invalid after {1} attempts", householdDay.Household.Id, householdDay.AttemptedSimulations);
-                        break;
-                    } else
+                        if (Global.Configuration.InvalidAttemptsBeforeContinue > 0 && householdDay.AttemptedSimulations > Global.Configuration.InvalidAttemptsBeforeContinue) {
+                            Global.PrintFile.WriteLine("***** Household day for household {0} invalid after {1} attempts", householdDay.Household.Id, householdDay.AttemptedSimulations);
+                            break;
+                        } else
 
-                        householdDay.IsValid = true;
-                    foreach (var personDay in householdDay.PersonDays) {
-                        personDay.IsValid = true;
-                    }
-
-                    //mbtrace
-                    Global.TraceResults = (Global.Configuration.TraceModelResultValidity && householdDay.AttemptedSimulations >= Global.Configuration.InvalidAttemptsBeforeTrace);
-                    //mbtrace
-                    if (Global.TraceResults) Global.PrintFile.WriteLine("> RunHouseholdDayModels for household {0}, attempt {1}", householdDay.Household.Id, householdDay.AttemptedSimulations);
-
-                    ChoiceModelFactory.TotalTimesHouseholdDayModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-                    RunHouseholdDayModelSuite((HouseholdDayWrapper)householdDay);
-
-                    // householdDay is invalid if any person day is invalid
-                    foreach (var personDay in householdDay.PersonDays) {
-                        if (personDay.IsValid == false) {
-                            householdDay.IsValid = false;
-                        }
-                    }
-
-                    // exits the loop if the household's day is valid
-                    if (householdDay.IsValid) {
-                        // after updating park and ride lot loads
+                            householdDay.IsValid = true;
                         foreach (var personDay in householdDay.PersonDays) {
-                            if (!Global.Configuration.IsInEstimationMode && personDay.Tours != null) {
-                                foreach (var tour in personDay.Tours.Where(tour => tour.Mode == Global.Settings.Modes.ParkAndRide)) {
-                                    tour.SetParkAndRideStay();
-                                }
+                            personDay.IsValid = true;
+                        }
+
+                        //mbtrace
+                        Global.TraceResults = (Global.Configuration.TraceModelResultValidity && householdDay.AttemptedSimulations >= Global.Configuration.InvalidAttemptsBeforeTrace);
+                        //mbtrace
+                        if (Global.TraceResults) Global.PrintFile.WriteLine("> RunHouseholdDayModels for household {0}, attempt {1}", householdDay.Household.Id, householdDay.AttemptedSimulations);
+
+                        ChoiceModelFactory.TotalTimesHouseholdDayModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                        RunHouseholdDayModelSuite((HouseholdDayWrapper)householdDay);
+
+                        // householdDay is invalid if any person day is invalid
+                        foreach (var personDay in householdDay.PersonDays) {
+                            if (personDay.IsValid == false) {
+                                householdDay.IsValid = false;
                             }
                         }
 
-                        break;
+                        // exits the loop if the household's day is valid
+                        if (householdDay.IsValid) {
+                            // after updating park and ride lot loads
+                            foreach (var personDay in householdDay.PersonDays) {
+                                if (!Global.Configuration.IsInEstimationMode && personDay.Tours != null) {
+                                    foreach (var tour in personDay.Tours.Where(tour => tour.Mode == Global.Settings.Modes.ParkAndRide)) {
+                                        tour.SetParkAndRideStay();
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+
+
+                        householdDay.AttemptedSimulations++;
+                        foreach (var personDay in householdDay.PersonDays) {
+                            personDay.AttemptedSimulations++;
+                        }
+
+                        if (!simulatedAnInvalidHouseholdDay) {
+                            simulatedAnInvalidHouseholdDay = true;
+
+                            // counts unique instances where a household's day is invalid
+                            ChoiceModelFactory.TotalInvalidAttempts[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                        }
+
+                        if (householdDay.Household.Id == 2033) { //3556) { // 35552) {
+                            bool testbreak = true;
+                        }
+
+                        householdDay.Reset();
                     }
-
-
-                    householdDay.AttemptedSimulations++;
-                    foreach (var personDay in householdDay.PersonDays) {
-                        personDay.AttemptedSimulations++;
-                    }
-
-                    if (!simulatedAnInvalidHouseholdDay) {
-                        simulatedAnInvalidHouseholdDay = true;
-
-                        // counts unique instances where a household's day is invalid
-                        ChoiceModelFactory.TotalInvalidAttempts[ParallelUtility.threadLocalAssignedIndex.Value]++;
-                    }
-
-                    if (householdDay.Household.Id == 2033) { //3556) { // 35552) {
-                        bool testbreak = true;
-                    }
-
-                    householdDay.Reset();
-                }
 
 #if RELEASE
-				}
-				catch (Exception e) {
-					throw new HouseholdDayModelException(string.Format("Error running household day models for {0}.", _household), e);
-				}
+                } catch (Exception e) {
+                    throw new HouseholdDayModelException(string.Format("Error running household day models for {0}.", _household), e);
+                }
 #endif
 
 
@@ -205,26 +203,25 @@ namespace DaySim.ChoiceModels.H {
 
             foreach (var subtour in tour.Subtours) {
 #if RELEASE
-				try {
+                try {
 #endif
-                ChoiceModelFactory.TotalTimesTourSubtourModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-                RunSubtourModelSuite(subtour, householdDay);
+                    ChoiceModelFactory.TotalTimesTourSubtourModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                    RunSubtourModelSuite(subtour, householdDay);
 
-                if (!subtour.PersonDay.IsValid) {
-                    return;
-                }
+                    if (!subtour.PersonDay.IsValid) {
+                        return;
+                    }
 
-                ChoiceModelFactory.TotalTimesSubtourTripModelsRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-                RunSubtourTripModels(subtour, personDay, householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin);
+                    ChoiceModelFactory.TotalTimesSubtourTripModelsRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                    RunSubtourTripModels(subtour, personDay, householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin);
 
-                if (!subtour.PersonDay.IsValid) {
-                    return;
-                }
+                    if (!subtour.PersonDay.IsValid) {
+                        return;
+                    }
 #if RELEASE
-				}
-				catch (Exception e) {
-					throw new SubtourModelException(string.Format("Error running subtour models for {0}.", subtour), e);
-				}
+                } catch (Exception e) {
+                    throw new SubtourModelException(string.Format("Error running subtour models for {0}.", subtour), e);
+                }
 #endif
             }
         }
@@ -384,24 +381,23 @@ namespace DaySim.ChoiceModels.H {
 
             foreach (var personDay in householdDay.PersonDays) {
 #if RELEASE
-				try {
+                try {
 #endif
-                ChoiceModelFactory.TotalTimesPersonDayModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-                RunPersonDayModelSuite(personDay, householdDay);
+                    ChoiceModelFactory.TotalTimesPersonDayModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                    RunPersonDayModelSuite(personDay, householdDay);
 
-                if (personDay.IsValid == false) {
-                    return;
-                }
-                if (!Global.Configuration.IsInEstimationMode) {
-                    personDay.SetHomeBasedNonMandatoryTours();
-                }
+                    if (personDay.IsValid == false) {
+                        return;
+                    }
+                    if (!Global.Configuration.IsInEstimationMode) {
+                        personDay.SetHomeBasedNonMandatoryTours();
+                    }
 
 
 #if RELEASE
-				}
-				catch (Exception e) {
-					throw new PersonDayModelException(string.Format("Error running person-day models for {0}.", personDay), e);
-				}
+                } catch (Exception e) {
+                    throw new PersonDayModelException(string.Format("Error running person-day models for {0}.", personDay), e);
+                }
 #endif
             }
 
@@ -2429,66 +2425,65 @@ namespace DaySim.ChoiceModels.H {
 
         private void RunNonMandatoryTourModelSuite(TourWrapper tour, PersonDayWrapper personDay, HouseholdDayWrapper householdDay) {
 #if RELEASE
-				try {
+            try {
 #endif
-            //mbtrace
-            if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > RunNonMandatoryTourModelSuite for Household {0} Person {1} Tour {2}", householdDay.Household.Id, personDay.Person.Sequence, tour.Sequence);
-            tour.SetHomeBasedIsSimulated();
+                //mbtrace
+                if (Global.TraceResults) Global.PrintFile.WriteLine("> > > > RunNonMandatoryTourModelSuite for Household {0} Person {1} Tour {2}", householdDay.Household.Id, personDay.Person.Sequence, tour.Sequence);
+                tour.SetHomeBasedIsSimulated();
 
-            IParcelWrapper destinationParcel = null;
-            int mode = 0;
-            int destinationArrivalTime = 0;
-            int destinationDepartureTime = 0;
+                IParcelWrapper destinationParcel = null;
+                int mode = 0;
+                int destinationArrivalTime = 0;
+                int destinationDepartureTime = 0;
 
-            if (tour.FullHalfTour1Sequence > 0 || tour.FullHalfTour2Sequence > 0 || tour.JointTourSequence > 0 || tour.PartialHalfTour1Sequence > 0 || tour.PartialHalfTour2Sequence > 0) {
-                destinationParcel = tour.DestinationParcel;
-                mode = tour.Mode;
-                destinationArrivalTime = tour.DestinationArrivalTime;
-                destinationDepartureTime = tour.DestinationDepartureTime;
-            }
+                if (tour.FullHalfTour1Sequence > 0 || tour.FullHalfTour2Sequence > 0 || tour.JointTourSequence > 0 || tour.PartialHalfTour1Sequence > 0 || tour.PartialHalfTour2Sequence > 0) {
+                    destinationParcel = tour.DestinationParcel;
+                    mode = tour.Mode;
+                    destinationArrivalTime = tour.DestinationArrivalTime;
+                    destinationDepartureTime = tour.DestinationDepartureTime;
+                }
 
-            SetTourDestination(tour, householdDay, destinationParcel);
+                SetTourDestination(tour, householdDay, destinationParcel);
 
-            if (!tour.PersonDay.IsValid) {
-                return;
-            }
+                if (!tour.PersonDay.IsValid) {
+                    return;
+                }
 
-            SetTourModeAndTime(householdDay, tour, mode, destinationArrivalTime, destinationDepartureTime);
+                SetTourModeAndTime(householdDay, tour, mode, destinationArrivalTime, destinationDepartureTime);
 
-            if (!tour.PersonDay.IsValid) {
-                return;
-            }
+                if (!tour.PersonDay.IsValid) {
+                    return;
+                }
 
-            tour.DestinationModeAndTimeHaveBeenSimulated = true;  // JLB 20140421 added this line
+                tour.DestinationModeAndTimeHaveBeenSimulated = true;  // JLB 20140421 added this line
 
-            //JLB 20130716 comment out the temporary updating of time window
-            //UpdateTimeWindowForTourDestinationTimes(tour);
+                //JLB 20130716 comment out the temporary updating of time window
+                //UpdateTimeWindowForTourDestinationTimes(tour);
 
-            int firstDirection = Global.Settings.TourDirections.OriginToDestination;
-            int lastDirection = Global.Settings.TourDirections.DestinationToOrigin;
+                int firstDirection = Global.Settings.TourDirections.OriginToDestination;
+                int lastDirection = Global.Settings.TourDirections.DestinationToOrigin;
 
-            //return if both half tours have already been simulated;
-            if (tour.JointTourSequence > 0 || (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour1Sequence > 0 && tour.FullHalfTour2Sequence > 0)) {
-                return;
-            }
-            // only simulate escort half tours that have not already been simulated as part of fully joint half tours
-            if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour1Sequence > 0) {
-                firstDirection = Global.Settings.TourDirections.DestinationToOrigin;
-            } else if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour2Sequence > 0) {
-                lastDirection = Global.Settings.TourDirections.OriginToDestination;
-            }
-            ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-            RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection);
-            if (!personDay.IsValid) {
-                return;
-            }
-            UpdateTimeWindowForTourDestinationTimes(tour);
+                //return if both half tours have already been simulated;
+                if (tour.JointTourSequence > 0 || (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour1Sequence > 0 && tour.FullHalfTour2Sequence > 0)) {
+                    return;
+                }
+                // only simulate escort half tours that have not already been simulated as part of fully joint half tours
+                if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour1Sequence > 0) {
+                    firstDirection = Global.Settings.TourDirections.DestinationToOrigin;
+                } else if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour2Sequence > 0) {
+                    lastDirection = Global.Settings.TourDirections.OriginToDestination;
+                }
+                ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection);
+                if (!personDay.IsValid) {
+                    return;
+                }
+                UpdateTimeWindowForTourDestinationTimes(tour);
 
 #if RELEASE
-				}
-				catch (Exception e) {
-					throw new TourModelException(string.Format("Error running tour models for {0}.", tour), e);
-				}
+            } catch (Exception e) {
+                throw new TourModelException(string.Format("Error running tour models for {0}.", tour), e);
+            }
 #endif
 
 
@@ -3098,27 +3093,26 @@ namespace DaySim.ChoiceModels.H {
                     var trip = halfTour.Trips[i];
 
 #if RELEASE
-					try {
+                    try {
 #endif
-                    halfTour.SimulatedTrips++;
+                        halfTour.SimulatedTrips++;
 
-                    if (trip.IsHalfTourFromOrigin) {
-                        tour.HalfTour1Trips++;
-                    } else {
-                        tour.HalfTour2Trips++;
-                    }
+                        if (trip.IsHalfTourFromOrigin) {
+                            tour.HalfTour1Trips++;
+                        } else {
+                            tour.HalfTour2Trips++;
+                        }
 
-                    ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-                    RunTripModelSuite(householdDay, personDay, tour, halfTour, trip);
+                        ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                        RunTripModelSuite(householdDay, personDay, tour, halfTour, trip);
 
-                    if (!trip.PersonDay.IsValid) {
-                        return;
-                    }
+                        if (!trip.PersonDay.IsValid) {
+                            return;
+                        }
 #if RELEASE
-					}
-					catch (Exception e) {
-						throw new TripModelException(string.Format("Error running trip models for {0}.", trip), e);
-					}
+                    } catch (Exception e) {
+                        throw new TripModelException(string.Format("Error running trip models for {0}.", trip), e);
+                    }
 #endif
                 }
             }
@@ -3430,32 +3424,31 @@ namespace DaySim.ChoiceModels.H {
                     var sourceTrip = sourceHalfTour.Trips[i];
 
 #if RELEASE
-					try {
+                    try {
 #endif
-                    halfTour.SimulatedTrips++;
+                        halfTour.SimulatedTrips++;
 
-                    if (trip.IsHalfTourFromOrigin) {
-                        tour.HalfTour1Trips++;
-                    } else {
-                        tour.HalfTour2Trips++;
-                    }
+                        if (trip.IsHalfTourFromOrigin) {
+                            tour.HalfTour1Trips++;
+                        } else {
+                            tour.HalfTour2Trips++;
+                        }
 
-                    ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+                        ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-                    if (!trip.PersonDay.IsValid) {
-                        bool testbreak = true;
-                    }
+                        if (!trip.PersonDay.IsValid) {
+                            bool testbreak = true;
+                        }
 
-                    RunTripCloneSuite(sourceTour, sourceHalfTour, sourceTrip, tour, halfTour, trip);
+                        RunTripCloneSuite(sourceTour, sourceHalfTour, sourceTrip, tour, halfTour, trip);
 
-                    if (!trip.PersonDay.IsValid) {
-                        return;
-                    }
+                        if (!trip.PersonDay.IsValid) {
+                            return;
+                        }
 #if RELEASE
-					}
-					catch (Exception e) {
-						throw new TripModelException(string.Format("Error running trip models for {0}.", trip), e);
-					}
+                    } catch (Exception e) {
+                        throw new TripModelException(string.Format("Error running trip models for {0}.", trip), e);
+                    }
 #endif
                 }
             }
