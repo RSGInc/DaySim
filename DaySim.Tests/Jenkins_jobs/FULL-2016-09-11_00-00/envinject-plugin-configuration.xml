@@ -1,5 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<org.jenkinsci.plugins.envinject.EnvInjectPluginConfiguration plugin="envinject@1.92.1">
-  <hideInjectedVars>false</hideInjectedVars>
-  <enablePermissions>false</enablePermissions>
-</org.jenkinsci.plugins.envinject.EnvInjectPluginConfiguration>
