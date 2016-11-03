@@ -6,11 +6,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using DaySim.DomainModels.Default.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
@@ -20,7 +15,9 @@ using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
 using DaySim.Sampling;
-using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DaySim.ChoiceModels.H.Models {
     public class IntermediateStopLocationModel : ChoiceModel {

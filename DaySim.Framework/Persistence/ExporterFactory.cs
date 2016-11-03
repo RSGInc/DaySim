@@ -5,11 +5,11 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.Framework.DomainModels.Models;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
-using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.Persistence {
     public sealed class ExporterFactory {

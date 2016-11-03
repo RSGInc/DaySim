@@ -1,5 +1,4 @@
 ﻿using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 
 namespace DaySim.PathTypeModels {

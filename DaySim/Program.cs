@@ -5,18 +5,15 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System;
-using DaySim.DomainModels.Factories;
 using DaySim.Framework.Core;
 using DaySim.Settings;
 using NDesk.Options;
-using SimpleInjector;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.IO;
-using DaySim.DomainModels.Default;
 
 namespace DaySim {
     public static class Program {

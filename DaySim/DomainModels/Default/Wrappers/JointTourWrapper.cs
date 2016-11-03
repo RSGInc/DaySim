@@ -5,13 +5,12 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System.Text;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Persisters;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
-using SimpleInjector;
+using System.Text;
 
 namespace DaySim.DomainModels.Default.Wrappers {
     [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]

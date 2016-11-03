@@ -6,14 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System.Collections.Generic;
-using System.IO;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Persisters;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Sampling;
-using SimpleInjector;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DaySim.Sampling {
     public static class SamplingWeightsExporter {

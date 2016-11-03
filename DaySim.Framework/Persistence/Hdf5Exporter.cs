@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using DaySim.Framework.Core;
+﻿using DaySim.Framework.Core;
 using HDF5DotNet;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DaySim.Framework.Persistence {
     public class Hdf5Exporter<TModel> {

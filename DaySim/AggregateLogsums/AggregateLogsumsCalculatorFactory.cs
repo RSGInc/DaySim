@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DaySim.Framework.Core;
+using System;
 using System.Collections.Generic;
-using DaySim.Framework.Core;
 
 namespace DaySim.AggregateLogsums {
     class AggregateLogsumsCalculatorFactory {

@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using DaySim.Framework.Core;
+using DaySim.Framework.ShadowPricing;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using DaySim.Framework.Core;
-using DaySim.Framework.ShadowPricing;
 
 namespace DaySim.ShadowPricing {
     public static class ShadowPriceReader {

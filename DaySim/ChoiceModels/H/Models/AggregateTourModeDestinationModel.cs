@@ -6,9 +6,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -16,7 +13,9 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
 using DaySim.Sampling;
-using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 //using System.IO;
 //using System.Runtime.Serialization.Formatters.Binary;
 //using System.Threading.Tasks;

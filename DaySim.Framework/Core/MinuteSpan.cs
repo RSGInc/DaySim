@@ -6,7 +6,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
 
 namespace DaySim.Framework.Core {
     public sealed class MinuteSpan : IMinuteSpan {

@@ -6,12 +6,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using DaySim.Framework.DomainModels.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.Core {
     public static class Extensions {

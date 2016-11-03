@@ -21,18 +21,14 @@
 // You should have received a copy of the GNU General Public License
 // along with DaySim. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using DaySim.DomainModels;
-using DaySim.DomainModels.Actum;
 using DaySim.DomainModels.Actum.Wrappers;
-using DaySim.DomainModels.Default;
-using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.Roster;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DaySim.ChoiceModels.Actum.Models {
     public class IntermediateStopGenerationModel : ChoiceModel {

@@ -1,5 +1,4 @@
 ﻿using DaySim.Framework.ChoiceModels;
-using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.Default.Models {

@@ -6,24 +6,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DaySim.ChoiceModels.Actum.Models;
 //using DaySim.ChoiceModels.Default.Models;
-using DaySim.DomainModels.Default.Models;
 using DaySim.DomainModels.Default.Wrappers;
-using DaySim.DomainModels.Extensions;
-using DaySim.DomainModels.Factories;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
-using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
-using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
 using HouseholdWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdWrapper;
 using IntermediateStopGenerationModel = DaySim.ChoiceModels.Actum.Models.IntermediateStopGenerationModel;

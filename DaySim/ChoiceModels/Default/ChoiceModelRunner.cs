@@ -6,17 +6,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Linq;
 using DaySim.ChoiceModels.Default.Models;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
-using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
-using SimpleInjector;
+using System.Linq;
 //using TransitPassOwnershipModel = DaySim.ChoiceModels.H.Models.TransitPassOwnershipModel;
 
 namespace DaySim.ChoiceModels.Default {

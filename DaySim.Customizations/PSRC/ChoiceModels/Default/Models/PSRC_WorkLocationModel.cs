@@ -1,6 +1,5 @@
 ﻿using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.DomainModels.Wrappers;
-using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Default.Models {
     class PSRC_WorkLocationModel : WorkLocationModel {

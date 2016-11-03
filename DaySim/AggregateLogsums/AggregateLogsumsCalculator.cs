@@ -6,12 +6,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading.Tasks;
 using DaySim.DomainModels.Factories;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
@@ -19,7 +13,12 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
-using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading.Tasks;
 
 namespace DaySim.AggregateLogsums {
     public sealed class AggregateLogsumsCalculator : IAggregateLogsumsCalculator {

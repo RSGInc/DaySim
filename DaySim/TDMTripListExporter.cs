@@ -6,11 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.IO;
-using DaySim.DomainModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
+using System;
+using System.IO;
 
 namespace DaySim {
     public sealed class TDMTripListExporter : IDisposable {

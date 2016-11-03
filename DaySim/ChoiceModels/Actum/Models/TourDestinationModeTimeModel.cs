@@ -6,25 +6,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using DaySim.DomainModels;
-using DaySim.DomainModels.Actum;
-using DaySim.DomainModels.Actum.Wrappers;
-using DaySim.DomainModels.Default;
-using DaySim.DomainModels.Default.Models;
-using DaySim.DomainModels.Default.Wrappers;
 using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
-using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.Sampling;
-using SimpleInjector;
+using System;
 using HouseholdDayWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdDayWrapper;
 using HouseholdWrapper = DaySim.DomainModels.Actum.Wrappers.HouseholdWrapper;
 using PersonDayWrapper = DaySim.DomainModels.Actum.Wrappers.PersonDayWrapper;

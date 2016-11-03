@@ -5,14 +5,14 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.Framework.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using DaySim.Framework.Core;
-using System.Diagnostics;
-using System;
 
 namespace DaySim.Framework.Persistence {
     public class Reader<TModel> : IEnumerator<TModel>, IEnumerable<TModel> where TModel : class {

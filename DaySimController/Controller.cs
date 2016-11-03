@@ -5,15 +5,15 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim;
+using DaySim.ChoiceModels;
+using DaySim.Framework.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Management;
 using System.Threading;
-using DaySim;
-using DaySim.ChoiceModels;
-using DaySim.Framework.Core;
 using Timer = DaySim.Framework.Core.Timer;
 
 namespace DaySimController {

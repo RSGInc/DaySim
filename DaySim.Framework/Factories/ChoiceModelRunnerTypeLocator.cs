@@ -5,11 +5,11 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.Framework.ChoiceModels;
+using DaySim.Framework.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DaySim.Framework.ChoiceModels;
-using DaySim.Framework.Core;
 
 namespace DaySim.Framework.Factories {
     public class ChoiceModelRunnerTypeLocator : TypeLocator {

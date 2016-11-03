@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DaySim.Framework.Coefficients;
+﻿using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 
 namespace DaySim.Framework.ChoiceModels {

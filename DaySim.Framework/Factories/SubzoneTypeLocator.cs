@@ -1,8 +1,8 @@
-﻿using System;
+﻿using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.Factories {
     public class SubzoneTypeLocator : TypeLocator {

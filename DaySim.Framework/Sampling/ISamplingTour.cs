@@ -6,7 +6,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.Persistence;
 
 namespace DaySim.Framework.Sampling {
     public interface ISamplingTour {

@@ -6,14 +6,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DaySim.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
 using DaySim.Framework.Roster;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DaySim.PathTypeModels {
     public class PathTypeModel : IPathTypeModel {

@@ -6,15 +6,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Sampling;
 using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace DaySim.Framework.Core {
     public static class Global {

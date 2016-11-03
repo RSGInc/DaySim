@@ -6,14 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using DaySim.DomainModels;
-using DaySim.DomainModels.Default;
-using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
+using System;
 
 namespace DaySim.ChoiceModels.H.Models {
     public class PersonDayPatternModel : ChoiceModel {

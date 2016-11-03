@@ -5,10 +5,6 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using DaySim.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
@@ -17,7 +13,10 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
-using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace DaySim.DomainModels.Default.Wrappers {
     [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]

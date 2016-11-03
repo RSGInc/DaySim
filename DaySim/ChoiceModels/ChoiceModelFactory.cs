@@ -6,10 +6,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using DaySim.DomainModels.Default.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
@@ -19,7 +15,10 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
 using DaySim.ShadowPricing;
-using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace DaySim.ChoiceModels {
     public static class ChoiceModelFactory {

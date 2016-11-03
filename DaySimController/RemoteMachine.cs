@@ -4,9 +4,9 @@
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+using DaySim.Framework.Core;
 using System.Collections.Generic;
 using System.IO;
-using DaySim.Framework.Core;
 
 namespace DaySimController {
     public class RemoteMachine {

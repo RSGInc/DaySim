@@ -6,14 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using DaySim.Framework.Core;
 using DaySim.Framework.Exceptions;
 using HDF5DotNet;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace DaySim {
     public static class InputTester {

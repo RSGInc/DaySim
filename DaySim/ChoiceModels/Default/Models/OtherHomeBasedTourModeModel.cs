@@ -6,15 +6,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DaySim.ChoiceModels.Default.Models {
     public class OtherHomeBasedTourModeModel : ChoiceModel {

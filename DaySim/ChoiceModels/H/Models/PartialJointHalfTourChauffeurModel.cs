@@ -6,14 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using DaySim.DomainModels;
 using DaySim.DomainModels.Default.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DaySim.ChoiceModels.H.Models {
     public class PartialJointHalfTourChauffeurModel : ChoiceModel {

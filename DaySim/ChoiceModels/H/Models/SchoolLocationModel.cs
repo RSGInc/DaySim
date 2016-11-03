@@ -6,19 +6,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using DaySim.DomainModels.Default.Models;
 using DaySim.DomainModels.Default.Wrappers;
 using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.Sampling;
-using SimpleInjector;
+using System;
 using System.Collections.Generic;
 
 namespace DaySim.ChoiceModels.H.Models {

@@ -1,8 +1,5 @@
-﻿using System;
+﻿using DaySim.Framework.DomainModels.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim {
     public interface ITripMapper {

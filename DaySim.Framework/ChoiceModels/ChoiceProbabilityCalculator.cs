@@ -6,13 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using DaySim.Framework.Coefficients;
+using DaySim.Framework.Core;
+using DaySim.Framework.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DaySim.Framework.Coefficients;
-using DaySim.Framework.Core;
-using DaySim.Framework.Exceptions;
 
 namespace DaySim.Framework.ChoiceModels {
     public sealed class ChoiceProbabilityCalculator {

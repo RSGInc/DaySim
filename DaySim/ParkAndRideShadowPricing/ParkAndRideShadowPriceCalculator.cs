@@ -6,10 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.IO;
 using DaySim.ChoiceModels;
 using DaySim.Framework.Core;
+using System;
+using System.IO;
 
 namespace DaySim.ParkAndRideShadowPricing {
     public static class ParkAndRideShadowPriceCalculator {

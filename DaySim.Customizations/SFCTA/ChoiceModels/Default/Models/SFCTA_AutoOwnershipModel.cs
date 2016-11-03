@@ -1,7 +1,6 @@
-﻿using System;
-using DaySim.Framework.ChoiceModels;
+﻿using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.DomainModels.Wrappers;
-using DaySim.Framework.Core;
+using System;
 
 namespace DaySim.ChoiceModels.Default.Models {
     class SFCTA_AutoOwnershipModel : AutoOwnershipModel {

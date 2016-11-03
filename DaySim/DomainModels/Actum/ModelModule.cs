@@ -7,9 +7,7 @@
 
 using DaySim.DomainModels.Actum.Models;
 using DaySim.Framework.Core;
-using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
-using SimpleInjector;
 
 namespace DaySim.DomainModels.Actum {
     public static class ModelModule {

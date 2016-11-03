@@ -6,14 +6,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.IO;
-using DaySim.DomainModels;
-using DaySim.DomainModels.Default;
-using DaySim.DomainModels.Default.Models;
-using DaySim.DomainModels.Default.Wrappers;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
+using System;
+using System.IO;
 
 namespace DaySim.ShadowPricing {
     public sealed class ShadowPriceWriter : IDisposable {

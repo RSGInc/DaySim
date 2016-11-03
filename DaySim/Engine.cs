@@ -5,14 +5,9 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Threading;
 using DaySim.AggregateLogsums;
 using DaySim.ChoiceModels;
+using DaySim.DomainModels.Default;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
@@ -25,11 +20,14 @@ using DaySim.ParkAndRideShadowPricing;
 using DaySim.Sampling;
 using DaySim.ShadowPricing;
 using HDF5DotNet;
-using SimpleInjector;
-
-using Timer = DaySim.Framework.Core.Timer;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using DaySim.DomainModels.Default;
+using System.IO;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
+using Timer = DaySim.Framework.Core.Timer;
 
 namespace DaySim {
     public static class Engine {

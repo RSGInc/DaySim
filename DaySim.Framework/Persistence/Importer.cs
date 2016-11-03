@@ -5,10 +5,10 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System.IO;
-using System.Runtime.InteropServices;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace DaySim.Framework.Persistence {
     public abstract class Importer<TModel> : IImporter where TModel : IModel, new() {

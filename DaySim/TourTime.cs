@@ -6,12 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Linq;
-using DaySim.DomainModels;
 using DaySim.DomainModels.Default.Wrappers;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
+using System;
+using System.Linq;
 
 namespace DaySim {
     public sealed class TourTime {

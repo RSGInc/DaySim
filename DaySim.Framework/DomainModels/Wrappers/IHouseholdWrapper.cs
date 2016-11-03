@@ -5,9 +5,9 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System.Collections.Generic;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
+using System.Collections.Generic;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
     public interface IHouseholdWrapper : IHousehold {

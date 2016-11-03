@@ -5,9 +5,6 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DaySim.ChoiceModels;
 using DaySim.DomainModels.Actum.Models;
 using DaySim.DomainModels.Actum.Models.Interfaces;
@@ -16,6 +13,9 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
     [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]

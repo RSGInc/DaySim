@@ -6,12 +6,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DaySim {
     public sealed class HTripTime {

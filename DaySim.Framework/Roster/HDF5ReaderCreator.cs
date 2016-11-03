@@ -5,8 +5,6 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DaySim.Framework.Roster {
     public class HDF5ReaderCreator : IFileReaderCreator {

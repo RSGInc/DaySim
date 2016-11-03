@@ -1,11 +1,9 @@
-﻿using System;
+﻿using DaySim.Framework.Core;
+using DaySim.Framework.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using DaySim.Framework.Core;
-using DaySim.Framework.Exceptions;
-using SimpleInjector;
 
 namespace DaySim.Framework.Roster {
     public class ImpedanceRosterLoader {

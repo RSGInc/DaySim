@@ -5,11 +5,11 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.Factories {
     public class PersistenceTypeLocator : TypeLocator {

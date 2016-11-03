@@ -5,10 +5,10 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Roster;
+using System;
 
 namespace DaySim.DomainModels.Extensions {
     public static class PointExtensions {

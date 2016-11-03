@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CaliperMTX;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using CaliperMTX;
 
 namespace DaySim.Framework.Roster {
     public class TranscadFileSkimReader : ISkimFileReader {

@@ -6,9 +6,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using System.IO;
 using DaySim.Framework.Coefficients;
-using DaySim.Framework.Core;
+using System.IO;
 
 namespace DaySim.Framework.ChoiceModels {
     public sealed class ChoiceProbabilityFactory {

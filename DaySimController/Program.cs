@@ -5,10 +5,9 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System;
-using DaySim;
 using DaySim.Framework.Core;
 using NDesk.Options;
+using System;
 
 namespace DaySimController {
     public static class Program {

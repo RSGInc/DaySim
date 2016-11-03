@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using DaySim.Framework.Core;
+﻿using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
+using System.Collections.Generic;
 
 namespace DaySim.PathTypeModels {
     public interface IPathTypeModel {

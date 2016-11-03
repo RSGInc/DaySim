@@ -5,16 +5,14 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
-using DaySim.Framework.Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DaySim.Framework.Sampling {
     public sealed class DestinationSampler {

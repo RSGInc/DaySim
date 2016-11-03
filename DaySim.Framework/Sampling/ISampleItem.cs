@@ -5,9 +5,8 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System.Collections.Generic;
 using DaySim.Framework.ChoiceModels;
-using DaySim.Framework.Core;
+using System.Collections.Generic;
 
 namespace DaySim.Framework.Sampling {
     public interface ISampleItem {

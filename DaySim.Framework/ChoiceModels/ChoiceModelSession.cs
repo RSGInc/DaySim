@@ -7,8 +7,6 @@
 
 using DaySim.Framework.Core;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace DaySim.Framework.ChoiceModels {
     public class ChoiceModelSession {
