@@ -792,7 +792,7 @@ namespace DaySim.Framework.Core {
 
         //new since 203
         [XmlAttribute]
-        public int NProcessors { get; set; }
+        public int NProcessors { get; set; } = Environment.ProcessorCount;
 
         [XmlAttribute]
         public bool ShouldOutputTDMTripList { get; set; }

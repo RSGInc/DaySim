@@ -5,6 +5,7 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -37,7 +38,7 @@ namespace DaySim.Framework.Core {
         public static void Init(Configuration configuration) {
             NThreads =
                 configuration.NProcessors < 1
-                    ? 1
+                    ? Environment.ProcessorCount
                     : configuration.NProcessors;
         }
         /// <summary>

@@ -183,21 +183,6 @@ namespace DaySim.Framework.Sampling {
         private string OutputDebugForFailedDestination(ISamplingUtilities samplingUtilities, int nullDestinationCounter) {
             string errorMessage = "Thread-" + Thread.CurrentThread.Name + " GetDestination<TourSampleItem> returned null " + nullDestinationCounter + ""
                 + " times. DestinationSampler object: " + ObjectDumper.Dump(this, /* depth */ 2, /* maxEnumeratedItems */ 3) + "\n\nsamplingUtilities: " + ObjectDumper.Dump(samplingUtilities, /* depth */ 2, /* maxEnumeratedItems */ 3);
-            //    + " _originParcel.Id:" + _originParcel.Id
-            //     + " _originParcel.ZoneId:" + _originParcel.ZoneId
-            //    + " _originParcel.ZoneKey: " + _originParcel.ZoneKey
-            //    + " _originSegmentZone.Id: " + _originSegmentZone.Id
-            //    + " _originSegmentZone.Key: " + _originSegmentZone.Key
-            //    + " _originSegmentZone.TotalWeight: " + _originSegmentZone.TotalWeight
-            //    + ((_excludedParcel == null) ? " _excludedParcel and excludedSegment null" : (
-            //    " _excludedParcel.Id:" + _excludedParcel.Id
-            //     + " _excludedParcel.ZoneId:" + _excludedParcel.ZoneId
-            //    + " _excludedParcel.ZoneKey: " + _excludedParcel.ZoneKey
-            //    + " _excludedSegmentZone.Id: " + _excludedSegmentZone.Id
-            //    + " _excludedSegmentZone.Key: " + _excludedSegmentZone.Key
-            //    + " _excludedSegmentZone.TotalWeight: " + _excludedSegmentZone.TotalWeight))
-            //    + " _segmentZonesIndex (used in DestinationSampler constructor to _segmentZones = Global.SegmentZones[_segmentZonesIndex]: " + _segmentZonesIndex
-            //+ " samplingUtilities: " + UtilityFunctions.DisplayObjectInfo(samplingUtilities);
             Global.PrintFile.WriteLine(errorMessage, /* writeToConsole */ true);
             return errorMessage;
         }
