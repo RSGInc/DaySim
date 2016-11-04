@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace DaySim.Framework.Sampling {
     public sealed class DestinationSampler {
@@ -43,7 +44,7 @@ namespace DaySim.Framework.Sampling {
         private readonly int _segmentZonesIndex;
 
         private int _alternativeIndex;
-        private const int NULL_DESTINATION_WARNING = 1000000;
+        private const int NULL_DESTINATION_WARNING = 2000000;
         private const int NULL_DESTINATION_ERROR = NULL_DESTINATION_WARNING * 10;   //MUST BE A MULTIPLE OF NULL_DESTINATION_WARNING
 
         private DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segmentZonesIndex, int sampleSize, IParcel chosenParcel) {
@@ -56,7 +57,6 @@ namespace DaySim.Framework.Sampling {
                 _chosenParcel = chosenParcel;
                 _chosenSegmentZone = _segmentZones[chosenParcel.ZoneId];
             }
-
         }
 
         public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segmentZonesIndex, int sampleSize, IParcel chosenParcel, ITourWrapper tour, ITripWrapper trip) : this(choiceProbabilityCalculator, segmentZonesIndex, sampleSize, chosenParcel) {
@@ -122,10 +122,10 @@ namespace DaySim.Framework.Sampling {
                         ++nullDestinationCounter;
                         if ((nullDestinationCounter % NULL_DESTINATION_WARNING) == 0) {
                             OutputDebugForFailedDestination
-                                (samplingUtilities, sampleItem, randomUniform01, nullDestinationCounter);
+                                (samplingUtilities, nullDestinationCounter);
                             if (nullDestinationCounter >= NULL_DESTINATION_ERROR) {
                                 throw new Exception(OutputDebugForFailedDestination
-                                (samplingUtilities, sampleItem, randomUniform01, nullDestinationCounter));
+                                (samplingUtilities, nullDestinationCounter));
                             }
                         }
                     }   //end else got null returned
@@ -180,23 +180,24 @@ namespace DaySim.Framework.Sampling {
             return sample.Count;
         }
 
-        private string OutputDebugForFailedDestination(ISamplingUtilities samplingUtilities, TourSampleItem sampleItem, RandomUniform01 randomUniform01, int nullDestinationCounter) {
-            string errorMessage = "GetDestination<TourSampleItem> returned null " + nullDestinationCounter + ""
-                + " times."
-                + " _originParcel.Id:" + _originParcel.Id
-                 + " _originParcel.ZoneId:" + _originParcel.ZoneId
-                + " _originParcel.ZoneKey: " + _originParcel.ZoneKey
-                + " _originSegmentZone.Id: " + _originSegmentZone.Id
-                + " _originSegmentZone.Key: " + _originSegmentZone.Key
-                + " _originSegmentZone.TotalWeight: " + _originSegmentZone.TotalWeight
-                + " _excludedParcel.Id:" + _excludedParcel.Id
-                 + " _excludedParcel.ZoneId:" + _excludedParcel.ZoneId
-                + " _excludedParcel.ZoneKey: " + _excludedParcel.ZoneKey
-                + " _excludedSegmentZone.Id: " + _excludedSegmentZone.Id
-                + " _excludedSegmentZone.Key: " + _excludedSegmentZone.Key
-                + " _excludedSegmentZone.TotalWeight: " + _excludedSegmentZone.TotalWeight
-                + " _segmentZonesIndex (used in DestinationSampler constructor to _segmentZones = Global.SegmentZones[_segmentZonesIndex]: " + _segmentZonesIndex
-            + " samplingUtilities: " + Newtonsoft.Json.JsonConvert.SerializeObject(samplingUtilities);
+        private string OutputDebugForFailedDestination(ISamplingUtilities samplingUtilities, int nullDestinationCounter) {
+            string errorMessage = "Thread-" + Thread.CurrentThread.Name + " GetDestination<TourSampleItem> returned null " + nullDestinationCounter + ""
+                + " times. DestinationSampler object: " + ObjectDumper.Dump(this, /* depth */ 2, /* maxEnumeratedItems */ 3) + "\n\nsamplingUtilities: " + ObjectDumper.Dump(samplingUtilities, /* depth */ 2, /* maxEnumeratedItems */ 3);
+            //    + " _originParcel.Id:" + _originParcel.Id
+            //     + " _originParcel.ZoneId:" + _originParcel.ZoneId
+            //    + " _originParcel.ZoneKey: " + _originParcel.ZoneKey
+            //    + " _originSegmentZone.Id: " + _originSegmentZone.Id
+            //    + " _originSegmentZone.Key: " + _originSegmentZone.Key
+            //    + " _originSegmentZone.TotalWeight: " + _originSegmentZone.TotalWeight
+            //    + ((_excludedParcel == null) ? " _excludedParcel and excludedSegment null" : (
+            //    " _excludedParcel.Id:" + _excludedParcel.Id
+            //     + " _excludedParcel.ZoneId:" + _excludedParcel.ZoneId
+            //    + " _excludedParcel.ZoneKey: " + _excludedParcel.ZoneKey
+            //    + " _excludedSegmentZone.Id: " + _excludedSegmentZone.Id
+            //    + " _excludedSegmentZone.Key: " + _excludedSegmentZone.Key
+            //    + " _excludedSegmentZone.TotalWeight: " + _excludedSegmentZone.TotalWeight))
+            //    + " _segmentZonesIndex (used in DestinationSampler constructor to _segmentZones = Global.SegmentZones[_segmentZonesIndex]: " + _segmentZonesIndex
+            //+ " samplingUtilities: " + UtilityFunctions.DisplayObjectInfo(samplingUtilities);
             Global.PrintFile.WriteLine(errorMessage, /* writeToConsole */ true);
             return errorMessage;
         }
@@ -215,10 +216,10 @@ namespace DaySim.Framework.Sampling {
                     if (sampleItem != null) {
                         if ((nullDestinationCounter % NULL_DESTINATION_WARNING) == 0) {
                             OutputDebugForFailedDestination
-                                (samplingUtilities, sampleItem, randomUniform01, nullDestinationCounter);
+                                (samplingUtilities, nullDestinationCounter);
                             if (nullDestinationCounter >= NULL_DESTINATION_ERROR) {
                                 throw new Exception(OutputDebugForFailedDestination
-                                (samplingUtilities, sampleItem, randomUniform01, nullDestinationCounter));
+                                (samplingUtilities, nullDestinationCounter));
                             }
                         }
                     }   //end else got null returned

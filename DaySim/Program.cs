@@ -5,6 +5,7 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.DomainModels.Factories;
 using DaySim.Framework.Core;
 using DaySim.Settings;
 using NDesk.Options;
@@ -110,7 +111,16 @@ namespace DaySim {
 
                 ParallelUtility.Init(Global.Configuration);
 
-                DaySimModule.registerDependencies();
+                //creating the DaySimModule does the non-model specific the SimpleInjector dependency injection registration
+                new DaySimModule();
+                //use the ModuleFactory to load the DaysimModule and the ModelModule (which could be Actum)
+                // which does the SimpleInjector dependency injection registration
+                var moduleFactory = new ModuleFactory(Global.Configuration);
+                moduleFactory.Load();
+
+                //after all dependency injection established, verify
+                Global.ContainerDaySim.Verify();
+
                 //copy the configuration file into the output so we can tell if configuration changed before regression test called.
                 var archiveConfigurationFilePath = Global.GetOutputPath("archive_" + Path.GetFileName(_configurationPath));
                 archiveConfigurationFilePath.CreateDirectory(); //create output directory if needed
@@ -141,10 +151,6 @@ namespace DaySim {
                         throw new Exception("More than one region specific flag such as DVRPC, Nashville, PSRC, or SFCTA was specified in configuration file.");
                     }
                 }
-
-
-
-
 
                 Engine.BeginProgram(_start, _end, _index);
                 //Engine.BeginTestMode();

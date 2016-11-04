@@ -15,7 +15,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace DaySim.Framework.Persistence {
-    public class Reader<TModel> : IEnumerator<TModel>, IEnumerable<TModel> where TModel : class {
+    public class Reader<TModel>: IEnumerator<TModel>, IEnumerable<TModel> where TModel : class {
         private readonly Dictionary<int, long> _index;
         private readonly Dictionary<string, Dictionary<int, int[]>> _indexes = new Dictionary<string, Dictionary<int, int[]>>();
 
@@ -28,46 +28,41 @@ namespace DaySim.Framework.Persistence {
         private long _position;
         private TModel _model;
         private readonly string path;
-        private readonly bool isOkay;
+
         public Reader(string path) {
             this.path = path;
-            try {
-                var file = new FileInfo(path);
+            var file = new FileInfo(path);
 
-                _size = Marshal.SizeOf(typeof(TModel));
-                _buffer = new byte[_size];
-                _stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
-                _count = (int)file.Length / _size;
+            if (!file.Exists) {
+                throw new Exception("Reader passed path '" + path + "' which does not exist!");
+            }
+            _size = Marshal.SizeOf(typeof(TModel));
+            _buffer = new byte[_size];
+            _stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
+            _count = (int)file.Length / _size;
 
-                _index = new Dictionary<int, long>(_count);
+            _index = new Dictionary<int, long>(_count);
 
-                var ifile = ModelUtility.GetIndexFile(path);
-                var isize = Marshal.SizeOf(typeof(Element));
-                var ibuffer = new byte[isize];
+            var ifile = ModelUtility.GetIndexFile(path);
+            var isize = Marshal.SizeOf(typeof(Element));
+            var ibuffer = new byte[isize];
 
-                using (var istream = ifile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                    while (istream.Read(ibuffer, 0, isize) != 0) {
-                        var element = ModelUtility.PtrToStructure<Element>(ref ibuffer);
+            using (var istream = ifile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                while (istream.Read(ibuffer, 0, isize) != 0) {
+                    var element = ModelUtility.PtrToStructure<Element>(ref ibuffer);
 
-                        _index.Add(element.Id, element.Position);
-                    }
+                    _index.Add(element.Id, element.Position);
                 }
-                isOkay = true;
-            } catch (IOException ex) {
-                Debug.WriteLine("Got exception trying to read '" + path + "': " + ex);
-                isOkay = false;
             }
         }
 
         public int Count {
             get {
-                if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
                 return _count;
             }
         }
 
         public TModel Seek(int id) {
-            if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
             lock (typeof(TModel)) {
 #if DEBUG
                 ParallelUtility.countLocks("typeof (TModel)");
@@ -80,7 +75,6 @@ namespace DaySim.Framework.Persistence {
         }
 
         private TModel Seek(long location) {
-            if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
             var offset = location - _position;
 
             if (offset != 0) {
@@ -101,7 +95,7 @@ namespace DaySim.Framework.Persistence {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (disposing && isOkay) {
+            if (disposing && _stream != null) {
                 _stream.Dispose();
             }
         }
@@ -111,7 +105,6 @@ namespace DaySim.Framework.Persistence {
         }
 
         public bool MoveNext() {
-            if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
             if (!_enumerator.MoveNext()) {
                 return false;
             }
@@ -122,7 +115,6 @@ namespace DaySim.Framework.Persistence {
         }
 
         public void Reset() {
-            if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
             _enumerator = _index.Values.GetEnumerator();
             _position = 0;
             _stream.Position = 0;
@@ -131,20 +123,17 @@ namespace DaySim.Framework.Persistence {
 
         public TModel Current {
             get {
-                if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
                 return _model;
             }
         }
 
         object IEnumerator.Current {
             get {
-                if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
                 return Current;
             }
         }
 
         public virtual IEnumerator<TModel> GetEnumerator() {
-            if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
             Reset();
 
             return this;
@@ -155,7 +144,6 @@ namespace DaySim.Framework.Persistence {
         }
 
         public void BuildIndex(string indexName, string idName, string parentIdName) {
-            if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
             var type = typeof(TModel);
             var idProperty = type.GetProperty(idName);
             var parentIdProperty = type.GetProperty(parentIdName);
@@ -197,7 +185,6 @@ namespace DaySim.Framework.Persistence {
         }
 
         public IList<TModel> Seek(int parentId, string indexName) {
-            if (!isOkay) throw new Exception("File '" + path + "' could not be read during the constructor!");
             lock (typeof(TModel)) {
 #if DEBUG
                 ParallelUtility.countLocks("typeof (TModel)");

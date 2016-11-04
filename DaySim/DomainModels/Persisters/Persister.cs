@@ -15,9 +15,11 @@ using System.Collections.Generic;
 
 namespace DaySim.DomainModels.Persisters {
     public abstract class Persister<TModel> : IPersisterReader<TModel>, IPersisterImporter, IPersisterExporter, IDisposable where TModel : class, IModel, new() {
+        //because the file that _reader will deal with may not exist at time of this static initialization the ModelModule must not actually run the reader constructors.
+        // the Invoke method is what will cause constuctor to actually be called and it in turn will only be called by the LazyWrapper when _reader is accessed.
         private readonly Lazy<Reader<TModel>> _reader = new Lazy<Reader<TModel>>(() =>
             Global
-                .ContainerWorkingPathReaders.GetInstance<Reader<TModel>>());
+                .ContainerDaySim.GetInstance<Func<Reader<TModel>>>().Invoke());
 
         private readonly Lazy<IImporter> _importer = new Lazy<IImporter>(() =>
             Global

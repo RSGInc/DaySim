@@ -65,8 +65,6 @@ namespace DaySim {
 
             BeginImportData();
 
-            ModelModule.registerDependencies();
-
             BeginBuildIndexes();
 
             BeginLoadRoster();

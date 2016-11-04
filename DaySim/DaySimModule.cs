@@ -18,8 +18,8 @@ using DaySim.Sampling;
 using SimpleInjector;
 
 namespace DaySim {
-    public static class DaySimModule {
-        public static void registerDependencies() {
+   public class DaySimModule {
+        public DaySimModule() {
             Global.ContainerDaySim.Register<ImporterFactory>(Lifestyle.Singleton);
 
             Global.ContainerDaySim.Register<ExporterFactory>(Lifestyle.Singleton);
@@ -85,8 +85,6 @@ namespace DaySim {
             Global.ContainerDaySim.Register<SamplingWeightsSettingsFactory>(Lifestyle.Singleton);
 
             Global.ContainerDaySim.Register<AggregateLogsumsCalculatorFactory>(Lifestyle.Singleton);
-
-            Global.ContainerDaySim.Verify();
-        }
-    }
-}
+        }   //end constructor
+    }   //end class
+}   //end namespace

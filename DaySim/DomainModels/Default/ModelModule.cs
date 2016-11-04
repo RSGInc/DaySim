@@ -7,42 +7,43 @@
 
 using DaySim.DomainModels.Default.Models;
 using DaySim.Framework.Core;
+using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
+using System;
 
 namespace DaySim.DomainModels.Default {
-    public static class ModelModule {
-        public static void registerDependencies() {
+    [UsedImplicitly]
+    [Factory(Factory.ModuleFactory, DataType = DataType.Default)]
+    public class ModelModule {
+        public ModelModule() {
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<Parcel>>>(() => new Reader<Parcel>(Global.WorkingParcelPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Parcel>>(new Reader<Parcel>(Global.WorkingParcelPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<ParcelNode>>>(() => new Reader<ParcelNode>(Global.WorkingParcelNodePath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<ParcelNode>>(new Reader<ParcelNode>(Global.WorkingParcelNodePath));
-
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<ParkAndRideNode>>(new Reader<ParkAndRideNode>(Global.WorkingParkAndRideNodePath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<ParkAndRideNode>>>(() => new Reader<ParkAndRideNode>(Global.WorkingParkAndRideNodePath));
 
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<TransitStopArea>>(new Reader<TransitStopArea>(Global.WorkingTransitStopAreaPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<TransitStopArea>>>(() => new Reader<TransitStopArea>(Global.WorkingTransitStopAreaPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Zone>>(new Reader<Zone>(Global.WorkingZonePath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<Zone>>>(() => new Reader<Zone>(Global.WorkingZonePath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Household>>(new Reader<Household>(Global.WorkingHouseholdPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<Household>>>(() => new Reader<Household>(Global.WorkingHouseholdPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Person>>(new Reader<Person>(Global.WorkingPersonPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<Person>>>(() => new Reader<Person>(Global.WorkingPersonPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<HouseholdDay>>(new Reader<HouseholdDay>(Global.WorkingHouseholdDayPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<HouseholdDay>>>(() => new Reader<HouseholdDay>(Global.WorkingHouseholdDayPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<PersonDay>>(new Reader<PersonDay>(Global.WorkingPersonDayPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<PersonDay>>>(() => new Reader<PersonDay>(Global.WorkingPersonDayPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Tour>>(new Reader<Tour>(Global.WorkingTourPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<Tour>>>(() => new Reader<Tour>(Global.WorkingTourPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<Trip>>(new Reader<Trip>(Global.WorkingTripPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<Trip>>>(() => new Reader<Trip>(Global.WorkingTripPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<JointTour>>(new Reader<JointTour>(Global.WorkingJointTourPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<JointTour>>>(() => new Reader<JointTour>(Global.WorkingJointTourPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<FullHalfTour>>(new Reader<FullHalfTour>(Global.WorkingFullHalfTourPath));
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<FullHalfTour>>>(() => new Reader<FullHalfTour>(Global.WorkingFullHalfTourPath));
 
-            Global.ContainerWorkingPathReaders.RegisterSingleton<Reader<PartialHalfTour>>(new Reader<PartialHalfTour>(Global.WorkingPartialHalfTourPath));
-
-            Global.ContainerWorkingPathReaders.Verify();
-        }
-    }
-}
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<PartialHalfTour>>>(() => new Reader<PartialHalfTour>(Global.WorkingPartialHalfTourPath));
+        }   //end constructor
+    }   //end class
+}   //end namespace

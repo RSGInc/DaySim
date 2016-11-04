@@ -10,7 +10,6 @@ using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Sampling;
-using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,8 +23,7 @@ namespace DaySim.Framework.Core {
         private const string PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "park_and_ride_" + SHADOW_PRICES_FILENAME;
         private const string ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILENAME;
 
-        public static Container ContainerWorkingPathReaders { get; } = new Container();
-        public static Container ContainerDaySim { get; } = new Container();
+         public static SimpleInjector.Container ContainerDaySim { get; } = new SimpleInjector.Container();
 
         public static Configuration Configuration { get; set; }
 
