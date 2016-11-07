@@ -439,7 +439,7 @@ namespace DaySim.ChoiceModels {
                     .GetInstance<IPersistenceFactory<IZone>>()
                     .Reader;
 
-            //			ZoneTotals = new Dictionary<int, ZoneTotals>(zoneReader.Count);
+            //            ZoneTotals = new Dictionary<int, ZoneTotals>(zoneReader.Count);
             ZoneKeys = new Dictionary<int, int>(zoneReader.Count);
 
             var zones = new Dictionary<int, IZone>();
@@ -464,15 +464,15 @@ namespace DaySim.ChoiceModels {
 
                 parcelWrapper.SetShadowPricing(zones, shadowPrices);
 
-                //				ZoneTotals zoneTotals;
+                //                ZoneTotals zoneTotals;
                 //
-                //				if (!ZoneTotals.TryGetValue(parcel.ZoneId, out zoneTotals)) {
-                //					zoneTotals = new ZoneTotals();
+                //                if (!ZoneTotals.TryGetValue(parcel.ZoneId, out zoneTotals)) {
+                //                    zoneTotals = new ZoneTotals();
                 //
-                //					ZoneTotals.Add(parcel.ZoneId, zoneTotals);
-                //				}
+                //                    ZoneTotals.Add(parcel.ZoneId, zoneTotals);
+                //                }
                 //
-                //				zoneTotals.SumTotals(parcel);
+                //                zoneTotals.SumTotals(parcel);
             }
 
             if (Global.ParkAndRideNodeIsEnabled) {

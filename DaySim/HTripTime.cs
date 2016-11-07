@@ -62,7 +62,7 @@ namespace DaySim {
             var departureTime = timeWindow.GetAvailableMinute(trip.Household.RandomUtility, time.EarliestFeasibleDepatureTime, time.LatestFeasibleDepartureTime);
 
             //if (departureTime == Constants.DEFAULT_VALUE) {
-            //	throw new InvalidDepartureTimeException();
+            //    throw new InvalidDepartureTimeException();
             //}
 
             return departureTime;

@@ -70,15 +70,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
             var person = (PersonWrapper)tour.Person;
             var personDay = (PersonDayWrapper)tour.PersonDay;
 
-            //			var foodRetailServiceMedicalQtrMileLog = tour.DestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
-            //			var mixedUseIndex = tour.DestinationParcel.MixedUse4Index1();
+            //            var foodRetailServiceMedicalQtrMileLog = tour.DestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
+            //            var mixedUseIndex = tour.DestinationParcel.MixedUse4Index1();
             var k8HighSchoolQtrMileLog = tour.DestinationParcel.K8HighSchoolQtrMileLogBuffer1();
             //var carOwnership = person.CarOwnershipSegment;
             var carOwnership = 0;
 
             var noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
             var carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
-            //			var notUsualWorkParcelFlag = tour.DestinationParcel.NotUsualWorkParcelFlag(person.UsualWorkParcelId);
+            //            var notUsualWorkParcelFlag = tour.DestinationParcel.NotUsualWorkParcelFlag(person.UsualWorkParcelId);
 
             var votALSegment = tour.GetVotALSegment();
 

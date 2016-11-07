@@ -46,7 +46,7 @@ namespace DaySim.ParkAndRideShadowPricing {
         }
 
         private static void DetermineShadowPrice(double previousShadowPrice, double maxLoad, int capacity, out double shadowPrice) {
-            //			shadowPrice = Math.Min(0, previousShadowPrice + Math.Log(Math.Max(capacity, .01) / Math.Max(prediction, .01)));
+            //            shadowPrice = Math.Min(0, previousShadowPrice + Math.Log(Math.Max(capacity, .01) / Math.Max(prediction, .01)));
             shadowPrice = (capacity > 0 && maxLoad > 0) ?
                 (1 - Global.Configuration.ParkAndRideShadowPriceStepSize) * previousShadowPrice
                     + Global.Configuration.ParkAndRideShadowPriceStepSize * Global.Configuration.ParkAndRideShadowPriceMaximumPenalty * alglib.poissondistr.poissoncdistribution(capacity, maxLoad)

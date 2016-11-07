@@ -153,7 +153,7 @@ namespace DaySim.ChoiceModels.H.Models {
             }
 
             //if (personDay.WorksAtHomeFlag == 1) {
-            //	worksAtHome =1;
+            //    worksAtHome =1;
             //}
 
 

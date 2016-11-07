@@ -491,14 +491,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
                     }
                     //Following code was used to test handling of partially joint half tours (JLB 20140603)
                     //if (partialHalfTour) {
-                    //	Global.PrintFile.WriteLine("HH pers {0} {1} avail {2} Aper Dper Mode {3} {4} {5} Travel Times {6} {7} Window {8} {9}",
-                    //	   household.Id, person.Sequence,  
+                    //    Global.PrintFile.WriteLine("HH pers {0} {1} avail {2} Aper Dper Mode {3} {4} {5} Travel Times {6} {7} Window {8} {9}",
+                    //       household.Id, person.Sequence,  
                     //    available,  
-                    //		arrivalPeriod.Index, departurePeriod.Index, mode, 
-                    //	                           modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
-                    //	                           modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
-                    //	                           modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.Start : -1,
-                    //	                           modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
+                    //        arrivalPeriod.Index, departurePeriod.Index, mode, 
+                    //                               modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
+                    //                               modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
+                    //                               modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.Start : -1,
+                    //                               modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
                     //}
 
                     //if in application mode and combination is not available, can skip the rest

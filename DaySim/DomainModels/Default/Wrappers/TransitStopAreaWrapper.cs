@@ -33,13 +33,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
         }
 
         //public bool DestinationEligible {
-        //	get { return _transitStopArea.DestinationEligible; }
-        //	set { _transitStopArea.DestinationEligible = value; }
+        //    get { return _transitStopArea.DestinationEligible; }
+        //    set { _transitStopArea.DestinationEligible = value; }
         //}
 
         //public bool External {
-        //	get { return _transitStopArea.External; }
-        //	set { _transitStopArea.External = value; }
+        //    get { return _transitStopArea.External; }
+        //    set { _transitStopArea.External = value; }
         //}
 
         public int XCoordinate {

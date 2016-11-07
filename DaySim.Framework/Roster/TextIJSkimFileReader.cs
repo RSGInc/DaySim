@@ -16,12 +16,12 @@ namespace DaySim.Framework.Roster {
     public sealed class TextIJSkimFileReader : ISkimFileReader {
         private const int FIELD_OFFSET = -1; // This value accounts for the fact that the first two columns are the origin and destination whicn aren't included in the field parameter.
 
-        //		private readonly Dictionary<string, List<float[]>> _cache;
+        //        private readonly Dictionary<string, List<float[]>> _cache;
         private readonly Dictionary<string, List<double[]>> _cache;  // 20150703 JLB
         private readonly string _path;
         private readonly Dictionary<int, int> _mapping;
 
-        //		public TextIJSkimFileReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping) {
+        //        public TextIJSkimFileReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping) {
         public TextIJSkimFileReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping) { // 20150703 JLB
             _cache = cache;
             _path = path;
@@ -45,11 +45,11 @@ namespace DaySim.Framework.Roster {
                 matrix[i] = new ushort[count];
             }
 
-            //			List<float[]> rows;
+            //            List<float[]> rows;
             List<double[]> rows;   // 20150703 JLB
 
             if (!_cache.TryGetValue(file.Name, out rows)) {
-                //				rows = new List<float[]>();
+                //                rows = new List<float[]>();
                 rows = new List<double[]>();  // 20150703 JLB 
 
                 using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
@@ -61,7 +61,7 @@ namespace DaySim.Framework.Roster {
                         try {
                             char delimiter = Global.SkimDelimiter;
                             var p1 = line.Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
-                            //							var row = p1.Select(Convert.ToSingle).ToArray();
+                            //                            var row = p1.Select(Convert.ToSingle).ToArray();
                             var row = p1.Select(Convert.ToDouble).ToArray();     // 20150703 JLB
 
                             rows.Add(row);

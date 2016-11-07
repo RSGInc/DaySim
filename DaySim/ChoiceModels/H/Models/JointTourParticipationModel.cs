@@ -142,7 +142,7 @@ namespace DaySim.ChoiceModels.H.Models {
             int meal = (purpose[nCallsForTour] == Global.Settings.Purposes.Meal) ? 1 : 0;
             int socialRecreationPurpose = (purpose[nCallsForTour] == Global.Settings.Purposes.Social ||
                                                     purpose[nCallsForTour] == Global.Settings.Purposes.Recreation) ? 1 : 0;
-            //nt recreationPurpose =	(purpose[nCallsForTour] == Global.Settings.Purposes.Recreation)	 ? 1 : 0;
+            //nt recreationPurpose =    (purpose[nCallsForTour] == Global.Settings.Purposes.Recreation)     ? 1 : 0;
 
             var votALSegment = householdDay.Household.GetVotALSegment();
             var transitAccessSegment = householdDay.Household.ResidenceParcel.TransitAccessSegment();

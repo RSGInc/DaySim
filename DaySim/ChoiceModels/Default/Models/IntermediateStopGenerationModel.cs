@@ -89,22 +89,22 @@ namespace DaySim.ChoiceModels.Default.Models {
             var simulatedWorkStopsFlag = personDay.SimulatedWorkStopsExist().ToFlag();
 
             var simulatedSchoolStops = personDay.SimulatedSchoolStops;
-            //			var simulatedSchoolStopsFlag = personDay.HasSimulatedSchoolStops.ToFlag();
+            //            var simulatedSchoolStopsFlag = personDay.HasSimulatedSchoolStops.ToFlag();
 
             var simulatedEscortStops = personDay.SimulatedEscortStops;
-            //			var simulatedEscortStopsFlag = personDay.HasSimulatedEscortStops.ToFlag();
+            //            var simulatedEscortStopsFlag = personDay.HasSimulatedEscortStops.ToFlag();
 
             var simulatedPersonalBusinessStops = personDay.SimulatedPersonalBusinessStops;
-            //			var simulatedPersonalBusinessStopsFlag = personDay.HasSimulatedPersonalBusinessStops.ToFlag();
+            //            var simulatedPersonalBusinessStopsFlag = personDay.HasSimulatedPersonalBusinessStops.ToFlag();
 
             var simulatedShoppingStops = personDay.SimulatedShoppingStops;
-            //			var simulatedShoppingStopsFlag = personDay.HasSimulatedShoppingStops.ToFlag();
+            //            var simulatedShoppingStopsFlag = personDay.HasSimulatedShoppingStops.ToFlag();
 
             var simulatedMealStops = personDay.SimulatedMealStops;
-            //			var simulatedMealStopsFlag = personDay.HasSimulatedMealStops.ToFlag();
+            //            var simulatedMealStopsFlag = personDay.HasSimulatedMealStops.ToFlag();
 
             var simulatedSocialStops = personDay.SimulatedSocialStops;
-            //			var simulatedSocialStopsFlag = personDay.HasSimulatedSocialStops.ToFlag();
+            //            var simulatedSocialStopsFlag = personDay.HasSimulatedSocialStops.ToFlag();
 
             // tour inputs
             var hov2TourFlag = tour.IsHov2Mode().ToFlag();
@@ -190,11 +190,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.Choice = Global.Settings.Purposes.Work;
 
                 alternative.AddUtilityTerm(33, workTourFlag + schoolTourFlag);
-                //				alternative.AddUtility(47, escortTourFlag);
-                //				alternative.AddUtility(54, personalBusinessOrMedicalTourFlag);
-                //				alternative.AddUtility(61, shoppingTourFlag);
-                //				alternative.AddUtility(68, mealTourFlag);
-                //				alternative.AddUtility(75, socialOrRecreationTourFlag);
+                //                alternative.AddUtility(47, escortTourFlag);
+                //                alternative.AddUtility(54, personalBusinessOrMedicalTourFlag);
+                //                alternative.AddUtility(61, shoppingTourFlag);
+                //                alternative.AddUtility(68, mealTourFlag);
+                //                alternative.AddUtility(75, socialOrRecreationTourFlag);
                 alternative.AddUtilityTerm(82, halfTourFromOriginFlag);
                 alternative.AddUtilityTerm(89, simulatedWorkStops);
                 alternative.AddUtilityTerm(96, simulatedWorkStopsFlag);
@@ -214,14 +214,14 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.Choice = Global.Settings.Purposes.School;
 
                 alternative.AddUtilityTerm(34, workTourFlag + schoolTourFlag);
-                //				alternative.AddUtility(48, escortTourFlag);
-                //				alternative.AddUtility(55, personalBusinessOrMedicalTourFlag);
-                //				alternative.AddUtility(62, shoppingTourFlag);
-                //				alternative.AddUtility(69, mealTourFlag);
-                //				alternative.AddUtility(76, socialOrRecreationTourFlag);
+                //                alternative.AddUtility(48, escortTourFlag);
+                //                alternative.AddUtility(55, personalBusinessOrMedicalTourFlag);
+                //                alternative.AddUtility(62, shoppingTourFlag);
+                //                alternative.AddUtility(69, mealTourFlag);
+                //                alternative.AddUtility(76, socialOrRecreationTourFlag);
                 alternative.AddUtilityTerm(83, halfTourFromOriginFlag);
                 alternative.AddUtilityTerm(90, simulatedSchoolStops);
-                //				alternative.AddUtility(97, simulatedSchoolStopsFlag);
+                //                alternative.AddUtility(97, simulatedSchoolStopsFlag);
                 alternative.AddUtilityTerm(104, remainingToursCount);
                 alternative.AddUtilityTerm(111, duration);
                 alternative.AddUtilityTerm(138, from7AMto9AMFlag + from7PMto9PMFlag + from9PMto11PMFlag + from11PMto7AMFlag);
@@ -239,13 +239,13 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                 alternative.AddUtilityTerm(35, workTourFlag + schoolTourFlag);
                 alternative.AddUtilityTerm(49, escortTourFlag);
-                //				alternative.AddUtility(56, personalBusinessOrMedicalTourFlag);
-                //				alternative.AddUtility(63, shoppingTourFlag);
-                //				alternative.AddUtility(70, mealTourFlag);
-                //				alternative.AddUtility(77, socialOrRecreationTourFlag);
+                //                alternative.AddUtility(56, personalBusinessOrMedicalTourFlag);
+                //                alternative.AddUtility(63, shoppingTourFlag);
+                //                alternative.AddUtility(70, mealTourFlag);
+                //                alternative.AddUtility(77, socialOrRecreationTourFlag);
                 alternative.AddUtilityTerm(84, halfTourFromOriginFlag);
                 alternative.AddUtilityTerm(91, simulatedEscortStops);
-                //				alternative.AddUtility(98, simulatedEscortStopsFlag);
+                //                alternative.AddUtility(98, simulatedEscortStopsFlag);
                 alternative.AddUtilityTerm(105, remainingToursCount);
                 alternative.AddUtilityTerm(112, duration);
                 alternative.AddUtilityTerm(146, from7AMto9AMFlag);
@@ -273,7 +273,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddUtilityTerm(78, socialOrRecreationTourFlag);
                 alternative.AddUtilityTerm(85, halfTourFromOriginFlag);
                 alternative.AddUtilityTerm(92, simulatedPersonalBusinessStops);
-                //				alternative.AddUtility(99, simulatedPersonalBusinessStopsFlag);
+                //                alternative.AddUtility(99, simulatedPersonalBusinessStopsFlag);
                 alternative.AddUtilityTerm(106, remainingToursCount);
                 alternative.AddUtilityTerm(113, duration);
                 alternative.AddUtilityTerm(154, from7AMto9AMFlag + from7PMto9PMFlag + from9PMto11PMFlag + from11PMto7AMFlag);
@@ -300,7 +300,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddUtilityTerm(79, socialOrRecreationTourFlag);
                 alternative.AddUtilityTerm(86, halfTourFromOriginFlag);
                 alternative.AddUtilityTerm(93, simulatedShoppingStops);
-                //				alternative.AddUtility(100, simulatedShoppingStopsFlag);
+                //                alternative.AddUtility(100, simulatedShoppingStopsFlag);
                 alternative.AddUtilityTerm(107, remainingToursCount);
                 alternative.AddUtilityTerm(114, duration);
                 alternative.AddUtilityTerm(162, from7AMto9AMFlag + from9PMto11PMFlag + from11PMto7AMFlag);
@@ -328,7 +328,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddUtilityTerm(80, socialOrRecreationTourFlag);
                 alternative.AddUtilityTerm(87, halfTourFromOriginFlag);
                 alternative.AddUtilityTerm(94, simulatedMealStops);
-                //				alternative.AddUtility(101, simulatedMealStopsFlag);
+                //                alternative.AddUtility(101, simulatedMealStopsFlag);
                 alternative.AddUtilityTerm(108, remainingToursCount);
                 alternative.AddUtilityTerm(115, duration);
                 alternative.AddUtilityTerm(170, from7AMto9AMFlag + from11PMto7AMFlag);
@@ -359,7 +359,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddUtilityTerm(81, socialOrRecreationTourFlag);
                 alternative.AddUtilityTerm(88, halfTourFromOriginFlag);
                 alternative.AddUtilityTerm(95, simulatedSocialStops);
-                //				alternative.AddUtility(102, simulatedSocialStopsFlag);
+                //                alternative.AddUtility(102, simulatedSocialStopsFlag);
                 alternative.AddUtilityTerm(109, remainingToursCount);
                 alternative.AddUtilityTerm(116, duration);
                 alternative.AddUtilityTerm(173, from7AMto9AMFlag + from11PMto7AMFlag);

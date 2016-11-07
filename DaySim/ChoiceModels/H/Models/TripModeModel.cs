@@ -266,7 +266,7 @@ namespace DaySim.ChoiceModels.H.Models {
             alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
             if (availableExtra) {
-                //	case Global.Settings.Modes.SchoolBus:
+                //    case Global.Settings.Modes.SchoolBus:
                 alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
                 alternative.AddUtilityTerm(18, 1);
                 alternative.AddUtilityTerm(100, schoolBusTourFlag);

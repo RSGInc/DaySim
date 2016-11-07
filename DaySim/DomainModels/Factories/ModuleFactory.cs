@@ -20,7 +20,7 @@ namespace DaySim.DomainModels.Factories {
         }
 
         public void Load() {
-           Activator.CreateInstance(_type);
+            Activator.CreateInstance(_type);
         }
     }
 }   //end namespace

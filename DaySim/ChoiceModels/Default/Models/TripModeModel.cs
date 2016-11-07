@@ -183,8 +183,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             var homeBasedMealTourFlag = (tour.IsHomeBasedTour && tour.IsMealPurpose()).ToFlag();
             var homeBasedSocialTourFlag = (tour.IsHomeBasedTour && tour.IsSocialPurpose()).ToFlag();
             var notHomeBasedTourFlag = (!tour.IsHomeBasedTour).ToFlag();
-            //			var homeBasedNotWorkSchoolEscortTourFlag = (tour.IsHomeBasedTour && tour.DestinationPurpose > Global.Settings.Purposes.Escort).ToFlag();
-            //			var costco = -0.1432 * homeBasedWorkTourFlag - 0.2000 * homeBasedSchoolTourFlag - 0.3000 * homeBasedEscortTourFlag - 0.2000 * homeBasedNotWorkSchoolEscortTourFlag - 0.2000 * notHomeBasedTourFlag;
+            //            var homeBasedNotWorkSchoolEscortTourFlag = (tour.IsHomeBasedTour && tour.DestinationPurpose > Global.Settings.Purposes.Escort).ToFlag();
+            //            var costco = -0.1432 * homeBasedWorkTourFlag - 0.2000 * homeBasedSchoolTourFlag - 0.3000 * homeBasedEscortTourFlag - 0.2000 * homeBasedNotWorkSchoolEscortTourFlag - 0.2000 * notHomeBasedTourFlag;
 
             // trip inputs
             var originHomeEscortFlag = (trip.IsNoneOrHomePurposeByOrigin() && trip.IsEscortPurposeByDestination()).ToFlag();
@@ -257,7 +257,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
                 if (availableExtra) {
-                    //	case Global.Settings.Modes.SchoolBus:
+                    //    case Global.Settings.Modes.SchoolBus:
                     alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
                     alternative.AddUtilityTerm(18, 1);
                     alternative.AddUtilityTerm(100, schoolBusTourFlag);
@@ -285,7 +285,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
                 if (availableExtra) {
-                    //	case Global.Settings.Modes.PaidRideShare
+                    //    case Global.Settings.Modes.PaidRideShare
                     alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
                     alternative.AddUtilityTerm(2, distanceExtra * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit * tour.CostCoefficient);
                     alternative.AddUtilityTerm(2, Global.Configuration.PaidRideShare_FixedCostPerRide * tour.CostCoefficient);

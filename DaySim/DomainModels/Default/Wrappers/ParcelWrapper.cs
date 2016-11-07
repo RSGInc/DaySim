@@ -614,16 +614,16 @@ namespace DaySim.DomainModels.Default.Wrappers {
             return distance;
         }
 
-        //		public virtual void SetFirstStopAreaDistanceIndex( int index) {
-        //			FirstPositionInStopAreaDistanceArray = index;
-        //		}
+        //        public virtual void SetFirstStopAreaDistanceIndex( int index) {
+        //            FirstPositionInStopAreaDistanceArray = index;
+        //        }
 
-        //		public virtual void SetLastStopAreaDistanceIndex( int index) {
-        //			LastPositionInStopAreaDistanceArray = index;
-        //		}
+        //        public virtual void SetLastStopAreaDistanceIndex( int index) {
+        //            LastPositionInStopAreaDistanceArray = index;
+        //        }
 
 
-        /*	 is now done in Engine instead
+        /*     is now done in Engine instead
                 public virtual void SetFirstAndLastStopAreaDistanceIndexes() {
                     if ( StopAreaDistanceArrayPositionsSet) {
                         return;
@@ -975,7 +975,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
             var lastRecord = Global.ANodeLastRecord[aNodeId - 1];
 
             if (firstRecord <= 0 || lastRecord <= 0) {
-                return Constants.DEFAULT_VALUE; //there are no b nodes for a node			
+                return Constants.DEFAULT_VALUE; //there are no b nodes for a node            
             }
 
             // binary search for bnode_Id in relevant records in node-node distance arrays
@@ -997,7 +997,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
             } while (bNodeComp != bNodeId && maxIndex >= minIndex);
 
             if (bNodeComp != bNodeId) {
-                return Constants.DEFAULT_VALUE; //there are no b nodes for a node			
+                return Constants.DEFAULT_VALUE; //there are no b nodes for a node            
             }
 
             var distance = Global.NodePairDistance[index] / 5280.0; // convert feet to miles

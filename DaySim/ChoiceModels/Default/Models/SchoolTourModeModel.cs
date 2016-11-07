@@ -208,7 +208,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
                 if (availableExtra) {
-                    //	case Global.Settings.Modes.SchoolBus:
+                    //    case Global.Settings.Modes.SchoolBus:
                     alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
                     alternative.AddUtilityTerm(10, 1);
                     alternative.AddUtilityTerm(17, childUnder5Flag);
@@ -230,7 +230,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
                 if (availableExtra) {
-                    //	case Global.Settings.Modes.PaidRideShare
+                    //    case Global.Settings.Modes.PaidRideShare
                     alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
                     alternative.AddUtilityTerm(2, distanceExtra * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit * tour.CostCoefficient);
                     alternative.AddUtilityTerm(2, Global.Configuration.PaidRideShare_FixedCostPerRide * tour.CostCoefficient);
@@ -267,12 +267,12 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(28, adultFlag);
                     alternative.AddUtilityTerm(29, drivingAgeStudentFlag);
                     alternative.AddUtilityTerm(129, destinationParcel.MixedUse2Index1());
-                    //						alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(125, originParcel.HouseholdDensity1());
-                    //						alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
-                    //						alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
+                    //                        alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
+                    //                        alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtilityTerm(125, originParcel.HouseholdDensity1());
+                    //                        alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
+                    //                        alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
                     alternative.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1 + 1));
                 } else if (mode == Global.Settings.Modes.Hov3) {
                     alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT3));
@@ -328,9 +328,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(69, adultFlag);
                     alternative.AddUtilityTerm(169, destinationParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(168, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtilityTerm(167, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(166, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(165, originParcel.HouseholdDensity1());
+                    //                        alternative.AddUtilityTerm(167, destinationParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtilityTerm(166, originParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtilityTerm(165, originParcel.HouseholdDensity1());
                     alternative.AddUtilityTerm(164, originParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(161, (class1Dist > 0).ToFlag());
                     alternative.AddUtilityTerm(162, (class2Dist > 0).ToFlag());
@@ -339,10 +339,10 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(70, 1);
                     alternative.AddUtilityTerm(79, adultFlag);
                     alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
-                    //						alternative.AddUtilityTerm(178, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtilityTerm(177, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(176, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
+                    //                        alternative.AddUtilityTerm(178, destinationParcel.TotalEmploymentDensity1());
+                    //                        alternative.AddUtilityTerm(177, destinationParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtilityTerm(176, originParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
                     alternative.AddUtilityTerm(179, originParcel.MixedUse4Index1());
                 }
             }

@@ -799,7 +799,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                     destSizeComponent.AddUtilityTerm(firstPurposeGamma + 8, destinationParcel.Households);
                 }
             }
-            //	}
+            //    }
 
             // may want to insert additional two-way interaction components such as mode-destination
             // second loop on destinations to handle all elemental alternatives
@@ -818,7 +818,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 }
 
                 //if (!destAvailable && !Global.Configuration.IsInEstimationMode) {
-                //	continue;
+                //    continue;
                 //}
                 // set tour destination parcel for within this loop in order to set other variables
                 HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, constrainedHouseholdCars, constrainedTransitDiscountFraction, destinationParcel);
@@ -908,14 +908,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
                     }
                     //Following code was used to test handling of partially joint half tours (JLB 20140603)
                     //if (partialHalfTour) {
-                    //	Global.PrintFile.WriteLine("HH pers {0} {1} avail {2} Aper Dper Mode {3} {4} {5} Travel Times {6} {7} Window {8} {9}",
-                    //	   household.Id, person.Sequence,  
+                    //    Global.PrintFile.WriteLine("HH pers {0} {1} avail {2} Aper Dper Mode {3} {4} {5} Travel Times {6} {7} Window {8} {9}",
+                    //       household.Id, person.Sequence,  
                     //    available,  
-                    //		arrivalPeriod.Index, departurePeriod.Index, mode, 
-                    //	                           modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
-                    //	                           modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
-                    //	                           modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.Start : -1,
-                    //	                           modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
+                    //        arrivalPeriod.Index, departurePeriod.Index, mode, 
+                    //                               modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
+                    //                               modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -1,
+                    //                               modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.Start : -1,
+                    //                               modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
                     //}
 
                     //if in application mode and combination is not available, can skip the rest
@@ -1006,42 +1006,42 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 // detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
                 var excludeReason = 0;
 
-                //				if (_maxZone == -1) {
-                //					// TODO: Verify / Optimize
-                //					_maxZone = ChoiceModelRunner.ZoneKeys.Max(z => z.Key);
-                //				}
+                //                if (_maxZone == -1) {
+                //                    // TODO: Verify / Optimize
+                //                    _maxZone = ChoiceModelRunner.ZoneKeys.Max(z => z.Key);
+                //                }
                 //
-                //				if (_maxParcel == -1) {
-                //					// TODO: Optimize
-                //					_maxParcel = ChoiceModelRunner.Parcels.Values.Max(parcel => parcel.Id);
-                //				}
+                //                if (_maxParcel == -1) {
+                //                    // TODO: Optimize
+                //                    _maxParcel = ChoiceModelRunner.Parcels.Values.Max(parcel => parcel.Id);
+                //                }
 
                 if (Global.Configuration.IsInEstimationMode) {
-                    //					if (tour.OriginParcelId > _maxParcel) {
-                    //						excludeReason = 3;
-                    //					}
+                    //                    if (tour.OriginParcelId > _maxParcel) {
+                    //                        excludeReason = 3;
+                    //                    }
 
                     if (tour.OriginParcelId <= 0) {
                         excludeReason = 4;
                     }
-                    //					else if (tour.DestinationAddressType > _maxParcel) {
-                    //						excludeReason = 5;
-                    //					}
+                    //                    else if (tour.DestinationAddressType > _maxParcel) {
+                    //                        excludeReason = 5;
+                    //                    }
                     else if (tour.DestinationParcelId <= 0) {
                         excludeReason = 6;
                         tour.DestinationParcelId = tour.OriginParcelId;
                         tour.DestinationParcel = tour.OriginParcel;
                         tour.DestinationZoneKey = tour.OriginParcelId;
                     }
-                    //					else if (tour.OriginParcelId > _maxParcel) {
-                    //						excludeReason = 7;
-                    //					}
-                    //					else if (tour.OriginParcelId <= 0) {
-                    //						excludeReason = 8;
-                    //					}
+                    //                    else if (tour.OriginParcelId > _maxParcel) {
+                    //                        excludeReason = 7;
+                    //                    }
+                    //                    else if (tour.OriginParcelId <= 0) {
+                    //                        excludeReason = 8;
+                    //                    }
                     //JLB 20130705 dropp following screen for actum
                     //else if (tour.OriginParcelId == tour.DestinationParcelId) {
-                    //	excludeReason = 9;
+                    //    excludeReason = 9;
                     //}
                     else if (tour.OriginParcel.ZoneId == -1) {
                         // TODO: Verify this condition... it used to check that the zone was == null. 

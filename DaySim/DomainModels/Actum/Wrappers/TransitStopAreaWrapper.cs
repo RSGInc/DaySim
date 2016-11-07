@@ -24,8 +24,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         #region domain model properies
 
         //public string TerminalName {
-        //	get { return _transitStopArea.TerminalName; }
-        //	set { _transitStopArea.TerminalName = value; }
+        //    get { return _transitStopArea.TerminalName; }
+        //    set { _transitStopArea.TerminalName = value; }
         //}
 
         public int Microzone {

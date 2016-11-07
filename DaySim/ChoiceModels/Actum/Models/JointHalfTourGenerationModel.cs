@@ -74,7 +74,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 choice = (int)chosenAlternative.Choice;
                 //}
                 //else {                                      // TODO:  see above TODO:
-                //	choice = Global.Settings.Purposes.NoneOrHome;   // this is returned if the model isn't even run because we know there are no tours
+                //    choice = Global.Settings.Purposes.NoneOrHome;   // this is returned if the model isn't even run because we know there are no tours
                 //                                               which is used by the choicemodelrunneer to break tour generation
                 // }
             }

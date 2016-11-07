@@ -55,9 +55,9 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
         double GetDistanceToTransit();
 
-        //		void SetFirstStopAreaDistanceIndex();
+        //        void SetFirstStopAreaDistanceIndex();
 
-        //		void SetLastStopAreaDistanceIndex();
+        //        void SetLastStopAreaDistanceIndex();
 
         double NetIntersectionDensity1();
 
@@ -157,7 +157,7 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
         double CircuityDistance(IParcelWrapper destination);
 
-        //		void SetFirstAndLastStopAreaDistanceIndexes();
+        //        void SetFirstAndLastStopAreaDistanceIndexes();
 
         #endregion
     }

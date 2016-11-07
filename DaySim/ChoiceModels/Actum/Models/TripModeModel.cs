@@ -139,7 +139,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 //var pathTypeModel = pathTypeModels.First(x => x.Mode == mode);
                 //
                 //if (!pathTypeModel.Available) {
-                //	return;
+                //    return;
                 //}
 
                 RunModel(choiceProbabilityCalculator, trip, pathTypeModels, originParcel, destinationParcel, trip.Mode);
@@ -326,8 +326,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
             // GV commented out park and ride
             //// if a park and ride tour, only car is available
             //if (tour.Mode == Global.Settings.Modes.ParkAndRide) {
-            //	tripModeAvailable[Global.Settings.Modes.Sov] = tour.Household.VehiclesAvailable > 0 && tour.Person.IsDrivingAge;
-            //	tripModeAvailable[Global.Settings.Modes.Hov2] = !tripModeAvailable[Global.Settings.Modes.Sov];
+            //    tripModeAvailable[Global.Settings.Modes.Sov] = tour.Household.VehiclesAvailable > 0 && tour.Person.IsDrivingAge;
+            //    tripModeAvailable[Global.Settings.Modes.Hov2] = !tripModeAvailable[Global.Settings.Modes.Sov];
             //}
             //// if the last trip of the tour and tour mode not yet used, only the tour mode is available
             if (isLastTripInTour && frequencyPreviousTripModeIsTourMode == 0) {
@@ -348,9 +348,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
             //var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov3);
             //const int modeExtra = Global.Settings.Modes.SchoolBus;
             //var availableExtra = pathTypeExtra.Available && tour.IsSchoolBusMode && tripModeAvailable[modeExtra]
-            //	 && (trip.IsHalfTourFromOrigin
-            //		  ? trip.LatestDepartureTime - pathTypeExtra.PathTime >= trip.ArrivalTimeLimit
-            //		  : trip.EarliestDepartureTime + pathTypeExtra.PathTime <= trip.ArrivalTimeLimit);
+            //     && (trip.IsHalfTourFromOrigin
+            //          ? trip.LatestDepartureTime - pathTypeExtra.PathTime >= trip.ArrivalTimeLimit
+            //          : trip.EarliestDepartureTime + pathTypeExtra.PathTime <= trip.ArrivalTimeLimit);
             //var generalizedTimeLogsumExtra = pathTypeExtra.GeneralizedTimeLogsum;
 
             //var alternative = choiceProbabilityCalculator.GetAlternative(modeExtra, availableExtra, choice == modeExtra);
@@ -359,18 +359,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
             //alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
             //
             //if (availableExtra) {
-            //	//	case Global.Settings.Modes.SchoolBus:
-            //	alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
-            //	alternative.AddUtilityTerm(18, 1);
-            //	alternative.AddUtilityTerm(100, schoolBusTourFlag);
-            //	alternative.AddUtilityTerm(102, (schoolBusTourFlag * onlyTripOnFirstHalfFlag));
-            //	alternative.AddUtilityTerm(103, (schoolBusTourFlag * onlyTripOnSecondHalfFlag));
-            //	alternative.AddUtilityTerm(104, (schoolBusTourFlag * firstTripOnFirstHalfFlag));
-            //	alternative.AddUtilityTerm(105, (schoolBusTourFlag * firstTripOnSecondHalfFlag));
-            //	alternative.AddUtilityTerm(106, (schoolBusTourFlag * lastTripOnFirstHalfFlag));
-            //	alternative.AddUtilityTerm(107, (schoolBusTourFlag * lastTripOnSecondHalfFlag));
-            //	alternative.AddUtilityTerm(112, parkAndRideTourFlag);
-            //	alternative.AddUtilityTerm(113, transitTourFlag);
+            //    //    case Global.Settings.Modes.SchoolBus:
+            //    alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
+            //    alternative.AddUtilityTerm(18, 1);
+            //    alternative.AddUtilityTerm(100, schoolBusTourFlag);
+            //    alternative.AddUtilityTerm(102, (schoolBusTourFlag * onlyTripOnFirstHalfFlag));
+            //    alternative.AddUtilityTerm(103, (schoolBusTourFlag * onlyTripOnSecondHalfFlag));
+            //    alternative.AddUtilityTerm(104, (schoolBusTourFlag * firstTripOnFirstHalfFlag));
+            //    alternative.AddUtilityTerm(105, (schoolBusTourFlag * firstTripOnSecondHalfFlag));
+            //    alternative.AddUtilityTerm(106, (schoolBusTourFlag * lastTripOnFirstHalfFlag));
+            //    alternative.AddUtilityTerm(107, (schoolBusTourFlag * lastTripOnSecondHalfFlag));
+            //    alternative.AddUtilityTerm(112, parkAndRideTourFlag);
+            //    alternative.AddUtilityTerm(113, transitTourFlag);
             //}
 
             ChoiceProbabilityCalculator.Alternative alternative;

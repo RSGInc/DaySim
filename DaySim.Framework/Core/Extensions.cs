@@ -205,14 +205,14 @@ namespace DaySim.Framework.Core {
 
             return offset;
 
-            //			int minutes;
-            //			var hours = Math.DivRem(clockTime24Hour, 100, out minutes);
-            //			
-            //			if (hours >= 3) {
-            //				return 60 * (hours - 3) + minutes; // subtract 3 hours
-            //			}
+            //            int minutes;
+            //            var hours = Math.DivRem(clockTime24Hour, 100, out minutes);
+            //            
+            //            if (hours >= 3) {
+            //                return 60 * (hours - 3) + minutes; // subtract 3 hours
+            //            }
             //
-            //			return 60 * (hours - 3 + 24) + minutes; // subtract 3 hours and add 24 hours to make it greater than 0
+            //            return 60 * (hours - 3 + 24) + minutes; // subtract 3 hours and add 24 hours to make it greater than 0
         }
 
         public static int ToMinutesAfterMidnight(this int minute) {
@@ -224,14 +224,14 @@ namespace DaySim.Framework.Core {
 
             return offset;
 
-            //			int minutes;
-            //			var hours = Math.DivRem(minutesAfter3AM, 60, out minutes);
-            //			
-            //			if (hours < 21) {
-            //				return 100 * (hours + 3) + minutes; // add 3 hours
-            //			}
+            //            int minutes;
+            //            var hours = Math.DivRem(minutesAfter3AM, 60, out minutes);
+            //            
+            //            if (hours < 21) {
+            //                return 100 * (hours + 3) + minutes; // add 3 hours
+            //            }
             //
-            //			return 100 * (hours + 3 - 24) + minutes; // add 3 hours and subtract 24 hours to make it less than 2400
+            //            return 100 * (hours + 3 - 24) + minutes; // add 3 hours and subtract 24 hours to make it less than 2400
         }
 
         public static int ToFlag(this bool expression) {

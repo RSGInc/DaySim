@@ -63,46 +63,46 @@ namespace DaySim.ChoiceModels.H.Models {
                 Global.Configuration.IsInEstimationMode = true;
             }
 
-              //				else if (Global.Configuration.TestEstimationModelInApplicationMode==true){
+              //                else if (Global.Configuration.TestEstimationModelInApplicationMode==true){
 
-              //				Global.Configuration.IsInEstimationMode = false;
+              //                Global.Configuration.IsInEstimationMode = false;
 
-              //				if (householdDay.Household.Id == 2015) {
-              //					bool testbreak = true;
-              //				}
-              //				RunModel(choiceProbabilityCalculator, personDay, householdDay, nCallsForTour, simulatedMandatoryTours);
+              //                if (householdDay.Household.Id == 2015) {
+              //                    bool testbreak = true;
+              //                }
+              //                RunModel(choiceProbabilityCalculator, personDay, householdDay, nCallsForTour, simulatedMandatoryTours);
 
               // need to determine the choice on this particular simulated tour
-              //				int[] totalMandatoryTours = new int[4];
+              //                int[] totalMandatoryTours = new int[4];
 
-              //				totalMandatoryTours[1] = personDay.UsualWorkplaceTours;
-              //				totalMandatoryTours[2] = personDay.WorkTours - totalMandatoryTours[1];
-              //				totalMandatoryTours[3] = personDay.SchoolTours;
-              //				totalMandatoryTours[0] = totalMandatoryTours[1] + totalMandatoryTours[2] + totalMandatoryTours[3];
-              //				if (personDay.UsualWorkplaceTours + personDay.SchoolTours > 0) {
-              //							personDay.HasMandatoryTourToUsualLocation = true;
-              //						}
+              //                totalMandatoryTours[1] = personDay.UsualWorkplaceTours;
+              //                totalMandatoryTours[2] = personDay.WorkTours - totalMandatoryTours[1];
+              //                totalMandatoryTours[3] = personDay.SchoolTours;
+              //                totalMandatoryTours[0] = totalMandatoryTours[1] + totalMandatoryTours[2] + totalMandatoryTours[3];
+              //                if (personDay.UsualWorkplaceTours + personDay.SchoolTours > 0) {
+              //                            personDay.HasMandatoryTourToUsualLocation = true;
+              //                        }
 
               //using nCallsForTour - 1 will give the choice
-              //				if (nCallsForTour - 1 < totalMandatoryTours[1]) { choice = 1; }
-              //				else if (nCallsForTour - 1 < totalMandatoryTours[1] + totalMandatoryTours[2]) { choice = 2; }
-              //				else if (nCallsForTour - 1 < totalMandatoryTours[0]) { choice = 3; }
-              //				else { choice = 0; }
+              //                if (nCallsForTour - 1 < totalMandatoryTours[1]) { choice = 1; }
+              //                else if (nCallsForTour - 1 < totalMandatoryTours[1] + totalMandatoryTours[2]) { choice = 2; }
+              //                else if (nCallsForTour - 1 < totalMandatoryTours[0]) { choice = 3; }
+              //                else { choice = 0; }
 
-              //				var observedChoice = choice ;
-              //				var simulatedChoice =choiceProbabilityCalculator.SimulateChoice(personDay.Household.RandomUtility, personDay.Id, observedChoice);
+              //                var observedChoice = choice ;
+              //                var simulatedChoice =choiceProbabilityCalculator.SimulateChoice(personDay.Household.RandomUtility, personDay.Id, observedChoice);
 
-              //				int tourPurpose =0;
+              //                int tourPurpose =0;
 
-              //					if ( simulatedChoice!= null)
-              //					{
-              //					tourPurpose = (int) simulatedChoice.Choice;
-              //					}
+              //                    if ( simulatedChoice!= null)
+              //                    {
+              //                    tourPurpose = (int) simulatedChoice.Choice;
+              //                    }
 
-              //				choice = tourPurpose;
+              //                choice = tourPurpose;
 
-              //				Global.Configuration.IsInEstimationMode = true;
-              //			}
+              //                Global.Configuration.IsInEstimationMode = true;
+              //            }
 
               else {
                 if (householdDay.Household.Id == 2015) {

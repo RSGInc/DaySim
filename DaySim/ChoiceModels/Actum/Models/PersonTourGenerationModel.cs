@@ -93,7 +93,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             var shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.Shopping][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
             //var mealAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
-            //	 [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
+            //     [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
             var socialAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
             var totalAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]

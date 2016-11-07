@@ -16,8 +16,8 @@ using System.Runtime.InteropServices;
 namespace DaySim.Framework.Roster {
     public class CubeSkimFileReader : ISkimFileReader {
 
-        //		[DllImport("VoyagerFileAccess.Dll", CharSet = CharSet.Auto, EntryPoint = "MatReaderOpen", CallingConvention = CallingConvention.Cdecl)]
-        //		public static extern IntPtr Open(string filename, StringBuilder buffer, int bufferLength);
+        //        [DllImport("VoyagerFileAccess.Dll", CharSet = CharSet.Auto, EntryPoint = "MatReaderOpen", CallingConvention = CallingConvention.Cdecl)]
+        //        public static extern IntPtr Open(string filename, StringBuilder buffer, int bufferLength);
 
         /// Return Type: BOOL->int
         /// lpPathName: LPCSTR->CHAR*
@@ -197,9 +197,9 @@ namespace DaySim.Framework.Roster {
         public static bool IsInstalled(string name) {
             RegistryKey[] keys = {
                 Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"), //current user
-				Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"), //local machine
-				Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") //inside local machine
-			};
+                Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"), //local machine
+                Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") //inside local machine
+            };
 
             foreach (var key in keys) {
                 foreach (String keyName in key.GetSubKeyNames()) {

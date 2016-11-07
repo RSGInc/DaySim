@@ -419,7 +419,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                     modeComponent.AddUtilityTerm(40, 1);
                     modeComponent.AddUtilityTerm(41, onePersonHouseholdFlag);
                 } else if (mode == Global.Settings.Modes.Sov) {
-                    //	modeComponent.AddUtilityTerm(50, 1);
+                    //    modeComponent.AddUtilityTerm(50, 1);
                     modeComponent.AddUtilityTerm(54, income0To25KFlag);
                     //modeComponent.AddUtilityTerm(55, income100KPlusFlag);
                     //modeComponent.AddUtilityTerm(57, carsLessThanWorkersFlag);
@@ -517,7 +517,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                                                    modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
 
                     }
-                    /*				if (altIndex == 0)
+                    /*                if (altIndex == 0)
                                         {
                                             alternative.AddUtilityTerm(991, tour.Household.Id);
                                             alternative.AddUtilityTerm(992, tour.Person.Id);
@@ -583,7 +583,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                     alternative.AddUtilityTerm(2, destinationParkingCost * parkingCostFraction);
                     //alternative.AddUtilityTerm(3,
                     //                          Math.Log(Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start -
-                    //													 minimumTimeNeeded + 1.0)));
+                    //                                                     minimumTimeNeeded + 1.0)));
                     // JLB 20140204 replaced coeff 3 with a different time window formulation:  time pressure
                     //    instead of having positive utility for increasing time window, have negative utility for decreasing time window
                     alternative.AddUtilityTerm(3,
@@ -593,7 +593,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
                     //alternative.AddUtilityTerm(4, Math.Log((totalMinutesAvailableInDay + 1.0)/(minimumTimeNeeded + 1.0)));
                     //alternative.AddUtilityTerm(4, 
-                    //					Math.Log(Math.Max(Constants.EPSILON, 1 - minimumTimeNeeded/(Math.Min(1140, totalMinutesAvailableInDay)))));
+                    //                    Math.Log(Math.Max(Constants.EPSILON, 1 - minimumTimeNeeded/(Math.Min(1140, totalMinutesAvailableInDay)))));
                     alternative.AddUtilityTerm(5,
                                                (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&
                                                 arrivalPeriod.Index >= DayPeriod.EVENING)

@@ -84,14 +84,14 @@ namespace DaySim {
                     Index = modeTime.Index;
 
                     /*
-				TravelTimeToDestination = modeTime.TravelTimeToDestination;
-				TravelTimeFromDestination = modeTime.TravelTimeFromDestination;
-				GeneralizedTimeToDestination = modeTime.GeneralizedTimeToDestination;
-				GeneralizedTimeFromDestination = modeTime.GeneralizedTimeFromDestination;
-				ModeAvailableToDestination = modeTime.ModeAvailableToDestination;
-				ModeAvailableFromDestination = modeTime.ModeAvailableFromDestination;
-				LongestFeasibleWindow = modeTime.LongestFeasibleWindow;
-				*/
+                TravelTimeToDestination = modeTime.TravelTimeToDestination;
+                TravelTimeFromDestination = modeTime.TravelTimeFromDestination;
+                GeneralizedTimeToDestination = modeTime.GeneralizedTimeToDestination;
+                GeneralizedTimeFromDestination = modeTime.GeneralizedTimeFromDestination;
+                ModeAvailableToDestination = modeTime.ModeAvailableToDestination;
+                ModeAvailableFromDestination = modeTime.ModeAvailableFromDestination;
+                LongestFeasibleWindow = modeTime.LongestFeasibleWindow;
+                */
                     break;
                 }
             }
@@ -107,7 +107,7 @@ namespace DaySim {
             var departureTime = timeWindow.GetAvailableMinute(tour.Household.RandomUtility, DeparturePeriod.Start, DeparturePeriod.End);
 
             //if (departureTime == Constants.DEFAULT_VALUE) {
-            //	throw new InvalidDepartureTimeException();
+            //    throw new InvalidDepartureTimeException();
             //}
 
             return departureTime;
@@ -168,7 +168,7 @@ namespace DaySim {
         public static void SetModeTimeImpedances(IHouseholdDayWrapper householdDay, ITourWrapper tour,
             int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, IParcelWrapper alternativeDestination = null) {
 
-            /*			if (householdDay.Household.Id == 80059 && tour.Person.Sequence == 2 && tour.Sequence == 2
+            /*            if (householdDay.Household.Id == 80059 && tour.Person.Sequence == 2 && tour.Sequence == 2
                             && constrainedMode == 5 && constrainedArrivalTime == 354 && constrainedDepartureTime == 361) {
                             bool testBreak = true;
                         }

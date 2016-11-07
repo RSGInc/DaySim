@@ -24,8 +24,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         #region domain model properies
 
         //public string TerminalName {
-        //	get { return _parkAndRideNode.TerminalName; }
-        //	set { _parkAndRideNode.TerminalName = value; }
+        //    get { return _parkAndRideNode.TerminalName; }
+        //    set { _parkAndRideNode.TerminalName = value; }
         //}
 
         public int ParkingTypeId {

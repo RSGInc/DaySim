@@ -461,12 +461,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 // require at least one driving age (as chauffeur) //GV:out july 2013
                 //int numberDrivingAge = 0;
                 //for (int i = 1; i <= 5; i++) {
-                //	if (altParticipants[alt][i] == 1 && pIsDrivingAge[i]) {
-                //		numberDrivingAge++;
-                //	}
+                //    if (altParticipants[alt][i] == 1 && pIsDrivingAge[i]) {
+                //        numberDrivingAge++;
+                //    }
                 //}
                 //if (numberDrivingAge == 0) {
-                //	available[alt] = false;
+                //    available[alt] = false;
                 //}
 
 

@@ -87,7 +87,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             destinationSampler.SampleTourDestinations(schoolLocationUtilities);
 
-            //			var alternative = choiceProbabilityCalculator.GetAlternative(countSampled, true);
+            //            var alternative = choiceProbabilityCalculator.GetAlternative(countSampled, true);
 
             // JLB 20120403 added third call parameter to idenitfy whether this alt is chosen or not
             var alternative = choiceProbabilityCalculator.GetAlternative(sampleSize, true, choseHome);
@@ -101,7 +101,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(98, 100); //old dummy size variable for oddball alt
 
             //make oddball alt unavailable and remove nesting for estimation of conditional MNL 
-            //			alternative.Available = false;
+            //            alternative.Available = false;
             alternative.AddNestedAlternative(sampleSize + 3, 1, 99);
         }
 
@@ -136,7 +136,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 }
 
                 var destinationParcel = ChoiceModelFactory.Parcels[sampleItem.ParcelId];
-                //				var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
+                //                var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
 
                 alternative.Choice = destinationParcel;
 
@@ -152,14 +152,14 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var distance3 = Math.Max(0, distanceFromOrigin - .5);
                 var distanceLog = Math.Log(1 + distanceFromOrigin);
                 var distanceFromWork = _person.IsFullOrPartTimeWorker ? _person.UsualWorkParcel.DistanceFromWorkLog(destinationParcel, 1) : 0;
-                //				var millionsSquareFeet = destinationZoneTotals.MillionsSquareFeet();
+                //                var millionsSquareFeet = destinationZoneTotals.MillionsSquareFeet();
 
                 // zone densities
-                //				var eduDensity = destinationZoneTotals.GetEmploymentEducationDensity(millionsSquareFeet);
-                //				var govDensity = destinationZoneTotals.GetEmploymentGovernmentDensity(millionsSquareFeet);
-                //				var offDensity = destinationZoneTotals.GetEmploymentOfficeDensity(millionsSquareFeet);
-                //				var serDensity = destinationZoneTotals.GetEmploymentServiceDensity(millionsSquareFeet);
-                //				var houDensity = destinationZoneTotals.GetHouseholdsDensity(millionsSquareFeet);
+                //                var eduDensity = destinationZoneTotals.GetEmploymentEducationDensity(millionsSquareFeet);
+                //                var govDensity = destinationZoneTotals.GetEmploymentGovernmentDensity(millionsSquareFeet);
+                //                var offDensity = destinationZoneTotals.GetEmploymentOfficeDensity(millionsSquareFeet);
+                //                var serDensity = destinationZoneTotals.GetEmploymentServiceDensity(millionsSquareFeet);
+                //                var houDensity = destinationZoneTotals.GetHouseholdsDensity(millionsSquareFeet);
 
                 // parcel buffers
                 var educationBuffer1 = Math.Log(destinationParcel.EmploymentEducationBuffer1 + 1);
@@ -190,35 +190,35 @@ namespace DaySim.ChoiceModels.Default.Models {
                 //var studentsK8Buffer2 = Math.Log(destinationParcel.StudentsK8Buffer2 + 1);
                 //var studentsHighSchoolBuffer2 = Math.Log(destinationParcel.StudentsHighSchoolBuffer2 + 1);
 
-                //				var educationBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentEducationBuffer1 - destinationParcel.EmploymentEducation)  + 1);
-                //				var governmentBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentGovernmentBuffer1 - destinationParcel.EmploymentGovernment)  + 1);
-                //				var officeBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentOfficeBuffer1 - destinationParcel.EmploymentOffice)  + 1);
-                //				var serviceBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentServiceBuffer1 - destinationParcel.EmploymentService)  + 1);
-                //				var householdsBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.HouseholdsBuffer1 - destinationParcel.Households)  + 1);
-                //				var retailBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentRetailBuffer1 - destinationParcel.EmploymentRetail)  + 1);
-                //				var industrialAgricultureConstructionBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentIndustrialBuffer1 + destinationParcel.EmploymentAgricultureConstructionBuffer1
-                //					- destinationParcel.EmploymentIndustrial - destinationParcel.EmploymentAgricultureConstruction)	+ 1);
-                //				var foodBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentFoodBuffer1 - destinationParcel.EmploymentFood)  + 1);
-                //				var medicalBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentMedicalBuffer1 - destinationParcel.EmploymentMedical)  + 1);
-                //				var employmentTotalBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentTotalBuffer1 - destinationParcel.EmploymentTotal)  + 1);
-                //				var studentsUniversityBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsUniversityBuffer1 - destinationParcel.StudentsUniversity)  + 1);
-                //				var studentsK8Buffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsK8Buffer1 - destinationParcel.StudentsK8)  + 1);
-                //				var studentsHighSchoolBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsHighSchoolBuffer1 - destinationParcel.StudentsHighSchool)  + 1);
+                //                var educationBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentEducationBuffer1 - destinationParcel.EmploymentEducation)  + 1);
+                //                var governmentBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentGovernmentBuffer1 - destinationParcel.EmploymentGovernment)  + 1);
+                //                var officeBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentOfficeBuffer1 - destinationParcel.EmploymentOffice)  + 1);
+                //                var serviceBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentServiceBuffer1 - destinationParcel.EmploymentService)  + 1);
+                //                var householdsBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.HouseholdsBuffer1 - destinationParcel.Households)  + 1);
+                //                var retailBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentRetailBuffer1 - destinationParcel.EmploymentRetail)  + 1);
+                //                var industrialAgricultureConstructionBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentIndustrialBuffer1 + destinationParcel.EmploymentAgricultureConstructionBuffer1
+                //                    - destinationParcel.EmploymentIndustrial - destinationParcel.EmploymentAgricultureConstruction)    + 1);
+                //                var foodBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentFoodBuffer1 - destinationParcel.EmploymentFood)  + 1);
+                //                var medicalBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentMedicalBuffer1 - destinationParcel.EmploymentMedical)  + 1);
+                //                var employmentTotalBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentTotalBuffer1 - destinationParcel.EmploymentTotal)  + 1);
+                //                var studentsUniversityBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsUniversityBuffer1 - destinationParcel.StudentsUniversity)  + 1);
+                //                var studentsK8Buffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsK8Buffer1 - destinationParcel.StudentsK8)  + 1);
+                //                var studentsHighSchoolBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsHighSchoolBuffer1 - destinationParcel.StudentsHighSchool)  + 1);
                 //
-                //				var educationBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentEducationBuffer2 - destinationParcel.EmploymentEducation)  + 1);
-                //				var governmentBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentGovernmentBuffer2 - destinationParcel.EmploymentGovernment)  + 1);
-                //				var officeBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentOfficeBuffer2 - destinationParcel.EmploymentOffice)  + 1);
-                //				var serviceBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentServiceBuffer2 - destinationParcel.EmploymentService)  + 1);
-                //				var householdsBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.HouseholdsBuffer2 - destinationParcel.Households)  + 1);
-                //				var retailBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentRetailBuffer2 - destinationParcel.EmploymentRetail)  + 1);
-                //				var industrialAgricultureConstructionBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentIndustrialBuffer2 + destinationParcel.EmploymentAgricultureConstructionBuffer2
-                //					- destinationParcel.EmploymentIndustrial - destinationParcel.EmploymentAgricultureConstruction)	+ 1);
-                //				var foodBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentFoodBuffer2 - destinationParcel.EmploymentFood)  + 1);
-                //				var medicalBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentMedicalBuffer2 - destinationParcel.EmploymentMedical)  + 1);
-                //				var employmentTotalBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentTotalBuffer2 - destinationParcel.EmploymentTotal)  + 1);
-                //				var studentsUniversityBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsUniversityBuffer2 - destinationParcel.StudentsUniversity)  + 1);
-                //				var studentsK8Buffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsK8Buffer2 - destinationParcel.StudentsK8)  + 1);
-                //				var studentsHighSchoolBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsHighSchoolBuffer2 - destinationParcel.StudentsHighSchool)  + 1);
+                //                var educationBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentEducationBuffer2 - destinationParcel.EmploymentEducation)  + 1);
+                //                var governmentBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentGovernmentBuffer2 - destinationParcel.EmploymentGovernment)  + 1);
+                //                var officeBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentOfficeBuffer2 - destinationParcel.EmploymentOffice)  + 1);
+                //                var serviceBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentServiceBuffer2 - destinationParcel.EmploymentService)  + 1);
+                //                var householdsBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.HouseholdsBuffer2 - destinationParcel.Households)  + 1);
+                //                var retailBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentRetailBuffer2 - destinationParcel.EmploymentRetail)  + 1);
+                //                var industrialAgricultureConstructionBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentIndustrialBuffer2 + destinationParcel.EmploymentAgricultureConstructionBuffer2
+                //                    - destinationParcel.EmploymentIndustrial - destinationParcel.EmploymentAgricultureConstruction)    + 1);
+                //                var foodBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentFoodBuffer2 - destinationParcel.EmploymentFood)  + 1);
+                //                var medicalBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentMedicalBuffer2 - destinationParcel.EmploymentMedical)  + 1);
+                //                var employmentTotalBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentTotalBuffer2 - destinationParcel.EmploymentTotal)  + 1);
+                //                var studentsUniversityBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsUniversityBuffer2 - destinationParcel.StudentsUniversity)  + 1);
+                //                var studentsK8Buffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsK8Buffer2 - destinationParcel.StudentsK8)  + 1);
+                //                var studentsHighSchoolBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsHighSchoolBuffer2 - destinationParcel.StudentsHighSchool)  + 1);
 
                 alternative.AddUtilityTerm(1, sampleItem.AdjustmentFactor);
 

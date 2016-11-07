@@ -143,7 +143,7 @@ namespace DaySim.Framework.ChoiceModels {
                      alternative.Utilities
                         .Where(u => u != null && u.Key == _key)
                         .Any(u => u.HasSizeVariable && !u.Data.AlmostEquals(0)) ||
-                    alternative.AltSizeComponents.Any(c => c != null && c.Utilities.Any(u => u != null && !u.Data.AlmostEquals(0))) // JLB 20140703 added the component condition	
+                    alternative.AltSizeComponents.Any(c => c != null && c.Utilities.Any(u => u != null && !u.Data.AlmostEquals(0))) // JLB 20140703 added the component condition    
                     )
                     ;
             }
@@ -774,10 +774,10 @@ namespace DaySim.Framework.ChoiceModels {
 
 
 
-            //			if (chosenAlternative == null) {
-            //				chosenAlternative = _alternatives[0];
-            //				Global.PrintFile.WriteLine("SimulateChoice.DrawAlternative had no available alternatives to choose from. Alternative 0 set as chosen, key is {0}",chosenAlternative.Key);
-            //			}
+            //            if (chosenAlternative == null) {
+            //                chosenAlternative = _alternatives[0];
+            //                Global.PrintFile.WriteLine("SimulateChoice.DrawAlternative had no available alternatives to choose from. Alternative 0 set as chosen, key is {0}",chosenAlternative.Key);
+            //            }
 
             return chosenAlternative;
         }

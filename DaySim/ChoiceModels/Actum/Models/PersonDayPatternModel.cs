@@ -117,9 +117,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
 
         private void InitializeDayPatterns(PersonDayWrapper personDay, DayPattern[] dayPatterns) {
-            //			if (_dayPatterns != null) {
-            //				return;
-            //			}
+            //            if (_dayPatterns != null) {
+            //                return;
+            //            }
 
             var workTours = personDay.WorkTours > 0 ? 1 : 0;
             var schoolTours = personDay.SchoolTours > 0 ? 1 : 0;

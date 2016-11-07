@@ -15,7 +15,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace DaySim.Framework.Persistence {
-    public class Reader<TModel>: IEnumerator<TModel>, IEnumerable<TModel> where TModel : class {
+    public class Reader<TModel> : IEnumerator<TModel>, IEnumerable<TModel> where TModel : class {
         private readonly Dictionary<int, long> _index;
         private readonly Dictionary<string, Dictionary<int, int[]>> _indexes = new Dictionary<string, Dictionary<int, int[]>>();
 

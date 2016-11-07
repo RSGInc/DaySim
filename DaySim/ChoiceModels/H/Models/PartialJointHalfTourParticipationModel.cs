@@ -209,17 +209,17 @@ namespace DaySim.ChoiceModels.H.Models {
             // set household characteristics here that do depend on person characteristics
             //bool partTimeWorkerIsAvailable = false;
             //for (int i = 1; i <= 5; i++) {
-            //	if (pType2[i] == 1 && pPatternType[i] == Constants.PatternType.MANDATORY && pHTAvailable[i] == true)
-            //		partTimeWorkerIsAvailable = true;
+            //    if (pType2[i] == 1 && pPatternType[i] == Constants.PatternType.MANDATORY && pHTAvailable[i] == true)
+            //        partTimeWorkerIsAvailable = true;
             //
             //}
 
             // set person characteristics here that depend on household characteristics
             //int[] pFullTimeWorkerButPartTimeWorkerIsAvailable = new int[6];
             //for (int i = 1; i <= 5; i++) {
-            //	if (pType1[i] == 1 && partTimeWorkerIsAvailable) {
-            //		pFullTimeWorkerButPartTimeWorkerIsAvailable[i] = 1;
-            //	}
+            //    if (pType1[i] == 1 && partTimeWorkerIsAvailable) {
+            //        pFullTimeWorkerButPartTimeWorkerIsAvailable[i] = 1;
+            //    }
             //}
 
             var componentIndex = 0;
@@ -384,7 +384,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 if (available[alt] == true) {
                     for (int i = 1; i <= 5; i++) {
                         if (altParticipants[alt][i] == 1) {
-                            //								totalParticipants++;
+                            //                                totalParticipants++;
                             if (pAdult[i] == 1) { numberOfParticipatingAdults++; }
                             if (pAdult[i] == 0) { numberOfParticipatingChildren++; }
                         }

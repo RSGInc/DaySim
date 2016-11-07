@@ -67,14 +67,14 @@ namespace DaySim.ChoiceModels.Default.Models {
             var person = tour.Person;
             var personDay = tour.PersonDay;
 
-            //			var foodRetailServiceMedicalQtrMileLog = tour.DestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
-            //			var mixedUseIndex = tour.DestinationParcel.MixedUse4Index1();
+            //            var foodRetailServiceMedicalQtrMileLog = tour.DestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
+            //            var mixedUseIndex = tour.DestinationParcel.MixedUse4Index1();
             var k8HighSchoolQtrMileLog = tour.DestinationParcel.K8HighSchoolQtrMileLogBuffer1();
             var carOwnership = person.GetCarOwnershipSegment();
 
             var noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
             var carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
-            //			var notUsualWorkParcelFlag = tour.DestinationParcel.NotUsualWorkParcelFlag(person.UsualWorkParcelId);
+            //            var notUsualWorkParcelFlag = tour.DestinationParcel.NotUsualWorkParcelFlag(person.UsualWorkParcelId);
 
             var votALSegment = tour.GetVotALSegment();
 
@@ -91,11 +91,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(15, (nCallsForTour > 1).ToFlag());
             alternative.AddUtilityTerm(16, Math.Log(personDay.HomeBasedTours));
             alternative.AddUtilityTerm(18, personDay.TwoOrMoreWorkToursExist().ToFlag());
-            //			alternative.AddUtility(19, notUsualWorkParcelFlag);
+            //            alternative.AddUtility(19, notUsualWorkParcelFlag);
             alternative.AddUtilityTerm(22, noCarsFlag);
             alternative.AddUtilityTerm(23, carCompetitionFlag);
             alternative.AddUtilityTerm(32, workAggregateLogsum);
-            //			alternative.AddUtility(32, mixedUseIndex);
+            //            alternative.AddUtility(32, mixedUseIndex);
 
             alternative.AddNestedAlternative(11, 0, 50);
 

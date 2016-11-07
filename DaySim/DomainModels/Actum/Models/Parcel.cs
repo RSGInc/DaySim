@@ -96,7 +96,7 @@ namespace DaySim.DomainModels.Actum.Models {
         [ColumnName("pprichrp")]
         public double ParkingOffStreetPaidHourlyPrice { get; set; }
 
-        /*		[ColumnName("Circ_E1")]
+        /*        [ColumnName("Circ_E1")]
                 public double ParkingCostPerHour8_18 { get; set; }
 
                 [ColumnName("Circ_E2")]
@@ -192,7 +192,7 @@ namespace DaySim.DomainModels.Actum.Models {
         [ColumnName("pprichr1")]
         public double ParkingOffStreetPaidHourlyPriceBuffer1 { get; set; }
 
-        /*		[ColumnName("Circ_W3")]
+        /*        [ColumnName("Circ_W3")]
                 public double ParkingCostPerHour8_18Buffer1 { get; set; }
 
                 [ColumnName("Circ_SW1")]
@@ -306,7 +306,7 @@ namespace DaySim.DomainModels.Actum.Models {
         [ColumnName("pprichr2")]
         public double ParkingOffStreetPaidHourlyPriceBuffer2 { get; set; }
 
-        /*		[ColumnName("ppricdyp")]
+        /*        [ColumnName("ppricdyp")]
                 public double ParkingCostPerHour8_18Buffer2 { get; set; }
 
                 [ColumnName("pprichrp")]

@@ -14,7 +14,7 @@ namespace DaySim.DomainModels.Actum.Models {
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
     public sealed class ParkAndRideNode : IActumParkAndRideNode {
-        //	public sealed class ParkAndRideNode {     //JLB 201505 Removed interface requirement so I could eliminate zoneID, and x and y coordinates
+        //    public sealed class ParkAndRideNode {     //JLB 201505 Removed interface requirement so I could eliminate zoneID, and x and y coordinates
 
         [ColumnName("id")]               //sequential ID of parking node not in raw input, added by RawConverter
         public int Id { get; set; }

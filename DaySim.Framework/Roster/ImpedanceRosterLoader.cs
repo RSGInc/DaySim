@@ -167,7 +167,7 @@ namespace DaySim.Framework.Roster {
                         RosterEntries[variableIndex][mode][pathType] = new RosterEntry[Global.Settings.VotGroups.TotalVotGroups][]; // Initialize the vot groups
 
                         for (var votGroup = Global.Settings.VotGroups.VeryLow; votGroup < Global.Settings.VotGroups.TotalVotGroups; votGroup++) {
-                            RosterEntries[variableIndex][mode][pathType][votGroup] = new RosterEntry[Global.Settings.Times.MinutesInADay + 1]; // Initialize the minute array	
+                            RosterEntries[variableIndex][mode][pathType][votGroup] = new RosterEntry[Global.Settings.Times.MinutesInADay + 1]; // Initialize the minute array    
                         }
                     }
                 }
@@ -229,7 +229,7 @@ namespace DaySim.Framework.Roster {
         public virtual void LoadSkimMatrices(IEnumerable<RosterEntry> entries, Dictionary<int, int> zoneMapping, Dictionary<int, int> transitStopAreaMapping, Dictionary<int, int> microzoneMapping) {
             SkimMatrices = new SkimMatrix[MatrixKeys.Length];
 
-            //			var cache = new Dictionary<string, List<float[]>>();
+            //            var cache = new Dictionary<string, List<float[]>>();
             var cache = new Dictionary<string, List<double[]>>(); // 20150703 JLB
 
             var currentFileName = "";
@@ -244,13 +244,13 @@ namespace DaySim.Framework.Roster {
                 IFileReaderCreator creator = Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().GetFileReaderCreator(entry.FileType);
 
                 /*switch (entry.FileType) {
-					case "text_ij":
-						skimFileReader = new TextIJSkimFileReader(cache, _path, mapping);
-						break;
-					case "bin":
-						skimFileReader = new BinarySkimFileReader(_path, mapping);
-						break;
-				}*/
+                    case "text_ij":
+                        skimFileReader = new TextIJSkimFileReader(cache, _path, mapping);
+                        break;
+                    case "bin":
+                        skimFileReader = new BinarySkimFileReader(_path, mapping);
+                        break;
+                }*/
 
                 if (creator == null) {
                     if (entry.FileType == "deferred") {

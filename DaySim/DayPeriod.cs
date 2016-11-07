@@ -222,34 +222,34 @@ namespace DaySim {
         };
 
         public static readonly MinuteSpan[] BigDayPeriods = new[] {
-			// 11:00 PM - 5:59 AM
-			new MinuteSpan(NIGHT, 1201, 180),
-			// 6:00 AM - 8:59 AM
-			new MinuteSpan(AM_PEAK, 181, 360),
-			// 9:00 AM - 3:29 PM
-			new MinuteSpan(MIDDAY, 361, 750),
-			// 3:30 PM - 6:29 PM
-			new MinuteSpan(PM_PEAK, 751, 930),
-			// 6:30 PM - 10:59 PM
-			new MinuteSpan(EVENING, 931, 1200)
+            // 11:00 PM - 5:59 AM
+            new MinuteSpan(NIGHT, 1201, 180),
+            // 6:00 AM - 8:59 AM
+            new MinuteSpan(AM_PEAK, 181, 360),
+            // 9:00 AM - 3:29 PM
+            new MinuteSpan(MIDDAY, 361, 750),
+            // 3:30 PM - 6:29 PM
+            new MinuteSpan(PM_PEAK, 751, 930),
+            // 6:30 PM - 10:59 PM
+            new MinuteSpan(EVENING, 931, 1200)
         };
 
         public const int H_BIG_DAY_PERIOD_TOTAL_TOUR_TIMES = 6;
         public const int H_BIG_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS = 21;
 
         public static readonly MinuteSpan[] HBigDayPeriods = new[] {
-			// 3:00 AM - 5:59 AM
-			new MinuteSpan(EARLY, 1, 180),
-			// 6:00 AM - 8:59 AM
-			new MinuteSpan(AM_PEAK, 181, 360),
-			// 9:00 AM - 3:29 PM
-			new MinuteSpan(MIDDAY, 361, 750),
-			// 3:30 PM - 6:29 PM
-			new MinuteSpan(PM_PEAK, 751, 930),
-			// 6:30 PM - 10:59 PM
-			new MinuteSpan(EVENING, 931, 1200),
-			// 11:00 PM - 2:59 AM
-			new MinuteSpan(LATE, 1201, 1440),
+            // 3:00 AM - 5:59 AM
+            new MinuteSpan(EARLY, 1, 180),
+            // 6:00 AM - 8:59 AM
+            new MinuteSpan(AM_PEAK, 181, 360),
+            // 9:00 AM - 3:29 PM
+            new MinuteSpan(MIDDAY, 361, 750),
+            // 3:30 PM - 6:29 PM
+            new MinuteSpan(PM_PEAK, 751, 930),
+            // 6:30 PM - 10:59 PM
+            new MinuteSpan(EVENING, 931, 1200),
+            // 11:00 PM - 2:59 AM
+            new MinuteSpan(LATE, 1201, 1440),
         };
     }
 }

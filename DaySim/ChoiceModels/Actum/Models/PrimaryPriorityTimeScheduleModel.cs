@@ -250,16 +250,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
             //if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
-            //				// set choice variable here  (derive from available household properties)
-            //				if (householdDay.SharedActivityHomeStays >= 1 
-            //					//&& householdDay.DurationMinutesSharedHomeStay >=60 
-            //					&& householdDay.AdultsInSharedHomeStay >= 1 
-            //					&& householdDay.NumberInLargestSharedHomeStay >= (householdDay.Household.Size)
+            //                // set choice variable here  (derive from available household properties)
+            //                if (householdDay.SharedActivityHomeStays >= 1 
+            //                    //&& householdDay.DurationMinutesSharedHomeStay >=60 
+            //                    && householdDay.AdultsInSharedHomeStay >= 1 
+            //                    && householdDay.NumberInLargestSharedHomeStay >= (householdDay.Household.Size)
             //                   )
-            //				{
-            //					householdDay.PrimaryPriorityTimeFlag = 1;
-            //				}
-            //				else 	householdDay.PrimaryPriorityTimeFlag = 0;
+            //                {
+            //                    householdDay.PrimaryPriorityTimeFlag = 1;
+            //                }
+            //                else     householdDay.PrimaryPriorityTimeFlag = 0;
 
             //RunModel(choiceProbabilityCalculator, householdDay, householdDay.PrimaryPriorityTimeFlag);
 

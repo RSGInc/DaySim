@@ -165,7 +165,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             var walkTourFlag = (parentTourMode == Global.Settings.Modes.Walk).ToFlag();
 
             // remaining inputs
-            //			var originParcel = subtour.OriginParcel;
+            //            var originParcel = subtour.OriginParcel;
             var parkingDuration = ChoiceModelUtility.GetParkingDuration(person.IsFulltimeWorker);
             var destinationParkingCost = destinationParcel.ParkingCostBuffer1(parkingDuration);
 
@@ -188,7 +188,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
                 if (availableExtra) {
-                    //	case Global.Settings.Modes.PaidRideShare
+                    //    case Global.Settings.Modes.PaidRideShare
                     alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * subtour.TimeCoefficient);
                     alternative.AddUtilityTerm(2, distanceExtra * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit * subtour.CostCoefficient);
                     alternative.AddUtilityTerm(2, Global.Configuration.PaidRideShare_FixedCostPerRide * subtour.CostCoefficient);
@@ -219,14 +219,14 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                 if (mode == Global.Settings.Modes.Transit) {
                     alternative.AddUtilityTerm(20, 1);
-                    //						alternative.AddUtility(129, destinationParcel.MixedUse2Index1());
-                    //						alternative.AddUtility(128, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtility(127, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtility(126, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtility(125, originParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtility(124, originParcel.MixedUse2Index1());
-                    //						alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
-                    //						alternative.AddUtility(122, Math.Log(originParcel.StopsTransitBuffer1+1));
+                    //                        alternative.AddUtility(129, destinationParcel.MixedUse2Index1());
+                    //                        alternative.AddUtility(128, destinationParcel.TotalEmploymentDensity1());
+                    //                        alternative.AddUtility(127, destinationParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtility(126, originParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtility(125, originParcel.TotalEmploymentDensity1());
+                    //                        alternative.AddUtility(124, originParcel.MixedUse2Index1());
+                    //                        alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
+                    //                        alternative.AddUtility(122, Math.Log(originParcel.StopsTransitBuffer1+1));
                 } else if (mode == Global.Settings.Modes.Hov3) {
                     alternative.AddUtilityTerm(1, (destinationParkingCost * subtour.CostCoefficient / ChoiceModelUtility.CPFACT3));
                     alternative.AddUtilityTerm(30, 1);
@@ -248,21 +248,21 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(60, 1);
                     alternative.AddUtilityTerm(61, maleFlag);
                     alternative.AddUtilityTerm(69, bikeTourFlag);
-                    //						alternative.AddUtility(169, destinationParcel.MixedUse4Index1());
-                    //						alternative.AddUtility(168, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtility(167, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtility(166, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtility(165, originParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtility(164, originParcel.MixedUse4Index1());
+                    //                        alternative.AddUtility(169, destinationParcel.MixedUse4Index1());
+                    //                        alternative.AddUtility(168, destinationParcel.TotalEmploymentDensity1());
+                    //                        alternative.AddUtility(167, destinationParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtility(166, originParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtility(165, originParcel.TotalEmploymentDensity1());
+                    //                        alternative.AddUtility(164, originParcel.MixedUse4Index1());
                 } else if (mode == Global.Settings.Modes.Walk) {
                     alternative.AddUtilityTerm(70, 1);
                     alternative.AddUtilityTerm(79, walkTourFlag);
-                    //						alternative.AddUtility(179, destinationParcel.MixedUse4Index1());
-                    //						alternative.AddUtility(178, destinationParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtility(177, destinationParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtility(176, originParcel.NetIntersectionDensity1());
-                    //						alternative.AddUtility(175, originParcel.TotalEmploymentDensity1());
-                    //						alternative.AddUtility(174, originParcel.MixedUse4Index1());
+                    //                        alternative.AddUtility(179, destinationParcel.MixedUse4Index1());
+                    //                        alternative.AddUtility(178, destinationParcel.TotalEmploymentDensity1());
+                    //                        alternative.AddUtility(177, destinationParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtility(176, originParcel.NetIntersectionDensity1());
+                    //                        alternative.AddUtility(175, originParcel.TotalEmploymentDensity1());
+                    //                        alternative.AddUtility(174, originParcel.MixedUse4Index1());
                 }
             }
         }

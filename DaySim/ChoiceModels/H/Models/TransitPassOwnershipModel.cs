@@ -132,11 +132,11 @@ namespace DaySim.ChoiceModels.H.Models {
                 workGenTimeWithPass = path.GeneralizedTimeLogsum;
             }
 
-            //			double schoolGenTimeNoPass = -99.0;
+            //            double schoolGenTimeNoPass = -99.0;
             var schoolGenTimeWithPass = -99.0;
 
             if (!schoolParcelMissing && schoolTranDist < maxTranDist && homeTranDist < maxTranDist) {
-                //				schoolGenTimeNoPass = path.GeneralizedTimeLogsum;
+                //                schoolGenTimeNoPass = path.GeneralizedTimeLogsum;
                 IEnumerable<IPathTypeModel> pathTypeModels =
                   PathTypeModelFactory.Singleton.Run(
                   person.Household.RandomUtility,
@@ -163,8 +163,8 @@ namespace DaySim.ChoiceModels.H.Models {
             var homeTranDist1 = Math.Pow(Math.Min(inflection, homeTranDist), 2.0);
             var homeTranDist2 = Math.Pow(Math.Max(homeTranDist - inflection, 0), 0.5);
 
-            //			var workTranDist1 = Math.Pow(Math.Min(inflection, workTranDist),2.0);
-            //			var workTranDist2 = Math.Pow(Math.Max(workTranDist - inflection, 0),0.5);
+            //            var workTranDist1 = Math.Pow(Math.Min(inflection, workTranDist),2.0);
+            //            var workTranDist2 = Math.Pow(Math.Max(workTranDist - inflection, 0),0.5);
 
             const double minimumAggLogsum = -15.0;
             var votSegment = person.Household.GetVotALSegment();
@@ -211,15 +211,15 @@ namespace DaySim.ChoiceModels.H.Models {
             alternative.AddUtilityTerm(13, (homeTranDist < 90.0) ? homeTranDist1 : 0);
             alternative.AddUtilityTerm(14, (homeTranDist < 90.0) ? homeTranDist2 : 0);
             alternative.AddUtilityTerm(15, (homeTranDist > 90.0) ? 1 : 0);
-            //			alternative.AddUtility(16, (workTranDist < 90.0) ? workTranDist : 0);
-            //			alternative.AddUtility(17, (workTranDist < 90.0) ? workTranDist2 : 0);
-            //			alternative.AddUtility(18, (workTranDist > 90.0) ? 1 : 0);
-            //			alternative.AddUtility(19, (schoolTranDist < 90.0) ? schoolTranDist : 0);
-            //			alternative.AddUtility(20, (schoolTranDist > 90.0) ? 1 : 0);
-            //			alternative.AddUtility(21, (!workParcelMissing && workGenTimeWithPass > -90 ) ? workGenTimeWithPass : 0);
+            //            alternative.AddUtility(16, (workTranDist < 90.0) ? workTranDist : 0);
+            //            alternative.AddUtility(17, (workTranDist < 90.0) ? workTranDist2 : 0);
+            //            alternative.AddUtility(18, (workTranDist > 90.0) ? 1 : 0);
+            //            alternative.AddUtility(19, (schoolTranDist < 90.0) ? schoolTranDist : 0);
+            //            alternative.AddUtility(20, (schoolTranDist > 90.0) ? 1 : 0);
+            //            alternative.AddUtility(21, (!workParcelMissing && workGenTimeWithPass > -90 ) ? workGenTimeWithPass : 0);
             alternative.AddUtilityTerm(22, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0);
             alternative.AddUtilityTerm(23, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0);
-            //			alternative.AddUtility(24, (!schoolParcelMissing && schoolGenTimeWithPass > -90 ) ? schoolGenTimeWithPass : 0);
+            //            alternative.AddUtility(24, (!schoolParcelMissing && schoolGenTimeWithPass > -90 ) ? schoolGenTimeWithPass : 0);
             alternative.AddUtilityTerm(25, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0);
             alternative.AddUtilityTerm(26, homeAggregateLogsumNoCar * (person.IsFullOrPartTimeWorker || person.IsUniversityStudent).ToFlag());
             alternative.AddUtilityTerm(27, homeAggregateLogsumNoCar * (person.IsDrivingAgeStudent || person.IsChildUnder16).ToFlag());

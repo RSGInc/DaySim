@@ -60,13 +60,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
 
         private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdWrapper household, int choice = Constants.DEFAULT_VALUE) {
-            //			var distanceToTransitCappedUnderQtrMile = household.ResidenceParcel.DistanceToTransitCappedUnderQtrMile();
-            //			var distanceToTransitQtrToHalfMile = household.ResidenceParcel.DistanceToTransitQtrToHalfMile();
+            //            var distanceToTransitCappedUnderQtrMile = household.ResidenceParcel.DistanceToTransitCappedUnderQtrMile();
+            //            var distanceToTransitQtrToHalfMile = household.ResidenceParcel.DistanceToTransitQtrToHalfMile();
             var foodRetailServiceMedicalLogBuffer1 = household.ResidenceParcel.FoodRetailServiceMedicalLogBuffer1();
 
             var workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
             var schoolTourLogsumDifference = 0D; // (school) full car ownership vs. no car ownership
-                                                 //			const double workTourOtherLogsumDifference = 0D; // (other workers) full car ownership vs. no car ownership
+                                                 //            const double workTourOtherLogsumDifference = 0D; // (other workers) full car ownership vs. no car ownership
 
             // Stefan
             var netIncome = (household.Income / 1000.0) / 2.0; // in 1000s of DKK
@@ -123,8 +123,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
             //var taSegment = household.ResidenceParcel.TransitAccessSegment();
 
             //var aggregateLogsumDifference = // full car ownership vs. no car ownership
-            //	Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment] -
-            //	Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];
+            //    Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment] -
+            //    Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];
 
             // 0 AUTOS
 

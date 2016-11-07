@@ -522,24 +522,24 @@ namespace DaySim.Framework.Core {
 
             /* old code
             int firstBusy = 0;
-			int nextAvailable = 0;
-			for (var i = 1; i <= Global.Settings.Times.MinutesInADay; i++) {
-				if (otherTimeWindow.IsBusy(i) && firstBusy == 0) {
-					firstBusy = i;
-				}
-				if (!otherTimeWindow.IsBusy(i) && i > firstBusy && firstBusy > 0 && nextAvailable == 0) {
-					nextAvailable = i;
-				}
-				if (firstBusy > 0 && nextAvailable > firstBusy) {
-					//thisTimeWindow.SetBusyMinutes (firstBusy, nextAvailable - 1);
-					SetBusyMinutes(firstBusy, nextAvailable - 1);
-					firstBusy = 0;
-					nextAvailable = 0;
-				}
-			}
-			if (firstBusy > 0) {
-				SetBusyMinutes(firstBusy, Global.Settings.Times.MinutesInADay);
-			*/
+            int nextAvailable = 0;
+            for (var i = 1; i <= Global.Settings.Times.MinutesInADay; i++) {
+                if (otherTimeWindow.IsBusy(i) && firstBusy == 0) {
+                    firstBusy = i;
+                }
+                if (!otherTimeWindow.IsBusy(i) && i > firstBusy && firstBusy > 0 && nextAvailable == 0) {
+                    nextAvailable = i;
+                }
+                if (firstBusy > 0 && nextAvailable > firstBusy) {
+                    //thisTimeWindow.SetBusyMinutes (firstBusy, nextAvailable - 1);
+                    SetBusyMinutes(firstBusy, nextAvailable - 1);
+                    firstBusy = 0;
+                    nextAvailable = 0;
+                }
+            }
+            if (firstBusy > 0) {
+                SetBusyMinutes(firstBusy, Global.Settings.Times.MinutesInADay);
+            */
 
             if (ValidTimeWindow() == false) {
                 bool testBreak = true;
@@ -554,11 +554,11 @@ namespace DaySim.Framework.Core {
                     return false;
                 }
                 //foreach (var otherBusySpan in _busyMinutes) {
-                //	if (busySpan.Index != otherBusySpan.Index) {
-                //		if (busySpan.Start == otherBusySpan.Start || busySpan.End == otherBusySpan.End) {
-                //			return false;
-                //		}
-                //	}
+                //    if (busySpan.Index != otherBusySpan.Index) {
+                //        if (busySpan.Start == otherBusySpan.Start || busySpan.End == otherBusySpan.End) {
+                //            return false;
+                //        }
+                //    }
                 //}
             }
             foreach (var span in _availableMinutes) {
@@ -566,11 +566,11 @@ namespace DaySim.Framework.Core {
                     return false;
                 }
                 //foreach (var otherSpan in _availableMinutes) {
-                //	if (span.Index != otherSpan.Index) {
-                //		if (span.Start == otherSpan.Start || span.End == otherSpan.End) {
-                //			return false;
-                //		}
-                //	}
+                //    if (span.Index != otherSpan.Index) {
+                //        if (span.Start == otherSpan.Start || span.End == otherSpan.End) {
+                //            return false;
+                //        }
+                //    }
                 //}
             }
 

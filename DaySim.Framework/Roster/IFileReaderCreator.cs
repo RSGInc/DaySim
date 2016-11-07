@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace DaySim.Framework.Roster {
     public interface IFileReaderCreator {
-        //		ISkimFileReader CreateReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping);
+        //        ISkimFileReader CreateReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping);
         ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping);  // 20150703 JLB
     }
 }

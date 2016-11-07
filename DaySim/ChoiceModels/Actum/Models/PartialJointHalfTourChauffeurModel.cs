@@ -177,7 +177,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 //Add utility terms that are not in components
                 alternative.AddUtilityTerm(1, 1);
                 // Note:  the above gives every available alternative equal utility, via an ASC with value equal to the beta1.
-                //		There are so few observations where two people are available to chauffeur that we have no infomration to choose between them
+                //        There are so few observations where two people are available to chauffeur that we have no infomration to choose between them
                 //    This spec will not estimate, but it can be used in application if we fix the parameter to any value.
                 //alternative.AddUtilityTerm(1, pType1[alt]);
                 //alternative.AddUtilityTerm(2, paired * pType1[alt]);  //fulltime workers may be less likely to chauffeur on paired joint half tours

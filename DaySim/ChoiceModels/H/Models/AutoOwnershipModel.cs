@@ -65,7 +65,7 @@ namespace DaySim.ChoiceModels.H.Models {
         }
 
         private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdWrapper household, int choice = Constants.DEFAULT_VALUE) {
-            //			
+            //            
             var workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
 
             var countTransitPasses = 0D;
@@ -97,8 +97,8 @@ namespace DaySim.ChoiceModels.H.Models {
             var taSegment = household.ResidenceParcel.TransitAccessSegment();
 
             //var aggregateLogsumDifference = // full car ownership vs. no car ownership
-            //	Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment] -
-            //	Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];
+            //    Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment] -
+            //    Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];
 
             var noCarAggLogsum =
                  Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];

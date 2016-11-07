@@ -81,9 +81,9 @@ namespace DaySim.Framework.Sampling {
             _originSegmentZone = _segmentZones[originParcel.ZoneId];
 
             //JLB 20120329 removed these lines because usual work location model doesn't set a sampled dest to chosen when it is the residence location
-            //			if (_choiceProbabilityCalculator.ModelIsInEstimationMode && chosenParcel == null) {
-            //				throw new ChosenParcelNotSetInEstimationModeException();
-            //			}
+            //            if (_choiceProbabilityCalculator.ModelIsInEstimationMode && chosenParcel == null) {
+            //                throw new ChosenParcelNotSetInEstimationModeException();
+            //            }
         }
 
         public DestinationSampler(ChoiceProbabilityCalculator choiceProbabilityCalculator, int segmentZonesIndex, int sampleSize, IParcel chosenParcel, IParcel originParcel, IParcel excludedParcel, IParcel usualParcel) : this(choiceProbabilityCalculator, segmentZonesIndex, sampleSize, chosenParcel, originParcel) {
@@ -140,7 +140,7 @@ namespace DaySim.Framework.Sampling {
             }
 
             //JLB 20120329
-            //			if (_choiceProbabilityCalculator.ModelIsInEstimationMode) {
+            //            if (_choiceProbabilityCalculator.ModelIsInEstimationMode) {
             if (_choiceProbabilityCalculator.ModelIsInEstimationMode && _chosenParcel != null) {
                 // creates a tour sample item that represents the chosen alternative
                 if (_usualParcel == null || _usualParcel.Id != _chosenParcel.Id) {
@@ -220,7 +220,7 @@ namespace DaySim.Framework.Sampling {
             }
 
             //JLB 20120329
-            //			if (_choiceProbabilityCalculator.ModelIsInEstimationMode) {
+            //            if (_choiceProbabilityCalculator.ModelIsInEstimationMode) {
             if (_choiceProbabilityCalculator.ModelIsInEstimationMode && _chosenParcel != null) {
                 // creates a tour sample item that represents the chosen alternative
                 if (_usualParcel == null || _usualParcel.Id != _chosenParcel.Id) {
@@ -376,15 +376,15 @@ namespace DaySim.Framework.Sampling {
                 destinationParcelSequence = 0;
                 destinationParcelIsValid = true;
             } else {
-                //				if (destinationSegmentZone.TotalSize - excludedSize < Constants.EPSILON) {
-                //					Console.WriteLine(originSegmentZone.Id);
-                //					Console.WriteLine(originSegmentZone.TotalWeight);
-                //					Console.WriteLine(originSegmentZone.TotalSize);
-                //					Console.WriteLine(destinationSegmentZone.Id);
-                //					Console.WriteLine(destinationSegmentZone.TotalWeight);
-                //					Console.WriteLine(destinationSegmentZone.TotalSize);
-                //					Console.WriteLine(excludedSize);
-                //				}
+                //                if (destinationSegmentZone.TotalSize - excludedSize < Constants.EPSILON) {
+                //                    Console.WriteLine(originSegmentZone.Id);
+                //                    Console.WriteLine(originSegmentZone.TotalWeight);
+                //                    Console.WriteLine(originSegmentZone.TotalSize);
+                //                    Console.WriteLine(destinationSegmentZone.Id);
+                //                    Console.WriteLine(destinationSegmentZone.TotalWeight);
+                //                    Console.WriteLine(destinationSegmentZone.TotalSize);
+                //                    Console.WriteLine(excludedSize);
+                //                }
 
                 random = randomUniform01.Uniform01() * (destinationSegmentZone.TotalSize - excludedSize);
 
@@ -430,7 +430,7 @@ namespace DaySim.Framework.Sampling {
         }
 
         //private sealed class TourSampleItem : SampleItem {
-        public class TourSampleItem: SampleItem {
+        public class TourSampleItem : SampleItem {
             private double _weightFromOrigin;
             private double _totalWeightFromOrigin;
 
@@ -447,7 +447,7 @@ namespace DaySim.Framework.Sampling {
                 ParcelId = destinationParcelId;
 
                 //if (Global.Configuration.DestinationScale == Constants.DestinationScale.ZONE) {
-                //	return;
+                //    return;
                 //}
 
                 SizeFromDestination = destinationSegmentZone.GetSize(destinationParcelSequence);
@@ -459,7 +459,7 @@ namespace DaySim.Framework.Sampling {
 
                 // set chosen alternative availability if model is in estimation mode and the sample item is the chosen alternative
                 //JLB 20120329 replaced followign to allow for no chosen alt in destinationSampler when in estimation mode (usual work location model)
-                //				var setAvailability = destinationSampler._choiceProbabilityCalculator.ModelIsInEstimationMode && ParcelId == destinationSampler._chosenParcel.Id;
+                //                var setAvailability = destinationSampler._choiceProbabilityCalculator.ModelIsInEstimationMode && ParcelId == destinationSampler._chosenParcel.Id;
                 var setAvailability = destinationSampler._choiceProbabilityCalculator.ModelIsInEstimationMode && destinationSampler._chosenParcel != null && ParcelId == destinationSampler._chosenParcel.Id;
 
                 if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone) {
@@ -489,7 +489,7 @@ namespace DaySim.Framework.Sampling {
             }
         }
 
-        private sealed class IntermediateStopSampleItem: SampleItem {
+        private sealed class IntermediateStopSampleItem : SampleItem {
             private double _tourWeightFromOrigin;
             private double _totalTourWeightFromOrigin;
             private double _tripWeightFromOrigin;
@@ -508,7 +508,7 @@ namespace DaySim.Framework.Sampling {
                 TotalWeightFromDestination = destinationSegmentZone.TotalWeight;
 
                 //if (Global.Configuration.DestinationScale == Constants.DestinationScale.ZONE) {
-                //	return;
+                //    return;
                 //}
 
                 ParcelId = destinationParcelId;
@@ -552,7 +552,7 @@ namespace DaySim.Framework.Sampling {
         }
 
         //private abstract class SampleItem : ISampleItem {
-        public abstract class SampleItem: ISampleItem {
+        public abstract class SampleItem : ISampleItem {
             public int ParcelId { get; protected set; }
 
             protected double SizeFromDestination { get; set; }
@@ -595,7 +595,7 @@ namespace DaySim.Framework.Sampling {
 
                             break;
                         case AlternativeType.Usual:
-                            //							alternativeIndex = sample.Count;
+                            //                            alternativeIndex = sample.Count;
                             alternativeIndex = destinationSampler._sampleSize;
 
                             break;

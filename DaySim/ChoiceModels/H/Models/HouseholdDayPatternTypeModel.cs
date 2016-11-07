@@ -72,8 +72,8 @@ namespace DaySim.ChoiceModels.H.Models {
             // array associating alternative with the purposes of each of the five possible positions in the alternative
             //  altPTypes[a,p] is the purpose of position p in alternative a  
             int[,] altPTypes = new int[,] {
-				//{0,0,0,0,0,0},
-				{0,1,0,0,0,0},
+                //{0,0,0,0,0,0},
+                {0,1,0,0,0,0},
                 {0,2,0,0,0,0},
                 {0,3,0,0,0,0},
                 {0,1,1,0,0,0},
@@ -489,13 +489,13 @@ namespace DaySim.ChoiceModels.H.Models {
             var votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
             var transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
             //var personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
-            //	[Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
+            //    [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
             var shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
                 [Global.Settings.Purposes.Shopping][carOwnership][votALSegment][transitAccessSegment];
             //var mealAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
-            //	[Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
+            //    [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
             //var socialAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
-            //	[Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
+            //    [Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
 
             int[,] pt = new int[6, 9];
             int[] li = new int[6];
@@ -1138,7 +1138,7 @@ namespace DaySim.ChoiceModels.H.Models {
                         && choiceProbabilityCalculator.GetUtilityComponent(component2[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5]]) != null) {
                         alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(component2[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5]]));
                     }
-                    //			if (includeThreeWayInteractions) {
+                    //            if (includeThreeWayInteractions) {
                     if (componentP[1] > 0 && componentP[2] > componentP[1] && componentP[3] > componentP[2]
                         && (componentP[4] > componentP[3] || componentP[4] == 0)
                         && (componentP[5] > componentP[4] || componentP[5] == 0)
@@ -1146,7 +1146,7 @@ namespace DaySim.ChoiceModels.H.Models {
                         && choiceProbabilityCalculator.GetUtilityComponent(component3[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5]]) != null) {
                         alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(component3[purp, componentP[1], componentP[2], componentP[3], componentP[4], componentP[5]]));
                     }
-                    //			}
+                    //            }
                 }
             }
         }

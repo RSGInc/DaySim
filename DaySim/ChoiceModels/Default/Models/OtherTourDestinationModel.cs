@@ -85,24 +85,24 @@ namespace DaySim.ChoiceModels.Default.Models {
         }
 
         private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, int sampleSize, IParcelWrapper choice = null) {
-            //			var household = tour.Household;
+            //            var household = tour.Household;
             var person = tour.Person;
             var personDay = tour.PersonDay;
 
-            //			var totalAvailableMinutes =
-            //				tour.ParentTour == null
-            //					? personDay.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay)
-            //					: tour.ParentTour.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay);
+            //            var totalAvailableMinutes =
+            //                tour.ParentTour == null
+            //                    ? personDay.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay)
+            //                    : tour.ParentTour.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay);
 
             var maxAvailableMinutes =
                 tour.ParentTour == null
                     ? personDay.TimeWindow.MaxAvailableMinutesAfter(121)
                     : tour.ParentTour.DestinationDepartureTime - tour.ParentTour.DestinationArrivalTime;
 
-            //			var hoursAvailableInverse =
-            //				tour.IsHomeBasedTour
-            //					? (personDay.HomeBasedTours - personDay.SimulatedHomeBasedTours + 1) / (Math.Max(totalAvailableMinutes - 360, 30) / 60D)
-            //					: 1 / (Math.Max(totalAvailableMinutes, 1) / 60D);
+            //            var hoursAvailableInverse =
+            //                tour.IsHomeBasedTour
+            //                    ? (personDay.HomeBasedTours - personDay.SimulatedHomeBasedTours + 1) / (Math.Max(totalAvailableMinutes - 360, 30) / 60D)
+            //                    : 1 / (Math.Max(totalAvailableMinutes, 1) / 60D);
 
             var fastestAvailableTimeOfDay =
                 tour.IsHomeBasedTour || tour.ParentTour == null
@@ -110,7 +110,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     : tour.ParentTour.DestinationArrivalTime + (tour.ParentTour.DestinationDepartureTime - tour.ParentTour.DestinationArrivalTime) / 2;
 
             var tourCategory = tour.GetTourCategory();
-            //			var primaryFlag = ChoiceModelUtility.GetPrimaryFlag(tourCategory);
+            //            var primaryFlag = ChoiceModelUtility.GetPrimaryFlag(tourCategory);
             var secondaryFlag = ChoiceModelUtility.GetSecondaryFlag(tourCategory);
 
             ChoiceModelUtility.DrawRandomTourTimePeriods(tour, tourCategory);
@@ -160,7 +160,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                 var household = _tour.Household;
                 var person = _tour.Person;
-                //				var personDay = _tour.PersonDay;
+                //                var personDay = _tour.PersonDay;
                 var householdHasChildren = household.HasChildren;
 
                 var destinationParcel = ChoiceModelFactory.Parcels[sampleItem.ParcelId];
@@ -216,17 +216,17 @@ namespace DaySim.ChoiceModels.Default.Models {
                 // log transforms of buffers for Neighborhood effects
                 var empEduBuffer = Math.Log(destinationParcel.EmploymentEducationBuffer1 + 1.0);
                 var empFooBuffer = Math.Log(destinationParcel.EmploymentFoodBuffer1 + 1.0);
-                //				var EMPGOV_B = Math.Log(destinationParcel.EmploymentGovernmentBuffer1 + 1.0);
+                //                var EMPGOV_B = Math.Log(destinationParcel.EmploymentGovernmentBuffer1 + 1.0);
                 var empOfcBuffer = Math.Log(destinationParcel.EmploymentOfficeBuffer1 + 1.0);
                 var empRetBuffer = Math.Log(destinationParcel.EmploymentRetailBuffer1 + 1.0);
                 var empSvcBuffer = Math.Log(destinationParcel.EmploymentServiceBuffer1 + 1.0);
                 var empMedBuffer = Math.Log(destinationParcel.EmploymentMedicalBuffer1 + 1.0);
-                //				var EMPIND_B = Math.Log(destinationParcel.EmploymentIndustrialBuffer1 + destinationParcel.EmploymentAgricultureConstructionBuffer1 + 1.0);
+                //                var EMPIND_B = Math.Log(destinationParcel.EmploymentIndustrialBuffer1 + destinationParcel.EmploymentAgricultureConstructionBuffer1 + 1.0);
                 var empTotBuffer = Math.Log(destinationParcel.EmploymentTotalBuffer1 + 1.0);
                 var housesBuffer = Math.Log(destinationParcel.HouseholdsBuffer1 + 1.0);
                 var studK12Buffer = Math.Log(destinationParcel.StudentsK8Buffer1 + destinationParcel.StudentsHighSchoolBuffer1 + 1.0);
                 var studUniBuffer = Math.Log(destinationParcel.StudentsUniversityBuffer1 + 1.0);
-                //				var EMPHOU_B = Math.Log(destinationParcel.EmploymentTotalBuffer1 + destinationParcel.HouseholdsBuffer1 + 1.0);
+                //                var EMPHOU_B = Math.Log(destinationParcel.EmploymentTotalBuffer1 + destinationParcel.HouseholdsBuffer1 + 1.0);
 
                 // connectivity attributes
                 var c34Ratio = destinationParcel.C34RatioBuffer1();
@@ -392,36 +392,36 @@ namespace DaySim.ChoiceModels.Default.Models {
                 // detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
                 var excludeReason = 0;
 
-                //				if (_maxZone == -1) {
-                //					// TODO: Verify / Optimize
-                //					_maxZone = ChoiceModelRunner.ZoneKeys.Max(z => z.Key);
-                //				}
+                //                if (_maxZone == -1) {
+                //                    // TODO: Verify / Optimize
+                //                    _maxZone = ChoiceModelRunner.ZoneKeys.Max(z => z.Key);
+                //                }
                 //
-                //				if (_maxParcel == -1) {
-                //					// TODO: Optimize
-                //					_maxParcel = ChoiceModelRunner.Parcels.Values.Max(parcel => parcel.Id);
-                //				}
+                //                if (_maxParcel == -1) {
+                //                    // TODO: Optimize
+                //                    _maxParcel = ChoiceModelRunner.Parcels.Values.Max(parcel => parcel.Id);
+                //                }
 
                 if (Global.Configuration.IsInEstimationMode) {
-                    //					if (tour.OriginParcelId > _maxParcel) {
-                    //						excludeReason = 3;
-                    //					}
+                    //                    if (tour.OriginParcelId > _maxParcel) {
+                    //                        excludeReason = 3;
+                    //                    }
 
                     if (tour.OriginParcelId <= 0) {
                         excludeReason = 4;
                     }
-                    //					else if (tour.DestinationAddressType > _maxParcel) {
-                    //						excludeReason = 5;
-                    //					}
+                    //                    else if (tour.DestinationAddressType > _maxParcel) {
+                    //                        excludeReason = 5;
+                    //                    }
                     else if (tour.DestinationParcelId <= 0) {
                         excludeReason = 6;
                     }
-                    //					else if (tour.OriginParcelId > _maxParcel) {
-                    //						excludeReason = 7;
-                    //					}
-                    //					else if (tour.OriginParcelId <= 0) {
-                    //						excludeReason = 8;
-                    //					}
+                    //                    else if (tour.OriginParcelId > _maxParcel) {
+                    //                        excludeReason = 7;
+                    //                    }
+                    //                    else if (tour.OriginParcelId <= 0) {
+                    //                        excludeReason = 8;
+                    //                    }
                     else if (tour.OriginParcelId == tour.DestinationParcelId) {
                         excludeReason = 9;
                     } else if (tour.OriginParcel.ZoneId == -1) {

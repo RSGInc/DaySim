@@ -61,16 +61,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
             if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
-                //				// set choice variable here  (derive from available household properties)
-                //				if (householdDay.SharedActivityHomeStays >= 1 
-                //					//&& householdDay.DurationMinutesSharedHomeStay >=60 
-                //					&& householdDay.AdultsInSharedHomeStay >= 1 
-                //					&& householdDay.NumberInLargestSharedHomeStay >= (householdDay.Household.Size)
+                //                // set choice variable here  (derive from available household properties)
+                //                if (householdDay.SharedActivityHomeStays >= 1 
+                //                    //&& householdDay.DurationMinutesSharedHomeStay >=60 
+                //                    && householdDay.AdultsInSharedHomeStay >= 1 
+                //                    && householdDay.NumberInLargestSharedHomeStay >= (householdDay.Household.Size)
                 //                   )
-                //				{
-                //					householdDay.PrimaryPriorityTimeFlag = 1;  
-                //				}
-                //				else 	householdDay.PrimaryPriorityTimeFlag = 0;
+                //                {
+                //                    householdDay.PrimaryPriorityTimeFlag = 1;  
+                //                }
+                //                else     householdDay.PrimaryPriorityTimeFlag = 0;
 
                 int choice = householdDay.PrimaryPriorityTimeFlag + 2 * (householdDay.JointTours > 0 ? 1 : 0);
 
@@ -139,7 +139,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 if (person.UsualWorkParcel == null || person.UsualWorkParcelId == household.ResidenceParcelId
                     || (person.PersonType != Global.Settings.PersonTypes.FullTimeWorker
                     && person.PersonType != Global.Settings.PersonTypes.PartTimeWorker))
-                //	|| household.VehiclesAvailable == 0) 
+                //    || household.VehiclesAvailable == 0) 
                 {
                 } else {
                     var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
@@ -193,8 +193,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
             //var taSegment = household.ResidenceParcel.TransitAccessSegment();
 
             //var aggregateLogsumDifference = // full car ownership vs. no car ownership
-            //	Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment] -
-            //	Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];
+            //    Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment] -
+            //    Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];
 
 
             //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;

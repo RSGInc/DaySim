@@ -386,19 +386,19 @@ namespace DaySim.ChoiceModels.H.Models {
                     //modeComponent.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1 + 1));
                 } else if (mode == Global.Settings.Modes.Transit) {
                     modeComponent.AddUtilityTerm(20, 1);
-                    //		modeComponent.AddUtilityTerm(21, maleFlag);
+                    //        modeComponent.AddUtilityTerm(21, maleFlag);
                     modeComponent.AddUtilityTerm(22, ageUnder30Flag);
-                    //	modeComponent.AddUtilityTerm(23, ageBetween51And98Flag);
+                    //    modeComponent.AddUtilityTerm(23, ageBetween51And98Flag);
                     modeComponent.AddUtilityTerm(24, income0To25KFlag);
-                    //	modeComponent.AddUtilityTerm(25, income100KPlusFlag);
+                    //    modeComponent.AddUtilityTerm(25, income100KPlusFlag);
                     modeComponent.AddUtilityTerm(26, noCarsInHouseholdFlag);
                     modeComponent.AddUtilityTerm(27, carsLessThanDriversFlag);
                     modeComponent.AddUtilityTerm(129, destinationParcel.MixedUse2Index1());
                     modeComponent.AddUtilityTerm(129, destinationParcel.TotalEmploymentDensity1() / 5000.0);
                     modeComponent.AddUtilityTerm(129, destinationParcel.NetIntersectionDensity1() / 50.0);
-                    //	modeComponent.AddUtilityTerm(124, originParcel.NetIntersectionDensity1()/50.0);
-                    //	modeComponent.AddUtilityTerm(124, originParcel.HouseholdDensity1()/1000.0);
-                    //	modeComponent.AddUtilityTerm(124, originParcel.MixedUse2Index1());
+                    //    modeComponent.AddUtilityTerm(124, originParcel.NetIntersectionDensity1()/50.0);
+                    //    modeComponent.AddUtilityTerm(124, originParcel.HouseholdDensity1()/1000.0);
+                    //    modeComponent.AddUtilityTerm(124, originParcel.MixedUse2Index1());
                     //modeComponent.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1 + 1));
                     //modeComponent.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1 + 1));
                 } else if (mode == Global.Settings.Modes.Hov3) {
@@ -419,8 +419,8 @@ namespace DaySim.ChoiceModels.H.Models {
                     modeComponent.AddUtilityTerm(40, 1);
                     modeComponent.AddUtilityTerm(41, onePersonHouseholdFlag);
                 } else if (mode == Global.Settings.Modes.Sov) {
-                    //	modeComponent.AddUtilityTerm(50, 1);
-                    //	modeComponent.AddUtilityTerm(54, income0To25KFlag);
+                    //    modeComponent.AddUtilityTerm(50, 1);
+                    //    modeComponent.AddUtilityTerm(54, income0To25KFlag);
                     modeComponent.AddUtilityTerm(55, income100KPlusFlag);
                     modeComponent.AddUtilityTerm(57, carsLessThanWorkersFlag);
                 } else if (mode == Global.Settings.Modes.Bike) {
@@ -428,8 +428,8 @@ namespace DaySim.ChoiceModels.H.Models {
                     modeComponent.AddUtilityTerm(61, maleFlag);
                     modeComponent.AddUtilityTerm(62, ageUnder30Flag);
                     modeComponent.AddUtilityTerm(63, ageBetween51And98Flag);
-                    //		modeComponent.AddUtilityTerm(64, income0To25KFlag);
-                    //  	modeComponent.AddUtilityTerm(65, income100KPlusFlag);
+                    //        modeComponent.AddUtilityTerm(64, income0To25KFlag);
+                    //      modeComponent.AddUtilityTerm(65, income100KPlusFlag);
                     modeComponent.AddUtilityTerm(66, noCarsInHouseholdFlag);
                     modeComponent.AddUtilityTerm(67, carsLessThanDriversFlag);
                     modeComponent.AddUtilityTerm(169, destinationParcel.MixedUse4Index2());
@@ -442,10 +442,10 @@ namespace DaySim.ChoiceModels.H.Models {
                     modeComponent.AddUtilityTerm(70, 1.0);
                     modeComponent.AddUtilityTerm(71, maleFlag);
                     modeComponent.AddUtilityTerm(72, ageUnder30Flag);
-                    //		modeComponent.AddUtilityTerm(73, ageBetween51And98Flag);
-                    //		modeComponent.AddUtilityTerm(74, income0To25KFlag);
+                    //        modeComponent.AddUtilityTerm(73, ageBetween51And98Flag);
+                    //        modeComponent.AddUtilityTerm(74, income0To25KFlag);
                     modeComponent.AddUtilityTerm(75, income100KPlusFlag);
-                    //		modeComponent.AddUtilityTerm(76, noCarsInHouseholdFlag);
+                    //        modeComponent.AddUtilityTerm(76, noCarsInHouseholdFlag);
                     modeComponent.AddUtilityTerm(77, carsLessThanDriversFlag);
                     modeComponent.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
                     modeComponent.AddUtilityTerm(179, destinationParcel.TotalEmploymentDensity1() / 5000.0);
@@ -464,7 +464,7 @@ namespace DaySim.ChoiceModels.H.Models {
                     //modeComponent.AddUtilityTerm(firstCoef + 3, socialTourFlag);
                     //modeComponent.AddUtilityTerm(firstCoef + 4, personalBusinessTourFlag);
                     //modeComponent.AddUtilityTerm(firstCoef + 5, recreationTourFlag);
-                    //	modeComponent.AddUtilityTerm(firstCoef + 6, medicalTourFlag);
+                    //    modeComponent.AddUtilityTerm(firstCoef + 6, medicalTourFlag);
                     //modeComponent.AddUtilityTerm(firstCoef + 7, jointTourFlag);
                     modeComponent.AddUtilityTerm(firstCoef + 8, Math.Min(partialHalfTour1Flag + partialHalfTour2Flag, 1.0));
                     modeComponent.AddUtilityTerm(firstCoef + 9, Math.Min(fullHalfTour1Flag + fullHalfTour2Flag, 1.0));
@@ -515,7 +515,7 @@ namespace DaySim.ChoiceModels.H.Models {
                                                    modeTimes.LongestFeasibleWindow != null ? modeTimes.LongestFeasibleWindow.End : -1);
 
                     }
-                    /*				if (altIndex == 0)
+                    /*                if (altIndex == 0)
                                         {
                                             alternative.AddUtilityTerm(991, tour.Household.Id);
                                             alternative.AddUtilityTerm(992, tour.Person.Id);
@@ -581,7 +581,7 @@ namespace DaySim.ChoiceModels.H.Models {
                     //alternative.AddUtilityTerm(2, destinationParkingCost*parkingCostFraction);
                     //alternative.AddUtilityTerm(3,
                     //                           Math.Log(Math.Min(1140, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start -
-                    //													 minimumTimeNeeded + 1.0 )));
+                    //                                                     minimumTimeNeeded + 1.0 )));
                     // JLB 20140204 replaced coeff 3 with a different time window formulation:  time pressure
                     //    instead of having positive utility for increasing time window, have negative utility for decreasing time window
                     alternative.AddUtilityTerm(3,
@@ -591,18 +591,18 @@ namespace DaySim.ChoiceModels.H.Models {
 
                     //alternative.AddUtilityTerm(4, Math.Log((totalMinutesAvailableInDay + 1.0)/(minimumTimeNeeded + 1.0)));
                     //alternative.AddUtilityTerm(4, 
-                    //					Math.Log(Math.Max(Constants.EPSILON, 1 - minimumTimeNeeded/(Math.Min(1140, totalMinutesAvailableInDay)))));
+                    //                    Math.Log(Math.Max(Constants.EPSILON, 1 - minimumTimeNeeded/(Math.Min(1140, totalMinutesAvailableInDay)))));
 
                     //alternative.AddUtilityTerm(5,
                     //                           (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&
                     //                            arrivalPeriod.Index >= DayPeriod.EVENING)
-                    //		                           ? 1
-                    //		                           : 0);
-                    //	alternative.AddUtilityTerm(5,
-                    //	                           (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&
-                    //	                            departurePeriod.Index >= DayPeriod.EVENING)
-                    //		                           ? 1
-                    //		                           : 0);
+                    //                                   ? 1
+                    //                                   : 0);
+                    //    alternative.AddUtilityTerm(5,
+                    //                               (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&
+                    //                                departurePeriod.Index >= DayPeriod.EVENING)
+                    //                                   ? 1
+                    //                                   : 0);
 
 
 

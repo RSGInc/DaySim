@@ -33,9 +33,9 @@ using System.Linq;
 namespace DaySim.ChoiceModels.Actum.Models {
     public class IntermediateStopGenerationModel : ChoiceModel {
         private const string CHOICE_MODEL_NAME = "ActumIntermediateStopGenerationModel";
-        //		private const int TOTAL_ALTERNATIVES = 20;
-        //		private const int TOTAL_NESTED_ALTERNATIVES = 10;
-        //		private const int TOTAL_LEVELS = 2;
+        //        private const int TOTAL_ALTERNATIVES = 20;
+        //        private const int TOTAL_NESTED_ALTERNATIVES = 10;
+        //        private const int TOTAL_LEVELS = 2;
         private const int TOTAL_ALTERNATIVES = 7;
         private const int TOTAL_NESTED_ALTERNATIVES = 0;
         private const int TOTAL_LEVELS = 1;
@@ -199,16 +199,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
             bool stopsNeeded = false;
 
             //if ((halfTour.SimulatedTrips <= 5) 
-            //	&& (timeIsAvailableForAnotherTrip)  
-            //	&& (trip.Direction == 2)
-            //	&&((trip.Tour.Sequence == trip.PersonDay.TotalCreatedTours)
-            //	&& ((simulatedSchoolStops == 0 && personDay.SchoolStops > 0)
-            //	||(simulatedBusinessStops == 0 && personDay.BusinessStops > 0)
-            //	||(simulatedEscortStops == 0 && personDay.EscortStops > 0)
-            //	||(simulatedPersonalBusinessStops == 0 && personDay.PersonalBusinessStops > 0)
-            //	||(simulatedShoppingStops == 0 && personDay.ShoppingStops > 0)
-            //	||(simulatedSocialStops == 0 && personDay.SocialStops > 0)))) {
-            //		stopsNeeded = true;
+            //    && (timeIsAvailableForAnotherTrip)  
+            //    && (trip.Direction == 2)
+            //    &&((trip.Tour.Sequence == trip.PersonDay.TotalCreatedTours)
+            //    && ((simulatedSchoolStops == 0 && personDay.SchoolStops > 0)
+            //    ||(simulatedBusinessStops == 0 && personDay.BusinessStops > 0)
+            //    ||(simulatedEscortStops == 0 && personDay.EscortStops > 0)
+            //    ||(simulatedPersonalBusinessStops == 0 && personDay.PersonalBusinessStops > 0)
+            //    ||(simulatedShoppingStops == 0 && personDay.ShoppingStops > 0)
+            //    ||(simulatedSocialStops == 0 && personDay.SocialStops > 0)))) {
+            //        stopsNeeded = true;
             //}
 
 
@@ -374,7 +374,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             //alternative.AddUtilityTerm(14, numAdultsOnJointTour);
             //alternative.AddUtilityTerm(15, numChildrenOnJointTour);
             //alternative.AddUtilityTerm(16, totHHToursJT);
-            //	alternative.AddUtilityTerm(17, totHHStopsJT);
+            //    alternative.AddUtilityTerm(17, totHHStopsJT);
             //alternative.AddUtilityTerm(22, (threeSimulatedTripsFlag + fourSimulatedTripsFlag + fivePlusSimulatedTripsFlag) * halfTourFromOriginFlag * isJointTour);
             //alternative.AddUtilityTerm(26, threeSimulatedTripsFlag * halfTourFromDestinationFlag * isJointTour);
             //alternative.AddUtilityTerm(27, fourSimulatedTripsFlag * halfTourFromDestinationFlag * isJointTour);

@@ -112,10 +112,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
             PersonWrapper person = (PersonWrapper)tour.Person;
             PersonDayWrapper personDay = (PersonDayWrapper)tour.PersonDay;
 
-            //			var totalAvailableMinutes =
-            //				tour.ParentTour == null
-            //					? personDay.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay)
-            //					: tour.ParentTour.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay);
+            //            var totalAvailableMinutes =
+            //                tour.ParentTour == null
+            //                    ? personDay.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay)
+            //                    : tour.ParentTour.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay);
 
 
             TimeWindow timeWindow = new TimeWindow();
@@ -139,10 +139,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
                       : tour.ParentTour.DestinationDepartureTime - tour.ParentTour.DestinationArrivalTime;
 
 
-            //			var hoursAvailableInverse =
-            //				tour.IsHomeBasedTour
-            //					? (personDay.HomeBasedTours - personDay.SimulatedHomeBasedTours + 1) / (Math.Max(totalAvailableMinutes - 360, 30) / 60D)
-            //					: 1 / (Math.Max(totalAvailableMinutes, 1) / 60D);
+            //            var hoursAvailableInverse =
+            //                tour.IsHomeBasedTour
+            //                    ? (personDay.HomeBasedTours - personDay.SimulatedHomeBasedTours + 1) / (Math.Max(totalAvailableMinutes - 360, 30) / 60D)
+            //                    : 1 / (Math.Max(totalAvailableMinutes, 1) / 60D);
 
             var householdHasChildren = household.HasChildren;
             var householdHasNoChildren = householdHasChildren ? false : true;
@@ -153,7 +153,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                       : tour.ParentTour.DestinationArrivalTime + (tour.ParentTour.DestinationDepartureTime - tour.ParentTour.DestinationArrivalTime) / 2;
 
             var tourCategory = tour.GetTourCategory();
-            //			var primaryFlag = ChoiceModelUtility.GetPrimaryFlag(tourCategory);
+            //            var primaryFlag = ChoiceModelUtility.GetPrimaryFlag(tourCategory);
             var secondaryFlag = ChoiceModelUtility.GetSecondaryFlag(tourCategory);
             var workOrSchoolPatternFlag = personDay.GetIsWorkOrSchoolPattern().ToFlag();
             var otherPatternFlag = personDay.GetIsOtherPattern().ToFlag();
@@ -216,8 +216,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
                     // JLB201406
                     //else if (tour.DestinationPurpose == Global.Settings.Purposes.Escort) {
-                    //	var nestedAlternative = Global.ChoiceModelSession.Get<EscortTourModeModel>().RunNested(tour, destinationParcel);
-                    //	tourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
+                    //    var nestedAlternative = Global.ChoiceModelSession.Get<EscortTourModeModel>().RunNested(tour, destinationParcel);
+                    //    tourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
                     //}
                     else {
                         // JLB201406
@@ -564,42 +564,42 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 // detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
                 var excludeReason = 0;
 
-                //				if (_maxZone == -1) {
-                //					// TODO: Verify / Optimize
-                //					_maxZone = ChoiceModelRunner.ZoneKeys.Max(z => z.Key);
-                //				}
+                //                if (_maxZone == -1) {
+                //                    // TODO: Verify / Optimize
+                //                    _maxZone = ChoiceModelRunner.ZoneKeys.Max(z => z.Key);
+                //                }
                 //
-                //				if (_maxParcel == -1) {
-                //					// TODO: Optimize
-                //					_maxParcel = ChoiceModelRunner.Parcels.Values.Max(parcel => parcel.Id);
-                //				}
+                //                if (_maxParcel == -1) {
+                //                    // TODO: Optimize
+                //                    _maxParcel = ChoiceModelRunner.Parcels.Values.Max(parcel => parcel.Id);
+                //                }
 
                 if (Global.Configuration.IsInEstimationMode) {
-                    //					if (tour.OriginParcelId > _maxParcel) {
-                    //						excludeReason = 3;
-                    //					}
+                    //                    if (tour.OriginParcelId > _maxParcel) {
+                    //                        excludeReason = 3;
+                    //                    }
 
                     if (tour.OriginParcelId <= 0) {
                         excludeReason = 4;
                     }
-                    //					else if (tour.DestinationAddressType > _maxParcel) {
-                    //						excludeReason = 5;
-                    //					}
+                    //                    else if (tour.DestinationAddressType > _maxParcel) {
+                    //                        excludeReason = 5;
+                    //                    }
                     else if (tour.DestinationParcelId <= 0) {
                         excludeReason = 6;
                         tour.DestinationParcelId = tour.OriginParcelId;
                         tour.DestinationParcel = tour.OriginParcel;
                         tour.DestinationZoneKey = tour.OriginParcelId;
                     }
-                    //					else if (tour.OriginParcelId > _maxParcel) {
-                    //						excludeReason = 7;
-                    //					}
-                    //					else if (tour.OriginParcelId <= 0) {
-                    //						excludeReason = 8;
-                    //					}
+                    //                    else if (tour.OriginParcelId > _maxParcel) {
+                    //                        excludeReason = 7;
+                    //                    }
+                    //                    else if (tour.OriginParcelId <= 0) {
+                    //                        excludeReason = 8;
+                    //                    }
                     //JLB 20130705 dropp following screen for actum
                     //else if (tour.OriginParcelId == tour.DestinationParcelId) {
-                    //	excludeReason = 9;
+                    //    excludeReason = 9;
                     //}
                     else if (tour.OriginParcel.ZoneId == -1) {
                         // TODO: Verify this condition... it used to check that the zone was == null. 

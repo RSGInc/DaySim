@@ -28,10 +28,10 @@ namespace DaySim.ChoiceModels.H.Models {
         private const int TOTAL_LEVELS = 1;
         private const int MAX_PARAMETER = 99;
 
-        //		private const int TOTAL_SUBZONES = 2;
-        //		private static int _zoneCount;
-        //		private static Dictionary<int, IZone> _eligibleZones;
-        //		private static ISubzone[][] _zoneSubzones;
+        //        private const int TOTAL_SUBZONES = 2;
+        //        private static int _zoneCount;
+        //        private static Dictionary<int, IZone> _eligibleZones;
+        //        private static ISubzone[][] _zoneSubzones;
         //private static int timesStarted;
         private static int timesStartedRunModel;
 
@@ -70,7 +70,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 }
                 // JLB 20140421 add the following to keep from estimatign twice for the same tour
                 //if (tour.DestinationModeAndTimeHaveBeenSimulated) {
-                //	return;
+                //    return;
                 //}
             }
 
@@ -178,7 +178,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 int destinationTransitBand1 = (destinationParcel.GetDistanceToTransit() >= 0 && destinationParcel.GetDistanceToTransit() <= 0.25).ToFlag();
                 int destinationTransitBand3 = (destinationParcel.GetDistanceToTransit() > 0.5).ToFlag();
 
-                //				var destinationSubzone = _zoneSubzones[destinationParcel.ZoneId][destinationTransitBand3];
+                //                var destinationSubzone = _zoneSubzones[destinationParcel.ZoneId][destinationTransitBand3];
 
                 IEnumerable<IPathTypeModel> pathTypeModels =
                     PathTypeModelFactory.Singleton.Run(

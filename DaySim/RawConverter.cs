@@ -18,53 +18,53 @@ using System.Linq;
 namespace DaySim {
     public static class RawConverter {
         /*
-				public static void RunTestMode()
-				{
-					var ixxi = ImportIxxiTestMode();
-					var parkAndRideNodes = ImportParkAndRideNodesTestMode();
-					var parcelNodes = ImportParcelNodesTestMode();
+                public static void RunTestMode()
+                {
+                    var ixxi = ImportIxxiTestMode();
+                    var parkAndRideNodes = ImportParkAndRideNodesTestMode();
+                    var parcelNodes = ImportParcelNodesTestMode();
 
-					ConvertParcelNodeFile(parcelNodes);
+                    ConvertParcelNodeFile(parcelNodes);
 
-					var zones = ConvertZoneFileTestMode(ref ixxi, ref parkAndRideNodes);
-					var transitStopAreas = ConvertTransitStopAreaFileTestMode(ref ixxi, ref parkAndRideNodes);
-					var parcels = ConvertParcelFileTestMode(parcelNodes, zones);
+                    var zones = ConvertZoneFileTestMode(ref ixxi, ref parkAndRideNodes);
+                    var transitStopAreas = ConvertTransitStopAreaFileTestMode(ref ixxi, ref parkAndRideNodes);
+                    var parcels = ConvertParcelFileTestMode(parcelNodes, zones);
 
-			
-					ConvertParkAndRideNodeFile(parkAndRideNodes, parcels);
-					Dictionary<Tuple<int,int>,int> personKeys;
+            
+                    ConvertParkAndRideNodeFile(parkAndRideNodes, parcels);
+                    Dictionary<Tuple<int,int>,int> personKeys;
 
-					if (Global.Configuration.ReadHDF5)
-					{
-						ConvertHouseholdFileHDF5(parcels, ixxi);
-						personKeys = ConvertPersonFileHDF5();
-					}
-					else
-					{
-						ConvertHouseholdFile(parcels, ixxi);
-						personKeys = ConvertPersonFile();
-					}
+                    if (Global.Configuration.ReadHDF5)
+                    {
+                        ConvertHouseholdFileHDF5(parcels, ixxi);
+                        personKeys = ConvertPersonFileHDF5();
+                    }
+                    else
+                    {
+                        ConvertHouseholdFile(parcels, ixxi);
+                        personKeys = ConvertPersonFile();
+                    }
 
-					if (Global.Configuration.ImportHouseholdDays)
-					{
-						var householdDayKeys = ConvertHouseholdDayFile();
+                    if (Global.Configuration.ImportHouseholdDays)
+                    {
+                        var householdDayKeys = ConvertHouseholdDayFile();
 
-						if (Global.Configuration.ImportPersonDays)
-						{
-							var personDayKeys = ConvertPersonDayFile(personKeys, householdDayKeys);
-							var tourKeys = ConvertTourFile(personKeys, personDayKeys);
+                        if (Global.Configuration.ImportPersonDays)
+                        {
+                            var personDayKeys = ConvertPersonDayFile(personKeys, householdDayKeys);
+                            var tourKeys = ConvertTourFile(personKeys, personDayKeys);
 
-							ConvertTripFile(tourKeys);
-						}
-						if (Global.Settings.UseJointTours) {
-							ConvertJointTourFile(householdDayKeys);
-							ConvertFullHalfTourFile(householdDayKeys);
-							ConvertPartialHalfTourFile(householdDayKeys);
-						}
-					}
+                            ConvertTripFile(tourKeys);
+                        }
+                        if (Global.Settings.UseJointTours) {
+                            ConvertJointTourFile(householdDayKeys);
+                            ConvertFullHalfTourFile(householdDayKeys);
+                            ConvertPartialHalfTourFile(householdDayKeys);
+                        }
+                    }
 
-				}
-		*/
+                }
+        */
         public static void Run() {
             var ixxi = ImportIxxi();
 
@@ -119,57 +119,57 @@ namespace DaySim {
             }
         }
         /*
-				private static Dictionary<int, Tuple<double, double>> ImportIxxiTestMode()
-				{
-					if (string.IsNullOrEmpty(Global.Configuration.IxxiPath))
-					{
-						return new Dictionary<int, Tuple<double, double>>();
-					}
+                private static Dictionary<int, Tuple<double, double>> ImportIxxiTestMode()
+                {
+                    if (string.IsNullOrEmpty(Global.Configuration.IxxiPath))
+                    {
+                        return new Dictionary<int, Tuple<double, double>>();
+                    }
 
-					var ixxi = new Dictionary<int, Tuple<double, double>>();
-					var file = Global.GetInputPath(Global.Configuration.IxxiPath).ToFile();
+                    var ixxi = new Dictionary<int, Tuple<double, double>>();
+                    var file = Global.GetInputPath(Global.Configuration.IxxiPath).ToFile();
 
-					if (Global.PrintFile != null)
-					{
-						Global.PrintFile.WriteFileInfo(file, true);
-					}
+                    if (Global.PrintFile != null)
+                    {
+                        Global.PrintFile.WriteFileInfo(file, true);
+                    }
 
-					using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
-					{
-						int i = 1;
-				
-						if (Global.Configuration.IxxiFirstLineIsHeader)
-						{
-							reader.ReadLine();
-							i++;
-						}
+                    using (var reader = new CountingReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+                    {
+                        int i = 1;
+                
+                        if (Global.Configuration.IxxiFirstLineIsHeader)
+                        {
+                            reader.ReadLine();
+                            i++;
+                        }
 
-						try
-						{
-							string line;
-							while ((line = reader.ReadLine()) != null)
-							{
-								var row = line.Split(new[] {Global.Configuration.IxxiDelimiter}, StringSplitOptions.RemoveEmptyEntries);
-								var zoneId = Convert.ToInt32(row[0]);
-								var workersWithJobsOutside = Convert.ToDouble(row[1]);
-								var workersWithJobsFilledFromOutside = Convert.ToDouble(row[2]);
+                        try
+                        {
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                var row = line.Split(new[] {Global.Configuration.IxxiDelimiter}, StringSplitOptions.RemoveEmptyEntries);
+                                var zoneId = Convert.ToInt32(row[0]);
+                                var workersWithJobsOutside = Convert.ToDouble(row[1]);
+                                var workersWithJobsFilledFromOutside = Convert.ToDouble(row[2]);
 
-								if (!ixxi.ContainsKey(zoneId))
-								{
-									ixxi.Add(zoneId, new Tuple<double, double>(workersWithJobsOutside, workersWithJobsFilledFromOutside));
-								}
-								i++;
-							}
-						}
-						catch (Exception e)
-						{
-							throw new Exception("Error reading ixxi file on line " + i, innerException:e);
-						}
+                                if (!ixxi.ContainsKey(zoneId))
+                                {
+                                    ixxi.Add(zoneId, new Tuple<double, double>(workersWithJobsOutside, workersWithJobsFilledFromOutside));
+                                }
+                                i++;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            throw new Exception("Error reading ixxi file on line " + i, innerException:e);
+                        }
 
-					}
-					return ixxi;
-				}
-		*/
+                    }
+                    return ixxi;
+                }
+        */
         private static Dictionary<int, Tuple<double, double>> ImportIxxi() {
             if (string.IsNullOrEmpty(Global.Configuration.IxxiPath)) {
                 return new Dictionary<int, Tuple<double, double>>();
@@ -250,51 +250,51 @@ namespace DaySim {
 
 
         /*
-		private static Dictionary<int, Tuple<int, int, int, int, int>> ImportParkAndRideNodesTestMode() {
-			if (!Global.ParkAndRideNodeIsEnabled) {
-				return new Dictionary<int, Tuple<int, int, int, int, int>>();
-			}
+        private static Dictionary<int, Tuple<int, int, int, int, int>> ImportParkAndRideNodesTestMode() {
+            if (!Global.ParkAndRideNodeIsEnabled) {
+                return new Dictionary<int, Tuple<int, int, int, int, int>>();
+            }
 
-			var parkAndRideNodes = new Dictionary<int, Tuple<int, int, int, int, int>>();
-			var rawFile = Global.GetInputPath(Global.Configuration.RawParkAndRideNodePath).ToFile();
-			var inputFile = Global.GetInputPath(Global.Configuration.InputParkAndRideNodePath).ToFile();
+            var parkAndRideNodes = new Dictionary<int, Tuple<int, int, int, int, int>>();
+            var rawFile = Global.GetInputPath(Global.Configuration.RawParkAndRideNodePath).ToFile();
+            var inputFile = Global.GetInputPath(Global.Configuration.InputParkAndRideNodePath).ToFile();
 
-			if (Global.PrintFile != null) {
-				Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
-			}
-			int i = 1;
-			try
-			{
+            if (Global.PrintFile != null) {
+                Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
+            }
+            int i = 1;
+            try
+            {
 
-			using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
-				reader.ReadLine();
+            using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+                reader.ReadLine();
 
-				string line;
+                string line;
 
-				while ((line = reader.ReadLine()) != null) {
-					var row = line.Split(new[] {Global.Configuration.RawParkAndRideNodeDelimiter}, StringSplitOptions.RemoveEmptyEntries);
-					var id = Convert.ToInt32(row[0]);
-					var zoneId = Convert.ToInt32(row[1]);
-					var xCoordinate = Convert.ToInt32(row[2]);
-					var yCoordinate = Convert.ToInt32(row[3]);
-					var capacity = Convert.ToInt32(row[4]);
-					var cost = Convert.ToInt32(row[5]);
+                while ((line = reader.ReadLine()) != null) {
+                    var row = line.Split(new[] {Global.Configuration.RawParkAndRideNodeDelimiter}, StringSplitOptions.RemoveEmptyEntries);
+                    var id = Convert.ToInt32(row[0]);
+                    var zoneId = Convert.ToInt32(row[1]);
+                    var xCoordinate = Convert.ToInt32(row[2]);
+                    var yCoordinate = Convert.ToInt32(row[3]);
+                    var capacity = Convert.ToInt32(row[4]);
+                    var cost = Convert.ToInt32(row[5]);
 
-					if (!parkAndRideNodes.ContainsKey(id)) {
-						parkAndRideNodes.Add(id, new Tuple<int, int, int, int, int>(zoneId, xCoordinate, yCoordinate, capacity, cost));
-					}
-					i++;
-				}
-			}
-				
-			}
-			catch (Exception e)
-			{
-				throw new Exception("Error reading Park and Ride Nodes file on line " + i, innerException:e);
-			}
+                    if (!parkAndRideNodes.ContainsKey(id)) {
+                        parkAndRideNodes.Add(id, new Tuple<int, int, int, int, int>(zoneId, xCoordinate, yCoordinate, capacity, cost));
+                    }
+                    i++;
+                }
+            }
+                
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error reading Park and Ride Nodes file on line " + i, innerException:e);
+            }
 
-			return parkAndRideNodes;
-		}
+            return parkAndRideNodes;
+        }
 */
 
 
@@ -336,51 +336,51 @@ namespace DaySim {
             return parcelNodes;
         }
         /*
-				private static Dictionary<int, int> ImportParcelNodesTestMode() {
-					if (!Global.ParcelNodeIsEnabled) {
-						return new Dictionary<int, int>();
-					}
+                private static Dictionary<int, int> ImportParcelNodesTestMode() {
+                    if (!Global.ParcelNodeIsEnabled) {
+                        return new Dictionary<int, int>();
+                    }
 
-					var parcelNodes = new Dictionary<int, int>();
-					var rawFile = Global.GetInputPath(Global.Configuration.RawParcelNodePath).ToFile();
-					var inputFile = Global.GetInputPath(Global.Configuration.InputParcelNodePath).ToFile();
+                    var parcelNodes = new Dictionary<int, int>();
+                    var rawFile = Global.GetInputPath(Global.Configuration.RawParcelNodePath).ToFile();
+                    var inputFile = Global.GetInputPath(Global.Configuration.InputParcelNodePath).ToFile();
 
-					if (Global.PrintFile != null) {
-						Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
-					}
-			
-					int i = 0;
-					try
-					{
-						using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
-						{
-							reader.ReadLine();
+                    if (Global.PrintFile != null) {
+                        Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
+                    }
+            
+                    int i = 0;
+                    try
+                    {
+                        using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+                        {
+                            reader.ReadLine();
 
-							string line;
+                            string line;
 
-							while ((line = reader.ReadLine()) != null)
-							{
-								var row = line.Split(new[] {Global.Configuration.RawParcelNodeDelimiter}, StringSplitOptions.RemoveEmptyEntries);
-								var parcelId = Convert.ToInt32(row[0]);
-								var nodeId = Convert.ToInt32(row[1]);
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                var row = line.Split(new[] {Global.Configuration.RawParcelNodeDelimiter}, StringSplitOptions.RemoveEmptyEntries);
+                                var parcelId = Convert.ToInt32(row[0]);
+                                var nodeId = Convert.ToInt32(row[1]);
 
-								if (!parcelNodes.ContainsKey(parcelId))
-								{
-									parcelNodes.Add(parcelId, nodeId);
-								}
-								i++;
-							}
-						}
+                                if (!parcelNodes.ContainsKey(parcelId))
+                                {
+                                    parcelNodes.Add(parcelId, nodeId);
+                                }
+                                i++;
+                            }
+                        }
 
-					}
-					catch (Exception e)
-					{
-						throw new Exception("Error reading Parcel Nodes file on line " + i, innerException:e);
-					}
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Error reading Parcel Nodes file on line " + i, innerException:e);
+                    }
 
-					return parcelNodes;
-				}
-		*/
+                    return parcelNodes;
+                }
+        */
         private static void ConvertParcelNodeFile(Dictionary<int, int> parcelNodes) {
             if (!Global.ParcelNodeIsEnabled) {
                 return;
@@ -619,110 +619,110 @@ namespace DaySim {
 
 
         /*
-		private static Dictionary<int, int> ConvertZoneFileTestMode(ref Dictionary<int, Tuple<double, double>> ixxi,
-																			 ref Dictionary<int, Tuple<int, int, int, int, int>>
-																				 parkAndRideNodes)
-		{
-			var newIxxi = new Dictionary<int, Tuple<double, double>>();
-			var zones = new Dictionary<int, int>();
-			var rawFile = Global.GetInputPath(Global.Configuration.RawZonePath).ToFile();
-			var inputFile = Global.GetInputPath(Global.Configuration.InputZonePath).ToFile();
+        private static Dictionary<int, int> ConvertZoneFileTestMode(ref Dictionary<int, Tuple<double, double>> ixxi,
+                                                                             ref Dictionary<int, Tuple<int, int, int, int, int>>
+                                                                                 parkAndRideNodes)
+        {
+            var newIxxi = new Dictionary<int, Tuple<double, double>>();
+            var zones = new Dictionary<int, int>();
+            var rawFile = Global.GetInputPath(Global.Configuration.RawZonePath).ToFile();
+            var inputFile = Global.GetInputPath(Global.Configuration.InputZonePath).ToFile();
 
-			if (Global.PrintFile != null)
-			{
-				Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
-			}
-			int z = 0;
-			try
-			{
-				using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
-				{
-					using (var writer = new StreamWriter(inputFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read)))
-					{
-						WriteZoneHeader(reader, writer);
+            if (Global.PrintFile != null)
+            {
+                Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
+            }
+            int z = 0;
+            try
+            {
+                using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+                {
+                    using (var writer = new StreamWriter(inputFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read)))
+                    {
+                        WriteZoneHeader(reader, writer);
 
-						var newId = 0;
-						string line;
+                        var newId = 0;
+                        string line;
 
-						while ((line = reader.ReadLine()) != null)
-						{
-							var row = line.Split(new[] {Global.Configuration.RawZoneDelimiter}, StringSplitOptions.RemoveEmptyEntries);
-							var originalId = int.Parse(row[0]);
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            var row = line.Split(new[] {Global.Configuration.RawZoneDelimiter}, StringSplitOptions.RemoveEmptyEntries);
+                            var originalId = int.Parse(row[0]);
 
-							zones.Add(originalId, newId);
+                            zones.Add(originalId, newId);
 
-							for (var i = 0; i < row.Length; i++)
-							{
-								switch (i)
-								{
-									case 0:
-										Tuple<double, double> ixxiEntry;
+                            for (var i = 0; i < row.Length; i++)
+                            {
+                                switch (i)
+                                {
+                                    case 0:
+                                        Tuple<double, double> ixxiEntry;
 
-										if (!ixxi.TryGetValue(originalId, out ixxiEntry))
-										{
-											ixxiEntry = new Tuple<double, double>(0, 0);
-										}
+                                        if (!ixxi.TryGetValue(originalId, out ixxiEntry))
+                                        {
+                                            ixxiEntry = new Tuple<double, double>(0, 0);
+                                        }
 
-										newIxxi.Add(newId, ixxiEntry);
+                                        newIxxi.Add(newId, ixxiEntry);
 
-										writer.Write(newId++); // id
-										writer.Write(Global.Configuration.InputZoneDelimiter);
+                                        writer.Write(newId++); // id
+                                        writer.Write(Global.Configuration.InputZoneDelimiter);
 
-										writer.Write(originalId); // taz
-										writer.Write(Global.Configuration.InputZoneDelimiter);
+                                        writer.Write(originalId); // taz
+                                        writer.Write(Global.Configuration.InputZoneDelimiter);
 
-										writer.Write(ixxiEntry.Item1); // fraction_with_jobs_outside
-										writer.Write(Global.Configuration.InputZoneDelimiter);
+                                        writer.Write(ixxiEntry.Item1); // fraction_with_jobs_outside
+                                        writer.Write(Global.Configuration.InputZoneDelimiter);
 
-										writer.Write(ixxiEntry.Item2); // fraction_filled_by_workers_from_outside
+                                        writer.Write(ixxiEntry.Item2); // fraction_filled_by_workers_from_outside
 
-										break;
-									default:
-										writer.Write(row[i]);
+                                        break;
+                                    default:
+                                        writer.Write(row[i]);
 
-										break;
-								}
+                                        break;
+                                }
 
-								if (i == row.Length - 1)
-								{
-									writer.WriteLine();
-								}
-								else
-								{
-									writer.Write(Global.Configuration.InputZoneDelimiter);
-								}
-							}
-							z++;
-						}
-					}
-				}
+                                if (i == row.Length - 1)
+                                {
+                                    writer.WriteLine();
+                                }
+                                else
+                                {
+                                    writer.Write(Global.Configuration.InputZoneDelimiter);
+                                }
+                            }
+                            z++;
+                        }
+                    }
+                }
 
 
-			}
-			catch (Exception e)
-			{
+            }
+            catch (Exception e)
+            {
 
-				throw new Exception("Error reading Zone file on line " + z, innerException:e);
-			}
+                throw new Exception("Error reading Zone file on line " + z, innerException:e);
+            }
 
-			ixxi = newIxxi;
+            ixxi = newIxxi;
 
-			var newParkAndRide = new Dictionary<int, Tuple<int, int, int, int, int>>();
+            var newParkAndRide = new Dictionary<int, Tuple<int, int, int, int, int>>();
 
-			foreach (var entry in parkAndRideNodes)
-			{
-				var key = entry.Key;
-				var value = entry.Value;
+            foreach (var entry in parkAndRideNodes)
+            {
+                var key = entry.Key;
+                var value = entry.Value;
 
-				newParkAndRide.Add(key,
-										 new Tuple<int, int, int, int, int>(zones[value.Item1], value.Item2, value.Item3, value.Item4,
-																						value.Item5));
-			}
+                newParkAndRide.Add(key,
+                                         new Tuple<int, int, int, int, int>(zones[value.Item1], value.Item2, value.Item3, value.Item4,
+                                                                                        value.Item5));
+            }
 
-			parkAndRideNodes = newParkAndRide;
+            parkAndRideNodes = newParkAndRide;
 
-			return zones;
-		}
+            return zones;
+        }
 */
         private static void WriteZoneHeader(TextReader reader, TextWriter writer) {
             var line = reader.ReadLine();
@@ -775,118 +775,118 @@ namespace DaySim {
         }
 
         /*
-				private static Dictionary<int, int> ConvertTransitStopAreaFileTestMode(
-					ref Dictionary<int, Tuple<double, double>> ixxi, ref Dictionary<int, Tuple<int, int, int, int, int>> parkAndRideNodes)
-				{
+                private static Dictionary<int, int> ConvertTransitStopAreaFileTestMode(
+                    ref Dictionary<int, Tuple<double, double>> ixxi, ref Dictionary<int, Tuple<int, int, int, int, int>> parkAndRideNodes)
+                {
 
-					if (String.IsNullOrEmpty(Global.Configuration.RawTransitStopAreaPath))
-						return null;
-
-
-					//var newIxxi = new Dictionary<int, Tuple<double, double>>();
-					var transitStopAreas = new Dictionary<int, int>();
-					var rawFile = Global.GetInputPath(Global.Configuration.RawTransitStopAreaPath).ToFile();
-					var inputFile = Global.GetInputPath(Global.Configuration.InputTransitStopAreaPath).ToFile();
-
-					if (Global.PrintFile != null)
-					{
-						Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
-					}
-
-					int z = 0;
-					try
-					{
-						using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
-						{
-							using (var writer = new StreamWriter(inputFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read)))
-							{
-								WriteTransitStopAreaHeader(reader, writer);
-
-								var newId = 0;
-								string line;
-
-								while ((line = reader.ReadLine()) != null)
-								{
-									var row = line.Split(new[] {Global.Configuration.RawTransitStopAreaDelimiter},
-																StringSplitOptions.RemoveEmptyEntries);
-									var originalId = int.Parse(row[0]);
-
-									transitStopAreas.Add(originalId, newId);
-
-									for (var i = 0; i < row.Length; i++)
-									{
-										switch (i)
-										{
-											case 0:
-												Tuple<double, double> ixxiEntry;
-
-												if (!ixxi.TryGetValue(originalId, out ixxiEntry))
-												{
-													ixxiEntry = new Tuple<double, double>(0, 0);
-												}
-
-												//newIxxi.Add(newId, ixxiEntry);
-
-												writer.Write(newId++); // id
-												writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
-
-												writer.Write(originalId); // taz
-												writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
-
-												writer.Write(ixxiEntry.Item1); // fraction_with_jobs_outside
-												writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
-
-												writer.Write(ixxiEntry.Item2); // fraction_filled_by_workers_from_outside
-
-												break;
-											default:
-												writer.Write(row[i]);
-
-												break;
-										}
-
-										if (i == row.Length - 1)
-										{
-											writer.WriteLine();
-										}
-										else
-										{
-											writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
-										}
-									}
-									z++;
-								}
-							}
-						}
+                    if (String.IsNullOrEmpty(Global.Configuration.RawTransitStopAreaPath))
+                        return null;
 
 
-					}
-					catch (Exception e)
-					{
+                    //var newIxxi = new Dictionary<int, Tuple<double, double>>();
+                    var transitStopAreas = new Dictionary<int, int>();
+                    var rawFile = Global.GetInputPath(Global.Configuration.RawTransitStopAreaPath).ToFile();
+                    var inputFile = Global.GetInputPath(Global.Configuration.InputTransitStopAreaPath).ToFile();
 
-						throw new Exception("Error reading TransitStopArea file on line " + z, innerException: e);
+                    if (Global.PrintFile != null)
+                    {
+                        Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
+                    }
 
-					}
+                    int z = 0;
+                    try
+                    {
+                        using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+                        {
+                            using (var writer = new StreamWriter(inputFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read)))
+                            {
+                                WriteTransitStopAreaHeader(reader, writer);
 
-					//ixxi = newIxxi;
+                                var newId = 0;
+                                string line;
 
-					var newParkAndRide = new Dictionary<int, Tuple<int, int, int, int, int>>();
+                                while ((line = reader.ReadLine()) != null)
+                                {
+                                    var row = line.Split(new[] {Global.Configuration.RawTransitStopAreaDelimiter},
+                                                                StringSplitOptions.RemoveEmptyEntries);
+                                    var originalId = int.Parse(row[0]);
 
-					foreach (var entry in parkAndRideNodes)
-					{
-						var key = entry.Key;
-						var value = entry.Value;
+                                    transitStopAreas.Add(originalId, newId);
 
-						newParkAndRide.Add(key,
-												 new Tuple<int, int, int, int, int>(transitStopAreas[value.Item1], value.Item2, value.Item3,
-																								value.Item4, value.Item5));
-					}
+                                    for (var i = 0; i < row.Length; i++)
+                                    {
+                                        switch (i)
+                                        {
+                                            case 0:
+                                                Tuple<double, double> ixxiEntry;
 
-					parkAndRideNodes = newParkAndRide;
+                                                if (!ixxi.TryGetValue(originalId, out ixxiEntry))
+                                                {
+                                                    ixxiEntry = new Tuple<double, double>(0, 0);
+                                                }
 
-					return transitStopAreas;
-				}
-		*/
+                                                //newIxxi.Add(newId, ixxiEntry);
+
+                                                writer.Write(newId++); // id
+                                                writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
+
+                                                writer.Write(originalId); // taz
+                                                writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
+
+                                                writer.Write(ixxiEntry.Item1); // fraction_with_jobs_outside
+                                                writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
+
+                                                writer.Write(ixxiEntry.Item2); // fraction_filled_by_workers_from_outside
+
+                                                break;
+                                            default:
+                                                writer.Write(row[i]);
+
+                                                break;
+                                        }
+
+                                        if (i == row.Length - 1)
+                                        {
+                                            writer.WriteLine();
+                                        }
+                                        else
+                                        {
+                                            writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
+                                        }
+                                    }
+                                    z++;
+                                }
+                            }
+                        }
+
+
+                    }
+                    catch (Exception e)
+                    {
+
+                        throw new Exception("Error reading TransitStopArea file on line " + z, innerException: e);
+
+                    }
+
+                    //ixxi = newIxxi;
+
+                    var newParkAndRide = new Dictionary<int, Tuple<int, int, int, int, int>>();
+
+                    foreach (var entry in parkAndRideNodes)
+                    {
+                        var key = entry.Key;
+                        var value = entry.Value;
+
+                        newParkAndRide.Add(key,
+                                                 new Tuple<int, int, int, int, int>(transitStopAreas[value.Item1], value.Item2, value.Item3,
+                                                                                                value.Item4, value.Item5));
+                    }
+
+                    parkAndRideNodes = newParkAndRide;
+
+                    return transitStopAreas;
+                }
+        */
         private static Dictionary<int, Tuple<int, int, int>> ConvertTransitStopAreaFile() {
 
             if (String.IsNullOrEmpty(Global.Configuration.RawTransitStopAreaPath))
@@ -1197,142 +1197,142 @@ namespace DaySim {
 
 
         /*
-				private static Dictionary<int, Tuple<int, int, int>> ConvertParcelFileTestMode(IDictionary<int, int> parcelNodes,
-																											  IDictionary<int, int> zones)
-				{
-					var parcels = new Dictionary<int, Tuple<int, int, int>>();
-					var rawFile = Global.GetInputPath(Global.Configuration.RawParcelPath).ToFile();
-					var inputFile = Global.GetInputPath(Global.Configuration.InputParcelPath).ToFile();
+                private static Dictionary<int, Tuple<int, int, int>> ConvertParcelFileTestMode(IDictionary<int, int> parcelNodes,
+                                                                                                              IDictionary<int, int> zones)
+                {
+                    var parcels = new Dictionary<int, Tuple<int, int, int>>();
+                    var rawFile = Global.GetInputPath(Global.Configuration.RawParcelPath).ToFile();
+                    var inputFile = Global.GetInputPath(Global.Configuration.InputParcelPath).ToFile();
 
-					if (Global.PrintFile != null)
-					{
-						Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
-					}
-
-
-					int z = 0;
-					try
-					{
-						using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
-						{
-							using (var writer = new StreamWriter(inputFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read)))
-							{
-								var hasShortDistanceCircuityMeasures = WriteParcelHeader(reader, writer);
-
-								var sequences = new Dictionary<int, int>();
-								string line;
-
-								while ((line = reader.ReadLine()) != null)
-								{
-									var row = line.Split(new[] {Global.Configuration.RawParcelDelimiter}, StringSplitOptions.RemoveEmptyEntries);
-									var id = int.Parse(row[0]);
-									var originalZoneId = int.Parse(row[4]);
-									var newZoneId = zones[originalZoneId];
-									var xCoordinate = int.Parse(row[1]);
-									var yCoordinate = Convert.ToInt32(Math.Round(double.Parse(row[2])));
-
-									parcels.Add(id, new Tuple<int, int, int>(newZoneId, xCoordinate, yCoordinate));
-
-									for (var i = 0; i < row.Length; i++)
-									{
-										switch (i)
-										{
-											case 0:
-												int sequence;
-
-												if (sequences.ContainsKey(newZoneId))
-												{
-													sequences[newZoneId]++;
-
-													sequence = sequences[newZoneId];
-												}
-												else
-												{
-													sequence = 0;
-
-													sequences.Add(newZoneId, sequence);
-												}
-
-												writer.Write(id); // id
-												writer.Write(Global.Configuration.InputParcelDelimiter);
-
-												writer.Write(sequence); // sequence
-												writer.Write(Global.Configuration.InputParcelDelimiter);
-
-												int nodeId;
-
-												writer.Write(parcelNodes.TryGetValue(id, out nodeId) ? nodeId : 0); // node_id
-												writer.Write(Global.Configuration.InputParcelDelimiter);
-
-												writer.Write(newZoneId); // zone_id
-
-												break;
-											case 1: // xcoord_p
-												writer.Write(Convert.ToInt32(Math.Round(double.Parse(row[i]))));
-
-												break;
-											case 2: // ycoord_p
-												writer.Write(Convert.ToInt32(Math.Round(double.Parse(row[i]))));
-
-												break;
-											case 3: // sqft_p
-												writer.Write(double.Parse(row[i])/1000);
-
-												break;
-											case 72: // dist_lbus
-											case 73: // dist_ebus
-											case 74: // dist_crt
-											case 75: // dist_fry
-											case 76: // dist_lrt
-												if (double.Parse(row[i]) > 5)
-												{
-													writer.Write(Constants.DEFAULT_VALUE);
-												}
-												else
-												{
-													writer.Write(row[i]);
-												}
-
-												break;
-											default:
-												writer.Write(row[i]);
-
-												break;
-										}
-
-										if (i == row.Length - 1)
-										{
-											if (!hasShortDistanceCircuityMeasures)
-											{
-												for (var j = 0; j < 24; j++)
-												{
-													writer.Write(Global.Configuration.InputParcelDelimiter);
-													writer.Write("0");
-												}
-											}
-
-											writer.WriteLine();
-										}
-										else
-										{
-											writer.Write(Global.Configuration.InputParcelDelimiter);
-										}
-									}
-								}
-							}
-						}
+                    if (Global.PrintFile != null)
+                    {
+                        Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
+                    }
 
 
-					}
-					catch (Exception e)
-					{
+                    int z = 0;
+                    try
+                    {
+                        using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+                        {
+                            using (var writer = new StreamWriter(inputFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read)))
+                            {
+                                var hasShortDistanceCircuityMeasures = WriteParcelHeader(reader, writer);
 
-						throw new Exception("Error reading Parcel file on line " + z, innerException: e);
-					}
+                                var sequences = new Dictionary<int, int>();
+                                string line;
 
-					return parcels;
-				}
-		*/
+                                while ((line = reader.ReadLine()) != null)
+                                {
+                                    var row = line.Split(new[] {Global.Configuration.RawParcelDelimiter}, StringSplitOptions.RemoveEmptyEntries);
+                                    var id = int.Parse(row[0]);
+                                    var originalZoneId = int.Parse(row[4]);
+                                    var newZoneId = zones[originalZoneId];
+                                    var xCoordinate = int.Parse(row[1]);
+                                    var yCoordinate = Convert.ToInt32(Math.Round(double.Parse(row[2])));
+
+                                    parcels.Add(id, new Tuple<int, int, int>(newZoneId, xCoordinate, yCoordinate));
+
+                                    for (var i = 0; i < row.Length; i++)
+                                    {
+                                        switch (i)
+                                        {
+                                            case 0:
+                                                int sequence;
+
+                                                if (sequences.ContainsKey(newZoneId))
+                                                {
+                                                    sequences[newZoneId]++;
+
+                                                    sequence = sequences[newZoneId];
+                                                }
+                                                else
+                                                {
+                                                    sequence = 0;
+
+                                                    sequences.Add(newZoneId, sequence);
+                                                }
+
+                                                writer.Write(id); // id
+                                                writer.Write(Global.Configuration.InputParcelDelimiter);
+
+                                                writer.Write(sequence); // sequence
+                                                writer.Write(Global.Configuration.InputParcelDelimiter);
+
+                                                int nodeId;
+
+                                                writer.Write(parcelNodes.TryGetValue(id, out nodeId) ? nodeId : 0); // node_id
+                                                writer.Write(Global.Configuration.InputParcelDelimiter);
+
+                                                writer.Write(newZoneId); // zone_id
+
+                                                break;
+                                            case 1: // xcoord_p
+                                                writer.Write(Convert.ToInt32(Math.Round(double.Parse(row[i]))));
+
+                                                break;
+                                            case 2: // ycoord_p
+                                                writer.Write(Convert.ToInt32(Math.Round(double.Parse(row[i]))));
+
+                                                break;
+                                            case 3: // sqft_p
+                                                writer.Write(double.Parse(row[i])/1000);
+
+                                                break;
+                                            case 72: // dist_lbus
+                                            case 73: // dist_ebus
+                                            case 74: // dist_crt
+                                            case 75: // dist_fry
+                                            case 76: // dist_lrt
+                                                if (double.Parse(row[i]) > 5)
+                                                {
+                                                    writer.Write(Constants.DEFAULT_VALUE);
+                                                }
+                                                else
+                                                {
+                                                    writer.Write(row[i]);
+                                                }
+
+                                                break;
+                                            default:
+                                                writer.Write(row[i]);
+
+                                                break;
+                                        }
+
+                                        if (i == row.Length - 1)
+                                        {
+                                            if (!hasShortDistanceCircuityMeasures)
+                                            {
+                                                for (var j = 0; j < 24; j++)
+                                                {
+                                                    writer.Write(Global.Configuration.InputParcelDelimiter);
+                                                    writer.Write("0");
+                                                }
+                                            }
+
+                                            writer.WriteLine();
+                                        }
+                                        else
+                                        {
+                                            writer.Write(Global.Configuration.InputParcelDelimiter);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
+                    catch (Exception e)
+                    {
+
+                        throw new Exception("Error reading Parcel file on line " + z, innerException: e);
+                    }
+
+                    return parcels;
+                }
+        */
         private static bool WriteParcelHeader(TextReader reader, TextWriter writer) {
             var line = reader.ReadLine();
 
@@ -2022,7 +2022,7 @@ namespace DaySim {
         private static Dictionary<Tuple<int, int>, int> ConvertPersonFileHDF5() {
             var personKeys = new Dictionary<Tuple<int, int>, int>();
             string[] essentials = { "hhno", "pno", "pptyp", "pagey", "pgend", "pwtyp", "pstyp" };
-            //			int parcelIndex = 3;
+            //            int parcelIndex = 3;
             string[] importants =
                 {
                     "pwpcl", "pwtaz", "pspcl", "pstaz", "puwmode", "puwarrp", "puwdepp", "ptpass", "ppaidprk", "pdiary", "pproxy"

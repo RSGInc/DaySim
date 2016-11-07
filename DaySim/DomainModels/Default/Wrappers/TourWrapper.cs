@@ -963,10 +963,10 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             TimeCoefficient = timeCoefficient;
 
-            //			if (randomVot) {
-            //				var vot = (60 * timeCoefficient) / costCoefficient;
-            //				Global.PrintFile.WriteLine("Value of time is {0}",vot);
-            //			}
+            //            if (randomVot) {
+            //                var vot = (60 * timeCoefficient) / costCoefficient;
+            //                Global.PrintFile.WriteLine("Value of time is {0}",vot);
+            //            }
         }
 
         private ITourModeImpedance GetTourModeImpedance(int minute) {

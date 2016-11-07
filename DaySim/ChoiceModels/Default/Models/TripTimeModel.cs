@@ -127,13 +127,13 @@ namespace DaySim.ChoiceModels.Default.Models {
                     var travelDuration = (int)Math.Round(departureImpedance.TravelTime + 0.5);
 
                     // if not the trip home, on a home-based tour, also include fastest time from the destinatinon to home
-                    //					if (trip.Tour.IsHomeBasedTour && trip.DestinationPurpose != Global.Settings.Purposes.NoneOrHome) {
-                    //						var fastestMode = Math.Min(trip.Tour.Mode, Global.Settings.Modes.Hov3);
-                    // 						var pathTypeModel = PathTypeModelFactory.Model.Run(trip.DestinationParcel, trip.Household.ResidenceParcel, departurePeriod.Middle, 0, 
-                    //							   trip.Tour.DestinationPurpose, trip.Tour.CostCoefficient, trip.Tour.TimeCoefficient, 
-                    //								trip.Person.IsDrivingAge, trip.Household.VehiclesAvailable, trip.Tour.Person.TransitFareDiscountFraction, false, fastestMode).First();
-                    //						travelDuration += (int) Math.Round(pathTypeModel.PathTime + 0.5);
-                    //					}
+                    //                    if (trip.Tour.IsHomeBasedTour && trip.DestinationPurpose != Global.Settings.Purposes.NoneOrHome) {
+                    //                        var fastestMode = Math.Min(trip.Tour.Mode, Global.Settings.Modes.Hov3);
+                    //                         var pathTypeModel = PathTypeModelFactory.Model.Run(trip.DestinationParcel, trip.Household.ResidenceParcel, departurePeriod.Middle, 0, 
+                    //                               trip.Tour.DestinationPurpose, trip.Tour.CostCoefficient, trip.Tour.TimeCoefficient, 
+                    //                                trip.Person.IsDrivingAge, trip.Household.VehiclesAvailable, trip.Tour.Person.TransitFareDiscountFraction, false, fastestMode).First();
+                    //                        travelDuration += (int) Math.Round(pathTypeModel.PathTime + 0.5);
+                    //                    }
 
                     var bestArrivalTime
                         = trip.IsHalfTourFromOrigin
@@ -165,9 +165,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                     var alternative = choiceProbabilityCalculator.GetAlternative(time.Index, available, choice != null && choice.Equals(time));
 
-                    //					if (choice.Equals(tripTime) && !available) {
-                    //						Console.WriteLine(available);
-                    //					}
+                    //                    if (choice.Equals(tripTime) && !available) {
+                    //                        Console.WriteLine(available);
+                    //                    }
 
                     if (!alternative.Available) {
                         continue;

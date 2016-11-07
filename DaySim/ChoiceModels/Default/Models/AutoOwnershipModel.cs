@@ -62,13 +62,13 @@ namespace DaySim.ChoiceModels.Default.Models {
         }
 
         private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IHouseholdWrapper household, int choice = Constants.DEFAULT_VALUE) {
-            //			var distanceToTransitCappedUnderQtrMile = household.ResidenceParcel.DistanceToTransitCappedUnderQtrMile();
-            //			var distanceToTransitQtrToHalfMile = household.ResidenceParcel.DistanceToTransitQtrToHalfMile();
+            //            var distanceToTransitCappedUnderQtrMile = household.ResidenceParcel.DistanceToTransitCappedUnderQtrMile();
+            //            var distanceToTransitQtrToHalfMile = household.ResidenceParcel.DistanceToTransitQtrToHalfMile();
             var foodRetailServiceMedicalLogBuffer1 = household.ResidenceParcel.FoodRetailServiceMedicalLogBuffer1();
 
             var workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
             var schoolTourLogsumDifference = 0D; // (school) full car ownership vs. no car ownership
-                                                 //			const double workTourOtherLogsumDifference = 0D; // (other workers) full car ownership vs. no car ownership
+                                                 //            const double workTourOtherLogsumDifference = 0D; // (other workers) full car ownership vs. no car ownership
 
             foreach (var person in household.Persons) {
                 if (person.IsWorker && person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
@@ -98,8 +98,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             //var taSegment = household.ResidenceParcel.TransitAccessSegment();
 
             //var aggregateLogsumDifference = // full car ownership vs. no car ownership
-            //	Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment] -
-            //	Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];
+            //    Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment] -
+            //    Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][taSegment];
 
             var distanceToStop
                 = household.ResidenceParcel.GetDistanceToTransit() > 0
@@ -119,32 +119,32 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(5, household.Has2Drivers.ToFlag());
             alternative.AddUtilityTerm(9, household.Has3Drivers.ToFlag());
             alternative.AddUtilityTerm(13, household.Has4OrMoreDrivers.ToFlag());
-            //			alternative.AddUtility(17, 0);
+            //            alternative.AddUtility(17, 0);
             alternative.AddUtilityTerm(18, household.HasNoFullOrPartTimeWorker.ToFlag());
             alternative.AddUtilityTerm(19, household.HouseholdTotals.PartTimeWorkersPerDrivingAgeMembers);
-            //			alternative.AddUtility(23, household.HouseholdTotals.RetiredAdultsPerDrivingAgeMembers);
-            //			alternative.AddUtility(27, household.HouseholdTotals.UniversityStudentsPerDrivingAgeMembers);
+            //            alternative.AddUtility(23, household.HouseholdTotals.RetiredAdultsPerDrivingAgeMembers);
+            //            alternative.AddUtility(27, household.HouseholdTotals.UniversityStudentsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(31, household.HouseholdTotals.DrivingAgeStudentsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(35, household.HouseholdTotals.HomeBasedPersonsPerDrivingAgeMembers);
-            //			alternative.AddUtility(39, household.HouseholdTotals.ChildrenUnder5PerDrivingAgeMembers);
+            //            alternative.AddUtility(39, household.HouseholdTotals.ChildrenUnder5PerDrivingAgeMembers);
             alternative.AddUtilityTerm(43, household.Has0To15KIncome.ToFlag());
             alternative.AddUtilityTerm(47, household.Has50To75KIncome.ToFlag());
             alternative.AddUtilityTerm(51, household.Has75KPlusIncome.ToFlag());
             alternative.AddUtilityTerm(55, household.HasMissingIncome.ToFlag());
             alternative.AddUtilityTerm(59, workTourLogsumDifference);
-            //			alternative.AddUtility(61, workTourOtherLogsumDifference);
+            //            alternative.AddUtility(61, workTourOtherLogsumDifference);
             alternative.AddUtilityTerm(63, schoolTourLogsumDifference);
-            //			alternative.AddUtility(67, aggregateLogsumDifference);
+            //            alternative.AddUtility(67, aggregateLogsumDifference);
             alternative.AddUtilityTerm(69, Math.Log(distanceToStop));
-            //			alternative.AddUtility(70, Math.Log(1+household.ResidenceParcel.StopsTransitBuffer1));
+            //            alternative.AddUtility(70, Math.Log(1+household.ResidenceParcel.StopsTransitBuffer1));
             alternative.AddUtilityTerm(73, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1);
             alternative.AddUtilityTerm(75, foodRetailServiceMedicalLogBuffer1);
             alternative.AddUtilityTerm(77, workTourLogsumDifference * ruralFlag);
-            //			alternative.AddUtility(78, workTourOtherLogsumDifference * ruralFlag);
-            //			alternative.AddUtility(79, aggregateLogsumDifference * ruralFlag);
-            //			alternative.AddUtility(80, Math.Log(distanceToStop)*ruralFlag);
-            //			alternative.AddUtility(81, Math.Log(1+household.ResidenceParcel.StopsTransitBuffer1)*ruralFlag);
-            //			alternative.AddUtility(82, foodRetailServiceMedicalQtrMileLog * ruralFlag);
+            //            alternative.AddUtility(78, workTourOtherLogsumDifference * ruralFlag);
+            //            alternative.AddUtility(79, aggregateLogsumDifference * ruralFlag);
+            //            alternative.AddUtility(80, Math.Log(distanceToStop)*ruralFlag);
+            //            alternative.AddUtility(81, Math.Log(1+household.ResidenceParcel.StopsTransitBuffer1)*ruralFlag);
+            //            alternative.AddUtility(82, foodRetailServiceMedicalQtrMileLog * ruralFlag);
             alternative.AddUtilityTerm(83, ruralFlag);
 
             RegionSpecificCustomizations(alternative, household);
@@ -160,22 +160,22 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(6, household.Has2Drivers.ToFlag());
             alternative.AddUtilityTerm(10, household.Has3Drivers.ToFlag());
             alternative.AddUtilityTerm(14, household.Has4OrMoreDrivers.ToFlag());
-            //			alternative.AddUtility(17, 1D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 1 car per driving age members
+            //            alternative.AddUtility(17, 1D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 1 car per driving age members
             alternative.AddUtilityTerm(18, household.Has1OrLessFullOrPartTimeWorkers.ToFlag());
             alternative.AddUtilityTerm(20, household.HouseholdTotals.PartTimeWorkersPerDrivingAgeMembers);
             alternative.AddUtilityTerm(24, household.HouseholdTotals.RetiredAdultsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(28, household.HouseholdTotals.UniversityStudentsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(32, household.HouseholdTotals.DrivingAgeStudentsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(36, household.HouseholdTotals.HomeBasedPersonsPerDrivingAgeMembers);
-            //			alternative.AddUtility(40, household.HouseholdTotals.ChildrenUnder5PerDrivingAgeMembers);
+            //            alternative.AddUtility(40, household.HouseholdTotals.ChildrenUnder5PerDrivingAgeMembers);
             alternative.AddUtilityTerm(44, household.Has0To15KIncome.ToFlag());
             alternative.AddUtilityTerm(48, household.Has50To75KIncome.ToFlag());
             alternative.AddUtilityTerm(52, household.Has75KPlusIncome.ToFlag());
             alternative.AddUtilityTerm(56, household.HasMissingIncome.ToFlag());
             alternative.AddUtilityTerm(60, workTourLogsumDifference * household.HasMoreDriversThan1.ToFlag());
-            //			alternative.AddUtility(62, workTourOtherLogsumDifference * household.HasMoreDriversThan1.ToFlag());
-            //			alternative.AddUtility(64, schoolTourLogsumDifference * household.HasMoreDriversThan1.ToFlag());
-            //			alternative.AddUtility(68, aggregateLogsumDifference * household.HasMoreDriversThan1.ToFlag());
+            //            alternative.AddUtility(62, workTourOtherLogsumDifference * household.HasMoreDriversThan1.ToFlag());
+            //            alternative.AddUtility(64, schoolTourLogsumDifference * household.HasMoreDriversThan1.ToFlag());
+            //            alternative.AddUtility(68, aggregateLogsumDifference * household.HasMoreDriversThan1.ToFlag());
             alternative.AddUtilityTerm(72, Math.Log(1 + household.ResidenceParcel.StopsTransitBuffer1) * household.HasMoreDriversThan1.ToFlag());
             //alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan1.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan1.ToFlag());
@@ -193,14 +193,14 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(2, household.Has1Driver.ToFlag());
             alternative.AddUtilityTerm(11, household.Has3Drivers.ToFlag());
             alternative.AddUtilityTerm(15, household.Has4OrMoreDrivers.ToFlag());
-            //			alternative.AddUtility(17, 2D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 2 cars per driving age members
+            //            alternative.AddUtility(17, 2D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 2 cars per driving age members
             alternative.AddUtilityTerm(18, household.Has2OrLessFullOrPartTimeWorkers.ToFlag());
             alternative.AddUtilityTerm(60, workTourLogsumDifference * household.HasMoreDriversThan2.ToFlag());
-            //			alternative.AddUtility(62, workTourOtherLogsumDifference * household.HasMoreDriversThan2.ToFlag());
-            //			alternative.AddUtility(64, schoolTourLogsumDifference * household.HasMoreDriversThan2.ToFlag());
-            //			alternative.AddUtility(68, aggregateLogsumDifference * household.HasMoreDriversThan2.ToFlag());
+            //            alternative.AddUtility(62, workTourOtherLogsumDifference * household.HasMoreDriversThan2.ToFlag());
+            //            alternative.AddUtility(64, schoolTourLogsumDifference * household.HasMoreDriversThan2.ToFlag());
+            //            alternative.AddUtility(68, aggregateLogsumDifference * household.HasMoreDriversThan2.ToFlag());
             alternative.AddUtilityTerm(72, Math.Log(1 + household.ResidenceParcel.StopsTransitBuffer1) * household.HasMoreDriversThan2.ToFlag());
-            //			alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan2.ToFlag());
+            //            alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan2.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan2.ToFlag());
 
             RegionSpecificCustomizations(alternative, household);
@@ -215,12 +215,12 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(3, household.Has1Driver.ToFlag());
             alternative.AddUtilityTerm(7, household.Has2Drivers.ToFlag());
             alternative.AddUtilityTerm(16, household.Has4OrMoreDrivers.ToFlag());
-            //			alternative.AddUtility(17, 3D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 3 cars per driving age members
+            //            alternative.AddUtility(17, 3D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 3 cars per driving age members
             alternative.AddUtilityTerm(18, household.Has3OrLessFullOrPartTimeWorkers.ToFlag());
-            //			alternative.AddUtility(21, household.HouseholdTotals.PartTimeWorkersPerDrivingAgeMembers);
+            //            alternative.AddUtility(21, household.HouseholdTotals.PartTimeWorkersPerDrivingAgeMembers);
             alternative.AddUtilityTerm(25, household.HouseholdTotals.RetiredAdultsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(29, household.HouseholdTotals.UniversityStudentsPerDrivingAgeMembers);
-            //			alternative.AddUtility(33, household.HouseholdTotals.DrivingAgeStudentsPerDrivingAgeMembers);
+            //            alternative.AddUtility(33, household.HouseholdTotals.DrivingAgeStudentsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(37, household.HouseholdTotals.HomeBasedPersonsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(41, household.HouseholdTotals.ChildrenUnder5PerDrivingAgeMembers);
             alternative.AddUtilityTerm(45, household.Has0To15KIncome.ToFlag());
@@ -228,11 +228,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(53, household.Has75KPlusIncome.ToFlag());
             alternative.AddUtilityTerm(57, household.HasMissingIncome.ToFlag());
             alternative.AddUtilityTerm(60, workTourLogsumDifference * household.HasMoreDriversThan3.ToFlag());
-            //			alternative.AddUtility(62, workTourOtherLogsumDifference * household.HasMoreDriversThan3.ToFlag());
-            //			alternative.AddUtility(64, schoolTourLogsumDifference * household.HasMoreDriversThan3.ToFlag());
-            //			alternative.AddUtility(68, aggregateLogsumDifference * household.HasMoreDriversThan3.ToFlag());
+            //            alternative.AddUtility(62, workTourOtherLogsumDifference * household.HasMoreDriversThan3.ToFlag());
+            //            alternative.AddUtility(64, schoolTourLogsumDifference * household.HasMoreDriversThan3.ToFlag());
+            //            alternative.AddUtility(68, aggregateLogsumDifference * household.HasMoreDriversThan3.ToFlag());
             alternative.AddUtilityTerm(72, Math.Log(1 + household.ResidenceParcel.StopsTransitBuffer1) * household.HasMoreDriversThan3.ToFlag());
-            //			alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan3.ToFlag());
+            //            alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan3.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan3.ToFlag());
 
             RegionSpecificCustomizations(alternative, household);
@@ -247,11 +247,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(4, household.Has1Driver.ToFlag());
             alternative.AddUtilityTerm(8, household.Has2Drivers.ToFlag());
             alternative.AddUtilityTerm(12, household.Has3Drivers.ToFlag());
-            //			alternative.AddUtility(17, 4D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 4 cars per driving age members
+            //            alternative.AddUtility(17, 4D / Math.Max(household.HouseholdTotals.DrivingAgeMembers, 1)); // ratio of 4 cars per driving age members
             alternative.AddUtilityTerm(18, household.Has4OrLessFullOrPartTimeWorkers.ToFlag());
             alternative.AddUtilityTerm(22, household.HouseholdTotals.PartTimeWorkersPerDrivingAgeMembers);
             alternative.AddUtilityTerm(26, household.HouseholdTotals.RetiredAdultsPerDrivingAgeMembers);
-            //			alternative.AddUtility(30, household.HouseholdTotals.UniversityStudentsPerDrivingAgeMembers);
+            //            alternative.AddUtility(30, household.HouseholdTotals.UniversityStudentsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(34, household.HouseholdTotals.DrivingAgeStudentsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(38, household.HouseholdTotals.HomeBasedPersonsPerDrivingAgeMembers);
             alternative.AddUtilityTerm(42, household.HouseholdTotals.ChildrenUnder5PerDrivingAgeMembers);
@@ -260,11 +260,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(54, household.Has75KPlusIncome.ToFlag());
             alternative.AddUtilityTerm(58, household.HasMissingIncome.ToFlag());
             alternative.AddUtilityTerm(60, workTourLogsumDifference * household.HasMoreDriversThan4.ToFlag());
-            //			alternative.AddUtility(62, workTourOtherLogsumDifference * household.HasMoreDriversThan4.ToFlag());
-            //			alternative.AddUtility(64, schoolTourLogsumDifference * household.HasMoreDriversThan4.ToFlag());
-            //			alternative.AddUtility(68, aggregateLogsumDifference * household.HasMoreDriversThan4.ToFlag());
+            //            alternative.AddUtility(62, workTourOtherLogsumDifference * household.HasMoreDriversThan4.ToFlag());
+            //            alternative.AddUtility(64, schoolTourLogsumDifference * household.HasMoreDriversThan4.ToFlag());
+            //            alternative.AddUtility(68, aggregateLogsumDifference * household.HasMoreDriversThan4.ToFlag());
             alternative.AddUtilityTerm(72, Math.Log(1 + household.ResidenceParcel.StopsTransitBuffer1) * household.HasMoreDriversThan4.ToFlag());
-            //			alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan4.ToFlag());
+            //            alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan4.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan4.ToFlag());
 
             RegionSpecificCustomizations(alternative, household);

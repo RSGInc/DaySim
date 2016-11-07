@@ -46,9 +46,9 @@ namespace DaySim.ChoiceModels.Default.Models {
             person.ResetRandom(0);
 
             if (Global.Configuration.IsInEstimationMode) {
-                //	if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-                //		return;
-                //	}
+                //    if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+                //        return;
+                //    }
                 if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
                     return;
                 }
@@ -179,7 +179,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 }
 
                 var destinationParcel = ChoiceModelFactory.Parcels[sampleItem.ParcelId];
-                //				var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
+                //                var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
 
                 alternative.Choice = destinationParcel;
 
@@ -208,7 +208,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var serviceBuffer = Math.Log(destinationParcel.EmploymentServiceBuffer2 + 1);
                 var householdsBuffer = Math.Log(destinationParcel.HouseholdsBuffer2 + 1);
 
-                //				var retailBuffer = Math.Log(destinationParcel.EmploymentRetailBuffer2 + 1);
+                //                var retailBuffer = Math.Log(destinationParcel.EmploymentRetailBuffer2 + 1);
                 var industrialAgricultureConstructionBuffer = Math.Log(destinationParcel.EmploymentIndustrialBuffer2 + destinationParcel.EmploymentAgricultureConstructionBuffer2 + 1);
                 var foodBuffer = Math.Log(destinationParcel.EmploymentFoodBuffer2 + 1);
                 var medicalBuffer = Math.Log(destinationParcel.EmploymentMedicalBuffer2 + 1);
@@ -216,7 +216,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var studentsUniversityBuffer = Math.Log(destinationParcel.StudentsUniversityBuffer2 + 1);
                 var studentsK12Buffer = Math.Log(destinationParcel.StudentsK8Buffer2 + destinationParcel.StudentsHighSchoolBuffer2 + 1);
 
-                //				var mixedUse4Index = destinationParcel.MixedUse4Index2();
+                //                var mixedUse4Index = destinationParcel.MixedUse4Index2();
 
                 //size attributes (derived)
                 var employmentIndustrialAgricultureConstruction = destinationParcel.EmploymentIndustrial + destinationParcel.EmploymentAgricultureConstruction;

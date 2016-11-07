@@ -18,7 +18,7 @@ using DaySim.Sampling;
 using SimpleInjector;
 
 namespace DaySim {
-   public class DaySimModule {
+    public class DaySimModule {
         public DaySimModule() {
             Global.ContainerDaySim.Register<ImporterFactory>(Lifestyle.Singleton);
 

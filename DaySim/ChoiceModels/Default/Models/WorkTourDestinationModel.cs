@@ -84,20 +84,20 @@ namespace DaySim.ChoiceModels.Default.Models {
             var person = tour.Person;
             var personDay = tour.PersonDay;
 
-            //			var totalAvailableMinutes =
-            //				tour.ParentTour == null
-            //					? personDay.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay)
-            //					: tour.ParentTour.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay);
+            //            var totalAvailableMinutes =
+            //                tour.ParentTour == null
+            //                    ? personDay.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay)
+            //                    : tour.ParentTour.TimeWindow.TotalAvailableMinutes(1, Global.Settings.Times.MinutesInADay);
 
             var maxAvailableMinutes =
                 tour.ParentTour == null
                     ? personDay.TimeWindow.MaxAvailableMinutesAfter(121)
                     : tour.ParentTour.DestinationDepartureTime - tour.ParentTour.DestinationArrivalTime;
 
-            //			var hoursAvailableInverse =
-            //				tour.IsHomeBasedTour
-            //					? (personDay.HomeBasedTours - personDay.SimulatedHomeBasedTours + 1) / (Math.Max(totalAvailableMinutes - 360, 30) / 60D)
-            //					: 1 / (Math.Max(totalAvailableMinutes, 1) / 60D);
+            //            var hoursAvailableInverse =
+            //                tour.IsHomeBasedTour
+            //                    ? (personDay.HomeBasedTours - personDay.SimulatedHomeBasedTours + 1) / (Math.Max(totalAvailableMinutes - 360, 30) / 60D)
+            //                    : 1 / (Math.Max(totalAvailableMinutes, 1) / 60D);
 
             var fastestAvailableTimeOfDay =
                 tour.IsHomeBasedTour || tour.ParentTour == null
@@ -151,7 +151,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var household = _tour.Household;
                 var person = _tour.Person;
                 var personDay = _tour.PersonDay;
-                //				var householdHasChildren = household.HasChildren;
+                //                var householdHasChildren = household.HasChildren;
 
                 var destinationParcel = ChoiceModelFactory.Parcels[sampleItem.ParcelId];
 
@@ -177,9 +177,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                 // use this block of code to eliminate the oddball alternative for estimation of the conditional model
                 //if (usualWorkParcelFlag == 1) {
-                //	alternative.Available = false;
+                //    alternative.Available = false;
                 //
-                //	return;
+                //    return;
                 //}
 
                 var fastestTravelTime =
@@ -214,46 +214,46 @@ namespace DaySim.ChoiceModels.Default.Models {
                 //var aggregateLogsumWorkBased = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.Work_BASED][carOwnership][votSegment][transitAccess];
 
                 var distanceFromOrigin = _tour.OriginParcel.DistanceFromOrigin(destinationParcel, _tour.DestinationArrivalTime);
-                //				var distanceFromOrigin0 = Math.Max(0, Math.Min(distanceFromOrigin - .5, 1 - .5));
-                //				var distanceFromOrigin3 = Math.Max(0, distanceFromOrigin - 1);
-                //				var distanceFromOrigin4 = Math.Min(distanceFromOrigin, .10);
-                //				var distanceFromOrigin5 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .5 - .1));
-                //				var distanceFromOrigin8 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .35 - .1));
-                //				var distanceFromOrigin9 = Math.Max(0, Math.Min(distanceFromOrigin - .35, 1 - .35));
+                //                var distanceFromOrigin0 = Math.Max(0, Math.Min(distanceFromOrigin - .5, 1 - .5));
+                //                var distanceFromOrigin3 = Math.Max(0, distanceFromOrigin - 1);
+                //                var distanceFromOrigin4 = Math.Min(distanceFromOrigin, .10);
+                //                var distanceFromOrigin5 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .5 - .1));
+                //                var distanceFromOrigin8 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .35 - .1));
+                //                var distanceFromOrigin9 = Math.Max(0, Math.Min(distanceFromOrigin - .35, 1 - .35));
                 var distanceFromOriginLog = Math.Log(1 + distanceFromOrigin);
                 var distanceFromWorkLog = person.UsualWorkParcel.DistanceFromWorkLog(destinationParcel, 1);
                 var distanceFromSchoolLog = person.UsualSchoolParcel.DistanceFromSchoolLog(destinationParcel, 1);
-                //				var millionsSquareFeet = destinationZoneTotals.MillionsSquareFeet();
+                //                var millionsSquareFeet = destinationZoneTotals.MillionsSquareFeet();
 
                 var timePressure = Math.Log(1 - fastestTravelTime / _maxAvailableMinutes);
 
                 // log transforms of buffers for Neighborhood effects
                 var empEduBuffer = Math.Log(destinationParcel.EmploymentEducationBuffer1 + 1.0);
-                //				var EMPFOO_B = Math.Log(destinationParcel.EmploymentFoodBuffer1 + 1.0);
-                //				var EMPGOV_B = Math.Log(destinationParcel.EmploymentGovernmentBuffer1 + 1.0);
+                //                var EMPFOO_B = Math.Log(destinationParcel.EmploymentFoodBuffer1 + 1.0);
+                //                var EMPGOV_B = Math.Log(destinationParcel.EmploymentGovernmentBuffer1 + 1.0);
                 var empOfcBuffer = Math.Log(destinationParcel.EmploymentOfficeBuffer1 + 1.0);
-                //				var EMPRET_B = Math.Log(destinationParcel.EmploymentRetailBuffer1 + 1.0);
-                //				var EMPSVC_B = Math.Log(destinationParcel.EmploymentServiceBuffer1 + 1.0);
-                //				var EMPMED_B = Math.Log(destinationParcel.EmploymentMedicalBuffer1 + 1.0);
+                //                var EMPRET_B = Math.Log(destinationParcel.EmploymentRetailBuffer1 + 1.0);
+                //                var EMPSVC_B = Math.Log(destinationParcel.EmploymentServiceBuffer1 + 1.0);
+                //                var EMPMED_B = Math.Log(destinationParcel.EmploymentMedicalBuffer1 + 1.0);
                 var empIndBuffer = Math.Log(destinationParcel.EmploymentIndustrialBuffer1 + destinationParcel.EmploymentAgricultureConstructionBuffer1 + 1.0);
-                //				var EMPTOT_B = Math.Log(destinationParcel.EmploymentTotalBuffer1 + 1.0);
+                //                var EMPTOT_B = Math.Log(destinationParcel.EmploymentTotalBuffer1 + 1.0);
                 var housesBuffer = Math.Log(destinationParcel.HouseholdsBuffer1 + 1.0);
-                //				var STUDK12B = Math.Log(destinationParcel.StudentsK8Buffer1 + destinationParcel.StudentsHighSchoolBuffer1 + 1.0);
-                //				var STUDUNIB = Math.Log(destinationParcel.StudentsUniversityBuffer1 + 1.0);
-                //				var EMPHOU_B = Math.Log(destinationParcel.EmploymentTotalBuffer1 + destinationParcel.HouseholdsBuffer1 + 1.0);
+                //                var STUDK12B = Math.Log(destinationParcel.StudentsK8Buffer1 + destinationParcel.StudentsHighSchoolBuffer1 + 1.0);
+                //                var STUDUNIB = Math.Log(destinationParcel.StudentsUniversityBuffer1 + 1.0);
+                //                var EMPHOU_B = Math.Log(destinationParcel.EmploymentTotalBuffer1 + destinationParcel.HouseholdsBuffer1 + 1.0);
 
                 // parking attributes
-                //				var parcelParkingDensity = destinationParcel.ParcelParkingPerTotalEmployment();
-                //				var zoneParkingDensity = destinationParcel.ZoneParkingPerTotalEmploymentAndK12UniversityStudents(destinationZoneTotals, millionsSquareFeet);
-                //				var ParkingPaidDailyLogBuffer1 = Math.Log(1 + destinationParcel.ParkingOffStreetPaidDailySpacesBuffer1);
+                //                var parcelParkingDensity = destinationParcel.ParcelParkingPerTotalEmployment();
+                //                var zoneParkingDensity = destinationParcel.ZoneParkingPerTotalEmploymentAndK12UniversityStudents(destinationZoneTotals, millionsSquareFeet);
+                //                var ParkingPaidDailyLogBuffer1 = Math.Log(1 + destinationParcel.ParkingOffStreetPaidDailySpacesBuffer1);
 
                 // connectivity attributes
-                //				var c34Ratio = destinationParcel.C34RatioBuffer1();
+                //                var c34Ratio = destinationParcel.C34RatioBuffer1();
 
-                //				var carDeficitFlag = FlagUtility.GetCarDeficitFlag(carOwnership);  // includes no cars
-                //				var carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership); // exludes no cars
+                //                var carDeficitFlag = FlagUtility.GetCarDeficitFlag(carOwnership);  // includes no cars
+                //                var carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership); // exludes no cars
                 var noCarCompetitionFlag = FlagUtility.GetNoCarCompetitionFlag(carOwnership);
-                //				var noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
+                //                var noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
 
                 // Usual location attributes
                 alternative.AddUtilityTerm(1, usualWorkParcelFlag);
@@ -312,19 +312,19 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 
 
-                //		// usual location size term
-                //		alternative.AddUtilityTerm(50, usualWorkParcelFlag * 1);
+                //        // usual location size term
+                //        alternative.AddUtilityTerm(50, usualWorkParcelFlag * 1);
 
-                //		// Comment out these nesting calls when estimating the conditional flat model
-                //		// model is NL with oddball alternative
-                //		if (usualWorkParcelFlag == 0) {
-                //			// this alternative is in the non-oddball nest
-                //			alternative.AddNestedAlternative(_sampleSize + 2, 0, 60); // associates alternative with non-oddball nest
-                //		}
-                //		else {
-                //			// this is the oddball alternative
-                //			alternative.AddNestedAlternative(_sampleSize + 3, 1, 60); // associates alternative with oddball nest
-                //		}
+                //        // Comment out these nesting calls when estimating the conditional flat model
+                //        // model is NL with oddball alternative
+                //        if (usualWorkParcelFlag == 0) {
+                //            // this alternative is in the non-oddball nest
+                //            alternative.AddNestedAlternative(_sampleSize + 2, 0, 60); // associates alternative with non-oddball nest
+                //        }
+                //        else {
+                //            // this is the oddball alternative
+                //            alternative.AddNestedAlternative(_sampleSize + 3, 1, 60); // associates alternative with oddball nest
+                //        }
             }
 
             public static bool ShouldRunInEstimationModeForModel(ITourWrapper tour) {
@@ -332,35 +332,35 @@ namespace DaySim.ChoiceModels.Default.Models {
                 // detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
                 var excludeReason = 0;
 
-                //				if (_maxZone == -1) {
-                //					// TODO: Verify / Optimize
-                //					_maxZone = ChoiceModelRunner.ZoneKeys.Max(z => z.Key);
-                //				}
-                //				if (_maxParcel == -1) {
-                //					// TODO: Optimize
-                //					_maxParcel = ChoiceModelRunner.Parcels.Values.Max(parcel => parcel.Id);
-                //				}
+                //                if (_maxZone == -1) {
+                //                    // TODO: Verify / Optimize
+                //                    _maxZone = ChoiceModelRunner.ZoneKeys.Max(z => z.Key);
+                //                }
+                //                if (_maxParcel == -1) {
+                //                    // TODO: Optimize
+                //                    _maxParcel = ChoiceModelRunner.Parcels.Values.Max(parcel => parcel.Id);
+                //                }
 
                 if (Global.Configuration.IsInEstimationMode) {
-                    //					if (tour.OriginParcelId > _maxParcel) {
-                    //						excludeReason = 3;
-                    //					}
+                    //                    if (tour.OriginParcelId > _maxParcel) {
+                    //                        excludeReason = 3;
+                    //                    }
 
                     if (tour.OriginParcelId <= 0) {
                         excludeReason = 4;
                     }
-                    //					else if (tour.DestinationAddressType > _maxParcel) {
-                    //						excludeReason = 5;
-                    //					}
+                    //                    else if (tour.DestinationAddressType > _maxParcel) {
+                    //                        excludeReason = 5;
+                    //                    }
                     else if (tour.DestinationParcelId <= 0) {
                         excludeReason = 6;
                     }
-                    //					else if (tour.OriginParcelId > _maxParcel) {
-                    //						excludeReason = 7;
-                    //					}
-                    //					else if (tour.OriginParcelId <= 0) {
-                    //						excludeReason = 8;
-                    //					}
+                    //                    else if (tour.OriginParcelId > _maxParcel) {
+                    //                        excludeReason = 7;
+                    //                    }
+                    //                    else if (tour.OriginParcelId <= 0) {
+                    //                        excludeReason = 8;
+                    //                    }
                     else if (tour.OriginParcelId == tour.DestinationParcelId) {
                         excludeReason = 9;
                     } else if (tour.OriginParcel.ZoneId == -1) {
