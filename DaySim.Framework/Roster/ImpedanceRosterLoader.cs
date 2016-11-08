@@ -271,9 +271,27 @@ namespace DaySim.Framework.Roster {
 
                 skimFileReader = creator.CreateReader(cache, _path, mapping);
 
-                var skimMatrix = skimFileReader.Read(entry.Name, entry.Field, (float)entry.Scaling);
+                var scaleFactor = (float)entry.Scaling;
+                var skimMatrix = skimFileReader.Read(entry.Name, entry.Field, scaleFactor);
 
                 SkimMatrices[entry.MatrixIndex] = skimMatrix;
+
+                //new code - report a summary of the skim matrix data
+                var numZones = mapping.Count;
+                var numPositive = 0;
+                double avgPositive = 0;
+                for (var row = 0; row < numZones; row++)   {
+                    for (var col = 0; col < numZones; col++)  {
+                        var value = skimMatrix.GetValue(row, col);
+                        if (value > Constants.EPSILON) {
+                            numPositive++;
+                            avgPositive += value / scaleFactor;
+                        }
+                     }
+                }
+                var pctPositive = Math.Round(numPositive * 100.0 / (numZones * numZones));
+                var avgValue = avgPositive / Math.Max(numPositive, 1);
+                Global.PrintFile.WriteLine("Skim File {0}, {1} percent of values are positive, with average value {2}.", entry.Name, pctPositive, avgValue);
             }
 
             foreach (
