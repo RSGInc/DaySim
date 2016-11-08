@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace DaySim.ChoiceModels {
     public static class ChoiceModelFactory {
@@ -256,7 +257,8 @@ namespace DaySim.ChoiceModels {
             _type = helper.ChoiceModelRunner.GetChoiceModelRunnerType();
 
             if (!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) {
-                ThreadQueue = new ThreadQueue();
+                string threadQueueThreadName = Thread.CurrentThread.Name + "_" + _type.ToString();
+                ThreadQueue = new ThreadQueue(threadQueueThreadName);
             }
 
             //ExporterFactory = Global.Kernel.GetInstance<ExporterFactory>();

@@ -15,10 +15,16 @@ namespace DaySim.Framework.Persistence {
         private readonly Queue<ISavable> _queue = new Queue<ISavable>();
         private Thread _thread;
         private bool _shutdown;
+  
+        public ThreadQueue(string threadQueueThreadName) {
+            if (_thread != null) {
+                throw new Exception("ThreadQueue already running.");
+            }
 
-        public ThreadQueue() {
-            Start();
-        }
+            _thread = new Thread(BeginSave);
+            _thread.Name = threadQueueThreadName;
+            _thread.Start();
+         }
 
         public bool IsRunning {
             get { return _thread != null; }
@@ -42,15 +48,6 @@ namespace DaySim.Framework.Persistence {
             if (_thread != null) {
                 _thread.Join();
             }
-        }
-
-        public void Start() {
-            if (_thread != null) {
-                throw new Exception("ThreadQueue already running.");
-            }
-
-            _thread = new Thread(BeginSave);
-            _thread.Start();
         }
 
         public void Stop() {
