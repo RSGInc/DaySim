@@ -9,11 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySim.Framework", "Daysim.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySimController", "DaysimController\DaySimController.csproj", "{FB158352-2310-4E0F-84E2-50EFFF669C55}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9C172028-C7C2-40B7-AE9B-413C4F84EC6D}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "compare_output_directories", "Daysim.Tests\Daysim.Tests.external\compare_output_directories\compare_output_directories.pyproj", "{66B71A86-D772-4A33-B182-760B912CD7F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSRC", "DaySim.Customizations\PSRC\PSRC.csproj", "{881E7750-B121-46EA-ACB3-F039E2919767}"
