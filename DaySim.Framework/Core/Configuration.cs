@@ -1357,6 +1357,10 @@ namespace DaySim.Framework.Core {
         //new since 203
         [XmlAttribute]
         public bool DVRPC { get; set; }
+
+        [XmlAttribute]
+        public bool JAX { get; set; }
+
         [XmlAttribute]
         public bool Nashville { get; set; }
 
