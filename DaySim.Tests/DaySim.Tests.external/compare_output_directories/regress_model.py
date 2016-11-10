@@ -46,10 +46,11 @@ It is a mistake for different configuration files to use the same working, estim
 all_configured_changeable_directories = dict()
 
 def parse_bool(v):
+  #true if passed in variable starts with 't', 'y', or 1
   return str(v)[:1].lower() in ('y', 't', '1')
     
 def regress_model(parameters):
-    """Passed a DaySim configuration file, this this renames the existing output directory, runs DaySim and compares the exisiting outputs directory to the new one using compare_output_directories.py"""
+    """Passed a DaySim configuration file, this will run DaySim and store all results in a new folder regression_results-YYYY-MM-DD. After the run it will compare the old existing working, outputs, and estimation directories with the newly created directories using compare_output_directories.py"""
     start_time = time.perf_counter()
     script_directory = os.path.split(os.path.realpath(__file__))[0] + '/'
     parser = argparse.ArgumentParser(description='Run DaySim regression tests for specified model')
@@ -58,7 +59,7 @@ def regress_model(parameters):
     parser.add_argument('--configuration_file',
                         help='path to configuration file to send to DaySim', default='configuration_regression.xml')
     parser.add_argument('--run_if_needed_to_create_baseline',
-                        help='if the output folder does not exist stting this to true will run it to create the baseline', type=parse_bool, default=True)
+                        help='if the output folder does not exist that will be an error unless this is true', type=parse_bool, default=True)
     parser.add_argument('--always_create_reports',
                         help='create reports regardless of whether regression tests passed or failed', type=parse_bool, default=True)
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
