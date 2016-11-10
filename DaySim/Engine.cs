@@ -1387,7 +1387,7 @@ namespace DaySim {
                     IHousehold household = null;
                     try {
                         //use a for loop instead of foreach on currentThreadHouseholds because wish to make try catch outside loop but still have access to value of household on catch
-                        for (int threadHouseholdIndex = currentThreadHouseholds.Count - 1; threadHouseholdIndex >= 0; --threadHouseholdIndex) {
+                        for (int threadHouseholdIndex =  0; threadHouseholdIndex < currentThreadHouseholds.Count; ++threadHouseholdIndex) {
                             household = currentThreadHouseholds[threadHouseholdIndex];
                             var randomSeed = householdRandomValues[household.Id];
                             var choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
