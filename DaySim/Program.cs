@@ -28,7 +28,10 @@ namespace DaySim {
         private static string _overrides = "";
 
         private static void Main(string[] args) {
+            int exitCode = 0;
+#if RELEASE //don't use try catch in release mode since wish to have Visual Studio debugger stop on unhandled exceptions
             try {
+#endif
                 var options = new OptionSet {
                     {"c|configuration=", "Path to configuration file", v => _configurationPath = v},
                     {"o|overrides=", "comma delimited name=value pairs to override configuration file values", v => _overrides = v},
@@ -51,11 +54,14 @@ namespace DaySim {
                     Console.WriteLine();
                     Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the output directory.", PrintFile.DEFAULT_PRINT_FILENAME);
 
-                    Console.WriteLine("Please press any key to exit");
-                    if (Environment.UserInteractive) Console.ReadKey();
+                    if (Environment.UserInteractive && !Console.IsInputRedirected) {
+                        Console.WriteLine("Please press any key to exit");
+                        Console.ReadKey();
+                    }
 
-                    Environment.Exit(0);
-                } else if (_showVersion) {
+                    Environment.Exit(exitCode);
+                } //end showHelp
+                else if (_showVersion) {
                     var assembly = typeof(Program).Assembly;
                     var assemblyName = assembly.GetName().Name;
                     var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
@@ -75,13 +81,16 @@ namespace DaySim {
                     //{
                     //    Console.WriteLine(string.Format("{0}: {1}", field.Name, field.GetValue(null)));
                     //}
-                    Console.WriteLine("Please press any key to exit");
-                    if (Environment.UserInteractive) Console.ReadKey();
-                    Environment.Exit(0);
-                }
+                    if (Environment.UserInteractive && !Console.IsInputRedirected) {
+                        Console.WriteLine("Please press any key to exit");
+                        Console.ReadKey();
+                    }
+                    Environment.Exit(exitCode);
+                }   //end if _showVersion
 
+                Console.WriteLine("Configuration file: " + _configurationPath);
                 if (!File.Exists(_configurationPath)) {
-                    throw new Exception("Configuration file '" + _configurationPath + "' does not exist.");
+                    throw new Exception("Configuration file '" + _configurationPath + "' does not exist. You must pass in a DaySim configuration file with -c or --configuration");
                 }
                 var configurationManager = new ConfigurationManagerRSG(_configurationPath);
 
@@ -159,6 +168,7 @@ namespace DaySim {
 
                 Engine.BeginProgram(_start, _end, _index);
                 //Engine.BeginTestMode();
+#if RELEASE //don't use try catch in release mode since wish to have Visual Studio debugger stop on unhandled exceptions
             } catch (Exception e) {
                 string message = e.ToString();
 
@@ -167,30 +177,30 @@ namespace DaySim {
                 //in this odd case I wish I could put the finally before the catch
                 if (Global.PrintFile != null) {
                     Global.PrintFile.WriteLine(message);
-                    Global.PrintFile.Dispose();
-                    Global.PrintFile = null;
                 }
                 Console.WriteLine();
                 Console.Error.WriteLine(message);
 
-                Console.WriteLine();
-                Console.WriteLine("Please press any key to exit");
-                if (Environment.UserInteractive) Console.ReadKey();
+                if (Environment.UserInteractive && !Console.IsInputRedirected) {
+                    Console.WriteLine();
+                    Console.WriteLine("Please press any key to exit");
+                    Console.ReadKey();
+                }
 
-                Environment.Exit(2);
-            } finally {
-#if DEBUG
-                string lockCounts = ParallelUtility.getLockCounts();
-                Console.WriteLine(lockCounts);
-                if (Global.PrintFile != null) {
-                    Global.PrintFile.WriteLine(lockCounts);
-                }
-#endif
-                if (Global.PrintFile != null) {
-                    Global.PrintFile.Dispose();
-                }
+                exitCode = 2;
             }
-            Environment.Exit(0);
+#endif
+#if DEBUG
+            string lockCounts = ParallelUtility.getLockCounts();
+            Console.WriteLine(lockCounts);
+            if (Global.PrintFile != null) {
+                Global.PrintFile.WriteLine(lockCounts);
+            }
+#endif
+            if (Global.PrintFile != null) {
+                Global.PrintFile.Dispose();
+            }
+            Environment.Exit(exitCode);
         }
 
         private static void overrideConfiguration(object configuration) {

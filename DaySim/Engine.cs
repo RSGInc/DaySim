@@ -51,7 +51,6 @@ namespace DaySim {
             _end = end;
             _index = index;
 
-
             var randomUtility = new RandomUtility();
             randomUtility.ResetUniform01(Global.Configuration.RandomSeed);
             randomUtility.ResetHouseholdSynchronization(Global.Configuration.RandomSeed);
@@ -1384,11 +1383,10 @@ namespace DaySim {
                     int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
                     List<IHousehold> currentThreadHouseholds = threadHouseholds[threadAssignedIndex];
                     Global.PrintFile.WriteLine("For threadAssignedIndex: " + threadAssignedIndex + " there are " + string.Format("{0:n0}", currentThreadHouseholds.Count) + " households", writeToConsole: true);
-                    IHousehold household = null;
-                    try {
-                        //use a for loop instead of foreach on currentThreadHouseholds because wish to make try catch outside loop but still have access to value of household on catch
-                        for (int threadHouseholdIndex =  0; threadHouseholdIndex < currentThreadHouseholds.Count; ++threadHouseholdIndex) {
-                            household = currentThreadHouseholds[threadHouseholdIndex];
+                    foreach (IHousehold household in currentThreadHouseholds) {
+#if RELEASE //don't use try catch in release mode since wish to have Visual Studio debugger stop on unhandled exceptions
+                        try {
+#endif
                             var randomSeed = householdRandomValues[household.Id];
                             var choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
 
@@ -1414,10 +1412,12 @@ namespace DaySim {
                                 //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
                                 current++;
                             }   //end if ShowRunChoiceModelsStatus
-                        }   //end household loop for this threadAssignedIndex
-                    } catch (Exception e) {
-                        throw new ChoiceModelRunnerException(string.Format("An error occurred in ChoiceModelRunner for household {0}.", household.Id), e);
-                    }
+#if RELEASE
+                        } catch (Exception e) {
+                            throw new ChoiceModelRunnerException(string.Format("An error occurred in ChoiceModelRunner for household {0}.", household.Id), e);
+                        }
+#endif
+                    }   //end household loop for this threadAssignedIndex
                 }));    //end creating Thread and ThreadStart
                 myThread.Name = "ChoiceModelRunner_" + (threadIndex + 1);
                 threads.Add(myThread);
