@@ -1078,6 +1078,12 @@ namespace DaySim.PathTypeModels {
             RegionSpecificTransitImpedanceCalculation(skimMode, pathType, votValue, outboundTime, returnTime, originZoneId, destinationZoneId, ref outboundInVehicleTime, ref returnInVehicleTime, ref pathTypeSpecificTime, ref pathTypeSpecificTimeWeight);
 
             var totalInVehicleTime = outboundInVehicleTime + returnInVehicleTime;
+
+            var boardingsWeight = (Global.Configuration.PathImpedance_TransitNumberBoardingsWeight_Rail > Constants.EPSILON &&
+                (pathType == Global.Settings.PathTypes.LightRail || pathType == Global.Settings.PathTypes.CommuterRail))
+                ? Global.Configuration.PathImpedance_TransitNumberBoardingsWeight_Rail
+                : Global.Configuration.PathImpedance_TransitNumberBoardingsWeight;
+
             path.Utility =
                     Global.Configuration.PathImpedance_PathChoiceScaleFactor *
                     (pathTypeConstant +
@@ -1086,7 +1092,7 @@ namespace DaySim.PathTypeModels {
                     (Global.Configuration.PathImpedance_TransitInVehicleTimeWeight * totalInVehicleTime +
                      Global.Configuration.PathImpedance_TransitFirstWaitTimeWeight * initialWaitTime +
                      Global.Configuration.PathImpedance_TransitTransferWaitTimeWeight * transferWaitTime +
-                     Global.Configuration.PathImpedance_TransitNumberBoardingsWeight * (numberOfBoards1 + numberOfBoards2) +
+                     boardingsWeight * (numberOfBoards1 + numberOfBoards2) +
                      pathTypeSpecificTime * pathTypeSpecificTimeWeight));
 
             return path;

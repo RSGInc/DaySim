@@ -524,6 +524,9 @@ namespace DaySim.Framework.Core {
         public double PathImpedance_TransitNumberBoardingsWeight { get; set; }
 
         [XmlAttribute]
+        public double PathImpedance_TransitNumberBoardingsWeight_Rail { get; set; }
+
+        [XmlAttribute]
         public double PathImpedance_TransitDriveAccessTimeWeight { get; set; }
 
         [XmlAttribute]
