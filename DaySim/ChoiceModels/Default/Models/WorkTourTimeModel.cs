@@ -189,6 +189,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                 // set departure period component
                 var departurePeriodIndex = periodIndex;
+                var departurePeriodShift = departurePeriodIndex * (48.0 / DayPeriod.SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES); //adjust shift amount if period lengths change
                 var departurePeriod = DayPeriod.SmallDayPeriods[departurePeriodIndex];
                 var lateDepartFlag = departurePeriod.Middle.IsLeftExclusiveBetween(Global.Settings.Times.NinePM, Global.Settings.Times.MinutesInADay).ToFlag();
                 var departureImpedance = impedances[departurePeriodIndex];
@@ -209,6 +210,10 @@ namespace DaySim.ChoiceModels.Default.Models {
                     departureComponent.AddUtilityTerm(28, departurePeriod.Middle.IsLeftExclusiveBetween(Global.Settings.Times.SevenPM, Global.Settings.Times.NinePM).ToFlag());
                     departureComponent.AddUtilityTerm(29, departurePeriod.Middle.IsLeftExclusiveBetween(Global.Settings.Times.NinePM, Global.Settings.Times.Midnight).ToFlag());
                     departureComponent.AddUtilityTerm(30, departurePeriod.Middle.IsLeftExclusiveBetween(Global.Settings.Times.Midnight, Global.Settings.Times.MinutesInADay).ToFlag());
+                    //added
+                    departureComponent.AddUtilityTerm(136, transitTourFlag * departurePeriodShift);
+                    departureComponent.AddUtilityTerm(137, transitTourFlag * lateDepartFlag);
+                    //
                     departureComponent.AddUtilityTerm(73, income100KPlusFlag * lateDepartFlag);
                     departureComponent.AddUtilityTerm(178, escortTourFlag * lateDepartFlag);
                     departureComponent.AddUtilityTerm(179, shoppingTourFlag * lateDepartFlag);
