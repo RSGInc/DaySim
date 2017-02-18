@@ -75,7 +75,6 @@
     <Compile Include="ChoiceModels\Default\Models\JAX_OtherHomeBasedTourModeModel.cs" />
     <Compile Include="ChoiceModels\Default\Models\JAX_OtherTourDestinationModel.cs" />
     <Compile Include="ChoiceModels\Default\Models\JAX_WorkTourModeModel.cs" />
-    <Compile Include="PathTypeModels\JAX_PathTypeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ChoiceModels\H\Models\JAX_WorkLocationModel.cs" />
     <Compile Include="ChoiceModels\Default\Models\JAX_WorkLocationModel.cs" />
@@ -96,7 +95,9 @@
       <Name>DaySim</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="PathTypeModels\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

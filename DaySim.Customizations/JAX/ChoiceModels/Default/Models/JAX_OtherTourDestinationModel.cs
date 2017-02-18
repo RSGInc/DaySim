@@ -1,5 +1,7 @@
 ﻿using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.DomainModels.Wrappers;
+using DaySim.Framework.Core;
+using DaySim.Framework.Roster;
 
 namespace DaySim.ChoiceModels.Default.Models {
     class JAX_OtherTourDestinationModel : OtherTourDestinationModel {
@@ -9,19 +11,37 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #
             //Global.PrintFile.WriteLine("JAX_OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients called");
-            var origdist = _tour.OriginParcel.District;
-            var destdist = destinationParcel.District;
-            var origKitDestTRP = (origdist == 9 || origdist == 11) && (destdist == 8 || destdist == 10 || destdist == 7) ? 1 : 0;
-            var origEastDestCBD = origdist == 6 && destdist == 4 ? 1 : 0;
-            var origTacDestKit = origdist == 8 && destdist == 9 || destdist == 11 ? 1 : 0;
-            var origKitDestNotKit = (origdist == 9 || origdist == 11) && (destdist != 9 && destdist != 11) ? 1 : 0;
-            var origSTacWorkCBD = (origdist == 11 && destdist == 4) ? 1 : 0;
+            var crossriver = ImpedanceRoster.GetValue("crossriver", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot,
+                1, _tour.OriginParcel, destinationParcel).Variable;
+            var intracounty = ImpedanceRoster.GetValue("intracounty", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 
+                1, _tour.OriginParcel, destinationParcel).Variable;
 
-            alternative.AddUtilityTerm(115, origEastDestCBD);
-            alternative.AddUtilityTerm(116, origKitDestTRP);
-            alternative.AddUtilityTerm(117, origTacDestKit);
-            alternative.AddUtilityTerm(118, origKitDestNotKit);
-            alternative.AddUtilityTerm(119, origSTacWorkCBD);
+
+            if (_tour.DestinationPurpose == Global.Settings.Purposes.Escort)
+            {
+                alternative.AddUtilityTerm(114, crossriver);
+            }
+            else if (_tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness || _tour.DestinationPurpose == Global.Settings.Purposes.Medical)
+            {
+                alternative.AddUtilityTerm(115, crossriver);
+                alternative.AddUtilityTerm(119, intracounty);
+            }
+            else if (_tour.DestinationPurpose == Global.Settings.Purposes.Shopping)
+            {
+                alternative.AddUtilityTerm(116, crossriver);
+                alternative.AddUtilityTerm(119, intracounty);
+            }
+            else if (_tour.DestinationPurpose == Global.Settings.Purposes.Meal)
+            {
+                 alternative.AddUtilityTerm(117, crossriver);
+                 alternative.AddUtilityTerm(119, intracounty);
+            }
+            else if (_tour.DestinationPurpose == Global.Settings.Purposes.Social || _tour.DestinationPurpose == Global.Settings.Purposes.Recreation)
+            {
+                 alternative.AddUtilityTerm(118, crossriver);
+                 alternative.AddUtilityTerm(119, intracounty);
+            }
+
         }
     }
 }

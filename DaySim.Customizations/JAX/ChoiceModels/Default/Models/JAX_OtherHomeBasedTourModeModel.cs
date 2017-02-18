@@ -7,11 +7,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour, int mode) {
             //Global.PrintFile.WriteLine("Default JAX_WorkTourModeModel.RegionSpecificCustomizations2 called");
 
-            if (mode == Global.Settings.Modes.Transit) {
-
-                alternative.AddUtilityTerm(200 + tour.OriginParcel.District, 1);//district specific transit calibration constant
-            }
-
+            //currently empty
 
         }
     }
