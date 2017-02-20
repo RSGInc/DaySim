@@ -378,6 +378,9 @@ namespace DaySim.Settings {
         public virtual int Passenger {
             get { return 2; }
         }
+        public virtual int AV_Passenger  {
+            get { return 3; }
+        }
     }
 
     public class DefaultPathTypes : IPathTypes {

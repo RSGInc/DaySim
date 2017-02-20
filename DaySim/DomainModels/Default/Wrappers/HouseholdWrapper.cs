@@ -194,6 +194,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
         #region flags/choice model/etc. properties
 
+        //use the SampleType data field for this
+        public int OwnsAutomatedVehicles {
+            get { return _household.SampleType; }
+            set { _household.SampleType = value; }
+        }
+
+
         public bool IsOnePersonHousehold { get; set; }
 
         public bool IsTwoPersonHousehold { get; set; }
@@ -511,6 +518,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
         private void SetExpansionFactor() {
             ExpansionFactor *= Global.Configuration.HouseholdSamplingRateOneInX;
         }
+
 
         #endregion
     }

@@ -1472,6 +1472,33 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public double PaidRideShare_FixedCostPerRide { get; set; }
 
+        //new for AV capabilities
+        [XmlAttribute]
+        public bool AV_IncludeAutoTypeChoice { get; set; }
+
+        [XmlAttribute]
+        public double AV_AutoTypeConstant { get; set; }
+
+        [XmlAttribute]
+        public double AV_HHIncomeUnder50KCoefficient { get; set; }
+
+        [XmlAttribute]
+        public double AV_HHIncomeOver100KCoefficient { get; set; }
+
+        [XmlAttribute]
+        public double AV_HHHeadUnder35Coefficient { get; set; }
+
+        [XmlAttribute]
+        public double AV_HHHeadOver65Coefficient { get; set; }
+
+        [XmlAttribute]
+        public double AV_CoefficientPerHourCommuteTime { get; set; }
+
+        [XmlAttribute]
+        public double AV_Own0VehiclesCoefficientForAVHouseholds { get; set; }
+
+        [XmlAttribute]
+        public double AV_Own1VehicleCoefficientForAVHouseholds { get; set; }
 
         [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;

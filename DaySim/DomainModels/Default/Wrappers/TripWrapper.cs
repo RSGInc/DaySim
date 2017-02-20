@@ -424,7 +424,14 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 }
             } else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
                 DriverType = Global.Settings.DriverTypes.NotApplicable;
-            } else if (Mode == Global.Settings.Modes.Sov) {
+            }
+            else if (Mode == Global.Settings.Modes.PaidRideShare) {
+                DriverType = Global.Settings.DriverTypes.Passenger;
+            }
+            else if (Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
+                DriverType = Global.Settings.DriverTypes.AV_Passenger;
+            }
+            else if (Mode == Global.Settings.Modes.Sov) {
                 DriverType = Global.Settings.DriverTypes.Driver;
             } else if (Mode == Global.Settings.Modes.Hov2 || Mode == Global.Settings.Modes.Hov3) {
                 if (Person.IsChildUnder16 || Household.VehiclesAvailable == 0 || (!Tour.IsHov2Mode() && !Tour.IsHov3Mode())) {

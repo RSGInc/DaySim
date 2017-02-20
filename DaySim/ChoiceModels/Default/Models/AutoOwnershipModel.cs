@@ -9,6 +9,7 @@
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
+using DaySim.Framework.Roster;
 using DaySim.Framework.DomainModels.Wrappers;
 using System;
 
@@ -18,7 +19,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         private const int TOTAL_ALTERNATIVES = 5;
         private const int TOTAL_NESTED_ALTERNATIVES = 0;
         private const int TOTAL_LEVELS = 1;
-        private const int MAX_PARAMETER = 199;
+        private const int MAX_PARAMETER = 200;
 
         public override void RunInitialize(ICoefficientsReader reader = null) {
             Initialize(CHOICE_MODEL_NAME, Global.Configuration.AutoOwnershipModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER, reader as CoefficientsReader);
@@ -40,6 +41,16 @@ namespace DaySim.ChoiceModels.Default.Models {
                     return;
                 }
             }
+            else if (Global.Configuration.AV_IncludeAutoTypeChoice)
+            {
+                var AVchoiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(household.Id);
+                RunAVModel(AVchoiceProbabilityCalculator, household);
+                var chosenAlternative = AVchoiceProbabilityCalculator.SimulateChoice(household.RandomUtility);
+                var choice = (int)chosenAlternative.Choice;
+
+                household.OwnsAutomatedVehicles = choice;
+            }
+
 
             var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(household.Id);
 
@@ -108,6 +119,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             var ruralFlag = household.ResidenceParcel.RuralFlag();
 
+            var zeroVehAVeffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0) ? Global.Configuration.AV_Own0VehiclesCoefficientForAVHouseholds : 0;
+            var oneVehAVeffect  = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0) ? Global.Configuration.AV_Own1VehicleCoefficientForAVHouseholds : 0;
+
             // 0 AUTOS
 
             var alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
@@ -147,6 +161,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             //            alternative.AddUtility(82, foodRetailServiceMedicalQtrMileLog * ruralFlag);
             alternative.AddUtilityTerm(83, ruralFlag);
 
+            alternative.AddUtilityTerm(200, zeroVehAVeffect);
+
             RegionSpecificCustomizations(alternative, household);
 
 
@@ -179,6 +195,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(72, Math.Log(1 + household.ResidenceParcel.StopsTransitBuffer1) * household.HasMoreDriversThan1.ToFlag());
             //alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan1.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan1.ToFlag());
+
+            alternative.AddUtilityTerm(200, oneVehAVeffect);
 
             RegionSpecificCustomizations(alternative, household);
 
@@ -269,6 +287,62 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             RegionSpecificCustomizations(alternative, household);
 
+        }
+        private void RunAVModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IHouseholdWrapper household, int choice = Constants.DEFAULT_VALUE)
+        {
+
+            int ageOfHouseholdHead = 0;
+            double totalCommuteTime = 0;
+
+            foreach (var person in household.Persons)   {
+
+                if (person.Sequence == 1)  {
+                    ageOfHouseholdHead = person.Age;
+                }
+                if (person.IsWorker && person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
+                    var destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
+                    var destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
+
+                    totalCommuteTime += ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot,
+                      destinationArrivalTime, household.ResidenceParcel, person.UsualWorkParcel).Variable;
+                    totalCommuteTime += ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot,
+                      destinationDepartureTime, person.UsualWorkParcel, household.ResidenceParcel).Variable;
+                }
+            }
+
+            // 0 Conventional auotos
+
+            var alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
+            alternative.Choice = 0;
+            //utility is 0
+
+            // 1 AVs
+
+            alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
+            alternative.Choice = 1;
+
+            alternative.AddUtilityTerm(200, Global.Configuration.AV_AutoTypeConstant);
+            alternative.AddUtilityTerm(200, Global.Configuration.AV_HHIncomeUnder50KCoefficient * household.HasIncomeUnder50K.ToFlag());
+            alternative.AddUtilityTerm(200, Global.Configuration.AV_HHIncomeOver100KCoefficient * household.Has100KPlusIncome.ToFlag());
+            alternative.AddUtilityTerm(200, Global.Configuration.AV_HHHeadUnder35Coefficient * (ageOfHouseholdHead<35).ToFlag());
+            alternative.AddUtilityTerm(200, Global.Configuration.AV_HHHeadOver65Coefficient * (ageOfHouseholdHead >=35).ToFlag());
+            alternative.AddUtilityTerm(200, Global.Configuration.AV_CoefficientPerHourCommuteTime * (totalCommuteTime/60.0));
+
+            // 2 not available
+
+            alternative = choiceProbabilityCalculator.GetAlternative(2, false, choice == 2);
+            alternative.Choice = 2;
+
+            // 3 not available
+
+            alternative = choiceProbabilityCalculator.GetAlternative(3, false, choice == 3);
+            alternative.Choice = 3;
+
+
+            // 4 not available
+
+            alternative = choiceProbabilityCalculator.GetAlternative(4, false, choice == 4);
+            alternative.Choice = 4;
         }
     }
 }

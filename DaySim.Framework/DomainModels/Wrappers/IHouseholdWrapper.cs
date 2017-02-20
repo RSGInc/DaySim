@@ -25,6 +25,8 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
         #region flags/choice model/etc. properties
 
+        int OwnsAutomatedVehicles  { get; set; }
+
         bool IsOnePersonHousehold { get; set; }
 
         bool IsTwoPersonHousehold { get; set; }

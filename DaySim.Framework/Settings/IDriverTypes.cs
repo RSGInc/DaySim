@@ -12,5 +12,7 @@ namespace DaySim.Framework.Settings {
         int Driver { get; }
 
         int Passenger { get; }
+
+        int AV_Passenger { get;  }
     }
 }
