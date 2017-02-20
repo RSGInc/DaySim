@@ -58,6 +58,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                         tour.TimeCoefficient,
                         tour.Person.IsDrivingAge,
                         tour.Household.VehiclesAvailable,
+                        (tour.Household.OwnsAutomatedVehicles>0),
                         tour.Person.GetTransitFareDiscountFraction(),
                         false,
                         Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);
@@ -84,7 +85,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                         tour.TimeCoefficient,
                         tour.Person.IsDrivingAge,
                         tour.Household.VehiclesAvailable,
-                        tour.Person.GetTransitFareDiscountFraction(),
+                       (tour.Household.OwnsAutomatedVehicles > 0),
+                         tour.Person.GetTransitFareDiscountFraction(),
                         false,
                         Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);
 
@@ -127,7 +129,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     tour.TimeCoefficient,
                     tour.Person.IsDrivingAge,
                     tour.Household.VehiclesAvailable,
-                    tour.Person.GetTransitFareDiscountFraction(),
+                   (tour.Household.OwnsAutomatedVehicles > 0),
+                     tour.Person.GetTransitFareDiscountFraction(),
                     false,
                     Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);
 

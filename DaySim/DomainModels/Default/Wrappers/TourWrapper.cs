@@ -667,7 +667,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton
-                .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
+                .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Household.OwnsAutomatedVehicles>0, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
 
             var autoPathRoundTrip = pathTypeModels.First();
 
@@ -980,12 +980,12 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             IEnumerable<IPathTypeModel> pathTypeModels =
                 PathTypeModelFactory.Singleton
-                    .Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
+                    .Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Household.OwnsAutomatedVehicles>0, Person.GetTransitFareDiscountFraction(), false, useMode);
             var pathTypeFromOrigin = pathTypeModels.First();
 
             pathTypeModels =
                 PathTypeModelFactory.Singleton
-                    .Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.GetTransitFareDiscountFraction(), false, useMode);
+                    .Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Household.OwnsAutomatedVehicles>0, Person.GetTransitFareDiscountFraction(), false, useMode);
             var pathTypeFromDestination = pathTypeModels.First();
 
             modeImpedance.GeneralizedTimeFromOrigin = pathTypeFromOrigin.GeneralizedTimeLogsum;

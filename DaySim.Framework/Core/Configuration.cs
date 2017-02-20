@@ -1501,6 +1501,9 @@ namespace DaySim.Framework.Core {
         public double AV_Own1VehicleCoefficientForAVHouseholds { get; set; }
 
         [XmlAttribute]
+        public double AV_InVehicleTimeCoefficientDiscountFactor { get; set; }
+
+        [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;
 
         public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };

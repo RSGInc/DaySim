@@ -69,7 +69,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 var choice = (int)chosenAlternative.Choice;
 
                 household.VehiclesAvailable = choice;
-            }
+           }
         }
 
         private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IHouseholdWrapper household, int choice = Constants.DEFAULT_VALUE) {

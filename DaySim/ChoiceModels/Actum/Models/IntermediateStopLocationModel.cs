@@ -865,6 +865,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                         timeCoef,
                         true,
                         1,
+                        false,
                         transitDiscountFraction,
                         false,
                         mode);

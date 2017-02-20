@@ -104,6 +104,7 @@ namespace DaySim.ChoiceModels.H.Models {
                         Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
                         true,
                         1,
+                        false,
                         0.0,
                         false,
                         Global.Settings.Modes.Transit);
@@ -123,6 +124,7 @@ namespace DaySim.ChoiceModels.H.Models {
                         Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
                         true,
                         1,
+                        false,
                         1.0,
                         false,
                         Global.Settings.Modes.Transit);
@@ -149,6 +151,7 @@ namespace DaySim.ChoiceModels.H.Models {
                       Global.Configuration.Coefficients_MeanTimeCoefficient_Other,
                       true,
                       1,
+                      false,
                       1.0,
                       false,
                       Global.Settings.Modes.Transit);

@@ -233,6 +233,7 @@ namespace DaySim {
                             tour.TimeCoefficient,
                             tour.Person.IsDrivingAge,
                             householdCars,
+                            tour.Household.OwnsAutomatedVehicles>0,
                             transitDiscountFraction,
                             false,
                             mode);
@@ -270,6 +271,7 @@ namespace DaySim {
                             tour.TimeCoefficient,
                             tour.Person.IsDrivingAge,
                             householdCars,
+                            tour.Household.OwnsAutomatedVehicles>0,
                             transitDiscountFraction,
                             false,
                             pathMode);
@@ -295,6 +297,7 @@ namespace DaySim {
                             tour.TimeCoefficient,
                             tour.Person.IsDrivingAge,
                             householdCars,
+                            tour.Household.OwnsAutomatedVehicles>0,
                             transitDiscountFraction,
                             false,
                             pathMode);

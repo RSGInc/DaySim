@@ -875,6 +875,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                         timeCoef,
                         true,
                         1,
+                        false,
                         transitDiscountFraction,
                         false,
                         mode);

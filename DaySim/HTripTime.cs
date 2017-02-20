@@ -118,6 +118,7 @@ namespace DaySim {
                                     tour.TimeCoefficient,
                                     tour.Person.IsDrivingAge,
                                     tour.Household.VehiclesAvailable,
+                                    tour.Household.OwnsAutomatedVehicles>0,
                                     tour.Person.GetTransitFareDiscountFraction(),
                                     true,
                                     pathMode);
