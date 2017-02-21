@@ -973,7 +973,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
             var modeImpedance = new TourModeImpedance();
 
             var useMode =
-                Mode ==
+                Mode >=
                 Global.Settings.Modes.SchoolBus
                     ? Global.Settings.Modes.Hov3
                     : Mode;

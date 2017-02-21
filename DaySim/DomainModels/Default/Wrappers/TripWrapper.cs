@@ -426,7 +426,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 DriverType = Global.Settings.DriverTypes.NotApplicable;
             }
             else if (Mode == Global.Settings.Modes.PaidRideShare) {
-                DriverType = Global.Settings.DriverTypes.Passenger;
+                DriverType = Global.Configuration.AV_PaidRideShareModeUsesAVs? Global.Settings.DriverTypes.AV_Passenger : Global.Settings.DriverTypes.Passenger;
             }
             else if (Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
                 DriverType = Global.Settings.DriverTypes.AV_Passenger;

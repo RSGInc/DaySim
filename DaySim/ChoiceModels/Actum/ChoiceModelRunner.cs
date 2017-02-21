@@ -1815,7 +1815,7 @@ namespace DaySim.ChoiceModels.Actum {
                     impedanceVariable = "ivtime";
                     mode = Global.Settings.Modes.HovDriver;
                     pathType = Global.Settings.PathTypes.FullNetwork;
-                } else if (tour[i - 1].Mode == Global.Settings.Modes.HovPassenger || tour[i - 1].Mode == Global.Settings.Modes.SchoolBus || tour[i - 1].Mode == Global.Settings.Modes.Other) {
+                } else if (tour[i - 1].Mode == Global.Settings.Modes.HovPassenger || tour[i - 1].Mode >= Global.Settings.Modes.SchoolBus || tour[i - 1].Mode == Global.Settings.Modes.Other) {
                     impedanceVariable = "ivtime";
                     mode = Global.Settings.Modes.HovPassenger;
                     pathType = Global.Settings.PathTypes.FullNetwork;
@@ -1988,7 +1988,7 @@ namespace DaySim.ChoiceModels.Actum {
                     impedanceVariable = "ivtime";
                     mode = Global.Settings.Modes.HovDriver;
                     pathType = Global.Settings.PathTypes.FullNetwork;
-                } else if (tour[1].Mode == Global.Settings.Modes.HovPassenger || tour[1].Mode == Global.Settings.Modes.SchoolBus || tour[1].Mode == Global.Settings.Modes.Other) {
+                } else if (tour[1].Mode == Global.Settings.Modes.HovPassenger || tour[1].Mode >= Global.Settings.Modes.SchoolBus || tour[1].Mode == Global.Settings.Modes.Other) {
                     impedanceVariable = "ivtime";
                     mode = Global.Settings.Modes.HovPassenger;
                     pathType = Global.Settings.PathTypes.FullNetwork;

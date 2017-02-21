@@ -26,7 +26,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         private const int MAX_PARAMETER = 199;
         private const int THETA_PARAMETER = 99;
 
-        private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 0, 23, 24 };
+        private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 0, 23, 21 };
         private readonly int[] _nestedAlternativeIndexes = new[] { 0, 0, 0, 1, 2, 2, 3, 0, 4, 2 };
 
         private readonly ITourCreator _creator =
@@ -74,7 +74,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                         tour.Person.GetTransitFareDiscountFraction(),
                         false);
 
-                var mode = (tour.Mode == Global.Settings.Modes.SchoolBus) ? Global.Settings.Modes.Hov3 : tour.Mode; // use HOV3 for school bus impedance
+                var mode = (tour.Mode >= Global.Settings.Modes.SchoolBus) ? Global.Settings.Modes.Hov3 : tour.Mode; // use HOV3 for school bus impedance
                 var pathTypeModel = pathTypeModels.First(x => x.Mode == mode);
 
                 if (!pathTypeModel.Available) {
@@ -222,29 +222,57 @@ namespace DaySim.ChoiceModels.Default.Models {
             // paidRideShare is another special case  - set in config file - use HOV2 impedance 
             if (Global.Configuration.SetPaidRideShareModeAvailable) {
                 var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov2);
+                if (Global.Configuration.AV_PaidRideShareModeUsesAVs)
+                {
+                    //get path type with 
+                    IEnumerable<IPathTypeModel> pathTypeModelsExtra = PathTypeModelFactory.Singleton.Run(
+                        tour.Household.RandomUtility,
+                        tour.OriginParcel,
+                        destinationParcel,
+                        tour.DestinationArrivalTime,
+                        tour.DestinationDepartureTime,
+                        tour.DestinationPurpose,
+                        tour.CostCoefficient,
+                        tour.TimeCoefficient,
+                        tour.Person.IsDrivingAge,
+                        1,
+                        true,
+                        0.0,
+                        false,
+                        Global.Settings.Modes.Hov2);
+                    pathTypeExtra = pathTypeModelsExtra.First(x => x.Mode == Global.Settings.Modes.Hov2);
+                }
                 var modeExtra = Global.Settings.Modes.PaidRideShare;
                 var availableExtra = pathTypeExtra.Available;
                 var generalizedTimeLogsumExtra = pathTypeExtra.GeneralizedTimeLogsum;
                 var distanceExtra = pathTypeExtra.PathDistance;
 
-                var alternative = choiceProbabilityCalculator.GetAlternative(modeExtra, availableExtra, choice == modeExtra);
+                var alternative = choiceProbabilityCalculator.GetAlternative(modeExtra-2, availableExtra, choice == modeExtra);
                 alternative.Choice = modeExtra;
 
                 alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
-                if (availableExtra) {
+                if (availableExtra)
+                {
+                    var extraCostPerMile = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
+                        Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit : Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit;
+                    var fixedCostPerRide = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
+                        Global.Configuration.AV_PaidRideShare_FixedCostPerRide : Global.Configuration.PaidRideShare_FixedCostPerRide;
                     //    case Global.Settings.Modes.PaidRideShare
                     alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
-                    alternative.AddUtilityTerm(2, distanceExtra * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit * tour.CostCoefficient);
-                    alternative.AddUtilityTerm(2, Global.Configuration.PaidRideShare_FixedCostPerRide * tour.CostCoefficient);
+                    alternative.AddUtilityTerm(2, distanceExtra * extraCostPerMile * tour.CostCoefficient);
+                    alternative.AddUtilityTerm(2, fixedCostPerRide * tour.CostCoefficient);
 
-                    alternative.AddUtilityTerm(90, 1);
-                    alternative.AddUtilityTerm(91, tour.Person.AgeIsBetween18And25.ToFlag());
-                    alternative.AddUtilityTerm(92, tour.Person.AgeIsBetween26And35.ToFlag());
-                    alternative.AddUtilityTerm(93, tour.Person.IsYouth.ToFlag());
+                    var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
+                        Global.Configuration.AV_PaidRideShareModeConstant : Global.Configuration.PaidRideShare_ModeConstant;
+
+                    alternative.AddUtilityTerm(90, modeConstant);
+                    alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());
+                    alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age18to25Coefficient * tour.Person.AgeIsBetween18And25.ToFlag());
+                    alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_AgeUnder18Coefficient * tour.Person.IsYouth.ToFlag());
                 }
             }
-
+ 
 
             foreach (var pathTypeModel in pathTypeModels) {
                 var mode = pathTypeModel.Mode;

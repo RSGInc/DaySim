@@ -295,7 +295,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     ttim2 = btime2;
                     gtim1 = gbtime1;
                     gtim2 = gbtime2;
-                } else if (tour.Mode == Global.Settings.Modes.SchoolBus) {
+                } else if (tour.Mode >= Global.Settings.Modes.SchoolBus) {
                     if (wdis1 < WTHRESH && wdis2 < WTHRESH && wdis1 > Constants.EPSILON && wdis2 > Constants.EPSILON) {
                         ttim1 = wtime1;
                         ttim2 = wtime2;

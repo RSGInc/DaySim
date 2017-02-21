@@ -1464,6 +1464,9 @@ namespace DaySim.Framework.Core {
         public double IntrazonalAutoMinutesPerMile_OverrideSkims { get; set; }
 
         [XmlAttribute]
+        public double PaidRideShare_ModeConstant { get; set; }
+
+        [XmlAttribute]
         public bool SetPaidRideShareModeAvailable { get; set; }
 
         [XmlAttribute]
@@ -1471,6 +1474,15 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double PaidRideShare_FixedCostPerRide { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideShare_Age26to35Coefficient { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideShare_Age18to25Coefficient { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideShare_AgeUnder18Coefficient { get; set; }
 
         //new for AV capabilities
         [XmlAttribute]
@@ -1502,6 +1514,19 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double AV_InVehicleTimeCoefficientDiscountFactor { get; set; }
+
+        [XmlAttribute]
+        public bool AV_PaidRideShareModeUsesAVs { get; set; }
+
+        [XmlAttribute]
+        public double AV_PaidRideShareModeConstant { get; set; }
+
+        [XmlAttribute]
+        public double AV_PaidRideShare_ExtraCostPerDistanceUnit { get; set; }
+
+        [XmlAttribute]
+        public double AV_PaidRideShare_FixedCostPerRide { get; set; }
+
 
         [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;
