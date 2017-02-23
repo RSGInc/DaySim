@@ -538,7 +538,8 @@ namespace DaySim.PathTypeModels {
             }
             _pathCost[pathType] += _pathDistance[pathType] * Global.PathImpedance_AutoOperatingCostPerDistanceUnit;
 
-            var autoTimeCoefficient = _carsAreAVs ? _tourTimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : _tourTimeCoefficient; 
+            var autoTimeCoefficient = (_carsAreAVs && Global.Configuration.AV_IncludeAutoTypeChoice) 
+                ? _tourTimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : _tourTimeCoefficient; 
                 
             _utility[pathType] = Global.Configuration.PathImpedance_PathChoiceScaleFactor *
             (_tourCostCoefficient * _pathCost[pathType] +

@@ -422,11 +422,12 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 if (Tour.Mode == Global.Settings.Modes.ParkAndRide) {
                     DriverType = (int)(Tour.ParkAndRideWalkAccessEgressTime / 2.0);
                 }
-            } else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
-                DriverType = Global.Settings.DriverTypes.NotApplicable;
             }
             else if (Mode == Global.Settings.Modes.PaidRideShare) {
                 DriverType = Global.Configuration.AV_PaidRideShareModeUsesAVs? Global.Settings.DriverTypes.AV_Passenger : Global.Settings.DriverTypes.Passenger;
+            }
+            else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
+                DriverType = Global.Settings.DriverTypes.NotApplicable;
             }
             else if (Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
                 DriverType = Global.Settings.DriverTypes.AV_Passenger;
