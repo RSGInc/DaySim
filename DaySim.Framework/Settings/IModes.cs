@@ -9,6 +9,8 @@ namespace DaySim.Framework.Settings {
     public interface IModes {
         int TotalModes { get; }
 
+        int RosterModes { get; }
+
         int MaxMode { get; }
 
         int None { get; }
@@ -30,6 +32,8 @@ namespace DaySim.Framework.Settings {
         int SchoolBus { get; }
 
         int PaidRideShare { get; }
+
+        int AV { get; }
 
         int Other { get; }
 

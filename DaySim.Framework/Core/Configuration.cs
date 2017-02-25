@@ -1467,7 +1467,7 @@ namespace DaySim.Framework.Core {
         public double PaidRideShare_ModeConstant { get; set; }
 
         [XmlAttribute]
-        public bool SetPaidRideShareModeAvailable { get; set; }
+        public bool PaidRideShareModeIsAvailable { get; set; }
 
         [XmlAttribute]
         public double PaidRideShare_ExtraCostPerDistanceUnit { get; set; }
@@ -1487,6 +1487,9 @@ namespace DaySim.Framework.Core {
         //new for AV capabilities
         [XmlAttribute]
         public bool AV_IncludeAutoTypeChoice { get; set; }
+
+        [XmlAttribute]
+        public bool AV_UseSeparateAVSkimMatrices { get; set; }
 
         [XmlAttribute]
         public double AV_AutoTypeConstant { get; set; }
@@ -1520,6 +1523,9 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double AV_PaidRideShareModeConstant { get; set; }
+
+        [XmlAttribute]
+        public double AV_PaidRideShareAVOwnerCoefficient { get; set; }
 
         [XmlAttribute]
         public double AV_PaidRideShare_ExtraCostPerDistanceUnit { get; set; }

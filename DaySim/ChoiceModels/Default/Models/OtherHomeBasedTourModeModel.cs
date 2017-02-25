@@ -189,27 +189,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             ChoiceModelUtility.SetEscortPercentages(personDay, out escortPercentage, out nonEscortPercentage, true);
 
             // paidRideShare is another special case  - set in config file - use HOV2 impedance 
-            if (Global.Configuration.SetPaidRideShareModeAvailable)  {
-                var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov2);
-                if (Global.Configuration.AV_PaidRideShareModeUsesAVs)   {
-                    //get path type with 
-                    IEnumerable<IPathTypeModel> pathTypeModelsExtra = PathTypeModelFactory.Singleton.Run(
-                    tour.Household.RandomUtility,
-                    tour.OriginParcel,
-                    destinationParcel,
-                    tour.DestinationArrivalTime,
-                    tour.DestinationDepartureTime,
-                    tour.DestinationPurpose,
-                    tour.CostCoefficient,
-                    tour.TimeCoefficient,
-                    tour.Person.IsDrivingAge,
-                    1,
-                    true,
-                    0.0,
-                    false,
-                    Global.Settings.Modes.Hov2);
-                    pathTypeExtra = pathTypeModelsExtra.First(x => x.Mode == Global.Settings.Modes.Hov2);
-                }
+            if (Global.Configuration.PaidRideShareModeIsAvailable)  {
+                var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.PaidRideShare);
                 var modeExtra = Global.Settings.Modes.PaidRideShare;
                 var availableExtra = pathTypeExtra.Available;
                 var generalizedTimeLogsumExtra = pathTypeExtra.GeneralizedTimeLogsum;
@@ -230,8 +211,10 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(2, distanceExtra * extraCostPerMile * tour.CostCoefficient);
                     alternative.AddUtilityTerm(2, fixedCostPerRide * tour.CostCoefficient);
 
-                    var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
-                        Global.Configuration.AV_PaidRideShareModeConstant : Global.Configuration.PaidRideShare_ModeConstant;
+                    var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
+                      ? Global.Configuration.AV_PaidRideShareModeConstant + Global.Configuration.AV_PaidRideShareAVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
+                      : Global.Configuration.PaidRideShare_ModeConstant;
+
 
                     alternative.AddUtilityTerm(90, modeConstant);
                     alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());

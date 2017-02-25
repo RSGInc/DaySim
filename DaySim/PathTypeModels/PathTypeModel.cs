@@ -110,8 +110,11 @@ namespace DaySim.PathTypeModels {
         public virtual List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
             var modes = new List<int>();
 
-            for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.ParkAndRide; mode++) {
-                modes.Add(mode);
+            for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.PaidRideShare; mode++) {
+                if (mode <= Global.Settings.Modes.ParkAndRide 
+                || (mode == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideShareModeIsAvailable))   {
+                    modes.Add(mode);
+                }
             }
 
             return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, carsAreAVs, transitDiscountFraction, randomChoice, modes.ToArray());
@@ -120,8 +123,11 @@ namespace DaySim.PathTypeModels {
         public virtual List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
             var modes = new List<int>();
 
-            for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.Transit; mode++) {
-                modes.Add(mode);
+            for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.PaidRideShare; mode++) {
+                if (mode <= Global.Settings.Modes.Transit 
+                || (mode == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideShareModeIsAvailable))   {
+                    modes.Add(mode);
+                }
             }
 
             return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, carsAreAVs, transitDiscountFraction, randomChoice, modes.ToArray());
@@ -221,7 +227,7 @@ namespace DaySim.PathTypeModels {
                 // set path type utility and impedance, depending on the mode
                 if (Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Walk) {
                     RunWalkBikeModel(skimMode, pathType, votValue, useZones);
-                } else if (Mode == Global.Settings.Modes.Hov3 || Mode == Global.Settings.Modes.Hov2 || Mode == Global.Settings.Modes.Sov) {
+                } else if (Mode == Global.Settings.Modes.Hov3 || Mode == Global.Settings.Modes.Hov2 || Mode == Global.Settings.Modes.Sov || Mode == Global.Settings.Modes.PaidRideShare) {
                     if (Mode != Global.Settings.Modes.Sov || (_isDrivingAge && _householdCars > 0)) {
                         RunAutoModel(skimMode, pathType, votValue, useZones);
                     }
@@ -441,7 +447,16 @@ namespace DaySim.PathTypeModels {
             _expUtility[pathType] = _utility[pathType] > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : _utility[pathType] < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(_utility[pathType]);
         }
 
-        protected void RunAutoModel(int skimMode, int pathType, double votValue, bool useZones) {
+        protected void RunAutoModel(int skimModeIn, int pathType, double votValue, bool useZones) {
+
+            bool useAVVOT = ((skimModeIn!=Global.Settings.Modes.PaidRideShare && _carsAreAVs && Global.Configuration.AV_IncludeAutoTypeChoice)
+                           ||(skimModeIn==Global.Settings.Modes.PaidRideShare && Global.Configuration.AV_PaidRideShareModeUsesAVs));
+
+            bool useAVSkims = (useAVVOT && Global.Configuration.AV_UseSeparateAVSkimMatrices);
+
+            var skimMode = useAVSkims ? Global.Settings.Modes.AV
+                         : (skimModeIn == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.Hov3 : skimModeIn;
+                
             _pathCost[pathType] =
               useZones
                 ? ImpedanceRoster.GetValue("toll", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
@@ -538,7 +553,7 @@ namespace DaySim.PathTypeModels {
             }
             _pathCost[pathType] += _pathDistance[pathType] * Global.PathImpedance_AutoOperatingCostPerDistanceUnit;
 
-            var autoTimeCoefficient = (_carsAreAVs && Global.Configuration.AV_IncludeAutoTypeChoice) 
+            var autoTimeCoefficient = useAVVOT 
                 ? _tourTimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : _tourTimeCoefficient; 
                 
             _utility[pathType] = Global.Configuration.PathImpedance_PathChoiceScaleFactor *

@@ -271,11 +271,15 @@ namespace DaySim.Settings {
 
     public class DefaultModes : IModes {
         public virtual int TotalModes {
-            get { return 9; }
+            get { return 10; }
+        }
+
+        public virtual int RosterModes {
+            get { return 10; }
         }
 
         public virtual int MaxMode {
-            get { return 8; }
+            get { return 9; }
         }
 
         public virtual int None {
@@ -314,7 +318,11 @@ namespace DaySim.Settings {
             get { return 8; }
         }
 
-        public virtual int PaidRideShare {
+        public virtual int PaidRideShare { //for use with mode choice models
+            get { return 9; }
+        }
+
+        public virtual int AV { //for use with PathTypeModel if separae skims
             get { return 9; }
         }
 

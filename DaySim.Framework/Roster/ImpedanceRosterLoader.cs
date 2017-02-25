@@ -23,10 +23,10 @@ namespace DaySim.Framework.Roster {
 
             Global.PrintFile.WriteFileInfo(file, true);
 
-            PossibleCombinations = new bool[Global.Settings.Modes.TotalModes][];
-            ActualCombinations = new bool[Global.Settings.Modes.TotalModes][];
+            PossibleCombinations = new bool[Global.Settings.Modes.RosterModes][];
+            ActualCombinations = new bool[Global.Settings.Modes.RosterModes][];
 
-            for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
+            for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.RosterModes; mode++) {
                 PossibleCombinations[mode] = new bool[Global.Settings.PathTypes.TotalPathTypes];
                 ActualCombinations[mode] = new bool[Global.Settings.PathTypes.TotalPathTypes];
             }
@@ -80,7 +80,7 @@ namespace DaySim.Framework.Roster {
                             throw new InvalidPathTypeException(string.Format("The value of \"{0}\" used for path type is invalid. Please adjust the roster accordingly.", tokens[0]));
                     }
 
-                    for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
+                    for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.RosterModes; mode++) {
                         PossibleCombinations[mode][pathType] = bool.Parse(tokens[mode]);
                     }
                 }
@@ -158,9 +158,9 @@ namespace DaySim.Framework.Roster {
             RosterEntries = new RosterEntry[VariableKeys.Length][][][][];
 
             for (var variableIndex = 0; variableIndex < VariableKeys.Length; variableIndex++) {
-                RosterEntries[variableIndex] = new RosterEntry[Global.Settings.Modes.TotalModes][][][]; // Initialize the mode array
+                RosterEntries[variableIndex] = new RosterEntry[Global.Settings.Modes.RosterModes][][][]; // Initialize the mode array
 
-                for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.TotalModes; mode++) {
+                for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.RosterModes; mode++) {
                     RosterEntries[variableIndex][mode] = new RosterEntry[Global.Settings.PathTypes.TotalPathTypes][][]; // Initialize the path type array
 
                     for (var pathType = Global.Settings.PathTypes.FullNetwork; pathType < Global.Settings.PathTypes.TotalPathTypes; pathType++) {

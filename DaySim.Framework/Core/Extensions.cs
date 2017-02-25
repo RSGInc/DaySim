@@ -117,6 +117,8 @@ namespace DaySim.Framework.Core {
                 case "walkRideBike":
                     return Global.Settings.Modes.WalkRideBike;
 
+                case "av":
+                    return Global.Settings.Modes.AV;
             }
 
             return Global.Settings.Modes.None;
