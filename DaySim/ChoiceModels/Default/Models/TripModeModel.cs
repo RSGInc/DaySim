@@ -18,13 +18,13 @@ using System.Linq;
 namespace DaySim.ChoiceModels.Default.Models {
     public class TripModeModel : ChoiceModel {
         private const string CHOICE_MODEL_NAME = "TripModeModel";
-        private const int TOTAL_NESTED_ALTERNATIVES = 5;
+        private const int TOTAL_NESTED_ALTERNATIVES = 6;
         private const int TOTAL_LEVELS = 2;
         private const int MAX_PARAMETER = 199;
         private const int THETA_PARAMETER = 99;
 
-        private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 0, 23, 21 };
-        private readonly int[] _nestedAlternativeIndexes = new[] { 0, 0, 0, 1, 2, 2, 3, 0, 4, 2 };
+        private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 0, 23, 24 };
+        private readonly int[] _nestedAlternativeIndexes = new[] { 0, 0, 0, 1, 2, 2, 3, 0, 4, 5 };
 
         public override void RunInitialize(ICoefficientsReader reader = null) {
             Initialize(CHOICE_MODEL_NAME, Global.Configuration.TripModeModelCoefficients, Global.Settings.Modes.TotalModes, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -304,9 +304,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(90, modeConstant);
                     alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());
                     alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age18to25Coefficient * tour.Person.AgeIsBetween18And25.ToFlag());
-                    alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_AgeUnder18Coefficient * tour.Person.IsYouth.ToFlag());
+                    alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_AgeOver65Coefficient * (tour.Person.Age >= 65).ToFlag());
                 }
-             }
+            }
 
 
             foreach (var pathTypeModel in pathTypeModels) {

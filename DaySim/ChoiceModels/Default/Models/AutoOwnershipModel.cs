@@ -325,7 +325,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(200, Global.Configuration.AV_HHIncomeUnder50KCoefficient * household.HasIncomeUnder50K.ToFlag());
             alternative.AddUtilityTerm(200, Global.Configuration.AV_HHIncomeOver100KCoefficient * household.Has100KPlusIncome.ToFlag());
             alternative.AddUtilityTerm(200, Global.Configuration.AV_HHHeadUnder35Coefficient * (ageOfHouseholdHead<35).ToFlag());
-            alternative.AddUtilityTerm(200, Global.Configuration.AV_HHHeadOver65Coefficient * (ageOfHouseholdHead >=35).ToFlag());
+            alternative.AddUtilityTerm(200, Global.Configuration.AV_HHHeadOver65Coefficient * (ageOfHouseholdHead >=65).ToFlag());
             alternative.AddUtilityTerm(200, Global.Configuration.AV_CoefficientPerHourCommuteTime * (totalCommuteTime/60.0));
 
             // 2 not available

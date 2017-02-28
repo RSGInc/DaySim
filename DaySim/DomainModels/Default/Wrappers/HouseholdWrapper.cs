@@ -196,8 +196,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
         //use the SampleType data field for this
         public int OwnsAutomatedVehicles {
-            get { return _household.SampleType; }
-            set { _household.SampleType = value; }
+            get { return _household.ResidenceType; }
+            set { _household.ResidenceType = value; }
         }
 
 

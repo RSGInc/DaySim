@@ -1482,7 +1482,7 @@ namespace DaySim.Framework.Core {
         public double PaidRideShare_Age18to25Coefficient { get; set; }
 
         [XmlAttribute]
-        public double PaidRideShare_AgeUnder18Coefficient { get; set; }
+        public double PaidRideShare_AgeOver65Coefficient { get; set; }
 
         //new for AV capabilities
         [XmlAttribute]
