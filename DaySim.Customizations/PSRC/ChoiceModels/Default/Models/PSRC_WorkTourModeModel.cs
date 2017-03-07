@@ -7,7 +7,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour, int mode) {
             //Global.PrintFile.WriteLine("Default PSRC_WorkTourModeModel.RegionSpecificCustomizations called");
 
-            if (mode == Global.Settings.Modes.Transit) {
+            if (mode == Global.Settings.Modes.Transit || mode == Global.Settings.Modes.ParkAndRide) {
 
                 alternative.AddUtilityTerm(200 + tour.OriginParcel.District, 1);//district specific transit calibration constant
             }
