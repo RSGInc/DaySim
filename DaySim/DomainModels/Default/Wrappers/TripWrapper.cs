@@ -779,7 +779,12 @@ namespace DaySim.DomainModels.Default.Wrappers {
                                 ? Global.Configuration.Coefficients_HOV3CostDivisor_Other
                                 : 1.0;
 
-            ValueOfTime = (Tour.TimeCoefficient * 60) / (Tour.CostCoefficient / costDivisor);
+
+            var AVFactor = ((Global.Configuration.AV_IncludeAutoTypeChoice && Household.OwnsAutomatedVehicles > 0 && Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3)
+                         || (Global.Configuration.AV_PaidRideShareModeUsesAVs && Mode == Global.Settings.Modes.PaidRideShare))
+                         ? (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : 1.0;
+
+            ValueOfTime = (Tour.TimeCoefficient * 60) * AVFactor / (Tour.CostCoefficient / costDivisor);
         }
 
         #endregion
