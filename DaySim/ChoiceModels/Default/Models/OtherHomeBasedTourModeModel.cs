@@ -21,7 +21,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         private const string CHOICE_MODEL_NAME = "OtherHomeBasedTourModeModel";
         private const int TOTAL_NESTED_ALTERNATIVES = 5;
         private const int TOTAL_LEVELS = 2;
-        private const int MAX_PARAMETER = 199;
+        private const int MAX_PARAMETER = 299;
         private const int THETA_PARAMETER = 99;
 
         private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 0, 0, 23 };
