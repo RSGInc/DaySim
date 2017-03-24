@@ -810,6 +810,12 @@ namespace DaySim.Framework.Core {
         public bool UseTransimsTDMTripListFormat { get; set; }
 
         [XmlAttribute]
+        public bool UseCustomTDMTripListFormat { get; set; }
+
+        [XmlAttribute]
+        public bool IsInBCASkimAttachmentMode { get; set; }
+
+        [XmlAttribute]
         public bool UseRandomVotDistribution { get; set; }
 
         [XmlAttribute]

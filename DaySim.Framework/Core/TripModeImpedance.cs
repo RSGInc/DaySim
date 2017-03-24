@@ -32,6 +32,18 @@ namespace DaySim.Framework.Core {
 
         public double TravelDistance { get; set; }
 
+        public double TollCost { get; set; }
+
+        public double FuelCost { get; set; }
+
+        public double ParkCost { get; set; }
+
+        public double TransitTime { get; set; }
+
+        public double TransitWait { get; set; }
+
+        public double TransitWalk { get; set; }
+
         public double WalkAccessEgressTime { get; set; }
 
         public int PathType { get; set; }

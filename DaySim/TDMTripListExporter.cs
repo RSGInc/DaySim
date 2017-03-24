@@ -27,7 +27,10 @@ namespace DaySim {
         }
 
         private void WriteHeader() {
-            if (Global.Configuration.UseTransimsTDMTripListFormat) {
+            if (Global.Configuration.UseCustomTDMTripListFormat)  {
+                //add custom code to write header here
+            }
+            else if (Global.Configuration.UseTransimsTDMTripListFormat) {
                 _writer.Write("HHOLD");
                 _writer.Write(_delimiter);
 
@@ -106,6 +109,9 @@ namespace DaySim {
         public void Export(ITripWrapper trip) {
             if (trip == null) {
                 throw new ArgumentNullException("trip");
+            }
+            if (Global.Configuration.UseCustomTDMTripListFormat)  {
+                //add custom code to write data items corresponding to header here
             }
             if (Global.Configuration.UseTransimsTDMTripListFormat) {
                 _writer.Write(trip.Household.Id);
