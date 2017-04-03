@@ -386,8 +386,11 @@ namespace DaySim.Settings {
         public virtual int Passenger {
             get { return 2; }
         }
-        public virtual int AV_Passenger  {
+        public virtual int AV_MainPassenger  {
             get { return 3; }
+        }
+        public virtual int AV_OtherPassenger  {
+            get { return 4; }
         }
     }
 

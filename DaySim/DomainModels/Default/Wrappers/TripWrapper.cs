@@ -424,13 +424,24 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 }
             }
             else if (Mode == Global.Settings.Modes.PaidRideShare) {
-                DriverType = Global.Configuration.AV_PaidRideShareModeUsesAVs? Global.Settings.DriverTypes.AV_Passenger : Global.Settings.DriverTypes.Passenger;
+                //set main and other passenger randomly by tour purpose to get right percentage of trips to assign to network
+                var randomNumber = Household.RandomUtility.Uniform01();
+                DriverType = 
+                    (  Tour.DestinationPurpose == Global.Settings.Purposes.WorkBased && randomNumber < 0.5
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < 0.8
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < 0.3
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < 0.3
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < 0.4
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < 0.4
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Meal && randomNumber < 0.3
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < 0.3) ?
+                    Global.Settings.DriverTypes.Driver : Global.Settings.DriverTypes.Passenger;
+                if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
+                    DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
+                }
             }
             else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
                 DriverType = Global.Settings.DriverTypes.NotApplicable;
-            }
-            else if (Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
-                DriverType = Global.Settings.DriverTypes.AV_Passenger;
             }
             else if (Mode == Global.Settings.Modes.Sov) {
                 DriverType = Global.Settings.DriverTypes.Driver;
@@ -454,6 +465,10 @@ namespace DaySim.DomainModels.Default.Wrappers {
                     }
                 }
             }
+            if (Mode>=Global.Settings.Modes.Sov && Mode<=Global.Settings.Modes.Hov3 && Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
+                DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
+            }
+
         }
 
         public virtual void UpdateTripValues() {

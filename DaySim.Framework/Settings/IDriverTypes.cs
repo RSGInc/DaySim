@@ -13,6 +13,8 @@ namespace DaySim.Framework.Settings {
 
         int Passenger { get; }
 
-        int AV_Passenger { get;  }
+        int AV_MainPassenger { get;  }
+
+        int AV_OtherPassenger { get; }
     }
 }
