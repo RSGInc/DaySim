@@ -1539,6 +1539,19 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public double AV_PaidRideShare_FixedCostPerRide { get; set; }
 
+        [XmlAttribute]
+        public double AV_SharingEconomy_ConstantForOwning1Vehicle { get; set; }
+
+        [XmlAttribute]
+        public double AV_SharingEconomy_ConstantForOwning2Vehicles { get; set; }
+
+        [XmlAttribute]
+        public double AV_SharingEconomy_ConstantForOwning3Vehicles { get; set; }
+
+        [XmlAttribute]
+        public double AV_SharingEconomy_ConstantForOwning4Vehicles { get; set; }
+
+
 
         [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;

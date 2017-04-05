@@ -119,8 +119,13 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             var ruralFlag = household.ResidenceParcel.RuralFlag();
 
-            var zeroVehAVeffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0) ? Global.Configuration.AV_Own0VehiclesCoefficientForAVHouseholds : 0;
-            var oneVehAVeffect  = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0) ? Global.Configuration.AV_Own1VehicleCoefficientForAVHouseholds : 0;
+            var zeroVehAVEffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0) ? Global.Configuration.AV_Own0VehiclesCoefficientForAVHouseholds : 0;
+            var oneVehAVEffect  = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0) ? Global.Configuration.AV_Own1VehicleCoefficientForAVHouseholds : 0;
+
+            var oneVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning1Vehicle : 0;
+            var twoVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning2Vehicles : 0;
+            var threeVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning3Vehicles : 0;
+            var fourVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning4Vehicles : 0;
 
             // 0 AUTOS
 
@@ -161,7 +166,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             //            alternative.AddUtility(82, foodRetailServiceMedicalQtrMileLog * ruralFlag);
             alternative.AddUtilityTerm(83, ruralFlag);
 
-            alternative.AddUtilityTerm(200, zeroVehAVeffect);
+            alternative.AddUtilityTerm(200, zeroVehAVEffect);
 
             RegionSpecificCustomizations(alternative, household);
 
@@ -196,7 +201,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             //alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan1.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan1.ToFlag());
 
-            alternative.AddUtilityTerm(200, oneVehAVeffect);
+            alternative.AddUtilityTerm(200, oneVehAVEffect);
+            alternative.AddUtilityTerm(200, oneVehSEEffect);
 
             RegionSpecificCustomizations(alternative, household);
 
@@ -220,6 +226,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(72, Math.Log(1 + household.ResidenceParcel.StopsTransitBuffer1) * household.HasMoreDriversThan2.ToFlag());
             //            alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan2.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan2.ToFlag());
+
+            alternative.AddUtilityTerm(200, twoVehSEEffect);
 
             RegionSpecificCustomizations(alternative, household);
 
@@ -253,6 +261,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             //            alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan3.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan3.ToFlag());
 
+            alternative.AddUtilityTerm(200, threeVehSEEffect);
+
             RegionSpecificCustomizations(alternative, household);
 
             // 4+ AUTOS
@@ -284,6 +294,8 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(72, Math.Log(1 + household.ResidenceParcel.StopsTransitBuffer1) * household.HasMoreDriversThan4.ToFlag());
             //            alternative.AddUtility(74, household.ResidenceParcel.ParkingOffStreetPaidDailyPriceBuffer1 * household.HasMoreDriversThan4.ToFlag());
             alternative.AddUtilityTerm(76, foodRetailServiceMedicalLogBuffer1 * household.HasMoreDriversThan4.ToFlag());
+
+            alternative.AddUtilityTerm(200, fourVehSEEffect);
 
             RegionSpecificCustomizations(alternative, household);
 
