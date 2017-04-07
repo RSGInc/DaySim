@@ -195,8 +195,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                         Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit : Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit;
                     var fixedCostPerRide = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
                         Global.Configuration.AV_PaidRideShare_FixedCostPerRide : Global.Configuration.PaidRideShare_FixedCostPerRide;
-                    //    case Global.Settings.Modes.PaidRideShare
-                    alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * subtour.TimeCoefficient);
+                    var autoTimeCoefficient = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
+                        subtour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : subtour.TimeCoefficient;
+                    alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * autoTimeCoefficient);
                     alternative.AddUtilityTerm(2, distanceExtra * extraCostPerMile * subtour.CostCoefficient);
                     alternative.AddUtilityTerm(2, fixedCostPerRide * subtour.CostCoefficient);
 
@@ -226,7 +227,10 @@ namespace DaySim.ChoiceModels.Default.Models {
                     continue;
                 }
 
-                alternative.AddUtilityTerm(2, generalizedTimeLogsum * subtour.TimeCoefficient);
+                var modeTimeCoefficient = (household.OwnsAutomatedVehicles > 0 && mode >= Global.Settings.Modes.Sov && mode <= Global.Settings.Modes.Hov3) ?
+                    subtour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : subtour.TimeCoefficient;
+                alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
+
 
                 if (mode == Global.Settings.Modes.Transit) {
                     alternative.AddUtilityTerm(20, 1);

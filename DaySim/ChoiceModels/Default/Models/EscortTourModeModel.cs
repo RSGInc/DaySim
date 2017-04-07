@@ -175,15 +175,18 @@ namespace DaySim.ChoiceModels.Default.Models {
                     continue;
                 }
 
+                var modeTimeCoefficient = (household.OwnsAutomatedVehicles > 0 && mode >= Global.Settings.Modes.Sov && mode <= Global.Settings.Modes.Hov3) ?
+                tour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : tour.TimeCoefficient;
+
                 if (mode == Global.Settings.Modes.Hov3) {
-                    alternative.AddUtilityTerm(2, generalizedTimeLogsum * tour.TimeCoefficient);
+                    alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
                     alternative.AddUtilityTerm(30, 1);
                     alternative.AddUtilityTerm(31, childrenUnder5);
                     alternative.AddUtilityTerm(32, childrenAge5Through15);
                     alternative.AddUtilityTerm(33, drivingAgeStudents);
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
                 } else if (mode == Global.Settings.Modes.Hov2) {
-                    alternative.AddUtilityTerm(2, generalizedTimeLogsum * tour.TimeCoefficient);
+                    alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
                     alternative.AddUtilityTerm(40, 1);
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
                     alternative.AddUtilityTerm(42, carsLessThanDriversFlag);
@@ -192,7 +195,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 } else if (mode == Global.Settings.Modes.Bike) {
                     alternative.AddUtilityTerm(60, 1);
                 } else if (mode == Global.Settings.Modes.Walk) {
-                    alternative.AddUtilityTerm(2, generalizedTimeLogsum * tour.TimeCoefficient);
+                    alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
                     alternative.AddUtilityTerm(70, 1);
                     alternative.AddUtilityTerm(73, ageBetween51And98Flag);
                     alternative.AddUtilityTerm(76, destinationParcel.NetIntersectionDensity1());
