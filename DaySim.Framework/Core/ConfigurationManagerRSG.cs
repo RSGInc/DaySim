@@ -286,5 +286,96 @@ namespace DaySim.Framework.Core {
 
             return configuration;
         }
+
+        public Configuration OverrideConfiguration(Configuration configuration, string overrides)
+        {
+            //read possible overrides
+            string[] nameValuePairs = overrides.Trim().Split(',');
+            // if (nameValuePairs.Length)
+            if (nameValuePairs.Length > 0 && nameValuePairs[0].Trim().Length > 0)
+            {
+                Dictionary<string, string> keyValuePairs = nameValuePairs
+               .Select(value => value.Split('='))
+               .ToDictionary(pair => pair[0].Trim(), pair => pair[1].Trim());
+
+                var type1 = configuration.GetType();
+                foreach (KeyValuePair<string, string> entry in keyValuePairs)
+                {
+                    var property = type1.GetProperty(entry.Key, BindingFlags.Public | BindingFlags.Instance);
+
+                    if (property == null)
+                    {
+                        Console.WriteLine("WARNING: override key value pair ignored because key not found!: " + entry);
+                        continue;
+                    }
+
+                    var type2 = property.PropertyType;
+
+                    try
+                    {
+                        if (type2 == typeof(char))
+                        {
+                            var b = Convert.ChangeType(entry.Value, typeof(byte));
+
+                            property.SetValue(configuration, Convert.ChangeType(b, type2), null);
+                        }
+                        else
+                        {
+                            property.SetValue(configuration, Convert.ChangeType(entry.Value, type2), null);
+                        }
+                        Console.WriteLine("Configuration override applied: " + entry);
+                    }
+                    catch
+                    {
+                        var builder = new StringBuilder();
+
+                        builder
+                            .AppendFormat("Error overriding configuration file for entry {0}.", entry).AppendLine()
+                            .AppendFormat("Cannot convert the value of \"{0}\" to the type of {1}.", entry.Value, type2.Name).AppendLine()
+                            .AppendLine("Please ensure that the value is in the correct format for the given type.");
+
+                        throw new Exception(builder.ToString());
+                    }
+                }
+            }
+            return (configuration);
+        }
+
+        public Configuration ProcessPath(Configuration configuration, string configurationPath)
+        {
+
+            if (string.IsNullOrWhiteSpace(configuration.BasePath))
+            {
+                //issue #52 use configuration file folder as default basepath rather than arbitrary current working directory.
+                configuration.BasePath = Path.GetDirectoryName(Path.GetFullPath(configurationPath));
+            }
+
+            //copy the configuration file into the output so we can tell if configuration changed before regression test called.
+            var archiveConfigurationFilePath = Global.GetOutputPath("archive_" + Path.GetFileName(configurationPath));
+            archiveConfigurationFilePath.CreateDirectory(); //create output directory if needed
+            File.Copy(configurationPath, archiveConfigurationFilePath, /* overwrite */ true);
+
+            return (configuration);
+        }
+
+        public PrintFile ProcessPrintPath(PrintFile printFile, string printFilePath)
+        {
+
+            if (string.IsNullOrWhiteSpace(printFilePath))
+            {
+                printFilePath = Global.GetOutputPath(PrintFile.DEFAULT_PRINT_FILENAME);
+            }
+
+            if (string.IsNullOrWhiteSpace(printFilePath))
+            {
+                printFilePath = Global.GetOutputPath(PrintFile.DEFAULT_PRINT_FILENAME);
+            }
+
+            printFilePath.CreateDirectory(); //create printfile directory if needed
+            printFile = new PrintFile(printFilePath, Global.Configuration);
+            Write(Global.Configuration, printFile);
+
+            return (printFile);
+        }
     }
 }

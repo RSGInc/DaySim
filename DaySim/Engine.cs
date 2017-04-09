@@ -8,6 +8,7 @@
 using DaySim.AggregateLogsums;
 using DaySim.ChoiceModels;
 using DaySim.DomainModels.Default;
+using DaySim.DomainModels.Factories;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
@@ -18,14 +19,17 @@ using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
 using DaySim.ParkAndRideShadowPricing;
 using DaySim.Sampling;
+using DaySim.Settings;
 using DaySim.ShadowPricing;
 using HDF5DotNet;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using Timer = DaySim.Framework.Core.Timer;
 
@@ -330,9 +334,15 @@ namespace DaySim {
             Global.Configuration.OutputHouseholdPath = Global.GetOutputPath(Global.Configuration.OutputHouseholdPath).ToIndexedPath(_index);
             Global.Configuration.OutputPersonPath = Global.GetOutputPath(Global.Configuration.OutputPersonPath).ToIndexedPath(_index);
             Global.Configuration.OutputHouseholdDayPath = Global.GetOutputPath(Global.Configuration.OutputHouseholdDayPath).ToIndexedPath(_index);
-            Global.Configuration.OutputJointTourPath = Global.GetOutputPath(Global.Configuration.OutputJointTourPath).ToIndexedPath(_index);
-            Global.Configuration.OutputFullHalfTourPath = Global.GetOutputPath(Global.Configuration.OutputFullHalfTourPath).ToIndexedPath(_index);
-            Global.Configuration.OutputPartialHalfTourPath = Global.GetOutputPath(Global.Configuration.OutputPartialHalfTourPath).ToIndexedPath(_index);
+            if (!string.IsNullOrEmpty(Global.Configuration.OutputJointTourPath)) {
+                Global.Configuration.OutputJointTourPath = Global.GetOutputPath(Global.Configuration.OutputJointTourPath).ToIndexedPath(_index);
+            }
+            if (!string.IsNullOrEmpty(Global.Configuration.OutputFullHalfTourPath)) {
+                Global.Configuration.OutputFullHalfTourPath = Global.GetOutputPath(Global.Configuration.OutputFullHalfTourPath).ToIndexedPath(_index);
+            }
+            if (!string.IsNullOrEmpty(Global.Configuration.OutputPartialHalfTourPath)) {
+                Global.Configuration.OutputPartialHalfTourPath = Global.GetOutputPath(Global.Configuration.OutputPartialHalfTourPath).ToIndexedPath(_index);
+            }
             Global.Configuration.OutputPersonDayPath = Global.GetOutputPath(Global.Configuration.OutputPersonDayPath).ToIndexedPath(_index);
             Global.Configuration.OutputTourPath = Global.GetOutputPath(Global.Configuration.OutputTourPath).ToIndexedPath(_index);
             Global.Configuration.OutputTripPath = Global.GetOutputPath(Global.Configuration.OutputTripPath).ToIndexedPath(_index);
@@ -1503,5 +1513,72 @@ namespace DaySim {
                 Global.PrintFile.WriteLine("{0} in the configuration file has been overridden, an import is required.", property.Name);
             }
         }
+        
+        public static void InitializeDaySim()
+        {
+            var settingsFactory = new SettingsFactory(Global.Configuration);
+            Global.Settings = settingsFactory.Create();
+
+            ParallelUtility.Init(Global.Configuration);
+
+            //creating the DaySimModule does the non-model specific the SimpleInjector dependency injection registration
+            new DaySimModule();
+            //use the ModuleFactory to load the DaysimModule and the ModelModule (which could be Actum)
+            // which does the SimpleInjector dependency injection registration
+            var moduleFactory = new ModuleFactory(Global.Configuration);
+            moduleFactory.Load();
+
+            //after all dependency injection established, verify
+            Global.ContainerDaySim.Verify();
+
+            if (!string.IsNullOrEmpty(Global.Configuration.CustomizationDll))
+            {
+                if (Global.Configuration.DVRPC || Global.Configuration.JAX || Global.Configuration.Nashville || Global.Configuration.PSRC || Global.Configuration.SFCTA)
+                {
+                    throw new Exception("Region specific flag is set such as DVRPC, JAX, Nashville, PSRC or SFCTA but CustomizationDll is already set to: " + Global.Configuration.CustomizationDll);
+                }
+            }
+            else if (Global.Configuration.DVRPC)
+            {
+                Global.Configuration.CustomizationDll = "DVRPC.dll";
+                if (Global.Configuration.JAX || Global.Configuration.Nashville || Global.Configuration.PSRC || Global.Configuration.SFCTA)
+                {
+                    throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                }
+            }
+            else if (Global.Configuration.JAX)
+            {
+                Global.Configuration.CustomizationDll = "JAX.dll";
+                if (Global.Configuration.DVRPC || Global.Configuration.Nashville || Global.Configuration.PSRC || Global.Configuration.SFCTA)
+                {
+                    throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                }
+            }
+            else if (Global.Configuration.Nashville)
+            {
+                Global.Configuration.CustomizationDll = "Nashville.dll";
+                if (Global.Configuration.DVRPC || Global.Configuration.JAX || Global.Configuration.PSRC || Global.Configuration.SFCTA)
+                {
+                    throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                }
+            }
+            else if (Global.Configuration.PSRC)
+            {
+                Global.Configuration.CustomizationDll = "PSRC.dll";
+                if (Global.Configuration.DVRPC || Global.Configuration.JAX || Global.Configuration.Nashville || Global.Configuration.SFCTA)
+                {
+                    throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                }
+            }
+            else if (Global.Configuration.SFCTA)
+            {
+                Global.Configuration.CustomizationDll = "SFCTA.dll";
+                if (Global.Configuration.DVRPC || Global.Configuration.JAX || Global.Configuration.Nashville || Global.Configuration.PSRC)
+                {
+                    throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
+                }
+            }
+        }
+
     }
 }
