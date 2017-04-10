@@ -1872,14 +1872,20 @@ namespace DaySim {
 
             int z = 0;
             foreach (string important in importantDoubles) {
-                //this is for hhexpfac which we are NOT getting from H5
-                headers[x + 2 + z] = important;
-                doubleValues[z] = new double[size];
-                for (int y = 0; y < size; y++) {
-                    doubleValues[z][y] = 1;
-                }
 
-                int vSize = values[z].Count();
+                //this is for hhexpfac which defaults to 1 if not in the H5 file
+
+                headers[x + 2 + z] = important;
+                doubleValues[z] = GetDoubleDataSet(dataFile, baseDataSetName + important);
+                if (doubleValues[z] == null)
+                {
+                    doubleValues[z] = new Double[size];
+                    for (int y = 0; y < size; y++)
+                    {
+                        doubleValues[z][y] = 1;
+                    }
+                }
+                int vSize = doubleValues[z].Count();
                 if (size == -1)
                     size = vSize;
                 else {
