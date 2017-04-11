@@ -1873,10 +1873,23 @@ namespace DaySim {
             int z = 0;
             foreach (string important in importantDoubles) {
 
-                //this is for hhexpfac which defaults to 1 if not in the H5 file
-
                 headers[x + 2 + z] = important;
-                doubleValues[z] = GetDoubleDataSet(dataFile, baseDataSetName + important);
+
+                //this is for hhexpfac which defaults to 1 if not in the H5 file 
+                //and may need to be converted from int32 to float64
+                if (IsIntegerDataSet(dataFile, baseDataSetName + important)) {
+                    Int32[] tempValues = new Int32[size];
+                    doubleValues[z] = new Double[size];
+                    tempValues = GetInt32DataSet(dataFile, baseDataSetName + important);
+                    for (int y = 0; y < size; y++) {
+                        doubleValues[z][y] = (double)tempValues[y];
+                    }
+                }
+
+                if (IsFloatDataSet(dataFile, baseDataSetName + important)) { 
+                    doubleValues[z] = GetDoubleDataSet(dataFile, baseDataSetName + important);
+                }
+
                 if (doubleValues[z] == null)
                 {
                     doubleValues[z] = new Double[size];
@@ -1970,6 +1983,28 @@ namespace DaySim {
                 return dataArray;
             }
             return null;
+        }
+
+        private static bool IsIntegerDataSet(H5FileId dataFile, string path)
+        {
+            var dataSet = H5D.open(dataFile, path);
+            H5T.H5TClass shCl = H5T.getClass(H5D.getType(dataSet));
+            if (shCl.Equals(H5T.H5TClass.INTEGER)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private static bool IsFloatDataSet(H5FileId dataFile, string path)
+        {
+            var dataSet = H5D.open(dataFile, path);
+            H5T.H5TClass shCl = H5T.getClass(H5D.getType(dataSet));
+            if (shCl.Equals(H5T.H5TClass.FLOAT)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         private static int[] GetInt32DataSet(H5FileId dataFile, string path) {
