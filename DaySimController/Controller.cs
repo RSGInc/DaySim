@@ -8,6 +8,7 @@
 using DaySim;
 using DaySim.ChoiceModels;
 using DaySim.Framework.Core;
+using DaySim.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,14 @@ namespace DaySimController {
         public static void BeginProgram() {
             var timer = new Timer("Starting DaySim Controller...");
 
+            Console.WriteLine("Run initial DaySim steps locally");
+
+            var settingsFactory = new SettingsFactory(Global.Configuration);
+            Global.Settings = settingsFactory.Create();
+
+            ParallelUtility.Init(Global.Configuration);
+
+            Engine.InitializeDaySim();
             Engine.BeginInitialize();
             Engine.BeginRunRawConversion();
             Engine.BeginImportData();
@@ -35,14 +44,15 @@ namespace DaySimController {
             BeginLoadData();
 
             Engine.BeginUpdateShadowPricing();
-
-            BeginCopyFilesToRemoteMachines();
+            if (Global.Configuration.RemoteCopySPFilesToRemoteMachines) {
+                BeginCopyFilesToRemoteMachines();
+            }
 
             timer.Stop("Total running time");
         }
 
         private static void BeginRunRemoteProcesses() {
-            var timer = new Timer("Running remote processes...");
+            var timer = new Timer("Running remote batches of households using DaySim's s=, e=, i= arguments...");
 
             RunRemoteProcesses();
 
@@ -67,6 +77,7 @@ namespace DaySimController {
 
                 var machine = machines[i];
 
+                //run a local remote DaySim session for debugging if desired
                 if (Environment.MachineName.Equals(machine.Name, StringComparison.OrdinalIgnoreCase)) {
                     var process = new Process {
                         StartInfo = {
@@ -81,6 +92,8 @@ namespace DaySimController {
 
                     _processes.Add(Tuple.Create(process, machine, new Timer()));
                 } else {
+
+                    //remote a remote DaySim session using WMI and RPC
                     var connectionOptions = new ConnectionOptions { Username = Global.Configuration.RemoteUsername, Password = Global.Configuration.RemotePassword };
                     var managementScope = new ManagementScope(String.Format(@"\\{0}\ROOT\CIMV2", machine.Name), connectionOptions);
 
@@ -165,7 +178,7 @@ namespace DaySimController {
         }
 
         private static void BeginMerge() {
-            var timer = new Timer("Merging...");
+            var timer = new Timer("Merging each remote output file into a master/local output file...");
 
             Merge();
 
@@ -256,11 +269,13 @@ namespace DaySimController {
 
             foreach (var machine in machines) {
                 if (shadowPricesFile.Exists) {
-                    shadowPricesFile.CopyTo(Global.GetWorkingPath("shadow_prices.txt").ToUncPath(machine.Name), true);
+                    Console.WriteLine("Copying updated shadowPricesFile");
+                    shadowPricesFile.CopyTo((machine.CurrentDirectory + @"\" + Global.GetWorkingPath("shadow_prices.txt", true)).ToUncPath(machine.Name), true);
                 }
 
                 if (parkAndRideShadowPricesFile.Exists) {
-                    parkAndRideShadowPricesFile.CopyTo(Global.GetWorkingPath("park_and_ride_shadow_prices.txt").ToUncPath(machine.Name), true);
+                    Console.WriteLine("Copying updated parkAndRideShadowPricesFile");
+                    parkAndRideShadowPricesFile.CopyTo((machine.CurrentDirectory + @"\" + Global.GetWorkingPath("park_and_ride_shadow_prices.txt", true)).ToUncPath(machine.Name), true);
                 }
             }
         }
