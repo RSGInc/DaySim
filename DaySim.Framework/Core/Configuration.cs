@@ -26,6 +26,8 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public string RemoteMachines { get; set; }
 
+        [XmlAttribute]
+        public bool RemoteCopySPFilesToRemoteMachines { get; set; }
 
         [XmlAttribute]
         public string NodeIndexPath { get; set; }

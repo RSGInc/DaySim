@@ -270,15 +270,16 @@ namespace DaySim.PathTypeModels {
 
             // set the generalized time logsum
             var logsum = Math.Log(expUtilitySum);
+            var tourTimeCoefficient = (Global.Configuration.PathImpedance_PathChoiceScaleFactor * _tourTimeCoefficient);
 
-            if (Double.IsNaN(expUtilitySum) || Double.IsNaN(logsum) || Double.IsNaN(_tourTimeCoefficient)) {
-                throw new ValueIsNaNException(string.Format("Value is NaN for utilitySum: {0}, logsum: {1}, tourTimeCoefficient: {2}.", expUtilitySum, logsum, _tourTimeCoefficient));
+            if (Double.IsNaN(expUtilitySum) || Double.IsNaN(logsum) || Double.IsNaN(tourTimeCoefficient)) {
+                throw new ValueIsNaNException(string.Format("Value is NaN for utilitySum: {0}, logsum: {1}, tourTimeCoefficient: {2}.", expUtilitySum, logsum, tourTimeCoefficient));
             }
 
-            GeneralizedTimeLogsum = logsum / _tourTimeCoefficient; // need to make sure _tourTimeCoefficient is not 0
+            GeneralizedTimeLogsum = logsum / tourTimeCoefficient; // need to make sure _tourTimeCoefficient is not 0
 
             if (Double.IsNaN(GeneralizedTimeLogsum)) {
-                throw new ValueIsNaNException(string.Format("Value is NaN for GeneralizedTimeLogsum where utilitySum: {0}, logsum: {1}, tourTimeCoefficient: {2}.", expUtilitySum, logsum, _tourTimeCoefficient));
+                throw new ValueIsNaNException(string.Format("Value is NaN for GeneralizedTimeLogsum where utilitySum: {0}, logsum: {1}, tourTimeCoefficient: {2}.", expUtilitySum, logsum, tourTimeCoefficient));
             }
 
             // draw a choice using a random number if requested (and in application mode), otherwise return best utility
@@ -302,7 +303,7 @@ namespace DaySim.PathTypeModels {
             PathTime = _pathTime[_choice];
             PathDistance = _pathDistance[_choice];
             PathCost = _pathCost[_choice];
-            GeneralizedTimeChosen = _utility[_choice] / _tourTimeCoefficient;
+            GeneralizedTimeChosen = _utility[_choice] / tourTimeCoefficient;
             PathParkAndRideNodeId = _pathParkAndRideNodeId[_choice];
             if (Mode == Global.Settings.Modes.Transit) {
                 PathTransitWalkAccessEgressTime = _pathTransitWalkAccessEgressTime[_choice];
@@ -311,7 +312,7 @@ namespace DaySim.PathTypeModels {
                 PathParkAndRideTransitTime = _pathParkAndRideTransitTime[_choice];
                 PathParkAndRideTransitDistance = _pathParkAndRideTransitDistance[_choice];
                 PathParkAndRideTransitCost = _pathParkAndRideTransitCost[_choice];
-                PathParkAndRideTransitGeneralizedTime = _pathParkAndRideTransitUtility[_choice] / _tourTimeCoefficient;
+                PathParkAndRideTransitGeneralizedTime = _pathParkAndRideTransitUtility[_choice] / tourTimeCoefficient;
                 PathParkAndRideWalkAccessEgressTime = _pathParkAndRideWalkAccessEgressTime[_choice];
             }
             if (Global.StopAreaIsEnabled) {
