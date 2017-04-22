@@ -168,7 +168,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             var walkTourFlag = (parentTourMode == Global.Settings.Modes.Walk).ToFlag();
 
             // remaining inputs
-            //            var originParcel = subtour.OriginParcel;
+            var originParcel = subtour.OriginParcel;
             var parkingDuration = ChoiceModelUtility.GetParkingDuration(person.IsFulltimeWorker);
             var destinationParkingCost = destinationParcel.ParkingCostBuffer1(parkingDuration);
 
@@ -202,8 +202,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(2, fixedCostPerRide * subtour.CostCoefficient);
 
                     var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
-                      ? Global.Configuration.AV_PaidRideShareModeConstant + Global.Configuration.AV_PaidRideShareAVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
-                      : Global.Configuration.PaidRideShare_ModeConstant;
+                      ? Global.Configuration.AV_PaidRideShare_ModeConstant
+                      + Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2, 6000)
+                      + Global.Configuration.AV_PaidRideShare_AVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
+                      : Global.Configuration.PaidRideShare_ModeConstant
+                      + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2, 6000);
 
                     alternative.AddUtilityTerm(90, modeConstant);
                     alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age26to35Coefficient * subtour.Person.AgeIsBetween26And35.ToFlag());

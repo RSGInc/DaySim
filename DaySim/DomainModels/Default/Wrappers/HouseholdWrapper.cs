@@ -194,12 +194,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
         #region flags/choice model/etc. properties
 
-        //use the SampleType data field for this
+        //use the Residence data field for this
         public int OwnsAutomatedVehicles {
             get { return _household.ResidenceType; }
             set { _household.ResidenceType = value; }
         }
 
+        public int ResidenceBuffer2Density { get; set; }
 
         public bool IsOnePersonHousehold { get; set; }
 
@@ -357,6 +358,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             // flags/choice model/etc. properties
 
+            ResidenceBuffer2Density = (int) Math.Round(ResidenceParcel.EmploymentTotalBuffer2 + ResidenceParcel.HouseholdsBuffer2 + ResidenceParcel.StudentsUniversityBuffer2,0);
+            if (Global.Configuration.WriteResidenceBufferDensityToOwnOrRent) { OwnOrRent = ResidenceBuffer2Density; }
             IsOnePersonHousehold = Size == 1;
             IsTwoPersonHousehold = Size == 2;
             Has0To15KIncome = Income.IsRightExclusiveBetween(0, 15000);

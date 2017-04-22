@@ -299,8 +299,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(2, fixedCostPerRide * tour.CostCoefficient);
 
                     var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
-                      ? Global.Configuration.AV_PaidRideShareModeConstant + Global.Configuration.AV_PaidRideShareAVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
-                      : Global.Configuration.PaidRideShare_ModeConstant;
+                     ? Global.Configuration.AV_PaidRideShare_ModeConstant
+                     + Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2, 6000)
+                     + Global.Configuration.AV_PaidRideShare_AVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
+                     : Global.Configuration.PaidRideShare_ModeConstant
+                     + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2, 6000);
 
                     alternative.AddUtilityTerm(90, modeConstant);
                     alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());

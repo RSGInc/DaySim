@@ -27,6 +27,8 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
         int OwnsAutomatedVehicles  { get; set; }
 
+        int ResidenceBuffer2Density { get; set; }
+
         bool IsOnePersonHousehold { get; set; }
 
         bool IsTwoPersonHousehold { get; set; }

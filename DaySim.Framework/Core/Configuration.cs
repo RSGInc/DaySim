@@ -1473,6 +1473,9 @@ namespace DaySim.Framework.Core {
         public double PaidRideShare_ModeConstant { get; set; }
 
         [XmlAttribute]
+        public double PaidRideShare_DensityCoefficient { get; set; }
+
+        [XmlAttribute]
         public bool PaidRideShareModeIsAvailable { get; set; }
 
         [XmlAttribute]
@@ -1489,6 +1492,9 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double PaidRideShare_AgeOver65Coefficient { get; set; }
+
+        [XmlAttribute]
+        public bool WriteResidenceBufferDensityToOwnOrRent { get; set; }
 
         //new for AV capabilities
         [XmlAttribute]
@@ -1528,10 +1534,13 @@ namespace DaySim.Framework.Core {
         public bool AV_PaidRideShareModeUsesAVs { get; set; }
 
         [XmlAttribute]
-        public double AV_PaidRideShareModeConstant { get; set; }
+        public double AV_PaidRideShare_ModeConstant { get; set; }
 
         [XmlAttribute]
-        public double AV_PaidRideShareAVOwnerCoefficient { get; set; }
+        public double AV_PaidRideShare_DensityCoefficient { get; set; }
+
+        [XmlAttribute]
+        public double AV_PaidRideShare_AVOwnerCoefficient { get; set; }
 
         [XmlAttribute]
         public double AV_PaidRideShare_ExtraCostPerDistanceUnit { get; set; }
@@ -1550,6 +1559,9 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double AV_SharingEconomy_ConstantForOwning4Vehicles { get; set; }
+
+        [XmlAttribute]
+        public double AV_SharingEconomy_DensityCoeffcientForOwning0Vehicles { get; set; }
 
 
 
