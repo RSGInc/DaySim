@@ -5,13 +5,9 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.ShadowPricing;
-using System.Collections.Generic;
-
-namespace DaySim.Framework.DomainModels.Wrappers {
-    public interface IDestinationParkingNodeWrapper : IDestinationParkingNode {
-        #region flags/choice model/etc. properties
+namespace DaySim.Framework.ShadowPricing {
+    public interface IDestinationParkingShadowPriceNode  {
+        int NodeId { get; set; }
 
         double[] ShadowPriceDifference { get; set; }
 
@@ -20,15 +16,5 @@ namespace DaySim.Framework.DomainModels.Wrappers {
         double[] ExogenousLoad { get; set; }
 
         double[] ParkingLoad { get; set; }
-
-        #endregion
-
-        #region wrapper methods
-
-        void SetDestinationParkingShadowPricing(Dictionary<int, IDestinationParkingShadowPriceNode> destinationParkingShadowPrices);
-
-        double SetDestinationParkingEffectivePrice(int minArrive, int minDepart, int destPurpose);
-
-        #endregion
     }
 }

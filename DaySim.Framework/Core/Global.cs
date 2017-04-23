@@ -22,6 +22,8 @@ namespace DaySim.Framework.Core {
         private const string ARCHIVE_SHADOW_PRICES_FILENAME = "archive_" + SHADOW_PRICES_FILENAME;
         private const string PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "park_and_ride_" + SHADOW_PRICES_FILENAME;
         private const string ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILENAME;
+        private const string DESTINATION_PARKING_SHADOW_PRICES_FILENAME = "destinatiion_parking_" + SHADOW_PRICES_FILENAME;
+        private const string ARCHIVE_DESTINATION_PARKING_SHADOW_PRICES_FILENAME = "archive_" + DESTINATION_PARKING_SHADOW_PRICES_FILENAME;
 
         public static SimpleInjector.Container ContainerDaySim { get; } = new SimpleInjector.Container();
 
@@ -114,6 +116,10 @@ namespace DaySim.Framework.Core {
             get { return !string.IsNullOrEmpty(Configuration.RawParkAndRideNodePath) && !string.IsNullOrEmpty(Configuration.InputParkAndRideNodePath); }
         }
 
+        public static bool DestinationParkingNodeIsEnabled        {
+            get { return !string.IsNullOrEmpty(Configuration.RawDestinationParkingNodePath) && !string.IsNullOrEmpty(Configuration.InputDestinationParkingNodePath); }
+        }
+
         public static string DefaultInputParkAndRideNodePath {
             get { return GetWorkingSubpath("park_and_ride_node.tsv"); }
         }
@@ -136,6 +142,10 @@ namespace DaySim.Framework.Core {
 
         public static string ArchiveParkAndRideShadowPricesPath {
             get { return GetOutputPath(ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME); }
+        }
+
+        public static string ArchiveDestinationParkingShadowPricesPath {
+            get { return GetOutputPath(ARCHIVE_DESTINATION_PARKING_SHADOW_PRICES_FILENAME); }
         }
 
         public static string DefaultInputParcelPath {
@@ -256,6 +266,10 @@ namespace DaySim.Framework.Core {
 
         public static string ParkAndRideShadowPricesPath {
             get { return GetWorkingPath(PARK_AND_RIDE_SHADOW_PRICES_FILENAME); }
+        }
+
+        public static string DestinationParkingShadowPricesPath  {
+            get { return GetWorkingPath(DESTINATION_PARKING_SHADOW_PRICES_FILENAME); }
         }
 
         public static double Coefficients_BaseCostCoefficientPerMonetaryUnit {

@@ -98,6 +98,7 @@
     <Compile Include="DomainModels\Creators\IJointTourCreator.cs" />
     <Compile Include="DomainModels\Creators\IParcelCreator.cs" />
     <Compile Include="DomainModels\Creators\IParcelNodeCreator.cs" />
+    <Compile Include="DomainModels\Creators\IDestinationParkingNodeCreator.cs" />
     <Compile Include="DomainModels\Creators\IParkAndRideNodeCreator.cs" />
     <Compile Include="DomainModels\Creators\IPartialHalfTourCreator.cs" />
     <Compile Include="DomainModels\Creators\IPersonCreator.cs" />
@@ -106,6 +107,8 @@
     <Compile Include="DomainModels\Creators\ITransitStopAreaCreator.cs" />
     <Compile Include="DomainModels\Creators\ITripCreator.cs" />
     <Compile Include="DomainModels\Creators\IZoneCreator.cs" />
+    <Compile Include="DomainModels\Models\IDestinationParkingNode.cs" />
+    <Compile Include="DomainModels\Wrappers\IDestinationParkingNodeWrapper.cs" />
     <Compile Include="Exceptions\MissingInstallationException.cs" />
     <Compile Include="Factories\Category.cs" />
     <Compile Include="Factories\ChoiceModelRunner.cs" />
@@ -282,6 +285,7 @@
     <Compile Include="Settings\IValueOfTimes.cs" />
     <Compile Include="Settings\IVotALSegments.cs" />
     <Compile Include="Settings\IVotGroups.cs" />
+    <Compile Include="ShadowPricing\IDestinationParkingShadowPriceNode.cs" />
     <Compile Include="ShadowPricing\IParkAndRideShadowPriceNode.cs" />
     <Compile Include="ShadowPricing\IShadowPriceParcel.cs" />
   </ItemGroup>

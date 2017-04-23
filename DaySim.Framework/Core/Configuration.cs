@@ -101,6 +101,21 @@ namespace DaySim.Framework.Core {
         public bool ShouldReadParkAndRideNodeSkim { get; set; }
 
         [XmlAttribute]
+        public bool ImportDestinationParkingNodes { get; set; }
+
+        [XmlAttribute]
+        public string RawDestinationParkingNodePath { get; set; }
+
+        [XmlAttribute]
+        public char RawDestinationParkingNodeDelimiter { get; set; }
+
+        [XmlAttribute]
+        public string InputDestinationParkingNodePath { get; set; }
+
+        [XmlAttribute]
+        public char InputDestinationParkingNodeDelimiter { get; set; } = '\t';
+
+        [XmlAttribute]
         public char SkimDelimiter { get; set; }
 
 
@@ -1564,6 +1579,30 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double AV_SharingEconomy_DensityCoeffcientForOwning0Vehicles { get; set; }
+
+        [XmlAttribute]
+        public double MaximumXYDistanceToDestinationParking { get; set; }
+
+        [XmlAttribute]
+        public int FirstDistrictNumberForDestinationParkingChoice { get; set; }
+
+        [XmlAttribute]
+        public int LastDistrictNumberForDestinationParkingChoice { get; set; }
+
+        [XmlAttribute]
+        public bool ShouldUseDestinationParkingShadowPricing { get; set; }
+
+        [XmlAttribute]
+        public char DestinationParkingShadowPriceDelimiter { get; set; }
+
+        [XmlAttribute]
+        public double DestinationParkingShadowPriceStepSize { get; set; }
+
+        [XmlAttribute]
+        public double DestinationParkingShadowPriceMaximumPenalty { get; set; }
+
+        [XmlAttribute]
+        public int DestinationParkingShadowPriceTimeSpread { get; set; }
 
 
 

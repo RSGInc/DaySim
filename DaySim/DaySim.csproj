@@ -192,12 +192,20 @@
     <Compile Include="ChoiceModels\Default\Models\WorkTourTimeModel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DomainModels\Creators\DestinationParkingNodeCreator.cs" />
+    <Compile Include="DomainModels\Default\Models\DestinationParkingNode.cs" />
+    <Compile Include="DomainModels\Default\Wrappers\DestinationParkingNodeWrapper.cs" />
     <Compile Include="DomainModels\Factories\ModuleFactory.cs" />
     <Compile Include="HTourDestinationModeTime.cs" />
     <Compile Include="HTourModeTime.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ITransitStopArea.cs" />
+    <Compile Include="DestinationParkingShadowPricing\DestinationParkingShadowPriceCalculator.cs" />
+    <Compile Include="DestinationParkingShadowPricing\DestinationParkingShadowPriceNode.cs" />
+    <Compile Include="DestinationParkingShadowPricing\DestinationParkingShadowPriceReader.cs" />
+    <Compile Include="DestinationParkingShadowPricing\DestinationParkingShadowPriceWriter.cs" />
+    <Compile Include="DestinationParkingDao.cs" />
     <Compile Include="PathTypeModels\PathTypeModel_override.cs" />
     <Compile Include="PathTypeModels\IPathTypeModel.cs" />
     <Compile Include="PathTypeModels\PathTypeModel.cs" />
