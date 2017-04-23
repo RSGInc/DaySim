@@ -196,6 +196,7 @@
     <Compile Include="DomainModels\Default\Models\DestinationParkingNode.cs" />
     <Compile Include="DomainModels\Default\Wrappers\DestinationParkingNodeWrapper.cs" />
     <Compile Include="DomainModels\Factories\ModuleFactory.cs" />
+    <Compile Include="DomainModels\Persisters\DestinationParkingNodePersister.cs" />
     <Compile Include="HTourDestinationModeTime.cs" />
     <Compile Include="HTourModeTime.cs">
       <SubType>Code</SubType>

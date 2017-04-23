@@ -30,6 +30,8 @@ namespace DaySim {
 
             Global.ContainerDaySim.Register<IPersistenceFactory<IParkAndRideNode>, PersistenceFactory<IParkAndRideNode>>(Lifestyle.Singleton);
 
+            Global.ContainerDaySim.Register<IPersistenceFactory<IDestinationParkingNode>, PersistenceFactory<IDestinationParkingNode>>(Lifestyle.Singleton);
+
             Global.ContainerDaySim.Register<IPersistenceFactory<ITransitStopArea>, PersistenceFactory<ITransitStopArea>>(Lifestyle.Singleton);
 
             Global.ContainerDaySim.Register<IPersistenceFactory<IZone>, PersistenceFactory<IZone>>(Lifestyle.Singleton);
@@ -55,6 +57,8 @@ namespace DaySim {
             Global.ContainerDaySim.Register<IWrapperFactory<IParcelCreator>, WrapperFactory<IParcelWrapper, IParcelCreator, IParcel>>(Lifestyle.Singleton);
 
             Global.ContainerDaySim.Register<IWrapperFactory<IParcelNodeCreator>, WrapperFactory<IParcelNodeWrapper, IParcelNodeCreator, IParcelNode>>(Lifestyle.Singleton);
+
+            Global.ContainerDaySim.Register<IWrapperFactory<IDestinationParkingNodeCreator>, WrapperFactory<IDestinationParkingNodeWrapper, IDestinationParkingNodeCreator, IDestinationParkingNode>>(Lifestyle.Singleton);
 
             Global.ContainerDaySim.Register<IWrapperFactory<IParkAndRideNodeCreator>, WrapperFactory<IParkAndRideNodeWrapper, IParkAndRideNodeCreator, IParkAndRideNode>>(Lifestyle.Singleton);
 

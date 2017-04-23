@@ -124,6 +124,10 @@ namespace DaySim.Framework.Core {
             get { return GetWorkingSubpath("park_and_ride_node.tsv"); }
         }
 
+        public static string DefaultInputDestinationParkingNodePath {
+            get { return GetWorkingSubpath("destination_parking_node.tsv"); }
+        }
+
         public static bool ParcelNodeIsEnabled {
             get { return !string.IsNullOrEmpty(Configuration.RawParcelNodePath) && !string.IsNullOrEmpty(Configuration.InputParcelNodePath); }
         }
@@ -200,6 +204,9 @@ namespace DaySim.Framework.Core {
             get { return GetWorkingPath("park_and_ride_node.bin"); }
         }
 
+        public static string WorkingDestinationParkingNodePath {
+            get { return GetWorkingPath("destination_parking_node.bin"); }
+        }
         public static string WorkingParcelNodePath {
             get { return GetWorkingPath("parcel_node.bin"); }
         }

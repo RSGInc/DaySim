@@ -68,6 +68,8 @@ namespace DaySim {
         public static void Run() {
             var ixxi = ImportIxxi();
 
+            var  destinationParkingNodes = ConvertDestinationParkingNodeFile();
+
             var parkAndRideNodes = new Dictionary<int, Tuple<int, int, int, int, int>>();
             if (!(Global.Configuration.DataType == "Actum")) {
                 parkAndRideNodes = ImportParkAndRideNodes();
@@ -207,8 +209,10 @@ namespace DaySim {
             return ixxi;
         }
 
+
         private static Dictionary<int, Tuple<int, int, int, int, int>> ImportParkAndRideNodes() {
-            if (!Global.ParkAndRideNodeIsEnabled) {
+            if (!Global.ParkAndRideNodeIsEnabled)
+            {
                 return new Dictionary<int, Tuple<int, int, int, int, int>>();
             }
 
@@ -216,17 +220,21 @@ namespace DaySim {
             var rawFile = Global.GetInputPath(Global.Configuration.RawParkAndRideNodePath).ToFile();
             var inputFile = Global.GetInputPath(Global.Configuration.InputParkAndRideNodePath).ToFile();
 
-            if (Global.PrintFile != null) {
+            if (Global.PrintFile != null)
+            {
                 Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
             }
 
-            using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+            using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+            {
                 reader.ReadLine();
 
                 string line = null;
 
-                try {
-                    while ((line = reader.ReadLine()) != null) {
+                try
+                {
+                    while ((line = reader.ReadLine()) != null)
+                    {
                         var row = line.Split(new[] { Global.Configuration.RawParkAndRideNodeDelimiter }, StringSplitOptions.RemoveEmptyEntries);
                         var id = Convert.ToInt32(row[0]);
                         var zoneId = Convert.ToInt32(row[1]);
@@ -235,11 +243,14 @@ namespace DaySim {
                         var capacity = Convert.ToInt32(row[4]);
                         var cost = Convert.ToInt32(row[5]);
 
-                        if (!parkAndRideNodes.ContainsKey(id)) {
+                        if (!parkAndRideNodes.ContainsKey(id))
+                        {
                             parkAndRideNodes.Add(id, new Tuple<int, int, int, int, int>(zoneId, xCoordinate, yCoordinate, capacity, cost));
                         }
                     }   //end while
-                } catch (FormatException e) {
+                }
+                catch (FormatException e)
+                {
                     throw new Exception("Format problem in file '" + rawFile + "' at line " + reader.LineNumber + " with content '" + line + "'.", e);
                 }
             }
@@ -985,6 +996,104 @@ namespace DaySim {
                             writer.WriteLine();
                         } else {
                             writer.Write(Global.Configuration.InputTransitStopAreaDelimiter);
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        private static Dictionary<int, Tuple<int, int, int>> ConvertDestinationParkingNodeFile()  {
+
+            if (String.IsNullOrEmpty(Global.Configuration.RawDestinationParkingNodePath))
+                return null;
+
+
+            var destinationParkingNodes = new Dictionary<int, Tuple<int, int, int>>();
+            var rawFile = Global.GetInputPath(Global.Configuration.RawDestinationParkingNodePath).ToFile();
+            var inputFile = Global.GetInputPath(Global.Configuration.InputDestinationParkingNodePath).ToFile();
+
+            if (Global.PrintFile != null) {
+                Global.PrintFile.WriteFileInfo(rawFile, true, inputFile.Name);
+            }
+
+            using (var reader = new CountingReader(rawFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))             {
+                using (var writer = new StreamWriter(inputFile.Open(FileMode.Create, FileAccess.Write, FileShare.Read)))        {
+
+                    WriteDestinationParkingNodeHeader(reader, writer);
+                    var newId = 0;
+                    string line = null;
+                    try                     {
+                        while ((line = reader.ReadLine()) != null)  {
+                            var row = line.Split(new[] { Global.Configuration.RawDestinationParkingNodeDelimiter }, StringSplitOptions.RemoveEmptyEntries);
+                            var originalId = int.Parse(row[0]);
+                            int xcoord = Convert.ToInt32(Math.Round(double.Parse(row[2])));
+                            int ycoord = Convert.ToInt32(Math.Round(double.Parse(row[3])));
+
+                            destinationParkingNodes.Add(originalId, new Tuple<int, int, int>(newId, xcoord, ycoord));
+
+                            for (var i = 0; i < row.Length; i++)  {
+                                switch (i)     {
+                                    case 0:
+                                        writer.Write(originalId); 
+
+                                        break;
+                                    case 2: // xcoord
+                                        writer.Write(xcoord);
+
+                                        break;
+                                    case 3: // ycoord
+                                        writer.Write(ycoord);
+
+                                        break;
+                                    default:
+                                        writer.Write(row[i]);
+
+                                        break;
+                                }
+
+                                if (i == row.Length - 1)  {
+                                    writer.WriteLine();
+                                }
+                                else  {
+                                    writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
+                                }
+                            }
+                        }
+                    }
+                    catch (FormatException e)  {
+                        throw new Exception("Format problem in file '" + rawFile + "' at line " + reader.LineNumber + " with content '" + line + "'.", e);
+                    }
+                }
+            }
+
+            return destinationParkingNodes;
+        }
+
+        private static void WriteDestinationParkingNodeHeader(TextReader reader, TextWriter writer)   {
+            var line = reader.ReadLine();
+
+            if (line == null)  {
+                throw new MissingHeaderException("The header is missing from the DestinationParkingNode file. Please ensure that the raw file contains the appropriate header.");
+            }
+
+            var fields = line.Split(new[] { Global.Configuration.RawDestinationParkingNodeDelimiter }, StringSplitOptions.RemoveEmptyEntries);
+
+            for (var i = 0; i < fields.Length; i++) {
+                switch (i)           {
+                    case 0:
+                        writer.Write("ID");
+                        writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
+
+                        break;
+                    default:
+                        writer.Write(fields[i]);
+
+                        if (i == fields.Length - 1)   {
+                            writer.WriteLine();
+                        }
+                        else {
+                            writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
                         }
 
                         break;

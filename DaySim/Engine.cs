@@ -18,6 +18,7 @@ using DaySim.Framework.Exceptions;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
 using DaySim.ParkAndRideShadowPricing;
+using DaySim.DestinationParkingShadowPricing;
 using DaySim.Sampling;
 using DaySim.Settings;
 using DaySim.ShadowPricing;
@@ -174,6 +175,11 @@ namespace DaySim {
 
             Global
                 .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IDestinationParkingNode>>()
+                .Initialize(Global.Configuration);
+
+            Global
+                .ContainerDaySim
                 .GetInstance<IPersistenceFactory<ITransitStopArea>>()
                 .Initialize(Global.Configuration);
 
@@ -242,6 +248,11 @@ namespace DaySim {
             Global
                 .ContainerDaySim
                 .GetInstance<IWrapperFactory<IParkAndRideNodeCreator>>()
+                .Initialize(Global.Configuration);
+
+            Global
+                .ContainerDaySim
+                .GetInstance<IWrapperFactory<IDestinationParkingNodeCreator>>()
                 .Initialize(Global.Configuration);
 
             Global
@@ -350,9 +361,11 @@ namespace DaySim {
         }
 
         private static void InitializeInput() {
+            if (string.IsNullOrEmpty(Global.Configuration.InputDestinationParkingNodePath)) {
+                Global.Configuration.InputDestinationParkingNodePath = Global.DefaultInputDestinationParkingNodePath;
+            }
             if (string.IsNullOrEmpty(Global.Configuration.InputParkAndRideNodePath)) {
                 Global.Configuration.InputParkAndRideNodePath = Global.DefaultInputParkAndRideNodePath;
-
             }
 
             if (string.IsNullOrEmpty(Global.Configuration.InputParcelNodePath)) {
@@ -421,6 +434,7 @@ namespace DaySim {
 
             }
 
+            var inputDestinationParkingNodeFile = Global.DestinationParkingNodeIsEnabled ? Global.GetInputPath(Global.Configuration.InputDestinationParkingNodePath).ToFile() : null;
             var inputParkAndRideNodeFile = Global.ParkAndRideNodeIsEnabled ? Global.GetInputPath(Global.Configuration.InputParkAndRideNodePath).ToFile() : null;
             var inputParcelNodeFile = Global.ParcelNodeIsEnabled ? Global.GetInputPath(Global.Configuration.InputParcelNodePath).ToFile() : null;
             var inputParcelFile = Global.GetInputPath(Global.Configuration.InputParcelPath).ToFile();
@@ -435,7 +449,7 @@ namespace DaySim {
             var inputTourFile = Global.GetInputPath(Global.Configuration.InputTourPath).ToFile();
             var inputTripFile = Global.GetInputPath(Global.Configuration.InputTripPath).ToFile();
 
-            InitializeInputDirectories(inputParkAndRideNodeFile, inputParcelNodeFile, inputParcelFile, inputZoneFile, inputHouseholdFile, inputPersonFile, inputHouseholdDayFile, inputJointTourFile, inputFullHalfTourFile, inputPartialHalfTourFile, inputPersonDayFile, inputTourFile, inputTripFile);
+            InitializeInputDirectories(inputDestinationParkingNodeFile, inputParkAndRideNodeFile, inputParcelNodeFile, inputParcelFile, inputZoneFile, inputHouseholdFile, inputPersonFile, inputHouseholdDayFile, inputJointTourFile, inputFullHalfTourFile, inputPartialHalfTourFile, inputPersonDayFile, inputTourFile, inputTripFile);
 
             if (Global.PrintFile == null) {
                 return;
@@ -444,6 +458,7 @@ namespace DaySim {
             Global.PrintFile.WriteLine("Input files:");
             Global.PrintFile.IncrementIndent();
 
+            Global.PrintFile.WriteFileInfo(inputDestinationParkingNodeFile, "Destination parking node is not enabled, input destination parking node file not set.");
             Global.PrintFile.WriteFileInfo(inputParkAndRideNodeFile, "Park-and-ride node is not enabled, input park-and-ride node file not set.");
             Global.PrintFile.WriteFileInfo(inputParcelNodeFile, "Parcel node is not enabled, input parcel node file not set.");
             Global.PrintFile.WriteFileInfo(inputParcelFile);
@@ -464,7 +479,12 @@ namespace DaySim {
             Global.PrintFile.DecrementIndent();
         }
 
-        private static void InitializeInputDirectories(FileInfo inputParkAndRideNodeFile, FileInfo inputParcelNodeFile, FileInfo inputParcelFile, FileInfo inputZoneFile, FileInfo inputHouseholdFile, FileInfo inputPersonFile, FileInfo inputHouseholdDayFile, FileInfo inputJointTourFile, FileInfo inputFullHalfTourFile, FileInfo inputPartialHalfTourFile, FileInfo inputPersonDayFile, FileInfo inputTourFile, FileInfo inputTripFile) {
+        private static void InitializeInputDirectories(FileInfo inputDestinationParkingNodeFile, FileInfo inputParkAndRideNodeFile, FileInfo inputParcelNodeFile, FileInfo inputParcelFile, FileInfo inputZoneFile, FileInfo inputHouseholdFile, FileInfo inputPersonFile, FileInfo inputHouseholdDayFile, FileInfo inputJointTourFile, FileInfo inputFullHalfTourFile, FileInfo inputPartialHalfTourFile, FileInfo inputPersonDayFile, FileInfo inputTourFile, FileInfo inputTripFile) {
+
+            if (inputDestinationParkingNodeFile != null)  {
+                inputDestinationParkingNodeFile.CreateDirectory();
+            }
+
             if (inputParkAndRideNodeFile != null) {
                 inputParkAndRideNodeFile.CreateDirectory();
             }
@@ -482,7 +502,7 @@ namespace DaySim {
             inputPersonFile.CreateDirectory();
             Global.GetOutputPath(Global.Configuration.OutputPersonPath).CreateDirectory();
 
-            var override1 = (inputParkAndRideNodeFile != null && !inputParkAndRideNodeFile.Exists) || (inputParcelNodeFile != null && !inputParcelNodeFile.Exists) || !inputParcelFile.Exists || !inputZoneFile.Exists || !inputHouseholdFile.Exists || !inputPersonFile.Exists;
+            var override1 = (inputDestinationParkingNodeFile != null && !inputDestinationParkingNodeFile.Exists) || (inputParkAndRideNodeFile != null && !inputParkAndRideNodeFile.Exists) || (inputParcelNodeFile != null && !inputParcelNodeFile.Exists) || !inputParcelFile.Exists || !inputZoneFile.Exists || !inputHouseholdFile.Exists || !inputPersonFile.Exists;
             var override2 = false;
 
             if (Global.Configuration.IsInEstimationMode) {
@@ -518,6 +538,7 @@ namespace DaySim {
         }
 
         private static void InitializeWorking() {
+            var workingDestinationParkingNodeFile = Global.DestinationParkingNodeIsEnabled ? Global.WorkingDestinationParkingNodePath.ToFile() : null;
             var workingParkAndRideNodeFile = Global.ParkAndRideNodeIsEnabled ? Global.WorkingParkAndRideNodePath.ToFile() : null;
             var workingParcelNodeFile = Global.ParcelNodeIsEnabled ? Global.WorkingParcelNodePath.ToFile() : null;
             var workingParcelFile = Global.WorkingParcelPath.ToFile();
@@ -534,7 +555,7 @@ namespace DaySim {
 
             InitializeWorkingDirectory();
 
-            InitializeWorkingImports(workingParkAndRideNodeFile, workingParcelNodeFile, workingParcelFile, workingZoneFile, workingHouseholdFile, workingPersonFile, workingHouseholdDayFile, workingJointTourFile, workingFullHalfTourFile, workingPartialHalfTourFile, workingPersonDayFile, workingTourFile, workingTripFile);
+            InitializeWorkingImports(workingDestinationParkingNodeFile, workingParkAndRideNodeFile, workingParcelNodeFile, workingParcelFile, workingZoneFile, workingHouseholdFile, workingPersonFile, workingHouseholdDayFile, workingJointTourFile, workingFullHalfTourFile, workingPartialHalfTourFile, workingPersonDayFile, workingTourFile, workingTripFile);
 
             if (Global.PrintFile == null) {
                 return;
@@ -543,6 +564,7 @@ namespace DaySim {
             Global.PrintFile.WriteLine("Working files:");
             Global.PrintFile.IncrementIndent();
 
+            Global.PrintFile.WriteFileInfo(workingDestinationParkingNodeFile, "Destination parking node is not enabled, working destination parking node file not set.");
             Global.PrintFile.WriteFileInfo(workingParkAndRideNodeFile, "Park-and-ride node is not enabled, working park-and-ride node file not set.");
             Global.PrintFile.WriteFileInfo(workingParcelNodeFile, "Parcel node is not enabled, working parcel node file not set.");
             Global.PrintFile.WriteFileInfo(workingParcelFile);
@@ -575,9 +597,13 @@ namespace DaySim {
             OverrideShouldRunRawConversion();
         }
 
-        private static void InitializeWorkingImports(FileInfo workingParkAndRideNodeFile, FileInfo workingParcelNodeFile, FileInfo workingParcelFile, FileInfo workingZoneFile, FileInfo workingHouseholdFile, FileInfo workingPersonFile, FileInfo workingHouseholdDayFile, FileInfo workingJointTourFile, FileInfo workingFullHalfTourFile, FileInfo workingPartialHalfTourFile, FileInfo workingPersonDayFile, FileInfo workingTourFile, FileInfo workingTripFile) {
-            if (Global.Configuration.ShouldRunRawConversion || (workingParkAndRideNodeFile != null && !workingParkAndRideNodeFile.Exists) || (workingParcelNodeFile != null && !workingParcelNodeFile.Exists) || !workingParcelFile.Exists || !workingZoneFile.Exists || !workingHouseholdFile.Exists || !workingPersonFile.Exists) {
-                if (workingParkAndRideNodeFile != null) {
+        private static void InitializeWorkingImports(FileInfo workingDestinationParkingNodeFile, FileInfo workingParkAndRideNodeFile, FileInfo workingParcelNodeFile, FileInfo workingParcelFile, FileInfo workingZoneFile, FileInfo workingHouseholdFile, FileInfo workingPersonFile, FileInfo workingHouseholdDayFile, FileInfo workingJointTourFile, FileInfo workingFullHalfTourFile, FileInfo workingPartialHalfTourFile, FileInfo workingPersonDayFile, FileInfo workingTourFile, FileInfo workingTripFile) {
+            if (Global.Configuration.ShouldRunRawConversion || (workingDestinationParkingNodeFile != null && !workingDestinationParkingNodeFile.Exists) || (workingParkAndRideNodeFile != null && !workingParkAndRideNodeFile.Exists) || (workingParcelNodeFile != null && !workingParcelNodeFile.Exists) || !workingParcelFile.Exists || !workingZoneFile.Exists || !workingHouseholdFile.Exists || !workingPersonFile.Exists) {
+                if (workingDestinationParkingNodeFile != null) {
+                    OverrideImport(Global.Configuration, x => x.ImportDestinationParkingNodes);
+                }
+
+                if (workingParkAndRideNodeFile != null)    {
                     OverrideImport(Global.Configuration, x => x.ImportParkAndRideNodes);
                 }
 
@@ -629,6 +655,7 @@ namespace DaySim {
             ImportParcels();
             ImportParcelNodes();
             ImportParkAndRideNodes();
+            ImportDestinationParkingNodes();
             ImportTransitStopAreas();
             ImportZones();
             ImportHouseholds();
@@ -732,6 +759,21 @@ namespace DaySim {
                 .Importer
                 .Import();
         }
+
+        private static void ImportDestinationParkingNodes()
+        {
+            if (!Global.DestinationParkingNodeIsEnabled || !Global.Configuration.ImportDestinationParkingNodes)  {
+                return;
+            }
+
+            Global
+                .ContainerDaySim
+                .GetInstance<IPersistenceFactory<IDestinationParkingNode>>()
+                .Importer
+                .Import();
+
+        }
+
 
         private static void ImportHouseholds() {
             if (!Global.Configuration.ImportHouseholds) {
@@ -1481,6 +1523,7 @@ namespace DaySim {
 
             ShadowPriceCalculator.CalculateAndWriteShadowPrices();
             ParkAndRideShadowPriceCalculator.CalculateAndWriteShadowPrices();
+            DestinationParkingShadowPriceCalculator.CalculateAndWriteShadowPrices();
 
             timer.Stop();
             overallDaySimTimer.Print();
