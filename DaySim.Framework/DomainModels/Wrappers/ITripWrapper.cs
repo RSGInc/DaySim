@@ -37,6 +37,14 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
         int ArrivalTimeLimit { get; set; }
 
+        int DestinationParkingNodeId { get; set; }
+
+        int DestinationParkingType { get; set; }
+
+        double DestinationParkingCost { get; set; }
+
+        double DestinationParkingWalkTime { get; set; }
+
         bool IsHalfTourFromOrigin { get; set; }
 
         bool IsToTourOrigin { get; set; }

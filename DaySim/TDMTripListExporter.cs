@@ -29,6 +29,52 @@ namespace DaySim {
         private void WriteHeader() {
             if (Global.Configuration.UseCustomTDMTripListFormat)  {
                 //add custom code to write header here
+                _writer.Write("HHOLD");
+                _writer.Write(_delimiter);
+
+                _writer.Write("PERSON");
+                _writer.Write(_delimiter);
+
+                _writer.Write("TOUR");
+                _writer.Write(_delimiter);
+
+                _writer.Write("TRIP");
+                _writer.Write(_delimiter);
+
+                _writer.Write("START");
+                _writer.Write(_delimiter);
+
+                _writer.Write("END");
+                _writer.Write(_delimiter);
+
+                _writer.Write("DURATION");
+                _writer.Write(_delimiter);
+
+                _writer.Write("ORIGIN");
+                _writer.Write(_delimiter);
+
+                _writer.Write("DESTINATION");
+                _writer.Write(_delimiter);
+
+                _writer.Write("PURPOSE");
+                _writer.Write(_delimiter);
+
+                _writer.Write("MODE");
+                _writer.Write(_delimiter);
+
+                _writer.Write("PARKNODE");
+                _writer.Write(_delimiter);
+
+                _writer.Write("PARKTYPE");
+                _writer.Write(_delimiter);
+
+                _writer.Write("PARKCOST");
+                _writer.Write(_delimiter);
+
+                _writer.Write("PARKWALK");
+                _writer.Write(_delimiter);
+
+                _writer.WriteLine("EXPFAC");
             }
             else if (Global.Configuration.UseTransimsTDMTripListFormat) {
                 _writer.Write("HHOLD");
@@ -112,8 +158,54 @@ namespace DaySim {
             }
             if (Global.Configuration.UseCustomTDMTripListFormat)  {
                 //add custom code to write data items corresponding to header here
+                _writer.Write(trip.Household.Id);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.Person.Sequence);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.Tour.Sequence);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.IsHalfTourFromOrigin ? trip.Sequence : trip.Tour.HalfTour1Trips + trip.Sequence);
+                _writer.Write(_delimiter);
+
+                 _writer.Write(trip.DepartureTime);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.ArrivalTime);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.ActivityEndTime - trip.ArrivalTime);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.OriginParcel.Id);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.DestinationParcel.Id);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.DestinationPurpose);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.Mode);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.DestinationParkingNodeId);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.DestinationParkingType);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.DestinationParkingCost);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.DestinationParkingWalkTime);
+                _writer.Write(_delimiter);
+
+                _writer.WriteLine(trip.ExpansionFactor);
             }
-            if (Global.Configuration.UseTransimsTDMTripListFormat) {
+            else if (Global.Configuration.UseTransimsTDMTripListFormat) {
                 _writer.Write(trip.Household.Id);
                 _writer.Write(_delimiter);
 

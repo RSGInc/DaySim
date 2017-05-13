@@ -223,6 +223,14 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
         public int ArrivalTimeLimit { get; set; }
 
+        public int DestinationParkingNodeId { get; set; }
+
+        public int DestinationParkingType { get; set; }
+
+        public double DestinationParkingCost { get; set; }
+
+        public double DestinationParkingWalkTime { get; set; }
+
         public bool IsHalfTourFromOrigin { get; set; }
 
         public bool IsToTourOrigin { get; set; }
@@ -476,12 +484,26 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunIntermediateStopLocationModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripModeModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripTimeModel)) {
                 return;
             }
+            //
+            var parkTime2 = IsToTourOrigin ? 0 :                            //trips to home have no parking
+                        (IsHalfTourFromOrigin && Sequence == 1) ? Tour.DestinationDepartureTime : //trip to primary tour destination
+                        (IsHalfTourFromOrigin && Sequence > 1) ? GetPreviousTrip().ArrivalTime : //intermediate stop on outbound half tour
+                       (!IsHalfTourFromOrigin && Sequence > 1) ? GetPreviousTrip().ArrivalTime : //intermediate stop on return half tour
+                       (!IsHalfTourFromOrigin && Sequence == 1) ? 0 : 0;                         //trip from primary tour destination, parking already counted
 
-            var modeImpedance = GetTripModeImpedance(DepartureTime, true);
+
+            var modeImpedance = GetTripModeImpedance(DepartureTime, true, -parkTime2);
 
             TravelTime = modeImpedance.TravelTime;
             TravelCost = modeImpedance.TravelCost;
             TravelDistance = modeImpedance.TravelDistance;
+            DestinationParkingNodeId = modeImpedance.DestinationParkingNodeId;
+            if (DestinationParkingNodeId > 0)            {
+                DestinationParkingType = modeImpedance.DestinationParkingType;
+                DestinationParkingCost = modeImpedance.DestinationParkingCost;
+                DestinationParkingWalkTime = modeImpedance.DestinationParkingWalkTime;
+                SetDestinationParkingStay(DepartureTime,parkTime2);
+            }
 
             if (Global.Configuration.IsInEstimationMode) {
                 return;
@@ -568,6 +590,26 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
             if (!Global.Configuration.IsInEstimationMode) {
                 PersonDay.IsValid = false;
+            }
+        }
+
+        public virtual void SetDestinationParkingStay(int min1, int min2)  {
+            if (!Global.DestinationParkingNodeIsEnabled || !Global.Configuration.ShouldUseDestinationParkingShadowPricing || Global.Configuration.IsInEstimationMode)  {
+                return;
+            }
+
+            var arrivalTime = Math.Min(min1, min2);
+            var departureTime = Math.Max(min1, min2);
+            var mode = Mode;
+
+            var parkingLoad =
+                ChoiceModelFactory
+                    .DestinationParkingNodeDao
+                    .Get(DestinationParkingNodeId)
+                    .ParkingLoad;
+
+            for (var minute = arrivalTime; minute < departureTime; minute++) {
+                parkingLoad[minute] += Household.ExpansionFactor / (mode == Global.Settings.Modes.Hov3 ? 3.3 : mode == Global.Settings.Modes.Hov2 ? 2 : 1);
             }
         }
 
@@ -859,7 +901,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
             }
         }
 
-        private TripModeImpedance GetTripModeImpedance(int minute, bool includeCostAndDistance = false) {
+        private TripModeImpedance GetTripModeImpedance(int minute, bool includeCostAndDistance = false, int minute2 = 0 ) {
             var modeImpedance = new TripModeImpedance();
             var costCoefficient = Tour.CostCoefficient;
             var timeCoefficient = Tour.TimeCoefficient;
@@ -913,13 +955,17 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
                 IEnumerable<IPathTypeModel> pathTypeModels =
                     PathTypeModelFactory.Singleton
-                        .Run(Household.RandomUtility, origin, destination, minute, 0, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Household.OwnsAutomatedVehicles>0, Person.GetTransitFareDiscountFraction(), false, useMode);
+                        .Run(Household.RandomUtility, origin, destination, minute, minute2, DestinationPurpose, costCoefficient, timeCoefficient, true, 1, Household.OwnsAutomatedVehicles>0, Person.GetTransitFareDiscountFraction(), false, useMode);
                 pathType = pathTypeModels.First();
 
                 modeImpedance.TravelTime = pathType.PathTime;
                 modeImpedance.GeneralizedTime = pathType.GeneralizedTimeLogsum;
                 modeImpedance.PathType = pathType.PathType;
                 modeImpedance.WalkAccessEgressTime = pathType.PathTransitWalkAccessEgressTime;
+                modeImpedance.DestinationParkingNodeId = pathType.PathDestinationParkingNodeId;
+                modeImpedance.DestinationParkingType = pathType.PathDestinationParkingType;
+                modeImpedance.DestinationParkingCost = pathType.PathDestinationParkingCost;
+                modeImpedance.DestinationParkingWalkTime = pathType.PathDestinationParkingWalkTime;
 
                 if (!includeCostAndDistance) {
                     return modeImpedance;

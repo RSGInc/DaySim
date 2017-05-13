@@ -24,6 +24,14 @@ namespace DaySim.Framework.Core {
 
         public int TotalMinutesAfter { get; set; }
 
+        public int DestinationParkingNodeId { get; set; }
+
+        public int DestinationParkingType { get; set; }
+
+        public double DestinationParkingCost { get; set; }
+
+        public double DestinationParkingWalkTime { get; set; }
+
         public double TravelTime { get; set; }
 
         public double GeneralizedTime { get; set; }

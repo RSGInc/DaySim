@@ -44,6 +44,9 @@ namespace DaySim.PathTypeModels {
         protected readonly double[] _pathCost = new double[Global.Settings.PathTypes.TotalPathTypes];
         protected readonly int[] _pathParkAndRideNodeId = new int[Global.Settings.PathTypes.TotalPathTypes];
         protected readonly int[] _pathDestinationParkingNodeId = new int[Global.Settings.PathTypes.TotalPathTypes];
+        protected readonly int[] _pathDestinationParkingType = new int[Global.Settings.PathTypes.TotalPathTypes];
+        protected readonly double[] _pathDestinationParkingCost = new double[Global.Settings.PathTypes.TotalPathTypes];
+        protected readonly double[] _pathDestinationParkingWalkTime = new double[Global.Settings.PathTypes.TotalPathTypes];
         protected readonly int[] _pathOriginStopAreaKey = new int[Global.Settings.PathTypes.TotalPathTypes];
         protected readonly int[] _pathDestinationStopAreaKey = new int[Global.Settings.PathTypes.TotalPathTypes];
         protected readonly double[] _pathParkAndRideTransitTime = new double[Global.Settings.PathTypes.TotalPathTypes];
@@ -93,6 +96,10 @@ namespace DaySim.PathTypeModels {
         public virtual int PathType { get; protected set; }
 
         public virtual int PathParkAndRideNodeId { get; protected set; }
+        public virtual int PathDestinationParkingNodeId { get; protected set; }
+        public virtual int PathDestinationParkingType { get; protected set; }
+        public virtual double PathDestinationParkingCost { get; protected set; }
+        public virtual double PathDestinationParkingWalkTime { get; protected set; }
 
         public virtual int PathOriginStopAreaKey { get; protected set; }
 
@@ -231,6 +238,7 @@ namespace DaySim.PathTypeModels {
                 } else if (Mode == Global.Settings.Modes.Hov3 || Mode == Global.Settings.Modes.Hov2 || Mode == Global.Settings.Modes.Sov || Mode == Global.Settings.Modes.PaidRideShare) {
                     if (Mode != Global.Settings.Modes.Sov || (_isDrivingAge && _householdCars > 0)) {
                         if (Global.DestinationParkingNodeIsEnabled && !useZones && ChoiceModelFactory.DestinationParkingNodeDao != null
+                            && Math.Abs(_returnTime) > Constants.EPSILON
                             && Global.Configuration.FirstZoneNumberForDestinationParkingChoice > 0
                             && _destinationParcel.ZoneKey >= Global.Configuration.FirstZoneNumberForDestinationParkingChoice
                             && _destinationParcel.ZoneKey <= Global.Configuration.LastZoneNumberForDestinationParkingChoice)   {
@@ -312,6 +320,10 @@ namespace DaySim.PathTypeModels {
             PathDistance = _pathDistance[_choice];
             PathCost = _pathCost[_choice];
             GeneralizedTimeChosen = _utility[_choice] / tourTimeCoefficient;
+            PathDestinationParkingNodeId = _pathDestinationParkingNodeId[_choice];
+            PathDestinationParkingType = _pathDestinationParkingType[_choice];
+            PathDestinationParkingCost = _pathDestinationParkingCost[_choice];
+            PathDestinationParkingWalkTime = _pathDestinationParkingWalkTime[_choice];
             PathParkAndRideNodeId = _pathParkAndRideNodeId[_choice];
             if (Mode == Global.Settings.Modes.Transit) {
                 PathTransitWalkAccessEgressTime = _pathTransitWalkAccessEgressTime[_choice];
@@ -612,11 +624,11 @@ namespace DaySim.PathTypeModels {
 
                 var parkingParcel = ChoiceModelFactory.Parcels[node.ParcelId];
 
-                var arriveTime = _outboundTime;
-                var departTime = _returnTime > 0 ? _returnTime : _outboundTime + 60; //revisit this assumption!!
+                var arriveTime = Math.Min(_outboundTime, Math.Abs(_returnTime));
+                var departTime = Math.Max(_outboundTime, Math.Abs(_returnTime));
                 var parkingCost = node.SetDestinationParkingEffectivePrice(arriveTime, departTime, _purpose);
 
-                if (parkingCost < -100) {
+                if (parkingCost < -500) {
                     continue;
                 }
 
@@ -693,6 +705,9 @@ namespace DaySim.PathTypeModels {
                 bestNodeUtility = nodeUtility;
 
                 _pathDestinationParkingNodeId[pathType] = node.Id;
+                _pathDestinationParkingType[pathType] = node.ParkingType;
+                _pathDestinationParkingCost[pathType] = parkingCost;
+                _pathDestinationParkingWalkTime[pathType] = walkTime;
                 _pathTime[pathType] = nodePathTime;
                 _pathDistance[pathType] = nodePathDistance;
                 _pathCost[pathType] = nodePathCost;

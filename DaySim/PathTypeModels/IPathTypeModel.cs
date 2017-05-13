@@ -18,6 +18,12 @@ namespace DaySim.PathTypeModels {
 
         int PathType { get; }
 
+        int PathDestinationParkingNodeId { get; }
+        int PathDestinationParkingType { get; }
+        double PathDestinationParkingCost { get; }
+        double PathDestinationParkingWalkTime { get; }
+
+
         int PathParkAndRideNodeId { get; }
 
         double PathParkAndRideTransitTime { get; }
