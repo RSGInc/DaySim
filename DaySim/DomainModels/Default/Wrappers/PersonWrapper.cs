@@ -167,17 +167,17 @@ namespace DaySim.DomainModels.Default.Wrappers {
             set { _person.AutoDistanceToUsualSchool = value; }
         }
 
-        public int UsualModeToWork {
+        public double UsualModeToWork {
             get { return _person.UsualModeToWork; }
             set { _person.UsualModeToWork = value; }
         }
 
-        public int UsualArrivalPeriodToWork {
+        public double UsualArrivalPeriodToWork {
             get { return _person.UsualArrivalPeriodToWork; }
             set { _person.UsualArrivalPeriodToWork = value; }
         }
 
-        public int UsualDeparturePeriodFromWork {
+        public double UsualDeparturePeriodFromWork {
             get { return _person.UsualDeparturePeriodFromWork; }
             set { _person.UsualDeparturePeriodFromWork = value; }
         }
@@ -192,12 +192,12 @@ namespace DaySim.DomainModels.Default.Wrappers {
             set { _person.PaidParkingAtWorkplace = value; }
         }
 
-        public int PaperDiary {
+        public double PaperDiary {
             get { return _person.PaperDiary; }
             set { _person.PaperDiary = value; }
         }
 
-        public int ProxyResponse {
+        public double ProxyResponse {
             get { return _person.ProxyResponse; }
             set { _person.ProxyResponse = value; }
         }
@@ -210,6 +210,10 @@ namespace DaySim.DomainModels.Default.Wrappers {
         #endregion
 
         #region flags/choice model/etc. properties
+
+        public double WorkLocationLogsum     { get;  set;      }
+
+        public double SchoolLocationLogsum   { get;  set;      }
 
         public bool IsFullOrPartTimeWorker { get; set; }
 
@@ -363,6 +367,9 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
                 AutoTimeToUsualWork = autoPathRoundTrip.PathTime / 2.0;
                 AutoDistanceToUsualWork = autoPathRoundTrip.PathDistance / 2.0;
+                if (Global.Configuration.BCA_WriteAggregateLogsumsToPersonRecords) {
+                    AutoTimeToUsualSchool = WorkLocationLogsum;
+                }
             }
 
             if ((!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) && Household.ResidenceParcel != null && UsualSchoolParcel != null) {
@@ -374,6 +381,21 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
                 AutoTimeToUsualSchool = autoPathRoundTrip.PathTime / 2.0;
                 AutoDistanceToUsualSchool = autoPathRoundTrip.PathDistance / 2.0;
+                if (Global.Configuration.BCA_WriteAggregateLogsumsToPersonRecords) {
+                    AutoTimeToUsualSchool = SchoolLocationLogsum;
+                }
+            }
+
+            if (Global.Configuration.BCA_WriteAggregateLogsumsToPersonRecords) {
+                var carOwnership = GetCarOwnershipSegment();
+                var votSegment = Household.GetVotALSegment();
+                var transitAccess = Household.ResidenceParcel.TransitAccessSegment();
+                var residenceZoneId = Household.ResidenceZoneId;
+                UsualModeToWork= Global.AggregateLogsums[residenceZoneId][Global.Settings.Purposes.Escort][carOwnership][votSegment][transitAccess];
+                UsualArrivalPeriodToWork = Global.AggregateLogsums[residenceZoneId][Global.Settings.Purposes.PersonalBusiness][carOwnership][votSegment][transitAccess];
+                UsualDeparturePeriodFromWork = Global.AggregateLogsums[residenceZoneId][Global.Settings.Purposes.Shopping][carOwnership][votSegment][transitAccess];
+                PaperDiary = Global.AggregateLogsums[residenceZoneId][Global.Settings.Purposes.Meal][carOwnership][votSegment][transitAccess];
+                ProxyResponse = Global.AggregateLogsums[residenceZoneId][Global.Settings.Purposes.Social][carOwnership][votSegment][transitAccess];
             }
         }
 

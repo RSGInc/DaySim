@@ -47,7 +47,7 @@ namespace DaySim {
                 _writer.Write("END");
                 _writer.Write(_delimiter);
 
-                _writer.Write("DURATION");
+                _writer.Write("ACTEND");
                 _writer.Write(_delimiter);
 
                 _writer.Write("ORIGIN");
@@ -62,6 +62,9 @@ namespace DaySim {
                 _writer.Write("MODE");
                 _writer.Write(_delimiter);
 
+                _writer.Write("DORP");
+                _writer.Write(_delimiter);
+
                 _writer.Write("PARKNODE");
                 _writer.Write(_delimiter);
 
@@ -72,6 +75,15 @@ namespace DaySim {
                 _writer.Write(_delimiter);
 
                 _writer.Write("PARKWALK");
+                _writer.Write(_delimiter);
+
+                _writer.Write("COSTCOEF");
+                _writer.Write(_delimiter);
+
+                _writer.Write("TIMECOEF");
+                _writer.Write(_delimiter);
+
+                _writer.Write("FREEPARK");
                 _writer.Write(_delimiter);
 
                 _writer.WriteLine("EXPFAC");
@@ -176,7 +188,7 @@ namespace DaySim {
                 _writer.Write(trip.ArrivalTime);
                 _writer.Write(_delimiter);
 
-                _writer.Write(trip.ActivityEndTime - trip.ArrivalTime);
+                _writer.Write(trip.ActivityEndTime);
                 _writer.Write(_delimiter);
 
                 _writer.Write(trip.OriginParcel.Id);
@@ -191,6 +203,9 @@ namespace DaySim {
                 _writer.Write(trip.Mode);
                 _writer.Write(_delimiter);
 
+                _writer.Write(trip.DriverType);
+                _writer.Write(_delimiter);
+
                 _writer.Write(trip.DestinationParkingNodeId);
                 _writer.Write(_delimiter);
 
@@ -201,6 +216,15 @@ namespace DaySim {
                 _writer.Write(_delimiter);
 
                 _writer.Write(trip.DestinationParkingWalkTime);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.Tour.CostCoefficient);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.Tour.TimeCoefficient);
+                _writer.Write(_delimiter);
+
+                _writer.Write(trip.Person.PaidParkingAtWorkplace);
                 _writer.Write(_delimiter);
 
                 _writer.WriteLine(trip.ExpansionFactor);

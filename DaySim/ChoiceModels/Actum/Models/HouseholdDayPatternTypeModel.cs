@@ -566,7 +566,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                             if (person.UsualDeparturePeriodFromWork != Constants.DEFAULT_VALUE && person.UsualArrivalPeriodToWork != Constants.DEFAULT_VALUE) {
                                 //JLB 201406
                                 //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(person, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
-                                var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
+                                var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, (int)person.UsualArrivalPeriodToWork, (int)person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
                                 mandatoryLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
                             } else {
                                 //JLB 201406

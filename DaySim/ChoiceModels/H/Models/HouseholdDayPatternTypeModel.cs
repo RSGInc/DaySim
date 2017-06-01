@@ -529,7 +529,7 @@ namespace DaySim.ChoiceModels.H.Models {
                     if (person.PersonType <= Global.Settings.PersonTypes.PartTimeWorker) {
                         if (person.UsualWorkParcelId != Constants.DEFAULT_VALUE && person.UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
                             if (person.UsualDeparturePeriodFromWork != Constants.DEFAULT_VALUE && person.UsualArrivalPeriodToWork != Constants.DEFAULT_VALUE) {
-                                var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
+                                var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, (int)person.UsualArrivalPeriodToWork, (int)person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
                                 mandatoryLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
                             } else {
                                 var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, person.Household.HouseholdTotals.DrivingAgeMembers);

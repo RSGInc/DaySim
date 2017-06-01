@@ -76,6 +76,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                 var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
                 var choice = (ParcelWrapper)chosenAlternative.Choice;
+                person.WorkLocationLogsum = chosenAlternative.ComputeLogsum();
 
                 person.UsualWorkParcelId = choice.Id;
                 person.UsualWorkParcel = choice;

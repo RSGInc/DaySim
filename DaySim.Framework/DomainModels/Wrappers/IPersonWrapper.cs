@@ -21,6 +21,11 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
         #region flags/choice model/etc. properties
 
+        double WorkLocationLogsum { get; set;  }
+
+        double SchoolLocationLogsum { get; set;  }
+
+
         bool IsFullOrPartTimeWorker { get; set; }
 
         bool IsFulltimeWorker { get; set; }
