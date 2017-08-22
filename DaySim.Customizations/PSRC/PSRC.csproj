@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="ChoiceModels\Default\Models\PSRC_OtherHomeBasedTourModeModel.cs" />
     <Compile Include="ChoiceModels\Default\Models\PSRC_OtherTourDestinationModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\PSRC_SchoolTourModeModel.cs" />
     <Compile Include="ChoiceModels\Default\Models\PSRC_WorkTourModeModel.cs" />
     <Compile Include="PathTypeModels\PSRC_PathTypeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

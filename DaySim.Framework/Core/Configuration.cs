@@ -1608,7 +1608,7 @@ namespace DaySim.Framework.Core {
         public int DestinationParkingShadowPriceTimeSpread { get; set; }
 
         [XmlAttribute]
-        public bool BCA_WriteAggregateLogsumsToPersonRecords { get; set; } = false;
+        public bool BCA_WriteAggregateLogsumsToPersonRecords { get; set; }
 
         [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;
