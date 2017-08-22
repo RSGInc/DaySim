@@ -184,6 +184,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(31, childrenUnder5);
                     alternative.AddUtilityTerm(32, childrenAge5Through15);
                     alternative.AddUtilityTerm(33, drivingAgeStudents);
+                    alternative.AddUtilityTerm(38, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(39, carsLessThanDriversFlag); // for calibration of hov3 vs hov2
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
                 } else if (mode == Global.Settings.Modes.Hov2) {
                     alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
@@ -192,13 +194,20 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(42, carsLessThanDriversFlag);
                 } else if (mode == Global.Settings.Modes.Sov) {
                     alternative.AddUtilityTerm(50, 1);
-                } else if (mode == Global.Settings.Modes.Bike) {
+                    alternative.AddUtilityTerm(52, carsLessThanDriversFlag); // for calibration
+                }
+                else if (mode == Global.Settings.Modes.Bike) {
                     alternative.AddUtilityTerm(60, 1);
-                } else if (mode == Global.Settings.Modes.Walk) {
+                    alternative.AddUtilityTerm(67, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(68, carsLessThanDriversFlag); //for calibration
+                }
+                else if (mode == Global.Settings.Modes.Walk) {
                     alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
                     alternative.AddUtilityTerm(70, 1);
                     alternative.AddUtilityTerm(73, ageBetween51And98Flag);
                     alternative.AddUtilityTerm(76, destinationParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(77, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(78, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(81, childrenUnder5);
                     alternative.AddUtilityTerm(82, childrenAge5Through15);
                     alternative.AddUtilityTerm(83, drivingAgeStudents);

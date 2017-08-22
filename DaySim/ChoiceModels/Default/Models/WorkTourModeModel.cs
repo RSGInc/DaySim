@@ -311,6 +311,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     //                        alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
                 } else if (mode == Global.Settings.Modes.Transit) {
                     alternative.AddUtilityTerm(20, 1);
+                    alternative.AddUtilityTerm(21, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(22, carsLessThanDriversFlag); //for calibration
                     //                        alternative.AddUtility(129, destinationParcel.MixedUse2Index1());
                     alternative.AddUtilityTerm(130, Math.Log(destinationParcel.TotalEmploymentDensity1() + 1) * 2553.0 / Math.Log(2553.0));
                     alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
@@ -329,6 +331,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(32, childrenAge5Through15);
                     //                        alternative.AddUtility(34, nonworkingAdults + retiredAdults);
                     alternative.AddUtilityTerm(35, ((double)pathTypeModel.PathDistance).AlmostEquals(0) ? 0 : Math.Log(pathTypeModel.PathDistance));
+                    alternative.AddUtilityTerm(36, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(37, carsLessThanDriversFlag); // for calibration of hov3 vs hov2
                     alternative.AddUtilityTerm(38, onePersonHouseholdFlag);
                     alternative.AddUtilityTerm(39, twoPersonHouseholdFlag);
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
@@ -374,6 +378,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(60, 1);
                     alternative.AddUtilityTerm(61, maleFlag);
                     alternative.AddUtilityTerm(63, ageBetween51And98Flag);
+                    alternative.AddUtilityTerm(67, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(68, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(169, destinationParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(168, destinationParcel.TotalEmploymentDensity1());
                     //                        alternative.AddUtility(167, destinationParcel.NetIntersectionDensity1());
@@ -384,9 +390,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(162, (class2Dist > 0).ToFlag());
                     //                        alternative.AddUtility(163, (worstDist > 0).ToFlag());
                 } else if (mode == Global.Settings.Modes.Walk) {
-                    alternative.AddUtilityTerm(70, 1);
+                    alternative.AddUtilityTerm(70, 1); //for calibration
                     alternative.AddUtilityTerm(71, maleFlag);
                     //                        alternative.AddUtility(73, ageBetween51And98Flag);
+                    alternative.AddUtilityTerm(77, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(78, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
                     //                        alternative.AddUtility(178, destinationParcel.TotalEmploymentDensity1());
                     //                        alternative.AddUtility(177, destinationParcel.NetIntersectionDensity1());

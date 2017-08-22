@@ -252,6 +252,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 if (mode == Global.Settings.Modes.Transit) {
                     alternative.AddUtilityTerm(20, 1);
                     alternative.AddUtilityTerm(21, noCarsInHouseholdFlag);
+                    alternative.AddUtilityTerm(22, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(120, shoppingTourFlag);
                     //                        alternative.AddUtility(121, mealTourFlag);
                     //                        alternative.AddUtility(129, destinationParcel.MixedUse2Index1());
@@ -285,6 +286,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(32, childrenAge5Through15);
                     alternative.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
                     alternative.AddUtilityTerm(35, ((double)pathTypeModel.PathDistance).AlmostEquals(0) ? 0 : Math.Log(pathTypeModel.PathDistance));
+                    alternative.AddUtilityTerm(38, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(39, carsLessThanWorkersFlag); // for calibration of hov3 vs hov2
                     alternative.AddUtilityTerm(40, 1);
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
                     alternative.AddUtilityTerm(43, carsLessThanWorkersFlag);
@@ -315,6 +318,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(60, 1);
                     alternative.AddUtilityTerm(61, maleFlag);
                     alternative.AddUtilityTerm(63, ageBetween51And98Flag);
+                    alternative.AddUtilityTerm(67, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(68, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(160, socialOrRecreationTourFlag);
                     alternative.AddUtilityTerm(169, destinationParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(168, destinationParcel.TotalEmploymentDensity1());
@@ -328,6 +333,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                 } else if (mode == Global.Settings.Modes.Walk) {
                     alternative.AddUtilityTerm(70, 1);
                     alternative.AddUtilityTerm(73, ageBetween51And98Flag);
+                    alternative.AddUtilityTerm(77, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(78, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(171, mealTourFlag);
                     alternative.AddUtilityTerm(172, socialOrRecreationTourFlag);
                     //                        alternative.AddUtility(179, destinationParcel.MixedUse4Index1());

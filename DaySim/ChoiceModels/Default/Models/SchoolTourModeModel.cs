@@ -214,6 +214,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     //    case Global.Settings.Modes.SchoolBus:
                     alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * tour.TimeCoefficient);
                     alternative.AddUtilityTerm(10, 1);
+                    alternative.AddUtilityTerm(11, noCarsInHouseholdFlag); // for calibration
+                    alternative.AddUtilityTerm(13, carsLessThanDriversFlag); // for calibration
                     alternative.AddUtilityTerm(17, childUnder5Flag);
                     alternative.AddUtilityTerm(18, adultFlag);
                 }
@@ -297,6 +299,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(30, 1);
                     alternative.AddUtilityTerm(37, twoPersonHouseholdFlag);
                     alternative.AddUtilityTerm(37, onePersonHouseholdFlag);
+                    alternative.AddUtilityTerm(38, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(39, carsLessThanDriversFlag); // for calibration of hov3 vs hov2
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
                     alternative.AddUtilityTerm(44, income0To25KFlag);
                     alternative.AddUtilityTerm(45, income25To50KFlag);
@@ -308,6 +312,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(38, onePersonHouseholdFlag);
                     alternative.AddUtilityTerm(40, 1);
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
+                    alternative.AddUtilityTerm(42, carsLessThanDriversFlag); // for calibration
                     alternative.AddUtilityTerm(44, income0To25KFlag);
                     alternative.AddUtilityTerm(45, income25To50KFlag);
                     alternative.AddUtilityTerm(47, childUnder5Flag);
@@ -343,6 +348,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                     alternative.AddUtilityTerm(60, 1);
                     alternative.AddUtilityTerm(61, maleFlag);
+                    alternative.AddUtilityTerm(67, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(68, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(69, adultFlag);
                     alternative.AddUtilityTerm(169, destinationParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(168, destinationParcel.TotalEmploymentDensity1());
@@ -355,6 +362,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(163, (worstDist > 0).ToFlag());
                 } else if (mode == Global.Settings.Modes.Walk) {
                     alternative.AddUtilityTerm(70, 1);
+                    alternative.AddUtilityTerm(77, noCarsInHouseholdFlag); //for calibration
+                    alternative.AddUtilityTerm(78, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(79, adultFlag);
                     alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
                     //                        alternative.AddUtilityTerm(178, destinationParcel.TotalEmploymentDensity1());
