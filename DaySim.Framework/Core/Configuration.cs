@@ -696,6 +696,11 @@ namespace DaySim.Framework.Core {
         public double PathImpedance_TransitFareDiscountFractionAge65Up { get; set; }
 
         [XmlAttribute]
+        public double PathImpedance_TransitPassOwnerWorkerFareFactor { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TransitPassOwnerNonWorkerFareFactor { get; set; }
+
+        [XmlAttribute]
         public double PathImpedance_TransitPassCostPercentChangeVersusBase { get; set; }
 
         [XmlAttribute]

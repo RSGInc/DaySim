@@ -301,11 +301,14 @@ namespace DaySim.DomainModels.Default.Wrappers {
         }
 
         public virtual double GetTransitFareDiscountFraction() {
+            var passDiscount = 1.0 - Math.Min(1.0, IsWorker ? Global.Configuration.PathImpedance_TransitPassOwnerWorkerFareFactor
+                                                            : Global.Configuration.PathImpedance_TransitPassOwnerNonWorkerFareFactor);
+
             return
                 !Global.Configuration.PathImpedance_TransitUseFareDiscountFractions
                     ? 0.0
                     : Global.Configuration.IncludeTransitPassOwnershipModel && TransitPassOwnership > 0
-                        ? 1.0
+                        ? passDiscount
                         : Math.Abs(Global.Configuration.Policy_UniversalTransitFareDiscountFraction) > Constants.EPSILON
                             ? Global.Configuration.Policy_UniversalTransitFareDiscountFraction
                             : IsChildUnder5
