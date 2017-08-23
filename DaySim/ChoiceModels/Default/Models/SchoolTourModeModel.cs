@@ -305,8 +305,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(30, 1);
                     alternative.AddUtilityTerm(37, twoPersonHouseholdFlag);
                     alternative.AddUtilityTerm(37, onePersonHouseholdFlag);
-                    alternative.AddUtilityTerm(38, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
-                    alternative.AddUtilityTerm(39, carsLessThanDriversFlag); // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(36, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(35, carsLessThanDriversFlag); // for calibration of hov3 vs hov2
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
                     alternative.AddUtilityTerm(44, income0To25KFlag);
                     alternative.AddUtilityTerm(45, income25To50KFlag);

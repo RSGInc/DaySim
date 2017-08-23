@@ -271,6 +271,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(32, childrenAge5Through15);
                     alternative.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
                     alternative.AddUtilityTerm(35, ((double)pathTypeModel.PathDistance).AlmostEquals(0) ? 0 : Math.Log(pathTypeModel.PathDistance));
+                    alternative.AddUtilityTerm(36, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(37, carsLessThanWorkersFlag); // for calibration of hov3 vs hov2
                     alternative.AddUtilityTerm(38, onePersonHouseholdFlag);
                     alternative.AddUtilityTerm(39, twoPersonHouseholdFlag);
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
@@ -286,8 +288,6 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(32, childrenAge5Through15);
                     alternative.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
                     alternative.AddUtilityTerm(35, ((double)pathTypeModel.PathDistance).AlmostEquals(0) ? 0 : Math.Log(pathTypeModel.PathDistance));
-                    alternative.AddUtilityTerm(38, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
-                    alternative.AddUtilityTerm(39, carsLessThanWorkersFlag); // for calibration of hov3 vs hov2
                     alternative.AddUtilityTerm(40, 1);
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
                     alternative.AddUtilityTerm(43, carsLessThanWorkersFlag);

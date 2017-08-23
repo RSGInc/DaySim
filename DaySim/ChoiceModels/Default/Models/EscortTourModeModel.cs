@@ -184,8 +184,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(31, childrenUnder5);
                     alternative.AddUtilityTerm(32, childrenAge5Through15);
                     alternative.AddUtilityTerm(33, drivingAgeStudents);
-                    alternative.AddUtilityTerm(38, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
-                    alternative.AddUtilityTerm(39, carsLessThanDriversFlag); // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(36, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
+                    alternative.AddUtilityTerm(37, carsLessThanDriversFlag); // for calibration of hov3 vs hov2
                     alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
                 } else if (mode == Global.Settings.Modes.Hov2) {
                     alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
