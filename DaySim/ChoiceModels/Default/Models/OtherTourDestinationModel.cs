@@ -23,7 +23,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         private const int TOTAL_NESTED_ALTERNATIVES = 0;
         private const int TOTAL_LEVELS = 1;
         // regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
-        private const int MAX_REGULAR_PARAMETER = 120;
+        private const int MAX_REGULAR_PARAMETER = 125;
         private const int MaxDistrictNumber = 100;
         private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
@@ -244,6 +244,10 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddUtilityTerm(6, _secondaryFlag * _otherPatternFlag * distanceFromOrigin3);
 
                 alternative.AddUtilityTerm(7, (!_tour.IsHomeBasedTour).ToFlag() * distanceFromOriginLog);
+                //new calibration constants work-based tours
+                alternative.AddUtilityTerm(121, (!_tour.IsHomeBasedTour).ToFlag() * distanceFromOrigin4);
+                alternative.AddUtilityTerm(122, (!_tour.IsHomeBasedTour).ToFlag() * distanceFromOrigin3);
+
                 alternative.AddUtilityTerm(8, household.Has0To15KIncome.ToFlag() * distanceFromOriginLog);
                 alternative.AddUtilityTerm(9, household.HasMissingIncome.ToFlag() * distanceFromOriginLog);
                 alternative.AddUtilityTerm(10, person.IsRetiredAdult.ToFlag() * distanceFromOriginLog);
