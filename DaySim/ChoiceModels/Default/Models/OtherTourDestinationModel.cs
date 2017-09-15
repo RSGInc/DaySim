@@ -200,11 +200,12 @@ namespace DaySim.ChoiceModels.Default.Models {
                 //var aggregateLogsumHomeBased = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votSegment][transitAccess];
                 //var aggregateLogsumWorkBased = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.Work_BASED][carOwnership][votSegment][transitAccess];
 
+                //distanceFromOrigin is in units of 10 miles, so 1=10 miles
                 var distanceFromOrigin = _tour.OriginParcel.DistanceFromOrigin(destinationParcel, _tour.DestinationArrivalTime);
                 var distanceFromOrigin0 = Math.Max(0, Math.Min(distanceFromOrigin - .5, 1 - .5));
-                var distanceFromOrigin3 = Math.Max(0, distanceFromOrigin - 1);
-                var distanceFromOrigin4 = Math.Min(distanceFromOrigin, .10);
-                var distanceFromOrigin5 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .5 - .1));
+                var distanceFromOrigin3 = Math.Max(0, distanceFromOrigin - 1); //distance over 10 miles
+                var distanceFromOrigin4 = Math.Min(distanceFromOrigin, .10); //distance up to 1 mile
+                var distanceFromOrigin5 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .5 - .1)); //distance between 1 and 5 miles
                 var distanceFromOrigin8 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .35 - .1));
                 var distanceFromOrigin9 = Math.Max(0, Math.Min(distanceFromOrigin - .35, 1 - .35));
                 var distanceFromOriginLog = Math.Log(1 + distanceFromOrigin);
@@ -247,6 +248,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 //new calibration constants work-based tours
                 alternative.AddUtilityTerm(58, (!_tour.IsHomeBasedTour).ToFlag() * distanceFromOrigin4);
                 alternative.AddUtilityTerm(59, (!_tour.IsHomeBasedTour).ToFlag() * distanceFromOrigin3);
+                alternative.AddUtilityTerm(60, (!_tour.IsHomeBasedTour).ToFlag() * distanceFromOrigin5);
 
                 alternative.AddUtilityTerm(8, household.Has0To15KIncome.ToFlag() * distanceFromOriginLog);
                 alternative.AddUtilityTerm(9, household.HasMissingIncome.ToFlag() * distanceFromOriginLog);
