@@ -9,6 +9,7 @@ using HDF5DotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace DaySim.Framework.Roster {
     public class OMXSkimFileReader : ISkimFileReader {
@@ -22,17 +23,28 @@ namespace DaySim.Framework.Roster {
         }
 
         public SkimMatrix Read(string filename, int field, float scale) {
-            Console.WriteLine("Reading {0}", filename);
-            int hdf5NameEnd = filename.IndexOf("/");
+            
+            //hdf5 filename contain "filename/group/skim"
+            //get the index of group
+            int hdf5GroupEnd = filename.LastIndexOf("/");
 
-            // the first part of the name in the roster file is the omx/hdf5 file
+            //get the index of filename
+            int hdf5NameEnd = hdf5GroupEnd>0 ? filename.LastIndexOf("/", hdf5GroupEnd-1) : -1;
+
+            //get the omx/hdf5 filename
             string HDFName = filename.Substring(0, hdf5NameEnd);
 
             //rename filename to be only the name of the skim matrix inside of the skim file
-            //skims are stored in the "data" folder within the omx/hdf5 file
             filename = filename.Substring(hdf5NameEnd);
 
-            string hdfFile = _path + "\\" + HDFName;
+            string hdfFile = Path.Combine(_path, HDFName);
+            Console.WriteLine("Loading skim file: {0}.", hdfFile);
+
+            var file = new FileInfo(hdfFile);
+            if (!file.Exists)
+            {
+                throw new FileNotFoundException(string.Format("The skim file {0} could not be found.", file.FullName));
+            }
 
             var dataFile = H5F.open(hdfFile, H5F.OpenMode.ACC_RDONLY);
             var dataSet = H5D.open(dataFile, filename);
