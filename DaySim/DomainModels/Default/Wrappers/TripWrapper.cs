@@ -435,14 +435,14 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 //set main and other passenger randomly by tour purpose to get right percentage of trips to assign to network
                 var randomNumber = Household.RandomUtility.Uniform01();
                 DriverType = 
-                    (  Tour.DestinationPurpose == Global.Settings.Purposes.WorkBased && randomNumber < 0.5
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < 0.8
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < 0.3
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < 0.3
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < 0.4
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < 0.4
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Meal && randomNumber < 0.3
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < 0.3) ?
+                    (  Tour.DestinationPurpose == Global.Settings.Purposes.WorkBased && randomNumber < 0.75
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < 0.98
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < 0.32
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < 0.4
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < 0.70
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < 0.73
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Meal && randomNumber < 0.75
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < 0.62) ?
                     Global.Settings.DriverTypes.Driver : Global.Settings.DriverTypes.Passenger;
                 if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
                     DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
