@@ -218,8 +218,11 @@ namespace DaySim.PathTypeModels {
 
             var votValue = (60.0 * _tourTimeCoefficient) / _tourCostCoefficient; // in $/hour
 
-
-            var skimMode = (Mode == Global.Settings.Modes.ParkAndRide) ? Global.Settings.Modes.Transit : Mode;
+            var skimMode = (Mode == Global.Settings.Modes.ParkAndRide) ? Global.Settings.Modes.Transit 
+                : (Mode == Global.Settings.Modes.PaidRideShare 
+                      && (!Global.Configuration.AV_PaidRideShareModeUsesAVs 
+                       || !Global.Configuration.AV_UseSeparateAVSkimMatrices)) ? Global.Settings.Modes.Hov3
+                : Mode;
             var availablePathTypes = 0;
             var expUtilitySum = 0D;
             var bestExpUtility = 0D;
@@ -245,7 +248,7 @@ namespace DaySim.PathTypeModels {
                             RunAutoModelWithDestinationParkingChoice(skimMode, pathType, votValue, useZones);
                         }
                         else
-                            RunAutoModel(skimMode, pathType, votValue, useZones);
+                            RunAutoModel(Mode, pathType, votValue, useZones);
                     }
                 } else if (Mode == Global.Settings.Modes.Transit) {
                     if (Global.StopAreaIsEnabled) {
@@ -585,10 +588,20 @@ namespace DaySim.PathTypeModels {
             if (_pathTime[pathType] > pathTimeLimit || _pathTime[pathType] < Constants.EPSILON) {
                 return;
             }
-            _pathCost[pathType] += _pathDistance[pathType] * Global.PathImpedance_AutoOperatingCostPerDistanceUnit;
+            if (skimModeIn != Global.Settings.Modes.PaidRideShare)  {
+                _pathCost[pathType] += _pathDistance[pathType] * Global.PathImpedance_AutoOperatingCostPerDistanceUnit;
+            }
+            else {
+                var extraCostPerMile = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
+                 Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit : Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit;
+                var fixedCostPerRide = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
+                 Global.Configuration.AV_PaidRideShare_FixedCostPerRide : Global.Configuration.PaidRideShare_FixedCostPerRide;
+
+                _pathCost[pathType] += _pathDistance[pathType] * extraCostPerMile  + fixedCostPerRide * (_returnTime > 0 ? 2 : 1);
+            }
 
             var autoTimeCoefficient = useAVVOT 
-                ? _tourTimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : _tourTimeCoefficient; 
+            ? _tourTimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : _tourTimeCoefficient; 
                 
             _utility[pathType] = Global.Configuration.PathImpedance_PathChoiceScaleFactor *
             (_tourCostCoefficient * _pathCost[pathType] +

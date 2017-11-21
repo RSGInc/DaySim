@@ -202,15 +202,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
 
                 if (availableExtra) {
-                    var extraCostPerMile = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
-                    Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit : Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit;
-                    var fixedCostPerRide = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
-                        Global.Configuration.AV_PaidRideShare_FixedCostPerRide : Global.Configuration.PaidRideShare_FixedCostPerRide;
                     var autoTimeCoefficient = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
                         tour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : tour.TimeCoefficient;
                     alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * autoTimeCoefficient);
-                    alternative.AddUtilityTerm(2, distanceExtra * extraCostPerMile * tour.CostCoefficient);
-                    alternative.AddUtilityTerm(2, fixedCostPerRide * tour.CostCoefficient);
 
                     var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
                       ? Global.Configuration.AV_PaidRideShare_ModeConstant 
