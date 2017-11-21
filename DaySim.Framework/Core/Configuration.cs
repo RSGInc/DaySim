@@ -1436,6 +1436,12 @@ namespace DaySim.Framework.Core {
         public bool UseMicrozoneSkims { get; set; }
 
         [XmlAttribute]
+        public bool UseMicrozoneSkimsForBikeMode { get; set; }
+
+        [XmlAttribute]
+        public bool UseMicrozoneSkimsForWalkMode { get; set; }
+
+        [XmlAttribute]
         public string MicrozoneToParkAndRideNodeIndexPath { get; set; }
 
         [XmlAttribute]

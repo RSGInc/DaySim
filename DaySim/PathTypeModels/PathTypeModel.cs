@@ -342,30 +342,44 @@ namespace DaySim.PathTypeModels {
         }
 
 
-        protected void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
+        protected void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones)   {
+            var useMicrozoneSkims = !useZones &&
+                                ((skimMode == Global.Settings.Modes.Walk && Global.Configuration.UseMicrozoneSkimsForWalkMode) ||
+                                 (skimMode == Global.Settings.Modes.Bike && Global.Configuration.UseMicrozoneSkimsForBikeMode));
 
-            var circuityDistance = useZones ? Constants.DEFAULT_VALUE : GetCircuityDistance(skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel);
+            var circuityDistance = (useZones || useMicrozoneSkims) ? Constants.DEFAULT_VALUE : GetCircuityDistance(skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel);
 
             var skimValue =
               useZones
                 ? ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId)
+                : useMicrozoneSkims
+                ? ImpedanceRoster.GetValue("time_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.Sequence, _destinationParcel.Sequence)
                 : ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel, circuityDistance);
 
-            _pathTime[pathType] = skimValue.Variable;
-            _pathDistance[pathType] = skimValue.BlendVariable;
+            var skimTime = skimValue.Variable;
+            var skimDistance = useMicrozoneSkims ? ImpedanceRoster.GetValue("distance_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.Sequence, _destinationParcel.Sequence).Variable
+                         : skimValue.BlendVariable;
+            _pathTime[pathType] = skimTime;
+            _pathDistance[pathType] = skimDistance;
             _pathCost[pathType] = 0;
             _pathParkAndRideNodeId[pathType] = 0;
 
-            if (_returnTime > 0) {
+            if (_returnTime > 0)   {
 
                 skimValue =
                   useZones
                     ? ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _returnTime, _destinationZoneId, _originZoneId)
+                    : useMicrozoneSkims
+                    ? ImpedanceRoster.GetValue("time_mz", skimMode, pathType, votValue, _returnTime, _destinationParcel.Sequence, _originParcel.Sequence)
                     : ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _returnTime, _destinationParcel, _originParcel, circuityDistance);
 
-                _pathTime[pathType] += skimValue.Variable;
-                _pathDistance[pathType] += skimValue.BlendVariable;
+                skimTime = skimValue.Variable;
+                skimDistance = useMicrozoneSkims ? ImpedanceRoster.GetValue("distance_mz", skimMode, pathType, votValue, _returnTime, _destinationParcel.Sequence, _originParcel.Sequence).Variable
+                             : skimValue.BlendVariable;
+                _pathTime[pathType] += skimTime;
+                _pathDistance[pathType] += skimDistance;
             }
+
 
             // sacog-specific adjustment of generalized time for bike mode
             if (_pathDistance[pathType] > Constants.EPSILON && skimMode == Global.Settings.Modes.Bike && Global.Configuration.PathImpedance_BikeUseTypeSpecificDistanceFractions) {

@@ -1296,7 +1296,7 @@ namespace DaySim {
 
             Global.MicrozoneMapping = new Dictionary<int, int>();
 
-            if (Global.Configuration.UseMicrozoneSkims) {
+            if (Global.Configuration.UseMicrozoneSkims || Global.Configuration.UseMicrozoneSkimsForBikeMode || Global.Configuration.UseMicrozoneSkimsForWalkMode) {
                 var microzoneReader =
                     Global
                         .ContainerDaySim
