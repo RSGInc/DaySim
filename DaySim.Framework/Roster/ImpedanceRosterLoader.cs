@@ -57,23 +57,53 @@ namespace DaySim.Framework.Roster {
 
                             break;
                         case "local-bus":
+                        case "transit-type-1":
                             pathType = Global.Settings.PathTypes.LocalBus;
 
                             break;
                         case "light-rail":
+                        case "transit-type-2":
                             pathType = Global.Settings.PathTypes.LightRail;
 
                             break;
                         case "premium-bus":
+                        case "transit-type-3":
                             pathType = Global.Settings.PathTypes.PremiumBus;
 
                             break;
                         case "commuter-rail":
+                        case "transit-type-4":
                             pathType = Global.Settings.PathTypes.CommuterRail;
 
                             break;
                         case "ferry":
+                        case "transit-type-5":
                             pathType = Global.Settings.PathTypes.Ferry;
+
+                            break;
+                        case "local-bus-knr":
+                        case "transit-type-1-knr":
+                            pathType = Global.Settings.PathTypes.LocalBus_Knr;
+
+                            break;
+                        case "light-rail-knr":
+                        case "transit-type-2-knr":
+                            pathType = Global.Settings.PathTypes.LightRail_Knr;
+
+                            break;
+                        case "premium-bus-knr":
+                        case "transit-type-3-knr":
+                            pathType = Global.Settings.PathTypes.PremiumBus_Knr;
+
+                            break;
+                        case "commuter-rail-knr":
+                        case "transit-type-4-knr":
+                            pathType = Global.Settings.PathTypes.CommuterRail_Knr;
+
+                            break;
+                        case "ferry-knr":
+                        case "transit-type-5-knr":
+                            pathType = Global.Settings.PathTypes.Ferry_Knr;
 
                             break;
                         default:

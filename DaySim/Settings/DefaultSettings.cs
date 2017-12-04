@@ -396,7 +396,7 @@ namespace DaySim.Settings {
 
     public class DefaultPathTypes : IPathTypes {
         public virtual int TotalPathTypes {
-            get { return 8; }
+            get { return 13; }
         }
 
         public virtual int None {
@@ -431,73 +431,66 @@ namespace DaySim.Settings {
             get { return 7; }
         }
 
-        public virtual int NewMode {
+        public virtual int TransitType1 {
+            get { return 3; }
+        }
+
+        public virtual int TransitType2 {
             get { return 4; }
         }
 
-        public virtual int Brt {
+        public virtual int TransitType3 {
             get { return 5; }
         }
 
-        public virtual int FixedGuideway {
+        public virtual int TransitType4 {
             get { return 6; }
         }
 
-        public virtual int BrtC2 {
+        public virtual int TransitType5 {
             get { return 7; }
         }
 
-        public virtual int FixedGuidewayC2 {
+        public virtual int LocalBus_Knr {
             get { return 8; }
         }
 
-        public virtual int LocalBusPnr {
+        public virtual int LightRail_Knr {
             get { return 9; }
         }
 
-        public virtual int NewModePnr {
+        public virtual int PremiumBus_Knr {
             get { return 10; }
         }
 
-        public virtual int BrtPnr {
+        public virtual int CommuterRail_Knr {
             get { return 11; }
         }
 
-        public virtual int FixedGuidewayPnr {
+        public virtual int Ferry_Knr {
             get { return 12; }
         }
 
-        public virtual int BrtC2Pnr {
-            get { return 13; }
+        public virtual int TransitType1_Knr {
+            get { return 8; }
         }
 
-        public virtual int FixedGuidewayC2Pnr {
-            get { return 14; }
+        public virtual int TransitType2_Knr {
+            get { return 9; }
         }
 
-        public virtual int LocalBusKnr {
-            get { return 15; }
+        public virtual int TransitType3_Knr {
+            get { return 10; }
         }
 
-        public virtual int NewModeKnr {
-            get { return 16; }
+        public virtual int TransitType4_Knr { 
+            get { return 11; }
         }
 
-        public virtual int BrtKnr {
-            get { return 17; }
+        public virtual int TransitType5_Knr  {
+            get { return 12; }
         }
 
-        public virtual int FixedGuidewayKnr {
-            get { return 18; }
-        }
-
-        public virtual int BrtC2Knr {
-            get { return 19; }
-        }
-
-        public virtual int FixedGuidewayC2Knr {
-            get { return 20; }
-        }
     }
 
     public class DefaultVotGroups : IVotGroups {

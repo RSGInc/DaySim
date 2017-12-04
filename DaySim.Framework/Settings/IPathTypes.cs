@@ -25,38 +25,35 @@ namespace DaySim.Framework.Settings {
 
         int Ferry { get; }
 
-        int NewMode { get; }
+        int TransitType1 { get; }
 
-        int Brt { get; }
+        int TransitType2 { get; }
 
-        int FixedGuideway { get; }
+        int TransitType3 { get; }
 
-        int BrtC2 { get; }
+        int TransitType4 { get; }
 
-        int FixedGuidewayC2 { get; }
+        int TransitType5 { get; }
 
-        int LocalBusPnr { get; }
+        int LocalBus_Knr { get; }
 
-        int NewModePnr { get; }
+        int LightRail_Knr { get; }
 
-        int BrtPnr { get; }
+        int PremiumBus_Knr { get; }
 
-        int FixedGuidewayPnr { get; }
+        int CommuterRail_Knr { get; }
 
-        int BrtC2Pnr { get; }
+        int Ferry_Knr { get; }
 
-        int FixedGuidewayC2Pnr { get; }
+        int TransitType1_Knr { get; }
 
-        int LocalBusKnr { get; }
+        int TransitType2_Knr { get; }
 
-        int NewModeKnr { get; }
+        int TransitType3_Knr { get; }
 
-        int BrtKnr { get; }
+        int TransitType4_Knr { get; }
 
-        int FixedGuidewayKnr { get; }
+        int TransitType5_Knr { get; }
 
-        int BrtC2Knr { get; }
-
-        int FixedGuidewayC2Knr { get; }
     }
 }
