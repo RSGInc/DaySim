@@ -250,8 +250,11 @@ namespace DaySim.PathTypeModels {
                         else
                             RunAutoModel(Mode, pathType, votValue, useZones);
                     }
-                } else if (Mode == Global.Settings.Modes.Transit && pathType < Global.Settings.PathTypes.TransitType1_Knr) {
-                    if (Global.StopAreaIsEnabled) {
+                } else if (Mode == Global.Settings.Modes.Transit) {
+                    if (pathType >= Global.Settings.PathTypes.TransitType1_Knr) {
+                        // don't run model for kiss and ride path types
+                    }
+                    else if (Global.StopAreaIsEnabled) {
                         RunStopAreaWalkTransitModel(skimMode, pathType, votValue, useZones);
                     } else {
                         RunSimpleWalkTransitModel(skimMode, pathType, votValue, useZones);
