@@ -698,6 +698,12 @@ namespace DaySim.Framework.Core {
         public double PathImpedance_TransitFerryInVehicleTimeWeight { get; set; }
 
         [XmlAttribute]
+        public int PathImpedance_ParkAndRideNodeKNRCapacityValue { get; set; }
+
+        [XmlAttribute]
+        public int PathImpedance_KNRAutoAccessTimeFactor { get; set; }
+
+        [XmlAttribute]
         public bool PathImpedance_BikeUseTypeSpecificDistanceFractions { get; set; }
 
         [XmlAttribute]

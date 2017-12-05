@@ -250,7 +250,7 @@ namespace DaySim.PathTypeModels {
                         else
                             RunAutoModel(Mode, pathType, votValue, useZones);
                     }
-                } else if (Mode == Global.Settings.Modes.Transit) {
+                } else if (Mode == Global.Settings.Modes.Transit && pathType < Global.Settings.PathTypes.TransitType1_Knr) {
                     if (Global.StopAreaIsEnabled) {
                         RunStopAreaWalkTransitModel(skimMode, pathType, votValue, useZones);
                     } else {
@@ -896,7 +896,7 @@ namespace DaySim.PathTypeModels {
 
                 parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
             } else {
-                parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity > 0);
+                parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity > Constants.EPSILON || (n.Capacity == 0 && pathType >= Global.Settings.PathTypes.TransitType1_Knr));
             }
 
             // valid node(s), and tour-level call  
@@ -913,7 +913,7 @@ namespace DaySim.PathTypeModels {
 
             foreach (var node in parkAndRideNodes) {
                 // only look at nodes with positive capacity
-                if (node.Capacity < Constants.EPSILON) {
+                if (node.Capacity < Constants.EPSILON && pathType < Global.Settings.PathTypes.TransitType1_Knr ) {
                     continue;
                 }
 
@@ -922,14 +922,16 @@ namespace DaySim.PathTypeModels {
                 //test distance to park and ride against user-set limits
 
 
-                double zzDistPR = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
+                int autoMode = pathType >= Global.Settings.PathTypes.TransitType1_Knr ? Global.Settings.Modes.Hov2 : Global.Settings.Modes.Sov ;
+
+                double zzDistPR = ImpedanceRoster.GetValue("distance", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
 
                 if (zzDistPR > maxMilesToDrive || zzDistPR / Math.Max(zzDistOD, 1.0) > maxDistanceRatio) {
                     continue;
                 }
 
                 var parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];
-                var parkAndRideParkingCost = node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
+                var parkAndRideParkingCost = pathType >= Global.Settings.PathTypes.TransitType1_Knr ? 0.0 : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
                 var transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideZoneId, destinationZoneId);
                 if (!transitPath.Available) {
@@ -953,8 +955,8 @@ namespace DaySim.PathTypeModels {
 
                 var skimValue
                   = useZones
-                      ? ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originZoneId, parkAndRideZoneId)
-                      : ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originParcel, parkAndRideParcel, circuityDistance);
+                      ? ImpedanceRoster.GetValue("ivtime", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originZoneId, parkAndRideZoneId)
+                      : ImpedanceRoster.GetValue("ivtime", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originParcel, parkAndRideParcel, circuityDistance);
 
                 var driveTime = skimValue.Variable;
                 var driveDistance = skimValue.BlendVariable;
@@ -969,8 +971,8 @@ namespace DaySim.PathTypeModels {
 
                 skimValue =
                   useZones
-                    ? ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, parkAndRideZoneId, _originZoneId)
-                    : ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, parkAndRideParcel, _originParcel, circuityDistance);
+                    ? ImpedanceRoster.GetValue("ivtime", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, parkAndRideZoneId, _originZoneId)
+                    : ImpedanceRoster.GetValue("ivtime", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, parkAndRideParcel, _originParcel, circuityDistance);
 
                 driveTime += skimValue.Variable;
                 driveDistance += skimValue.BlendVariable;
@@ -986,14 +988,17 @@ namespace DaySim.PathTypeModels {
                     continue;
                 }
 
+                var driveTimeWeight = Global.Configuration.PathImpedance_TransitDriveAccessTimeWeight
+                    * pathType >= Global.Settings.PathTypes.TransitType1_Knr ? Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor : 1.0;
+
                 var nodeUtility = transitPath.Utility +
                   Global.Configuration.PathImpedance_PathChoiceScaleFactor *
                   (_tourCostCoefficient * parkAndRideParkingCost +
                    _tourTimeCoefficient *
-                   (Global.Configuration.PathImpedance_TransitDriveAccessTimeWeight * driveTime +
+                   (driveTimeWeight * driveTime +
                     Global.Configuration.PathImpedance_TransitWalkAccessTimeWeight * destinationWalkTime));
 
-                if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !Global.Configuration.IsInEstimationMode) {
+                if (Global.Configuration.ShouldUseParkAndRideShadowPricing && pathType < Global.Settings.PathTypes.TransitType1_Knr && !Global.Configuration.IsInEstimationMode) {
                     nodeUtility += node.ShadowPrice[parkMinute];
                 }
 
