@@ -1221,17 +1221,49 @@ namespace DaySim.PathTypeModels {
             // valid path(s).  Proceed.
 
             var pathTypeConstant =
-                pathType == Global.Settings.PathTypes.LocalBus
-                  ? Global.Configuration.PathImpedance_TransitLocalBusPathConstant
-                  : pathType == Global.Settings.PathTypes.LightRail
-                      ? Global.Configuration.PathImpedance_TransitLightRailPathConstant
-                      : pathType == Global.Settings.PathTypes.PremiumBus
-                         ? Global.Configuration.PathImpedance_TransitPremiumBusPathConstant
-                         : pathType == Global.Settings.PathTypes.CommuterRail
-                            ? Global.Configuration.PathImpedance_TransitCommuterRailPathConstant
-                            : pathType == Global.Settings.PathTypes.Ferry
-                                ? Global.Configuration.PathImpedance_TransitFerryPathConstant
-                                : 0;
+                pathType == Global.Settings.PathTypes.TransitType1 ?
+                     (Global.Configuration.PathImpedance_TransitType1PathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType1PathConstant
+                        : Global.Configuration.PathImpedance_TransitLocalBusPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType2 ?
+                     (Global.Configuration.PathImpedance_TransitType2PathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType2PathConstant
+                        : Global.Configuration.PathImpedance_TransitLightRailPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType3 ?
+                     (Global.Configuration.PathImpedance_TransitType3PathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType3PathConstant
+                        : Global.Configuration.PathImpedance_TransitPremiumBusPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType4 ?
+                     (Global.Configuration.PathImpedance_TransitType4PathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType4PathConstant
+                        : Global.Configuration.PathImpedance_TransitCommuterRailPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType5 ?
+                     (Global.Configuration.PathImpedance_TransitType5PathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType5PathConstant
+                        : Global.Configuration.PathImpedance_TransitFerryPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType1_Knr ?
+                     (Global.Configuration.PathImpedance_TransitType1_KnrPathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType1_KnrPathConstant
+                        : Global.Configuration.PathImpedance_TransitLocalBus_KnrPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType2_Knr ?
+                     (Global.Configuration.PathImpedance_TransitType2_KnrPathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType2_KnrPathConstant
+                        : Global.Configuration.PathImpedance_TransitLightRail_KnrPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType3_Knr ?
+                     (Global.Configuration.PathImpedance_TransitType3_KnrPathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType3_KnrPathConstant
+                        : Global.Configuration.PathImpedance_TransitPremiumBus_KnrPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType4_Knr ?
+                     (Global.Configuration.PathImpedance_TransitType4_KnrPathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType4_KnrPathConstant
+                        : Global.Configuration.PathImpedance_TransitCommuterRail_KnrPathConstant)
+                : pathType == Global.Settings.PathTypes.TransitType5_Knr ?
+                     (Global.Configuration.PathImpedance_TransitType5_KnrPathConstant != 0
+                        ? Global.Configuration.PathImpedance_TransitType5_KnrPathConstant
+                        : Global.Configuration.PathImpedance_TransitFerry_KnrPathConstant)
+                : 0; 
+
+
 
             var pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (returnTime > 0 ? 2 : 1);
 
@@ -1265,16 +1297,24 @@ namespace DaySim.PathTypeModels {
             // for sacog, use pathtype-specific time skims and weights
             var pathTypeSpecificTime = 0D;
             var pathTypeSpecificTimeWeight =
-                  pathType == Global.Settings.PathTypes.LightRail
-                    ? Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight
-                    : pathType == Global.Settings.PathTypes.PremiumBus
-                        ? Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight
-                        : pathType == Global.Settings.PathTypes.CommuterRail
-                             ? Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight
-                             : pathType == Global.Settings.PathTypes.Ferry
-                                  ? Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight
-                                  : 0D;
-
+                  (pathType == Global.Settings.PathTypes.TransitType2 || pathType == Global.Settings.PathTypes.TransitType2_Knr)
+                    ? (Global.Configuration.PathImpedance_TransitType2TimeAdditiveWeight != 0
+                        ? Global.Configuration.PathImpedance_TransitType2TimeAdditiveWeight
+                        : Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight)
+                  : (pathType == Global.Settings.PathTypes.TransitType3 || pathType == Global.Settings.PathTypes.TransitType3_Knr)
+                    ? (Global.Configuration.PathImpedance_TransitType3TimeAdditiveWeight != 0
+                        ? Global.Configuration.PathImpedance_TransitType3TimeAdditiveWeight
+                        : Global.Configuration.PathImpedance_TransitPremiumBusTimeAdditiveWeight)
+                  : (pathType == Global.Settings.PathTypes.TransitType4 || pathType == Global.Settings.PathTypes.TransitType4_Knr)
+                    ? (Global.Configuration.PathImpedance_TransitType4TimeAdditiveWeight != 0
+                        ? Global.Configuration.PathImpedance_TransitType4TimeAdditiveWeight
+                        : Global.Configuration.PathImpedance_TransitCommuterRailTimeAdditiveWeight)
+                  : (pathType == Global.Settings.PathTypes.TransitType5 || pathType == Global.Settings.PathTypes.TransitType5_Knr)
+                    ? (Global.Configuration.PathImpedance_TransitType5TimeAdditiveWeight != 0
+                        ? Global.Configuration.PathImpedance_TransitType5TimeAdditiveWeight
+                        : Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight)
+                  : 0;
+ 
             RegionSpecificTransitImpedanceCalculation(skimMode, pathType, votValue, outboundTime, returnTime, originZoneId, destinationZoneId, ref outboundInVehicleTime, ref returnInVehicleTime, ref pathTypeSpecificTime, ref pathTypeSpecificTimeWeight);
 
             var totalInVehicleTime = outboundInVehicleTime + returnInVehicleTime;

@@ -585,10 +585,10 @@ namespace DaySim.Framework.Core {
         public double PathImpedance_TransitLocalBusPathConstant { get; set; }
 
         [XmlAttribute]
-        public double PathImpedance_TransitPremiumBusPathConstant { get; set; }
+        public double PathImpedance_TransitLightRailPathConstant { get; set; }
 
         [XmlAttribute]
-        public double PathImpedance_TransitLightRailPathConstant { get; set; }
+        public double PathImpedance_TransitPremiumBusPathConstant { get; set; }
 
         [XmlAttribute]
         public double PathImpedance_TransitCommuterRailPathConstant { get; set; }
@@ -596,31 +596,54 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public double PathImpedance_TransitFerryPathConstant { get; set; }
 
-        // new constants for Florida
         [XmlAttribute]
-        public double PathImpedance_TransitLocalBusPNRPathConstant { get; set; }
+        public double PathImpedance_TransitType1PathConstant { get; set; }
 
         [XmlAttribute]
-        public double PathImpedance_TransitLocalBusKNRPathConstant { get; set; }
+        public double PathImpedance_TransitType2PathConstant { get; set; }
 
         [XmlAttribute]
-        public double PathImpedance_TransitNEWMODEPathConstant { get; set; }
+        public double PathImpedance_TransitType3PathConstant { get; set; }
 
         [XmlAttribute]
-        public double PathImpedance_TransitBRTPathConstant { get; set; }
+        public double PathImpedance_TransitType4PathConstant { get; set; }
 
         [XmlAttribute]
-        public double PathImpedance_TransitFIXEDGUIDEWAYPathConstant { get; set; }
+        public double PathImpedance_TransitType5PathConstant { get; set; }
 
         [XmlAttribute]
-        public double PathImpedance_TransitBRTTimeAdditiveWeight { get; set; }
-        // new constants for Florida
+        public double PathImpedance_TransitLocalBus_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitLightRail_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitPremiumBus_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitCommuterRail_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitFerry_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType1_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType2_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType3_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType4_KnrPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType5_KnrPathConstant { get; set; }
+
 
         [XmlAttribute]
         public bool PathImpedance_TransitUsePathTypeSpecificTime { get; set; }
-
-        [XmlAttribute]
-        public bool PathImpedance_TransitUseFloridaSubmodes { get; set; }
 
         [XmlAttribute]
         public double PathImpedance_TransitPremiumBusTimeAdditiveWeight { get; set; }
@@ -632,26 +655,45 @@ namespace DaySim.Framework.Core {
         public double PathImpedance_TransitCommuterRailTimeAdditiveWeight { get; set; }
 
         [XmlAttribute]
-        public double PathImpedance_TransitSubwayTimeAdditiveWeight { get; set; }
-
-        [XmlAttribute]
-        public double PathImpedance_TransitPATTimeAdditiveWeight { get; set; }
-
-        [XmlAttribute]
-        public double PathImpedance_TransitTrolleyTimeAdditiveWeight { get; set; }
-
-        [XmlAttribute]
         public double PathImpedance_TransitFerryTimeAdditiveWeight { get; set; }
 
         [XmlAttribute]
+        public double PathImpedance_TransitType2TimeAdditiveWeight { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType3TimeAdditiveWeight { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType4TimeAdditiveWeight { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType5TimeAdditiveWeight { get; set; }
+
+        //for DVRPC override
+        [XmlAttribute]
+        public double PathImpedance_TransitSubwayTimeAdditiveWeight { get; set; }
+
+        //for DVRPC override
+        [XmlAttribute]
+        public double PathImpedance_TransitPATTimeAdditiveWeight { get; set; }
+
+        //for DVRPC override
+        [XmlAttribute]
+        public double PathImpedance_TransitTrolleyTimeAdditiveWeight { get; set; }
+
+        //for Nashville override
+        [XmlAttribute]
         public double PathImpedance_TransitLightRailInVehicleTimeWeight { get; set; }
 
+        //for Nashville override
         [XmlAttribute]
         public double PathImpedance_TransitPremiumBusInVehicleTimeWeight { get; set; }
 
+        //for Nashville override
         [XmlAttribute]
         public double PathImpedance_TransitCommuterRailInVehicleTimeWeight { get; set; }
 
+        //for Nashville override
         [XmlAttribute]
         public double PathImpedance_TransitFerryInVehicleTimeWeight { get; set; }
 
