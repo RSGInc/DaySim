@@ -410,6 +410,9 @@ namespace DaySim.Framework.Core {
         public bool UseShortDistanceNodeToNodeMeasures { get; set; }
 
         [XmlAttribute]
+        public bool UseParkAndRideModeInRosterForParkAndRidePaths { get; set; }
+
+        [XmlAttribute]
         public double PathImpedance_PathChoiceScaleFactor { get; set; }
 
         //new since 203

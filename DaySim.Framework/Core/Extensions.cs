@@ -129,19 +129,48 @@ namespace DaySim.Framework.Core {
                 case "full-network":
                     return Global.Settings.PathTypes.FullNetwork;
                 case "no-tolls":
-                    return Global.Settings.PathTypes.NoTolls;
-                case "local-bus":
-                    return Global.Settings.PathTypes.LocalBus;
-                case "light-rail":
-                    return Global.Settings.PathTypes.LightRail;
-                case "premium-bus":
-                    return Global.Settings.PathTypes.PremiumBus;
-                case "commuter-rail":
-                    return Global.Settings.PathTypes.CommuterRail;
-                case "ferry":
-                    return Global.Settings.PathTypes.Ferry;
                 case "no-toll-network":
                     return Global.Settings.PathTypes.NoTolls;
+                case "local-bus":
+                case "transit-type-1":
+                case "local-bus-pnr":
+                case "transit-type-1-pnr":
+                    return Global.Settings.PathTypes.TransitType1;
+                case "light-rail":
+                case "transit-type-2":
+                case "light-rail-pnr":
+                case "transit-type-2-pnr":
+                    return Global.Settings.PathTypes.TransitType2;
+                case "premium-bus":
+                case "transit-type-3":
+                case "premium-bus-pnr":
+                case "transit-type-3-pnr":
+                    return Global.Settings.PathTypes.TransitType3;
+                case "commuter-rail":
+                case "transit-type-4":
+                case "commuter-rail-pnr":
+                case "transit-type-4-pnr":
+                    return Global.Settings.PathTypes.TransitType4;
+                case "ferry":
+                case "transit-type-5":
+                case "ferry-pnr":
+                case "transit-type-5-pnr":
+                    return Global.Settings.PathTypes.TransitType5;
+                case "local-bus-knr":
+                case "transit-type-1-knr":
+                    return Global.Settings.PathTypes.TransitType1_Knr;
+                case "light-rail-knr":
+                case "transit-type-2-knr":
+                    return Global.Settings.PathTypes.TransitType2_Knr;
+                case "premium-bus-knr":
+                case "transit-type-3-knr":
+                    return Global.Settings.PathTypes.TransitType3_Knr;
+                case "commuter-rail-knr":
+                case "transit-type-4-knr":
+                    return Global.Settings.PathTypes.TransitType4_Knr;
+                case "ferry-knr":
+                case "transit-type-5-knr":
+                    return Global.Settings.PathTypes.TransitType5_Knr;
             }
 
             return Global.Settings.PathTypes.None;

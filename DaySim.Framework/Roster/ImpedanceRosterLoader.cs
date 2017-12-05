@@ -53,31 +53,42 @@ namespace DaySim.Framework.Roster {
 
                             break;
                         case "no-tolls":
+                        case "no-toll-network":
                             pathType = Global.Settings.PathTypes.NoTolls;
 
                             break;
                         case "local-bus":
                         case "transit-type-1":
+                        case "local-bus-pnr":
+                        case "transit-type-1-pnr":
                             pathType = Global.Settings.PathTypes.LocalBus;
 
                             break;
                         case "light-rail":
                         case "transit-type-2":
+                        case "light-rail-pnr":
+                        case "transit-type-2-pnr":
                             pathType = Global.Settings.PathTypes.LightRail;
 
                             break;
                         case "premium-bus":
                         case "transit-type-3":
+                        case "premium-bus-pnr":
+                        case "transit-type-3-pnr":
                             pathType = Global.Settings.PathTypes.PremiumBus;
 
                             break;
                         case "commuter-rail":
                         case "transit-type-4":
+                        case "commuter-rail-pnr":
+                        case "transit-type-4-pnr":
                             pathType = Global.Settings.PathTypes.CommuterRail;
 
                             break;
                         case "ferry":
                         case "transit-type-5":
+                        case "ferry-pnr":
+                        case "transit-type-5-pnr":
                             pathType = Global.Settings.PathTypes.Ferry;
 
                             break;

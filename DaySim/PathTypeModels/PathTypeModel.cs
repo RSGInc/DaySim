@@ -218,10 +218,10 @@ namespace DaySim.PathTypeModels {
 
             var votValue = (60.0 * _tourTimeCoefficient) / _tourCostCoefficient; // in $/hour
 
-            var skimMode = (Mode == Global.Settings.Modes.ParkAndRide) ? Global.Settings.Modes.Transit 
-                : (Mode == Global.Settings.Modes.PaidRideShare 
-                      && (!Global.Configuration.AV_PaidRideShareModeUsesAVs 
-                       || !Global.Configuration.AV_UseSeparateAVSkimMatrices)) ? Global.Settings.Modes.Hov3
+            var skimMode = (Mode == Global.Settings.Modes.ParkAndRide && !Global.Configuration.UseParkAndRideModeInRosterForParkAndRidePaths)
+                ? Global.Settings.Modes.Transit 
+                : (Mode == Global.Settings.Modes.PaidRideShare && (!Global.Configuration.AV_PaidRideShareModeUsesAVs || !Global.Configuration.AV_UseSeparateAVSkimMatrices)) 
+                ? Global.Settings.Modes.Hov3
                 : Mode;
             var availablePathTypes = 0;
             var expUtilitySum = 0D;
