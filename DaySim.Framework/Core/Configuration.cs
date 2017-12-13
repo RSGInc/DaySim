@@ -1670,6 +1670,10 @@ namespace DaySim.Framework.Core {
         public bool BCA_WriteAggregateLogsumsToPersonRecords { get; set; }
 
         [XmlAttribute]
+        public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
+
+
+        [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;
 
         public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };

@@ -24,8 +24,8 @@ namespace DaySim.ChoiceModels.Default.Models {
         private const int MAX_PARAMETER = 299;
         private const int THETA_PARAMETER = 99;
 
-        private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 0, 0, 23 };
-        private readonly int[] _nestedAlternativeIndexes = new[] { 0, 0, 0, 1, 2, 2, 3, 0, 0, 4 };
+        private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 22, 0, 23 };
+        private readonly int[] _nestedAlternativeIndexes = new[] { 0, 0, 0, 1, 2, 2, 3, 3, 0, 4 };
 
         public override void RunInitialize(ICoefficientsReader reader = null) {
             Initialize(CHOICE_MODEL_NAME, Global.Configuration.OtherHomeBasedTourModeModelCoefficients, Global.Settings.Modes.TotalModes, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -46,12 +46,34 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(tour.Id);
 
+            var highestMode = Global.Configuration.IncludeParkAndRideInOtherHomeBasedTourModeModel ? Global.Settings.Modes.ParkAndRide : Global.Settings.Modes.Transit;
+
             if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-                if (tour.DestinationParcel == null || tour.Mode <= Global.Settings.Modes.None || tour.Mode > Global.Settings.Modes.Transit) {
+                if (tour.DestinationParcel == null || tour.Mode <= Global.Settings.Modes.None || tour.Mode > highestMode) {
                     return;
                 }
 
-                IEnumerable<IPathTypeModel> pathTypeModels =
+                IEnumerable<IPathTypeModel> pathTypeModels = null;
+
+                if (Global.Configuration.IncludeParkAndRideInOtherHomeBasedTourModeModel) {
+                    pathTypeModels =
+                    PathTypeModelFactory.Singleton.RunAllPlusParkAndRide(
+                    tour.Household.RandomUtility,
+                        tour.OriginParcel,
+                        tour.DestinationParcel,
+                        tour.DestinationArrivalTime,
+                        tour.DestinationDepartureTime,
+                        tour.DestinationPurpose,
+                        tour.CostCoefficient,
+                        tour.TimeCoefficient,
+                        tour.Person.IsDrivingAge,
+                        tour.Household.VehiclesAvailable,
+                        tour.Household.OwnsAutomatedVehicles > 0,
+                        tour.Person.GetTransitFareDiscountFraction(),
+                        false);
+                }
+                else {
+                    pathTypeModels =
                     PathTypeModelFactory.Singleton.RunAll(
                     tour.Household.RandomUtility,
                         tour.OriginParcel,
@@ -67,6 +89,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                         tour.Person.GetTransitFareDiscountFraction(),
                         false);
 
+                }
                 var pathTypeModel = pathTypeModels.First(x => x.Mode == tour.Mode);
 
                 if (!pathTypeModel.Available) {
@@ -77,7 +100,28 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                 choiceProbabilityCalculator.WriteObservation();
             } else {
-                IEnumerable<IPathTypeModel> pathTypeModels =
+                IEnumerable<IPathTypeModel> pathTypeModels = null;
+
+                if (Global.Configuration.IncludeParkAndRideInOtherHomeBasedTourModeModel)        {
+
+                    pathTypeModels =
+                    PathTypeModelFactory.Singleton.RunAllPlusParkAndRide(
+                    tour.Household.RandomUtility,
+                        tour.OriginParcel,
+                        tour.DestinationParcel,
+                        tour.DestinationArrivalTime,
+                        tour.DestinationDepartureTime,
+                        tour.DestinationPurpose,
+                        tour.CostCoefficient,
+                        tour.TimeCoefficient,
+                        tour.Person.IsDrivingAge,
+                        tour.Household.VehiclesAvailable,
+                        tour.Household.OwnsAutomatedVehicles > 0,
+                        tour.Person.GetTransitFareDiscountFraction(),
+                        false);
+                }
+                else {
+                    pathTypeModels =
                     PathTypeModelFactory.Singleton.RunAll(
                     tour.Household.RandomUtility,
                         tour.OriginParcel,
@@ -92,7 +136,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                         tour.Household.OwnsAutomatedVehicles > 0,
                         tour.Person.GetTransitFareDiscountFraction(),
                         false);
-
+                }
                 RunModel(choiceProbabilityCalculator, tour, pathTypeModels, tour.DestinationParcel);
 
                 var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
@@ -226,7 +270,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             foreach (IPathTypeModel pathTypeModel in pathTypeModels) {
                 IPathTypeModel ipathTypeModel = pathTypeModel;
                 var mode = pathTypeModel.Mode;
-                var available = pathTypeModel.Mode != Global.Settings.Modes.ParkAndRide && pathTypeModel.Available;
+                var available = (pathTypeModel.Mode != Global.Settings.Modes.ParkAndRide || Global.Configuration.IncludeParkAndRideInOtherHomeBasedTourModeModel) && pathTypeModel.Available;
                 var generalizedTimeLogsum = pathTypeModel.GeneralizedTimeLogsum;
 
                 var alternative = choiceProbabilityCalculator.GetAlternative(mode, available, choice == mode);
@@ -243,7 +287,13 @@ namespace DaySim.ChoiceModels.Default.Models {
                     tour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : tour.TimeCoefficient;
                 alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
 
-                if (mode == Global.Settings.Modes.Transit) {
+                if (mode == Global.Settings.Modes.ParkAndRide)  {
+                    alternative.AddUtilityTerm(10, 1);
+                    alternative.AddUtilityTerm(11, noCarsInHouseholdFlag);
+                    alternative.AddUtilityTerm(13, carsLessThanWorkersFlag);
+                    alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
+                }
+                else if (mode == Global.Settings.Modes.Transit) {
                     alternative.AddUtilityTerm(20, 1);
                     alternative.AddUtilityTerm(21, noCarsInHouseholdFlag);
                     alternative.AddUtilityTerm(22, carsLessThanDriversFlag); //for calibration
