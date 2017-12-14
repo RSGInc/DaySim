@@ -751,6 +751,41 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public double PathImpedance_TransitPassCostPercentChangeVersusBase { get; set; }
 
+
+        [XmlAttribute]
+        public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
+
+        [XmlAttribute]
+        public bool IncludeParkAndRideInSchoolTourModeModel { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_WorkTour_NonDriver { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_WorkTour_0VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_WorkTour_1VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_WorkTour_2pVehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_SchoolTour_NonDriver { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_SchoolTour_0VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_SchoolTour_1VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_SchoolTour_2pVehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_OtherTour_NonDriver { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_OtherTour_0VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_OtherTour_1VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_KNRAdditiveConstant_OtherTour_2pVehicleHH { get; set; }
+
+
+
+
         [XmlAttribute]
         public double Coefficients_BaseCostCoefficientPerDollar { get; set; }
         // replaced by Coefficients_BaseCostCoefficientPerMonetaryUnit.  Retained for backward comatibility.
@@ -1668,10 +1703,6 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public bool BCA_WriteAggregateLogsumsToPersonRecords { get; set; }
-
-        [XmlAttribute]
-        public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
-
 
         [XmlAttribute]
         public bool HDF5SkimScaledAndCondensed { get; set; } = false;

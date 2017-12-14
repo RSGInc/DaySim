@@ -288,9 +288,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                 alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
 
                 if (mode == Global.Settings.Modes.ParkAndRide)  {
-                    alternative.AddUtilityTerm(10, 1);
-                    alternative.AddUtilityTerm(11, noCarsInHouseholdFlag);
-                    alternative.AddUtilityTerm(13, carsLessThanWorkersFlag);
+                    alternative.AddUtilityTerm(5, 1);
+                    alternative.AddUtilityTerm(6, noCarsInHouseholdFlag);
+                    alternative.AddUtilityTerm(7, carsLessThanWorkersFlag);
                     alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
                 }
                 else if (mode == Global.Settings.Modes.Transit) {
