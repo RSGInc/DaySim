@@ -928,11 +928,9 @@ namespace DaySim.PathTypeModels {
                   : _householdCars == 0 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_0VehicleHH
                   : _householdCars == 1 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_1VehicleHH
                   : Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_2pVehicleHH)
-                  // density-related effect
-                + (Global.Configuration.AV_PaidRideShareModeUsesAVs
-                 ? Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000)
-                 : Global.Configuration.PaidRideShare_DensityCoefficient    * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000));
-
+                // density-related effect
+                  + Global.Configuration.TNCtoTransit_DensityCoefficient * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000);
+ 
             var driveTimeWeightFactor = knrPathType ? (Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor : 2.0)
                                       : tncPathType ? (Global.Configuration.PathImpedance_TNCAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_TNCAutoAccessTimeFactor : 1.0)
                                                      * Global.Configuration.AV_PaidRideShareModeUsesAVs.ToFlag() * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor)
@@ -964,7 +962,10 @@ namespace DaySim.PathTypeModels {
             double maxMilesToDrive = (Global.Configuration.MaximumMilesToDriveToParkAndRide > 0) ? Global.Configuration.MaximumMilesToDriveToParkAndRide : 999D;
             double maxDistanceRatio = (Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination > 0) ? Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination : 99D;
 
-            int autoMode = knrPathType ? Global.Settings.Modes.Hov2 : Global.Settings.Modes.Sov;
+            bool useAVSkims = (Global.Configuration.AV_PaidRideShareModeUsesAVs && Global.Configuration.AV_UseSeparateAVSkimMatrices);
+
+            int autoMode = tncPathType? (useAVSkims ? Global.Settings.Modes.AV : Global.Settings.Modes.Hov2)
+                         : knrPathType ? Global.Settings.Modes.Hov2 : Global.Settings.Modes.Sov;
 
             double zzDistOD = ImpedanceRoster.GetValue("distance", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId).Variable;
 
@@ -986,10 +987,8 @@ namespace DaySim.PathTypeModels {
 
                 var parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];
                 var parkAndRideCost = knrPathType ? 0.0
-                                           : tncPathType ? (Global.Configuration.AV_PaidRideShareModeUsesAVs 
-                                                      ? Global.Configuration.AV_PaidRideShare_FixedCostPerRide + zzDistPR * Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit
-                                                      : Global.Configuration.PaidRideShare_FixedCostPerRide    + zzDistPR * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit)
-                                                      : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
+                                           : tncPathType ? (Global.Configuration.TNCtoTransit_FixedCostPerRide + zzDistPR * Global.Configuration.TNCtoTransit_ExtraCostPerDistanceUnit)
+                                           : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
                 var transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideZoneId, destinationZoneId);
                 if (!transitPath.Available) {
@@ -1053,7 +1052,7 @@ namespace DaySim.PathTypeModels {
                    (driveTimeWeight * driveTime +
                     Global.Configuration.PathImpedance_TransitWalkAccessTimeWeight * destinationWalkTime));
 
-                if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !knrPathType && !Global.Configuration.IsInEstimationMode) {
+                if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !knrPathType && !tncPathType && !Global.Configuration.IsInEstimationMode) {
                     nodeUtility += node.ShadowPrice[parkMinute];
                 }
 
@@ -1123,10 +1122,9 @@ namespace DaySim.PathTypeModels {
                   : _householdCars == 0 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_0VehicleHH
                   : _householdCars == 1 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_1VehicleHH
                   : Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_2pVehicleHH)
-                // density-related effect
-                + (Global.Configuration.AV_PaidRideShareModeUsesAVs
-                 ? Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000)
-                 : Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000));
+                  // density-related effect
+                  // density-related effect
+                  + Global.Configuration.TNCtoTransit_DensityCoefficient * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000);
 
             var driveTimeWeightFactor = knrPathType ? (Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor : 2.0)
                                       : tncPathType ? (Global.Configuration.PathImpedance_TNCAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_TNCAutoAccessTimeFactor : 1.0)
@@ -1169,7 +1167,10 @@ namespace DaySim.PathTypeModels {
                 return;
             }
 
-            int autoMode = knrPathType ? Global.Settings.Modes.Hov2 : Global.Settings.Modes.Sov;
+            bool useAVSkims = (Global.Configuration.AV_PaidRideShareModeUsesAVs && Global.Configuration.AV_UseSeparateAVSkimMatrices);
+
+            int autoMode = tncPathType ? (useAVSkims ? Global.Settings.Modes.AV : Global.Settings.Modes.Hov2)
+                         : knrPathType ? Global.Settings.Modes.Hov2 : Global.Settings.Modes.Sov;
 
             double zzDistOD = ImpedanceRoster.GetValue("distance", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId).Variable;
 
@@ -1192,11 +1193,8 @@ namespace DaySim.PathTypeModels {
                 var parkAndRideStopAreaKey = node.NearestStopAreaId;
                 var parkAndRideStopArea = Global.TransitStopAreaMapping[node.NearestStopAreaId];
                 var parkAndRideCost = knrPathType ? 0.0
-                                           : tncPathType ? (Global.Configuration.AV_PaidRideShareModeUsesAVs
-                                                      ? Global.Configuration.AV_PaidRideShare_FixedCostPerRide + zzDistPR * Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit
-                                                      : Global.Configuration.PaidRideShare_FixedCostPerRide + zzDistPR * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit)
-                                                      : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
-
+                                           : tncPathType ? (Global.Configuration.TNCtoTransit_FixedCostPerRide + zzDistPR * Global.Configuration.TNCtoTransit_ExtraCostPerDistanceUnit)
+                                           : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
 
                 var circuityDistance =
@@ -1266,7 +1264,7 @@ namespace DaySim.PathTypeModels {
                       (driveTimeWeight * driveTime +
                        Global.Configuration.PathImpedance_TransitWalkAccessTimeWeight * destinationWalkTime));
 
-                    if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !knrPathType && !Global.Configuration.IsInEstimationMode)  {
+                    if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !knrPathType && !tncPathType && !Global.Configuration.IsInEstimationMode)  {
                         nodeUtility += node.ShadowPrice[parkMinute];
                     }
 

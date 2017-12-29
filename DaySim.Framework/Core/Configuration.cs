@@ -1663,6 +1663,17 @@ namespace DaySim.Framework.Core {
         public double PaidRideShare_AgeOver65Coefficient { get; set; }
 
         [XmlAttribute]
+        public double TNCtoTransit_DensityCoefficient { get; set; }
+
+        [XmlAttribute]
+        public double TNCtoTransit_ExtraCostPerDistanceUnit { get; set; }
+
+        [XmlAttribute]
+        public double TNCtoTransit_FixedCostPerRide { get; set; }
+
+
+
+        [XmlAttribute]
         public bool WriteResidenceBufferDensityToOwnOrRent { get; set; }
 
         //new for AV capabilities

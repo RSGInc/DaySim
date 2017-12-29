@@ -436,7 +436,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 var randomNumber = Household.RandomUtility.Uniform01();
                 DriverType = 
                     (  Tour.DestinationPurpose == Global.Settings.Purposes.WorkBased && randomNumber < 0.75
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < 0.98
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < 0.88
                     || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < 0.32
                     || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < 0.4
                     || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < 0.70
@@ -450,6 +450,17 @@ namespace DaySim.DomainModels.Default.Wrappers {
             }
             else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
                 DriverType = Global.Settings.DriverTypes.NotApplicable;
+            }
+            //the knr or tnc auto legs of drive-transit tours - make sure driver type and mode are correct
+            else if (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3 && Tour.Mode == Global.Settings.Modes.ParkAndRide) {
+                if (Tour.PathType >= Global.Settings.PathTypes.TransitType1_TNC && Tour.PathType <= Global.Settings.PathTypes.TransitType5_TNC) {
+                    DriverType = Global.Configuration.AV_PaidRideShareModeUsesAVs ? Global.Settings.DriverTypes.AV_MainPassenger : Global.Settings.DriverTypes.Passenger;
+                    Mode = Global.Settings.Modes.Hov2;
+                }
+                else if (Tour.PathType >= Global.Settings.PathTypes.TransitType1_Knr && Tour.PathType <= Global.Settings.PathTypes.TransitType5_Knr) {
+                    DriverType = (Tour.Household.OwnsAutomatedVehicles > 0) ? Global.Settings.DriverTypes.AV_MainPassenger : Global.Settings.DriverTypes.Passenger;
+                    Mode = Global.Settings.Modes.Hov2;
+                }
             }
             else if (Mode == Global.Settings.Modes.Sov) {
                 DriverType = Global.Settings.DriverTypes.Driver;
