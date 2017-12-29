@@ -644,6 +644,36 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public double PathImpedance_TransitType5_KnrPathConstant { get; set; }
 
+        [XmlAttribute]
+        public double PathImpedance_TransitLocalBus_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitLightRail_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitPremiumBus_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitCommuterRail_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitFerry_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType1_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType2_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType3_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType4_TNCPathConstant { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TransitType5_TNCPathConstant { get; set; }
+
 
         [XmlAttribute]
         public bool PathImpedance_TransitUsePathTypeSpecificTime { get; set; }
@@ -702,6 +732,9 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double PathImpedance_KNRAutoAccessTimeFactor { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TNCAutoAccessTimeFactor { get; set; }
 
         [XmlAttribute]
         public bool PathImpedance_BikeUseTypeSpecificDistanceFractions { get; set; }
@@ -782,6 +815,31 @@ namespace DaySim.Framework.Core {
         public double PathImpedance_KNRAdditiveConstant_OtherTour_1VehicleHH { get; set; }
         [XmlAttribute]
         public double PathImpedance_KNRAdditiveConstant_OtherTour_2pVehicleHH { get; set; }
+
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_NonDriver { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_0VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_1VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_2pVehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_NonDriver { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_0VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_1VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_2pVehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_NonDriver { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_0VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_1VehicleHH { get; set; }
+        [XmlAttribute]
+        public double PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_2pVehicleHH { get; set; }
 
 
 

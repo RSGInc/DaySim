@@ -396,7 +396,7 @@ namespace DaySim.Settings {
 
     public class DefaultPathTypes : IPathTypes {
         public virtual int TotalPathTypes {
-            get { return 13; }
+            get { return 18; }
         }
 
         public virtual int None {
@@ -489,6 +489,46 @@ namespace DaySim.Settings {
 
         public virtual int TransitType5_Knr  {
             get { return 12; }
+        }
+
+        public virtual int LocalBus_TNC        {
+            get { return 13; }
+        }
+
+        public virtual int LightRail_TNC        {
+            get { return 14; }
+        }
+
+        public virtual int PremiumBus_TNC        {
+            get { return 15; }
+        }
+
+        public virtual int CommuterRail_TNC        {
+            get { return 16; }
+        }
+
+        public virtual int Ferry_TNC        {
+            get { return 17; }
+        }
+
+        public virtual int TransitType1_TNC        {
+            get { return 13; }
+        }
+
+        public virtual int TransitType2_TNC        {
+            get { return 14; }
+        }
+
+        public virtual int TransitType3_TNC        {
+            get { return 15; }
+        }
+
+        public virtual int TransitType4_TNC        {
+            get { return 16; }
+        }
+
+        public virtual int TransitType5_TNC        {
+            get { return 17; }
         }
 
     }

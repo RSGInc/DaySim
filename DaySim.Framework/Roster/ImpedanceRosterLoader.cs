@@ -117,6 +117,31 @@ namespace DaySim.Framework.Roster {
                             pathType = Global.Settings.PathTypes.Ferry_Knr;
 
                             break;
+                        case "local-bus-tnc":
+                        case "transit-type-1-tnc":
+                            pathType = Global.Settings.PathTypes.LocalBus_TNC;
+
+                            break;
+                        case "light-rail-tnc":
+                        case "transit-type-2-tnc":
+                            pathType = Global.Settings.PathTypes.LightRail_TNC;
+
+                            break;
+                        case "premium-bus-tnc":
+                        case "transit-type-3-tnc":
+                            pathType = Global.Settings.PathTypes.PremiumBus_TNC;
+
+                            break;
+                        case "commuter-rail-tnc":
+                        case "transit-type-4-tnc":
+                            pathType = Global.Settings.PathTypes.CommuterRail_TNC;
+
+                            break;
+                        case "ferry-tnc":
+                        case "transit-type-5-tnc":
+                            pathType = Global.Settings.PathTypes.Ferry_TNC;
+
+                            break;
                         default:
                             throw new InvalidPathTypeException(string.Format("The value of \"{0}\" used for path type is invalid. Please adjust the roster accordingly.", tokens[0]));
                     }

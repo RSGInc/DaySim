@@ -252,7 +252,7 @@ namespace DaySim.PathTypeModels {
                     }
                 } else if (Mode == Global.Settings.Modes.Transit) {
                     if (pathType >= Global.Settings.PathTypes.TransitType1_Knr) {
-                        // don't run model for kiss and ride path types
+                        // don't run model for kiss and ride or TNC to transit path types
                     }
                     else if (Global.StopAreaIsEnabled) {
                         RunStopAreaWalkTransitModel(skimMode, pathType, votValue, useZones);
@@ -260,7 +260,10 @@ namespace DaySim.PathTypeModels {
                         RunSimpleWalkTransitModel(skimMode, pathType, votValue, useZones);
                     }
                 } else if (Mode == Global.Settings.Modes.ParkAndRide) {
-                    if (Global.StopAreaIsEnabled) {
+                    if (pathType >= Global.Settings.PathTypes.TransitType1_TNC && !Global.Configuration.PaidRideShareModeIsAvailable)  {
+                        // don't run model for TNC to transit path types if paid rideshare mode not available
+                    }
+                    else if (Global.StopAreaIsEnabled) {
                         RunStopAreaParkAndRideModel(skimMode, pathType, votValue, useZones);
                     } else {
                         RunSimpleParkAndRideModel(skimMode, pathType, votValue, useZones);
@@ -890,6 +893,7 @@ namespace DaySim.PathTypeModels {
             IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
 
             bool knrPathType = (pathType >= Global.Settings.PathTypes.TransitType1_Knr && pathType <= Global.Settings.PathTypes.TransitType5_Knr);
+            bool tncPathType = (pathType >= Global.Settings.PathTypes.TransitType1_TNC && pathType <= Global.Settings.PathTypes.TransitType5_TNC);
 
             double knrAdditiveConstant =
                 !knrPathType ? 0D
@@ -908,9 +912,35 @@ namespace DaySim.PathTypeModels {
                   : _householdCars == 1 ? Global.Configuration.PathImpedance_KNRAdditiveConstant_OtherTour_1VehicleHH
                   : Global.Configuration.PathImpedance_KNRAdditiveConstant_OtherTour_2pVehicleHH);
 
-            var driveTimeWeight = Global.Configuration.PathImpedance_TransitDriveAccessTimeWeight *
-                (knrPathType ? (Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor : 2.0) : 1.0);
+            double tncAdditiveConstant =
+                !tncPathType ? 0D
+                : _purpose == Global.Settings.Purposes.Work
+                ? (!_isDrivingAge ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_NonDriver
+                  : _householdCars == 0 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_0VehicleHH
+                  : _householdCars == 1 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_1VehicleHH
+                  : Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_2pVehicleHH)
+                : _purpose == Global.Settings.Purposes.School
+                ? (!_isDrivingAge ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_NonDriver
+                  : _householdCars == 0 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_0VehicleHH
+                  : _householdCars == 1 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_1VehicleHH
+                  : Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_2pVehicleHH)
+                : (!_isDrivingAge ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_NonDriver
+                  : _householdCars == 0 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_0VehicleHH
+                  : _householdCars == 1 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_1VehicleHH
+                  : Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_2pVehicleHH)
+                  // density-related effect
+                + (Global.Configuration.AV_PaidRideShareModeUsesAVs
+                 ? Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000)
+                 : Global.Configuration.PaidRideShare_DensityCoefficient    * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000));
 
+            var driveTimeWeightFactor = knrPathType ? (Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor : 2.0)
+                                      : tncPathType ? (Global.Configuration.PathImpedance_TNCAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_TNCAutoAccessTimeFactor : 1.0)
+                                                     * Global.Configuration.AV_PaidRideShareModeUsesAVs.ToFlag() * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor)
+                                      : 1.0;
+
+
+            var driveTimeWeight = Global.Configuration.PathImpedance_TransitDriveAccessTimeWeight * driveTimeWeightFactor;
+                        
             if (Global.Configuration.ShouldReadParkAndRideNodeSkim) {
                 var nodeId =
                   useZones
@@ -940,7 +970,7 @@ namespace DaySim.PathTypeModels {
 
             foreach (var node in parkAndRideNodes) {
                 // only look at nodes with positive capacity
-                if (node.Capacity < Constants.EPSILON && !knrPathType) {
+                if (node.Capacity < Constants.EPSILON && !knrPathType && !tncPathType) {
                     continue;
                 }
 
@@ -955,7 +985,11 @@ namespace DaySim.PathTypeModels {
                 }
 
                 var parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];
-                var parkAndRideParkingCost = knrPathType ? 0.0 : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
+                var parkAndRideCost = knrPathType ? 0.0
+                                           : tncPathType ? (Global.Configuration.AV_PaidRideShareModeUsesAVs 
+                                                      ? Global.Configuration.AV_PaidRideShare_FixedCostPerRide + zzDistPR * Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit
+                                                      : Global.Configuration.PaidRideShare_FixedCostPerRide    + zzDistPR * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit)
+                                                      : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
                 var transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideZoneId, destinationZoneId);
                 if (!transitPath.Available) {
@@ -1006,15 +1040,15 @@ namespace DaySim.PathTypeModels {
                 // set utility
                 var nodePathTime = transitPath.Time + driveTime + destinationWalkTime;
                 var nodePathDistance = driveDistance + transitDistance;
-                var nodePathCost = transitPath.Cost + parkAndRideParkingCost;
+                var nodePathCost = transitPath.Cost + parkAndRideCost;
 
                 if (nodePathTime > pathTimeLimit) {
                     continue;
                 }
 
-                var nodeUtility = transitPath.Utility + knrAdditiveConstant +
+                var nodeUtility = transitPath.Utility + knrAdditiveConstant + tncAdditiveConstant +
                   Global.Configuration.PathImpedance_PathChoiceScaleFactor *
-                  (_tourCostCoefficient * parkAndRideParkingCost +
+                  (_tourCostCoefficient * parkAndRideCost +
                    _tourTimeCoefficient *
                    (driveTimeWeight * driveTime +
                     Global.Configuration.PathImpedance_TransitWalkAccessTimeWeight * destinationWalkTime));
@@ -1053,6 +1087,7 @@ namespace DaySim.PathTypeModels {
             IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
 
             bool knrPathType = (pathType >= Global.Settings.PathTypes.TransitType1_Knr && pathType <= Global.Settings.PathTypes.TransitType5_Knr);
+            bool tncPathType = (pathType >= Global.Settings.PathTypes.TransitType1_TNC && pathType <= Global.Settings.PathTypes.TransitType5_TNC);
 
             double knrAdditiveConstant =
                 !knrPathType ? 0D
@@ -1071,8 +1106,35 @@ namespace DaySim.PathTypeModels {
                   : _householdCars == 1 ? Global.Configuration.PathImpedance_KNRAdditiveConstant_OtherTour_1VehicleHH
                   : Global.Configuration.PathImpedance_KNRAdditiveConstant_OtherTour_2pVehicleHH);
 
-            var driveTimeWeight = Global.Configuration.PathImpedance_TransitDriveAccessTimeWeight *
-                (knrPathType ? (Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor : 2.0) : 1.0);
+
+            double tncAdditiveConstant =
+                !tncPathType ? 0D
+                : _purpose == Global.Settings.Purposes.Work
+                ? (!_isDrivingAge ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_NonDriver
+                  : _householdCars == 0 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_0VehicleHH
+                  : _householdCars == 1 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_1VehicleHH
+                  : Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_WorkTour_2pVehicleHH)
+                : _purpose == Global.Settings.Purposes.School
+                ? (!_isDrivingAge ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_NonDriver
+                  : _householdCars == 0 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_0VehicleHH
+                  : _householdCars == 1 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_1VehicleHH
+                  : Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_SchoolTour_2pVehicleHH)
+                : (!_isDrivingAge ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_NonDriver
+                  : _householdCars == 0 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_0VehicleHH
+                  : _householdCars == 1 ? Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_1VehicleHH
+                  : Global.Configuration.PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_2pVehicleHH)
+                // density-related effect
+                + (Global.Configuration.AV_PaidRideShareModeUsesAVs
+                 ? Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000)
+                 : Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(_originParcel.HouseholdsBuffer2 + _originParcel.StudentsUniversityBuffer2 + _originParcel.EmploymentTotalBuffer2, 6000));
+
+            var driveTimeWeightFactor = knrPathType ? (Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_KNRAutoAccessTimeFactor : 2.0)
+                                      : tncPathType ? (Global.Configuration.PathImpedance_TNCAutoAccessTimeFactor > 0 ? Global.Configuration.PathImpedance_TNCAutoAccessTimeFactor : 1.0)
+                                                     * Global.Configuration.AV_PaidRideShareModeUsesAVs.ToFlag() * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor)
+                                      : 1.0;
+
+
+            var driveTimeWeight = Global.Configuration.PathImpedance_TransitDriveAccessTimeWeight * driveTimeWeightFactor;
 
 
             if (Global.Configuration.ShouldReadParkAndRideNodeSkim) {
@@ -1085,7 +1147,7 @@ namespace DaySim.PathTypeModels {
 
                 parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
             } else {
-                parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => (n.Capacity > Constants.EPSILON || (n.Capacity == 0 && knrPathType)));
+                parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => (n.Capacity > Constants.EPSILON || (n.Capacity == 0 && knrPathType) || (n.Capacity == 0 && tncPathType)));
             }
 
             // valid node(s), and tour-level call  
@@ -1129,7 +1191,12 @@ namespace DaySim.PathTypeModels {
                 var parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];
                 var parkAndRideStopAreaKey = node.NearestStopAreaId;
                 var parkAndRideStopArea = Global.TransitStopAreaMapping[node.NearestStopAreaId];
-                var parkAndRideParkingCost = knrPathType ? 0.0 : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
+                var parkAndRideCost = knrPathType ? 0.0
+                                           : tncPathType ? (Global.Configuration.AV_PaidRideShareModeUsesAVs
+                                                      ? Global.Configuration.AV_PaidRideShare_FixedCostPerRide + zzDistPR * Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit
+                                                      : Global.Configuration.PaidRideShare_FixedCostPerRide + zzDistPR * Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit)
+                                                      : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
+
 
 
                 var circuityDistance =
@@ -1186,15 +1253,15 @@ namespace DaySim.PathTypeModels {
                     // set utility
                     var nodePathTime = transitPath.Time + driveTime + destinationWalkTime;
                     var nodePathDistance = driveDistance + transitDistance;
-                    var nodePathCost = transitPath.Cost + parkAndRideParkingCost;
+                    var nodePathCost = transitPath.Cost + parkAndRideCost;
 
                     if (nodePathTime > pathTimeLimit) {
                         continue;
                     }
 
-                    var nodeUtility = transitPath.Utility + knrAdditiveConstant +
+                    var nodeUtility = transitPath.Utility + knrAdditiveConstant + tncAdditiveConstant +
                       Global.Configuration.PathImpedance_PathChoiceScaleFactor *
-                      (_tourCostCoefficient * parkAndRideParkingCost +
+                      (_tourCostCoefficient * parkAndRideCost +
                       _tourTimeCoefficient *
                       (driveTimeWeight * driveTime +
                        Global.Configuration.PathImpedance_TransitWalkAccessTimeWeight * destinationWalkTime));

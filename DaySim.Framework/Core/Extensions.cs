@@ -171,6 +171,21 @@ namespace DaySim.Framework.Core {
                 case "ferry-knr":
                 case "transit-type-5-knr":
                     return Global.Settings.PathTypes.TransitType5_Knr;
+                case "local-bus-tnc":
+                case "transit-type-1-tnc":
+                    return Global.Settings.PathTypes.TransitType1_TNC;
+                case "light-rail-tnc":
+                case "transit-type-2-tnc":
+                    return Global.Settings.PathTypes.TransitType2_TNC;
+                case "premium-bus-tnc":
+                case "transit-type-3-tnc":
+                    return Global.Settings.PathTypes.TransitType3_TNC;
+                case "commuter-rail-tnc":
+                case "transit-type-4-tnc":
+                    return Global.Settings.PathTypes.TransitType4_TNC;
+                case "ferry-tnc":
+                case "transit-type-5-tnc":
+                    return Global.Settings.PathTypes.TransitType5_TNC;
             }
 
             return Global.Settings.PathTypes.None;

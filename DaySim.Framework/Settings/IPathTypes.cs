@@ -55,5 +55,25 @@ namespace DaySim.Framework.Settings {
 
         int TransitType5_Knr { get; }
 
+        int LocalBus_TNC { get; }
+
+        int LightRail_TNC { get; }
+
+        int PremiumBus_TNC { get; }
+
+        int CommuterRail_TNC { get; }
+
+        int Ferry_TNC { get; }
+
+        int TransitType1_TNC { get; }
+
+        int TransitType2_TNC { get; }
+
+        int TransitType3_TNC { get; }
+
+        int TransitType4_TNC { get; }
+
+        int TransitType5_TNC { get; }
+
     }
 }
