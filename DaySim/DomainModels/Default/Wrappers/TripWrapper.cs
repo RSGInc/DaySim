@@ -452,7 +452,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 DriverType = Global.Settings.DriverTypes.NotApplicable;
             }
             //the knr or tnc auto legs of drive-transit tours - make sure driver type and mode are correct
-            else if (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3 && Tour.Mode == Global.Settings.Modes.ParkAndRide) {
+            else if (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3 
+                && Tour.Mode == Global.Settings.Modes.ParkAndRide && Tour.PathType >= Global.Settings.PathTypes.TransitType1_Knr) {
                 if (Tour.PathType >= Global.Settings.PathTypes.TransitType1_TNC && Tour.PathType <= Global.Settings.PathTypes.TransitType5_TNC) {
                     DriverType = Global.Configuration.AV_PaidRideShareModeUsesAVs ? Global.Settings.DriverTypes.AV_MainPassenger : Global.Settings.DriverTypes.Passenger;
                     Mode = Global.Settings.Modes.Hov2;
