@@ -157,6 +157,7 @@ namespace DaySim.AggregateLogsums {
         private const double PSG126 = -2.30761023730;
         private const double PSG129 = -3.23454701949;
         private const double PSG130 = -1.93793528420;
+        private const double PSG131 = -1.93793528420;
 
         private static readonly double[][][] _distanceParameters =
             new[] {
@@ -689,6 +690,7 @@ namespace DaySim.AggregateLogsums {
                 subzones[subzone].EmploymentTotal += parcelWrapper.EmploymentTotal;
                 subzones[subzone].ParkingOffStreetPaidDailySpaces += parcelWrapper.ParkingOffStreetPaidDailySpaces;
                 subzones[subzone].ParkingOffStreetPaidHourlySpaces += parcelWrapper.ParkingOffStreetPaidHourlySpaces;
+                subzones[subzone].OpenSpace += (Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? parcelWrapper.LandUseCode : 0.0; 
             }
 
             foreach (var subzones in _eligibleZones.Values.Select(zone => zoneSubzones[zone.Id])) {
@@ -705,6 +707,7 @@ namespace DaySim.AggregateLogsums {
                     var ret = subzones[subzone].EmploymentRetail;
                     var ser = subzones[subzone].EmploymentService;
                     var tot = subzones[subzone].EmploymentTotal;
+                    var osp = subzones[subzone].OpenSpace;
                     const double oth = 0;
 
                     var subtotal = foo + ret + ser + med;
@@ -717,7 +720,7 @@ namespace DaySim.AggregateLogsums {
                     subzones[subzone].SetSize(Global.Settings.Purposes.PersonalBusiness, ComputeSize(Math.Exp(PSG080) * edu + Math.Exp(PSG081) * foo + Math.Exp(PSG082) * gov + Math.Exp(PSG083) * off + Math.Exp(PSG084) * oth + Math.Exp(PSG085) * ret + Math.Exp(PSG086) * ser + Math.Exp(PSG087) * med + Math.Exp(PSG088) * ind + Math.Exp(PSG090) * hou + Math.Exp(PSG091) * uni));
                     subzones[subzone].SetSize(Global.Settings.Purposes.Shopping, ComputeSize(Math.Exp(PSG094) * foo + Math.Exp(PSG095) * gov + Math.Exp(PSG097) * oth + Math.Exp(PSG098) * ret + Math.Exp(PSG099) * ser + Math.Exp(PSG100) * med + Math.Exp(PSG103) * hou + Math.Exp(PSG105) * k12));
                     subzones[subzone].SetSize(Global.Settings.Purposes.Meal, ComputeSize(Math.Exp(PSG107) * foo + Math.Exp(PSG115) * tot + Math.Exp(PSG117) * uni));
-                    subzones[subzone].SetSize(Global.Settings.Purposes.Social, ComputeSize(Math.Exp(PSG119) * edu + Math.Exp(PSG120) * foo + Math.Exp(PSG121) * gov + Math.Exp(PSG122) * off + Math.Exp(PSG123) * oth + Math.Exp(PSG125) * ser + Math.Exp(PSG126) * med + Math.Exp(PSG129) * hou + Math.Exp(PSG130) * uni));
+                    subzones[subzone].SetSize(Global.Settings.Purposes.Social, ComputeSize(Math.Exp(PSG119) * edu + Math.Exp(PSG120) * foo + Math.Exp(PSG121) * gov + Math.Exp(PSG122) * off + Math.Exp(PSG123) * oth + Math.Exp(PSG125) * ser + Math.Exp(PSG126) * med + Math.Exp(PSG129) * hou + Math.Exp(PSG130) * uni + Math.Exp(PSG131) * Math.Log(osp+1.0)));
                 }
             }
 

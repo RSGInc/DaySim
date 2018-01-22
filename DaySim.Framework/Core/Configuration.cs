@@ -1672,9 +1672,15 @@ namespace DaySim.Framework.Core {
         public double TNCtoTransit_FixedCostPerRide { get; set; }
 
 
-
         [XmlAttribute]
         public bool WriteResidenceBufferDensityToOwnOrRent { get; set; }
+
+
+        [XmlAttribute]
+        public bool UseParcelLandUseCodeAsSquareFeetOpenSpace { get; set; }
+
+        [XmlAttribute]
+        public bool UseLogOfSquareFeetOpenSpaceInDestinationSampling { get; set; }
 
         //new for AV capabilities
         [XmlAttribute]

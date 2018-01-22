@@ -39,6 +39,8 @@ namespace DaySim.Framework.DomainModels.Models {
 
         double ParkingOffStreetPaidHourlySpaces { get; set; }
 
+        double OpenSpace { get; set; }
+
         double MixedUseMeasure { get; set; }
 
         void SetSize(int purpose, double size);

@@ -130,6 +130,10 @@ namespace DaySim.Sampling {
                     segmentZones[segmentZone.Id] = segmentZone;
                 }
 
+                var openSpace = (Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? parcel.LandUseCode : parcel.OpenSpaceType2Buffer1;
+                var openSpaceSize = (Global.Configuration.UseLogOfSquareFeetOpenSpaceInDestinationSampling 
+                    || Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? Math.Log(openSpace + 1.0) : openSpace;
+
                 var factor = Math.Exp(sizeFactors[0]) * parcel.EmploymentEducation +
                                  Math.Exp(sizeFactors[1]) * parcel.EmploymentFood +
                                  Math.Exp(sizeFactors[2]) * parcel.EmploymentGovernment +
@@ -145,7 +149,7 @@ namespace DaySim.Sampling {
                                  Math.Exp(sizeFactors[12]) * parcel.StudentsUniversity +
                                  Math.Exp(sizeFactors[13]) * parcel.GetLandUseCode19() +
                                  Math.Exp(sizeFactors[14]) * parcel.OpenSpaceType1Buffer1 +
-                                 Math.Exp(sizeFactors[15]) * parcel.OpenSpaceType2Buffer1 +
+                                 Math.Exp(sizeFactors[15]) * openSpaceSize +
                                  Math.Exp(sizeFactors[16]) * parcel.StudentsHighSchool;
 
                 var size = 100 * factor;
