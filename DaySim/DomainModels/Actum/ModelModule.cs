@@ -20,6 +20,8 @@ namespace DaySim.DomainModels.Actum {
 
             Global.ContainerDaySim.RegisterSingleton<Func<Reader<ParcelNode>>>(() => new Reader<ParcelNode>(Global.WorkingParcelNodePath));
 
+            Global.ContainerDaySim.RegisterSingleton<Func<Reader<DestinationParkingNode>>>(() => new Reader<DestinationParkingNode>(Global.WorkingDestinationParkingNodePath));
+
             Global.ContainerDaySim.RegisterSingleton<Func<Reader<ParkAndRideNode>>>(() => new Reader<ParkAndRideNode>(Global.WorkingParkAndRideNodePath));
 
             Global.ContainerDaySim.RegisterSingleton<Func<Reader<TransitStopArea>>>(() => new Reader<TransitStopArea>(Global.WorkingTransitStopAreaPath));
