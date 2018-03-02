@@ -22,7 +22,7 @@ namespace DaySim.Sampling {
                         new[] {-30D, -30D, -30D, -30D, -01D, -30D, -30D, -30D, -30D, -01D, -1.5D, -02D, -03D, -30D, -30D, -30D, -02D}, /*    3    10:motorized WBTour or IntStop --pers bus."        */
                         new[] {-30D, -30D, -30D, -30D, -30D, -03D, -30D, -00D, -03D, -04D, -04D, -06D, -06D, -30D, -30D, -30D, -06D},  /*    4    11:motorized WBTour or IntStop --shop"             */
                         new[] {-30D, -00D, -30D, -30D, -30D, -03D, -30D, -02D, -03D, -04D, -03D, -07D, -07D, -30D, -30D, -30D, -07D},  /*    5    12:motorized WBTour or IntStop --meal"             */
-                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -01D, -03D, -03D, -30D, -30D, -01D, -03D},  /*    6    13:motorized WBTour or IntStop --social"           */
+                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -01D, -03D, -03D, -30D, -30D,  03D, -03D},  /*    6    13:motorized WBTour or IntStop --social"           */
                         new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -1.5D, -03D, -03D, -03D, -01D, -30D, -03D, -03D}, /*    7    14:motorized WBTour or IntStop --rec"              */
                         new[] {-30D, -30D, -30D, -30D, -00D, -30D, -30D, -30D, -30D, -07D, -30D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    8    15:motorized WBTour or IntStop --medical"          */
                         new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -00D, -30D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    9    16:motorized HBTour --work"                        */
@@ -31,7 +31,7 @@ namespace DaySim.Sampling {
                         new[] {-30D, -30D, -30D, -30D, -01D, -30D, -30D, -30D, -30D, -01D, -1.5D, -02D, -03D, -30D, -30D, -30D, -02D}, /*    12    19:motorized HBTour --pers bus."                   */
                         new[] {-30D, -30D, -30D, -30D, -30D, -03D, -30D, -00D, -03D, -04D, -30D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    13    20:motorized HBTour --shop"                        */
                         new[] {-30D, -00D, -30D, -30D, -30D, -03D, -30D, -02D, -03D, -04D, -03D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    14    21:motorized HBTour --meal"                        */
-                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -01D, -03D, -03D, -30D, -30D, -01D, -03D},  /*    15    22:motorized HBTour --social"                      */
+                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -01D, -03D, -03D, -30D, -30D,  03D, -03D},  /*    15    22:motorized HBTour --social"                      */
                         new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -07D, -04D, -04D, -02D, -30D, -03D, -04D},  /*    16    23:motorized HBTour --rec"                         */
                         new[] {-30D, -30D, -30D, -30D, -00D, -30D, -30D, -30D, -30D, -07D, -30D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    17    24:motorized HBTour --medical"                     */
                         new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -00D, -04D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    18    25:walk --work"                                    */
@@ -40,8 +40,8 @@ namespace DaySim.Sampling {
                         new[] {-30D, -30D, -30D, -30D, -01D, -30D, -30D, -30D, -30D, -01D, -1.5D, -02D, -03D, -30D, -30D, -30D, -02D}, /*    21    28:walk --pers bus."                               */
                         new[] {-30D, -30D, -30D, -30D, -30D, -03D, -30D, -00D, -03D, -04D, -04D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    22    29:walk --shop"                                    */
                         new[] {-30D, -00D, -30D, -30D, -30D, -03D, -30D, -02D, -03D, -04D, -03D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    23    30:walk --meal"                                    */
-                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -01D, -03D, -03D, -30D, -30D, -01D, -03D},  /*    24    31:walk --social"                                  */
-                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -04D, -04D, -04D, -02D, -30D, -03D, -04D},  /*    25    32:walk --rec"                                     */
+                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -01D, -03D, -03D, -30D, -30D,  03D, -03D},  /*    24    31:walk --social"                                  */
+                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -04D, -04D, -04D, -02D, -30D,  -03D, -04D},  /*    25    32:walk --rec"                                     */
                         new[] {-30D, -30D, -30D, -30D, -00D, -30D, -30D, -30D, -30D, -07D, -04D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    26    33:walk --medical"                                 */
                         new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -00D, -04D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    27    34:bike --work"                                    */
                         new[] {-03D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -07D, -04D, -02D, -02D, -30D, -30D, -30D, -02D},  /* 28 35:bike --school"                                  */
@@ -49,8 +49,8 @@ namespace DaySim.Sampling {
                         new[] {-30D, -30D, -30D, -30D, -01D, -30D, -30D, -30D, -30D, -01D, -1.5D, -02D, -03D, -30D, -30D, -30D, -02D}, /*    30    37:bike --pers bus."                               */
                         new[] {-30D, -30D, -30D, -30D, -30D, -03D, -30D, -00D, -03D, -04D, -04D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    31    38:bike --shop"                                    */
                         new[] {-30D, -00D, -30D, -30D, -30D, -03D, -30D, -02D, -03D, -04D, -03D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    32    39:bike --meal"                                    */
-                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -01D, -03D, -03D, -30D, -30D, -01D, -03D},  /*    33    40:bike --social"                                  */
-                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -04D, -04D, -04D, -02D, -30D, -03D, -04D},  /*    34    41:bike --rec"                                     */
+                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -01D, -03D, -03D, -30D, -30D,  03D, -03D},  /*    33    40:bike --social"                                  */
+                        new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -02D, -04D, -04D, -04D, -02D, -30D,  -03D, -04D},  /*    34    41:bike --rec"                                     */
                         new[] {-30D, -30D, -30D, -30D, -00D, -30D, -30D, -30D, -30D, -07D, -04D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    35    42:bike --medical"                                 */
                         new[] {-02D, -30D, -30D, -30D, -30D, -02D, -30D, -30D, -02D, -02D, -01D, -30D, -00D, -30D, -30D, -30D, -03D}   /* 36   :ptypes 1-5 --usu school                         */
                         //new[] {-03D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -07D, -30D, -02D, -02D, -30D, -30D, -30D, -02D},    10    17:motorized HBTour --school"                        
