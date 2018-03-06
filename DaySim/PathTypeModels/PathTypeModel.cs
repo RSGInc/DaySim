@@ -465,7 +465,8 @@ namespace DaySim.PathTypeModels {
             //            }
 
             // a fix for intra-parcels, which happen once in a great while for school
-            if (!useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
+            if (!Global.Configuration.OverrideIntraParcelDefaultWalkDistance &&  //MB20180305 This code is wrong for microzones - for now putting in a switch to turn it off
+                !useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
               //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
               && Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone) {
                 _pathTime[pathType] = 1.0;
@@ -1002,13 +1003,9 @@ namespace DaySim.PathTypeModels {
                 }
 
                 var circuityDistance =
-                  (zzDistPR > Global.Configuration.MaximumBlendingDistance)
+                  (zzDistPR > Global.Configuration.MaximumBlendingDistance || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                      ? _originParcel.NodeToNodeDistance(parkAndRideParcel)
-                      : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-                        ? _originParcel.CircuityDistance(parkAndRideParcel)
-                        : Constants.DEFAULT_VALUE;
+                    : _originParcel.CalculateShortDistance(parkAndRideParcel);
 
                 var skimValue
                   = useZones
@@ -1198,13 +1195,9 @@ namespace DaySim.PathTypeModels {
 
 
                 var circuityDistance =
-                    (zzDistPR > Global.Configuration.MaximumBlendingDistance)
+                    (zzDistPR > Global.Configuration.MaximumBlendingDistance || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                      ? _originParcel.NodeToNodeDistance(parkAndRideParcel)
-                      : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-                        ? _originParcel.CircuityDistance(parkAndRideParcel)
-                        : Constants.DEFAULT_VALUE;
+                    : _originParcel.CalculateShortDistance(parkAndRideParcel);
 
                 var skimValue
                     = useZones
@@ -1301,11 +1294,7 @@ namespace DaySim.PathTypeModels {
             var circuityDistance =
                 (zzDist < Constants.EPSILON || zzDist > Global.Configuration.MaximumBlendingDistance)
                     ? Constants.DEFAULT_VALUE
-                    : (Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                        ? oParcel.NodeToNodeDistance(dParcel)
-                        : (Global.Configuration.UseShortDistanceCircuityMeasures)
-                            ? oParcel.CircuityDistance(dParcel)
-                            : Constants.DEFAULT_VALUE;
+                    : oParcel.CalculateShortDistance(dParcel);
             return circuityDistance;
         }
 

@@ -1168,11 +1168,7 @@ namespace DaySim.ChoiceModels.H {
                             if (j == chauffeurOrder) {
                                 distanceFromChauffeur[j] = -1;  // forces chauffeur to be first in pick sequence
                             } else if (destinationParcel[j] != null) {
-                                var circuityDistance = Global.Configuration.UseShortDistanceNodeToNodeMeasures
-                                              ? chauffeurParcel.NodeToNodeDistance(destinationParcel[j])
-                                              : (Global.Configuration.UseShortDistanceCircuityMeasures)
-                                                        ? chauffeurParcel.CircuityDistance(destinationParcel[j])
-                                                        : Constants.DEFAULT_VALUE;
+                                var circuityDistance = chauffeurParcel.CalculateShortDistance(destinationParcel[j]);
 
                                 distanceFromChauffeur[j] = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 1, chauffeurParcel, destinationParcel[j], circuityDistance).Variable;
                             }
@@ -1809,11 +1805,7 @@ namespace DaySim.ChoiceModels.H {
                     pathType = Global.Settings.PathTypes.FullNetwork;
                 }
 
-                var circuityDistance = Global.Configuration.UseShortDistanceNodeToNodeMeasures
-                                                ? tour[i - 1].DestinationParcel.NodeToNodeDistance(tour[i].DestinationParcel)
-                                                : (Global.Configuration.UseShortDistanceCircuityMeasures)
-                                                ? tour[i - 1].DestinationParcel.CircuityDistance(tour[i].DestinationParcel)
-                                                : Constants.DEFAULT_VALUE;
+                var circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
 
                 if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
                     if (!(Global.Configuration.IsInEstimationMode)) {

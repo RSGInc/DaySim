@@ -1677,6 +1677,16 @@ namespace DaySim.Framework.Core {
 
 
         [XmlAttribute]
+        public bool OverrideIntraParcelDefaultWalkDistance { get; set; }
+
+        [XmlAttribute]
+        public bool CorrectIntraParcelAreaToDistanceCalculation { get; set; }
+
+        [XmlAttribute]
+        public double MinimumIntraParcelDistanceCutoff{ get; set; }
+
+
+        [XmlAttribute]
         public bool UseParcelLandUseCodeAsSquareFeetOpenSpace { get; set; }
 
         [XmlAttribute]
