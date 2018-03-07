@@ -320,6 +320,7 @@ namespace DaySim {
         private static void InitializeSamplingFactories() {
             Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettings", new SamplingWeightsSettings());
             Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsSimple", new SamplingWeightsSettingsSimple());
+            Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsUpdate", new SamplingWeightsSettingsUpdate());
             Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Register("SamplingWeightsSettingsSACOG", new SamplingWeightsSettingsSACOG());
             Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().Initialize();
         }

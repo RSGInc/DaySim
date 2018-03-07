@@ -215,6 +215,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sampling\SamplingWeightsSettingsSACOG.cs" />
+    <Compile Include="Sampling\SamplingWeightsSettingsSimple.cs" />
+    <Compile Include="Sampling\SamplingWeightsSettingsUpdate.cs" />
     <Compile Include="Settings\ActumSettings.cs" />
     <Compile Include="Settings\HSettings.cs" />
     <Compile Include="DomainModels\Actum\ModelModule.cs" />
@@ -395,7 +397,6 @@
     <Compile Include="Sampling\SamplingWeightsSettingsFactory.cs" />
     <Compile Include="DomainModels\Default\Models\Zone.cs" />
     <Compile Include="Sampling\SamplingWeightsExporter.cs" />
-    <Compile Include="Sampling\SamplingWeightsSettingsSimple.cs" />
     <Compile Include="ShadowPricing\ShadowPriceCalculator.cs" />
     <Compile Include="ShadowPricing\ShadowPriceParcel.cs" />
     <Compile Include="ShadowPricing\ShadowPriceReader.cs" />
