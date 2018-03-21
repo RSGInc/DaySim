@@ -157,7 +157,7 @@ namespace DaySim.AggregateLogsums {
         private const double PSG126 = -2.30761023730;
         private const double PSG129 = -3.23454701949;
         private const double PSG130 = -1.93793528420;
-        private const double PSG131 =  1.02; //new size added for open space-recreation, exp(4.25) relative to HH (PG129)
+        private const double PSG131 = -0.23; //new size added for open space-recreation, exp(1) relative to HH (PG129)
 
         private static readonly double[][][] _distanceParameters =
             new[] {

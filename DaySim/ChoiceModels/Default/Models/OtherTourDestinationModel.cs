@@ -376,8 +376,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(112, destinationParcel.StudentsUniversity);
                     alternative.AddUtilityTerm(113, destinationParcel.GetStudentsK12());
                     //new size variable for log(sq ft open space)
-                    alternative.AddUtilityTerm(120, (Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? Math.Log(destinationParcel.LandUseCode + 1.0) : 0.0);
-
+                    if (destinationParcel.LandUseCode > 0) {
+                        alternative.AddUtilityTerm(120, (Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? Math.Log(destinationParcel.LandUseCode + 1.0) : 0.0);
+                    }
                 }
 
                 //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #
