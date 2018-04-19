@@ -10,3 +10,4 @@ Develop Branch: ![Jenkins Build Status](http://wrjmdlppw01.rsginc.com:8080/build
 
   - PSRC: ![Jenkins PSRC Build Status](http://wrjmdlppw01.rsginc.com:8080/job/PSRC/badge/icon)
   - SACOG: ![Jenkins SACOG Build Status](http://wrjmdlppw01.rsginc.com:8080/job/SACOG/badge/icon)
+  - BKR: ![Jenkins BKR Build Status](http://wrjmdlppw01.rsginc.com:8080/job/BKRCast/badge/icon)
