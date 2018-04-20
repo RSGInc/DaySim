@@ -4,7 +4,7 @@ Documentation: [https://github.com/RSGInc/DaySim/wiki](https://github.com/RSGInc
 
 ## Build Status
 
-Master (Release) Branch: Automatically Merged When Develop Branch Passes Tests
+Master (Release) Branch: automatically merged when develop branch passes tests
 
 Develop Branch: ![Jenkins Build Status](http://wrjmdlppw01.rsginc.com:8080/buildStatus/icon?job=DaySim_all_regions)
 
