@@ -1671,6 +1671,19 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public double TNCtoTransit_FixedCostPerRide { get; set; }
 
+        [XmlAttribute]
+        public double PaidRideshare_AvergeNumberOfPassengersForWorkTours { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideshare_AvergeNumberOfPassengersForSchoolTours { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideshare_AvergeNumberOfPassengersForEscortTours { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideshare_AvergeNumberOfPassengersForOtherTours { get; set; }
+
+
 
         [XmlAttribute]
         public bool WriteResidenceBufferDensityToOwnOrRent { get; set; }

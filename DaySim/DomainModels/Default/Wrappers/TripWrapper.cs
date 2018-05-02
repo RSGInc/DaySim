@@ -433,16 +433,24 @@ namespace DaySim.DomainModels.Default.Wrappers {
             }
             else if (Mode == Global.Settings.Modes.PaidRideShare) {
                 //set main and other passenger randomly by tour purpose to get right percentage of trips to assign to network
+                var workFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForWorkTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForWorkTours : 0.88;
+                var schoolFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForSchoolTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForSchoolTours : 0.32;
+                var escortFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForEscortTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForEscortTours : 0.40;
+                var perbustFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.70;
+                var shopFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.73;
+                var mealFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.75;
+                var socialFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.62;
+                var wbasedFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.75;
                 var randomNumber = Household.RandomUtility.Uniform01();
                 DriverType = 
-                    (  Tour.DestinationPurpose == Global.Settings.Purposes.WorkBased && randomNumber < 0.75
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < 0.88
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < 0.32
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < 0.4
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < 0.70
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < 0.73
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Meal && randomNumber < 0.75
-                    || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < 0.62) ?
+                    (  Tour.DestinationPurpose == Global.Settings.Purposes.WorkBased && randomNumber < wbasedFracDriver
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < workFracDriver
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < schoolFracDriver
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < escortFracDriver
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < perbustFracDriver
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < shopFracDriver
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Meal && randomNumber < mealFracDriver
+                    || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < socialFracDriver) ?
                     Global.Settings.DriverTypes.Driver : Global.Settings.DriverTypes.Passenger;
                 if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
                     DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
