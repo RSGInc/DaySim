@@ -954,6 +954,7 @@ namespace DaySim.ChoiceModels.Default {
 
                             foreach (var trip in subtour.HalfTourFromOrigin.Trips.Invert()) {
                                 trip.SetTourSequence(subtour.Sequence);
+                                trip.SetTripValueOfTime();
                                 trip.Export();
 
                                 ChoiceModelUtility.WriteTripForTDM(trip, ChoiceModelFactory.TDMTripListExporter);
@@ -961,6 +962,7 @@ namespace DaySim.ChoiceModels.Default {
 
                             foreach (var trip in subtour.HalfTourFromDestination.Trips) {
                                 trip.SetTourSequence(subtour.Sequence);
+                                trip.SetTripValueOfTime();
                                 trip.Export();
 
                                 ChoiceModelUtility.WriteTripForTDM(trip, ChoiceModelFactory.TDMTripListExporter);
