@@ -1853,8 +1853,7 @@ namespace DaySim.Framework.Core {
                     Global.PrintFile.WriteLine("CustomizationDll LoadCustomizationTypes: dll '" + Global.Configuration.CustomizationDll + "' not found at location relative to BasePath so looked relative to executing assembly location: " + dllFile + ". File exists?: " + fileExists);
                 }
                 if (fileExists) {
-                    AssemblyName an = AssemblyName.GetAssemblyName(dllFile);
-                    assembly = Assembly.Load(an);
+                    assembly = Assembly.UnsafeLoadFrom(dllFile); //bypass some security checks
                     if (assembly != null) {
                         Type[] types = assembly.GetTypes();
 
