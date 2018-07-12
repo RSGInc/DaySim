@@ -10,8 +10,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             if (mode == Global.Settings.Modes.Transit && pathType != Global.Settings.PathTypes.LightRail && pathType != Global.Settings.PathTypes.CommuterRail && pathType != Global.Settings.PathTypes.Ferry){
 
-                           alternative.AddUtilityTerm(200 + tour.OriginParcel.District, 1);//district specific transit calibration constant
-                           alternative.AddUtilityTerm(300 + destinationParcel.District, 1);//district specific transit calibration constant
+                           //alternative.AddUtilityTerm(200 + tour.OriginParcel.District, 1);//district specific transit calibration constant
+                           //alternative.AddUtilityTerm(300 + destinationParcel.District, 1);//district specific transit calibration constant
             }
 
 
