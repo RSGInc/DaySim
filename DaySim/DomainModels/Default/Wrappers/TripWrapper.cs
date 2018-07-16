@@ -432,18 +432,41 @@ namespace DaySim.DomainModels.Default.Wrappers {
                 }
             }
             else if (Mode == Global.Settings.Modes.PaidRideShare) {
-                //set main and other passenger randomly by tour purpose to get right percentage of trips to assign to network
-                var workFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForWorkTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForWorkTours : 0.88;
-                var schoolFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForSchoolTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForSchoolTours : 0.32;
-                var escortFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForEscortTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForEscortTours : 0.40;
-                var perbustFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.70;
-                var shopFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.73;
-                var mealFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.75;
-                var socialFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.62;
-                var wbasedFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.75;
-                var randomNumber = Household.RandomUtility.Uniform01();
-                DriverType = 
-                    (  Tour.DestinationPurpose == Global.Settings.Purposes.WorkBased && randomNumber < wbasedFracDriver
+                if (Global.Configuration.PaidRideshare_OutputNumberOfPassengersOnTripRecord) {
+                    var randomNumber = Household.RandomUtility.Uniform01();
+                    if (Tour.DestinationPurpose == Global.Settings.Purposes.Work)
+                        DriverType = (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForWorkTours) ? 11
+                              : (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForWorkTours + Global.Configuration.PaidRideshare_2PassengerShareForWorkTours) ? 12
+                              : 13;
+                    else if (Tour.DestinationPurpose == Global.Settings.Purposes.School)
+                        DriverType = (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForSchoolTours) ? 11
+                              : (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForSchoolTours + Global.Configuration.PaidRideshare_2PassengerShareForSchoolTours) ? 12
+                              : 13;
+                    else if (Tour.DestinationPurpose == Global.Settings.Purposes.Escort)
+                        DriverType = (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForEscortTours) ? 11
+                              : (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForEscortTours + Global.Configuration.PaidRideshare_2PassengerShareForEscortTours) ? 12
+                              : 13;
+                    else
+                        DriverType = (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForOtherTours) ? 11
+                              : (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForOtherTours + Global.Configuration.PaidRideshare_2PassengerShareForOtherTours) ? 12
+                              : 13;
+                    if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
+                        DriverType = DriverType + 10; //two types of AV passengers so we know which trips to assign to network
+                    }
+                }
+                else {
+                    //set main and other passenger randomly by tour purpose to get right percentage of trips to assign to network
+                    var workFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForWorkTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForWorkTours : 0.88;
+                    var schoolFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForSchoolTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForSchoolTours : 0.32;
+                    var escortFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForEscortTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForEscortTours : 0.40;
+                    var perbustFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.70;
+                    var shopFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.73;
+                    var mealFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.75;
+                    var socialFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.62;
+                    var wbasedFracDriver = (Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours >= 1) ? 1.0 / Global.Configuration.PaidRideshare_AvergeNumberOfPassengersForOtherTours : 0.75;
+                    var randomNumber = Household.RandomUtility.Uniform01();
+                    DriverType =
+                    (Tour.DestinationPurpose == Global.Settings.Purposes.WorkBased && randomNumber < wbasedFracDriver
                     || Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < workFracDriver
                     || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < schoolFracDriver
                     || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < escortFracDriver
@@ -452,8 +475,9 @@ namespace DaySim.DomainModels.Default.Wrappers {
                     || Tour.DestinationPurpose == Global.Settings.Purposes.Meal && randomNumber < mealFracDriver
                     || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < socialFracDriver) ?
                     Global.Settings.DriverTypes.Driver : Global.Settings.DriverTypes.Passenger;
-                if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
-                    DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
+                    if (Global.Configuration.AV_PaidRideShareModeUsesAVs)   {
+                        DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
+                    }
                 }
             }
             else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {

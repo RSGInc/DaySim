@@ -1683,6 +1683,28 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public double PaidRideshare_AvergeNumberOfPassengersForOtherTours { get; set; }
 
+        [XmlAttribute]
+        public bool PaidRideshare_OutputNumberOfPassengersOnTripRecord { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideshare_1PassengerShareForWorkTours { get; set; }
+        [XmlAttribute]
+        public double PaidRideshare_2PassengerShareForWorkTours { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideshare_1PassengerShareForSchoolTours { get; set; }
+        [XmlAttribute]
+        public double PaidRideshare_2PassengerShareForSchoolTours { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideshare_1PassengerShareForEscortTours { get; set; }
+        [XmlAttribute]
+        public double PaidRideshare_2PassengerShareForEscortTours { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideshare_1PassengerShareForOtherTours { get; set; }
+        [XmlAttribute]
+        public double PaidRideshare_2PassengerShareForOtherTours { get; set; }
 
 
         [XmlAttribute]
