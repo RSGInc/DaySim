@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySim", "Daysim\DaySim.csproj", "{C89E2003-E353-43B8-BF0A-9A821945933A}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFCTA", "DaySim.Customizations\SFCTA\SFCTA.csproj", "{41DA73F7-DA85-4726-9C2C-2A8599848784}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JAX", "DaySim.Customizations\JAX\JAX.csproj", "{DFA34E99-4B7E-4D3D-A1A7-C672430F996F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fresno", "DaySim.Customizations\Fresno\Fresno.csproj", "{179D1DAD-6DC3-469F-9AF0-07E21C17B249}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,8 +102,19 @@ Global
 		{DFA34E99-4B7E-4D3D-A1A7-C672430F996F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DFA34E99-4B7E-4D3D-A1A7-C672430F996F}.Release|x64.ActiveCfg = Release|x64
 		{DFA34E99-4B7E-4D3D-A1A7-C672430F996F}.Release|x64.Build.0 = Release|x64
+		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Debug|x64.ActiveCfg = Debug|x64
+		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Debug|x64.Build.0 = Debug|x64
+		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Release|x64.ActiveCfg = Release|x64
+		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5387F4AD-419F-453E-BD70-87C8AF7582F6}
 	EndGlobalSection
 EndGlobal

@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{41DA73F7-DA85-4726-9C2C-2A8599848784}</ProjectGuid>
+    <ProjectGuid>{179D1DAD-6DC3-469F-9AF0-07E21C17B249}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFCTA</RootNamespace>
-    <AssemblyName>SFCTA</AssemblyName>
+    <RootNamespace>Fresno</RootNamespace>
+    <AssemblyName>Fresno</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -72,10 +72,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChoiceModels\Default\Models\SFCTA_OtherTourDestinationModel.cs" />
-    <Compile Include="ChoiceModels\Default\Models\SFCTA_AutoOwnershipModel.cs" />
-    <Compile Include="ChoiceModels\Default\Models\SFCTA_WorkLocationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ChoiceModels\Default\Models\Fresno_OtherHomeBasedTourModeModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\Fresno_OtherTourDestinationModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\Fresno_SchoolTourModeModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\Fresno_WorkTourModeModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\Fresno_WorkLocationModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -93,9 +95,7 @@
       <Name>DaySim</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PathTypeModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
