@@ -451,7 +451,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                               : (randomNumber < Global.Configuration.PaidRideshare_1PassengerShareForOtherTours + Global.Configuration.PaidRideshare_2PassengerShareForOtherTours) ? 12
                               : 13;
                     if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
-                        DriverType = DriverType + 10; //two types of AV passengers so we know which trips to assign to network
+                        DriverType = DriverType + 10; //AVs use types 21-23 instead of 11-13
                     }
                 }
                 else {
