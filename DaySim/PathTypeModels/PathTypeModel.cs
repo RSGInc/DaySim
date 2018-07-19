@@ -496,11 +496,21 @@ namespace DaySim.PathTypeModels {
             bool useAVVOT = ((skimModeIn!=Global.Settings.Modes.PaidRideShare && _carsAreAVs && Global.Configuration.AV_IncludeAutoTypeChoice)
                            ||(skimModeIn==Global.Settings.Modes.PaidRideShare && Global.Configuration.AV_PaidRideShareModeUsesAVs));
 
+            bool useAVSkimsByOccupancy = (useAVVOT && Global.Configuration.AV_UseSeparateAVSkimMatricesByOccupancy);
+
             bool useAVSkims = (useAVVOT && Global.Configuration.AV_UseSeparateAVSkimMatrices);
 
-            var skimMode = useAVSkims ? Global.Settings.Modes.AV
-                         : (skimModeIn == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.Hov3 : skimModeIn;
-                
+            var skimMode = (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.Sov ) ? Global.Settings.Modes.AV1 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.Hov2) ? Global.Settings.Modes.AV2 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.Hov3) ? Global.Settings.Modes.AV3 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseSOVSkims) ? Global.Settings.Modes.AV1 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseHOV3Skims) ? Global.Settings.Modes.AV3 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.AV2 :
+                           (useAVSkims) ? Global.Settings.Modes.AV :
+                           (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseSOVSkims) ? Global.Settings.Modes.Sov :
+                           (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseHOV3Skims) ? Global.Settings.Modes.Hov3 :
+                           (skimModeIn == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.Hov2 : skimModeIn;
+
             _pathCost[pathType] =
               useZones
                 ? ImpedanceRoster.GetValue("toll", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
@@ -623,10 +633,20 @@ namespace DaySim.PathTypeModels {
             bool useAVVOT = ((skimModeIn != Global.Settings.Modes.PaidRideShare && _carsAreAVs && Global.Configuration.AV_IncludeAutoTypeChoice)
                            || (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.AV_PaidRideShareModeUsesAVs));
 
+            bool useAVSkimsByOccupancy = (useAVVOT && Global.Configuration.AV_UseSeparateAVSkimMatricesByOccupancy);
+
             bool useAVSkims = (useAVVOT && Global.Configuration.AV_UseSeparateAVSkimMatrices);
 
-            var skimMode = useAVSkims ? Global.Settings.Modes.AV
-                         : (skimModeIn == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.Hov3 : skimModeIn;
+            var skimMode = (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.Sov) ? Global.Settings.Modes.AV1 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.Hov2) ? Global.Settings.Modes.AV2 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.Hov3) ? Global.Settings.Modes.AV3 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseSOVSkims) ? Global.Settings.Modes.AV1 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseHOV3Skims) ? Global.Settings.Modes.AV3 :
+                           (useAVSkimsByOccupancy && skimModeIn == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.AV2 :
+                           (useAVSkims) ? Global.Settings.Modes.AV :
+                           (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseSOVSkims) ? Global.Settings.Modes.Sov :
+                           (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseHOV3Skims) ? Global.Settings.Modes.Hov3 :
+                           (skimModeIn == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.Hov2 : skimModeIn;
 
             IEnumerable<IDestinationParkingNodeWrapper> destinationParkingNodes = ChoiceModelFactory.DestinationParkingNodeDao.Nodes.Where(n => n.Capacity > Constants.EPSILON);
 
@@ -963,10 +983,14 @@ namespace DaySim.PathTypeModels {
             double maxMilesToDrive = (Global.Configuration.MaximumMilesToDriveToParkAndRide > 0) ? Global.Configuration.MaximumMilesToDriveToParkAndRide : 999D;
             double maxDistanceRatio = (Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination > 0) ? Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination : 99D;
 
-            bool useAVSkims = (Global.Configuration.AV_PaidRideShareModeUsesAVs && Global.Configuration.AV_UseSeparateAVSkimMatrices);
+            bool useTNCAVSkimsByOccupancy = (Global.Configuration.AV_PaidRideShareModeUsesAVs && Global.Configuration.AV_UseSeparateAVSkimMatricesByOccupancy);
+            bool useTNCAVSkims = (Global.Configuration.AV_PaidRideShareModeUsesAVs && Global.Configuration.AV_UseSeparateAVSkimMatrices);
+            bool useKNRAVSkimsByOccupancy = (_carsAreAVs && Global.Configuration.AV_UseSeparateAVSkimMatricesByOccupancy);
+            bool useKNRAVSkims = (_carsAreAVs && Global.Configuration.AV_UseSeparateAVSkimMatrices);
 
-            int autoMode = tncPathType? (useAVSkims ? Global.Settings.Modes.AV : Global.Settings.Modes.Hov2)
-                         : knrPathType ? Global.Settings.Modes.Hov2 : Global.Settings.Modes.Sov;
+            int autoMode = tncPathType? (useTNCAVSkimsByOccupancy? Global.Settings.Modes.AV2 : useTNCAVSkims ? Global.Settings.Modes.AV : Global.Settings.Modes.Hov2)
+                         : knrPathType? (useKNRAVSkimsByOccupancy? Global.Settings.Modes.AV2 : useKNRAVSkims ? Global.Settings.Modes.AV : Global.Settings.Modes.Hov2)
+                         : Global.Settings.Modes.Sov;
 
             double zzDistOD = ImpedanceRoster.GetValue("distance", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId).Variable;
 
@@ -1164,11 +1188,15 @@ namespace DaySim.PathTypeModels {
                 return;
             }
 
-            bool useAVSkims = (Global.Configuration.AV_PaidRideShareModeUsesAVs && Global.Configuration.AV_UseSeparateAVSkimMatrices);
+            bool useTNCAVSkimsByOccupancy = (Global.Configuration.AV_PaidRideShareModeUsesAVs && Global.Configuration.AV_UseSeparateAVSkimMatricesByOccupancy);
+            bool useTNCAVSkims = (Global.Configuration.AV_PaidRideShareModeUsesAVs && Global.Configuration.AV_UseSeparateAVSkimMatrices);
+            bool useKNRAVSkimsByOccupancy = (_carsAreAVs && Global.Configuration.AV_UseSeparateAVSkimMatricesByOccupancy);
+            bool useKNRAVSkims = (_carsAreAVs && Global.Configuration.AV_UseSeparateAVSkimMatrices);
 
-            int autoMode = tncPathType ? (useAVSkims ? Global.Settings.Modes.AV : Global.Settings.Modes.Hov2)
-                         : knrPathType ? Global.Settings.Modes.Hov2 : Global.Settings.Modes.Sov;
-
+            int autoMode = tncPathType ? (useTNCAVSkimsByOccupancy ? Global.Settings.Modes.AV2 : useTNCAVSkims ? Global.Settings.Modes.AV : Global.Settings.Modes.Hov2)
+                         : knrPathType ? (useKNRAVSkimsByOccupancy ? Global.Settings.Modes.AV2 : useKNRAVSkims ? Global.Settings.Modes.AV : Global.Settings.Modes.Hov2)
+                         : Global.Settings.Modes.Sov;
+ 
             double zzDistOD = ImpedanceRoster.GetValue("distance", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId).Variable;
 
             foreach (var node in parkAndRideNodes) {

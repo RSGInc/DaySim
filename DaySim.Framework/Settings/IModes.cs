@@ -34,6 +34,9 @@ namespace DaySim.Framework.Settings {
         int PaidRideShare { get; }
 
         int AV { get; }
+        int AV1 { get; }
+        int AV2 { get; }
+        int AV3 { get; }
 
         int Other { get; }
 

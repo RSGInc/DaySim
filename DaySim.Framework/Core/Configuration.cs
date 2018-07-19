@@ -1684,6 +1684,12 @@ namespace DaySim.Framework.Core {
         public double PaidRideshare_AvergeNumberOfPassengersForOtherTours { get; set; }
 
         [XmlAttribute]
+        public bool PaidRideshare_UseSOVSkims { get; set; }
+        [XmlAttribute]
+        public bool PaidRideshare_UseHOV3Skims { get; set; }
+
+
+        [XmlAttribute]
         public bool PaidRideshare_OutputNumberOfPassengersOnTripRecord { get; set; }
 
         [XmlAttribute]
@@ -1733,6 +1739,10 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public bool AV_UseSeparateAVSkimMatrices { get; set; }
+
+        [XmlAttribute]
+        public bool AV_UseSeparateAVSkimMatricesByOccupancy { get; set; }
+
 
         [XmlAttribute]
         public double AV_AutoTypeConstant { get; set; }

@@ -119,6 +119,13 @@ namespace DaySim.Framework.Core {
 
                 case "av":
                     return Global.Settings.Modes.AV;
+
+                case "av1":
+                    return Global.Settings.Modes.AV1;
+                case "av2":
+                    return Global.Settings.Modes.AV2;
+                case "av3":
+                    return Global.Settings.Modes.AV3;
             }
 
             return Global.Settings.Modes.None;

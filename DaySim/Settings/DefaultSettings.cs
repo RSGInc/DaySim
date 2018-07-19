@@ -275,7 +275,7 @@ namespace DaySim.Settings {
         }
 
         public virtual int RosterModes {
-            get { return 10; }
+            get { return 12; }
         }
 
         public virtual int MaxMode {
@@ -324,6 +324,15 @@ namespace DaySim.Settings {
 
         public virtual int AV { //for use with PathTypeModel if separae skims
             get { return 9; }
+        }
+        public virtual int AV1 { //for use with PathTypeModel if separae skims
+            get { return 9; }
+        }
+        public virtual int AV2 {//for use with PathTypeModel if separae skims
+            get { return 10; }
+        }
+        public virtual int AV3 { //for use with PathTypeModel if separae skims
+            get { return 11; }
         }
 
         public virtual int Other {
