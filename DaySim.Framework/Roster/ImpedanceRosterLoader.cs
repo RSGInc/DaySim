@@ -146,7 +146,8 @@ namespace DaySim.Framework.Roster {
                             throw new InvalidPathTypeException(string.Format("The value of \"{0}\" used for path type is invalid. Please adjust the roster accordingly.", tokens[0]));
                     }
 
-                    for (var mode = Global.Settings.Modes.Walk; mode < Global.Settings.Modes.RosterModes; mode++) {
+                    var expectedRosterModes = tokens.Length;
+                    for (var mode = Global.Settings.Modes.Walk; mode < expectedRosterModes; mode++) {
                         PossibleCombinations[mode][pathType] = bool.Parse(tokens[mode]);
                     }
                 }
