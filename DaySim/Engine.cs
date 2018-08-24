@@ -1190,7 +1190,8 @@ namespace DaySim {
 
                     int aNodeId = int.Parse(tokens[0]);
                     Global.NodePairBNodeId[i] = int.Parse(tokens[1]);
-                    int distance = int.Parse(tokens[2]);
+                    double rdist = double.Parse(tokens[2]);
+                    int distance = (int) Math.Round(rdist);
                     Global.NodePairDistance[i] = (ushort)Math.Min(distance, ushort.MaxValue);
 
                     i++;
