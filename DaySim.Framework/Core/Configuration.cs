@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
+﻿// Copyright 2005-2008 Mark A. Bradley and John L. Bowman// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
 // Copyright 2011-2013 John Bowman, Mark Bradley, and RSG, Inc.
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
@@ -1643,6 +1643,10 @@ namespace DaySim.Framework.Core {
 
         [XmlAttribute]
         public double PaidRideShare_DensityCoefficient { get; set; }
+
+        [XmlAttribute]
+        public double PaidRideShare_DensityMeasureCapValue { get; set; }
+
 
         [XmlAttribute]
         public bool PaidRideShareModeIsAvailable { get; set; }

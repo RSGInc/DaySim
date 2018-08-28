@@ -249,10 +249,12 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                     var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
                      ? Global.Configuration.AV_PaidRideShare_ModeConstant
-                     + Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2, 6000)
+                     + Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,
+                     (Global.Configuration.PaidRideShare_DensityMeasureCapValue > 0) ? Global.Configuration.PaidRideShare_DensityMeasureCapValue : 6000)
                      + Global.Configuration.AV_PaidRideShare_AVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
                      : Global.Configuration.PaidRideShare_ModeConstant
-                     + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2, 6000);
+                     + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,
+                     (Global.Configuration.PaidRideShare_DensityMeasureCapValue > 0) ? Global.Configuration.PaidRideShare_DensityMeasureCapValue : 6000);
 
                     alternative.AddUtilityTerm(90, modeConstant);
                     alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());
@@ -376,9 +378,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(68, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(169, destinationParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(168, destinationParcel.TotalEmploymentDensity1());
-                    //                        alternative.AddUtility(167, destinationParcel.NetIntersectionDensity1());
-                    //                        alternative.AddUtility(166, originParcel.NetIntersectionDensity1());
-                    //                        alternative.AddUtility(165, originParcel.HouseholdDensity1());
+                    alternative.AddUtilityTerm(167, destinationParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(166, originParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(165, originParcel.HouseholdDensity1());
                     alternative.AddUtilityTerm(164, originParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(162, (class1Dist > 0).ToFlag());
                     alternative.AddUtilityTerm(162, (class2Dist > 0).ToFlag());
@@ -386,14 +388,14 @@ namespace DaySim.ChoiceModels.Default.Models {
                 } else if (mode == Global.Settings.Modes.Walk) {
                     alternative.AddUtilityTerm(70, 1); //for calibration
                     alternative.AddUtilityTerm(71, maleFlag);
-                    //                        alternative.AddUtility(73, ageBetween51And98Flag);
+                    alternative.AddUtilityTerm(73, ageBetween51And98Flag);
                     alternative.AddUtilityTerm(77, noCarsInHouseholdFlag); //for calibration
                     alternative.AddUtilityTerm(78, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
-                    //                        alternative.AddUtility(178, destinationParcel.TotalEmploymentDensity1());
-                    //                        alternative.AddUtility(177, destinationParcel.NetIntersectionDensity1());
-                    //                        alternative.AddUtility(176, originParcel.NetIntersectionDensity1());
-                    //                        alternative.AddUtility(175, originParcel.HouseholdDensity1());
+                    alternative.AddUtilityTerm(178, destinationParcel.TotalEmploymentDensity1());
+                    alternative.AddUtilityTerm(177, destinationParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(176, originParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
                     alternative.AddUtilityTerm(179, originParcel.MixedUse4Index1());
                 }
 

@@ -252,10 +252,12 @@ namespace DaySim.ChoiceModels.Default.Models {
 
                     var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
                       ? Global.Configuration.AV_PaidRideShare_ModeConstant 
-                      + Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,6000)
+                      + Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,
+                       (Global.Configuration.PaidRideShare_DensityMeasureCapValue > 0) ? Global.Configuration.PaidRideShare_DensityMeasureCapValue : 6000)
                       + Global.Configuration.AV_PaidRideShare_AVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
                       : Global.Configuration.PaidRideShare_ModeConstant
-                      + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,6000);
+                      + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,
+                       (Global.Configuration.PaidRideShare_DensityMeasureCapValue > 0) ? Global.Configuration.PaidRideShare_DensityMeasureCapValue : 6000);
 
 
                     alternative.AddUtilityTerm(90, modeConstant);
@@ -367,8 +369,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(160, socialOrRecreationTourFlag);
                     alternative.AddUtilityTerm(169, destinationParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(168, destinationParcel.TotalEmploymentDensity1());
-                    //                        alternative.AddUtility(167, destinationParcel.NetIntersectionDensity1());
-                    //                        alternative.AddUtility(166, originParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(167, destinationParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(166, originParcel.NetIntersectionDensity1());
                     alternative.AddUtilityTerm(165, originParcel.HouseholdDensity1());
                     alternative.AddUtilityTerm(164, originParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(161, (class1Dist > 0).ToFlag());
@@ -381,12 +383,12 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(78, carsLessThanDriversFlag); //for calibration
                     alternative.AddUtilityTerm(171, mealTourFlag);
                     alternative.AddUtilityTerm(172, socialOrRecreationTourFlag);
-                    //                        alternative.AddUtility(179, destinationParcel.MixedUse4Index1());
+                    alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
                     alternative.AddUtilityTerm(178, destinationParcel.HouseholdDensity1());
-                    //                        alternative.AddUtility(177, destinationParcel.NetIntersectionDensity1());
-                    //                        alternative.AddUtility(176, originParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(177, destinationParcel.NetIntersectionDensity1());
+                    alternative.AddUtilityTerm(176, originParcel.NetIntersectionDensity1());
                     alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
-                    //                        alternative.AddUtility(174, originParcel.MixedUse4Index1());
+                    alternative.AddUtilityTerm(174, originParcel.MixedUse4Index1());
                 }
 
                 RegionSpecificCustomizations(alternative, tour, pathTypeModel.PathType, mode, destinationParcel);
