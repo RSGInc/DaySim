@@ -2597,8 +2597,9 @@ namespace DaySim {
                 }
             }
 
-            ConvertTime(Global.GetInputPath(Global.Configuration.InputTourPath), Global.Configuration.InputTourDelimiter, new[] { "tlvorig", "tardest", "tlvdest", "tarorig" });
-
+            if (!Global.Configuration.InputFileTimesAlreadyInMinutesPastMidnight)  {
+                ConvertTime(Global.GetInputPath(Global.Configuration.InputTourPath), Global.Configuration.InputTourDelimiter, new[] { "tlvorig", "tardest", "tlvdest", "tarorig" });
+            }
             return tourKeys;
         }
 
@@ -2689,7 +2690,9 @@ namespace DaySim {
                 }
             }
 
-            ConvertTime(Global.GetInputPath(Global.Configuration.InputTripPath), Global.Configuration.InputTripDelimiter, new[] { "deptm", "arrtm", "endacttm" });
+            if (!Global.Configuration.InputFileTimesAlreadyInMinutesPastMidnight) {
+                ConvertTime(Global.GetInputPath(Global.Configuration.InputTripPath), Global.Configuration.InputTripDelimiter, new[] { "deptm", "arrtm", "endacttm" });
+            }
         }
 
         private static void WriteTripHeader(TextReader reader, TextWriter writer) {
