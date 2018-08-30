@@ -93,6 +93,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
             // set trip inputs
             var originChangeMode = trip.Sequence > 1 && trip.GetPreviousTrip().DestinationPurpose == Global.Settings.Purposes.ChangeMode;
+            var originWorkFlag = trip.IsWorkOriginPurpose().ToFlag();
             var originSchoolFlag = trip.IsSchoolOriginPurpose().ToFlag();
             var originEscortFlag = trip.IsEscortOriginPurpose().ToFlag();
             var originShoppingFlag = trip.IsShoppingOriginPurpose().ToFlag();
@@ -215,23 +216,26 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(39, duration.IsRightExclusiveBetween(Global.Settings.Times.FourteenHours, Global.Settings.Times.EighteenHours).ToFlag()); // 14 - 18  
                     alternative.AddUtilityTerm(40, (duration >= Global.Settings.Times.EighteenHours).ToFlag()); // 18 - 24  
 
-                    alternative.AddUtilityTerm(41, partTimeWorkerFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(43, nonworkingAdultFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(45, universityStudentFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(47, retiredAdultFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(49, drivingAgeStudentFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(51, childAge5Through15Flag * departurePeriodShift);
-                    alternative.AddUtilityTerm(53, childUnder5Flag * departurePeriodShift);
-                    alternative.AddUtilityTerm(131, workTourFlag * halfTourFromOriginFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(133, workTourFlag * halfTourFromDestinationFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(135, notWorkTourFlag * halfTourFromDestinationFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(137, notHomeBasedTourFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(145, originEscortFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(147, originShoppingFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(149, originMealFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(151, originSocialFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(153, originPersonalBusinessFlag * departurePeriodShift);
-                    alternative.AddUtilityTerm(155, originSchoolFlag * departurePeriodShift);
+                    //these were duplicate departure shift variables before, and constrained to 0 in all the coefficient files - replaced by duration shifts
+                    alternative.AddUtilityTerm(41, partTimeWorkerFlag * duration);
+                    alternative.AddUtilityTerm(43, nonworkingAdultFlag * duration);
+                    alternative.AddUtilityTerm(45, universityStudentFlag * duration);
+                    alternative.AddUtilityTerm(47, retiredAdultFlag * duration);
+                    alternative.AddUtilityTerm(49, drivingAgeStudentFlag * duration);
+                    alternative.AddUtilityTerm(51, childAge5Through15Flag * duration);
+                    alternative.AddUtilityTerm(53, childUnder5Flag * duration);
+                    alternative.AddUtilityTerm(55, halfTourFromOriginFlag * duration);
+                    alternative.AddUtilityTerm(131, workTourFlag * halfTourFromOriginFlag * duration);
+                    alternative.AddUtilityTerm(133, workTourFlag * halfTourFromDestinationFlag * duration);
+                    alternative.AddUtilityTerm(135, notWorkTourFlag * halfTourFromDestinationFlag * duration);
+                    alternative.AddUtilityTerm(137, notHomeBasedTourFlag * duration);
+                    alternative.AddUtilityTerm(145, originEscortFlag * duration);
+                    alternative.AddUtilityTerm(147, originShoppingFlag * duration);
+                    alternative.AddUtilityTerm(149, originMealFlag * duration);
+                    alternative.AddUtilityTerm(151, originSocialFlag * duration);
+                    alternative.AddUtilityTerm(153, originPersonalBusinessFlag * duration);
+                    alternative.AddUtilityTerm(155, originSchoolFlag * duration);
+
                     alternative.AddUtilityTerm(42, partTimeWorkerFlag * departurePeriodShift);
                     alternative.AddUtilityTerm(44, nonworkingAdultFlag * departurePeriodShift);
                     alternative.AddUtilityTerm(46, universityStudentFlag * departurePeriodShift);
@@ -239,6 +243,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(50, drivingAgeStudentFlag * departurePeriodShift);
                     alternative.AddUtilityTerm(52, childAge5Through15Flag * departurePeriodShift);
                     alternative.AddUtilityTerm(54, childUnder5Flag * departurePeriodShift);
+                    alternative.AddUtilityTerm(56, halfTourFromOriginFlag * departurePeriodShift);
                     alternative.AddUtilityTerm(132, workTourFlag * halfTourFromOriginFlag * departurePeriodShift);
                     alternative.AddUtilityTerm(134, workTourFlag * halfTourFromDestinationFlag * departurePeriodShift);
                     alternative.AddUtilityTerm(136, notWorkTourFlag * halfTourFromDestinationFlag * departurePeriodShift);
@@ -249,6 +254,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(152, originSocialFlag * departurePeriodShift);
                     alternative.AddUtilityTerm(154, originPersonalBusinessFlag * departurePeriodShift);
                     alternative.AddUtilityTerm(156, originSchoolFlag * departurePeriodShift);
+                   
                     alternative.AddUtilityTerm(86, sovOrHovTripFlag * Math.Max(departureImpedance.GeneralizedTime, 0) * tour.TimeCoefficient);
                     alternative.AddUtilityTerm(88, transitTripFlag * Math.Max(departureImpedance.GeneralizedTime, 0) * tour.TimeCoefficient);
                     alternative.AddUtilityTerm(89, transitTripFlag * (departureImpedance.GeneralizedTime < 0).ToFlag());

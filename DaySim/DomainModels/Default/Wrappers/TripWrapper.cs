@@ -343,6 +343,10 @@ namespace DaySim.DomainModels.Default.Wrappers {
             return IsMealDestinationPurpose() || IsPersonalBusinessDestinationPurpose() || IsShoppingDestinationPurpose() || IsSocialDestinationPurpose();
         }
 
+        public virtual bool IsWorkOriginPurpose() {
+            return OriginPurpose == Global.Settings.Purposes.Work;
+        }
+
         public virtual bool IsSchoolOriginPurpose() {
             return OriginPurpose == Global.Settings.Purposes.School;
         }

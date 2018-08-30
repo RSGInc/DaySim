@@ -91,6 +91,8 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
         bool IsPersonalReasonsDestinationPurpose();
 
+        bool IsWorkOriginPurpose();
+
         bool IsSchoolOriginPurpose();
 
         bool IsEscortOriginPurpose();
