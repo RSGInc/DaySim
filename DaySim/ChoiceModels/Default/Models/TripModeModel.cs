@@ -67,9 +67,16 @@ namespace DaySim.ChoiceModels.Default.Models {
                           : trip.GetPreviousTrip().ArrivalTime;
 
             if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-                if (destinationParcel == null || originParcel == null || trip.Mode <= Global.Settings.Modes.None || trip.Mode == Global.Settings.Modes.ParkAndRide || trip.Mode == Global.Settings.Modes.Other) {
+                if (destinationParcel == null || originParcel == null ||
+                trip.Mode <= Global.Settings.Modes.None ||
+                trip.Mode == Global.Settings.Modes.ParkAndRide ||
+               (trip.Mode == Global.Settings.Modes.SchoolBus && trip.Tour.DestinationPurpose != Global.Settings.Purposes.School) ||
+               (trip.Mode == Global.Settings.Modes.PaidRideShare && !Global.Configuration.PaidRideShareModeIsAvailable) ||
+                trip.Mode > Global.Settings.Modes.PaidRideShare)
+                {
                     return;
                 }
+
 
                 IEnumerable<IPathTypeModel> pathTypeModels =
                     PathTypeModelFactory.Singleton.RunAll(
@@ -158,6 +165,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             var twoPersonHouseholdFlag = household.IsTwoPersonHousehold.ToFlag();
             var income0To25KFlag = household.Has0To25KIncome.ToFlag();
             var income25To45KFlag = household.Has25To45KIncome.ToFlag();
+            var incomeOver100Flag = household.Has100KPlusIncome.ToFlag();
             var childrenAge5Through15 = householdTotals.ChildrenAge5Through15;
             var nonworkingAdults = householdTotals.NonworkingAdults;
             var retiredAdults = householdTotals.RetiredAdults;
@@ -178,6 +186,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             var sovTourFlag = tour.IsSovMode().ToFlag();
             var bikeTourFlag = tour.IsBikeMode().ToFlag();
             var walkTourFlag = tour.IsWalkMode().ToFlag();
+            var tncTourFlag = (tour.Mode==Global.Settings.Modes.PaidRideShare).ToFlag();
             var homeBasedWorkTourFlag = (tour.IsHomeBasedTour && tour.IsWorkPurpose()).ToFlag();
             var homeBasedSchoolTourFlag = (tour.IsHomeBasedTour && tour.IsSchoolPurpose()).ToFlag();
             var homeBasedEscortTourFlag = (tour.IsHomeBasedTour && tour.IsEscortPurpose()).ToFlag();
@@ -223,7 +232,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             var eveningPeriodFlag = (departureTime > Global.Settings.Times.SevenPM).ToFlag();
 
             // availability
-            var tripModeAvailable = new bool[Global.Settings.Modes.TotalModes];
+            var tripModeAvailable = new bool[Global.Settings.Modes.TotalModes+1];
 
             var isLastTripInTour = (!trip.IsHalfTourFromOrigin && halfTour.SimulatedTrips == 1 && trip.IsToTourOrigin) || (!trip.IsHalfTourFromOrigin && halfTour.SimulatedTrips > 1 && trip.IsToTourOrigin);
             var frequencyPreviousTripModeIsTourMode =
@@ -232,7 +241,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     : tour.HalfTourFromOrigin.Trips.Union(tour.HalfTourFromDestination.Trips.Where(x => x.Sequence < trip.Sequence)).Count(x => tour.Mode == x.Mode);
 
             // if a park and ride tour, only car is available
-            var maxAvail = tour.Mode == Global.Settings.Modes.PaidRideShare ? Global.Settings.Modes.Transit : tour.Mode;
+            var maxAvail = tour.Mode;
             if (tour.Mode == Global.Settings.Modes.ParkAndRide) {
                 tripModeAvailable[Global.Settings.Modes.Sov] = tour.Household.VehiclesAvailable > 0 && tour.Person.IsDrivingAge;
                 tripModeAvailable[Global.Settings.Modes.Hov2] = !tripModeAvailable[Global.Settings.Modes.Sov];
@@ -243,7 +252,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             } else {
                 // set availability based on tour mode
                 for (var mode = Global.Settings.Modes.Walk; mode <= maxAvail; mode++) {
-                    tripModeAvailable[mode] = true;
+                    if (mode!= Global.Settings.Modes.ParkAndRide) tripModeAvailable[mode] = true;
                 }
             }
 
@@ -274,44 +283,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(113, transitTourFlag);
                 }
             }
-            // paidRideShare is a special case   
-            if (Global.Configuration.PaidRideShareModeIsAvailable && tour.Mode == Global.Settings.Modes.PaidRideShare) {
-                var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.PaidRideShare);
-                var modeExtra = Global.Settings.Modes.PaidRideShare;
-                var availableExtra = pathTypeExtra.Available;
-                var generalizedTimeLogsumExtra = pathTypeExtra.GeneralizedTimeLogsum;
-                var distanceExtra = pathTypeExtra.PathDistance;
-
-                var alternative = choiceProbabilityCalculator.GetAlternative(modeExtra-2, availableExtra, choice == modeExtra);
-                alternative.Choice = modeExtra;
-
-                alternative.AddNestedAlternative(_nestedAlternativeIds[modeExtra], _nestedAlternativeIndexes[modeExtra], THETA_PARAMETER);
-
-                if (availableExtra)    {
-                    var autoTimeCoefficient = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
-                        tour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : tour.TimeCoefficient;
-                    alternative.AddUtilityTerm(2, generalizedTimeLogsumExtra * autoTimeCoefficient);
- 
-                    var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
-                     ? Global.Configuration.AV_PaidRideShare_ModeConstant
-                     + Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,
-                      (Global.Configuration.PaidRideShare_DensityMeasureCapValue > 0) ? Global.Configuration.PaidRideShare_DensityMeasureCapValue : 6000)
-                     + Global.Configuration.AV_PaidRideShare_AVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
-                     : Global.Configuration.PaidRideShare_ModeConstant
-                     + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,
-                     (Global.Configuration.PaidRideShare_DensityMeasureCapValue > 0) ? Global.Configuration.PaidRideShare_DensityMeasureCapValue : 6000);
-
-                    alternative.AddUtilityTerm(90, modeConstant);
-                    alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());
-                    alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age18to25Coefficient * tour.Person.AgeIsBetween18And25.ToFlag());
-                    alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_AgeOver65Coefficient * (tour.Person.Age >= 65).ToFlag());
-                }
-            }
-
 
             foreach (var pathTypeModel in pathTypeModels) {
                 var mode = pathTypeModel.Mode;
-                var available = pathTypeModel.Available && tripModeAvailable[mode];
+                var available = (pathTypeModel.Mode != Global.Settings.Modes.PaidRideShare || Global.Configuration.PaidRideShareModeIsAvailable)
+                    && pathTypeModel.Available && tripModeAvailable[mode];
                 var generalizedTimeLogsum = pathTypeModel.GeneralizedTimeLogsum;
 
                 var alternative = choiceProbabilityCalculator.GetAlternative(mode, available, choice == mode);
@@ -324,7 +300,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                 }
 
                 var modeTimeCoefficient = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0 && mode >= Global.Settings.Modes.Sov && mode <= Global.Settings.Modes.Hov3) ?
-                    tour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : tour.TimeCoefficient;
+                     tour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) :
+                     (mode == Global.Settings.Modes.PaidRideShare && Global.Configuration.AV_PaidRideShareModeUsesAVs) ?
+                     tour.TimeCoefficient * (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : tour.TimeCoefficient;
                 alternative.AddUtilityTerm(2, generalizedTimeLogsum * modeTimeCoefficient);
 
 
@@ -338,7 +316,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(105, (transitTourFlag * firstTripOnSecondHalfFlag));
                     alternative.AddUtilityTerm(106, (transitTourFlag * lastTripOnFirstHalfFlag));
                     alternative.AddUtilityTerm(107, (transitTourFlag * lastTripOnSecondHalfFlag));
-                } else if (mode == Global.Settings.Modes.Hov3) {
+                    alternative.AddUtilityTerm(136, tncTourFlag);
+                }
+                else if (mode == Global.Settings.Modes.Hov3) {
                     alternative.AddUtilityTerm(30, 1);
                     alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT3));
                     alternative.AddUtilityTerm(32, childrenAge5Through15);
@@ -356,6 +336,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(114, parkAndRideTourFlag);
                     alternative.AddUtilityTerm(115, transitTourFlag);
                     alternative.AddUtilityTerm(116, schoolBusTourFlag);
+                    alternative.AddUtilityTerm(135, tncTourFlag);
                     alternative.AddUtilityTerm(149, homeBasedWorkTourFlag);
                     alternative.AddUtilityTerm(150, homeBasedSchoolTourFlag);
                     alternative.AddUtilityTerm(152, homeBasedEscortTourFlag);
@@ -389,6 +370,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(118, transitTourFlag);
                     alternative.AddUtilityTerm(119, schoolBusTourFlag);
                     alternative.AddUtilityTerm(120, hov3TourFlag);
+                    alternative.AddUtilityTerm(135, tncTourFlag);
                     alternative.AddUtilityTerm(149, homeBasedWorkTourFlag);
                     alternative.AddUtilityTerm(150, homeBasedSchoolTourFlag);
                     alternative.AddUtilityTerm(152, homeBasedEscortTourFlag);
@@ -423,7 +405,9 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(122, transitTourFlag);
                     alternative.AddUtilityTerm(124, hov3TourFlag);
                     alternative.AddUtilityTerm(125, hov2TourFlag);
-                } else if (mode == Global.Settings.Modes.Bike) {
+                    alternative.AddUtilityTerm(134, tncTourFlag);
+                }
+                else if (mode == Global.Settings.Modes.Bike) {
                     alternative.AddUtilityTerm(60, 1);
                     alternative.AddUtilityTerm(61, maleFlag);
                     alternative.AddUtilityTerm(62, ageLessThan35Flag);
@@ -439,6 +423,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(128, schoolBusTourFlag);
                     alternative.AddUtilityTerm(130, hov2TourFlag);
                     alternative.AddUtilityTerm(131, sovTourFlag);
+                    alternative.AddUtilityTerm(133, tncTourFlag);
                     alternative.AddUtilityTerm(147, notHomeBasedTourFlag);
                 } else if (mode == Global.Settings.Modes.Walk) {
                     alternative.AddUtilityTerm(72, ageLessThan35Flag);
@@ -453,6 +438,46 @@ namespace DaySim.ChoiceModels.Default.Models {
                     alternative.AddUtilityTerm(107, (walkTourFlag * lastTripOnSecondHalfFlag));
                     alternative.AddUtilityTerm(141, homeBasedWorkTourFlag);
                     alternative.AddUtilityTerm(142, homeBasedSchoolTourFlag);
+                }
+                else if (mode == Global.Settings.Modes.PaidRideShare)     {
+                    alternative.AddUtilityTerm(100, tncTourFlag);
+                    alternative.AddUtilityTerm(102, (tncTourFlag * onlyTripOnFirstHalfFlag));
+                    alternative.AddUtilityTerm(103, (tncTourFlag * onlyTripOnSecondHalfFlag));
+                    alternative.AddUtilityTerm(104, (tncTourFlag * firstTripOnFirstHalfFlag));
+                    alternative.AddUtilityTerm(105, (tncTourFlag * firstTripOnSecondHalfFlag));
+                    alternative.AddUtilityTerm(106, (tncTourFlag * lastTripOnFirstHalfFlag));
+                    alternative.AddUtilityTerm(107, (tncTourFlag * lastTripOnSecondHalfFlag));
+                    if (Global.Configuration.PaidRideshare_UseEstimatedInsteadOfAssertedCoefficients)  {
+                        alternative.AddUtilityTerm(80, 1.0);
+                        alternative.AddUtilityTerm(81, noCarsInHouseholdFlag); 
+                        alternative.AddUtilityTerm(82, carsLessThanDriversFlag); 
+                        alternative.AddUtilityTerm(83, tour.Person.AgeIsBetween26And35.ToFlag());
+                        alternative.AddUtilityTerm(83, tour.Person.AgeIsBetween18And25.ToFlag());
+                        alternative.AddUtilityTerm(84, (tour.Person.Age>=65).ToFlag());
+                        alternative.AddUtilityTerm(85, originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2);
+                        alternative.AddUtilityTerm(86, destinationParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2);
+                        alternative.AddUtilityTerm(87, income0To25KFlag);
+                        alternative.AddUtilityTerm(88, incomeOver100Flag);
+                        alternative.AddUtilityTerm(89, homeBasedWorkTourFlag);
+                        alternative.AddUtilityTerm(90, homeBasedSchoolTourFlag);
+                        alternative.AddUtilityTerm(91, homeBasedEscortTourFlag);
+                        alternative.AddUtilityTerm(92, homeBasedShoppingTourFlag);
+                    }
+                    else {
+                        var modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
+                        ? Global.Configuration.AV_PaidRideShare_ModeConstant
+                        + Global.Configuration.AV_PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,
+                        (Global.Configuration.PaidRideShare_DensityMeasureCapValue > 0) ? Global.Configuration.PaidRideShare_DensityMeasureCapValue : 6000)
+                        + Global.Configuration.AV_PaidRideShare_AVOwnerCoefficient * (household.OwnsAutomatedVehicles > 0).ToFlag()
+                        : Global.Configuration.PaidRideShare_ModeConstant
+                        + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2,
+                        (Global.Configuration.PaidRideShare_DensityMeasureCapValue > 0) ? Global.Configuration.PaidRideShare_DensityMeasureCapValue : 6000);
+
+                        alternative.AddUtilityTerm(90, modeConstant);
+                        alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());
+                        alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_Age18to25Coefficient * tour.Person.AgeIsBetween18And25.ToFlag());
+                        alternative.AddUtilityTerm(90, Global.Configuration.PaidRideShare_AgeOver65Coefficient * (tour.Person.Age >= 65).ToFlag());
+                    }
                 }
             }
         }

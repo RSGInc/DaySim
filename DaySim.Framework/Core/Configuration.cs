@@ -1716,6 +1716,8 @@ namespace DaySim.Framework.Core {
         [XmlAttribute]
         public double PaidRideshare_2PassengerShareForOtherTours { get; set; }
 
+        [XmlAttribute]
+        public bool PaidRideshare_UseEstimatedInsteadOfAssertedCoefficients { get; set; }
 
         [XmlAttribute]
         public bool WriteResidenceBufferDensityToOwnOrRent { get; set; }
