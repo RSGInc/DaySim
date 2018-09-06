@@ -19,6 +19,8 @@ def run_process_with_realtime_output(cmd):
         if not stream.closed:
             stream.close()
 
+    print("In run_process_with_realtime_output. cmd='", cmd, "'" )
+
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
 
     Thread(target=stream_watcher, name='stdout-watcher',
