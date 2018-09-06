@@ -4,10 +4,9 @@
 #Rprof()
 
 options(warn = 1) #print warnings as they occur
-
 ## This will print the stack trace at the time of the error.
-options(error = function() traceback())
-options(warning = function() traceback())
+options(error = function() traceback(2))
+options(warning = function() traceback(2))
 
 #-----------------------
 #Load packages

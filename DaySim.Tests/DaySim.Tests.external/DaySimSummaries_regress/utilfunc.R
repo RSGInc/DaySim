@@ -93,7 +93,7 @@ output <- function(out,outnum,wb,outsheet,celloc,xvals=0,yvals=0,transpose=0)
     if(transpose!=0)
       out <- data.frame(t(out))
 	}
-  regname <- paste("out",outnum,sep="")
+  regname <- paste("out_",outnum,sep="")
   createName(wb, name = regname, formula = paste(outsheet,"!",celloc,sep=""),overwrite=TRUE)
 	writeNamedRegion(wb, out, name = regname,header=F)
 }
