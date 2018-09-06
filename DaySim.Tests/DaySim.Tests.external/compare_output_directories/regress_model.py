@@ -257,7 +257,7 @@ def regress_model(parameters):
 if __name__ == "__main__":
      try:
         model_regression_successful = regress_model(sys.argv[1:])
-        sys.exit(0 if model_regression_successful else 1)
+        sys.exit(0 if model_regression_successful == True else 1)
      except Exception as ex:
         print("Exception in user code:")
         print("-"*60)
