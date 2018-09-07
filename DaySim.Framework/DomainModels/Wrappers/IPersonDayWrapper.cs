@@ -5,206 +5,206 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using System.Collections.Generic;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
-using System.Collections.Generic;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-    public interface IPersonDayWrapper : IPersonDay {
-        #region relations properties
+  public interface IPersonDayWrapper : IPersonDay {
+    #region relations properties
 
-        IHouseholdWrapper Household { get; set; }
+    IHouseholdWrapper Household { get; set; }
 
-        IPersonWrapper Person { get; set; }
+    IPersonWrapper Person { get; set; }
 
-        IHouseholdDayWrapper HouseholdDay { get; set; }
+    IHouseholdDayWrapper HouseholdDay { get; set; }
 
-        List<ITourWrapper> Tours { get; set; }
+    List<ITourWrapper> Tours { get; set; }
 
-        #endregion
+    #endregion
 
-        #region flags/choice model/etc. properties
+    #region flags/choice model/etc. properties
 
-        ITimeWindow TimeWindow { get; set; }
+    ITimeWindow TimeWindow { get; set; }
 
-        int CreatedWorkTours { get; set; }
+    int CreatedWorkTours { get; set; }
 
-        int CreatedSchoolTours { get; set; }
+    int CreatedSchoolTours { get; set; }
 
-        int CreatedEscortTours { get; set; }
+    int CreatedEscortTours { get; set; }
 
-        int CreatedPersonalBusinessTours { get; set; }
+    int CreatedPersonalBusinessTours { get; set; }
 
-        int CreatedShoppingTours { get; set; }
+    int CreatedShoppingTours { get; set; }
 
-        int CreatedMealTours { get; set; }
+    int CreatedMealTours { get; set; }
 
-        int CreatedSocialTours { get; set; }
+    int CreatedSocialTours { get; set; }
 
-        int CreatedRecreationTours { get; set; }
+    int CreatedRecreationTours { get; set; }
 
-        int CreatedMedicalTours { get; set; }
+    int CreatedMedicalTours { get; set; }
 
-        int CreatedWorkBasedTours { get; set; }
+    int CreatedWorkBasedTours { get; set; }
 
-        int SimulatedHomeBasedTours { get; set; }
+    int SimulatedHomeBasedTours { get; set; }
 
-        int SimulatedWorkTours { get; set; }
+    int SimulatedWorkTours { get; set; }
 
-        int SimulatedSchoolTours { get; set; }
+    int SimulatedSchoolTours { get; set; }
 
-        int SimulatedEscortTours { get; set; }
+    int SimulatedEscortTours { get; set; }
 
-        int SimulatedPersonalBusinessTours { get; set; }
+    int SimulatedPersonalBusinessTours { get; set; }
 
-        int SimulatedShoppingTours { get; set; }
+    int SimulatedShoppingTours { get; set; }
 
-        int SimulatedMealTours { get; set; }
+    int SimulatedMealTours { get; set; }
 
-        int SimulatedSocialTours { get; set; }
+    int SimulatedSocialTours { get; set; }
 
-        int SimulatedRecreationTours { get; set; }
+    int SimulatedRecreationTours { get; set; }
 
-        int SimulatedMedicalTours { get; set; }
+    int SimulatedMedicalTours { get; set; }
 
-        int SimulatedWorkStops { get; set; }
+    int SimulatedWorkStops { get; set; }
 
-        int SimulatedSchoolStops { get; set; }
+    int SimulatedSchoolStops { get; set; }
 
-        int SimulatedEscortStops { get; set; }
+    int SimulatedEscortStops { get; set; }
 
-        int SimulatedPersonalBusinessStops { get; set; }
+    int SimulatedPersonalBusinessStops { get; set; }
 
-        int SimulatedShoppingStops { get; set; }
+    int SimulatedShoppingStops { get; set; }
 
-        int SimulatedMealStops { get; set; }
+    int SimulatedMealStops { get; set; }
 
-        int SimulatedSocialStops { get; set; }
+    int SimulatedSocialStops { get; set; }
 
-        int SimulatedRecreationStops { get; set; }
+    int SimulatedRecreationStops { get; set; }
 
-        int SimulatedMedicalStops { get; set; }
+    int SimulatedMedicalStops { get; set; }
 
-        bool IsValid { get; set; }
+    bool IsValid { get; set; }
 
-        int AttemptedSimulations { get; set; }
+    int AttemptedSimulations { get; set; }
 
-        int PatternType { get; set; }
+    int PatternType { get; set; }
 
-        bool HasMandatoryTourToUsualLocation { get; set; }
+    bool HasMandatoryTourToUsualLocation { get; set; }
 
-        int EscortFullHalfTours { get; set; }
+    int EscortFullHalfTours { get; set; }
 
-        int WorksAtHomeFlag { get; set; }
+    int WorksAtHomeFlag { get; set; }
 
-        int JointTours { get; set; }
+    int JointTours { get; set; }
 
-        int EscortJointTours { get; set; }
+    int EscortJointTours { get; set; }
 
-        int PersonalBusinessJointTours { get; set; }
+    int PersonalBusinessJointTours { get; set; }
 
-        int ShoppingJointTours { get; set; }
+    int ShoppingJointTours { get; set; }
 
-        int MealJointTours { get; set; }
+    int MealJointTours { get; set; }
 
-        int SocialJointTours { get; set; }
+    int SocialJointTours { get; set; }
 
-        int RecreationJointTours { get; set; }
+    int RecreationJointTours { get; set; }
 
-        int MedicalJointTours { get; set; }
+    int MedicalJointTours { get; set; }
 
-        bool IsMissingData { get; set; }
+    bool IsMissingData { get; set; }
 
-        #endregion
+    #endregion
 
-        #region wrapper methods
+    #region wrapper methods
 
-        int GetTotalTours();
+    int GetTotalTours();
 
-        int GetTotalToursExcludingWorkAndSchool();
+    int GetTotalToursExcludingWorkAndSchool();
 
-        int GetCreatedNonMandatoryTours();
+    int GetCreatedNonMandatoryTours();
 
-        int GetTotalCreatedTours();
+    int GetTotalCreatedTours();
 
-        int GetTotalCreatedTourPurposes();
+    int GetTotalCreatedTourPurposes();
 
-        int GetTotalSimulatedTours();
+    int GetTotalSimulatedTours();
 
-        int GetTotalStops();
+    int GetTotalStops();
 
-        int GetTotalStopPurposes();
+    int GetTotalStopPurposes();
 
-        int GetTotalStopsExcludingWorkAndSchool();
+    int GetTotalStopsExcludingWorkAndSchool();
 
-        int GetTotalSimulatedStops();
+    int GetTotalSimulatedStops();
 
-        bool GetIsWorkOrSchoolPattern();
+    bool GetIsWorkOrSchoolPattern();
 
-        bool GetIsOtherPattern();
+    bool GetIsOtherPattern();
 
-        bool HomeBasedToursExist();
+    bool HomeBasedToursExist();
 
-        bool TwoOrMoreWorkToursExist();
+    bool TwoOrMoreWorkToursExist();
 
-        bool WorkStopsExist();
+    bool WorkStopsExist();
 
-        bool SimulatedToursExist();
+    bool SimulatedToursExist();
 
-        bool OnlyHomeBasedToursExist();
+    bool OnlyHomeBasedToursExist();
 
-        bool IsFirstSimulatedHomeBasedTour();
+    bool IsFirstSimulatedHomeBasedTour();
 
-        bool IsLaterSimulatedHomeBasedTour();
+    bool IsLaterSimulatedHomeBasedTour();
 
-        bool SimulatedWorkStopsExist();
+    bool SimulatedWorkStopsExist();
 
-        bool SimulatedSchoolStopsExist();
+    bool SimulatedSchoolStopsExist();
 
-        bool SimulatedEscortStopsExist();
+    bool SimulatedEscortStopsExist();
 
-        bool SimulatedPersonalBusinessStopsExist();
+    bool SimulatedPersonalBusinessStopsExist();
 
-        bool SimulatedShoppingStopsExist();
+    bool SimulatedShoppingStopsExist();
 
-        bool SimulatedMealStopsExist();
+    bool SimulatedMealStopsExist();
 
-        bool SimulatedSocialStopsExist();
+    bool SimulatedSocialStopsExist();
 
-        int GetJointTourParticipationPriority();
+    int GetJointTourParticipationPriority();
 
-        int GetJointHalfTourParticipationPriority();
+    int GetJointHalfTourParticipationPriority();
 
-        void InitializeTours();
+    void InitializeTours();
 
-        void SetTours();
+    void SetTours();
 
-        void GetMandatoryTourSimulatedData(IPersonDayWrapper personDay, List<ITourWrapper> tours);
+    void GetMandatoryTourSimulatedData(IPersonDayWrapper personDay, List<ITourWrapper> tours);
 
-        void GetIndividualTourSimulatedData(IPersonDayWrapper personDay, List<ITourWrapper> tours);
+    void GetIndividualTourSimulatedData(IPersonDayWrapper personDay, List<ITourWrapper> tours);
 
-        void IncrementSimulatedTours(int destinationPurpose);
+    void IncrementSimulatedTours(int destinationPurpose);
 
-        void IncrementSimulatedStops(int destinationPurpose);
+    void IncrementSimulatedStops(int destinationPurpose);
 
-        ITourWrapper GetEscortTour(int originAddressType, int originParcelId, int originZoneKey);
+    ITourWrapper GetEscortTour(int originAddressType, int originParcelId, int originZoneKey);
 
-        ITourWrapper GetNewTour(int originAddressType, int originParcelId, int originZoneKey, int purpose);
+    ITourWrapper GetNewTour(int originAddressType, int originParcelId, int originZoneKey, int purpose);
 
-        int GetNextTourSequence();
+    int GetNextTourSequence();
 
-        int GetCurrentTourSequence();
+    int GetCurrentTourSequence();
 
-        void SetHomeBasedNonMandatoryTours();
+    void SetHomeBasedNonMandatoryTours();
 
-        #endregion
+    #endregion
 
-        #region init/utility/export methods
+    #region init/utility/export methods
 
-        void Export();
+    void Export();
 
-        void Reset();
+    void Reset();
 
-        #endregion
-    }
+    #endregion
+  }
 }

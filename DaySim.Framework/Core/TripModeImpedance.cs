@@ -7,53 +7,53 @@
 
 
 namespace DaySim.Framework.Core {
-    public sealed class TripModeImpedance : ITripModeImpedance {
-        public TripModeImpedance() {
-            TravelTime = Constants.DEFAULT_VALUE;
-        }
-
-        public int AdjacentMinutesBefore { get; set; }
-
-        public int MaxMinutesBefore { get; set; }
-
-        public int TotalMinutesBefore { get; set; }
-
-        public int AdjacentMinutesAfter { get; set; }
-
-        public int MaxMinutesAfter { get; set; }
-
-        public int TotalMinutesAfter { get; set; }
-
-        public int DestinationParkingNodeId { get; set; }
-
-        public int DestinationParkingType { get; set; }
-
-        public double DestinationParkingCost { get; set; }
-
-        public double DestinationParkingWalkTime { get; set; }
-
-        public double TravelTime { get; set; }
-
-        public double GeneralizedTime { get; set; }
-
-        public double TravelCost { get; set; }
-
-        public double TravelDistance { get; set; }
-
-        public double TollCost { get; set; }
-
-        public double FuelCost { get; set; }
-
-        public double ParkCost { get; set; }
-
-        public double TransitTime { get; set; }
-
-        public double TransitWait { get; set; }
-
-        public double TransitWalk { get; set; }
-
-        public double WalkAccessEgressTime { get; set; }
-
-        public int PathType { get; set; }
+  public sealed class TripModeImpedance : ITripModeImpedance {
+    public TripModeImpedance() {
+      TravelTime = Constants.DEFAULT_VALUE;
     }
+
+    public int AdjacentMinutesBefore { get; set; }
+
+    public int MaxMinutesBefore { get; set; }
+
+    public int TotalMinutesBefore { get; set; }
+
+    public int AdjacentMinutesAfter { get; set; }
+
+    public int MaxMinutesAfter { get; set; }
+
+    public int TotalMinutesAfter { get; set; }
+
+    public int DestinationParkingNodeId { get; set; }
+
+    public int DestinationParkingType { get; set; }
+
+    public double DestinationParkingCost { get; set; }
+
+    public double DestinationParkingWalkTime { get; set; }
+
+    public double TravelTime { get; set; }
+
+    public double GeneralizedTime { get; set; }
+
+    public double TravelCost { get; set; }
+
+    public double TravelDistance { get; set; }
+
+    public double TollCost { get; set; }
+
+    public double FuelCost { get; set; }
+
+    public double ParkCost { get; set; }
+
+    public double TransitTime { get; set; }
+
+    public double TransitWait { get; set; }
+
+    public double TransitWalk { get; set; }
+
+    public double WalkAccessEgressTime { get; set; }
+
+    public int PathType { get; set; }
+  }
 }

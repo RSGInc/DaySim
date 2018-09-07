@@ -8,19 +8,19 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
-    public interface IActumHouseholdDay : IHouseholdDay {
-        int SharedActivityHomeStays { get; set; }
+  public interface IActumHouseholdDay : IHouseholdDay {
+    int SharedActivityHomeStays { get; set; }
 
-        int NumberInLargestSharedHomeStay { get; set; }
+    int NumberInLargestSharedHomeStay { get; set; }
 
-        int StartingMinuteSharedHomeStay { get; set; }
+    int StartingMinuteSharedHomeStay { get; set; }
 
-        int DurationMinutesSharedHomeStay { get; set; }
+    int DurationMinutesSharedHomeStay { get; set; }
 
-        int AdultsInSharedHomeStay { get; set; }
+    int AdultsInSharedHomeStay { get; set; }
 
-        int ChildrenInSharedHomeStay { get; set; }
+    int ChildrenInSharedHomeStay { get; set; }
 
-        int PrimaryPriorityTimeFlag { get; set; }
-    }
+    int PrimaryPriorityTimeFlag { get; set; }
+  }
 }

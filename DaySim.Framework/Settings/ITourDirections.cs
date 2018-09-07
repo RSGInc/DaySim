@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface ITourDirections {
-        int TotalTourDirections { get; }
+  public interface ITourDirections {
+    int TotalTourDirections { get; }
 
-        int OriginToDestination { get; }
+    int OriginToDestination { get; }
 
-        int DestinationToOrigin { get; }
-    }
+    int DestinationToOrigin { get; }
+  }
 }

@@ -9,67 +9,67 @@ using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
-    public interface IActumTourWrapper : ITourWrapper, IActumTour {
+  public interface IActumTourWrapper : ITourWrapper, IActumTour {
 
 
-        #region flags/choice model/etc. properties
+    #region flags/choice model/etc. properties
 
-        int HalfTour1AccessMode { get; set; }
+    int HalfTour1AccessMode { get; set; }
 
-        int HalfTour1AccessPathType { get; set; }
+    int HalfTour1AccessPathType { get; set; }
 
-        double HalfTour1AccessTime { get; set; }
+    double HalfTour1AccessTime { get; set; }
 
-        double HalfTour1AccessCost { get; set; }
+    double HalfTour1AccessCost { get; set; }
 
-        double HalfTour1AccessDistance { get; set; }
+    double HalfTour1AccessDistance { get; set; }
 
-        int HalfTour1AccessStopArea { get; set; }
+    int HalfTour1AccessStopArea { get; set; }
 
-        int HalfTour1EgressMode { get; set; }
+    int HalfTour1EgressMode { get; set; }
 
-        int HalfTour1EgressPathType { get; set; }
+    int HalfTour1EgressPathType { get; set; }
 
-        double HalfTour1EgressTime { get; set; }
+    double HalfTour1EgressTime { get; set; }
 
-        double HalfTour1EgressCost { get; set; }
+    double HalfTour1EgressCost { get; set; }
 
-        double HalfTour1EgressDistance { get; set; }
+    double HalfTour1EgressDistance { get; set; }
 
-        int HalfTour1EgressStopArea { get; set; }
+    int HalfTour1EgressStopArea { get; set; }
 
-        int HalfTour2AccessMode { get; set; }
+    int HalfTour2AccessMode { get; set; }
 
-        int HalfTour2AccessPathType { get; set; }
+    int HalfTour2AccessPathType { get; set; }
 
-        double HalfTour2AccessTime { get; set; }
+    double HalfTour2AccessTime { get; set; }
 
-        double HalfTour2AccessCost { get; set; }
+    double HalfTour2AccessCost { get; set; }
 
-        double HalfTour2AccessDistance { get; set; }
+    double HalfTour2AccessDistance { get; set; }
 
-        int HalfTour2AccessStopArea { get; set; }
+    int HalfTour2AccessStopArea { get; set; }
 
-        int HalfTour2EgressMode { get; set; }
+    int HalfTour2EgressMode { get; set; }
 
-        int HalfTour2EgressPathType { get; set; }
+    int HalfTour2EgressPathType { get; set; }
 
-        double HalfTour2EgressTime { get; set; }
+    double HalfTour2EgressTime { get; set; }
 
-        double HalfTour2EgressCost { get; set; }
+    double HalfTour2EgressCost { get; set; }
 
-        double HalfTour2EgressDistance { get; set; }
+    double HalfTour2EgressDistance { get; set; }
 
-        int HalfTour2EgressStopArea { get; set; }
+    int HalfTour2EgressStopArea { get; set; }
 
-        #endregion
+    #endregion
 
 
 
-        bool IsBusinessPurpose();
+    bool IsBusinessPurpose();
 
-        bool IsHovDriverMode();
+    bool IsHovDriverMode();
 
-        bool IsHovPassengerMode();
-    }
+    bool IsHovPassengerMode();
+  }
 }

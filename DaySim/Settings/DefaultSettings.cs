@@ -5,1050 +5,587 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using System;
 using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Settings;
-using System;
 
 namespace DaySim.Settings {
-    [UsedImplicitly]
-    [Factory(Factory.SettingsFactory, ChoiceModelRunner = ChoiceModelRunner.Default)]
-    public class DefaultSettings : ISettings {
-        public DefaultSettings() {
-            DestinationScales = new DefaultDestinationScales();
-            PersonTypes = new DefaultPersonTypes();
-            PatternTypes = new DefaultPatternTypes();
-            Purposes = new DefaultPurposes();
-            TourCategories = new DefaultTourCatetories();
-            TourPriorities = new DefaultTourPriorities();
-            Modes = new DefaultModes();
-            DriverTypes = new DefaultDriverTypes();
-            PathTypes = new DefaultPathTypes();
-            VotGroups = new DefaultVotGroups();
-            TimeDirections = new DefaultTimeDirections();
-            TourDirections = new DefaultTourDirections();
-            PersonGenders = new DefaultPersonGenders();
-            TransitAccesses = new DefaultTransitAccesses();
-            VotALSegments = new DefaultVotALSegments();
-            CarOwnerships = new DefaultCarOwnerships();
-            AddressTypes = new DefaultAddressTypes();
-            ValueOfTimes = new DefaultValueOfTimes();
-            Models = new DefaultModels();
-            Times = new DefaultTimes();
-            HouseholdTypes = new DefaultHouseholdTypes();
-            MaxInputs = new DefaultMaxInputs();
-        }
-
-        public virtual double LengthUnitsPerFoot {
-            get { return 1.0; }
-        }
-
-        public virtual double DistanceUnitsPerMile {
-            get { return 1.0; }
-        }
-
-        public virtual double MonetaryUnitsPerDollar {
-            get { return 1.0; }
-        }
-
-        public virtual bool UseJointTours {
-            //            get { return true; }
-            get { return false; }
-        }
-
-        public virtual int OutOfRegionParcelId {
-            get { return -999; }
-        }
-
-        public virtual double GeneralizedTimeUnavailable {
-            get { return -999.0; }
-        }
-
-        public virtual int NumberOfRandomSeeds {
-            get { return 1200; }
-        }
-
-        public IDestinationScales DestinationScales { get; set; }
-
-        public IPersonTypes PersonTypes { get; set; }
-
-        public IPatternTypes PatternTypes { get; set; }
-
-        public IPurposes Purposes { get; set; }
-
-        public ITourCategories TourCategories { get; set; }
-
-        public ITourPriorities TourPriorities { get; set; }
-
-        public IModes Modes { get; set; }
-
-        public IDriverTypes DriverTypes { get; set; }
-
-        public IPathTypes PathTypes { get; set; }
-
-        public IVotGroups VotGroups { get; set; }
-
-        public ITimeDirections TimeDirections { get; set; }
-
-        public ITourDirections TourDirections { get; set; }
-
-        public IPersonGenders PersonGenders { get; set; }
-
-        public ITransitAccesses TransitAccesses { get; set; }
-
-        public IVotALSegments VotALSegments { get; set; }
-
-        public ICarOwnerships CarOwnerships { get; set; }
-
-        public IAddressTypes AddressTypes { get; set; }
-
-        public IValueOfTimes ValueOfTimes { get; set; }
-
-        public IModels Models { get; set; }
-
-        public ITimes Times { get; set; }
-
-        public IHouseholdTypes HouseholdTypes { get; set; }
-
-        public IMaxInputs MaxInputs { get; set; }
+  [UsedImplicitly]
+  [Factory(Factory.SettingsFactory, ChoiceModelRunner = ChoiceModelRunner.Default)]
+  public class DefaultSettings : ISettings {
+    public DefaultSettings() {
+      DestinationScales = new DefaultDestinationScales();
+      PersonTypes = new DefaultPersonTypes();
+      PatternTypes = new DefaultPatternTypes();
+      Purposes = new DefaultPurposes();
+      TourCategories = new DefaultTourCatetories();
+      TourPriorities = new DefaultTourPriorities();
+      Modes = new DefaultModes();
+      DriverTypes = new DefaultDriverTypes();
+      PathTypes = new DefaultPathTypes();
+      VotGroups = new DefaultVotGroups();
+      TimeDirections = new DefaultTimeDirections();
+      TourDirections = new DefaultTourDirections();
+      PersonGenders = new DefaultPersonGenders();
+      TransitAccesses = new DefaultTransitAccesses();
+      VotALSegments = new DefaultVotALSegments();
+      CarOwnerships = new DefaultCarOwnerships();
+      AddressTypes = new DefaultAddressTypes();
+      ValueOfTimes = new DefaultValueOfTimes();
+      Models = new DefaultModels();
+      Times = new DefaultTimes();
+      HouseholdTypes = new DefaultHouseholdTypes();
+      MaxInputs = new DefaultMaxInputs();
     }
 
-    public class DefaultDestinationScales : IDestinationScales {
-        public virtual int Parcel {
-            get { return 0; }
-        }
-
-        public virtual int MicroZone {
-            get { return 1; }
-        }
-
-        public virtual int Zone {
-            get { return 2; }
-        }
-    }
-
-    public class DefaultPersonTypes : IPersonTypes {
-        public virtual int FullTimeWorker {
-            get { return 1; }
-        }
-
-        public virtual int PartTimeWorker {
-            get { return 2; }
-        }
-
-        public virtual int RetiredAdult {
-            get { return 3; }
-        }
-
-        public virtual int NonWorkingAdult {
-            get { return 4; }
-        }
-
-        public virtual int UniversityStudent {
-            get { return 5; }
-        }
-
-        public virtual int DrivingAgeStudent {
-            get { return 6; }
-        }
-
-        public virtual int ChildAge5Through15 {
-            get { return 7; }
-        }
-
-        public virtual int ChildUnder5 {
-            get { return 8; }
-        }
-    }
-
-    public class DefaultPatternTypes : IPatternTypes {
-        public virtual int Mandatory {
-            get { return 1; }
-        }
-
-        public virtual int Optional {
-            get { return 2; }
-        }
-
-        public virtual int Home {
-            get { return 3; }
-        }
-    }
-
-    public class DefaultPurposes : IPurposes {
-        public virtual int TotalPurposes {
-            get { return 12; }
-        }
-
-        public virtual int NoneOrHome {
-            get { return 0; }
-        }
-
-        public virtual int Work {
-            get { return 1; }
-        }
-
-        public virtual int HomeBasedComposite {
-            get { return 1; }
-        }
-
-        public virtual int School {
-            get { return 2; }
-        }
-
-        public virtual int WorkBased {
-            get { return 2; }
-        }
-
-        public virtual int Escort {
-            get { return 3; }
-        }
-
-        public virtual int PersonalBusiness {
-            get { return 4; }
-        }
-
-        public virtual int Shopping {
-            get { return 5; }
-        }
-
-        public virtual int Meal {
-            get { return 6; }
-        }
-
-        public virtual int Social {
-            get { return 7; }
-        }
-
-        public virtual int Recreation {
-            get { return 8; }
-        }
-
-        public virtual int Medical {
-            get { return 9; }
-        }
-
-        public virtual int ChangeMode {
-            get { return 10; }
-        }
-
-        public virtual int Business {
-            get { return 11; }
-        }
-    }
-
-    public class DefaultTourCatetories : ITourCategories {
-        public virtual int Primary {
-            get { return 0; }
-        }
-
-        public virtual int Secondary {
-            get { return 1; }
-        }
-
-        public virtual int WorkBased {
-            get { return 2; }
-        }
-
-        public virtual int HomeBased {
-            get { return 3; }
-        }
-    }
-
-    public class DefaultTourPriorities : ITourPriorities {
-        public virtual int UsualLocation {
-            get { return 0; }
-        }
-
-        public virtual int HomeBasedTour {
-            get { return 1; }
-        }
-
-        public virtual int WorkBasedTour {
-            get { return 2; }
-        }
-    }
-
-    public class DefaultModes : IModes {
-        public virtual int TotalModes {
-            get { return 10; }
-        }
-
-        public virtual int RosterModes {
-            get { return 12; }
-        }
-
-        public virtual int MaxMode {
-            get { return 9; }
-        }
-
-        public virtual int None {
-            get { return 0; }
-        }
-
-        public virtual int Walk {
-            get { return 1; }
-        }
-
-        public virtual int Bike {
-            get { return 2; }
-        }
-
-        public virtual int Sov {
-            get { return 3; }
-        }
-
-        public virtual int Hov2 {
-            get { return 4; }
-        }
-
-        public virtual int Hov3 {
-            get { return 5; }
-        }
-
-        public virtual int Transit {
-            get { return 6; }
-        }
-
-        public virtual int ParkAndRide {
-            get { return 7; }
-        }
-
-        public virtual int SchoolBus {
-            get { return 8; }
-        }
-
-        public virtual int PaidRideShare { //for use with mode choice models
-            get { return 9; }
-        }
-
-        public virtual int AV { //for use with PathTypeModel if separae skims
-            get { return 9; }
-        }
-        public virtual int AV1 { //for use with PathTypeModel if separae skims
-            get { return 9; }
-        }
-        public virtual int AV2 {//for use with PathTypeModel if separae skims
-            get { return 10; }
-        }
-        public virtual int AV3 { //for use with PathTypeModel if separae skims
-            get { return 11; }
-        }
-
-        public virtual int Other {
-            get { return 9; }
-        }
-
-        public virtual int HovDriver {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int HovPassenger {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int KissAndRide {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int BikeParkRideWalk {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int BikeParkRideBike {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int BikeOnTransit {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int CarParkRideWalk {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int CarKissRideWalk {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int CarParkRideBike {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual int WalkRideBike {
-            get { throw new NotImplementedException(); }
-        }
-
-
-
-    }
-
-    public class DefaultDriverTypes : IDriverTypes {
-        public virtual int NotApplicable {
-            get { return 0; }
-        }
-
-        public virtual int Driver {
-            get { return 1; }
-        }
-
-        public virtual int Passenger {
-            get { return 2; }
-        }
-        public virtual int AV_MainPassenger  {
-            get { return 3; }
-        }
-        public virtual int AV_OtherPassenger  {
-            get { return 4; }
-        }
-    }
-
-    public class DefaultPathTypes : IPathTypes {
-        public virtual int TotalPathTypes {
-            get { return 18; }
-        }
-
-        public virtual int None {
-            get { return 0; }
-        }
-
-        public virtual int FullNetwork {
-            get { return 1; }
-        }
-
-        public virtual int NoTolls {
-            get { return 2; }
-        }
-
-        public virtual int LocalBus {
-            get { return 3; }
-        }
-
-        public virtual int LightRail {
-            get { return 4; }
-        }
-
-        public virtual int PremiumBus {
-            get { return 5; }
-        }
-
-        public virtual int CommuterRail {
-            get { return 6; }
-        }
-
-        public virtual int Ferry {
-            get { return 7; }
-        }
-
-        public virtual int TransitType1 {
-            get { return 3; }
-        }
-
-        public virtual int TransitType2 {
-            get { return 4; }
-        }
-
-        public virtual int TransitType3 {
-            get { return 5; }
-        }
-
-        public virtual int TransitType4 {
-            get { return 6; }
-        }
-
-        public virtual int TransitType5 {
-            get { return 7; }
-        }
-
-        public virtual int LocalBus_Knr {
-            get { return 8; }
-        }
-
-        public virtual int LightRail_Knr {
-            get { return 9; }
-        }
-
-        public virtual int PremiumBus_Knr {
-            get { return 10; }
-        }
-
-        public virtual int CommuterRail_Knr {
-            get { return 11; }
-        }
-
-        public virtual int Ferry_Knr {
-            get { return 12; }
-        }
-
-        public virtual int TransitType1_Knr {
-            get { return 8; }
-        }
-
-        public virtual int TransitType2_Knr {
-            get { return 9; }
-        }
-
-        public virtual int TransitType3_Knr {
-            get { return 10; }
-        }
-
-        public virtual int TransitType4_Knr { 
-            get { return 11; }
-        }
-
-        public virtual int TransitType5_Knr  {
-            get { return 12; }
-        }
-
-        public virtual int LocalBus_TNC        {
-            get { return 13; }
-        }
-
-        public virtual int LightRail_TNC        {
-            get { return 14; }
-        }
-
-        public virtual int PremiumBus_TNC        {
-            get { return 15; }
-        }
-
-        public virtual int CommuterRail_TNC        {
-            get { return 16; }
-        }
-
-        public virtual int Ferry_TNC        {
-            get { return 17; }
-        }
-
-        public virtual int TransitType1_TNC        {
-            get { return 13; }
-        }
-
-        public virtual int TransitType2_TNC        {
-            get { return 14; }
-        }
-
-        public virtual int TransitType3_TNC        {
-            get { return 15; }
-        }
-
-        public virtual int TransitType4_TNC        {
-            get { return 16; }
-        }
-
-        public virtual int TransitType5_TNC        {
-            get { return 17; }
-        }
-
-    }
-
-    public class DefaultVotGroups : IVotGroups {
-        public virtual int TotalVotGroups {
-            get { return 6; }
-        }
-
-        public virtual int None {
-            get { return 0; }
-        }
-
-        public virtual int VeryLow {
-            get { return 1; }
-        }
-
-        public virtual int Low {
-            get { return 2; }
-        }
-
-        public virtual int Medium {
-            get { return 3; }
-        }
-
-        public virtual int High {
-            get { return 4; }
-        }
-
-        public virtual int VeryHigh {
-            get { return 5; }
-        }
-
-        public virtual int Default {
-            get { return -1; }
-        }
-    }
-
-    public class DefaultTimeDirections : ITimeDirections {
-        public virtual int Before {
-            get { return 1; }
-        }
-
-        public virtual int After {
-            get { return 2; }
-        }
-
-        public virtual int Both {
-            get { return 3; }
-        }
-    }
-
-    public class DefaultTourDirections : ITourDirections {
-        public virtual int TotalTourDirections {
-            get { return 2; }
-        }
-
-        public virtual int OriginToDestination {
-            get { return 1; }
-        }
-
-        public virtual int DestinationToOrigin {
-            get { return 2; }
-        }
-    }
-
-    public class DefaultPersonGenders : IPersonGenders {
-        public virtual int Male {
-            get { return 1; }
-        }
-
-        public virtual int Female {
-            get { return 2; }
-        }
-    }
-
-    public class DefaultTransitAccesses : ITransitAccesses {
-        public virtual int TotalTransitAccesses {
-            get { return 3; }
-        }
-
-        public virtual int Gt0AndLteQtrMi {
-            get { return 0; }
-        }
-
-        public virtual int GtQtrMiAndLteHMi {
-            get { return 1; }
-        }
-
-        public virtual int None {
-            get { return 2; }
-        }
-    }
-
-    public class DefaultVotALSegments : IVotALSegments {
-        public virtual int TotalVotALSegments {
-            get { return 3; }
-        }
-
-        public virtual int Low {
-            get { return 0; }
-        }
-
-        public virtual int Medium {
-            get { return 1; }
-        }
-
-        public virtual int High {
-            get { return 2; }
-        }
-
-        public virtual int IncomeLowMedium {
-            get { return 20000; }
-        }
-
-        public virtual int IncomeMediumHigh {
-            get { return 80000; }
-        }
-
-        public virtual double VotLowMedium {
-            get { return 4.0; }
-        }
-
-        public virtual double VotMediumHigh {
-            get { return 12.0; }
-        }
-
-        public virtual double TimeCoefficient {
-            get { return -0.02; }
-        }
-
-        public virtual double CostCoefficientLow {
-            get { return -0.60; }
-        }
-
-        public virtual double CostCoefficientMedium {
-            get { return -0.15; }
-        }
-
-        public virtual double CostCoefficientHigh {
-            get { return -0.06; }
-        }
-    }
-
-    public class DefaultCarOwnerships : ICarOwnerships {
-        public virtual int TotalCarOwnerships {
-            get { return 4; }
-        }
-
-        public virtual int Child {
-            get { return 0; }
-        }
-
-        public virtual int NoCars {
-            get { return 1; }
-        }
-
-        public virtual int LtOneCarPerAdult {
-            get { return 2; }
-        }
-
-        public virtual int OneOrMoreCarsPerAdult {
-            get { return 3; }
-        }
-    }
-
-    public class DefaultAddressTypes : IAddressTypes {
-        public virtual int None {
-            get { return 0; }
-        }
-
-        public virtual int Home {
-            get { return 1; }
-        }
-
-        public virtual int UsualWorkplace {
-            get { return 2; }
-        }
-
-        public virtual int UsualSchool {
-            get { return 3; }
-        }
-
-        public virtual int Other {
-            get { return 4; }
-        }
-
-        public virtual int Missing {
-            get { return 5; }
-        }
-
-        public virtual int ChangeMode {
-            get { return 6; }
-        }
-    }
-
-    public class DefaultValueOfTimes : IValueOfTimes {
-        public virtual int Low {
-            get { return 1; }
-        }
-
-        public virtual int Medium {
-            get { return 2; }
-        }
-
-        public virtual int High {
-            get { return 3; }
-        }
-
-        public virtual double DefaultVot {
-            get { return 10; }
-        }
-    }
-
-    public class DefaultModels : IModels {
-        public virtual int WorkTourModeModel {
-            get { return 0; }
-        }
-
-        public virtual int SchoolTourModeModel {
-            get { return 1; }
-        }
-
-        public virtual int WorkbasedSubtourModeModel {
-            get { return 2; }
-        }
-
-        public virtual int EscortTourModeModel {
-            get { return 3; }
-        }
-
-        public virtual int OtherHomeBasedTourMode {
-            get { return 4; }
-        }
-    }
-
-    public class DefaultTimes : ITimes {
-        public virtual int MinutesInADay {
-            get { return 1440; }
-        }
-
-        public virtual int MinimumActivityDuration {
-            get { return 1; }
-        }
-
-        public virtual int ZeroHours {
-            get { return 0; }
-        }
-
-        public virtual int OneHour {
-            get { return 60 * 1; }
-        }
-
-        public virtual int TwoHours {
-            get { return 60 * 2; }
-        }
-
-        public virtual int ThreeHours {
-            get { return 60 * 3; }
-        }
-
-        public virtual int FourHours {
-            get { return 60 * 4; }
-        }
-
-        public virtual int FiveHours {
-            get { return 60 * 5; }
-        }
-
-        public virtual int SixHours {
-            get { return 60 * 6; }
-        }
-
-        public virtual int SevenHours {
-            get { return 60 * 7; }
-        }
-
-        public virtual int EightHours {
-            get { return 60 * 8; }
-        }
-
-        public virtual int NineHours {
-            get { return 60 * 9; }
-        }
-
-        public virtual int TenHours {
-            get { return 60 * 10; }
-        }
-
-        public virtual int ElevenHours {
-            get { return 60 * 11; }
-        }
-
-        public virtual int TwelveHours {
-            get { return 60 * 12; }
-        }
-
-        public virtual int ThirteenHours {
-            get { return 60 * 13; }
-        }
-
-        public virtual int FourteenHours {
-            get { return 60 * 14; }
-        }
-
-        public virtual int FifteenHours {
-            get { return 60 * 15; }
-        }
-
-        public virtual int SixteenHours {
-            get { return 60 * 16; }
-        }
-
-        public virtual int SeventeenHours {
-            get { return 60 * 17; }
-        }
-
-        public virtual int EighteenHours {
-            get { return 60 * 18; }
-        }
-
-        public virtual int NineteenHours {
-            get { return 60 * 19; }
-        }
-
-        public virtual int TwentyHours {
-            get { return 60 * 20; }
-        }
-
-        public virtual int TwentyOneHours {
-            get { return 60 * 21; }
-        }
-
-        public virtual int TwentyTwoHours {
-            get { return 60 * 22; }
-        }
-
-        public virtual int TwentyThreeHours {
-            get { return 60 * 23; }
-        }
-
-        public virtual int TwentyFourHours {
-            get { return 60 * 24; }
-        }
-
-        public virtual int ThreeAM {
-            get { return 1; }
-        }
-
-        public virtual int FourAM {
-            get { return 60 * 1 + 1; }
-        }
-
-        public virtual int FiveAM {
-            get { return 60 * 2 + 1; }
-        }
-
-        public virtual int SixAM {
-            get { return 60 * 3 + 1; }
-        }
-
-        public virtual int SevenAM {
-            get { return 60 * 4 + 1; }
-        }
-
-        public virtual int EightAM {
-            get { return 60 * 5 + 1; }
-        }
-
-        public virtual int NineAM {
-            get { return 60 * 6 + 1; }
-        }
-
-        public virtual int TenAM {
-            get { return 60 * 7 + 1; }
-        }
-
-        public virtual int ElevenAM {
-            get { return 60 * 8 + 1; }
-        }
-
-        public virtual int Noon {
-            get { return 60 * 9 + 1; }
-        }
-
-        public virtual int OnePM {
-            get { return 60 * 10 + 1; }
-        }
-
-        public virtual int TwoPM {
-            get { return 60 * 11 + 1; }
-        }
-
-        public virtual int ThreePM {
-            get { return 60 * 12 + 1; }
-        }
-
-        public virtual int FourPM {
-            get { return 60 * 13 + 1; }
-        }
-
-        public virtual int FivePM {
-            get { return 60 * 14 + 1; }
-        }
-
-        public virtual int SixPM {
-            get { return 60 * 15 + 1; }
-        }
-
-        public virtual int SevenPM {
-            get { return 60 * 16 + 1; }
-        }
-
-        public virtual int EightPM {
-            get { return 60 * 17 + 1; }
-        }
-
-        public virtual int NinePM {
-            get { return 60 * 18 + 1; }
-        }
-
-        public virtual int TenPM {
-            get { return 60 * 19 + 1; }
-        }
-
-        public virtual int ElevenPM {
-            get { return 60 * 20 + 1; }
-        }
-
-        public virtual int Midnight {
-            get { return 60 * 21 + 1; }
-        }
-
-        public virtual int OneAM {
-            get { return 60 * 22 + 1; }
-        }
-
-        public virtual int TwoAM {
-            get { return 60 * 23 + 1; }
-        }
-
-        public virtual int EndOfRelevantWindow {
-            get { return 60 * 21 + 1; }
-        }
-    }
-
-    public class DefaultHouseholdTypes : IHouseholdTypes {
-        public virtual int IndividualWorkerStudent {
-            get { return 1; }
-        }
-
-        public virtual int IndividualNonworkerNonstudent {
-            get { return 2; }
-        }
-
-        public virtual int OneAdultWithChildren {
-            get { return 3; }
-        }
-
-        public virtual int TwoPlusWorkerStudentAdultsWithChildren {
-            get { return 4; }
-        }
-
-        public virtual int TwoPlusAdultsOnePlusWorkersStudentsWithChildren {
-            get { return 5; }
-        }
-
-        public virtual int TwoPlusWorkerStudentAdultsWithoutChildren {
-            get { return 6; }
-        }
-
-        public virtual int OnePlusWorkerStudentAdultsAndOnePlusNonworkerNonstudentAdultsWithoutChildren {
-            get { return 7; }
-        }
-
-        public virtual int TwoPlusNonworkerNonstudentAdultsWithoutChildren {
-            get { return 8; }
-        }
-    }
-
-    public class DefaultMaxInputs : IMaxInputs {
-        public virtual int MaxParcelVals {
-            get { return 200000; }
-        }
-
-        public virtual int MaxHhSize {
-            get { return 20; }
-        }
-
-        public virtual int MaxAge {
-            get { return 200; }
-        }
-
-        public virtual int MaxGend {
-            get { return 3; }
-        }
-
-        public virtual int MaxPwtyp {
-            get { return 3; }
-        }
-
-        public virtual int MaxPstyp {
-            get { return 3; }
-        }
-
-        public virtual int MaxPnrCap {
-            get { return 50000; }
-        }
-
-        public virtual int MaxPnrCost {
-            get { return 10000; }
-        }
-    }
+    public virtual double LengthUnitsPerFoot => 1.0;
+
+    public virtual double DistanceUnitsPerMile => 1.0;
+
+    public virtual double MonetaryUnitsPerDollar => 1.0;
+
+    public virtual bool UseJointTours => false;
+
+    public virtual int OutOfRegionParcelId => -999;
+
+    public virtual double GeneralizedTimeUnavailable => -999.0;
+
+    public virtual int NumberOfRandomSeeds => 1200;
+
+    public IDestinationScales DestinationScales { get; set; }
+
+    public IPersonTypes PersonTypes { get; set; }
+
+    public IPatternTypes PatternTypes { get; set; }
+
+    public IPurposes Purposes { get; set; }
+
+    public ITourCategories TourCategories { get; set; }
+
+    public ITourPriorities TourPriorities { get; set; }
+
+    public IModes Modes { get; set; }
+
+    public IDriverTypes DriverTypes { get; set; }
+
+    public IPathTypes PathTypes { get; set; }
+
+    public IVotGroups VotGroups { get; set; }
+
+    public ITimeDirections TimeDirections { get; set; }
+
+    public ITourDirections TourDirections { get; set; }
+
+    public IPersonGenders PersonGenders { get; set; }
+
+    public ITransitAccesses TransitAccesses { get; set; }
+
+    public IVotALSegments VotALSegments { get; set; }
+
+    public ICarOwnerships CarOwnerships { get; set; }
+
+    public IAddressTypes AddressTypes { get; set; }
+
+    public IValueOfTimes ValueOfTimes { get; set; }
+
+    public IModels Models { get; set; }
+
+    public ITimes Times { get; set; }
+
+    public IHouseholdTypes HouseholdTypes { get; set; }
+
+    public IMaxInputs MaxInputs { get; set; }
+  }
+
+  public class DefaultDestinationScales : IDestinationScales {
+    public virtual int Parcel => 0;
+
+    public virtual int MicroZone => 1;
+
+    public virtual int Zone => 2;
+  }
+
+  public class DefaultPersonTypes : IPersonTypes {
+    public virtual int FullTimeWorker => 1;
+
+    public virtual int PartTimeWorker => 2;
+
+    public virtual int RetiredAdult => 3;
+
+    public virtual int NonWorkingAdult => 4;
+
+    public virtual int UniversityStudent => 5;
+
+    public virtual int DrivingAgeStudent => 6;
+
+    public virtual int ChildAge5Through15 => 7;
+
+    public virtual int ChildUnder5 => 8;
+  }
+
+  public class DefaultPatternTypes : IPatternTypes {
+    public virtual int Mandatory => 1;
+
+    public virtual int Optional => 2;
+
+    public virtual int Home => 3;
+  }
+
+  public class DefaultPurposes : IPurposes {
+    public virtual int TotalPurposes => 12;
+
+    public virtual int NoneOrHome => 0;
+
+    public virtual int Work => 1;
+
+    public virtual int HomeBasedComposite => 1;
+
+    public virtual int School => 2;
+
+    public virtual int WorkBased => 2;
+
+    public virtual int Escort => 3;
+
+    public virtual int PersonalBusiness => 4;
+
+    public virtual int Shopping => 5;
+
+    public virtual int Meal => 6;
+
+    public virtual int Social => 7;
+
+    public virtual int Recreation => 8;
+
+    public virtual int Medical => 9;
+
+    public virtual int ChangeMode => 10;
+
+    public virtual int Business => 11;
+  }
+
+  public class DefaultTourCatetories : ITourCategories {
+    public virtual int Primary => 0;
+
+    public virtual int Secondary => 1;
+
+    public virtual int WorkBased => 2;
+
+    public virtual int HomeBased => 3;
+  }
+
+  public class DefaultTourPriorities : ITourPriorities {
+    public virtual int UsualLocation => 0;
+
+    public virtual int HomeBasedTour => 1;
+
+    public virtual int WorkBasedTour => 2;
+  }
+
+  public class DefaultModes : IModes {
+    public virtual int TotalModes => 10;
+
+    public virtual int RosterModes => 12;
+
+    public virtual int MaxMode => 9;
+
+    public virtual int None => 0;
+
+    public virtual int Walk => 1;
+
+    public virtual int Bike => 2;
+
+    public virtual int Sov => 3;
+
+    public virtual int Hov2 => 4;
+
+    public virtual int Hov3 => 5;
+
+    public virtual int Transit => 6;
+
+    public virtual int ParkAndRide => 7;
+
+    public virtual int SchoolBus => 8;
+
+    public virtual int PaidRideShare => 9;
+
+    public virtual int AV => 9;
+    public virtual int AV1 => 9;
+    public virtual int AV2 => 10;
+    public virtual int AV3 => 11;
+
+    public virtual int Other => 9;
+
+    public virtual int HovDriver => throw new NotImplementedException();
+
+    public virtual int HovPassenger => throw new NotImplementedException();
+
+    public virtual int KissAndRide => throw new NotImplementedException();
+
+    public virtual int BikeParkRideWalk => throw new NotImplementedException();
+
+    public virtual int BikeParkRideBike => throw new NotImplementedException();
+
+    public virtual int BikeOnTransit => throw new NotImplementedException();
+
+    public virtual int CarParkRideWalk => throw new NotImplementedException();
+
+    public virtual int CarKissRideWalk => throw new NotImplementedException();
+
+    public virtual int CarParkRideBike => throw new NotImplementedException();
+
+    public virtual int WalkRideBike => throw new NotImplementedException();
+
+
+
+  }
+
+  public class DefaultDriverTypes : IDriverTypes {
+    public virtual int NotApplicable => 0;
+
+    public virtual int Driver => 1;
+
+    public virtual int Passenger => 2;
+    public virtual int AV_MainPassenger => 3;
+    public virtual int AV_OtherPassenger => 4;
+  }
+
+  public class DefaultPathTypes : IPathTypes {
+    public virtual int TotalPathTypes => 18;
+
+    public virtual int None => 0;
+
+    public virtual int FullNetwork => 1;
+
+    public virtual int NoTolls => 2;
+
+    public virtual int LocalBus => 3;
+
+    public virtual int LightRail => 4;
+
+    public virtual int PremiumBus => 5;
+
+    public virtual int CommuterRail => 6;
+
+    public virtual int Ferry => 7;
+
+    public virtual int TransitType1 => 3;
+
+    public virtual int TransitType2 => 4;
+
+    public virtual int TransitType3 => 5;
+
+    public virtual int TransitType4 => 6;
+
+    public virtual int TransitType5 => 7;
+
+    public virtual int LocalBus_Knr => 8;
+
+    public virtual int LightRail_Knr => 9;
+
+    public virtual int PremiumBus_Knr => 10;
+
+    public virtual int CommuterRail_Knr => 11;
+
+    public virtual int Ferry_Knr => 12;
+
+    public virtual int TransitType1_Knr => 8;
+
+    public virtual int TransitType2_Knr => 9;
+
+    public virtual int TransitType3_Knr => 10;
+
+    public virtual int TransitType4_Knr => 11;
+
+    public virtual int TransitType5_Knr => 12;
+
+    public virtual int LocalBus_TNC => 13;
+
+    public virtual int LightRail_TNC => 14;
+
+    public virtual int PremiumBus_TNC => 15;
+
+    public virtual int CommuterRail_TNC => 16;
+
+    public virtual int Ferry_TNC => 17;
+
+    public virtual int TransitType1_TNC => 13;
+
+    public virtual int TransitType2_TNC => 14;
+
+    public virtual int TransitType3_TNC => 15;
+
+    public virtual int TransitType4_TNC => 16;
+
+    public virtual int TransitType5_TNC => 17;
+
+  }
+
+  public class DefaultVotGroups : IVotGroups {
+    public virtual int TotalVotGroups => 6;
+
+    public virtual int None => 0;
+
+    public virtual int VeryLow => 1;
+
+    public virtual int Low => 2;
+
+    public virtual int Medium => 3;
+
+    public virtual int High => 4;
+
+    public virtual int VeryHigh => 5;
+
+    public virtual int Default => -1;
+  }
+
+  public class DefaultTimeDirections : ITimeDirections {
+    public virtual int Before => 1;
+
+    public virtual int After => 2;
+
+    public virtual int Both => 3;
+  }
+
+  public class DefaultTourDirections : ITourDirections {
+    public virtual int TotalTourDirections => 2;
+
+    public virtual int OriginToDestination => 1;
+
+    public virtual int DestinationToOrigin => 2;
+  }
+
+  public class DefaultPersonGenders : IPersonGenders {
+    public virtual int Male => 1;
+
+    public virtual int Female => 2;
+  }
+
+  public class DefaultTransitAccesses : ITransitAccesses {
+    public virtual int TotalTransitAccesses => 3;
+
+    public virtual int Gt0AndLteQtrMi => 0;
+
+    public virtual int GtQtrMiAndLteHMi => 1;
+
+    public virtual int None => 2;
+  }
+
+  public class DefaultVotALSegments : IVotALSegments {
+    public virtual int TotalVotALSegments => 3;
+
+    public virtual int Low => 0;
+
+    public virtual int Medium => 1;
+
+    public virtual int High => 2;
+
+    public virtual int IncomeLowMedium => 20000;
+
+    public virtual int IncomeMediumHigh => 80000;
+
+    public virtual double VotLowMedium => 4.0;
+
+    public virtual double VotMediumHigh => 12.0;
+
+    public virtual double TimeCoefficient => -0.02;
+
+    public virtual double CostCoefficientLow => -0.60;
+
+    public virtual double CostCoefficientMedium => -0.15;
+
+    public virtual double CostCoefficientHigh => -0.06;
+  }
+
+  public class DefaultCarOwnerships : ICarOwnerships {
+    public virtual int TotalCarOwnerships => 4;
+
+    public virtual int Child => 0;
+
+    public virtual int NoCars => 1;
+
+    public virtual int LtOneCarPerAdult => 2;
+
+    public virtual int OneOrMoreCarsPerAdult => 3;
+  }
+
+  public class DefaultAddressTypes : IAddressTypes {
+    public virtual int None => 0;
+
+    public virtual int Home => 1;
+
+    public virtual int UsualWorkplace => 2;
+
+    public virtual int UsualSchool => 3;
+
+    public virtual int Other => 4;
+
+    public virtual int Missing => 5;
+
+    public virtual int ChangeMode => 6;
+  }
+
+  public class DefaultValueOfTimes : IValueOfTimes {
+    public virtual int Low => 1;
+
+    public virtual int Medium => 2;
+
+    public virtual int High => 3;
+
+    public virtual double DefaultVot => 10;
+  }
+
+  public class DefaultModels : IModels {
+    public virtual int WorkTourModeModel => 0;
+
+    public virtual int SchoolTourModeModel => 1;
+
+    public virtual int WorkbasedSubtourModeModel => 2;
+
+    public virtual int EscortTourModeModel => 3;
+
+    public virtual int OtherHomeBasedTourMode => 4;
+  }
+
+  public class DefaultTimes : ITimes {
+    public virtual int MinutesInADay => 1440;
+
+    public virtual int MinimumActivityDuration => 1;
+
+    public virtual int ZeroHours => 0;
+
+    public virtual int OneHour => 60 * 1;
+
+    public virtual int TwoHours => 60 * 2;
+
+    public virtual int ThreeHours => 60 * 3;
+
+    public virtual int FourHours => 60 * 4;
+
+    public virtual int FiveHours => 60 * 5;
+
+    public virtual int SixHours => 60 * 6;
+
+    public virtual int SevenHours => 60 * 7;
+
+    public virtual int EightHours => 60 * 8;
+
+    public virtual int NineHours => 60 * 9;
+
+    public virtual int TenHours => 60 * 10;
+
+    public virtual int ElevenHours => 60 * 11;
+
+    public virtual int TwelveHours => 60 * 12;
+
+    public virtual int ThirteenHours => 60 * 13;
+
+    public virtual int FourteenHours => 60 * 14;
+
+    public virtual int FifteenHours => 60 * 15;
+
+    public virtual int SixteenHours => 60 * 16;
+
+    public virtual int SeventeenHours => 60 * 17;
+
+    public virtual int EighteenHours => 60 * 18;
+
+    public virtual int NineteenHours => 60 * 19;
+
+    public virtual int TwentyHours => 60 * 20;
+
+    public virtual int TwentyOneHours => 60 * 21;
+
+    public virtual int TwentyTwoHours => 60 * 22;
+
+    public virtual int TwentyThreeHours => 60 * 23;
+
+    public virtual int TwentyFourHours => 60 * 24;
+
+    public virtual int ThreeAM => 1;
+
+    public virtual int FourAM => 60 * 1 + 1;
+
+    public virtual int FiveAM => 60 * 2 + 1;
+
+    public virtual int SixAM => 60 * 3 + 1;
+
+    public virtual int SevenAM => 60 * 4 + 1;
+
+    public virtual int EightAM => 60 * 5 + 1;
+
+    public virtual int NineAM => 60 * 6 + 1;
+
+    public virtual int TenAM => 60 * 7 + 1;
+
+    public virtual int ElevenAM => 60 * 8 + 1;
+
+    public virtual int Noon => 60 * 9 + 1;
+
+    public virtual int OnePM => 60 * 10 + 1;
+
+    public virtual int TwoPM => 60 * 11 + 1;
+
+    public virtual int ThreePM => 60 * 12 + 1;
+
+    public virtual int FourPM => 60 * 13 + 1;
+
+    public virtual int FivePM => 60 * 14 + 1;
+
+    public virtual int SixPM => 60 * 15 + 1;
+
+    public virtual int SevenPM => 60 * 16 + 1;
+
+    public virtual int EightPM => 60 * 17 + 1;
+
+    public virtual int NinePM => 60 * 18 + 1;
+
+    public virtual int TenPM => 60 * 19 + 1;
+
+    public virtual int ElevenPM => 60 * 20 + 1;
+
+    public virtual int Midnight => 60 * 21 + 1;
+
+    public virtual int OneAM => 60 * 22 + 1;
+
+    public virtual int TwoAM => 60 * 23 + 1;
+
+    public virtual int EndOfRelevantWindow => 60 * 21 + 1;
+  }
+
+  public class DefaultHouseholdTypes : IHouseholdTypes {
+    public virtual int IndividualWorkerStudent => 1;
+
+    public virtual int IndividualNonworkerNonstudent => 2;
+
+    public virtual int OneAdultWithChildren => 3;
+
+    public virtual int TwoPlusWorkerStudentAdultsWithChildren => 4;
+
+    public virtual int TwoPlusAdultsOnePlusWorkersStudentsWithChildren => 5;
+
+    public virtual int TwoPlusWorkerStudentAdultsWithoutChildren => 6;
+
+    public virtual int OnePlusWorkerStudentAdultsAndOnePlusNonworkerNonstudentAdultsWithoutChildren => 7;
+
+    public virtual int TwoPlusNonworkerNonstudentAdultsWithoutChildren => 8;
+  }
+
+  public class DefaultMaxInputs : IMaxInputs {
+    public virtual int MaxParcelVals => 200000;
+
+    public virtual int MaxHhSize => 20;
+
+    public virtual int MaxAge => 200;
+
+    public virtual int MaxGend => 3;
+
+    public virtual int MaxPwtyp => 3;
+
+    public virtual int MaxPstyp => 3;
+
+    public virtual int MaxPnrCap => 50000;
+
+    public virtual int MaxPnrCost => 10000;
+  }
 }

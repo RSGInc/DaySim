@@ -8,12 +8,12 @@
 using System;
 
 namespace DaySim.Framework.Persistence {
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class ColumnNameAttribute : Attribute {
-        public ColumnNameAttribute(string columnName) {
-            ColumnName = columnName;
-        }
-
-        public string ColumnName { get; private set; }
+  [AttributeUsage(AttributeTargets.Property)]
+  public sealed class ColumnNameAttribute : Attribute {
+    public ColumnNameAttribute(string columnName) {
+      ColumnName = columnName;
     }
+
+    public string ColumnName { get; private set; }
+  }
 }

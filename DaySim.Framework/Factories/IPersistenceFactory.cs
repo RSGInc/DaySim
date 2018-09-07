@@ -10,15 +10,15 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Persisters;
 
 namespace DaySim.Framework.Factories {
-    public interface IPersistenceFactory<out TModel> where TModel : IModel {
-        IPersisterReader<TModel> Reader { get; }
+  public interface IPersistenceFactory<out TModel> where TModel : IModel {
+    IPersisterReader<TModel> Reader { get; }
 
-        IPersisterImporter Importer { get; }
+    IPersisterImporter Importer { get; }
 
-        IPersisterExporter Exporter { get; }
+    IPersisterExporter Exporter { get; }
 
-        void Initialize(Configuration configuration);
+    void Initialize(Configuration configuration);
 
-        void Close();
-    }
+    void Close();
+  }
 }

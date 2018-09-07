@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.DomainModels.Models {
-    public interface IZoneItem {
-        int ZoneId { get; set; }
-    }
+  public interface IZoneItem {
+    int ZoneId { get; set; }
+  }
 }

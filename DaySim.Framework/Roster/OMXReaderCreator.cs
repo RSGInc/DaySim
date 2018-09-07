@@ -7,13 +7,13 @@
 using System.Collections.Generic;
 
 namespace DaySim.Framework.Roster {
-    public class OMXReaderCreator : IFileReaderCreator {
-        #region IFileReaderCreator Members
+  public class OMXReaderCreator : IFileReaderCreator {
+    #region IFileReaderCreator Members
 
-        public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping) {
-            return new OMXSkimFileReader(path, mapping);
-        }
-
-        #endregion
+    public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping) {
+      return new OMXSkimFileReader(path, mapping);
     }
+
+    #endregion
+  }
 }

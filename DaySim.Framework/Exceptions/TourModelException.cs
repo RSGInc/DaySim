@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-    [Serializable]
-    public class TourModelException : Exception {
-        public TourModelException() : this("Error running tour models.") { }
+  [Serializable]
+  public class TourModelException : Exception {
+    public TourModelException() : this("Error running tour models.") { }
 
-        public TourModelException(string message) : base(message) { }
+    public TourModelException(string message) : base(message) { }
 
-        public TourModelException(string message, Exception innerException) : base(message, innerException) { }
+    public TourModelException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected TourModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
+    protected TourModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+  }
 }

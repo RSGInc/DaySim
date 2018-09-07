@@ -8,8 +8,8 @@
 using System.Collections.Generic;
 
 namespace DaySim.Framework.Core {
-    public static class AsciiTable {
-        private static readonly Dictionary<byte, string> _asciiTable = new Dictionary<byte, string> {
+  public static class AsciiTable {
+    private static readonly Dictionary<byte, string> _asciiTable = new Dictionary<byte, string> {
             {0, "'NUL' (Null char)"},
             {1, "'SOH' (Start of Heading)"},
             {2, "'STX' (Start of Text)"},
@@ -268,8 +268,8 @@ namespace DaySim.Framework.Core {
             {255, "'ÿ' (Latin small letter y with diaeresis)"}
         };
 
-        public static string GetDescription(byte value) {
-            return _asciiTable[value];
-        }
+    public static string GetDescription(byte value) {
+      return _asciiTable[value];
     }
+  }
 }

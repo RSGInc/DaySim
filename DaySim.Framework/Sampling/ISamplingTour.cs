@@ -8,7 +8,7 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.Sampling {
-    public interface ISamplingTour {
-        IParcel OriginParcel { get; }
-    }
+  public interface ISamplingTour {
+    IParcel OriginParcel { get; }
+  }
 }

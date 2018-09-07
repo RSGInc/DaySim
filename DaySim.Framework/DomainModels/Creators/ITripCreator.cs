@@ -9,13 +9,13 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.DomainModels.Creators {
-    public interface ITripCreator : ICreator {
-        ITrip CreateModel();
+  public interface ITripCreator : ICreator {
+    ITrip CreateModel();
 
-        ITripWrapper CreateWrapper(ITrip trip, ITourWrapper tourWrapper, IHalfTour halfTour);
+    ITripWrapper CreateWrapper(ITrip trip, ITourWrapper tourWrapper, IHalfTour halfTour);
 
-        ITripWrapper CreateWrapper(ITourWrapper tourWrapper, int nextTripId, int direction, int sequence, bool isToTourOrigin, IHalfTour halfTour);
+    ITripWrapper CreateWrapper(ITourWrapper tourWrapper, int nextTripId, int direction, int sequence, bool isToTourOrigin, IHalfTour halfTour);
 
-        ITripWrapper CreateWrapper(ITourWrapper tourWrapper, ITripWrapper trip, int nextTripId, int intermediateStopPurpose, int destinationPurpose, IHalfTour halfTour);
-    }
+    ITripWrapper CreateWrapper(ITourWrapper tourWrapper, ITripWrapper trip, int nextTripId, int intermediateStopPurpose, int destinationPurpose, IHalfTour halfTour);
+  }
 }

@@ -6,51 +6,51 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.DomainModels.Models {
-    public interface IPerson : IModel {
-        int HouseholdId { get; set; }
+  public interface IPerson : IModel {
+    int HouseholdId { get; set; }
 
-        int Sequence { get; set; }
+    int Sequence { get; set; }
 
-        int PersonType { get; set; }
+    int PersonType { get; set; }
 
-        int Age { get; set; }
+    int Age { get; set; }
 
-        int Gender { get; set; }
+    int Gender { get; set; }
 
-        int WorkerType { get; set; }
+    int WorkerType { get; set; }
 
-        int UsualWorkParcelId { get; set; }
+    int UsualWorkParcelId { get; set; }
 
-        int UsualWorkZoneKey { get; set; }
+    int UsualWorkZoneKey { get; set; }
 
-        double AutoTimeToUsualWork { get; set; }
+    double AutoTimeToUsualWork { get; set; }
 
-        double AutoDistanceToUsualWork { get; set; }
+    double AutoDistanceToUsualWork { get; set; }
 
-        int StudentType { get; set; }
+    int StudentType { get; set; }
 
-        int UsualSchoolParcelId { get; set; }
+    int UsualSchoolParcelId { get; set; }
 
-        int UsualSchoolZoneKey { get; set; }
+    int UsualSchoolZoneKey { get; set; }
 
-        double AutoTimeToUsualSchool { get; set; }
+    double AutoTimeToUsualSchool { get; set; }
 
-        double AutoDistanceToUsualSchool { get; set; }
+    double AutoDistanceToUsualSchool { get; set; }
 
-        double UsualModeToWork { get; set; }
+    double UsualModeToWork { get; set; }
 
-        double UsualArrivalPeriodToWork { get; set; }
+    double UsualArrivalPeriodToWork { get; set; }
 
-        double UsualDeparturePeriodFromWork { get; set; }
+    double UsualDeparturePeriodFromWork { get; set; }
 
-        int TransitPassOwnership { get; set; }
+    int TransitPassOwnership { get; set; }
 
-        int PaidParkingAtWorkplace { get; set; }
+    int PaidParkingAtWorkplace { get; set; }
 
-        double PaperDiary { get; set; }
+    double PaperDiary { get; set; }
 
-        double ProxyResponse { get; set; }
+    double ProxyResponse { get; set; }
 
-        double ExpansionFactor { get; set; }
-    }
+    double ExpansionFactor { get; set; }
+  }
 }

@@ -6,6 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
@@ -13,128 +18,122 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DaySim.Sampling {
-    public sealed class SamplingWeightsCalculator {
-        private readonly List<IParcelWrapper> _eligibleParcels = new List<IParcelWrapper>();
-        private readonly Dictionary<int, int> _parcelCounts = new Dictionary<int, int>();
-        private readonly Dictionary<int, IZone> _eligibleZones;
+  public sealed class SamplingWeightsCalculator {
+    private readonly List<IParcelWrapper> _eligibleParcels = new List<IParcelWrapper>();
+    private readonly Dictionary<int, int> _parcelCounts = new Dictionary<int, int>();
+    private readonly Dictionary<int, IZone> _eligibleZones;
 
-        private readonly int _zoneCount;
-        private readonly int _segmentCount;
-        private readonly string _variableName;
-        private readonly int _mode;
-        private readonly int _pathType;
-        private readonly double _vot;
-        private readonly int _minute;
+    private readonly int _zoneCount;
+    private readonly int _segmentCount;
+    private readonly string _variableName;
+    private readonly int _mode;
+    private readonly int _pathType;
+    private readonly double _vot;
+    private readonly int _minute;
 
-        private SamplingWeightsCalculator(string variableName, int mode, int pathType, double vot, int minute) {
-            var zoneReader =
+    private SamplingWeightsCalculator(string variableName, int mode, int pathType, double vot, int minute) {
+      Framework.DomainModels.Persisters.IPersisterReader<IZone> zoneReader =
                 Global
                     .ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
                     .Reader;
 
-            var parcelReader =
+      Framework.DomainModels.Persisters.IPersisterReader<IParcel> parcelReader =
                 Global
                     .ContainerDaySim
                     .GetInstance<IPersistenceFactory<IParcel>>()
                     .Reader;
 
-            var parcelCreator =
+      IParcelCreator parcelCreator =
                 Global
                     .ContainerDaySim
                     .GetInstance<IWrapperFactory<IParcelCreator>>()
                     .Creator;
 
-            _eligibleZones =
-                zoneReader
-                    .Where(z => z.DestinationEligible)
-                    .ToDictionary(z => z.Id, z => z);
+      _eligibleZones =
+          zoneReader
+              .Where(z => z.DestinationEligible)
+              .ToDictionary(z => z.Id, z => z);
 
-            foreach (var parcel in parcelReader) {
-                IZone zone;
+      foreach (IParcel parcel in parcelReader) {
 
-                if (_eligibleZones.TryGetValue(parcel.ZoneId, out zone)) {
-                    _eligibleParcels.Add(parcelCreator.CreateWrapper(parcel));
-                }
-
-                if (_parcelCounts.ContainsKey(parcel.ZoneId)) {
-                    _parcelCounts[parcel.ZoneId]++;
-                } else {
-                    _parcelCounts.Add(parcel.ZoneId, 1);
-                }
-            }
-
-            _zoneCount = zoneReader.Count;
-            _segmentCount = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.SizeFactors.GetLength(0);
-            _variableName = variableName;
-            _mode = mode;
-            _pathType = pathType;
-            _vot = vot;
-            _minute = minute;
+        if (_eligibleZones.TryGetValue(parcel.ZoneId, out IZone zone)) {
+          _eligibleParcels.Add(parcelCreator.CreateWrapper(parcel));
         }
 
-        public static void Calculate(string variableName, int mode, int pathType, double vot, int minute) {
-            var samplingWeightsCalculator = new SamplingWeightsCalculator(variableName, mode, pathType, vot, minute);
-            var segmentCount = samplingWeightsCalculator._segmentCount;
+        if (_parcelCounts.ContainsKey(parcel.ZoneId)) {
+          _parcelCounts[parcel.ZoneId]++;
+        } else {
+          _parcelCounts.Add(parcel.ZoneId, 1);
+        }
+      }
 
-            Global.SegmentZones = new SegmentZone[segmentCount][];
+      _zoneCount = zoneReader.Count;
+      _segmentCount = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.SizeFactors.GetLength(0);
+      _variableName = variableName;
+      _mode = mode;
+      _pathType = pathType;
+      _vot = vot;
+      _minute = minute;
+    }
 
-            Parallel.For(0, segmentCount, new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.NThreads }, segment => CalculateSegment(samplingWeightsCalculator, segment));
+    public static void Calculate(string variableName, int mode, int pathType, double vot, int minute) {
+      SamplingWeightsCalculator samplingWeightsCalculator = new SamplingWeightsCalculator(variableName, mode, pathType, vot, minute);
+      int segmentCount = samplingWeightsCalculator._segmentCount;
+
+      Global.SegmentZones = new SegmentZone[segmentCount][];
+
+      Parallel.For(0, segmentCount, new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.NThreads }, segment => CalculateSegment(samplingWeightsCalculator, segment));
+    }
+
+    private static void CalculateSegment(SamplingWeightsCalculator samplingWeightsCalculator, int segment) {
+      FileInfo file = new FileInfo(string.Format(Global.SamplingWeightsPath, segment));
+
+      if (Global.Configuration.ShouldLoadSamplingWeightsFromFile && file.Exists) {
+        Global.SegmentZones[segment] = LoadSamplingWeightsFromFile(file);
+
+        return;
+      }
+
+      Global.SegmentZones[segment] = samplingWeightsCalculator.ComputeSegment(segment);
+
+      if (Global.Configuration.ShouldLoadSamplingWeightsFromFile && !file.Exists) {
+        SaveSamplingWeightsToFile(file, segment);
+      }
+    }
+
+    private static SegmentZone[] LoadSamplingWeightsFromFile(FileInfo file) {
+      using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
+        return SegmentZoneFormatter.Deserialize(stream);
+      }
+    }
+
+    private static void SaveSamplingWeightsToFile(FileInfo file, int segment) {
+      using (FileStream stream = file.Open(FileMode.Create, FileAccess.Write, FileShare.Read)) {
+        SegmentZoneFormatter.Serialize(stream, Global.SegmentZones[segment]);
+      }
+    }
+
+    private SegmentZone[] ComputeSegment(int segment) {
+      double[] sizeFactors = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.SizeFactors[segment];
+      double[] weightFactors = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.WeightFactors[segment];
+      SegmentZone[] segmentZones = new SegmentZone[_zoneCount];
+
+      foreach (IParcelWrapper parcel in _eligibleParcels) {
+        SegmentZone segmentZone = segmentZones[parcel.ZoneId];
+        IZone zone = _eligibleZones[parcel.ZoneId];
+        if (segmentZone == null) {
+          segmentZone = new SegmentZone(_parcelCounts[parcel.ZoneId], _zoneCount) { Id = parcel.ZoneId, Key = zone.Key };
+
+          segmentZones[segmentZone.Id] = segmentZone;
         }
 
-        private static void CalculateSegment(SamplingWeightsCalculator samplingWeightsCalculator, int segment) {
-            var file = new FileInfo(string.Format(Global.SamplingWeightsPath, segment));
-
-            if (Global.Configuration.ShouldLoadSamplingWeightsFromFile && file.Exists) {
-                Global.SegmentZones[segment] = LoadSamplingWeightsFromFile(file);
-
-                return;
-            }
-
-            Global.SegmentZones[segment] = samplingWeightsCalculator.ComputeSegment(segment);
-
-            if (Global.Configuration.ShouldLoadSamplingWeightsFromFile && !file.Exists) {
-                SaveSamplingWeightsToFile(file, segment);
-            }
-        }
-
-        private static SegmentZone[] LoadSamplingWeightsFromFile(FileInfo file) {
-            using (var stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                return SegmentZoneFormatter.Deserialize(stream);
-            }
-        }
-
-        private static void SaveSamplingWeightsToFile(FileInfo file, int segment) {
-            using (var stream = file.Open(FileMode.Create, FileAccess.Write, FileShare.Read)) {
-                SegmentZoneFormatter.Serialize(stream, Global.SegmentZones[segment]);
-            }
-        }
-
-        private SegmentZone[] ComputeSegment(int segment) {
-            var sizeFactors = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.SizeFactors[segment];
-            var weightFactors = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.WeightFactors[segment];
-            var segmentZones = new SegmentZone[_zoneCount];
-
-            foreach (var parcel in _eligibleParcels) {
-                var segmentZone = segmentZones[parcel.ZoneId];
-                var zone = _eligibleZones[parcel.ZoneId];
-                if (segmentZone == null) {
-                    segmentZone = new SegmentZone(_parcelCounts[parcel.ZoneId], _zoneCount) { Id = parcel.ZoneId, Key = zone.Key };
-
-                    segmentZones[segmentZone.Id] = segmentZone;
-                }
-
-                var openSpace = (Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? parcel.LandUseCode : parcel.OpenSpaceType2Buffer1;
-                var openSpaceSize = (Global.Configuration.UseLogOfSquareFeetOpenSpaceInDestinationSampling 
+        double openSpace = (Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? parcel.LandUseCode : parcel.OpenSpaceType2Buffer1;
+        double openSpaceSize = (Global.Configuration.UseLogOfSquareFeetOpenSpaceInDestinationSampling
                     || Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? Math.Log(openSpace + 1.0) : openSpace;
 
-                var factor = Math.Exp(sizeFactors[0]) * parcel.EmploymentEducation +
+        double factor = Math.Exp(sizeFactors[0]) * parcel.EmploymentEducation +
                                  Math.Exp(sizeFactors[1]) * parcel.EmploymentFood +
                                  Math.Exp(sizeFactors[2]) * parcel.EmploymentGovernment +
                                  Math.Exp(sizeFactors[3]) * parcel.EmploymentIndustrial +
@@ -152,45 +151,45 @@ namespace DaySim.Sampling {
                                  Math.Exp(sizeFactors[15]) * openSpaceSize +
                                  Math.Exp(sizeFactors[16]) * parcel.StudentsHighSchool;
 
-                var size = 100 * factor;
+        double size = 100 * factor;
 
-                if (size >= Global.Configuration.MinParcelSize) {
-                    segmentZone.TotalSize += size;
-                }
-
-                segmentZone.SetSize(parcel.Sequence, parcel.Id, size);
-            }
-
-            foreach (var origin in segmentZones.Where(o => o != null)) {
-                origin.RankSizes();
-
-                foreach (var destination in segmentZones.Where(d => d != null)) {
-                    var skimValue = ImpedanceRoster.GetValue(_variableName, _mode, _pathType, _vot, _minute, origin.Id, destination.Id);
-
-                    //jb 20130707 mimic mb fix for 0 intrazonals
-                    if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone && origin.Id == destination.Id && skimValue.Variable < Constants.EPSILON) {
-                        if (_variableName == "distance") {
-                            skimValue.Variable = 0.25 * Global.Settings.DistanceUnitsPerMile;
-                        } else if (_variableName == "ivtime" || _variableName == "time" || _variableName == "ivtfree") {
-                            skimValue.Variable =
-                                 (_mode == Global.Settings.Modes.Walk) ? 5 :
-                                 (_mode == Global.Settings.Modes.Bike) ? 2 :
-                                 (_mode > Global.Settings.Modes.Bike && _mode < Global.Settings.Modes.Transit) ? 1 : 0;
-                        }
-                    }
-                    var sovInVehicleTime = skimValue.Variable;
-
-                    // give 0 weight if not connected in SOV matrix
-                    var weight = sovInVehicleTime < Constants.EPSILON ? 0.0 : Math.Exp(-2 * sovInVehicleTime * 100 / weightFactors[0]) * destination.TotalSize;
-
-                    origin.TotalWeight += weight;
-                    origin.SetWeight(destination.Id, weight);
-                }
-
-                origin.RankWeights();
-            }
-
-            return segmentZones;
+        if (size >= Global.Configuration.MinParcelSize) {
+          segmentZone.TotalSize += size;
         }
+
+        segmentZone.SetSize(parcel.Sequence, parcel.Id, size);
+      }
+
+      foreach (SegmentZone origin in segmentZones.Where(o => o != null)) {
+        origin.RankSizes();
+
+        foreach (SegmentZone destination in segmentZones.Where(d => d != null)) {
+          SkimValue skimValue = ImpedanceRoster.GetValue(_variableName, _mode, _pathType, _vot, _minute, origin.Id, destination.Id);
+
+          //jb 20130707 mimic mb fix for 0 intrazonals
+          if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone && origin.Id == destination.Id && skimValue.Variable < Constants.EPSILON) {
+            if (_variableName == "distance") {
+              skimValue.Variable = 0.25 * Global.Settings.DistanceUnitsPerMile;
+            } else if (_variableName == "ivtime" || _variableName == "time" || _variableName == "ivtfree") {
+              skimValue.Variable =
+                   (_mode == Global.Settings.Modes.Walk) ? 5 :
+                   (_mode == Global.Settings.Modes.Bike) ? 2 :
+                   (_mode > Global.Settings.Modes.Bike && _mode < Global.Settings.Modes.Transit) ? 1 : 0;
+            }
+          }
+          double sovInVehicleTime = skimValue.Variable;
+
+          // give 0 weight if not connected in SOV matrix
+          double weight = sovInVehicleTime < Constants.EPSILON ? 0.0 : Math.Exp(-2 * sovInVehicleTime * 100 / weightFactors[0]) * destination.TotalSize;
+
+          origin.TotalWeight += weight;
+          origin.SetWeight(destination.Id, weight);
+        }
+
+        origin.RankWeights();
+      }
+
+      return segmentZones;
     }
+  }
 }

@@ -8,7 +8,7 @@
 
 
 namespace DaySim.PathTypeModels {
-    public class PathTypeModel_override : PathTypeModel {
-    }
+  public class PathTypeModel_override : PathTypeModel {
+  }
 
 }

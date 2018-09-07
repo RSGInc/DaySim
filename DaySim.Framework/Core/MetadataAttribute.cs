@@ -9,12 +9,12 @@
 using System;
 
 namespace DaySim.Framework.Core {
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class MetadataAttribute : Attribute {
-        public MetadataAttribute(string value) {
-            Value = value;
-        }
-
-        public string Value { get; private set; }
+  [AttributeUsage(AttributeTargets.Property)]
+  public sealed class MetadataAttribute : Attribute {
+    public MetadataAttribute(string value) {
+      Value = value;
     }
+
+    public string Value { get; private set; }
+  }
 }

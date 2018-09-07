@@ -6,15 +6,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface ICarOwnerships {
-        int TotalCarOwnerships { get; }
+  public interface ICarOwnerships {
+    int TotalCarOwnerships { get; }
 
-        int Child { get; }
+    int Child { get; }
 
-        int NoCars { get; }
+    int NoCars { get; }
 
-        int LtOneCarPerAdult { get; }
+    int LtOneCarPerAdult { get; }
 
-        int OneOrMoreCarsPerAdult { get; }
-    }
+    int OneOrMoreCarsPerAdult { get; }
+  }
 }

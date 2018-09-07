@@ -6,15 +6,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface IModels {
-        int WorkTourModeModel { get; }
+  public interface IModels {
+    int WorkTourModeModel { get; }
 
-        int SchoolTourModeModel { get; }
+    int SchoolTourModeModel { get; }
 
-        int WorkbasedSubtourModeModel { get; }
+    int WorkbasedSubtourModeModel { get; }
 
-        int EscortTourModeModel { get; }
+    int EscortTourModeModel { get; }
 
-        int OtherHomeBasedTourMode { get; }
-    }
+    int OtherHomeBasedTourMode { get; }
+  }
 }

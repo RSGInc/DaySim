@@ -6,65 +6,65 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.DomainModels.Models {
-    public interface IPersonDay : IModel {
-        int PersonId { get; set; }
+  public interface IPersonDay : IModel {
+    int PersonId { get; set; }
 
-        int HouseholdDayId { get; set; }
+    int HouseholdDayId { get; set; }
 
-        int HouseholdId { get; set; }
+    int HouseholdId { get; set; }
 
-        int PersonSequence { get; set; }
+    int PersonSequence { get; set; }
 
-        int Day { get; set; }
+    int Day { get; set; }
 
-        int DayBeginsAtHome { get; set; }
+    int DayBeginsAtHome { get; set; }
 
-        int DayEndsAtHome { get; set; }
+    int DayEndsAtHome { get; set; }
 
-        int HomeBasedTours { get; set; }
+    int HomeBasedTours { get; set; }
 
-        int WorkBasedTours { get; set; }
+    int WorkBasedTours { get; set; }
 
-        int UsualWorkplaceTours { get; set; }
+    int UsualWorkplaceTours { get; set; }
 
-        int WorkTours { get; set; }
+    int WorkTours { get; set; }
 
-        int SchoolTours { get; set; }
+    int SchoolTours { get; set; }
 
-        int EscortTours { get; set; }
+    int EscortTours { get; set; }
 
-        int PersonalBusinessTours { get; set; }
+    int PersonalBusinessTours { get; set; }
 
-        int ShoppingTours { get; set; }
+    int ShoppingTours { get; set; }
 
-        int MealTours { get; set; }
+    int MealTours { get; set; }
 
-        int SocialTours { get; set; }
+    int SocialTours { get; set; }
 
-        int RecreationTours { get; set; }
+    int RecreationTours { get; set; }
 
-        int MedicalTours { get; set; }
+    int MedicalTours { get; set; }
 
-        int WorkStops { get; set; }
+    int WorkStops { get; set; }
 
-        int SchoolStops { get; set; }
+    int SchoolStops { get; set; }
 
-        int EscortStops { get; set; }
+    int EscortStops { get; set; }
 
-        int PersonalBusinessStops { get; set; }
+    int PersonalBusinessStops { get; set; }
 
-        int ShoppingStops { get; set; }
+    int ShoppingStops { get; set; }
 
-        int MealStops { get; set; }
+    int MealStops { get; set; }
 
-        int SocialStops { get; set; }
+    int SocialStops { get; set; }
 
-        int RecreationStops { get; set; }
+    int RecreationStops { get; set; }
 
-        int MedicalStops { get; set; }
+    int MedicalStops { get; set; }
 
-        int WorkAtHomeDuration { get; set; }
+    int WorkAtHomeDuration { get; set; }
 
-        double ExpansionFactor { get; set; }
-    }
+    double ExpansionFactor { get; set; }
+  }
 }

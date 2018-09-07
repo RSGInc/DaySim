@@ -9,19 +9,19 @@
 using DaySim.Framework.Core;
 
 namespace DaySim {
-    public static class DayPeriod {
-        public const int EARLY = 0;
-        public const int NIGHT = 0;
-        public const int AM_PEAK = 1;
-        public const int MIDDAY = 2;
-        public const int PM_PEAK = 3;
-        public const int EVENING = 4;
-        public const int LATE = 5;
+  public static class DayPeriod {
+    public const int EARLY = 0;
+    public const int NIGHT = 0;
+    public const int AM_PEAK = 1;
+    public const int MIDDAY = 2;
+    public const int PM_PEAK = 3;
+    public const int EVENING = 4;
+    public const int LATE = 5;
 
-        public const int SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES = 48;
-        public const int SMALL_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS = 1176;
+    public const int SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES = 48;
+    public const int SMALL_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS = 1176;
 
-        public static readonly MinuteSpan[] SmallDayPeriods = new[] {
+    public static readonly MinuteSpan[] SmallDayPeriods = new[] {
             new MinuteSpan(0, 1, 30),
             new MinuteSpan(1, 31, 60),
             new MinuteSpan(2, 61, 90),
@@ -72,9 +72,9 @@ namespace DaySim {
             new MinuteSpan(47, 1411, 1440)
         };
 
-        public const int H_SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES = 144;
+    public const int H_SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES = 144;
 
-        public static readonly MinuteSpan[] HSmallDayPeriods = new[] {
+    public static readonly MinuteSpan[] HSmallDayPeriods = new[] {
             new MinuteSpan(0, 1, 10),
             new MinuteSpan(1, 11, 20),
             new MinuteSpan(2, 21, 30),
@@ -221,7 +221,7 @@ namespace DaySim {
             new MinuteSpan(143, 1431, 1440)
         };
 
-        public static readonly MinuteSpan[] BigDayPeriods = new[] {
+    public static readonly MinuteSpan[] BigDayPeriods = new[] {
             // 11:00 PM - 5:59 AM
             new MinuteSpan(NIGHT, 1201, 180),
             // 6:00 AM - 8:59 AM
@@ -234,10 +234,10 @@ namespace DaySim {
             new MinuteSpan(EVENING, 931, 1200)
         };
 
-        public const int H_BIG_DAY_PERIOD_TOTAL_TOUR_TIMES = 6;
-        public const int H_BIG_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS = 21;
+    public const int H_BIG_DAY_PERIOD_TOTAL_TOUR_TIMES = 6;
+    public const int H_BIG_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS = 21;
 
-        public static readonly MinuteSpan[] HBigDayPeriods = new[] {
+    public static readonly MinuteSpan[] HBigDayPeriods = new[] {
             // 3:00 AM - 5:59 AM
             new MinuteSpan(EARLY, 1, 180),
             // 6:00 AM - 8:59 AM
@@ -251,5 +251,5 @@ namespace DaySim {
             // 11:00 PM - 2:59 AM
             new MinuteSpan(LATE, 1201, 1440),
         };
-    }
+  }
 }

@@ -6,19 +6,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.ShadowPricing {
-    public interface IShadowPriceParcel {
-        int ParcelId { get; set; }
+  public interface IShadowPriceParcel {
+    int ParcelId { get; set; }
 
-        double EmploymentDifference { get; set; }
+    double EmploymentDifference { get; set; }
 
-        double ShadowPriceForEmployment { get; set; }
+    double ShadowPriceForEmployment { get; set; }
 
-        double StudentsK12Difference { get; set; }
+    double StudentsK12Difference { get; set; }
 
-        double ShadowPriceForStudentsK12 { get; set; }
+    double ShadowPriceForStudentsK12 { get; set; }
 
-        double StudentsUniversityDifference { get; set; }
+    double StudentsUniversityDifference { get; set; }
 
-        double ShadowPriceForStudentsUniversity { get; set; }
-    }
+    double ShadowPriceForStudentsUniversity { get; set; }
+  }
 }

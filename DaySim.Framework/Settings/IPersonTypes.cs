@@ -6,21 +6,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface IPersonTypes {
-        int FullTimeWorker { get; }
+  public interface IPersonTypes {
+    int FullTimeWorker { get; }
 
-        int PartTimeWorker { get; }
+    int PartTimeWorker { get; }
 
-        int RetiredAdult { get; }
+    int RetiredAdult { get; }
 
-        int NonWorkingAdult { get; }
+    int NonWorkingAdult { get; }
 
-        int UniversityStudent { get; }
+    int UniversityStudent { get; }
 
-        int DrivingAgeStudent { get; }
+    int DrivingAgeStudent { get; }
 
-        int ChildAge5Through15 { get; }
+    int ChildAge5Through15 { get; }
 
-        int ChildUnder5 { get; }
-    }
+    int ChildUnder5 { get; }
+  }
 }

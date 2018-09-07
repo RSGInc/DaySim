@@ -9,5 +9,5 @@ using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
-    public interface IActumHouseholdDayWrapper : IHouseholdDayWrapper, IActumHouseholdDay { }
+  public interface IActumHouseholdDayWrapper : IHouseholdDayWrapper, IActumHouseholdDay { }
 }

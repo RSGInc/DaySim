@@ -6,13 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.DomainModels.Models {
-    public interface IParkAndRideNode : IModel, IPoint {
-        int Capacity { get; set; }
+  public interface IParkAndRideNode : IModel, IPoint {
+    int Capacity { get; set; }
 
-        int Cost { get; set; }
+    int Cost { get; set; }
 
-        int NearestParcelId { get; set; }
+    int NearestParcelId { get; set; }
 
-        int NearestStopAreaId { get; set; }
-    }
+    int NearestStopAreaId { get; set; }
+  }
 }

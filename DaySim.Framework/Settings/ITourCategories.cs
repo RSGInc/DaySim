@@ -6,13 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface ITourCategories {
-        int Primary { get; }
+  public interface ITourCategories {
+    int Primary { get; }
 
-        int Secondary { get; }
+    int Secondary { get; }
 
-        int WorkBased { get; }
+    int WorkBased { get; }
 
-        int HomeBased { get; }
-    }
+    int HomeBased { get; }
+  }
 }

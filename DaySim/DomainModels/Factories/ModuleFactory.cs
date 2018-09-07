@@ -10,17 +10,17 @@ using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Factories {
-    public class ModuleFactory {
-        private readonly Type _type;
+  public class ModuleFactory {
+    private readonly Type _type;
 
-        public ModuleFactory(Configuration configuration) {
-            var helper = new FactoryHelper(configuration);
+    public ModuleFactory(Configuration configuration) {
+      FactoryHelper helper = new FactoryHelper(configuration);
 
-            _type = helper.Module.GetModuleType();
-        }
-
-        public void Load() {
-            Activator.CreateInstance(_type);
-        }
+      _type = helper.Module.GetModuleType();
     }
+
+    public void Load() {
+      Activator.CreateInstance(_type);
+    }
+  }
 }   //end namespace

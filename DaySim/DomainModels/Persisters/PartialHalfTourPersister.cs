@@ -11,13 +11,13 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Persisters {
-    [UsedImplicitly]
-    [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
-    public class PartialHalfTourPersister<TModel> : Persister<TModel> where TModel : class, IPartialHalfTour, new() {
-        public override void Export(IModel model) {
-            base.Export(model);
+  [UsedImplicitly]
+  [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
+  public class PartialHalfTourPersister<TModel> : Persister<TModel> where TModel : class, IPartialHalfTour, new() {
+    public override void Export(IModel model) {
+      base.Export(model);
 
-            ChoiceModelFactory.PartialHalfTourFileRecordsWritten++;
-        }
+      ChoiceModelFactory.PartialHalfTourFileRecordsWritten++;
     }
+  }
 }

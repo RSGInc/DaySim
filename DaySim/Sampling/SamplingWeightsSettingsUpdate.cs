@@ -10,11 +10,11 @@ using DaySim.Framework.Core;
 using DaySim.Framework.Exceptions;
 
 namespace DaySim.Sampling {
-    public class SamplingWeightsSettingsUpdate : ISamplingWeightsSettings {
+  public class SamplingWeightsSettingsUpdate : ISamplingWeightsSettings {
 
-        public SamplingWeightsSettingsUpdate() {
-            SizeFactors = new[]
-                    {
+    public SamplingWeightsSettingsUpdate() {
+      SizeFactors = new[]
+              {
                         /*     EDU   food  GOV   IND   MED   OFC   RSC   RET   SVC EMPTOT  HOUSE  K8    UNI LUSE19 LU19Q OPENSP HighSchool*/
                         new[] {-30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -30D, -00D, -30D, -30D, -30D, -30D, -30D, -30D, -30D},  /*    0 9    16:motorized --work"                        */
                         new[] {-02D, -30D, -30D, -30D, -30D, -02D, -30D, -30D, -02D, -02D, -01D, -00D, -06D, -30D, -30D, -30D, -00D},  /*    1 10    17:motorized --school"                      */
@@ -37,7 +37,7 @@ namespace DaySim.Sampling {
                         new[] {-02D, -30D, -30D, -30D, -30D, -02D, -30D, -30D, -02D, -02D, -01D, -30D, -00D, -30D, -30D, -30D, -03D}   /* 18 36   :ptypes 1-5 --usu school                         */
                     };
 
-            WeightFactors = new[] {
+      WeightFactors = new[] {
                 /*  0     7:motorized WBTour or IntStop --work"          */new[] {2300D}, //{1455}, /*values on the right are temporary values to synchronize with delphi for testing only*/
                 /*  1     8:motorized WBTour or IntStop --school"        */new[] {1350D}, //{1111},  
                 /*  2     9:motorized WBTour or IntStop --escort"        */new[] {1350D}, //{1216},  
@@ -58,175 +58,175 @@ namespace DaySim.Sampling {
                 /* 17 26    33:walk --medical"                           */new[] {550D}, //{1329},
                 /* 18 36      :ptypes 1-5 usual school"                  */new[] {1600D} //   
             };
-        }
-
-        #region size factors
-
-        public double[][] SizeFactors {
-            get; private set;
-        }
-
-        #endregion
-
-        #region weight factors
-
-        public double[][] WeightFactors { get; private set; }
-
-        #endregion
-
-        public int GetTourDestinationSegment(int purpose, int priority, int mode, int personType) {
-            if ((purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.Business) && mode >= Global.Settings.Modes.Sov) {
-                return 0;
-            }
-
-            if (purpose == Global.Settings.Purposes.School && mode >= Global.Settings.Modes.Sov && priority == Global.Settings.TourPriorities.UsualLocation && personType <= Global.Settings.PersonTypes.UniversityStudent) {
-                return 18;
-            }
-
-            if (purpose == Global.Settings.Purposes.School && mode >= Global.Settings.Modes.Sov) {
-                return 1;
-            }
-
-            if (purpose == Global.Settings.Purposes.Escort && mode >= Global.Settings.Modes.Sov) {
-                return 2;
-            }
-
-            if (purpose == Global.Settings.Purposes.PersonalBusiness && mode >= Global.Settings.Modes.Sov) {
-                return 3;
-            }
-
-            if (purpose == Global.Settings.Purposes.Shopping && mode >= Global.Settings.Modes.Sov) {
-                return 4;
-            }
-
-            if (purpose == Global.Settings.Purposes.Meal && mode >= Global.Settings.Modes.Sov) {
-                return 5;
-            }
-
-            if (purpose == Global.Settings.Purposes.Social && mode >= Global.Settings.Modes.Sov) {
-                return 6;
-            }
-
-            if (purpose == Global.Settings.Purposes.Recreation && mode >= Global.Settings.Modes.Sov) {
-                return 7;
-            }
-
-            if (purpose == Global.Settings.Purposes.Medical && mode >= Global.Settings.Modes.Sov) {
-                return 8;
-            }
-
-            if ((purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.Business)) {
-                return 9;
-            }
-
-            if (purpose == Global.Settings.Purposes.School) {
-                return 10;
-            }
-
-            if (purpose == Global.Settings.Purposes.Escort) {
-                return 11;
-            }
-
-            if (purpose == Global.Settings.Purposes.PersonalBusiness) {
-                return 12;
-            }
-
-            if (purpose == Global.Settings.Purposes.Shopping) {
-                return 13;
-            }
-
-            if (purpose == Global.Settings.Purposes.Meal) {
-                return 14;
-            }
-
-            if (purpose == Global.Settings.Purposes.Social) {
-                return 15;
-            }
-
-            if (purpose == Global.Settings.Purposes.Recreation) {
-                return 16;
-            }
-
-            if (purpose == Global.Settings.Purposes.Medical) {
-                return 17;
-            }
-
-            throw new SegmentRemainsUnassignedException();
-        }
-
-        public int GetIntermediateStopSegment(int purpose, int mode) {
-            if ((purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.Business) && mode >= Global.Settings.Modes.Sov) {
-                return 0;
-            }
-
-            if (purpose == Global.Settings.Purposes.School && mode >= Global.Settings.Modes.Sov) {
-                return 1;
-            }
-
-            if (purpose == Global.Settings.Purposes.Escort && mode >= Global.Settings.Modes.Sov) {
-                return 2;
-            }
-
-            if (purpose == Global.Settings.Purposes.PersonalBusiness && mode >= Global.Settings.Modes.Sov) {
-                return 3;
-            }
-
-            if (purpose == Global.Settings.Purposes.Shopping && mode >= Global.Settings.Modes.Sov) {
-                return 4;
-            }
-
-            if (purpose == Global.Settings.Purposes.Meal && mode >= Global.Settings.Modes.Sov) {
-                return 5;
-            }
-
-            if (purpose == Global.Settings.Purposes.Social && mode >= Global.Settings.Modes.Sov) {
-                return 6;
-            }
-
-            if (purpose == Global.Settings.Purposes.Recreation && mode >= Global.Settings.Modes.Sov) {
-                return 7;
-            }
-
-            if (purpose == Global.Settings.Purposes.Medical && mode >= Global.Settings.Modes.Sov) {
-                return 8;
-            }
-
-            if ((purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.Business)) {
-                return 9;
-            }
-
-            if (purpose == Global.Settings.Purposes.School) {
-                return 10;
-            }
-
-            if (purpose == Global.Settings.Purposes.Escort) {
-                return 11;
-            }
-
-            if (purpose == Global.Settings.Purposes.PersonalBusiness) {
-                return 12;
-            }
-
-            if (purpose == Global.Settings.Purposes.Shopping) {
-                return 13;
-            }
-
-            if (purpose == Global.Settings.Purposes.Meal) {
-                return 14;
-            }
-
-            if (purpose == Global.Settings.Purposes.Social) {
-                return 15;
-            }
-
-            if (purpose == Global.Settings.Purposes.Recreation) {
-                return 16;
-            }
-
-            if (purpose == Global.Settings.Purposes.Medical) {
-                return 17;
-            }
-            throw new SegmentRemainsUnassignedException();
-        }
     }
+
+    #region size factors
+
+    public double[][] SizeFactors {
+      get; private set;
+    }
+
+    #endregion
+
+    #region weight factors
+
+    public double[][] WeightFactors { get; private set; }
+
+    #endregion
+
+    public int GetTourDestinationSegment(int purpose, int priority, int mode, int personType) {
+      if ((purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.Business) && mode >= Global.Settings.Modes.Sov) {
+        return 0;
+      }
+
+      if (purpose == Global.Settings.Purposes.School && mode >= Global.Settings.Modes.Sov && priority == Global.Settings.TourPriorities.UsualLocation && personType <= Global.Settings.PersonTypes.UniversityStudent) {
+        return 18;
+      }
+
+      if (purpose == Global.Settings.Purposes.School && mode >= Global.Settings.Modes.Sov) {
+        return 1;
+      }
+
+      if (purpose == Global.Settings.Purposes.Escort && mode >= Global.Settings.Modes.Sov) {
+        return 2;
+      }
+
+      if (purpose == Global.Settings.Purposes.PersonalBusiness && mode >= Global.Settings.Modes.Sov) {
+        return 3;
+      }
+
+      if (purpose == Global.Settings.Purposes.Shopping && mode >= Global.Settings.Modes.Sov) {
+        return 4;
+      }
+
+      if (purpose == Global.Settings.Purposes.Meal && mode >= Global.Settings.Modes.Sov) {
+        return 5;
+      }
+
+      if (purpose == Global.Settings.Purposes.Social && mode >= Global.Settings.Modes.Sov) {
+        return 6;
+      }
+
+      if (purpose == Global.Settings.Purposes.Recreation && mode >= Global.Settings.Modes.Sov) {
+        return 7;
+      }
+
+      if (purpose == Global.Settings.Purposes.Medical && mode >= Global.Settings.Modes.Sov) {
+        return 8;
+      }
+
+      if ((purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.Business)) {
+        return 9;
+      }
+
+      if (purpose == Global.Settings.Purposes.School) {
+        return 10;
+      }
+
+      if (purpose == Global.Settings.Purposes.Escort) {
+        return 11;
+      }
+
+      if (purpose == Global.Settings.Purposes.PersonalBusiness) {
+        return 12;
+      }
+
+      if (purpose == Global.Settings.Purposes.Shopping) {
+        return 13;
+      }
+
+      if (purpose == Global.Settings.Purposes.Meal) {
+        return 14;
+      }
+
+      if (purpose == Global.Settings.Purposes.Social) {
+        return 15;
+      }
+
+      if (purpose == Global.Settings.Purposes.Recreation) {
+        return 16;
+      }
+
+      if (purpose == Global.Settings.Purposes.Medical) {
+        return 17;
+      }
+
+      throw new SegmentRemainsUnassignedException();
+    }
+
+    public int GetIntermediateStopSegment(int purpose, int mode) {
+      if ((purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.Business) && mode >= Global.Settings.Modes.Sov) {
+        return 0;
+      }
+
+      if (purpose == Global.Settings.Purposes.School && mode >= Global.Settings.Modes.Sov) {
+        return 1;
+      }
+
+      if (purpose == Global.Settings.Purposes.Escort && mode >= Global.Settings.Modes.Sov) {
+        return 2;
+      }
+
+      if (purpose == Global.Settings.Purposes.PersonalBusiness && mode >= Global.Settings.Modes.Sov) {
+        return 3;
+      }
+
+      if (purpose == Global.Settings.Purposes.Shopping && mode >= Global.Settings.Modes.Sov) {
+        return 4;
+      }
+
+      if (purpose == Global.Settings.Purposes.Meal && mode >= Global.Settings.Modes.Sov) {
+        return 5;
+      }
+
+      if (purpose == Global.Settings.Purposes.Social && mode >= Global.Settings.Modes.Sov) {
+        return 6;
+      }
+
+      if (purpose == Global.Settings.Purposes.Recreation && mode >= Global.Settings.Modes.Sov) {
+        return 7;
+      }
+
+      if (purpose == Global.Settings.Purposes.Medical && mode >= Global.Settings.Modes.Sov) {
+        return 8;
+      }
+
+      if ((purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.Business)) {
+        return 9;
+      }
+
+      if (purpose == Global.Settings.Purposes.School) {
+        return 10;
+      }
+
+      if (purpose == Global.Settings.Purposes.Escort) {
+        return 11;
+      }
+
+      if (purpose == Global.Settings.Purposes.PersonalBusiness) {
+        return 12;
+      }
+
+      if (purpose == Global.Settings.Purposes.Shopping) {
+        return 13;
+      }
+
+      if (purpose == Global.Settings.Purposes.Meal) {
+        return 14;
+      }
+
+      if (purpose == Global.Settings.Purposes.Social) {
+        return 15;
+      }
+
+      if (purpose == Global.Settings.Purposes.Recreation) {
+        return 16;
+      }
+
+      if (purpose == Global.Settings.Purposes.Medical) {
+        return 17;
+      }
+      throw new SegmentRemainsUnassignedException();
+    }
+  }
 }

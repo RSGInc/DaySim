@@ -6,45 +6,45 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.DomainModels.Models {
-    public interface ISubzone {
-        int Sequence { get; }
+  public interface ISubzone {
+    int Sequence { get; }
 
-        double Households { get; set; }
+    double Households { get; set; }
 
-        double StudentsK8 { get; set; }
+    double StudentsK8 { get; set; }
 
-        double StudentsHighSchool { get; set; }
+    double StudentsHighSchool { get; set; }
 
-        double StudentsUniversity { get; set; }
+    double StudentsUniversity { get; set; }
 
-        double EmploymentEducation { get; set; }
+    double EmploymentEducation { get; set; }
 
-        double EmploymentFood { get; set; }
+    double EmploymentFood { get; set; }
 
-        double EmploymentGovernment { get; set; }
+    double EmploymentGovernment { get; set; }
 
-        double EmploymentIndustrial { get; set; }
+    double EmploymentIndustrial { get; set; }
 
-        double EmploymentMedical { get; set; }
+    double EmploymentMedical { get; set; }
 
-        double EmploymentOffice { get; set; }
+    double EmploymentOffice { get; set; }
 
-        double EmploymentRetail { get; set; }
+    double EmploymentRetail { get; set; }
 
-        double EmploymentService { get; set; }
+    double EmploymentService { get; set; }
 
-        double EmploymentTotal { get; set; }
+    double EmploymentTotal { get; set; }
 
-        double ParkingOffStreetPaidDailySpaces { get; set; }
+    double ParkingOffStreetPaidDailySpaces { get; set; }
 
-        double ParkingOffStreetPaidHourlySpaces { get; set; }
+    double ParkingOffStreetPaidHourlySpaces { get; set; }
 
-        double OpenSpace { get; set; }
+    double OpenSpace { get; set; }
 
-        double MixedUseMeasure { get; set; }
+    double MixedUseMeasure { get; set; }
 
-        void SetSize(int purpose, double size);
+    void SetSize(int purpose, double size);
 
-        double GetSize(int purpose);
-    }
+    double GetSize(int purpose);
+  }
 }

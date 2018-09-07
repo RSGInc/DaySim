@@ -10,9 +10,9 @@ using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Models {
-    [UsedImplicitly]
-    [Factory(Factory.SubzoneFactory, DataType = DataType.Actum)]
-    public class Subzone : Default.Models.Subzone, IActumSubzone {
-        public Subzone(int sequence) : base(sequence) { }
-    }
+  [UsedImplicitly]
+  [Factory(Factory.SubzoneFactory, DataType = DataType.Actum)]
+  public class Subzone : Default.Models.Subzone, IActumSubzone {
+    public Subzone(int sequence) : base(sequence) { }
+  }
 }

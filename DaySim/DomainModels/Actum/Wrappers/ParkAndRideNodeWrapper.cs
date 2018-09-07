@@ -12,67 +12,67 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
-    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-    public class ParkAndRideNodeWrapper : Default.Wrappers.ParkAndRideNodeWrapper, IActumParkAndRideNodeWrapper {
-        private readonly IActumParkAndRideNode _parkAndRideNode;
+  [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
+  public class ParkAndRideNodeWrapper : Default.Wrappers.ParkAndRideNodeWrapper, IActumParkAndRideNodeWrapper {
+    private readonly IActumParkAndRideNode _parkAndRideNode;
 
-        [UsedImplicitly]
-        public ParkAndRideNodeWrapper(IParkAndRideNode parkAndRideNode) : base(parkAndRideNode) {
-            _parkAndRideNode = (IActumParkAndRideNode)parkAndRideNode;
-        }
-
-        #region domain model properies
-
-        //public string TerminalName {
-        //    get { return _parkAndRideNode.TerminalName; }
-        //    set { _parkAndRideNode.TerminalName = value; }
-        //}
-
-        public int ParkingTypeId {
-            get { return _parkAndRideNode.ParkingTypeId; }
-            set { _parkAndRideNode.ParkingTypeId = value; }
-        }
-
-        public double CostPerHour08_18 {
-            get { return _parkAndRideNode.CostPerHour08_18; }
-            set { _parkAndRideNode.CostPerHour08_18 = value; }
-        }
-
-        public double CostPerHour18_23 {
-            get { return _parkAndRideNode.CostPerHour18_23; }
-            set { _parkAndRideNode.CostPerHour18_23 = value; }
-        }
-
-        public double CostPerHour23_08 {
-            get { return _parkAndRideNode.CostPerHour23_08; }
-            set { _parkAndRideNode.CostPerHour23_08 = value; }
-        }
-
-        public double CostAnnual {
-            get { return _parkAndRideNode.CostAnnual; }
-            set { _parkAndRideNode.CostAnnual = value; }
-        }
-
-        public int PRFacility {
-            get { return _parkAndRideNode.PRFacility; }
-            set { _parkAndRideNode.PRFacility = value; }
-        }
-
-        public int LengthToStopArea {
-            get { return _parkAndRideNode.LengthToStopArea; }
-            set { _parkAndRideNode.LengthToStopArea = value; }
-        }
-
-        public int Auto {
-            get { return _parkAndRideNode.Auto; }
-            set { _parkAndRideNode.Auto = value; }
-        }
-
-        #endregion
-
-
-
-
-
+    [UsedImplicitly]
+    public ParkAndRideNodeWrapper(IParkAndRideNode parkAndRideNode) : base(parkAndRideNode) {
+      _parkAndRideNode = (IActumParkAndRideNode)parkAndRideNode;
     }
+
+    #region domain model properies
+
+    //public string TerminalName {
+    //    get { return _parkAndRideNode.TerminalName; }
+    //    set { _parkAndRideNode.TerminalName = value; }
+    //}
+
+    public int ParkingTypeId {
+      get => _parkAndRideNode.ParkingTypeId;
+      set => _parkAndRideNode.ParkingTypeId = value;
+    }
+
+    public double CostPerHour08_18 {
+      get => _parkAndRideNode.CostPerHour08_18;
+      set => _parkAndRideNode.CostPerHour08_18 = value;
+    }
+
+    public double CostPerHour18_23 {
+      get => _parkAndRideNode.CostPerHour18_23;
+      set => _parkAndRideNode.CostPerHour18_23 = value;
+    }
+
+    public double CostPerHour23_08 {
+      get => _parkAndRideNode.CostPerHour23_08;
+      set => _parkAndRideNode.CostPerHour23_08 = value;
+    }
+
+    public double CostAnnual {
+      get => _parkAndRideNode.CostAnnual;
+      set => _parkAndRideNode.CostAnnual = value;
+    }
+
+    public int PRFacility {
+      get => _parkAndRideNode.PRFacility;
+      set => _parkAndRideNode.PRFacility = value;
+    }
+
+    public int LengthToStopArea {
+      get => _parkAndRideNode.LengthToStopArea;
+      set => _parkAndRideNode.LengthToStopArea = value;
+    }
+
+    public int Auto {
+      get => _parkAndRideNode.Auto;
+      set => _parkAndRideNode.Auto = value;
+    }
+
+    #endregion
+
+
+
+
+
+  }
 }

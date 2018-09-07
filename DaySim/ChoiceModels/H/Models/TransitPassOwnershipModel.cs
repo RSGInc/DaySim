@@ -6,231 +6,231 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DaySim.ChoiceModels.H.Models {
-    public class TransitPassOwnershipModel : ChoiceModel {
-        private const string CHOICE_MODEL_NAME = "HTransitPassOwnershipModel";
-        private const int TOTAL_ALTERNATIVES = 2;
-        private const int TOTAL_NESTED_ALTERNATIVES = 0;
-        private const int TOTAL_LEVELS = 1;
-        private const int MAX_PARAMETER = 99;
+  public class TransitPassOwnershipModel : ChoiceModel {
+    private const string CHOICE_MODEL_NAME = "HTransitPassOwnershipModel";
+    private const int TOTAL_ALTERNATIVES = 2;
+    private const int TOTAL_NESTED_ALTERNATIVES = 0;
+    private const int TOTAL_LEVELS = 1;
+    private const int MAX_PARAMETER = 99;
 
-        public override void RunInitialize(ICoefficientsReader reader = null) {
-            Initialize(CHOICE_MODEL_NAME, Global.Configuration.TransitPassOwnershipModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
+    public override void RunInitialize(ICoefficientsReader reader = null) {
+      Initialize(CHOICE_MODEL_NAME, Global.Configuration.TransitPassOwnershipModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
+    }
+
+    public void Run(IPersonWrapper person) {
+      if (person == null) {
+        throw new ArgumentNullException("person");
+      }
+
+      person.ResetRandom(3);
+
+      if (Global.Configuration.IsInEstimationMode) {
+        if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+          return;
+        }
+      }
+
+      ChoiceProbabilityCalculator choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+
+      if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
+        if (person.TransitPassOwnership < 0 || person.TransitPassOwnership > 1) {
+          return;
         }
 
-        public void Run(IPersonWrapper person) {
-            if (person == null) {
-                throw new ArgumentNullException("person");
-            }
+        RunModel(choiceProbabilityCalculator, person, person.TransitPassOwnership);
 
-            person.ResetRandom(3);
+        choiceProbabilityCalculator.WriteObservation();
+      } else {
+        RunModel(choiceProbabilityCalculator, person);
 
-            if (Global.Configuration.IsInEstimationMode) {
-                if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-                    return;
-                }
-            }
+        ChoiceProbabilityCalculator.Alternative chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
+        int choice = (int)chosenAlternative.Choice;
 
-            var choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
+        person.TransitPassOwnership = choice;
+      }
+    }
 
-            if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-                if (person.TransitPassOwnership < 0 || person.TransitPassOwnership > 1) {
-                    return;
-                }
+    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
+      IParcelWrapper homeParcel = person.Household.ResidenceParcel;
+      IParcelWrapper workParcel = person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel;
+      IParcelWrapper schoolParcel = person.IsUniversityStudent ? null : person.UsualSchoolParcel;
 
-                RunModel(choiceProbabilityCalculator, person, person.TransitPassOwnership);
+      bool workParcelMissing = workParcel == null;
+      bool schoolParcelMissing = schoolParcel == null;
 
-                choiceProbabilityCalculator.WriteObservation();
-            } else {
-                RunModel(choiceProbabilityCalculator, person);
+      const double maxTranDist = 1.5;
 
-                var chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
-                var choice = (int)chosenAlternative.Choice;
+      double homeTranDist = 99.0;
 
-                person.TransitPassOwnership = choice;
-            }
-        }
+      if (homeParcel.GetDistanceToTransit() >= 0.0001 && homeParcel.GetDistanceToTransit() <= maxTranDist) {
+        homeTranDist = homeParcel.GetDistanceToTransit();
+      }
 
-        private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
-            var homeParcel = person.Household.ResidenceParcel;
-            var workParcel = person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel;
-            var schoolParcel = person.IsUniversityStudent ? null : person.UsualSchoolParcel;
+      double workTranDist = 99.0;
 
-            var workParcelMissing = workParcel == null;
-            var schoolParcelMissing = schoolParcel == null;
+      if (!workParcelMissing && workParcel.GetDistanceToTransit() >= 0.0001 && workParcel.GetDistanceToTransit() <= maxTranDist) {
+        workTranDist = workParcel.GetDistanceToTransit();
+      }
 
-            const double maxTranDist = 1.5;
+      double schoolTranDist = 99.0;
 
-            var homeTranDist = 99.0;
+      if (!schoolParcelMissing && schoolParcel.GetDistanceToTransit() >= 0.0001 && schoolParcel.GetDistanceToTransit() <= maxTranDist) {
+        schoolTranDist = schoolParcel.GetDistanceToTransit();
+      }
 
-            if (homeParcel.GetDistanceToTransit() >= 0.0001 && homeParcel.GetDistanceToTransit() <= maxTranDist) {
-                homeTranDist = homeParcel.GetDistanceToTransit();
-            }
+      double workGenTimeNoPass = -99.0;
+      double workGenTimeWithPass = -99.0;
 
-            var workTranDist = 99.0;
+      if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
-            if (!workParcelMissing && workParcel.GetDistanceToTransit() >= 0.0001 && workParcel.GetDistanceToTransit() <= maxTranDist) {
-                workTranDist = workParcel.GetDistanceToTransit();
-            }
+        IEnumerable<IPathTypeModel> pathTypeModels = PathTypeModelFactory.Singleton.Run(
+            person.Household.RandomUtility,
+                homeParcel,
+                workParcel,
+                Global.Settings.Times.EightAM,
+                Global.Settings.Times.FivePM,
+                Global.Settings.Purposes.Work,
+                Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
+                Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
+                true,
+                1,
+                false,
+                0.0,
+                false,
+                Global.Settings.Modes.Transit);
 
-            var schoolTranDist = 99.0;
+        IPathTypeModel path = pathTypeModels.First();
 
-            if (!schoolParcelMissing && schoolParcel.GetDistanceToTransit() >= 0.0001 && schoolParcel.GetDistanceToTransit() <= maxTranDist) {
-                schoolTranDist = schoolParcel.GetDistanceToTransit();
-            }
+        workGenTimeNoPass = path.GeneralizedTimeLogsum;
 
-            var workGenTimeNoPass = -99.0;
-            var workGenTimeWithPass = -99.0;
+        pathTypeModels = PathTypeModelFactory.Singleton.Run(
+            person.Household.RandomUtility,
+                homeParcel,
+                workParcel,
+                Global.Settings.Times.EightAM,
+                Global.Settings.Times.FivePM,
+                Global.Settings.Purposes.Work,
+                Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
+                Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
+                true,
+                1,
+                false,
+                1.0,
+                false,
+                Global.Settings.Modes.Transit);
 
-            if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
+        path = pathTypeModels.First();
 
-                IEnumerable<IPathTypeModel> pathTypeModels = PathTypeModelFactory.Singleton.Run(
-                    person.Household.RandomUtility,
-                        homeParcel,
-                        workParcel,
-                        Global.Settings.Times.EightAM,
-                        Global.Settings.Times.FivePM,
-                        Global.Settings.Purposes.Work,
-                        Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
-                        Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
-                        true,
-                        1,
-                        false,
-                        0.0,
-                        false,
-                        Global.Settings.Modes.Transit);
+        workGenTimeWithPass = path.GeneralizedTimeLogsum;
+      }
 
-                var path = pathTypeModels.First();
+      //            double schoolGenTimeNoPass = -99.0;
+      double schoolGenTimeWithPass = -99.0;
 
-                workGenTimeNoPass = path.GeneralizedTimeLogsum;
+      if (!schoolParcelMissing && schoolTranDist < maxTranDist && homeTranDist < maxTranDist) {
+        //                schoolGenTimeNoPass = path.GeneralizedTimeLogsum;
+        IEnumerable<IPathTypeModel> pathTypeModels =
+          PathTypeModelFactory.Singleton.Run(
+          person.Household.RandomUtility,
+              homeParcel,
+              schoolParcel,
+              Global.Settings.Times.EightAM,
+              Global.Settings.Times.ThreePM,
+              Global.Settings.Purposes.School,
+              Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
+              Global.Configuration.Coefficients_MeanTimeCoefficient_Other,
+              true,
+              1,
+              false,
+              1.0,
+              false,
+              Global.Settings.Modes.Transit);
 
-                pathTypeModels = PathTypeModelFactory.Singleton.Run(
-                    person.Household.RandomUtility,
-                        homeParcel,
-                        workParcel,
-                        Global.Settings.Times.EightAM,
-                        Global.Settings.Times.FivePM,
-                        Global.Settings.Purposes.Work,
-                        Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
-                        Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
-                        true,
-                        1,
-                        false,
-                        1.0,
-                        false,
-                        Global.Settings.Modes.Transit);
+        IPathTypeModel path = pathTypeModels.First();
 
-                path = pathTypeModels.First();
+        schoolGenTimeWithPass = path.GeneralizedTimeLogsum;
+      }
 
-                workGenTimeWithPass = path.GeneralizedTimeLogsum;
-            }
+      const double inflection = 0.50;
 
-            //            double schoolGenTimeNoPass = -99.0;
-            var schoolGenTimeWithPass = -99.0;
+      double homeTranDist1 = Math.Pow(Math.Min(inflection, homeTranDist), 2.0);
+      double homeTranDist2 = Math.Pow(Math.Max(homeTranDist - inflection, 0), 0.5);
 
-            if (!schoolParcelMissing && schoolTranDist < maxTranDist && homeTranDist < maxTranDist) {
-                //                schoolGenTimeNoPass = path.GeneralizedTimeLogsum;
-                IEnumerable<IPathTypeModel> pathTypeModels =
-                  PathTypeModelFactory.Singleton.Run(
-                  person.Household.RandomUtility,
-                      homeParcel,
-                      schoolParcel,
-                      Global.Settings.Times.EightAM,
-                      Global.Settings.Times.ThreePM,
-                      Global.Settings.Purposes.School,
-                      Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
-                      Global.Configuration.Coefficients_MeanTimeCoefficient_Other,
-                      true,
-                      1,
-                      false,
-                      1.0,
-                      false,
-                      Global.Settings.Modes.Transit);
+      //            var workTranDist1 = Math.Pow(Math.Min(inflection, workTranDist),2.0);
+      //            var workTranDist2 = Math.Pow(Math.Max(workTranDist - inflection, 0),0.5);
 
-                var path = pathTypeModels.First();
+      const double minimumAggLogsum = -15.0;
+      int votSegment = person.Household.GetVotALSegment();
 
-                schoolGenTimeWithPass = path.GeneralizedTimeLogsum;
-            }
+      int homeTaSegment = homeParcel.TransitAccessSegment();
+      double homeAggregateLogsumNoCar = Math.Max(minimumAggLogsum, Global.AggregateLogsums[homeParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][homeTaSegment]);
 
-            const double inflection = 0.50;
-
-            var homeTranDist1 = Math.Pow(Math.Min(inflection, homeTranDist), 2.0);
-            var homeTranDist2 = Math.Pow(Math.Max(homeTranDist - inflection, 0), 0.5);
-
-            //            var workTranDist1 = Math.Pow(Math.Min(inflection, workTranDist),2.0);
-            //            var workTranDist2 = Math.Pow(Math.Max(workTranDist - inflection, 0),0.5);
-
-            const double minimumAggLogsum = -15.0;
-            var votSegment = person.Household.GetVotALSegment();
-
-            var homeTaSegment = homeParcel.TransitAccessSegment();
-            var homeAggregateLogsumNoCar = Math.Max(minimumAggLogsum, Global.AggregateLogsums[homeParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][homeTaSegment]);
-
-            var workTaSegment = workParcelMissing ? 0 : workParcel.TransitAccessSegment();
-            var workAggregateLogsumNoCar =
+      int workTaSegment = workParcelMissing ? 0 : workParcel.TransitAccessSegment();
+      double workAggregateLogsumNoCar =
                 workParcelMissing
                     ? 0
                     : Math.Max(minimumAggLogsum, Global.AggregateLogsums[workParcel.ZoneId][Global.Settings.Purposes.WorkBased][Global.Settings.CarOwnerships.NoCars][votSegment][workTaSegment]);
 
-            var schoolTaSegment = schoolParcelMissing ? 0 : schoolParcel.TransitAccessSegment();
-            var schoolAggregateLogsumNoCar =
+      int schoolTaSegment = schoolParcelMissing ? 0 : schoolParcel.TransitAccessSegment();
+      double schoolAggregateLogsumNoCar =
                 schoolParcelMissing
                     ? 0
                     : Math.Max(minimumAggLogsum, Global.AggregateLogsums[schoolParcel.ZoneId][Global.Settings.Purposes.WorkBased][Global.Settings.CarOwnerships.NoCars][votSegment][schoolTaSegment]);
 
-            var transitPassCostChange = !Global.Configuration.IsInEstimationMode ? Global.Configuration.PathImpedance_TransitPassCostPercentChangeVersusBase : 0;
+      double transitPassCostChange = !Global.Configuration.IsInEstimationMode ? Global.Configuration.PathImpedance_TransitPassCostPercentChangeVersusBase : 0;
 
-            // 0 No transit pass
-            var alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
-            alternative.Choice = 0;
+      // 0 No transit pass
+      ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
+      alternative.Choice = 0;
 
-            alternative.AddUtilityTerm(1, 0.0);
+      alternative.AddUtilityTerm(1, 0.0);
 
-            // 1 Transit pass
-            alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
-            alternative.Choice = 1;
+      // 1 Transit pass
+      alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
+      alternative.Choice = 1;
 
-            alternative.AddUtilityTerm(1, 1.0);
-            alternative.AddUtilityTerm(2, person.IsPartTimeWorker.ToFlag());
-            alternative.AddUtilityTerm(3, (person.IsWorker && person.IsNotFullOrPartTimeWorker).ToFlag());
-            alternative.AddUtilityTerm(4, person.IsUniversityStudent.ToFlag());
-            alternative.AddUtilityTerm(5, person.IsRetiredAdult.ToFlag());
-            alternative.AddUtilityTerm(6, person.IsNonworkingAdult.ToFlag());
-            alternative.AddUtilityTerm(7, person.IsDrivingAgeStudent.ToFlag());
-            alternative.AddUtilityTerm(8, person.IsChildUnder16.ToFlag());
-            alternative.AddUtilityTerm(9, Math.Log(Math.Max(1, person.Household.Income)));
-            alternative.AddUtilityTerm(10, person.Household.HasMissingIncome.ToFlag());
-            alternative.AddUtilityTerm(11, workParcelMissing.ToFlag());
-            alternative.AddUtilityTerm(12, schoolParcelMissing.ToFlag());
-            alternative.AddUtilityTerm(13, (homeTranDist < 90.0) ? homeTranDist1 : 0);
-            alternative.AddUtilityTerm(14, (homeTranDist < 90.0) ? homeTranDist2 : 0);
-            alternative.AddUtilityTerm(15, (homeTranDist > 90.0) ? 1 : 0);
-            //            alternative.AddUtility(16, (workTranDist < 90.0) ? workTranDist : 0);
-            //            alternative.AddUtility(17, (workTranDist < 90.0) ? workTranDist2 : 0);
-            //            alternative.AddUtility(18, (workTranDist > 90.0) ? 1 : 0);
-            //            alternative.AddUtility(19, (schoolTranDist < 90.0) ? schoolTranDist : 0);
-            //            alternative.AddUtility(20, (schoolTranDist > 90.0) ? 1 : 0);
-            //            alternative.AddUtility(21, (!workParcelMissing && workGenTimeWithPass > -90 ) ? workGenTimeWithPass : 0);
-            alternative.AddUtilityTerm(22, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0);
-            alternative.AddUtilityTerm(23, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0);
-            //            alternative.AddUtility(24, (!schoolParcelMissing && schoolGenTimeWithPass > -90 ) ? schoolGenTimeWithPass : 0);
-            alternative.AddUtilityTerm(25, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0);
-            alternative.AddUtilityTerm(26, homeAggregateLogsumNoCar * (person.IsFullOrPartTimeWorker || person.IsUniversityStudent).ToFlag());
-            alternative.AddUtilityTerm(27, homeAggregateLogsumNoCar * (person.IsDrivingAgeStudent || person.IsChildUnder16).ToFlag());
-            alternative.AddUtilityTerm(28, homeAggregateLogsumNoCar * (person.IsNonworkingAdult).ToFlag());
-            alternative.AddUtilityTerm(29, homeAggregateLogsumNoCar * (person.IsRetiredAdult).ToFlag());
-            alternative.AddUtilityTerm(30, workParcelMissing ? 0 : workAggregateLogsumNoCar);
-            alternative.AddUtilityTerm(31, schoolParcelMissing ? 0 : schoolAggregateLogsumNoCar);
-            alternative.AddUtilityTerm(32, transitPassCostChange);
-        }
+      alternative.AddUtilityTerm(1, 1.0);
+      alternative.AddUtilityTerm(2, person.IsPartTimeWorker.ToFlag());
+      alternative.AddUtilityTerm(3, (person.IsWorker && person.IsNotFullOrPartTimeWorker).ToFlag());
+      alternative.AddUtilityTerm(4, person.IsUniversityStudent.ToFlag());
+      alternative.AddUtilityTerm(5, person.IsRetiredAdult.ToFlag());
+      alternative.AddUtilityTerm(6, person.IsNonworkingAdult.ToFlag());
+      alternative.AddUtilityTerm(7, person.IsDrivingAgeStudent.ToFlag());
+      alternative.AddUtilityTerm(8, person.IsChildUnder16.ToFlag());
+      alternative.AddUtilityTerm(9, Math.Log(Math.Max(1, person.Household.Income)));
+      alternative.AddUtilityTerm(10, person.Household.HasMissingIncome.ToFlag());
+      alternative.AddUtilityTerm(11, workParcelMissing.ToFlag());
+      alternative.AddUtilityTerm(12, schoolParcelMissing.ToFlag());
+      alternative.AddUtilityTerm(13, (homeTranDist < 90.0) ? homeTranDist1 : 0);
+      alternative.AddUtilityTerm(14, (homeTranDist < 90.0) ? homeTranDist2 : 0);
+      alternative.AddUtilityTerm(15, (homeTranDist > 90.0) ? 1 : 0);
+      //            alternative.AddUtility(16, (workTranDist < 90.0) ? workTranDist : 0);
+      //            alternative.AddUtility(17, (workTranDist < 90.0) ? workTranDist2 : 0);
+      //            alternative.AddUtility(18, (workTranDist > 90.0) ? 1 : 0);
+      //            alternative.AddUtility(19, (schoolTranDist < 90.0) ? schoolTranDist : 0);
+      //            alternative.AddUtility(20, (schoolTranDist > 90.0) ? 1 : 0);
+      //            alternative.AddUtility(21, (!workParcelMissing && workGenTimeWithPass > -90 ) ? workGenTimeWithPass : 0);
+      alternative.AddUtilityTerm(22, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0);
+      alternative.AddUtilityTerm(23, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0);
+      //            alternative.AddUtility(24, (!schoolParcelMissing && schoolGenTimeWithPass > -90 ) ? schoolGenTimeWithPass : 0);
+      alternative.AddUtilityTerm(25, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0);
+      alternative.AddUtilityTerm(26, homeAggregateLogsumNoCar * (person.IsFullOrPartTimeWorker || person.IsUniversityStudent).ToFlag());
+      alternative.AddUtilityTerm(27, homeAggregateLogsumNoCar * (person.IsDrivingAgeStudent || person.IsChildUnder16).ToFlag());
+      alternative.AddUtilityTerm(28, homeAggregateLogsumNoCar * (person.IsNonworkingAdult).ToFlag());
+      alternative.AddUtilityTerm(29, homeAggregateLogsumNoCar * (person.IsRetiredAdult).ToFlag());
+      alternative.AddUtilityTerm(30, workParcelMissing ? 0 : workAggregateLogsumNoCar);
+      alternative.AddUtilityTerm(31, schoolParcelMissing ? 0 : schoolAggregateLogsumNoCar);
+      alternative.AddUtilityTerm(32, transitPassCostChange);
     }
+  }
 }

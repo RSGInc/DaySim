@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-    [Serializable]
-    public class TripModelException : Exception {
-        public TripModelException() : this("Error running trip models.") { }
+  [Serializable]
+  public class TripModelException : Exception {
+    public TripModelException() : this("Error running trip models.") { }
 
-        public TripModelException(string message) : base(message) { }
+    public TripModelException(string message) : base(message) { }
 
-        public TripModelException(string message, Exception innerException) : base(message, innerException) { }
+    public TripModelException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected TripModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
+    protected TripModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+  }
 }

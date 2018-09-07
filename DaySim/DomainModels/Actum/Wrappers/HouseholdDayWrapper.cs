@@ -14,76 +14,76 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
-    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-    public class HouseholdDayWrapper : Default.Wrappers.HouseholdDayWrapper, IActumHouseholdDayWrapper {
-        private IActumHouseholdDay _householdDay;
+  [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
+  public class HouseholdDayWrapper : Default.Wrappers.HouseholdDayWrapper, IActumHouseholdDayWrapper {
+    private IActumHouseholdDay _householdDay;
 
-        [UsedImplicitly]
-        public HouseholdDayWrapper(IHouseholdDay householdDay, IHouseholdWrapper householdWrapper) : base(householdDay, householdWrapper) {
-            _householdDay = (IActumHouseholdDay)householdDay;
-        }
-
-        #region domain model properies
-
-        public int SharedActivityHomeStays {
-            get { return _householdDay.SharedActivityHomeStays; }
-            set { _householdDay.SharedActivityHomeStays = value; }
-        }
-
-        public int NumberInLargestSharedHomeStay {
-            get { return _householdDay.NumberInLargestSharedHomeStay; }
-            set { _householdDay.NumberInLargestSharedHomeStay = value; }
-        }
-
-        public int StartingMinuteSharedHomeStay {
-            get { return _householdDay.StartingMinuteSharedHomeStay; }
-            set { _householdDay.StartingMinuteSharedHomeStay = value; }
-        }
-
-        public int DurationMinutesSharedHomeStay {
-            get { return _householdDay.DurationMinutesSharedHomeStay; }
-            set { _householdDay.DurationMinutesSharedHomeStay = value; }
-        }
-
-        public int AdultsInSharedHomeStay {
-            get { return _householdDay.AdultsInSharedHomeStay; }
-            set { _householdDay.AdultsInSharedHomeStay = value; }
-        }
-
-        public int ChildrenInSharedHomeStay {
-            get { return _householdDay.ChildrenInSharedHomeStay; }
-            set { _householdDay.ChildrenInSharedHomeStay = value; }
-        }
-
-        public int PrimaryPriorityTimeFlag {
-            get { return _householdDay.PrimaryPriorityTimeFlag; }
-            set { _householdDay.PrimaryPriorityTimeFlag = value; }
-        }
-
-        #endregion
-
-        #region flags, choice model properties, etc.
-
-        public int JointTourFlag {
-            get; set;
-        }
-
-        #endregion
-
-        #region init/utility/export methods
-
-        protected override IHouseholdDay ResetHouseholdDay() {
-            _householdDay = new HouseholdDay {
-                Id = Id,
-                HouseholdId = HouseholdId,
-                Day = Day,
-                DayOfWeek = DayOfWeek,
-                ExpansionFactor = ExpansionFactor
-            };
-
-            return _householdDay;
-        }
-
-        #endregion
+    [UsedImplicitly]
+    public HouseholdDayWrapper(IHouseholdDay householdDay, IHouseholdWrapper householdWrapper) : base(householdDay, householdWrapper) {
+      _householdDay = (IActumHouseholdDay)householdDay;
     }
+
+    #region domain model properies
+
+    public int SharedActivityHomeStays {
+      get => _householdDay.SharedActivityHomeStays;
+      set => _householdDay.SharedActivityHomeStays = value;
+    }
+
+    public int NumberInLargestSharedHomeStay {
+      get => _householdDay.NumberInLargestSharedHomeStay;
+      set => _householdDay.NumberInLargestSharedHomeStay = value;
+    }
+
+    public int StartingMinuteSharedHomeStay {
+      get => _householdDay.StartingMinuteSharedHomeStay;
+      set => _householdDay.StartingMinuteSharedHomeStay = value;
+    }
+
+    public int DurationMinutesSharedHomeStay {
+      get => _householdDay.DurationMinutesSharedHomeStay;
+      set => _householdDay.DurationMinutesSharedHomeStay = value;
+    }
+
+    public int AdultsInSharedHomeStay {
+      get => _householdDay.AdultsInSharedHomeStay;
+      set => _householdDay.AdultsInSharedHomeStay = value;
+    }
+
+    public int ChildrenInSharedHomeStay {
+      get => _householdDay.ChildrenInSharedHomeStay;
+      set => _householdDay.ChildrenInSharedHomeStay = value;
+    }
+
+    public int PrimaryPriorityTimeFlag {
+      get => _householdDay.PrimaryPriorityTimeFlag;
+      set => _householdDay.PrimaryPriorityTimeFlag = value;
+    }
+
+    #endregion
+
+    #region flags, choice model properties, etc.
+
+    public int JointTourFlag {
+      get; set;
+    }
+
+    #endregion
+
+    #region init/utility/export methods
+
+    protected override IHouseholdDay ResetHouseholdDay() {
+      _householdDay = new HouseholdDay {
+        Id = Id,
+        HouseholdId = HouseholdId,
+        Day = Day,
+        DayOfWeek = DayOfWeek,
+        ExpansionFactor = ExpansionFactor
+      };
+
+      return _householdDay;
+    }
+
+    #endregion
+  }
 }

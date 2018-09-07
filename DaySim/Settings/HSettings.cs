@@ -9,7 +9,7 @@ using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 
 namespace DaySim.Settings {
-    [UsedImplicitly]
-    [Factory(Factory.SettingsFactory, ChoiceModelRunner = ChoiceModelRunner.H)]
-    public class HSettings : DefaultSettings { }
+  [UsedImplicitly]
+  [Factory(Factory.SettingsFactory, ChoiceModelRunner = ChoiceModelRunner.H)]
+  public class HSettings : DefaultSettings { }
 }

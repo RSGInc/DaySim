@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Factories {
-    public enum DataType {
-        Default,
-        Actum,
-        LD
-    }
+  public enum DataType {
+    Default,
+    Actum,
+    LD
+  }
 }

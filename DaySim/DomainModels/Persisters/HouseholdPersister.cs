@@ -11,17 +11,17 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Persisters {
-    [UsedImplicitly]
-    [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
-    public class HouseholdPersister<TModel> : Persister<TModel> where TModel : class, IHousehold, new() {
-        public override void Export(IModel model) {
-            base.Export(model);
+  [UsedImplicitly]
+  [Factory(Factory.PersistenceFactory, Category = Category.Persister)]
+  public class HouseholdPersister<TModel> : Persister<TModel> where TModel : class, IHousehold, new() {
+    public override void Export(IModel model) {
+      base.Export(model);
 
-            ChoiceModelFactory.HouseholdFileRecordsWritten++;
+      ChoiceModelFactory.HouseholdFileRecordsWritten++;
 
-            var m = (TModel)model;
+      TModel m = (TModel)model;
 
-            ChoiceModelFactory.HouseholdVehiclesOwnedCheckSum += m.VehiclesAvailable;
-        }
+      ChoiceModelFactory.HouseholdVehiclesOwnedCheckSum += m.VehiclesAvailable;
     }
+  }
 }

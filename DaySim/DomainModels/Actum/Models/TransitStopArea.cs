@@ -5,46 +5,46 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using System.Runtime.InteropServices;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
-using System.Runtime.InteropServices;
 
 namespace DaySim.DomainModels.Actum.Models {
-    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-    [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
-    public sealed class TransitStopArea : IActumTransitStopArea {
-        [ColumnName("id")]
-        public int Id { get; set; }
+  [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+  [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
+  public sealed class TransitStopArea : IActumTransitStopArea {
+    [ColumnName("id")]
+    public int Id { get; set; }
 
-        //[ColumnName("Name")]
-        //public string TerminalName { get; set; }
+    //[ColumnName("Name")]
+    //public string TerminalName { get; set; }
 
-        [ColumnName("taz")]  // this is the TerminalId
-        public int Key { get; set; }
+    [ColumnName("taz")]  // this is the TerminalId
+    public int Key { get; set; }
 
-        [ColumnName("MicroZoneID")]
-        public int Microzone { get; set; }
+    [ColumnName("MicroZoneID")]
+    public int Microzone { get; set; }
 
-        //[ColumnName("Dest_eligible")]
-        //public bool DestinationEligible { get; set; }
+    //[ColumnName("Dest_eligible")]
+    //public bool DestinationEligible { get; set; }
 
-        //[ColumnName("External")]
-        //public bool External { get; set; }
+    //[ColumnName("External")]
+    //public bool External { get; set; }
 
-        [ColumnName("POINT_X")]
-        public int XCoordinate { get; set; }
+    [ColumnName("POINT_X")]
+    public int XCoordinate { get; set; }
 
-        [ColumnName("POINT_Y")]
-        public int YCoordinate { get; set; }
+    [ColumnName("POINT_Y")]
+    public int YCoordinate { get; set; }
 
-        [ColumnName("Bike_on_board")]
-        public int BikeOnBoardTerminal { get; set; }
+    [ColumnName("Bike_on_board")]
+    public int BikeOnBoardTerminal { get; set; }
 
-        //[ColumnName("fraction_with_jobs_outside")]
-        //public double FractionWorkersWithJobsOutsideRegion { get; set; }
+    //[ColumnName("fraction_with_jobs_outside")]
+    //public double FractionWorkersWithJobsOutsideRegion { get; set; }
 
-        //[ColumnName("fraction_filled_by_workers_from_outside")]
-        //public double FractionJobsFilledByWorkersFromOutsideRegion { get; set; }
-    }
+    //[ColumnName("fraction_filled_by_workers_from_outside")]
+    //public double FractionJobsFilledByWorkersFromOutsideRegion { get; set; }
+  }
 }

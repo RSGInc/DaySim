@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-    [Serializable]
-    public class MissingHeaderException : Exception {
-        public MissingHeaderException() : this("The header is missing. Please ensure that the raw file contains the appropriate header.") { }
+  [Serializable]
+  public class MissingHeaderException : Exception {
+    public MissingHeaderException() : this("The header is missing. Please ensure that the raw file contains the appropriate header.") { }
 
-        public MissingHeaderException(string message) : base(message) { }
+    public MissingHeaderException(string message) : base(message) { }
 
-        public MissingHeaderException(string message, Exception innerException) : base(message, innerException) { }
+    public MissingHeaderException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected MissingHeaderException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
+    protected MissingHeaderException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+  }
 }

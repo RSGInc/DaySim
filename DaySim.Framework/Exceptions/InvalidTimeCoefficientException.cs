@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-    [Serializable]
-    public class InvalidTimeCoefficientException : Exception {
-        public InvalidTimeCoefficientException() : this("The time coefficient is invalid.") { }
+  [Serializable]
+  public class InvalidTimeCoefficientException : Exception {
+    public InvalidTimeCoefficientException() : this("The time coefficient is invalid.") { }
 
-        public InvalidTimeCoefficientException(string message) : base(message) { }
+    public InvalidTimeCoefficientException(string message) : base(message) { }
 
-        public InvalidTimeCoefficientException(string message, Exception innerException) : base(message, innerException) { }
+    public InvalidTimeCoefficientException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected InvalidTimeCoefficientException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
+    protected InvalidTimeCoefficientException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+  }
 }

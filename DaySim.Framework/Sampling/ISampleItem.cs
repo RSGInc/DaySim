@@ -5,32 +5,32 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using DaySim.Framework.ChoiceModels;
 using System.Collections.Generic;
+using DaySim.Framework.ChoiceModels;
 
 namespace DaySim.Framework.Sampling {
-    public interface ISampleItem {
-        int ParcelId { get; }
+  public interface ISampleItem {
+    int ParcelId { get; }
 
-        double ExcludedSize { set; }
+    double ExcludedSize { set; }
 
-        ChoiceProbabilityCalculator.Alternative Alternative { get; }
+    ChoiceProbabilityCalculator.Alternative Alternative { get; }
 
-        double AdjustmentFactor { get; }
+    double AdjustmentFactor { get; }
 
-        bool Available { get; }
+    bool Available { get; }
 
-        bool IsChosen { get; }
+    bool IsChosen { get; }
 
-        void Initialize(DestinationSampler destinationSampler, int destinationParcelId, int destinationParcelSequence, SegmentZone destinationSegmentZone);
+    void Initialize(DestinationSampler destinationSampler, int destinationParcelId, int destinationParcelSequence, SegmentZone destinationSegmentZone);
 
-        void SetAlternative<TSample>(DestinationSampler destinationSampler, Dictionary<TSample, int> sample, bool isChosenAlternative,
-                AlternativeType alternativeType = AlternativeType.Default, bool skipChoiceProbabilityCalculator = false) where TSample : ISampleItem;
-    }
+    void SetAlternative<TSample>(DestinationSampler destinationSampler, Dictionary<TSample, int> sample, bool isChosenAlternative,
+            AlternativeType alternativeType = AlternativeType.Default, bool skipChoiceProbabilityCalculator = false) where TSample : ISampleItem;
+  }
 
-    public enum AlternativeType {
-        Default,
-        Chosen,
-        Usual
-    }
+  public enum AlternativeType {
+    Default,
+    Chosen,
+    Usual
+  }
 }

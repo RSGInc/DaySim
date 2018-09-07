@@ -6,118 +6,111 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using System.Collections.Generic;
+using System.Linq;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.ParkAndRideShadowPricing;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DaySim {
-    public sealed class ParkAndRideNodeDao {
-        private readonly Dictionary<int, IParkAndRideNodeWrapper> _nodes = new Dictionary<int, IParkAndRideNodeWrapper>();
-        private readonly Dictionary<int, int[]> _zoneIdKeys = new Dictionary<int, int[]>();
-        private readonly Dictionary<int, int[]> _parcelIdKeys = new Dictionary<int, int[]>();
+  public sealed class ParkAndRideNodeDao {
+    private readonly Dictionary<int, IParkAndRideNodeWrapper> _nodes = new Dictionary<int, IParkAndRideNodeWrapper>();
+    private readonly Dictionary<int, int[]> _zoneIdKeys = new Dictionary<int, int[]>();
+    private readonly Dictionary<int, int[]> _parcelIdKeys = new Dictionary<int, int[]>();
 
-        public ParkAndRideNodeDao() {
-            var reader =
+    public ParkAndRideNodeDao() {
+      Framework.DomainModels.Persisters.IPersisterReader<IParkAndRideNode> reader =
                 Global
                     .ContainerDaySim.GetInstance<IPersistenceFactory<IParkAndRideNode>>()
                     .Reader;
 
-            var creator =
+      IParkAndRideNodeCreator creator =
                 Global
                     .ContainerDaySim
                     .GetInstance<IWrapperFactory<IParkAndRideNodeCreator>>()
                     .Creator;
 
-            var zoneIdKeys = new Dictionary<int, HashSet<int>>();
-            var parcelIdKeys = new Dictionary<int, HashSet<int>>();
+      Dictionary<int, HashSet<int>> zoneIdKeys = new Dictionary<int, HashSet<int>>();
+      Dictionary<int, HashSet<int>> parcelIdKeys = new Dictionary<int, HashSet<int>>();
 
-            var parkAndRideShadowPrices = ParkAndRideShadowPriceReader.ReadParkAndRideShadowPrices();
+      Dictionary<int, Framework.ShadowPricing.IParkAndRideShadowPriceNode> parkAndRideShadowPrices = ParkAndRideShadowPriceReader.ReadParkAndRideShadowPrices();
 
-            foreach (var parkAndRideNode in reader) {
-                var node = creator.CreateWrapper(parkAndRideNode);
-                var id = node.Id;
+      foreach (IParkAndRideNode parkAndRideNode in reader) {
+        IParkAndRideNodeWrapper node = creator.CreateWrapper(parkAndRideNode);
+        int id = node.Id;
 
-                _nodes.Add(id, node);
+        _nodes.Add(id, node);
 
-                var zoneId = node.ZoneId;
-                HashSet<int> zoneIdKey;
+        int zoneId = node.ZoneId;
 
-                if (!zoneIdKeys.TryGetValue(zoneId, out zoneIdKey)) {
-                    zoneIdKey = new HashSet<int>();
+        if (!zoneIdKeys.TryGetValue(zoneId, out HashSet<int> zoneIdKey)) {
+          zoneIdKey = new HashSet<int>();
 
-                    zoneIdKeys.Add(zoneId, zoneIdKey);
-                }
-
-                zoneIdKey.Add(id);
-
-                var parcelId = node.NearestParcelId;
-                HashSet<int> parcelIdKey;
-
-                if (!parcelIdKeys.TryGetValue(parcelId, out parcelIdKey)) {
-                    parcelIdKey = new HashSet<int>();
-
-                    parcelIdKeys.Add(parcelId, parcelIdKey);
-                }
-
-                node.SetParkAndRideShadowPricing(parkAndRideShadowPrices);
-
-                parcelIdKey.Add(id);
-            }
-
-            foreach (var entry in zoneIdKeys) {
-                _zoneIdKeys.Add(entry.Key, entry.Value.ToArray());
-            }
-
-            foreach (var entry in parcelIdKeys) {
-                _parcelIdKeys.Add(entry.Key, entry.Value.ToArray());
-            }
+          zoneIdKeys.Add(zoneId, zoneIdKey);
         }
 
-        public IEnumerable<IParkAndRideNodeWrapper> Nodes {
-            get { return _nodes.Values; }
+        zoneIdKey.Add(id);
+
+        int parcelId = node.NearestParcelId;
+
+        if (!parcelIdKeys.TryGetValue(parcelId, out HashSet<int> parcelIdKey)) {
+          parcelIdKey = new HashSet<int>();
+
+          parcelIdKeys.Add(parcelId, parcelIdKey);
         }
 
-        public IParkAndRideNodeWrapper Get(int id) {
-            IParkAndRideNodeWrapper parkAndRideNode;
+        node.SetParkAndRideShadowPricing(parkAndRideShadowPrices);
 
-            return _nodes.TryGetValue(id, out parkAndRideNode) ? parkAndRideNode : null;
-        }
+        parcelIdKey.Add(id);
+      }
 
-        public IParkAndRideNodeWrapper[] GetAllByZoneId(int zoneId) {
-            int[] key;
+      foreach (KeyValuePair<int, HashSet<int>> entry in zoneIdKeys) {
+        _zoneIdKeys.Add(entry.Key, entry.Value.ToArray());
+      }
 
-            if (!_zoneIdKeys.TryGetValue(zoneId, out key)) {
-                return new IParkAndRideNodeWrapper[0];
-            }
-
-            var nodes = new IParkAndRideNodeWrapper[key.Length];
-
-            for (var i = 0; i < key.Length; i++) {
-                nodes[i] = _nodes[key[i]];
-            }
-
-            return nodes;
-        }
-
-        public IParkAndRideNodeWrapper[] GetAllByNearestParcelId(int parcelId) {
-            int[] key;
-
-            if (!_parcelIdKeys.TryGetValue(parcelId, out key)) {
-                return new IParkAndRideNodeWrapper[0];
-            }
-
-            var nodes = new IParkAndRideNodeWrapper[key.Length];
-
-            for (var i = 0; i < key.Length; i++) {
-                nodes[i] = _nodes[key[i]];
-            }
-
-            return nodes;
-        }
+      foreach (KeyValuePair<int, HashSet<int>> entry in parcelIdKeys) {
+        _parcelIdKeys.Add(entry.Key, entry.Value.ToArray());
+      }
     }
+
+    public IEnumerable<IParkAndRideNodeWrapper> Nodes => _nodes.Values;
+
+    public IParkAndRideNodeWrapper Get(int id) {
+
+      return _nodes.TryGetValue(id, out IParkAndRideNodeWrapper parkAndRideNode) ? parkAndRideNode : null;
+    }
+
+    public IParkAndRideNodeWrapper[] GetAllByZoneId(int zoneId) {
+
+      if (!_zoneIdKeys.TryGetValue(zoneId, out int[] key)) {
+        return new IParkAndRideNodeWrapper[0];
+      }
+
+      IParkAndRideNodeWrapper[] nodes = new IParkAndRideNodeWrapper[key.Length];
+
+      for (int i = 0; i < key.Length; i++) {
+        nodes[i] = _nodes[key[i]];
+      }
+
+      return nodes;
+    }
+
+    public IParkAndRideNodeWrapper[] GetAllByNearestParcelId(int parcelId) {
+
+      if (!_parcelIdKeys.TryGetValue(parcelId, out int[] key)) {
+        return new IParkAndRideNodeWrapper[0];
+      }
+
+      IParkAndRideNodeWrapper[] nodes = new IParkAndRideNodeWrapper[key.Length];
+
+      for (int i = 0; i < key.Length; i++) {
+        nodes[i] = _nodes[key[i]];
+      }
+
+      return nodes;
+    }
+  }
 }

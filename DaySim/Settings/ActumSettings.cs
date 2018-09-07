@@ -9,96 +9,60 @@ using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 
 namespace DaySim.Settings {
-    [UsedImplicitly]
-    [Factory(Factory.SettingsFactory)]
-    public class ActumSettings : DefaultSettings {
-        public ActumSettings() {
-            Modes = new ActumModes();
-        }
-
-        public override double LengthUnitsPerFoot {
-            get { return 0.3048; }
-        }
-
-        public override double DistanceUnitsPerMile {
-            get { return 1.60934; }
-        }
-
-        public override double MonetaryUnitsPerDollar {
-            get { return 5.75; }
-        }
-
+  [UsedImplicitly]
+  [Factory(Factory.SettingsFactory)]
+  public class ActumSettings : DefaultSettings {
+    public ActumSettings() {
+      Modes = new ActumModes();
     }
 
-    public class ActumModes : DefaultModes {
-        //public override int Hov2 {
-        //get { throw new NotImplementedException(); }
-        //}
+    public override double LengthUnitsPerFoot => 0.3048;
 
-        //public override int Hov3 {
-        //get { throw new NotImplementedException(); }
-        //}
+    public override double DistanceUnitsPerMile => 1.60934;
 
-        public override int TotalModes {
-            get { return 13; }
-        }
+    public override double MonetaryUnitsPerDollar => 5.75;
 
-        public override int MaxMode {
-            get { return 13; }
-        }
+  }
 
-        public override int Walk {
-            get { return 1; }
-        }
+  public class ActumModes : DefaultModes {
+    //public override int Hov2 {
+    //get { throw new NotImplementedException(); }
+    //}
 
-        public override int Bike {
-            get { return 2; }
-        }
+    //public override int Hov3 {
+    //get { throw new NotImplementedException(); }
+    //}
 
-        public override int Sov {
-            get { return 3; }
-        }
+    public override int TotalModes => 13;
 
-        public override int HovDriver {
-            get { return 4; }
-        }
+    public override int MaxMode => 13;
 
-        public override int HovPassenger {
-            get { return 5; }
-        }
+    public override int Walk => 1;
 
-        public override int Transit {
-            get { return 6; }
-        }
+    public override int Bike => 2;
 
-        public virtual int CarParkRideWalk {
-            get { return 7; }
-        }
+    public override int Sov => 3;
 
-        public virtual int CarKissRideWalk {
-            get { return 8; }
-        }
+    public override int HovDriver => 4;
 
-        public override int BikeParkRideWalk {
-            get { return 9; }
-        }
+    public override int HovPassenger => 5;
 
-        public override int BikeParkRideBike {
-            get { return 10; }
-        }
+    public override int Transit => 6;
 
-        public override int BikeOnTransit {
-            get { return 11; }
-        }
+    public override int CarParkRideWalk => 7;
 
-        public virtual int CarParkRideBike {
-            get { return 12; }
-        }
+    public override int CarKissRideWalk => 8;
 
-        public virtual int WalkRideBike {
-            get { return 13; }
-        }
+    public override int BikeParkRideWalk => 9;
+
+    public override int BikeParkRideBike => 10;
+
+    public override int BikeOnTransit => 11;
+
+    public override int CarParkRideBike => 12;
+
+    public override int WalkRideBike => 13;
 
 
-    }
+  }
 }

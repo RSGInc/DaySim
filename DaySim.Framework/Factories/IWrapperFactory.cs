@@ -9,9 +9,9 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 
 namespace DaySim.Framework.Factories {
-    public interface IWrapperFactory<out TCreator> where TCreator : ICreator {
-        TCreator Creator { get; }
+  public interface IWrapperFactory<out TCreator> where TCreator : ICreator {
+    TCreator Creator { get; }
 
-        void Initialize(Configuration configuration);
-    }
+    void Initialize(Configuration configuration);
+  }
 }

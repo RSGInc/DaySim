@@ -9,41 +9,41 @@ using System.IO;
 using System.Linq;
 
 namespace DaySim.Framework.Sampling {
-    public static class SegmentZoneFormatter {
-        public static SegmentZone[] Deserialize(Stream serializationStream) {
-            using (var reader = new BinaryReader(serializationStream)) {
-                var totalSegmentZones = reader.ReadInt32();
-                var arraySize = reader.ReadInt32();
-                var segmentZones = new SegmentZone[arraySize];
+  public static class SegmentZoneFormatter {
+    public static SegmentZone[] Deserialize(Stream serializationStream) {
+      using (BinaryReader reader = new BinaryReader(serializationStream)) {
+        int totalSegmentZones = reader.ReadInt32();
+        int arraySize = reader.ReadInt32();
+        SegmentZone[] segmentZones = new SegmentZone[arraySize];
 
-                for (var i = 0; i < totalSegmentZones; i++) {
-                    var index = reader.ReadInt32();
+        for (int i = 0; i < totalSegmentZones; i++) {
+          int index = reader.ReadInt32();
 
-                    segmentZones[index] = SegmentZone.Load(reader);
-                }
-
-                return segmentZones;
-            }
+          segmentZones[index] = SegmentZone.Load(reader);
         }
 
-        public static void Serialize(Stream serializationStream, SegmentZone[] segmentZones) {
-            using (var writer = new BinaryWriter(serializationStream)) {
-                var totalSegmentZones = segmentZones.Count(x => x != null);
-                var arraySize = segmentZones.Length;
-
-                writer.Write(totalSegmentZones);
-                writer.Write(arraySize);
-
-                for (var index = 0; index < arraySize; index++) {
-                    if (segmentZones[index] == null) {
-                        continue;
-                    }
-
-                    writer.Write(index);
-
-                    SegmentZone.Save(segmentZones[index], writer);
-                }
-            }
-        }
+        return segmentZones;
+      }
     }
+
+    public static void Serialize(Stream serializationStream, SegmentZone[] segmentZones) {
+      using (BinaryWriter writer = new BinaryWriter(serializationStream)) {
+        int totalSegmentZones = segmentZones.Count(x => x != null);
+        int arraySize = segmentZones.Length;
+
+        writer.Write(totalSegmentZones);
+        writer.Write(arraySize);
+
+        for (int index = 0; index < arraySize; index++) {
+          if (segmentZones[index] == null) {
+            continue;
+          }
+
+          writer.Write(index);
+
+          SegmentZone.Save(segmentZones[index], writer);
+        }
+      }
+    }
+  }
 }

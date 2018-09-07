@@ -6,9 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Sampling {
-    public interface ISamplingUtilities {
-        int[] SeedValues { get; }
+  public interface ISamplingUtilities {
+    int[] SeedValues { get; }
 
-        void SetUtilities(ISampleItem sampleItem, int sampleFrequency);
-    }
+    void SetUtilities(ISampleItem sampleItem, int sampleFrequency);
+  }
 }

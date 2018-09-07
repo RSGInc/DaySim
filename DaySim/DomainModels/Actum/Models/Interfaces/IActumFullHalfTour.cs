@@ -8,5 +8,5 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
-    public interface IActumFullHalfTour : IFullHalfTour { }
+  public interface IActumFullHalfTour : IFullHalfTour { }
 }

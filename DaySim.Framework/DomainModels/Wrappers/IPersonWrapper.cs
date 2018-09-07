@@ -8,112 +8,112 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-    public interface IPersonWrapper : IPerson {
-        #region relations properties
+  public interface IPersonWrapper : IPerson {
+    #region relations properties
 
-        IHouseholdWrapper Household { get; set; }
+    IHouseholdWrapper Household { get; set; }
 
-        IParcelWrapper UsualWorkParcel { get; set; }
+    IParcelWrapper UsualWorkParcel { get; set; }
 
-        IParcelWrapper UsualSchoolParcel { get; set; }
+    IParcelWrapper UsualSchoolParcel { get; set; }
 
-        #endregion
+    #endregion
 
-        #region flags/choice model/etc. properties
+    #region flags/choice model/etc. properties
 
-        double WorkLocationLogsum { get; set;  }
+    double WorkLocationLogsum { get; set; }
 
-        double SchoolLocationLogsum { get; set;  }
+    double SchoolLocationLogsum { get; set; }
 
 
-        bool IsFullOrPartTimeWorker { get; set; }
+    bool IsFullOrPartTimeWorker { get; set; }
 
-        bool IsFulltimeWorker { get; set; }
+    bool IsFulltimeWorker { get; set; }
 
-        bool IsPartTimeWorker { get; set; }
+    bool IsPartTimeWorker { get; set; }
 
-        bool IsNotFullOrPartTimeWorker { get; set; }
+    bool IsNotFullOrPartTimeWorker { get; set; }
 
-        bool IsStudentAge { get; set; }
+    bool IsStudentAge { get; set; }
 
-        bool IsRetiredAdult { get; set; }
+    bool IsRetiredAdult { get; set; }
 
-        bool IsNonworkingAdult { get; set; }
+    bool IsNonworkingAdult { get; set; }
 
-        bool IsUniversityStudent { get; set; }
+    bool IsUniversityStudent { get; set; }
 
-        bool IsDrivingAgeStudent { get; set; }
+    bool IsDrivingAgeStudent { get; set; }
 
-        bool IsChildAge5Through15 { get; set; }
+    bool IsChildAge5Through15 { get; set; }
 
-        bool IsChildUnder5 { get; set; }
+    bool IsChildUnder5 { get; set; }
 
-        bool IsChildUnder16 { get; set; }
+    bool IsChildUnder16 { get; set; }
 
-        bool IsAdult { get; set; }
+    bool IsAdult { get; set; }
 
-        bool IsWorker { get; set; }
+    bool IsWorker { get; set; }
 
-        bool IsStudent { get; set; }
+    bool IsStudent { get; set; }
 
-        bool IsFemale { get; set; }
+    bool IsFemale { get; set; }
 
-        bool IsMale { get; set; }
+    bool IsMale { get; set; }
 
-        bool IsAdultFemale { get; set; }
+    bool IsAdultFemale { get; set; }
 
-        bool IsAdultMale { get; set; }
+    bool IsAdultMale { get; set; }
 
-        bool IsDrivingAge { get; set; }
+    bool IsDrivingAge { get; set; }
 
-        bool AgeIsBetween18And25 { get; set; }
+    bool AgeIsBetween18And25 { get; set; }
 
-        bool AgeIsBetween26And35 { get; set; }
+    bool AgeIsBetween26And35 { get; set; }
 
-        bool AgeIsBetween51And65 { get; set; }
+    bool AgeIsBetween51And65 { get; set; }
 
-        bool AgeIsBetween51And98 { get; set; }
+    bool AgeIsBetween51And98 { get; set; }
 
-        bool AgeIsLessThan35 { get; set; }
+    bool AgeIsLessThan35 { get; set; }
 
-        bool AgeIsLessThan30 { get; set; }
+    bool AgeIsLessThan30 { get; set; }
 
-        bool WorksAtHome { get; set; }
+    bool WorksAtHome { get; set; }
 
-        bool IsYouth { get; set; }
+    bool IsYouth { get; set; }
 
-        #endregion
+    #endregion
 
-        #region random/seed synchronization properties
+    #region random/seed synchronization properties
 
-        int[] SeedValues { get; set; }
+    int[] SeedValues { get; set; }
 
-        #endregion
+    #endregion
 
-        #region wrapper methods
+    #region wrapper methods
 
-        bool IsOnlyFullOrPartTimeWorker();
+    bool IsOnlyFullOrPartTimeWorker();
 
-        bool IsOnlyAdult();
+    bool IsOnlyAdult();
 
-        int GetCarOwnershipSegment();
+    int GetCarOwnershipSegment();
 
-        double GetTransitFareDiscountFraction();
+    double GetTransitFareDiscountFraction();
 
-        int GetHouseholdDayPatternParticipationPriority();
+    int GetHouseholdDayPatternParticipationPriority();
 
-        void UpdatePersonValues();
+    void UpdatePersonValues();
 
-        void SetWorkParcelPredictions();
+    void SetWorkParcelPredictions();
 
-        void SetSchoolParcelPredictions();
+    void SetSchoolParcelPredictions();
 
-        #endregion
+    #endregion
 
-        #region init/utility/export methods
+    #region init/utility/export methods
 
-        void Export();
+    void Export();
 
-        #endregion
-    }
+    #endregion
+  }
 }

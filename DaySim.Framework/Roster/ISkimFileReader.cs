@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Roster {
-    public interface ISkimFileReader {
-        SkimMatrix Read(string filename, int field, float scale);
-    }
+  public interface ISkimFileReader {
+    SkimMatrix Read(string filename, int field, float scale);
+  }
 }

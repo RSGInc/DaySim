@@ -6,13 +6,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface ITransitAccesses {
-        int TotalTransitAccesses { get; }
+  public interface ITransitAccesses {
+    int TotalTransitAccesses { get; }
 
-        int Gt0AndLteQtrMi { get; }
+    int Gt0AndLteQtrMi { get; }
 
-        int GtQtrMiAndLteHMi { get; }
+    int GtQtrMiAndLteHMi { get; }
 
-        int None { get; }
-    }
+    int None { get; }
+  }
 }

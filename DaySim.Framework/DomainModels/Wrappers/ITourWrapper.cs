@@ -5,172 +5,172 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using System.Collections.Generic;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
-using System.Collections.Generic;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-    public interface ITourWrapper : ITour {
-        #region relations properties
+  public interface ITourWrapper : ITour {
+    #region relations properties
 
-        IHouseholdWrapper Household { get; set; }
+    IHouseholdWrapper Household { get; set; }
 
-        IPersonWrapper Person { get; set; }
+    IPersonWrapper Person { get; set; }
 
-        IPersonDayWrapper PersonDay { get; set; }
+    IPersonDayWrapper PersonDay { get; set; }
 
-        ITourWrapper ParentTour { get; set; }
+    ITourWrapper ParentTour { get; set; }
 
-        List<ITourWrapper> Subtours { get; set; }
+    List<ITourWrapper> Subtours { get; set; }
 
-        IHalfTour HalfTourFromOrigin { get; set; }
+    IHalfTour HalfTourFromOrigin { get; set; }
 
-        IHalfTour HalfTourFromDestination { get; set; }
+    IHalfTour HalfTourFromDestination { get; set; }
 
-        IParcelWrapper OriginParcel { get; set; }
+    IParcelWrapper OriginParcel { get; set; }
 
-        IParcelWrapper DestinationParcel { get; set; }
+    IParcelWrapper DestinationParcel { get; set; }
 
-        #endregion
+    #endregion
 
-        #region flags/choice model/etc. properties
+    #region flags/choice model/etc. properties
 
-        bool IsHomeBasedTour { get; set; }
+    bool IsHomeBasedTour { get; set; }
 
-        ITimeWindow TimeWindow { get; set; }
+    ITimeWindow TimeWindow { get; set; }
 
-        double IndicatedTravelTimeToDestination { get; set; }
+    double IndicatedTravelTimeToDestination { get; set; }
 
-        double IndicatedTravelTimeFromDestination { get; set; }
+    double IndicatedTravelTimeFromDestination { get; set; }
 
-        int EarliestOriginDepartureTime { get; set; }
+    int EarliestOriginDepartureTime { get; set; }
 
-        int LatestOriginArrivalTime { get; set; }
+    int LatestOriginArrivalTime { get; set; }
 
-        IMinuteSpan DestinationDepartureBigPeriod { get; set; }
+    IMinuteSpan DestinationDepartureBigPeriod { get; set; }
 
-        IMinuteSpan DestinationArrivalBigPeriod { get; set; }
+    IMinuteSpan DestinationArrivalBigPeriod { get; set; }
 
-        double TimeCoefficient { get; set; }
+    double TimeCoefficient { get; set; }
 
-        double CostCoefficient { get; set; }
+    double CostCoefficient { get; set; }
 
-        int ParkAndRideNodeId { get; set; }
+    int ParkAndRideNodeId { get; set; }
 
-        int ParkAndRideOriginStopAreaKey { get; set; }
+    int ParkAndRideOriginStopAreaKey { get; set; }
 
-        int ParkAndRideDestinationStopAreaKey { get; set; }
+    int ParkAndRideDestinationStopAreaKey { get; set; }
 
-        int ParkAndRidePathType { get; set; }
+    int ParkAndRidePathType { get; set; }
 
-        double ParkAndRideTransitTime { get; set; }
+    double ParkAndRideTransitTime { get; set; }
 
-        double ParkAndRideTransitDistance { get; set; }
+    double ParkAndRideTransitDistance { get; set; }
 
-        double ParkAndRideTransitCost { get; set; }
+    double ParkAndRideTransitCost { get; set; }
 
-        double ParkAndRideWalkAccessEgressTime { get; set; }
+    double ParkAndRideWalkAccessEgressTime { get; set; }
 
-        double ParkAndRideTransitGeneralizedTime { get; set; }
+    double ParkAndRideTransitGeneralizedTime { get; set; }
 
-        bool DestinationModeAndTimeHaveBeenSimulated { get; set; }
+    bool DestinationModeAndTimeHaveBeenSimulated { get; set; }
 
-        bool HalfTour1HasBeenSimulated { get; set; }
+    bool HalfTour1HasBeenSimulated { get; set; }
 
-        bool HalfTour2HasBeenSimulated { get; set; }
+    bool HalfTour2HasBeenSimulated { get; set; }
 
-        bool IsMissingData { get; set; }
+    bool IsMissingData { get; set; }
 
-        #endregion
+    #endregion
 
-        #region wrapper methods
+    #region wrapper methods
 
-        bool IsWorkPurpose();
+    bool IsWorkPurpose();
 
-        bool IsSchoolPurpose();
+    bool IsSchoolPurpose();
 
-        bool IsEscortPurpose();
+    bool IsEscortPurpose();
 
-        bool IsPersonalBusinessPurpose();
+    bool IsPersonalBusinessPurpose();
 
-        bool IsShoppingPurpose();
+    bool IsShoppingPurpose();
 
-        bool IsMealPurpose();
+    bool IsMealPurpose();
 
-        bool IsSocialPurpose();
+    bool IsSocialPurpose();
 
-        bool IsRecreationPurpose();
+    bool IsRecreationPurpose();
 
-        bool IsMedicalPurpose();
+    bool IsMedicalPurpose();
 
-        bool IsPersonalBusinessOrMedicalPurpose();
+    bool IsPersonalBusinessOrMedicalPurpose();
 
-        bool IsSocialOrRecreationPurpose();
+    bool IsSocialOrRecreationPurpose();
 
-        bool IsWalkMode();
+    bool IsWalkMode();
 
-        bool IsBikeMode();
+    bool IsBikeMode();
 
-        bool IsSovMode();
+    bool IsSovMode();
 
-        bool IsHov2Mode();
+    bool IsHov2Mode();
 
-        bool IsHov3Mode();
+    bool IsHov3Mode();
 
-        bool IsTransitMode();
+    bool IsTransitMode();
 
-        bool IsParkAndRideMode();
+    bool IsParkAndRideMode();
 
-        bool IsSchoolBusMode();
+    bool IsSchoolBusMode();
 
-        bool IsWalkOrBikeMode();
+    bool IsWalkOrBikeMode();
 
-        bool SubtoursExist();
+    bool SubtoursExist();
 
-        bool IsAnHovMode();
+    bool IsAnHovMode();
 
-        bool IsAnAutoMode();
+    bool IsAnAutoMode();
 
-        bool UsesTransitModes();
+    bool UsesTransitModes();
 
-        int GetTotalToursByPurpose();
+    int GetTotalToursByPurpose();
 
-        int GetTotalSimulatedToursByPurpose();
+    int GetTotalSimulatedToursByPurpose();
 
-        int GetTourPurposeSegment();
+    int GetTourPurposeSegment();
 
-        int GetTourCategory();
+    int GetTourCategory();
 
-        void SetHomeBasedIsSimulated();
+    void SetHomeBasedIsSimulated();
 
-        void SetWorkBasedIsSimulated();
+    void SetWorkBasedIsSimulated();
 
-        void SetHalfTours(int direction);
+    void SetHalfTours(int direction);
 
-        ITimeWindow GetRelevantTimeWindow(IHouseholdDayWrapper householdDay);
+    ITimeWindow GetRelevantTimeWindow(IHouseholdDayWrapper householdDay);
 
-        void SetOriginTimes(int direction = 0);
+    void SetOriginTimes(int direction = 0);
 
-        void UpdateTourValues();
+    void UpdateTourValues();
 
-        IHalfTour GetHalfTour(int direction);
+    IHalfTour GetHalfTour(int direction);
 
-        ITourModeImpedance[] GetTourModeImpedances();
+    ITourModeImpedance[] GetTourModeImpedances();
 
-        void SetParentTourSequence(int parentTourSequence);
+    void SetParentTourSequence(int parentTourSequence);
 
-        ITourWrapper CreateSubtour(int originAddressType, int originParcelId, int originZoneKey, int destinationPurpose);
+    ITourWrapper CreateSubtour(int originAddressType, int originParcelId, int originZoneKey, int destinationPurpose);
 
-        void SetParkAndRideStay();
+    void SetParkAndRideStay();
 
-        int GetVotALSegment();
+    int GetVotALSegment();
 
-        #endregion
+    #endregion
 
-        #region init/utility/export methods
+    #region init/utility/export methods
 
-        void Export();
+    void Export();
 
-        #endregion
-    }
+    #endregion
+  }
 }

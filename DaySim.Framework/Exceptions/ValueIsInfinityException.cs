@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-    [Serializable]
-    public class ValueIsInfinityException : Exception {
-        public ValueIsInfinityException() : this("Value is Infinity.") { }
+  [Serializable]
+  public class ValueIsInfinityException : Exception {
+    public ValueIsInfinityException() : this("Value is Infinity.") { }
 
-        public ValueIsInfinityException(string message) : base(message) { }
+    public ValueIsInfinityException(string message) : base(message) { }
 
-        public ValueIsInfinityException(string message, Exception innerException) : base(message, innerException) { }
+    public ValueIsInfinityException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected ValueIsInfinityException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
+    protected ValueIsInfinityException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+  }
 }

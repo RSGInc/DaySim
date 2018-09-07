@@ -9,9 +9,9 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.Framework.DomainModels.Creators {
-    public interface IDestinationParkingNodeCreator : ICreator    {
-        IDestinationParkingNode CreateModel();
+  public interface IDestinationParkingNodeCreator : ICreator {
+    IDestinationParkingNode CreateModel();
 
-        IDestinationParkingNodeWrapper CreateWrapper(IDestinationParkingNode destinationParkingNode);
-    }
+    IDestinationParkingNodeWrapper CreateWrapper(IDestinationParkingNode destinationParkingNode);
+  }
 }

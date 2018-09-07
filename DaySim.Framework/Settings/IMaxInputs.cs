@@ -6,21 +6,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface IMaxInputs {
-        int MaxParcelVals { get; }
+  public interface IMaxInputs {
+    int MaxParcelVals { get; }
 
-        int MaxHhSize { get; }
+    int MaxHhSize { get; }
 
-        int MaxAge { get; }
+    int MaxAge { get; }
 
-        int MaxGend { get; }
+    int MaxGend { get; }
 
-        int MaxPwtyp { get; }
+    int MaxPwtyp { get; }
 
-        int MaxPstyp { get; }
+    int MaxPstyp { get; }
 
-        int MaxPnrCap { get; }
+    int MaxPnrCap { get; }
 
-        int MaxPnrCost { get; }
-    }
+    int MaxPnrCost { get; }
+  }
 }

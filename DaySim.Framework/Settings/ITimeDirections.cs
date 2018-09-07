@@ -6,11 +6,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface ITimeDirections {
-        int Before { get; }
+  public interface ITimeDirections {
+    int Before { get; }
 
-        int After { get; }
+    int After { get; }
 
-        int Both { get; }
-    }
+    int Both { get; }
+  }
 }

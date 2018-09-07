@@ -10,14 +10,14 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DaySim.Framework.Exceptions {
-    [Serializable]
-    public class UndefinedInputPathException : Exception {
-        public UndefinedInputPathException() : this("The input path is missing or empty from the configuration file.") { }
+  [Serializable]
+  public class UndefinedInputPathException : Exception {
+    public UndefinedInputPathException() : this("The input path is missing or empty from the configuration file.") { }
 
-        public UndefinedInputPathException(string message) : base(message) { }
+    public UndefinedInputPathException(string message) : base(message) { }
 
-        public UndefinedInputPathException(string message, Exception innerException) : base(message, innerException) { }
+    public UndefinedInputPathException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected UndefinedInputPathException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
+    protected UndefinedInputPathException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+  }
 }

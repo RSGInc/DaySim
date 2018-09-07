@@ -6,21 +6,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 namespace DaySim.Framework.Settings {
-    public interface IVotGroups {
-        int TotalVotGroups { get; }
+  public interface IVotGroups {
+    int TotalVotGroups { get; }
 
-        int None { get; }
+    int None { get; }
 
-        int VeryLow { get; }
+    int VeryLow { get; }
 
-        int Low { get; }
+    int Low { get; }
 
-        int Medium { get; }
+    int Medium { get; }
 
-        int High { get; }
+    int High { get; }
 
-        int VeryHigh { get; }
+    int VeryHigh { get; }
 
-        int Default { get; }
-    }
+    int Default { get; }
+  }
 }

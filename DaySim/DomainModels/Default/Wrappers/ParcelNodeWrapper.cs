@@ -11,27 +11,27 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Default.Wrappers {
-    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
-    public class ParcelNodeWrapper : IParcelNodeWrapper {
-        private readonly IParcelNode _parcelNode;
+  [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
+  public class ParcelNodeWrapper : IParcelNodeWrapper {
+    private readonly IParcelNode _parcelNode;
 
-        [UsedImplicitly]
-        public ParcelNodeWrapper(IParcelNode parcelNode) {
-            _parcelNode = parcelNode;
-        }
-
-        #region domain model properies
-
-        public int Id {
-            get { return _parcelNode.Id; }
-            set { _parcelNode.Id = value; }
-        }
-
-        public int NodeId {
-            get { return _parcelNode.NodeId; }
-            set { _parcelNode.NodeId = value; }
-        }
-
-        #endregion
+    [UsedImplicitly]
+    public ParcelNodeWrapper(IParcelNode parcelNode) {
+      _parcelNode = parcelNode;
     }
+
+    #region domain model properies
+
+    public int Id {
+      get => _parcelNode.Id;
+      set => _parcelNode.Id = value;
+    }
+
+    public int NodeId {
+      get => _parcelNode.NodeId;
+      set => _parcelNode.NodeId = value;
+    }
+
+    #endregion
+  }
 }

@@ -7,15 +7,15 @@
 using System.Collections.Generic;
 
 namespace DaySim.Framework.Roster {
-    public class EMMEReaderCreator : IFileReaderCreator {
-        #region IFileReaderCreator Members
+  public class EMMEReaderCreator : IFileReaderCreator {
+    #region IFileReaderCreator Members
 
-        //        public ISkimFileReader CreateReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping)
-        public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping)  // 20150703 JLB
-        {
-            return new EMMESkimFileReader(path, mapping);
-        }
-
-        #endregion
+    //        public ISkimFileReader CreateReader(Dictionary<string, List<float[]>> cache, string path, Dictionary<int, int> mapping)
+    public ISkimFileReader CreateReader(Dictionary<string, List<double[]>> cache, string path, Dictionary<int, int> mapping)  // 20150703 JLB
+    {
+      return new EMMESkimFileReader(path, mapping);
     }
+
+    #endregion
+  }
 }

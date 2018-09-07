@@ -12,13 +12,13 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
-    [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-    public class ParcelNodeWrapper : Default.Wrappers.ParcelNodeWrapper, IActumParcelNodeWrapper {
-        private readonly IActumParcelNode _parcelNode;
+  [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
+  public class ParcelNodeWrapper : Default.Wrappers.ParcelNodeWrapper, IActumParcelNodeWrapper {
+    private readonly IActumParcelNode _parcelNode;
 
-        [UsedImplicitly]
-        public ParcelNodeWrapper(IParcelNode parcelNode) : base(parcelNode) {
-            _parcelNode = (IActumParcelNode)parcelNode;
-        }
+    [UsedImplicitly]
+    public ParcelNodeWrapper(IParcelNode parcelNode) : base(parcelNode) {
+      _parcelNode = (IActumParcelNode)parcelNode;
     }
+  }
 }

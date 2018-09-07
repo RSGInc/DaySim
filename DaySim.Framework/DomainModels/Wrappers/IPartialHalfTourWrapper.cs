@@ -8,31 +8,31 @@
 using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-    public interface IPartialHalfTourWrapper : IPartialHalfTour {
-        #region relations properties
+  public interface IPartialHalfTourWrapper : IPartialHalfTour {
+    #region relations properties
 
-        IHouseholdWrapper Household { get; }
+    IHouseholdWrapper Household { get; }
 
-        IHouseholdDayWrapper HouseholdDay { get; }
+    IHouseholdDayWrapper HouseholdDay { get; }
 
-        #endregion
+    #endregion
 
-        #region flags/choice model/etc. properties
+    #region flags/choice model/etc. properties
 
-        bool Paired { get; set; }
+    bool Paired { get; set; }
 
-        #endregion
+    #endregion
 
-        #region wrapper methods
+    #region wrapper methods
 
-        void SetParticipantTourSequence(ITourWrapper participantTour);
+    void SetParticipantTourSequence(ITourWrapper participantTour);
 
-        #endregion
+    #endregion
 
-        #region init/utility/export methods
+    #region init/utility/export methods
 
-        void Export();
+    void Export();
 
-        #endregion
-    }
+    #endregion
+  }
 }

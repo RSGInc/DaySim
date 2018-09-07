@@ -6,99 +6,99 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
-using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Wrappers;
 using System;
 using System.Linq;
+using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim {
-    public sealed class TripTime {
-        public const int TOTAL_TRIP_TIMES = DayPeriod.SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES;
+  public sealed class TripTime {
+    public const int TOTAL_TRIP_TIMES = DayPeriod.SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES;
 
-        private TripTime(int index, MinuteSpan departurePeriod) {
-            Index = index;
-            DeparturePeriod = departurePeriod;
-        }
-
-        public TripTime(int departureTime) {
-            DecomposeTimesToPeriods(departureTime);
-        }
-
-        public int Index { get; private set; }
-
-        public MinuteSpan DeparturePeriod { get; private set; }
-
-        public static TripTime[] Times { get; private set; }
-
-        private void DecomposeTimesToPeriods(int departureTime) {
-            foreach (var period in DayPeriod.SmallDayPeriods.Where(period => departureTime.IsBetween(period.Start, period.End))) {
-                DeparturePeriod = period;
-            }
-
-            foreach (var time in Times.Where(time => time.DeparturePeriod == DeparturePeriod)) {
-                Index = time.Index;
-
-                break;
-            }
-        }
-
-        public int GetDepartureTime(ITripWrapper trip) {
-            if (trip == null) {
-                throw new ArgumentNullException("trip");
-            }
-
-            var timeWindow = trip.Tour.ParentTour == null ? trip.Tour.PersonDay.TimeWindow : trip.Tour.ParentTour.TimeWindow;
-            var departureTime = timeWindow.GetAvailableMinute(trip.Household.RandomUtility, DeparturePeriod.Start, DeparturePeriod.End);
-
-            //if (departureTime == Constants.DEFAULT_VALUE) {
-            //    throw new InvalidDepartureTimeException();
-            //}
-
-            return departureTime;
-        }
-
-        public static void InitializeTripTimes() {
-            if (Times != null) {
-                return;
-            }
-
-            Times = new TripTime[TOTAL_TRIP_TIMES];
-
-            var alternativeIndex = 0;
-
-            foreach (var minuteSpan in DayPeriod.SmallDayPeriods) {
-                var time = new TripTime(alternativeIndex, minuteSpan);
-
-                Times[alternativeIndex++] = time;
-            }
-        }
-
-        public bool Equals(TripTime other) {
-            if (ReferenceEquals(null, other)) {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other)) {
-                return true;
-            }
-
-            return other.Index == Index;
-        }
-
-        public override bool Equals(object obj) {
-            if (ReferenceEquals(null, obj)) {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj)) {
-                return true;
-            }
-
-            return obj is TripTime && Equals((TripTime)obj);
-        }
-
-        public override int GetHashCode() {
-            return Index;
-        }
+    private TripTime(int index, MinuteSpan departurePeriod) {
+      Index = index;
+      DeparturePeriod = departurePeriod;
     }
+
+    public TripTime(int departureTime) {
+      DecomposeTimesToPeriods(departureTime);
+    }
+
+    public int Index { get; private set; }
+
+    public MinuteSpan DeparturePeriod { get; private set; }
+
+    public static TripTime[] Times { get; private set; }
+
+    private void DecomposeTimesToPeriods(int departureTime) {
+      foreach (MinuteSpan period in DayPeriod.SmallDayPeriods.Where(period => departureTime.IsBetween(period.Start, period.End))) {
+        DeparturePeriod = period;
+      }
+
+      foreach (TripTime time in Times.Where(time => time.DeparturePeriod == DeparturePeriod)) {
+        Index = time.Index;
+
+        break;
+      }
+    }
+
+    public int GetDepartureTime(ITripWrapper trip) {
+      if (trip == null) {
+        throw new ArgumentNullException("trip");
+      }
+
+      ITimeWindow timeWindow = trip.Tour.ParentTour == null ? trip.Tour.PersonDay.TimeWindow : trip.Tour.ParentTour.TimeWindow;
+      int departureTime = timeWindow.GetAvailableMinute(trip.Household.RandomUtility, DeparturePeriod.Start, DeparturePeriod.End);
+
+      //if (departureTime == Constants.DEFAULT_VALUE) {
+      //    throw new InvalidDepartureTimeException();
+      //}
+
+      return departureTime;
+    }
+
+    public static void InitializeTripTimes() {
+      if (Times != null) {
+        return;
+      }
+
+      Times = new TripTime[TOTAL_TRIP_TIMES];
+
+      int alternativeIndex = 0;
+
+      foreach (MinuteSpan minuteSpan in DayPeriod.SmallDayPeriods) {
+        TripTime time = new TripTime(alternativeIndex, minuteSpan);
+
+        Times[alternativeIndex++] = time;
+      }
+    }
+
+    public bool Equals(TripTime other) {
+      if (ReferenceEquals(null, other)) {
+        return false;
+      }
+
+      if (ReferenceEquals(this, other)) {
+        return true;
+      }
+
+      return other.Index == Index;
+    }
+
+    public override bool Equals(object obj) {
+      if (ReferenceEquals(null, obj)) {
+        return false;
+      }
+
+      if (ReferenceEquals(this, obj)) {
+        return true;
+      }
+
+      return obj is TripTime && Equals((TripTime)obj);
+    }
+
+    public override int GetHashCode() {
+      return Index;
+    }
+  }
 }

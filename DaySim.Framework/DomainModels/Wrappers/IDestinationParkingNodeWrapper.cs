@@ -5,28 +5,28 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using System.Collections.Generic;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.ShadowPricing;
-using System.Collections.Generic;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-    public interface IParkAndRideNodeWrapper : IParkAndRideNode {
-        #region flags/choice model/etc. properties
+  public interface IParkAndRideNodeWrapper : IParkAndRideNode {
+    #region flags/choice model/etc. properties
 
-        double[] ShadowPriceDifference { get; set; }
+    double[] ShadowPriceDifference { get; set; }
 
-        double[] ShadowPrice { get; set; }
+    double[] ShadowPrice { get; set; }
 
-        double[] ExogenousLoad { get; set; }
+    double[] ExogenousLoad { get; set; }
 
-        double[] ParkAndRideLoad { get; set; }
+    double[] ParkAndRideLoad { get; set; }
 
-        #endregion
+    #endregion
 
-        #region wrapper methods
+    #region wrapper methods
 
-        void SetParkAndRideShadowPricing(Dictionary<int, IParkAndRideShadowPriceNode> parkAndRideShadowPrices);
+    void SetParkAndRideShadowPricing(Dictionary<int, IParkAndRideShadowPriceNode> parkAndRideShadowPrices);
 
-        #endregion
-    }
+    #endregion
+  }
 }

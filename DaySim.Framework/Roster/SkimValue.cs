@@ -8,22 +8,22 @@
 using System.Runtime.InteropServices;
 
 namespace DaySim.Framework.Roster {
-    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-    public struct SkimValue {
-        /// <summary>
-        /// Gets or sets the value of the skim variable. The variable may be blended based on some business rules.
-        /// </summary>
-        /// <value>
-        /// The variable.
-        /// </value>
-        public double Variable { get; set; }
+  [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+  public struct SkimValue {
+    /// <summary>
+    /// Gets or sets the value of the skim variable. The variable may be blended based on some business rules.
+    /// </summary>
+    /// <value>
+    /// The variable.
+    /// </value>
+    public double Variable { get; set; }
 
-        /// <summary>
-        /// Gets or sets the blended variable.
-        /// </summary>
-        /// <value>
-        /// The blended variable.
-        /// </value>
-        public double BlendVariable { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the blended variable.
+    /// </summary>
+    /// <value>
+    /// The blended variable.
+    /// </value>
+    public double BlendVariable { get; set; }
+  }
 }

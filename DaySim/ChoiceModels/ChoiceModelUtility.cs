@@ -6,16 +6,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using System;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
-using System;
 
 namespace DaySim.ChoiceModels {
-    public static class ChoiceModelUtility {
-        public const double CPFACT2 = 2;
-        public const double CPFACT3 = 3.33;
+  public static class ChoiceModelUtility {
+    public const double CPFACT2 = 2;
+    public const double CPFACT3 = 3.33;
 
-        private static readonly double[,,] _timeOfDayFraction = new[, ,] {
+    private static readonly double[,,] _timeOfDayFraction = new[, ,] {
             
             //  {AM-AM,  AM-MD,  AM-PM,  AM-NT,  MD-AM,  MD-MD,  MD-PM,  MD-NT,  PM-AM,  PM-MD,  PM-PM,  PM-NT,  NT-AM, NT-MD,  NT-PM,   NT-NT }
             
@@ -105,194 +105,194 @@ namespace DaySim.ChoiceModels {
             }
         };
 
-        //  {AM-AM,  AM-MD,  AM-PM,  AM-NT,  MD-AM,  MD-MD,  MD-PM,  MD-NT,  PM-AM,  PM-MD,  PM-PM,  PM-NT,  NT-AM, NT-MD,  NT-PM,   NT-NT }
+    //  {AM-AM,  AM-MD,  AM-PM,  AM-NT,  MD-AM,  MD-MD,  MD-PM,  MD-NT,  PM-AM,  PM-MD,  PM-PM,  PM-NT,  NT-AM, NT-MD,  NT-PM,   NT-NT }
 
-        private static readonly int[] _arrivalTimeMinute = new[]
-            {300,    300,    300,    300,    0,      540,    540,    540,    0,      0,      840,    840,    120,   120,    120,     1020};
+    private static readonly int[] _arrivalTimeMinute = new[]
+        {300,    300,    300,    300,    0,      540,    540,    540,    0,      0,      840,    840,    120,   120,    120,     1020};
 
-        private static readonly int[] _departureTimeMinute = new[]
-            {360,    600,    840,    1020,   0,      600,    840,    1020,   0,      0,      900,    1020,   360,   600,    840,     1140};
+    private static readonly int[] _departureTimeMinute = new[]
+        {360,    600,    840,    1020,   0,      600,    840,    1020,   0,      0,      900,    1020,   360,   600,    840,     1140};
 
-        public static void SetEscortPercentages(IPersonDayWrapper personDay, out double escortPercentage, out double nonEscortPercentage, bool excludeWorkAndSchool = false) {
-            if (personDay == null || personDay.HomeBasedTours == 0) {
-                escortPercentage = 0;
-                nonEscortPercentage = 0;
-            } else {
-                var totalTours = excludeWorkAndSchool ? personDay.GetTotalToursExcludingWorkAndSchool() : personDay.GetTotalTours();
-                var totalStops = excludeWorkAndSchool ? personDay.GetTotalStopsExcludingWorkAndSchool() : personDay.GetTotalStops();
-                var escortStopFlag = (personDay.EscortStops > 0).ToFlag();
+    public static void SetEscortPercentages(IPersonDayWrapper personDay, out double escortPercentage, out double nonEscortPercentage, bool excludeWorkAndSchool = false) {
+      if (personDay == null || personDay.HomeBasedTours == 0) {
+        escortPercentage = 0;
+        nonEscortPercentage = 0;
+      } else {
+        int totalTours = excludeWorkAndSchool ? personDay.GetTotalToursExcludingWorkAndSchool() : personDay.GetTotalTours();
+        int totalStops = excludeWorkAndSchool ? personDay.GetTotalStopsExcludingWorkAndSchool() : personDay.GetTotalStops();
+        int escortStopFlag = (personDay.EscortStops > 0).ToFlag();
 
-                escortPercentage = escortStopFlag / Math.Max(totalTours, 1.0);
-                nonEscortPercentage = (totalStops - escortStopFlag) / Math.Max(totalTours, 1.0);
-            }
-        }
-
-        public static void DrawRandomTourTimePeriods(ITourWrapper tour, int tourCategory) {
-            if (tour == null) {
-                throw new ArgumentNullException("tour");
-            }
-
-            int startAndEndPeriod = 0;
-            var random = tour.Household.RandomUtility.Uniform01();
-            double cumulativePercent = 0;
-
-            while (random > cumulativePercent & startAndEndPeriod < _arrivalTimeMinute.Length) {
-                cumulativePercent = cumulativePercent + _timeOfDayFraction[tour.DestinationPurpose, tourCategory, startAndEndPeriod];
-                if (random < cumulativePercent) { break; }
-                startAndEndPeriod = startAndEndPeriod + 1;
-            }
-            if (random > cumulativePercent) {
-                startAndEndPeriod = startAndEndPeriod - 1; //in case fractions do not quite sum to 1 and random is greater
-            }
-
-            tour.DestinationArrivalTime = _arrivalTimeMinute[startAndEndPeriod];
-            tour.DestinationDepartureTime = _departureTimeMinute[startAndEndPeriod];
-
-        }
-
-        public static void WriteTripForTDM(ITripWrapper trip, TDMTripListExporter tdmTripListExporter) {
-            if (tdmTripListExporter == null) {
-                return;
-            }
-
-            tdmTripListExporter.Export(trip);
-        }
-
-        public static int GetDestinationArrivalTime(int model) {
-            if (model == Global.Settings.Models.WorkTourModeModel) {
-                return DayPeriod.BigDayPeriods[DayPeriod.AM_PEAK].Middle;
-            } else if (model == Global.Settings.Models.SchoolTourModeModel) {
-                return DayPeriod.BigDayPeriods[DayPeriod.AM_PEAK].Middle;
-            } else {
-                return DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Middle;
-            }
-        }
-
-        public static int GetDestinationDepartureTime(int model) {
-            if (model == Global.Settings.Models.WorkTourModeModel) {
-                return DayPeriod.BigDayPeriods[DayPeriod.PM_PEAK].Middle;
-            } else if (model == Global.Settings.Models.SchoolTourModeModel) {
-                return DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Middle;
-            } else {
-                return DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Middle;
-            }
-        }
-
-        public static int GetParkingDuration(bool isFulltimeWorker) {
-            return isFulltimeWorker ? 9 : 6;
-        }
-
-        public static int GetPrimaryFlag(int tourCategory) {
-            return (tourCategory == Global.Settings.TourCategories.Primary).ToFlag();
-        }
-
-        public static int GetSecondaryFlag(int tourCategory) {
-            return (tourCategory == Global.Settings.TourCategories.Secondary).ToFlag();
-        }
-
-        public static int GetDurationUnder1HourFlag(int durationInMinutes) {
-            return (durationInMinutes < Global.Settings.Times.OneHour).ToFlag();
-        }
-
-        public static int GetDuration1To2HoursFlag(int durationInMinutes) {
-            return (durationInMinutes.IsRightExclusiveBetween(Global.Settings.Times.OneHour, Global.Settings.Times.TwoHours)).ToFlag();
-        }
-
-        public static int GetDurationUnder4HoursFlag(int durationInMinutes) {
-            return (durationInMinutes < Global.Settings.Times.FourHours).ToFlag();
-        }
-
-        public static int GetDurationUnder8HoursFlag(int durationInMinutes) {
-            return (durationInMinutes < Global.Settings.Times.EightHours).ToFlag();
-        }
-
-        public static int GetDurationUnder9HoursFlag(int durationInMinutes) {
-            return (durationInMinutes < Global.Settings.Times.NineHours).ToFlag();
-        }
-
-        public static void ResetRandom(this IHouseholdWrapper household, int index) {
-            if (household == null) {
-                throw new ArgumentNullException("household");
-            }
-
-            ResetRandom(household.RandomUtility, household.SeedValues, index);
-        }
-
-        public static void ResetRandom(this IHouseholdDayWrapper householdDay, int index) {
-            if (householdDay == null) {
-                throw new ArgumentNullException("householdDay");
-            }
-
-            ResetRandom(householdDay.Household.RandomUtility, householdDay.Household.SeedValues, index, householdDay.AttemptedSimulations);
-        }
-
-        public static void ResetRandom(this IPersonWrapper person, int index) {
-            if (person == null) {
-                throw new ArgumentNullException("person");
-            }
-
-            ResetRandom(person.Household.RandomUtility, person.SeedValues, index);
-        }
-
-        public static void ResetRandom(this IPersonDayWrapper personDay, int index) {
-            if (personDay == null) {
-                throw new ArgumentNullException("personDay");
-            }
-
-            ResetRandom(personDay.Household.RandomUtility, personDay.Person.SeedValues, index, personDay.AttemptedSimulations, personDay.Day);
-        }
-
-        private static void ResetRandom(IRandomUtility randomUtility, int[] seedValues, int index, int attemptedSimulations = 0, int day = 1) {
-            if (!Global.Configuration.ShouldSynchronizeRandomSeed) {
-                return;
-            }
-
-            // increasing the number of random seeds instead
-
-            while (index >= Global.Settings.NumberOfRandomSeeds) {
-                index -= Global.Settings.NumberOfRandomSeeds; // makes sure index is in range 
-            }
-
-            if (attemptedSimulations > 0) {
-                var randomSeed = seedValues[index];
-
-                if (randomSeed > 0) {
-                    randomSeed -= attemptedSimulations;
-                } else {
-                    randomSeed += attemptedSimulations;
-                }
-
-                seedValues[index] = randomSeed;
-            }
-
-            var dayIndex = day - 1;
-
-            if (dayIndex > 0) {
-                var randomSeed = seedValues[index];
-
-                if (randomSeed > 0) {
-                    randomSeed -= dayIndex;
-                } else {
-                    randomSeed += dayIndex;
-                }
-
-                seedValues[index] = randomSeed;
-            }
-
-            //Global.PrintFile.WriteLine("Seed reset to index {0} value {1}", index, seedValues[index]);
-
-            randomUtility.ResetUniform01(seedValues[index]);
-        }
-
-        public static int[] GetRandomSampling(int size, int randomSeed) {
-            var random = new Random(randomSeed);
-            var seedValues = new int[size];
-
-            for (var i = 0; i < size; i++) {
-                seedValues[i] = random.Next(short.MinValue, short.MaxValue + 1);
-            }
-
-            return seedValues;
-        }
+        escortPercentage = escortStopFlag / Math.Max(totalTours, 1.0);
+        nonEscortPercentage = (totalStops - escortStopFlag) / Math.Max(totalTours, 1.0);
+      }
     }
+
+    public static void DrawRandomTourTimePeriods(ITourWrapper tour, int tourCategory) {
+      if (tour == null) {
+        throw new ArgumentNullException("tour");
+      }
+
+      int startAndEndPeriod = 0;
+      double random = tour.Household.RandomUtility.Uniform01();
+      double cumulativePercent = 0;
+
+      while (random > cumulativePercent & startAndEndPeriod < _arrivalTimeMinute.Length) {
+        cumulativePercent = cumulativePercent + _timeOfDayFraction[tour.DestinationPurpose, tourCategory, startAndEndPeriod];
+        if (random < cumulativePercent) { break; }
+        startAndEndPeriod = startAndEndPeriod + 1;
+      }
+      if (random > cumulativePercent) {
+        startAndEndPeriod = startAndEndPeriod - 1; //in case fractions do not quite sum to 1 and random is greater
+      }
+
+      tour.DestinationArrivalTime = _arrivalTimeMinute[startAndEndPeriod];
+      tour.DestinationDepartureTime = _departureTimeMinute[startAndEndPeriod];
+
+    }
+
+    public static void WriteTripForTDM(ITripWrapper trip, TDMTripListExporter tdmTripListExporter) {
+      if (tdmTripListExporter == null) {
+        return;
+      }
+
+      tdmTripListExporter.Export(trip);
+    }
+
+    public static int GetDestinationArrivalTime(int model) {
+      if (model == Global.Settings.Models.WorkTourModeModel) {
+        return DayPeriod.BigDayPeriods[DayPeriod.AM_PEAK].Middle;
+      } else if (model == Global.Settings.Models.SchoolTourModeModel) {
+        return DayPeriod.BigDayPeriods[DayPeriod.AM_PEAK].Middle;
+      } else {
+        return DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Middle;
+      }
+    }
+
+    public static int GetDestinationDepartureTime(int model) {
+      if (model == Global.Settings.Models.WorkTourModeModel) {
+        return DayPeriod.BigDayPeriods[DayPeriod.PM_PEAK].Middle;
+      } else if (model == Global.Settings.Models.SchoolTourModeModel) {
+        return DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Middle;
+      } else {
+        return DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Middle;
+      }
+    }
+
+    public static int GetParkingDuration(bool isFulltimeWorker) {
+      return isFulltimeWorker ? 9 : 6;
+    }
+
+    public static int GetPrimaryFlag(int tourCategory) {
+      return (tourCategory == Global.Settings.TourCategories.Primary).ToFlag();
+    }
+
+    public static int GetSecondaryFlag(int tourCategory) {
+      return (tourCategory == Global.Settings.TourCategories.Secondary).ToFlag();
+    }
+
+    public static int GetDurationUnder1HourFlag(int durationInMinutes) {
+      return (durationInMinutes < Global.Settings.Times.OneHour).ToFlag();
+    }
+
+    public static int GetDuration1To2HoursFlag(int durationInMinutes) {
+      return (durationInMinutes.IsRightExclusiveBetween(Global.Settings.Times.OneHour, Global.Settings.Times.TwoHours)).ToFlag();
+    }
+
+    public static int GetDurationUnder4HoursFlag(int durationInMinutes) {
+      return (durationInMinutes < Global.Settings.Times.FourHours).ToFlag();
+    }
+
+    public static int GetDurationUnder8HoursFlag(int durationInMinutes) {
+      return (durationInMinutes < Global.Settings.Times.EightHours).ToFlag();
+    }
+
+    public static int GetDurationUnder9HoursFlag(int durationInMinutes) {
+      return (durationInMinutes < Global.Settings.Times.NineHours).ToFlag();
+    }
+
+    public static void ResetRandom(this IHouseholdWrapper household, int index) {
+      if (household == null) {
+        throw new ArgumentNullException("household");
+      }
+
+      ResetRandom(household.RandomUtility, household.SeedValues, index);
+    }
+
+    public static void ResetRandom(this IHouseholdDayWrapper householdDay, int index) {
+      if (householdDay == null) {
+        throw new ArgumentNullException("householdDay");
+      }
+
+      ResetRandom(householdDay.Household.RandomUtility, householdDay.Household.SeedValues, index, householdDay.AttemptedSimulations);
+    }
+
+    public static void ResetRandom(this IPersonWrapper person, int index) {
+      if (person == null) {
+        throw new ArgumentNullException("person");
+      }
+
+      ResetRandom(person.Household.RandomUtility, person.SeedValues, index);
+    }
+
+    public static void ResetRandom(this IPersonDayWrapper personDay, int index) {
+      if (personDay == null) {
+        throw new ArgumentNullException("personDay");
+      }
+
+      ResetRandom(personDay.Household.RandomUtility, personDay.Person.SeedValues, index, personDay.AttemptedSimulations, personDay.Day);
+    }
+
+    private static void ResetRandom(IRandomUtility randomUtility, int[] seedValues, int index, int attemptedSimulations = 0, int day = 1) {
+      if (!Global.Configuration.ShouldSynchronizeRandomSeed) {
+        return;
+      }
+
+      // increasing the number of random seeds instead
+
+      while (index >= Global.Settings.NumberOfRandomSeeds) {
+        index -= Global.Settings.NumberOfRandomSeeds; // makes sure index is in range 
+      }
+
+      if (attemptedSimulations > 0) {
+        int randomSeed = seedValues[index];
+
+        if (randomSeed > 0) {
+          randomSeed -= attemptedSimulations;
+        } else {
+          randomSeed += attemptedSimulations;
+        }
+
+        seedValues[index] = randomSeed;
+      }
+
+      int dayIndex = day - 1;
+
+      if (dayIndex > 0) {
+        int randomSeed = seedValues[index];
+
+        if (randomSeed > 0) {
+          randomSeed -= dayIndex;
+        } else {
+          randomSeed += dayIndex;
+        }
+
+        seedValues[index] = randomSeed;
+      }
+
+      //Global.PrintFile.WriteLine("Seed reset to index {0} value {1}", index, seedValues[index]);
+
+      randomUtility.ResetUniform01(seedValues[index]);
+    }
+
+    public static int[] GetRandomSampling(int size, int randomSeed) {
+      Random random = new Random(randomSeed);
+      int[] seedValues = new int[size];
+
+      for (int i = 0; i < size; i++) {
+        seedValues[i] = random.Next(short.MinValue, short.MaxValue + 1);
+      }
+
+      return seedValues;
+    }
+  }
 }

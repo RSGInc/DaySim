@@ -9,17 +9,17 @@
 using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim {
-    public sealed class HTourDestinationModeTime {
+  public sealed class HTourDestinationModeTime {
 
 
-        public HTourDestinationModeTime(IParcelWrapper destination, HTourModeTime modeTimes) {
-            Destination = destination;
-            ModeTimes = modeTimes;
-        }
-
-        public IParcelWrapper Destination { get; set; }
-
-        public HTourModeTime ModeTimes { get; set; }
-
+    public HTourDestinationModeTime(IParcelWrapper destination, HTourModeTime modeTimes) {
+      Destination = destination;
+      ModeTimes = modeTimes;
     }
+
+    public IParcelWrapper Destination { get; set; }
+
+    public HTourModeTime ModeTimes { get; set; }
+
+  }
 }
