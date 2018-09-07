@@ -1434,37 +1434,37 @@ namespace DaySim {
           Global.PrintFile.WriteLine("For threadAssignedIndex: " + threadAssignedIndex + " there are " + string.Format("{0:n0}", currentThreadHouseholds.Count) + " households", writeToConsole: true);
           foreach (IHousehold household in currentThreadHouseholds) {
 #if RELEASE //don't use try catch in release mode since wish to have Visual Studio debugger stop on unhandled exceptions
-                        try {
+            try {
 #endif
-            int randomSeed = householdRandomValues[household.Id];
-            IChoiceModelRunner choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
+              int randomSeed = householdRandomValues[household.Id];
+              IChoiceModelRunner choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
 
-            choiceModelRunner.RunChoiceModels();
+              choiceModelRunner.RunChoiceModels();
 
-            if (Global.Configuration.ShowRunChoiceModelsStatus) {
-              if (current % 1000 == 0) {
-                int countLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
-                //Actum and Default differ in that one Actum counts TotalHouseholdDays and Default counts TotalPersonDays
-                string countStringLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
+              if (Global.Configuration.ShowRunChoiceModelsStatus) {
+                if (current % 1000 == 0) {
+                  int countLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
+                  //Actum and Default differ in that one Actum counts TotalHouseholdDays and Default counts TotalPersonDays
+                  string countStringLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
 
-                int ivcountLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
+                  int ivcountLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
 
-                Console.Write(string.Format("\r{0:p}", (double)current / addedHousehouldCounter) +
-                    string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", current, addedHousehouldCounter, countStringLocal, countLocal) +
-                    (Global.Configuration.ReportInvalidPersonDays
-                        ? string.Format("Total Invalid Attempts: {0:n0}",
-                            ivcountLocal)
-                        : ""));
-              }   //if outputting progress to console
+                  Console.Write(string.Format("\r{0:p}", (double)current / addedHousehouldCounter) +
+                      string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", current, addedHousehouldCounter, countStringLocal, countLocal) +
+                      (Global.Configuration.ReportInvalidPersonDays
+                          ? string.Format("Total Invalid Attempts: {0:n0}",
+                              ivcountLocal)
+                          : ""));
+                }   //if outputting progress to console
 
-              //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
-              //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
-              current++;
-            }   //end if ShowRunChoiceModelsStatus
+                //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
+                //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
+                current++;
+              }   //end if ShowRunChoiceModelsStatus
 #if RELEASE
-                        } catch (Exception e) {
-                            throw new ChoiceModelRunnerException(string.Format("An error occurred in ChoiceModelRunner for household {0}.", household.Id), e);
-                        }
+            } catch (Exception e) {
+              throw new DaySim.Framework.Exceptions.ChoiceModelRunnerException(string.Format("An error occurred in ChoiceModelRunner for household {0}.", household.Id), e);
+            }
 #endif
           }   //end household loop for this threadAssignedIndex
         })) {
