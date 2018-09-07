@@ -61,8 +61,6 @@ namespace DaySim.Framework.Persistence {
       lock (typeof(TModel)) {
 #if DEBUG
         ParallelUtility.countLocks("typeof (TModel)");
-
-#endif
 #endif
 
 
