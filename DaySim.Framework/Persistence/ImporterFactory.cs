@@ -43,7 +43,7 @@ namespace DaySim.Framework.Persistence {
         ILGenerator methodIl = methodBuilder.GetILGenerator();
         MethodInfo method = typeof(Importer<TModel>).GetMethod("SetModel");
 
-        GenerateMethodCode(methodIl, typeof(TModel), index);
+        GenerateMethodCode(methodIl, typeof(TModel), index, inputPath);
 
         typeBuilder.DefineMethodOverride(methodBuilder, method);
 
@@ -75,7 +75,7 @@ namespace DaySim.Framework.Persistence {
       il.Emit(OpCodes.Ret);
     }
 
-    private static void GenerateMethodCode(ILGenerator il, Type type, Dictionary<string, int> index) {
+    private static void GenerateMethodCode(ILGenerator il, Type type, Dictionary<string, int> index, string inputPath) {
       PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
       foreach (PropertyInfo property in properties) {
@@ -90,8 +90,11 @@ namespace DaySim.Framework.Persistence {
         try {
           element = index[attribute.ColumnName];
         } catch (KeyNotFoundException) {
-          Console.WriteLine("The column {0} was not found in the file for type {1}.", attribute.ColumnName, type);
-
+          string message = string.Format("The column '{0}' for object of type {1} was not found in filename: {2}", attribute.ColumnName, type, inputPath);
+          Console.WriteLine(message);
+          if (Global.PrintFile != null) {
+            Global.PrintFile.WriteLine(message);
+          }
           Environment.Exit(0);
 
           return;
