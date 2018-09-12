@@ -12,6 +12,6 @@ namespace DaySim.Framework.DomainModels.Creators {
   public interface IParkAndRideNodeCreator : ICreator {
     IParkAndRideNode CreateModel();
 
-    IDestinationParkingNodeCreator CreateWrapper(IParkAndRideNode parkAndRideNode);
+    IParkAndRideNodeWrapper CreateWrapper(IParkAndRideNode parkAndRideNode);
   }
 }
