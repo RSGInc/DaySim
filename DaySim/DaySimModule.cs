@@ -58,9 +58,9 @@ namespace DaySim {
 
       Global.ContainerDaySim.Register<IWrapperFactory<IParcelNodeCreator>, WrapperFactory<IParcelNodeWrapper, IParcelNodeCreator, IParcelNode>>(Lifestyle.Singleton);
 
-      Global.ContainerDaySim.Register<IWrapperFactory<IDestinationParkingNodeCreator>, WrapperFactory<IDestinationParkingNodeWrapper, IDestinationParkingNodeCreator, IDestinationParkingNode>>(Lifestyle.Singleton);
+      Global.ContainerDaySim.Register<IWrapperFactory<Framework.DomainModels.Creators.IDestinationParkingNodeCreator>, WrapperFactory<IDestinationParkingNodeWrapper, Framework.DomainModels.Creators.IDestinationParkingNodeCreator, IDestinationParkingNode>>(Lifestyle.Singleton);
 
-      Global.ContainerDaySim.Register<IWrapperFactory<IParkAndRideNodeCreator>, WrapperFactory<IParkAndRideNodeWrapper, IParkAndRideNodeCreator, IParkAndRideNode>>(Lifestyle.Singleton);
+      Global.ContainerDaySim.Register<IWrapperFactory<IParkAndRideNodeCreator>, WrapperFactory<Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper, IParkAndRideNodeCreator, IParkAndRideNode>>(Lifestyle.Singleton);
 
       Global.ContainerDaySim.Register<IWrapperFactory<ITransitStopAreaCreator>, WrapperFactory<ITransitStopAreaWrapper, ITransitStopAreaCreator, ITransitStopArea>>(Lifestyle.Singleton);
 

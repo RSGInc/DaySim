@@ -19,11 +19,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
-using IntermediateStopGenerationModel = DaySim.ChoiceModels.Actum.Models.IntermediateStopGenerationModel;
-using IntermediateStopLocationModel = DaySim.ChoiceModels.Actum.Models.IntermediateStopLocationModel;
-using TripModeModel = DaySim.ChoiceModels.Actum.Models.TripModeModel;
-using TripTimeModel = DaySim.ChoiceModels.Actum.Models.TripTimeModel;
-using WorkBasedSubtourGenerationModel = DaySim.ChoiceModels.Actum.Models.WorkBasedSubtourGenerationModel;
+
 
 namespace DaySim.ChoiceModels.Actum {
   [UsedImplicitly]
@@ -3498,7 +3494,7 @@ namespace DaySim.ChoiceModels.Actum {
 
       if (trip.DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
         // CHANGE_MODE location is always park and ride node for tour
-        IParkAndRideNodeWrapper parkAndRideNode = ChoiceModelFactory.ParkAndRideNodeDao.Get(trip.Tour.ParkAndRideNodeId);
+        Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper parkAndRideNode = ChoiceModelFactory.ParkAndRideNodeDao.Get(trip.Tour.ParkAndRideNodeId);
 
         if (parkAndRideNode != null) {
           trip.DestinationParcelId = parkAndRideNode.NearestParcelId;

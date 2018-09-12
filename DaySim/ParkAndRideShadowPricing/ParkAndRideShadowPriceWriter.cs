@@ -52,7 +52,7 @@ namespace DaySim.ParkAndRideShadowPricing {
       }
     }
 
-    public void Write(IParkAndRideNodeWrapper node) {
+    public void Write(IDestinationParkingNodeWrapper node) {
       if (node == null) {
         throw new ArgumentNullException("node");
       }

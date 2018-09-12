@@ -3307,7 +3307,7 @@ namespace DaySim.ChoiceModels.H {
 
       if (trip.DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
         // CHANGE_MODE location is always park and ride node for tour
-        IParkAndRideNodeWrapper parkAndRideNode = ChoiceModelFactory.ParkAndRideNodeDao.Get(trip.Tour.ParkAndRideNodeId);
+        Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper parkAndRideNode = ChoiceModelFactory.ParkAndRideNodeDao.Get(trip.Tour.ParkAndRideNodeId);
 
         if (parkAndRideNode != null) {
           trip.DestinationParcelId = parkAndRideNode.NearestParcelId;

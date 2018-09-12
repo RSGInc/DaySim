@@ -7,6 +7,7 @@
 
 
 using System;
+using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -14,11 +15,6 @@ using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
-
-using HouseholdDayWrapper = DaySim.DomainModels.Default.Wrappers.HouseholdDayWrapper;
-using PersonDayWrapper = DaySim.DomainModels.Default.Wrappers.PersonDayWrapper;
-using PersonWrapper = DaySim.DomainModels.Default.Wrappers.PersonWrapper;
-using TourWrapper = DaySim.DomainModels.Default.Wrappers.TourWrapper;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TourModeTimeModel : ChoiceModel {
@@ -30,8 +26,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private readonly ITourCreator _creator =
         Global
-        .Kernel
-        .Get<IWrapperFactory<ITourCreator>>()
+        .ContainerDaySim
+        .GetInstance<IWrapperFactory<ITourCreator>>()
         .Creator;
 
     public override void RunInitialize(ICoefficientsReader reader = null) {

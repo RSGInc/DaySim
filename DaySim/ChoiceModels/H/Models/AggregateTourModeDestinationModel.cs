@@ -42,7 +42,7 @@ namespace DaySim.ChoiceModels.H.Models {
       /*
                   var zoneReader =
                       Global
-                          .Kernel
+                          .ContainerDaySim
                           .GetInstance<IPersistenceFactory<IZone>>()
                           .Reader;
 
@@ -327,13 +327,13 @@ namespace DaySim.ChoiceModels.H.Models {
 
                 var parcelReader = 
                     Global
-                        .Kernel
+                        .ContainerDaySim
                         .GetInstance<IPersistenceFactory<IParcel>>()
                         .Reader;
 
                 var parcelCreator =
                     Global
-                        .Kernel
+                        .ContainerDaySim
                         .GetInstance<IWrapperFactory<IParcelCreator>>()
                         .Creator;
 

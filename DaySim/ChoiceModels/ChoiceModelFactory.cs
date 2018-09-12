@@ -263,7 +263,7 @@ namespace DaySim.ChoiceModels {
         ThreadQueue = new ThreadQueue(threadQueueThreadName);
       }
 
-      //ExporterFactory = Global.Kernel.GetInstance<ExporterFactory>();
+      //ExporterFactory = Global.ContainerDaySim.GetInstance<ExporterFactory>();
 
       // e.g. 30 minutes between each minute span
       SmallPeriodDuration = DayPeriod.SmallDayPeriods.First().Duration;

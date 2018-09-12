@@ -10,7 +10,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.ShadowPricing;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-  public interface IDestinationParkingNodeWrapper : IDestinationParkingNode {
+  public interface IParkAndRideNodeWrapper : IParkAndRideNode {
     #region flags/choice model/etc. properties
 
     double[] ShadowPriceDifference { get; set; }

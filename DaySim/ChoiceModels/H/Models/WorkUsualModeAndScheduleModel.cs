@@ -101,7 +101,7 @@ namespace DaySim.ChoiceModels.H.Models {
       double costCoefficient = Global.Coefficients_BaseCostCoefficientPerMonetaryUnit / Math.Pow(incomeMultiple, incomePower);
       /*
                   var pathTypeModels =
-                      PathTypeModelFactory.Model.RunAll(
+                      PathTypeModelFactory.Singleton.RunAll(
                           household.RandomUtility,
                           originParcel,
                           destinationParcel,

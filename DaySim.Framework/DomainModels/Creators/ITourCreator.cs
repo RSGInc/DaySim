@@ -15,7 +15,7 @@ namespace DaySim.Framework.DomainModels.Creators {
   public interface ITourCreator : ICreator {
     ITour CreateModel();
 
-    ITourWrapper CreateWrapper(IPersonWrapper personWrapper, IPersonDayWrapper personDayWrapper, IParcelWrapper originParcel, IParcelWrapper destinationParcel, double destinationArrivalTime, double destinationDepartureTime, int destinationPurpose);
+    ITourWrapper CreateWrapper(IPersonWrapper personWrapper, IPersonDayWrapper personDayWrapper, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int destinationArrivalTime, int destinationDepartureTime, int destinationPurpose);
 
     ITourWrapper CreateWrapper(ITour subtour, ITourWrapper tourWrapper, int purpose, bool suppressRandomVOT);
 

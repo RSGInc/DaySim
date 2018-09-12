@@ -909,7 +909,7 @@ namespace DaySim.PathTypeModels {
         return;
       }
       int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
-      IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
+      IEnumerable<IDestinationParkingNodeWrapper> parkAndRideNodes;
 
       bool knrPathType = (pathType >= Global.Settings.PathTypes.TransitType1_Knr && pathType <= Global.Settings.PathTypes.TransitType5_Knr);
       bool tncPathType = (pathType >= Global.Settings.PathTypes.TransitType1_TNC && pathType <= Global.Settings.PathTypes.TransitType5_TNC);
@@ -964,9 +964,9 @@ namespace DaySim.PathTypeModels {
                     ? (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
                     : (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel).Variable;
 
-        IParkAndRideNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
+        IDestinationParkingNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
 
-        parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
+        parkAndRideNodes = new List<IDestinationParkingNodeWrapper> { node };
       } else {
         parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => (n.Capacity > Constants.EPSILON || (n.Capacity == 0 && knrPathType)));
       }
@@ -992,7 +992,7 @@ namespace DaySim.PathTypeModels {
 
       double zzDistOD = ImpedanceRoster.GetValue("distance", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId).Variable;
 
-      foreach (IParkAndRideNodeWrapper node in parkAndRideNodes) {
+      foreach (IDestinationParkingNodeWrapper node in parkAndRideNodes) {
         // only look at nodes with positive capacity
         if (node.Capacity < Constants.EPSILON && !knrPathType && !tncPathType) {
           continue;
@@ -1102,7 +1102,7 @@ namespace DaySim.PathTypeModels {
         return;
       }
       int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
-      IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
+      IEnumerable<IDestinationParkingNodeWrapper> parkAndRideNodes;
 
       bool knrPathType = (pathType >= Global.Settings.PathTypes.TransitType1_Knr && pathType <= Global.Settings.PathTypes.TransitType5_Knr);
       bool tncPathType = (pathType >= Global.Settings.PathTypes.TransitType1_TNC && pathType <= Global.Settings.PathTypes.TransitType5_TNC);
@@ -1160,9 +1160,9 @@ namespace DaySim.PathTypeModels {
                     ? (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
                     : (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel).Variable;
 
-        IParkAndRideNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
+        IDestinationParkingNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
 
-        parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
+        parkAndRideNodes = new List<IDestinationParkingNodeWrapper> { node };
       } else {
         parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => (n.Capacity > Constants.EPSILON || (n.Capacity == 0 && knrPathType) || (n.Capacity == 0 && tncPathType)));
       }
@@ -1197,7 +1197,7 @@ namespace DaySim.PathTypeModels {
 
       double zzDistOD = ImpedanceRoster.GetValue("distance", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId).Variable;
 
-      foreach (IParkAndRideNodeWrapper node in parkAndRideNodes) {
+      foreach (IDestinationParkingNodeWrapper node in parkAndRideNodes) {
         // only look at nodes with positive capacity
         if (node.Capacity < Constants.EPSILON && !knrPathType) {
           continue;

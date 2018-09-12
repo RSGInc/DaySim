@@ -13,7 +13,6 @@ using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
-using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Actum.Models {
@@ -95,7 +94,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
         IEnumerable<dynamic> pathTypeModels =
-            PathTypeModelFactory.Model.Run(
+            PathTypeModelFactory.Singleton.Run(
             person.Household.RandomUtility,
                 homeParcel,
                 workParcel,
@@ -118,7 +117,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         // intermediate variable of type IEnumerable<dynamic> is needed to acquire First() method as extension
         pathTypeModels =
-            PathTypeModelFactory.Model.Run(
+            PathTypeModelFactory.Singleton.Run(
             person.Household.RandomUtility,
                 homeParcel,
                 workParcel,
@@ -127,12 +126,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Purposes.Work,
                 Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
-                true,
-                1,
-                        1,
-                false,
-                        1.0,
-                false,
+                true /* isDrivingAge */,
+                1 /* householdCars */,
+                        1 /* transitPassOwnership */,
+                false /* carsAreAVs */,
+                        1.0 /*transitDiscountFraction */,
+                false /* randomChoice */,
                 Global.Settings.Modes.Transit);
 
         path = pathTypeModels.First();
@@ -147,7 +146,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //				schoolGenTimeNoPass = path.GeneralizedTimeLogsum;
 
         IEnumerable<dynamic> pathTypeModels =
-            PathTypeModelFactory.Model.Run(
+            PathTypeModelFactory.Singleton.Run(
             person.Household.RandomUtility,
                 homeParcel,
                 schoolParcel,

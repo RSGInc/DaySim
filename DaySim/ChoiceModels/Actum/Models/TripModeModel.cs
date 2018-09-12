@@ -8,6 +8,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -115,7 +117,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
 
         IEnumerable<dynamic> pathTypeModels =
-            PathTypeModelFactory.Model.RunAll(
+            PathTypeModelFactory.Singleton.RunAll(
                 trip.Household.RandomUtility,
                 originParcel,
                 destinationParcel,
@@ -147,7 +149,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         choiceProbabilityCalculator.WriteObservation();
       } else {
         IEnumerable<dynamic> pathTypeModels =
-            PathTypeModelFactory.Model.RunAll(
+            PathTypeModelFactory.Singleton.RunAll(
                 trip.Household.RandomUtility,
                 originParcel,
                 destinationParcel,
@@ -210,7 +212,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       IHouseholdWrapper household = trip.Household;
       Framework.DomainModels.Models.IHouseholdTotals householdTotals = household.HouseholdTotals;
       IPersonWrapper person = trip.Person;
-      ITourWrapper tour = trip.Tour;
+      IActumTourWrapper tour = trip.Tour;
       Framework.DomainModels.Models.IHalfTour halfTour = trip.HalfTour;
 
       // household inputs

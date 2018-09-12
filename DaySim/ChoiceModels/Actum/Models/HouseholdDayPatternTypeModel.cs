@@ -553,6 +553,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int[] pfpt = new int[6];
 
       int ct = 0;
+      int currentBatch = ParallelUtility.threadLocalAssignedIndex.Value;
 
       foreach (PersonDayWrapper personDay in orderedPersonDays) {
         ct++;
@@ -567,7 +568,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(person, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
                 //JLB 201602
                 //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers);
-                ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, person.UsualArrivalPeriodToWork, person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
+                ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, person.Household.ResidenceParcel, person.UsualWorkParcel, (int)person.UsualArrivalPeriodToWork, (int)person.UsualDeparturePeriodFromWork, person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
                 mandatoryLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
               } else {
                 //JLB 201406

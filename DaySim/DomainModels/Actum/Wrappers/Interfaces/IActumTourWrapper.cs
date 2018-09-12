@@ -93,5 +93,7 @@ namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
     bool IsHovDriverMode();
 
     bool IsHovPassengerMode();
+
+    bool IsPaidRideShareMode();
   }
 }

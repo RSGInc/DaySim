@@ -27,7 +27,7 @@ namespace DaySim.ParkAndRideShadowPricing {
       }
 
       using (ParkAndRideShadowPriceWriter shadowPriceWriter = new ParkAndRideShadowPriceWriter(new FileInfo(Global.ParkAndRideShadowPricesPath))) {
-        foreach (Framework.DomainModels.Wrappers.IParkAndRideNodeWrapper node in ChoiceModelFactory.ParkAndRideNodeDao.Nodes) {
+        foreach (Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper node in ChoiceModelFactory.ParkAndRideNodeDao.Nodes) {
           int capacity = node.Capacity;
           for (int i = 1; i < Global.Settings.Times.MinutesInADay; i++) {
             double maxLoad = 0;

@@ -14,7 +14,7 @@ using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-  public class ParkAndRideNodeWrapper : Default.Wrappers.ParkAndRideNodeWrapper, IParkAndRideNodeWrapper {
+  public class ParkAndRideNodeWrapper : Default.Wrappers.ParkAndRideNodeWrapper, IDestinationParkingNodeWrapper {
     private readonly IParkAndRideNode _parkAndRideNode;
 
     [UsedImplicitly]
