@@ -1050,12 +1050,13 @@ namespace DaySim {
 
     public static void InitializeParcelStopAreaIndex(TextReader reader) {
       //mb moved this from global to engine in order to use DaySim.ChoiceModels.ChoiceModelFactory
-      //mb tried to change this code to set parcel first and last indeces here instead of later, but did not work
+      //mb tried to change this code to set parcel first and last indices here instead of later, but did not work
 
       //var parcelIds = new List<int>();  
       List<int> stopAreaKeys = new List<int>();
       List<int> stopAreaIds = new List<int>();
-      List<float> distances = new List<float>();
+      List<float> lengths = new List<float>(); /* raw values */
+      List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
 
       // read header
       reader.ReadLine();
@@ -1064,11 +1065,12 @@ namespace DaySim {
       int lastParcelId = -1;
       IParcelWrapper parcel = null;
       int arrayIndex = 0;
-      //start arrays at index 0 with dummy values, since valid indeces start with 1
+      //start arrays at index 0 with dummy values, since valid indices start with 1
       //parcelIds.Add(0);
       stopAreaIds.Add(0);
       stopAreaKeys.Add(0);
       distances.Add(0F);
+      lengths.Add(0F);
 
       while ((line = reader.ReadLine()) != null) {
         string[] tokens = line.Split(new[] { ' ' });
@@ -1089,15 +1091,18 @@ namespace DaySim {
         //mb changed this array to use mapping of stop area ids 
         int stopAreaIndex = Global.TransitStopAreaMapping[stopAreaId];
         stopAreaIds.Add(stopAreaIndex);
-        double distance = double.Parse(tokens[2]) / Global.Settings.LengthUnitsPerFoot;
-        distances.Add((float)distance);
+
+        float length = float.Parse(tokens[2]);
+        lengths.Add(length);
+        float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
+        distances.Add(distance);
       }
 
       //Global.ParcelStopAreaParcelIds = parcelIds.ToArray();
       Global.ParcelStopAreaStopAreaKeys = stopAreaKeys.ToArray();
       Global.ParcelStopAreaStopAreaIds = stopAreaIds.ToArray();
+      Global.ParcelStopAreaLengths = lengths.ToArray();
       Global.ParcelStopAreaDistances = distances.ToArray();
-
     }
 
     private static void BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances() {
@@ -1123,7 +1128,8 @@ namespace DaySim {
       //var parcelIds = new List<int>();  
       List<int> nodeSequentialIds = new List<int>();
       List<int> parkAndRideNodeIds = new List<int>();
-      List<float> distances = new List<float>();
+      List<float> lengths = new List<float>(); /* raw values */
+      List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
 
       // read header
       reader.ReadLine();
@@ -1132,11 +1138,12 @@ namespace DaySim {
       int lastParcelId = -1;
       IParcelWrapper parcel = null;
       int arrayIndex = 0;
-      //start arrays at index 0 with dummy values, since valid indeces start with 1
+      //start arrays at index 0 with dummy values, since valid indices start with 1
       //parcelIds.Add(0);
       nodeSequentialIds.Add(0);
       parkAndRideNodeIds.Add(0);
       distances.Add(0F);
+      lengths.Add(0F);
 
       while ((line = reader.ReadLine()) != null) {
         string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToParkAndRideNodeIndexDelimiter });
@@ -1157,12 +1164,15 @@ namespace DaySim {
         //mb changed this array to use mapping of stop area ids 
         int nodeSequentialIndex = Global.ParkAndRideNodeMapping[parkAndRideNodeId];
         nodeSequentialIds.Add(nodeSequentialIndex);
-        double distance = double.Parse(tokens[2]) / Global.Settings.LengthUnitsPerFoot;
-        distances.Add((float)distance);
+        float length = float.Parse(tokens[2]);
+        lengths.Add(length);
+        float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
+        distances.Add(distance);
       }
 
       Global.ParcelParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
       Global.ParcelParkAndRideNodeSequentialIds = nodeSequentialIds.ToArray();
+      Global.ParcelToBikeCarParkAndRideNodeLength = lengths.ToArray();
       Global.ParcelToBikeCarParkAndRideNodeDistance = distances.ToArray();
 
     }
@@ -1436,31 +1446,31 @@ namespace DaySim {
 #if RELEASE //don't use try catch in release mode since wish to have Visual Studio debugger stop on unhandled exceptions
             try {
 #endif
-              int randomSeed = householdRandomValues[household.Id];
-              IChoiceModelRunner choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
+            int randomSeed = householdRandomValues[household.Id];
+            IChoiceModelRunner choiceModelRunner = ChoiceModelFactory.Get(household, randomSeed);
 
-              choiceModelRunner.RunChoiceModels();
+            choiceModelRunner.RunChoiceModels();
 
-              if (Global.Configuration.ShowRunChoiceModelsStatus) {
-                if (current % 1000 == 0) {
-                  int countLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
-                  //Actum and Default differ in that one Actum counts TotalHouseholdDays and Default counts TotalPersonDays
-                  string countStringLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
+            if (Global.Configuration.ShowRunChoiceModelsStatus) {
+              if (current % 1000 == 0) {
+                int countLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
+                //Actum and Default differ in that one Actum counts TotalHouseholdDays and Default counts TotalPersonDays
+                string countStringLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
 
-                  int ivcountLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
+                int ivcountLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
 
-                  Console.Write(string.Format("\r{0:p}", (double)current / addedHousehouldCounter) +
-                      string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", current, addedHousehouldCounter, countStringLocal, countLocal) +
-                      (Global.Configuration.ReportInvalidPersonDays
-                          ? string.Format("Total Invalid Attempts: {0:n0}",
-                              ivcountLocal)
-                          : ""));
-                }   //if outputting progress to console
+                Console.Write(string.Format("\r{0:p}", (double)current / addedHousehouldCounter) +
+                    string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", current, addedHousehouldCounter, countStringLocal, countLocal) +
+                    (Global.Configuration.ReportInvalidPersonDays
+                        ? string.Format("Total Invalid Attempts: {0:n0}",
+                            ivcountLocal)
+                        : ""));
+              }   //if outputting progress to console
 
-                //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
-                //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
-                current++;
-              }   //end if ShowRunChoiceModelsStatus
+              //WARNING: not threadsafe. It doesn't matter much though because this is only used for console output.
+              //because of multithreaded issues may see skipped outputs or duplicated outputs. Could use Interlocked.Increment(ref threadsSoFarIndex) but not worth locking cost
+              current++;
+            }   //end if ShowRunChoiceModelsStatus
 #if RELEASE
             } catch (Exception e) {
               throw new DaySim.Framework.Exceptions.ChoiceModelRunnerException(string.Format("An error occurred in ChoiceModelRunner for household {0}.", household.Id), e);

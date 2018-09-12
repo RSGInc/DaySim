@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
+﻿// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
 // Copyright 2011-2013 John Bowman, Mark Bradley, and RSG, Inc.
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
@@ -35,8 +35,8 @@ namespace DaySim {
     public bool Available;
 
     public IPathTypeModel ModeLOS;
-    private int EarliestFeasibleDepatureTime;
-    private int LatestFeasibleDepartureTime;
+    public int EarliestFeasibleDepatureTime { get; set; }
+    public int LatestFeasibleDepartureTime { get; set; }
 
     private void FindPeriod(int departureTime) {
       foreach (MinuteSpan period in DayPeriod.HSmallDayPeriods.Where(period => departureTime.IsBetween(period.Start, period.End))) {

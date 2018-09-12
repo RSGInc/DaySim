@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DaySim.ChoiceModels.Actum.Models;
 //using DaySim.ChoiceModels.Default.Models;
-using DaySim.DomainModels.Default.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
@@ -1156,7 +1156,7 @@ namespace DaySim.ChoiceModels.Actum {
             //determine chauffeur's order in the orderedPersonDays
             int chauffeurOrder = 0;
             int ct = 0;
-            foreach (DomainModels.Default.Wrappers.PersonDayWrapper personDay in orderedPersonDays) {
+            foreach (PersonDayWrapper personDay in orderedPersonDays) {
               ct++;
               if (ct <= maxNumberParticipants) {
                 if (personDay.Person.Sequence == chauffeurSequence) {
@@ -3069,7 +3069,7 @@ namespace DaySim.ChoiceModels.Actum {
       //			}
     }
 
-    private static DomainModels.Default.Wrappers.TripWrapper GeneratePartialHalfTourIntermediateStop(IHalfTour halfTour, TripWrapper trip, int stopPurpose, IParcelWrapper stopLocation, int mode, int departureTime) {
+    private static TripWrapper GeneratePartialHalfTourIntermediateStop(IHalfTour halfTour, TripWrapper trip, int stopPurpose, IParcelWrapper stopLocation, int mode, int departureTime) {
       if (!Global.Configuration.ShouldRunIntermediateStopGenerationModel) {
         return null;
       }
@@ -3762,7 +3762,7 @@ namespace DaySim.ChoiceModels.Actum {
       }
     }
 
-    private static DomainModels.Default.Wrappers.TripWrapper GenerateIntermediateStopClone(IHalfTour sourceHalfTour, TripWrapper sourceTrip, IHalfTour halfTour, TripWrapper trip) {
+    private static TripWrapper GenerateIntermediateStopClone(IHalfTour sourceHalfTour, TripWrapper sourceTrip, IHalfTour halfTour, TripWrapper trip) {
       //mbtrace
       if (Global.TraceResults) {
         Global.PrintFile.WriteLine("> > > > > > GenerateIntermediateStopClone Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);

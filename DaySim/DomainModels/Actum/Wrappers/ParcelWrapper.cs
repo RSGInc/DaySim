@@ -237,6 +237,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     }
 
 
+    public int FirstPositionInParkAndRideNodeDistanceArray { get; set; }
+
+    public int LastPositionInParkAndRideNodeDistanceArray { get; set; }
 
 
 

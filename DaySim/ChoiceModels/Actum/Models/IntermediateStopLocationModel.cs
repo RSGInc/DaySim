@@ -9,22 +9,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DaySim.DomainModels.Default.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
 using DaySim.Sampling;
-
-using HouseholdDayWrapper = DaySim.DomainModels.Default.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = DaySim.DomainModels.Default.Wrappers.HouseholdWrapper;
-using PersonDayWrapper = DaySim.DomainModels.Default.Wrappers.PersonDayWrapper;
-using PersonWrapper = DaySim.DomainModels.Default.Wrappers.PersonWrapper;
-using TourWrapper = DaySim.DomainModels.Default.Wrappers.TourWrapper;
-using TripWrapper = DaySim.DomainModels.Default.Wrappers.TripWrapper;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class IntermediateStopLocationModel : ChoiceModel {
@@ -210,7 +203,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           return;
         }
 
-        IParcelWrapper destinationParcel = ChoiceModelFactory.Parcels[sampleItem.ParcelId];
+        IActumParcelWrapper destinationParcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[sampleItem.ParcelId];
         alternative.Choice = destinationParcel;
 
         HouseholdWrapper household = (HouseholdWrapper)_trip.Household;
@@ -855,22 +848,22 @@ namespace DaySim.ChoiceModels.Actum.Models {
         IParcelWrapper destination = (leg == 1) ? tripDestination : tourOrigin;
 
         IEnumerable<dynamic> pathTypeModels =
-            PathTypeModelFactory.Model.Run(
-            randomUtility,
-                origin,
-                destination,
-                minute,
-                0,
-                purpose,
-                costCoef,
-                timeCoef,
-                true,
-                1,
-                transitPassOwnership,
-                false,
-                transitDiscountFraction,
-                false,
-                mode);
+           PathTypeModelFactory.Singleton.Run(
+           randomUtility,
+               origin,
+               destination,
+               minute /*outboundTime */,
+               0 /* returnTime */,
+               purpose,
+               costCoef,
+               timeCoef,
+               true /* isDrivingAge */,
+               1 /* householdCars */,
+               transitPassOwnership,
+               false /*carsAreAVs */,
+               transitDiscountFraction,
+               false /* randomChoice */,
+               mode);
 
         dynamic path = pathTypeModels.First();
 

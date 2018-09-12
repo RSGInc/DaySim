@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaySim.ChoiceModels;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
@@ -20,8 +21,8 @@ namespace DaySim.PathTypeModels {
     protected const double MAX_UTILITY = 80D;
     protected const double MIN_UTILITY = -80D;
 
-    protected IParcelWrapper _originParcel;
-    protected IParcelWrapper _destinationParcel;
+    protected IActumParcelWrapper _originParcel;
+    protected IActumParcelWrapper _destinationParcel;
     protected int _originZoneId;
     protected int _destinationZoneId;
     protected int _outboundTime;
@@ -72,8 +73,8 @@ namespace DaySim.PathTypeModels {
 
     private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, int mode) {
       initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, carsAreAVs, transitDiscountFraction, randomChoice, mode);
-      _originParcel = originParcel;
-      _destinationParcel = destinationParcel;
+      _originParcel = (IActumParcelWrapper)originParcel;
+      _destinationParcel = (IActumParcelWrapper)destinationParcel;
     }
     private void initialize(int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, int mode) {
       initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, carsAreAVs, transitDiscountFraction, randomChoice, mode);
@@ -466,7 +467,7 @@ namespace DaySim.PathTypeModels {
       if (!Global.Configuration.OverrideIntraParcelDefaultWalkDistance &&  //MB20180305 This code is wrong for microzones - for now putting in a switch to turn it off
           !useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
         //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
-        && Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone) {
+        && Global.Settings.DestinationScale != Global.Settings.DestinationScales.Zone) {
         _pathTime[pathType] = 1.0;
         _pathDistance[pathType] = 0.01 * Global.Settings.DistanceUnitsPerMile;  // JLBscale.  multiplied by distance units per mile
       }
@@ -903,7 +904,7 @@ namespace DaySim.PathTypeModels {
     }
 
 
-    protected void RunSimpleParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected virtual void RunSimpleParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
@@ -1096,7 +1097,7 @@ namespace DaySim.PathTypeModels {
 
     }
 
-    protected void RunStopAreaParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected virtual void RunStopAreaParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
@@ -1496,6 +1497,10 @@ namespace DaySim.PathTypeModels {
     }
     protected static double GetXYDistance(double x1, double y1, double x2, double y2) {
       return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
+      throw new NotImplementedException("This implemented only in Actum");
     }
   }
 

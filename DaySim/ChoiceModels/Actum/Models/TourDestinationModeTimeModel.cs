@@ -17,12 +17,6 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Sampling;
 using DaySim.Sampling;
 
-using HouseholdDayWrapper = DaySim.DomainModels.Default.Wrappers.HouseholdDayWrapper;
-using HouseholdWrapper = DaySim.DomainModels.Default.Wrappers.HouseholdWrapper;
-using PersonDayWrapper = DaySim.DomainModels.Default.Wrappers.PersonDayWrapper;
-using PersonWrapper = DaySim.DomainModels.Default.Wrappers.PersonWrapper;
-using TourWrapper = DaySim.DomainModels.Default.Wrappers.TourWrapper;
-
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TourDestinationModeTimeModel : ChoiceModel {
     private const string CHOICE_MODEL_NAME = "ActumTourDestinationModeTimeModel";

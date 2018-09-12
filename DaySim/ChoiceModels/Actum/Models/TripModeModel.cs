@@ -13,8 +13,6 @@ using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
-using HouseholdDayWrapper = DaySim.DomainModels.Default.Wrappers.HouseholdDayWrapper;
-using TripWrapper = DaySim.DomainModels.Default.Wrappers.TripWrapper;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TripModeModel : ChoiceModel {

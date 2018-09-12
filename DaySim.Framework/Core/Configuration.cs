@@ -554,7 +554,14 @@ namespace DaySim.Framework.Core {
 
     //new since 203
     [XmlAttribute]
+    public double PathImpedance_WalkAccessTimeWeight { get; set; }
+
+    //new since 203
+    [XmlAttribute]
     public double PathImpedance_TransitAccessEgressTimeWeight { get; set; }
+
+    [XmlAttribute]
+    public double PathImpedance_BikeAccessTimeWeight { get; set; }
 
     [XmlAttribute]
     public double PathImpedance_WalkTimeWeight { get; set; }
@@ -568,6 +575,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double PathImpedance_WalkMinutesPerMile { get; set; }
     // replaced by PathImpedance_WalkMinutesPerDistanceUnit.  Retained for backward comatibility.
+
+    [XmlAttribute]
+    public double PathImpedance_BikeMinutesPerDistanceUnit { get; set; }
 
     [XmlAttribute]
     public double PathImpedance_TransitWalkAccessDistanceLimit { get; set; }
@@ -1557,14 +1567,21 @@ namespace DaySim.Framework.Core {
 
     //new since 203
     [XmlAttribute]
+    public int MaximumParcelToStopAreaLengthUnits { get; set; }
+    [XmlAttribute]
     public int MaximumParcelToStopAreaDistance { get; set; }
     [XmlAttribute]
     public int MaximumStopAreasToSearch { get; set; }
     [XmlAttribute]
     public int MaximumParcelToStopAreaDistanceParkAndRide { get; set; }
     [XmlAttribute]
+    public int MaximumParcelToStopAreaLengthUnitsParkAndRide { get; set; }
+
+    [XmlAttribute]
     public int MaximumStopAreasToSearchParkAndRide { get; set; }
 
+    [XmlAttribute]
+    public double MaximumDistanceUnitsToDriveToParkAndRide { get; set; }
     [XmlAttribute]
     public double MaximumMilesToDriveToParkAndRide { get; set; }
     [XmlAttribute]
@@ -1589,7 +1606,10 @@ namespace DaySim.Framework.Core {
     public char MicrozoneToParkAndRideNodeIndexDelimiter { get; set; }
 
     [XmlAttribute]
-    public int DestinationScale { get; set; }
+    public int MaximumParcelToStopAreaLengthUnitsToBike { get; set; }
+
+    [XmlAttribute]
+    public int MinimumParcelToStopAreaLengthUnitsToBike { get; set; }
 
     [XmlAttribute]
     public int NumberOfODShadowPricingDistricts { get; set; }
@@ -1808,7 +1828,10 @@ namespace DaySim.Framework.Core {
     public double AV_SharingEconomy_ConstantForOwning4Vehicles { get; set; }
 
     [XmlAttribute]
-    public double AV_SharingEconomy_DensityCoeffcientForOwning0Vehicles { get; set; }
+    public double AV_SharingEconomy_DensityCoefficientForOwning0Vehicles { get; set; }
+
+    [XmlAttribute]
+    public double PaidRideShare_PathImpedance_Gamma_Cost { get; set; }
 
     [XmlAttribute]
     public double MaximumXYDistanceToDestinationParking { get; set; }

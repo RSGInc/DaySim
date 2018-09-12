@@ -276,11 +276,11 @@ namespace DaySim.ChoiceModels.H.Models {
           if (pPatternType[t1] > 0 && pPatternType[t2] > 0) {
             double zzDist = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, Global.Settings.Times.EightAM, pUsualLocationZoneId[t1], pUsualLocationZoneId[t2]).Variable;
             double circuityDistance =
-                            (zzDist > Global.Configuration.MaximumBlendingDistance || Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Parcel)
+                            (zzDist > Global.Configuration.MaximumBlendingDistance || Global.Settings.DestinationScale != Global.Settings.DestinationScales.Parcel)
                                 ? pUsualLocationParcel[t1].CalculateShortDistance(pUsualLocationParcel[t2])
                                 : Constants.DEFAULT_VALUE;
             SkimValue skimValue =
-                            Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Parcel
+                            Global.Settings.DestinationScale != Global.Settings.DestinationScales.Parcel
                                 ? ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, Global.Settings.Times.EightAM, pUsualLocationZoneId[t1], pUsualLocationZoneId[t2])
                                 : ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, Global.Settings.Times.EightAM, pUsualLocationParcel[t1], pUsualLocationParcel[t2], circuityDistance);
             distanceInMiles = skimValue.BlendVariable;

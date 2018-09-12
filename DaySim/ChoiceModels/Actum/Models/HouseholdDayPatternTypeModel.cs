@@ -9,7 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DaySim.DomainModels.Default.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -33,15 +33,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.HouseholdDayPatternTypeModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
-      int nBatches = ParallelUtility.NBatches;
-      i3 = new int[4, 4, 4, 6, 6, 6, 6, 6, nBatches];
-      xt = new int[6, 4, nBatches];
+      int nThreads = ParallelUtility.NThreads;
+      i3 = new int[4, 4, 4, 6, 6, 6, 6, 6, nThreads];
+      xt = new int[6, 4, nThreads];
 
-      i2 = new int[9, 9, 6, 6, 6, 6, 6, nBatches];
+      i2 = new int[9, 9, 6, 6, 6, 6, 6, nThreads];
 
-      component1 = new int[4, 6, nBatches];
-      component2 = new int[4, 6, 6, 6, 6, 6, nBatches];
-      component3 = new int[4, 6, 6, 6, 6, 6, nBatches];
+      component1 = new int[4, 6, nThreads];
+      component2 = new int[4, 6, 6, 6, 6, 6, nThreads];
+      component3 = new int[4, 6, 6, 6, 6, 6, nThreads];
     }
 
     // array associating alternative with the purposes of each of the five possible positions in the alternative
@@ -495,7 +495,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int[,] altPTypes, int numberPersonsModeledJointly, int choice = Constants.DEFAULT_VALUE) {
-      int currentBatch = ParallelUtility.GetBatchFromThreadId();
       bool includeThreeWayInteractions = false;   // set this at compile time, dependign on whether we want to include or exclude 3-way interactions.
       int numberPersonTypes = 7;  // set this at compile time; 7 for Actum
       int numberAlternatives = numberPersonsModeledJointly == 4 ? 120 : 363;

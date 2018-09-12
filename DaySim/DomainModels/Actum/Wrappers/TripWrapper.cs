@@ -34,7 +34,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     //public IActumPersonDayWrapper PersonDay { get; set; }
 
-    public IActumTourWrapper Tour { get; set; }
+    private new IActumTourWrapper Tour { get; set; }
 
     //public IActumParcelWrapper OriginParcel { get; set; }
 
@@ -123,7 +123,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region wrapper methods
 
-    public virtual void SetDriverOrPassenger(List<ITripWrapper> trips) {
+    public override void SetDriverOrPassenger(List<ITripWrapper> trips) {
       if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Transit || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
         DriverType = Global.Settings.DriverTypes.NotApplicable;
       } else if (Mode == Global.Settings.Modes.Sov || Mode == Global.Settings.Modes.HovDriver) {
@@ -139,7 +139,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       }
     }
 
-    public virtual void SetTripValueOfTime() {
+    public override void SetTripValueOfTime() {
       double costDivisor =
                 Mode == Global.Settings.Modes.HovDriver && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
                     ? Global.Configuration.Coefficients_HOV2CostDivisor_Work

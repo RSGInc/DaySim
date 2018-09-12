@@ -167,7 +167,7 @@ namespace DaySim.Sampling {
           SkimValue skimValue = ImpedanceRoster.GetValue(_variableName, _mode, _pathType, _vot, _minute, origin.Id, destination.Id);
 
           //jb 20130707 mimic mb fix for 0 intrazonals
-          if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone && origin.Id == destination.Id && skimValue.Variable < Constants.EPSILON) {
+          if (Global.Settings.DestinationScale == Global.Settings.DestinationScales.Zone && origin.Id == destination.Id && skimValue.Variable < Constants.EPSILON) {
             if (_variableName == "distance") {
               skimValue.Variable = 0.25 * Global.Settings.DistanceUnitsPerMile;
             } else if (_variableName == "ivtime" || _variableName == "time" || _variableName == "ivtfree") {

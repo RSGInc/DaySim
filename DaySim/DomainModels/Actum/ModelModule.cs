@@ -5,86 +5,44 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using System;
 using DaySim.DomainModels.Actum.Models;
 using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
-using Ninject.Modules;
 
 namespace DaySim.DomainModels.Actum {
   [UsedImplicitly]
   [Factory(Factory.ModuleFactory, DataType = DataType.Actum)]
-  public class ModelModule : NinjectModule {
-    public override void Load() {
-      Bind<Reader<Parcel>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingParcelPath);
+  public class ModelModule {
+    public ModelModule() {
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<Parcel>>>(() => new Reader<Parcel>(Global.WorkingParcelPath));
 
-      Bind<Reader<ParcelNode>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingParcelNodePath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<ParcelNode>>>(() => new Reader<ParcelNode>(Global.WorkingParcelNodePath));
 
-      Bind<Reader<ParkAndRideNode>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingParkAndRideNodePath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<ParkAndRideNode>>>(() => new Reader<ParkAndRideNode>(Global.WorkingParkAndRideNodePath));
 
-      Bind<Reader<TransitStopArea>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingTransitStopAreaPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<TransitStopArea>>>(() => new Reader<TransitStopArea>(Global.WorkingTransitStopAreaPath));
 
-      Bind<Reader<Zone>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingZonePath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<Zone>>>(() => new Reader<Zone>(Global.WorkingZonePath));
 
-      Bind<Reader<Household>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingHouseholdPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<Household>>>(() => new Reader<Household>(Global.WorkingHouseholdPath));
 
-      Bind<Reader<Person>>().
-          ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingPersonPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<Person>>>(() => new Reader<Person>(Global.WorkingPersonPath));
 
-      Bind<Reader<HouseholdDay>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingHouseholdDayPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<HouseholdDay>>>(() => new Reader<HouseholdDay>(Global.WorkingHouseholdDayPath));
 
-      Bind<Reader<PersonDay>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingPersonDayPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<PersonDay>>>(() => new Reader<PersonDay>(Global.WorkingPersonDayPath));
 
-      Bind<Reader<Tour>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingTourPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<Tour>>>(() => new Reader<Tour>(Global.WorkingTourPath));
 
-      Bind<Reader<Trip>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingTripPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<Trip>>>(() => new Reader<Trip>(Global.WorkingTripPath));
 
-      Bind<Reader<JointTour>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingJointTourPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<JointTour>>>(() => new Reader<JointTour>(Global.WorkingJointTourPath));
 
-      Bind<Reader<FullHalfTour>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingFullHalfTourPath);
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<FullHalfTour>>>(() => new Reader<FullHalfTour>(Global.WorkingFullHalfTourPath));
 
-      Bind<Reader<PartialHalfTour>>()
-          .ToSelf()
-          .InSingletonScope()
-          .WithConstructorArgument("path", Global.WorkingPartialHalfTourPath);
-    }
-  }
-}
+      Global.ContainerDaySim.RegisterInstance<Func<Reader<PartialHalfTour>>>(() => new Reader<PartialHalfTour>(Global.WorkingPartialHalfTourPath));
+    }   //end constructor
+  }   //end class
+}   //end namespace

@@ -8,7 +8,7 @@
 
 using System;
 using System.Collections.Generic;
-using DaySim.DomainModels.Default.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
@@ -17,8 +17,6 @@ using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.Sampling;
-
-using PersonWrapper = DaySim.DomainModels.Default.Wrappers.PersonWrapper;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkLocationModel : ChoiceModel {
