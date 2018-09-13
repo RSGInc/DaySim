@@ -35,6 +35,8 @@ namespace DaySim {
     public bool Available;
 
     public IPathTypeModel ModeLOS;
+    
+    //PathType_Actum uses these fields which used to be and should be private
     public int EarliestFeasibleDepatureTime { get; set; }
     public int LatestFeasibleDepartureTime { get; set; }
 
