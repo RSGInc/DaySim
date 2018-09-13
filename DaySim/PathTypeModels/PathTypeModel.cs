@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaySim.ChoiceModels;
-using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
@@ -21,8 +20,8 @@ namespace DaySim.PathTypeModels {
     protected const double MAX_UTILITY = 80D;
     protected const double MIN_UTILITY = -80D;
 
-    protected IActumParcelWrapper _originParcel;
-    protected IActumParcelWrapper _destinationParcel;
+    protected IParcelWrapper _originParcel;
+    protected IParcelWrapper _destinationParcel;
     protected int _originZoneId;
     protected int _destinationZoneId;
     protected int _outboundTime;
@@ -73,8 +72,8 @@ namespace DaySim.PathTypeModels {
 
     private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, int mode) {
       initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, carsAreAVs, transitDiscountFraction, randomChoice, mode);
-      _originParcel = (IActumParcelWrapper)originParcel;
-      _destinationParcel = (IActumParcelWrapper)destinationParcel;
+      _originParcel = originParcel;
+      _destinationParcel = destinationParcel;
     }
     private void initialize(int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, int mode) {
       initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, carsAreAVs, transitDiscountFraction, randomChoice, mode);
@@ -113,49 +112,7 @@ namespace DaySim.PathTypeModels {
     public virtual double PathParkAndRideWalkAccessEgressTime { get; protected set; }
     public virtual double PathTransitWalkAccessEgressTime { get; protected set; }
 
-
     public virtual bool Available { get; protected set; }
-    int IPathTypeModel.Mode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-    double IPathTypeModel.GeneralizedTimeLogsum => throw new NotImplementedException();
-
-    double IPathTypeModel.GeneralizedTimeChosen => throw new NotImplementedException();
-
-    double IPathTypeModel.PathTime => throw new NotImplementedException();
-
-    double IPathTypeModel.PathDistance => throw new NotImplementedException();
-
-    double IPathTypeModel.PathCost => throw new NotImplementedException();
-
-    int IPathTypeModel.PathType => throw new NotImplementedException();
-
-    int IPathTypeModel.PathDestinationParkingNodeId => throw new NotImplementedException();
-
-    int IPathTypeModel.PathDestinationParkingType => throw new NotImplementedException();
-
-    double IPathTypeModel.PathDestinationParkingCost => throw new NotImplementedException();
-
-    double IPathTypeModel.PathDestinationParkingWalkTime => throw new NotImplementedException();
-
-    int IPathTypeModel.PathParkAndRideNodeId => throw new NotImplementedException();
-
-    double IPathTypeModel.PathParkAndRideTransitTime => throw new NotImplementedException();
-
-    double IPathTypeModel.PathParkAndRideTransitDistance => throw new NotImplementedException();
-
-    double IPathTypeModel.PathParkAndRideTransitCost => throw new NotImplementedException();
-
-    double IPathTypeModel.PathParkAndRideTransitGeneralizedTime => throw new NotImplementedException();
-
-    bool IPathTypeModel.Available => throw new NotImplementedException();
-
-    int IPathTypeModel.PathOriginStopAreaKey => throw new NotImplementedException();
-
-    int IPathTypeModel.PathDestinationStopAreaKey => throw new NotImplementedException();
-
-    double IPathTypeModel.PathParkAndRideWalkAccessEgressTime => throw new NotImplementedException();
-
-    double IPathTypeModel.PathTransitWalkAccessEgressTime => throw new NotImplementedException();
 
     public virtual List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
       List<int> modes = new List<int>();
