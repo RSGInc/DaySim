@@ -212,7 +212,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       IHouseholdWrapper household = trip.Household;
       Framework.DomainModels.Models.IHouseholdTotals householdTotals = household.HouseholdTotals;
       IPersonWrapper person = trip.Person;
-      IActumTourWrapper tour = trip.Tour;
+      ITourWrapper tour = trip.Tour;
       Framework.DomainModels.Models.IHalfTour halfTour = trip.HalfTour;
 
       // household inputs
@@ -245,7 +245,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int CarDrivNotAloneFlag = tour.IsHov2Mode().ToFlag();
       int CarPassengerFlag = tour.IsHov3Mode().ToFlag();
       int transitTourFlag = tour.IsTransitMode().ToFlag();
-      int paidRideShareTourFlag = tour.IsPaidRideShareMode().ToFlag();
+      int paidRideShareTourFlag = ((IActumTourWrapper)tour).IsPaidRideShareMode().ToFlag();
 
       int homeBasedWorkTourFlag = (tour.IsHomeBasedTour && tour.IsWorkPurpose()).ToFlag();
       int homeBasedSchoolTourFlag = (tour.IsHomeBasedTour && tour.IsSchoolPurpose()).ToFlag();

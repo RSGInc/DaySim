@@ -201,7 +201,7 @@ namespace DaySim.PathTypeModels {
     }   //end RegionSpecificTransitImpedanceCalculation
 
 
-    public void RunModel(IRandomUtility randomUtility, bool useZones = false) {
+    public virtual void RunModel(IRandomUtility randomUtility, bool useZones = false) {
       if (Mode == Global.Settings.Modes.Hov2) {
         _tourCostCoefficient
           = _tourCostCoefficient /
@@ -350,7 +350,7 @@ namespace DaySim.PathTypeModels {
     }
 
 
-    protected void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected virtual void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
       bool useMicrozoneSkims = !useZones &&
                                 ((skimMode == Global.Settings.Modes.Walk && Global.Configuration.UseMicrozoneSkimsForWalkMode) ||
                                  (skimMode == Global.Settings.Modes.Bike && Global.Configuration.UseMicrozoneSkimsForBikeMode));
@@ -490,7 +490,7 @@ namespace DaySim.PathTypeModels {
       _expUtility[pathType] = _utility[pathType] > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : _utility[pathType] < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(_utility[pathType]);
     }
 
-    protected void RunAutoModel(int skimModeIn, int pathType, double votValue, bool useZones) {
+    protected override void RunAutoModel(int skimModeIn, int pathType, double votValue, bool useZones) {
 
       bool useAVVOT = ((skimModeIn != Global.Settings.Modes.PaidRideShare && _carsAreAVs && Global.Configuration.AV_IncludeAutoTypeChoice)
                      || (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.AV_PaidRideShareModeUsesAVs));
@@ -769,7 +769,7 @@ namespace DaySim.PathTypeModels {
 
     }
 
-    protected void RunSimpleWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected virtual void RunSimpleWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
 
       if (!useZones) {
         // get zones associated with parcels for transit path
@@ -813,7 +813,7 @@ namespace DaySim.PathTypeModels {
       _pathDistance[pathType] = distance;
     }
 
-    protected void RunStopAreaWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected virtual void RunStopAreaWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
 
       if (useZones) {
         return;
@@ -909,7 +909,7 @@ namespace DaySim.PathTypeModels {
         return;
       }
       int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
-      IEnumerable<IDestinationParkingNodeWrapper> parkAndRideNodes;
+      IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
 
       bool knrPathType = (pathType >= Global.Settings.PathTypes.TransitType1_Knr && pathType <= Global.Settings.PathTypes.TransitType5_Knr);
       bool tncPathType = (pathType >= Global.Settings.PathTypes.TransitType1_TNC && pathType <= Global.Settings.PathTypes.TransitType5_TNC);
@@ -964,9 +964,9 @@ namespace DaySim.PathTypeModels {
                     ? (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
                     : (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel).Variable;
 
-        IDestinationParkingNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
+        IParkAndRideNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
 
-        parkAndRideNodes = new List<IDestinationParkingNodeWrapper> { node };
+        parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
       } else {
         parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => (n.Capacity > Constants.EPSILON || (n.Capacity == 0 && knrPathType)));
       }
@@ -1102,7 +1102,7 @@ namespace DaySim.PathTypeModels {
         return;
       }
       int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
-      IEnumerable<IDestinationParkingNodeWrapper> parkAndRideNodes;
+      IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
 
       bool knrPathType = (pathType >= Global.Settings.PathTypes.TransitType1_Knr && pathType <= Global.Settings.PathTypes.TransitType5_Knr);
       bool tncPathType = (pathType >= Global.Settings.PathTypes.TransitType1_TNC && pathType <= Global.Settings.PathTypes.TransitType5_TNC);
@@ -1160,9 +1160,9 @@ namespace DaySim.PathTypeModels {
                     ? (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
                     : (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel).Variable;
 
-        IDestinationParkingNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
+        IParkAndRideNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
 
-        parkAndRideNodes = new List<IDestinationParkingNodeWrapper> { node };
+        parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
       } else {
         parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => (n.Capacity > Constants.EPSILON || (n.Capacity == 0 && knrPathType) || (n.Capacity == 0 && tncPathType)));
       }
@@ -1469,7 +1469,7 @@ namespace DaySim.PathTypeModels {
 
       return path;
     }
-    protected static double GetTransitWalkTime(IParcelWrapper parcel, int pathType, double boardings) {
+    protected virtual double GetTransitWalkTime(IParcelWrapper parcel, int pathType, double boardings) {
       double walkDist = parcel.DistanceToLocalBus; // default is local bus (feeder), for any submode
 
       double altDist;

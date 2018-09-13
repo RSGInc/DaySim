@@ -130,7 +130,7 @@ namespace DaySim.PathTypeModels {
       return list;
     }
 
-    private void RunModel(IRandomUtility randomUtility, bool useZones = false) {
+    public override void RunModel(IRandomUtility randomUtility, bool useZones = false) {
       if (Mode == Global.Settings.Modes.Hov2) {
         _tourCostCoefficient
             = _tourCostCoefficient /
@@ -312,7 +312,7 @@ namespace DaySim.PathTypeModels {
     }
 
 
-    private void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected override void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
       double zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
       double circuityDistance =
                 (zzDist > Global.Configuration.MaximumBlendingDistance)
@@ -480,7 +480,7 @@ namespace DaySim.PathTypeModels {
       _pathDestinationAccessCost[pathType] = 0.0;
     }
 
-    private void RunAutoModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected override void RunAutoModel(int skimMode, int pathType, double votValue, bool useZones) {
       _pathCost[pathType] =
           useZones
               ? ImpedanceRoster.GetValue("toll", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
@@ -839,7 +839,7 @@ namespace DaySim.PathTypeModels {
       _pathDestinationAccessCost[pathType] = 0.0;
     }
 
-    private void RunSimpleWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected override void RunSimpleWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
 
       if (!useZones) {
         // get zones associated with parcels for transit path
@@ -847,7 +847,7 @@ namespace DaySim.PathTypeModels {
         _destinationZoneId = _destinationParcel.ZoneId;
       }
 
-      TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, _originZoneId, _destinationZoneId, _transitPassOwnership);
+      TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, _originZoneId, _destinationZoneId, _transitPassOwnership);
       if (!transitPath.Available) {
         return;
       }
@@ -868,7 +868,7 @@ namespace DaySim.PathTypeModels {
       _pathDistance[pathType] = distance;
     }
 
-    private void RunStopAreaWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected override void RunStopAreaWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
 
       if (useZones) {
         return;
@@ -915,7 +915,7 @@ namespace DaySim.PathTypeModels {
           double walkDistance = (oWalkDistance + dWalkDistance);
           double walkTime = (oWalkTime + dWalkTime);
 
-          TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dStopArea, _transitPassOwnership);
+          TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dStopArea, _transitPassOwnership);
           if (!transitPath.Available) {
             continue;
           }
@@ -980,7 +980,7 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IDestinationParkingNodeWrapper> parkAndRideNodes;
+      IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
 
       if (Global.Configuration.ShouldReadParkAndRideNodeSkim) {
         int nodeId =
@@ -988,9 +988,9 @@ namespace DaySim.PathTypeModels {
                         ? (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
                         : (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel).Variable;
 
-        IDestinationParkingNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
+        IParkAndRideNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
 
-        parkAndRideNodes = new List<IDestinationParkingNodeWrapper> { node };
+        parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
       } else {
         parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity > 0);
       }
@@ -1017,7 +1017,7 @@ namespace DaySim.PathTypeModels {
         int parkAndRideZoneId = node.ZoneId;
         double parkAndRideParkingCost = node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
-        TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideZoneId, destinationZoneId, _transitPassOwnership);
+        TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideZoneId, destinationZoneId, _transitPassOwnership);
         if (!transitPath.Available) {
           continue;
         }
@@ -1203,7 +1203,7 @@ namespace DaySim.PathTypeModels {
           double destinationWalkDistance = 2 * dWalkLength / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile;
           double destinationWalkTime = destinationWalkDistance * Global.PathImpedance_WalkMinutesPerDistanceUnit;
 
-          TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dStopArea, _transitPassOwnership);
+          TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dStopArea, _transitPassOwnership);
           if (!transitPath.Available) {
             continue;
           }
@@ -1407,7 +1407,7 @@ namespace DaySim.PathTypeModels {
           double destinationWalkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * dWalkLength / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile;
           destinationWalkTime *= 2; //round trip
 
-          TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dStopArea, _transitPassOwnership);
+          TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dStopArea, _transitPassOwnership);
           if (!transitPath.Available) {
             continue;
           }
@@ -1454,7 +1454,7 @@ namespace DaySim.PathTypeModels {
     }
 
 
-    public class TransitPath {
+    public class TransitPath_Actum {
       public bool Available { get; set; }
       public double Time { get; set; }
       public double Distance { get; set; }
@@ -1464,9 +1464,9 @@ namespace DaySim.PathTypeModels {
       public double Utility { get; set; }
     }
 
-    private PathTypeModel_Actum.TransitPath GetTransitPath(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int transitPassOwnership) {
+    private PathTypeModel_Actum.TransitPath_Actum GetTransitPath(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int transitPassOwnership) {
 
-      TransitPath path = new PathTypeModel_Actum.TransitPath {
+      TransitPath_Actum path = new PathTypeModel_Actum.TransitPath_Actum {
         Available = true
       };
 
@@ -1589,7 +1589,7 @@ namespace DaySim.PathTypeModels {
     }
 
 
-    private static double GetTransitWalkTime(IParcelWrapper parcel, int pathType, double boardings) {
+    protected override double GetTransitWalkTime(IParcelWrapper parcel, int pathType, double boardings) {
       double walkDist = parcel.DistanceToLocalBus; // default is local bus (feeder), for any submode
 
       double altDist;
@@ -1989,7 +1989,7 @@ namespace DaySim.PathTypeModels {
           foreach (IDestinationParkingNodeWrapper dStopAreaNode in dStopAreaNodes) {
             int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
 
-            TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
+            TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
             if (!transitPath.Available) {
               continue;
             }
@@ -2136,7 +2136,7 @@ namespace DaySim.PathTypeModels {
 
             double destinationWalkDistance = 2 * dWalkLength / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile;
             double destinationWalkTime = destinationWalkDistance * Global.PathImpedance_WalkMinutesPerDistanceUnit;
-            TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dStopArea, _transitPassOwnership);
+            TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dStopArea, _transitPassOwnership);
             if (!transitPath.Available) {
               continue;
             }
@@ -2288,7 +2288,7 @@ namespace DaySim.PathTypeModels {
             //loop on stop areas associated with the dnode
             foreach (IDestinationParkingNodeWrapper dStopAreaNode in dStopAreaNodes) {
               int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
-              TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
+              TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
               if (!transitPath.Available) {
                 continue;
               }
@@ -2431,7 +2431,7 @@ namespace DaySim.PathTypeModels {
           //loop on stop areas associated with the dnode
           foreach (IDestinationParkingNodeWrapper dStopAreaNode in dStopAreaNodes) {
             int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
-            TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dParkAndRideStopArea, _transitPassOwnership);
+            TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dParkAndRideStopArea, _transitPassOwnership);
             if (!transitPath.Available) {
               continue;
             }
@@ -2598,7 +2598,7 @@ namespace DaySim.PathTypeModels {
                 continue;
               }
               int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
-              TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
+              TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
               if (!transitPath.Available) {
                 continue;
               }

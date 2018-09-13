@@ -19,7 +19,7 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     double[] ExogenousLoad { get; set; }
 
-    double[] ParkAndRideLoad { get; set; }
+    double[] ParkingLoad { get; set; }
 
     #endregion
 

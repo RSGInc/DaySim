@@ -14,6 +14,7 @@ using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
 using DaySim.PathTypeModels;
@@ -85,7 +86,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       }
     }
 
-    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TripWrapper trip, HouseholdDayWrapper householdDay, int sampleSize, IActumParcelWrapper choice = null) {
+    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TripWrapper trip, HouseholdDayWrapper householdDay, int sampleSize, IParcelWrapper choice = null) {
       PersonDayWrapper personDay = (PersonDayWrapper)trip.PersonDay;
       TourWrapper tour = (TourWrapper)trip.Tour;
 
@@ -838,14 +839,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
       }
 
-      private static void GetGenTime(IRandomUtility randomUtility, int mode, int purpose, double costCoef, double timeCoef, double transitDiscountFraction, int transitPassOwnership, int leg, IActumParcelWrapper tripOrigin, IActumParcelWrapper tripDestination, IActumParcelWrapper tourOrigin, out double dis, out double tim, out double gtim, int minute = -1, double parkHours = 0.0) {
+      private static void GetGenTime(IRandomUtility randomUtility, int mode, int purpose, double costCoef, double timeCoef, double transitDiscountFraction, int transitPassOwnership, int leg, IParcelWrapper tripOrigin, IParcelWrapper tripDestination, IParcelWrapper tourOrigin, out double dis, out double tim, out double gtim, int minute = -1, double parkHours = 0.0) {
         if (minute < 0) {
           // default minute of day
           minute = DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Start;
         }
 
-        IActumParcelWrapper origin = (leg == 1) ? tripOrigin : tripDestination;
-        IActumParcelWrapper destination = (leg == 1) ? tripDestination : tourOrigin;
+        IParcelWrapper origin = (leg == 1) ? tripOrigin : tripDestination;
+        IParcelWrapper destination = (leg == 1) ? tripDestination : tourOrigin;
 
         IEnumerable<dynamic> pathTypeModels =
            PathTypeModelFactory.Singleton.Run(
@@ -885,7 +886,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
       }
 
-      public static bool ShouldRunInEstimationModeForModel(IActumTripWrapper trip, IActumTourWrapper tour, int tourMode) {
+      public static bool ShouldRunInEstimationModeForModel(IActumTripWrapper trip, ITourWrapper tour, int tourMode) {
         // determine validity and need, then characteristics
         // detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
         int excludeReason = 0;

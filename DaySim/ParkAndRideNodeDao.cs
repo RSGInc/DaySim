@@ -17,7 +17,7 @@ using DaySim.ParkAndRideShadowPricing;
 
 namespace DaySim {
   public sealed class ParkAndRideNodeDao {
-    private readonly Dictionary<int, Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper> _nodes = new Dictionary<int, Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper>();
+    private readonly Dictionary<int, IParkAndRideNodeWrapper> _nodes = new Dictionary<int, IParkAndRideNodeWrapper>();
     private readonly Dictionary<int, int[]> _zoneIdKeys = new Dictionary<int, int[]>();
     private readonly Dictionary<int, int[]> _parcelIdKeys = new Dictionary<int, int[]>();
 
@@ -39,7 +39,7 @@ namespace DaySim {
       Dictionary<int, Framework.ShadowPricing.IParkAndRideShadowPriceNode> parkAndRideShadowPrices = ParkAndRideShadowPriceReader.ReadParkAndRideShadowPrices();
 
       foreach (IParkAndRideNode parkAndRideNode in reader) {
-        Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper node = creator.CreateWrapper(parkAndRideNode);
+        IParkAndRideNodeWrapper node = creator.CreateWrapper(parkAndRideNode);
         int id = node.Id;
 
         _nodes.Add(id, node);
@@ -76,20 +76,20 @@ namespace DaySim {
       }
     }
 
-    public IEnumerable<Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper> Nodes => _nodes.Values;
+    public IEnumerable<IParkAndRideNodeWrapper> Nodes => _nodes.Values;
 
-    public IDestinationParkingNodeCreator Get(int id) {
+    public IParkAndRideNodeWrapper Get(int id) {
 
-      return _nodes.TryGetValue(id, out Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper parkAndRideNode) ? parkAndRideNode : null;
+      return _nodes.TryGetValue(id, out IParkAndRideNodeWrapper parkAndRideNode) ? parkAndRideNode : null;
     }
 
-    public Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper[] GetAllByZoneId(int zoneId) {
+    public IParkAndRideNodeWrapper[] GetAllByZoneId(int zoneId) {
 
       if (!_zoneIdKeys.TryGetValue(zoneId, out int[] key)) {
-        return new Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper[0];
+        return new IParkAndRideNodeWrapper[0];
       }
 
-      Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper[] nodes = new Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper[key.Length];
+      IParkAndRideNodeWrapper[] nodes = new IParkAndRideNodeWrapper[key.Length];
 
       for (int i = 0; i < key.Length; i++) {
         nodes[i] = _nodes[key[i]];
@@ -98,13 +98,13 @@ namespace DaySim {
       return nodes;
     }
 
-    public Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper[] GetAllByNearestParcelId(int parcelId) {
+    public IParkAndRideNodeWrapper[] GetAllByNearestParcelId(int parcelId) {
 
       if (!_parcelIdKeys.TryGetValue(parcelId, out int[] key)) {
-        return new Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper[0];
+        return new IParkAndRideNodeWrapper[0];
       }
 
-      Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper[] nodes = new Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper[key.Length];
+      IParkAndRideNodeWrapper[] nodes = new IParkAndRideNodeWrapper[key.Length];
 
       for (int i = 0; i < key.Length; i++) {
         nodes[i] = _nodes[key[i]];

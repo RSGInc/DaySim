@@ -15,7 +15,7 @@ using DaySim.Framework.Factories;
 namespace DaySim.DomainModels.Creators {
   [UsedImplicitly]
   [Factory(Factory.WrapperFactory, Category = Category.Creator)]
-  public class ParkAndRideNodeCreator<TWrapper, TModel> : IParkAndRideNodeCreator where TWrapper : Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper where TModel : IParkAndRideNode, new() {
+  public class ParkAndRideNodeCreator<TWrapper, TModel> : IParkAndRideNodeCreator where TWrapper : IParkAndRideNodeWrapper where TModel : IParkAndRideNode, new() {
     IParkAndRideNode IParkAndRideNodeCreator.CreateModel() {
       return CreateModel();
     }
@@ -24,7 +24,7 @@ namespace DaySim.DomainModels.Creators {
       return new TModel();
     }
 
-    IDestinationParkingNodeCreator IParkAndRideNodeCreator.CreateWrapper(IParkAndRideNode parkAndRideNode) {
+    IParkAndRideNodeWrapper IParkAndRideNodeCreator.CreateWrapper(IParkAndRideNode parkAndRideNode) {
       return CreateWrapper(parkAndRideNode);
     }
 
