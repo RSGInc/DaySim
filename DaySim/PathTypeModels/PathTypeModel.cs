@@ -1467,7 +1467,7 @@ namespace DaySim.PathTypeModels {
 
       return path;
     }
-    protected virtual double GetTransitWalkTime(IParcelWrapper parcel, int pathType, double boardings) {
+    protected static double GetTransitWalkTime(IParcelWrapper parcel, int pathType, double boardings) {
       double walkDist = parcel.DistanceToLocalBus; // default is local bus (feeder), for any submode
 
       double altDist;
