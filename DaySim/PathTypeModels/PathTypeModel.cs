@@ -112,6 +112,7 @@ namespace DaySim.PathTypeModels {
     public virtual double PathParkAndRideWalkAccessEgressTime { get; protected set; }
     public virtual double PathTransitWalkAccessEgressTime { get; protected set; }
 
+
     public virtual bool Available { get; protected set; }
 
     public virtual List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
@@ -199,7 +200,7 @@ namespace DaySim.PathTypeModels {
     }   //end RegionSpecificTransitImpedanceCalculation
 
 
-    public virtual void RunModel(IRandomUtility randomUtility, bool useZones = false) {
+    public void RunModel(IRandomUtility randomUtility, bool useZones = false) {
       if (Mode == Global.Settings.Modes.Hov2) {
         _tourCostCoefficient
           = _tourCostCoefficient /
@@ -348,7 +349,7 @@ namespace DaySim.PathTypeModels {
     }
 
 
-    protected virtual void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
       bool useMicrozoneSkims = !useZones &&
                                 ((skimMode == Global.Settings.Modes.Walk && Global.Configuration.UseMicrozoneSkimsForWalkMode) ||
                                  (skimMode == Global.Settings.Modes.Bike && Global.Configuration.UseMicrozoneSkimsForBikeMode));
@@ -488,7 +489,7 @@ namespace DaySim.PathTypeModels {
       _expUtility[pathType] = _utility[pathType] > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : _utility[pathType] < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(_utility[pathType]);
     }
 
-    protected virtual void RunAutoModel(int skimModeIn, int pathType, double votValue, bool useZones) {
+    protected void RunAutoModel(int skimModeIn, int pathType, double votValue, bool useZones) {
 
       bool useAVVOT = ((skimModeIn != Global.Settings.Modes.PaidRideShare && _carsAreAVs && Global.Configuration.AV_IncludeAutoTypeChoice)
                      || (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.AV_PaidRideShareModeUsesAVs));
@@ -767,7 +768,7 @@ namespace DaySim.PathTypeModels {
 
     }
 
-    protected virtual void RunSimpleWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected void RunSimpleWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
 
       if (!useZones) {
         // get zones associated with parcels for transit path
@@ -811,7 +812,7 @@ namespace DaySim.PathTypeModels {
       _pathDistance[pathType] = distance;
     }
 
-    protected virtual void RunStopAreaWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected void RunStopAreaWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
 
       if (useZones) {
         return;
@@ -902,7 +903,7 @@ namespace DaySim.PathTypeModels {
     }
 
 
-    protected virtual void RunSimpleParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected void RunSimpleParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
@@ -1095,7 +1096,7 @@ namespace DaySim.PathTypeModels {
 
     }
 
-    protected virtual void RunStopAreaParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
+    protected void RunStopAreaParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
@@ -1493,22 +1494,21 @@ namespace DaySim.PathTypeModels {
           ? walkDist * Global.PathImpedance_WalkMinutesPerDistanceUnit
           : Constants.DEFAULT_VALUE; // -1 is "missing" value
     }
-
     protected static double GetXYDistance(double x1, double y1, double x2, double y2) {
       return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }
 
-    public virtual List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
+    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
       throw new NotImplementedException("Implemented in Actum only");
     }
 
-    public virtual List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
       throw new NotImplementedException("Implemented in Actum only");
     }
 
-    public virtual List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
       throw new NotImplementedException("Implemented in Actum only");
     }
-  } //end class PathTypeModel
+  }
 
-} //end namesapce
+}
