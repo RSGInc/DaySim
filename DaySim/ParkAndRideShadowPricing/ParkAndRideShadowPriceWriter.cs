@@ -9,9 +9,9 @@
 using System;
 using System.IO;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Wrappers;
 //using System.Linq;
 //using System.Text;
+using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ParkAndRideShadowPricing {
   public sealed class ParkAndRideShadowPriceWriter : IDisposable {
