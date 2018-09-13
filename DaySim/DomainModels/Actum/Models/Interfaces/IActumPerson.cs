@@ -32,5 +32,6 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
     int FlexibleWorkHours { get; set; }
 
     int HasSchoolParking { get; set; }
+
   }
 }

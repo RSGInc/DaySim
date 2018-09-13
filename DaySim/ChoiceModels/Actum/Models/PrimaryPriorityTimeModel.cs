@@ -325,7 +325,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           } else {
             available = true;
           }
-          ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available, choice != null && choice == altIndex);
+          ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available, choice == altIndex);
 
           alternative.Choice = altIndex;
 

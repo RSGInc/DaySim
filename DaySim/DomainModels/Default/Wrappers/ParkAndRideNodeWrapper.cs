@@ -15,7 +15,7 @@ using DaySim.Framework.ShadowPricing;
 
 namespace DaySim.DomainModels.Default.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Default)]
-  public class ParkAndRideNodeWrapper : IDestinationParkingNodeWrapper {
+  public class ParkAndRideNodeWrapper : IParkAndRideNodeWrapper {
     private readonly IParkAndRideNode _parkAndRideNode;
 
     [UsedImplicitly]

@@ -84,7 +84,7 @@ namespace DaySim.PathTypeModels {
       return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitPassOwnership, carsAreAVs, transitDiscountFraction, randomChoice, modes.ToArray());
     }
 
-    public virtual List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
+    public override List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
       //		public virtual List<PathTypeModel_Actum> RunAll(IRandomUtility randomUtility, IActumParcelWrapper originParcel, IActumParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice) {
       List<int> modes = new List<int>();
 
@@ -103,7 +103,7 @@ namespace DaySim.PathTypeModels {
       return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitPassOwnership, carsAreAVs, transitDiscountFraction, randomChoice, modes.ToArray());
     }
 
-    public virtual List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
+    public override List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
       //		public virtual List<PathTypeModel_Actum> Run(IRandomUtility randomUtility, IActumParcelWrapper originParcel, IActumParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, params int[] modes) {
       List<IPathTypeModel> list = new List<IPathTypeModel>();
       //			var list = new List<PathTypeModel_Actum>();
@@ -117,6 +117,8 @@ namespace DaySim.PathTypeModels {
 
       return list;
     }
+
+
 
     public override List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
       List<IPathTypeModel> list = new List<IPathTypeModel>();
@@ -1006,7 +1008,7 @@ namespace DaySim.PathTypeModels {
       //double maxMilesToDrive = (Global.Configuration.MaximumDistanceUnitsToDriveToParkAndRide > 0) ? Global.Configuration.MaximumDistanceUnitsToDriveToParkAndRide : 999D;
       //double maxDistanceRatio = (Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination > 0) ? Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination : 99D;
 
-      foreach (IDestinationParkingNodeWrapper node in parkAndRideNodes) {
+      foreach (IParkAndRideNodeWrapper node in parkAndRideNodes) {
         // only look at nodes with positive capacity
         if (node.Capacity < Constants.EPSILON) {
           continue;
@@ -1105,10 +1107,9 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      //int batchNumber = ParallelUtility.GetBatchFromThreadId();
-      IEnumerable<IDestinationParkingNodeWrapper> parkAndRideNodes;
+      IEnumerable<IActumParkAndRideNodeWrapper> parkAndRideNodes;
 
-      parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && n.Auto == 1);
+      parkAndRideNodes = (IEnumerable<IActumParkAndRideNodeWrapper>)ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && ((IActumParkAndRideNodeWrapper)n).Auto == 1);
 
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
@@ -1129,7 +1130,7 @@ namespace DaySim.PathTypeModels {
       if (dFirst <= 0) {
         return;
       }
-      foreach (IDestinationParkingNodeWrapper node in parkAndRideNodes) {
+      foreach (IActumParkAndRideNodeWrapper node in parkAndRideNodes) {
         // only look at nodes with positive capacity and (JLB 201508) auto parking nodes 
         // if (node.Capacity < Constants.EPSILON || !(node.Auto == 1)) {       //Added this logic to declaration/selection of parkAndRideNodes above
         //	continue;
@@ -1268,7 +1269,7 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IDestinationParkingNodeWrapper> parkAndRideNodes;
+      IEnumerable<IActumParkAndRideNodeWrapper> parkAndRideNodes;
 
       //if (Global.Configuration.ShouldReadParkAndRideNodeSkim) {
       //	var nodeId =
@@ -1281,7 +1282,8 @@ namespace DaySim.PathTypeModels {
       //	parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
       //}
       //else {
-      parkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && n.Auto == 1);
+
+      parkAndRideNodes = (IEnumerable<IActumParkAndRideNodeWrapper>)ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && ((IActumParkAndRideNodeWrapper)n).Auto == 1);
       //}
 
       // valid node(s), and tour-level call  
@@ -1302,7 +1304,7 @@ namespace DaySim.PathTypeModels {
       if (dFirst <= 0) {
         return;
       }
-      foreach (IDestinationParkingNodeWrapper node in parkAndRideNodes) {
+      foreach (IActumParkAndRideNodeWrapper node in parkAndRideNodes) {
         // only look at nodes with positive capacity and (JLB 201508) auto parking nodes 
         // if (node.Capacity < Constants.EPSILON || !(node.Auto == 1)) {       //Added this logic to declaration/selection of parkAndRideNodes above
         //	continue;
@@ -1876,10 +1878,10 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IDestinationParkingNodeWrapper> carParkAndRideNodes;
-      carParkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && n.Auto == 1);
-      IEnumerable<IDestinationParkingNodeWrapper> bikeParkAndRideNodes;
-      bikeParkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && n.Auto == 0);
+      IEnumerable<IActumParkAndRideNodeWrapper> carParkAndRideNodes;
+      carParkAndRideNodes = (IEnumerable<IActumParkAndRideNodeWrapper>)ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && ((IActumParkAndRideNodeWrapper)n).Auto == 1);
+      IEnumerable<IActumParkAndRideNodeWrapper> bikeParkAndRideNodes;
+      bikeParkAndRideNodes = (IEnumerable<IActumParkAndRideNodeWrapper>)ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && ((IActumParkAndRideNodeWrapper)n).Auto == 0);
 
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
@@ -1903,7 +1905,7 @@ namespace DaySim.PathTypeModels {
       if (dFirst <= 0) {
         return;
       }
-      foreach (IDestinationParkingNodeWrapper node in carParkAndRideNodes) {
+      foreach (IActumParkAndRideNodeWrapper node in carParkAndRideNodes) {
 
         // use the nearest stop area for transit LOS  
         IActumParcelWrapper parkAndRideParcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
@@ -1980,13 +1982,13 @@ namespace DaySim.PathTypeModels {
           dBikeDistance *= 2;  //round trip
           int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
           int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-          IEnumerable<IDestinationParkingNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
+          IEnumerable<IActumParkAndRideNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
           if (dStopAreaNodes == null) {
             continue;
           }
           double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
           //loop on stop areas associated with the dnode
-          foreach (IDestinationParkingNodeWrapper dStopAreaNode in dStopAreaNodes) {
+          foreach (IActumParkAndRideNodeWrapper dStopAreaNode in dStopAreaNodes) {
             int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
 
             TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
@@ -2066,9 +2068,8 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      //int batchNumber = ParallelUtility.GetBatchFromThreadId();
-      IEnumerable<IDestinationParkingNodeWrapper> bikeParkAndRideNodes;
-      bikeParkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && n.Auto == 0);
+      IEnumerable<IActumParkAndRideNodeWrapper> bikeParkAndRideNodes;
+      bikeParkAndRideNodes = (IEnumerable<IActumParkAndRideNodeWrapper>)ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && ((IActumParkAndRideNodeWrapper)n).Auto == 0);
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;
@@ -2112,13 +2113,13 @@ namespace DaySim.PathTypeModels {
         }
         oBikeDistance *= 2;  //round trip
         int oStopAreaNodeId = Global.ParcelParkAndRideNodeIds[oIndex];
-        IEnumerable<IDestinationParkingNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
+        IEnumerable<IActumParkAndRideNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
         if (oStopAreaNodes == null) {
           continue;
         }
         double oBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * oBikeDistance;
         //loop on stop areas associated with the onode
-        foreach (IDestinationParkingNodeWrapper oStopAreaNode in oStopAreaNodes) {
+        foreach (IActumParkAndRideNodeWrapper oStopAreaNode in oStopAreaNodes) {
           int oParkAndRideStopArea = Global.TransitStopAreaMapping[oStopAreaNode.NearestStopAreaId];
           int oParkAndRideStopAreaKey = oStopAreaNode.NearestStopAreaId;
           double oParkAndRideParkingCost = Math.Min(oStopAreaNode.Cost, oStopAreaNode.CostAnnual / 100.0); //assume that cost for tour is one hundredth of annual cost
@@ -2205,10 +2206,8 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      //int batchNumber = ParallelUtility.GetBatchFromThreadId();
-      IEnumerable<IDestinationParkingNodeWrapper> bikeParkAndRideNodes;
-      bikeParkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && n.Auto == 0);
-      // valid node(s), and tour-level call  
+      IEnumerable<IActumParkAndRideNodeWrapper> bikeParkAndRideNodes;
+      bikeParkAndRideNodes = (IEnumerable<IActumParkAndRideNodeWrapper>)ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && ((IActumParkAndRideNodeWrapper)n).Auto == 0);      // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;
       //user-set limits on search - use high values if not set
@@ -2250,13 +2249,13 @@ namespace DaySim.PathTypeModels {
         }
         oBikeDistance *= 2;  //round trip
         int oStopAreaNodeId = Global.ParcelParkAndRideNodeIds[oIndex];
-        IEnumerable<IDestinationParkingNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
+        IEnumerable<IActumParkAndRideNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
         if (oStopAreaNodes == null) {
           continue;
         }
         double oBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * oBikeDistance;
         //loop on stop areas associated with the onode
-        foreach (IDestinationParkingNodeWrapper oStopAreaNode in oStopAreaNodes) {
+        foreach (IActumParkAndRideNodeWrapper oStopAreaNode in oStopAreaNodes) {
           int oParkAndRideStopArea = Global.TransitStopAreaMapping[oStopAreaNode.NearestStopAreaId];
           int oParkAndRideStopAreaKey = oStopAreaNode.NearestStopAreaId;
           double oParkAndRideParkingCost = Math.Min(oStopAreaNode.Cost, oStopAreaNode.CostAnnual / 100.0); //assume that cost for tour is one hundredth of annual cost
@@ -2280,13 +2279,13 @@ namespace DaySim.PathTypeModels {
             dBikeDistance *= 2;  //round trip
             int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
             int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-            IEnumerable<IDestinationParkingNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
+            IEnumerable<IActumParkAndRideNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
             if (dStopAreaNodes == null) {
               continue;
             }
             double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
             //loop on stop areas associated with the dnode
-            foreach (IDestinationParkingNodeWrapper dStopAreaNode in dStopAreaNodes) {
+            foreach (IActumParkAndRideNodeWrapper dStopAreaNode in dStopAreaNodes) {
               int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
               TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
               if (!transitPath.Available) {
@@ -2364,8 +2363,8 @@ namespace DaySim.PathTypeModels {
         return;
       }
       //int batchNumber = ParallelUtility.GetBatchFromThreadId();
-      IEnumerable<IDestinationParkingNodeWrapper> bikeParkAndRideNodes;
-      bikeParkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && n.Auto == 0);
+      IEnumerable<IActumParkAndRideNodeWrapper> bikeParkAndRideNodes;
+      bikeParkAndRideNodes = (IEnumerable<IActumParkAndRideNodeWrapper>)ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && ((IActumParkAndRideNodeWrapper)n).Auto == 0);
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;
@@ -2423,13 +2422,13 @@ namespace DaySim.PathTypeModels {
           dBikeDistance *= 2;  //round trip
           int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
           int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-          IEnumerable<IDestinationParkingNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
+          IEnumerable<IActumParkAndRideNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
           if (dStopAreaNodes == null) {
             continue;
           }
           double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
           //loop on stop areas associated with the dnode
-          foreach (IDestinationParkingNodeWrapper dStopAreaNode in dStopAreaNodes) {
+          foreach (IActumParkAndRideNodeWrapper dStopAreaNode in dStopAreaNodes) {
             int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
             TransitPath_Actum transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dParkAndRideStopArea, _transitPassOwnership);
             if (!transitPath.Available) {
@@ -2511,9 +2510,8 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      //int batchNumber = ParallelUtility.GetBatchFromThreadId();
-      IEnumerable<IDestinationParkingNodeWrapper> bikeParkAndRideNodes;
-      bikeParkAndRideNodes = ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && n.Auto == 0);
+      IEnumerable<IActumParkAndRideNodeWrapper> bikeParkAndRideNodes;
+      bikeParkAndRideNodes = (IEnumerable<IActumParkAndRideNodeWrapper>)ChoiceModelFactory.ParkAndRideNodeDao.Nodes.Where(n => n.Capacity >= Constants.EPSILON && ((IActumParkAndRideNodeWrapper)n).Auto == 0);
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;
@@ -2556,13 +2554,13 @@ namespace DaySim.PathTypeModels {
         }
         oBikeDistance *= 2;  //round trip
         int oStopAreaNodeId = Global.ParcelParkAndRideNodeIds[oIndex];
-        IEnumerable<IDestinationParkingNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
+        IEnumerable<IParkAndRideNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
         if (oStopAreaNodes == null) {
           continue;
         }
         double oBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * oBikeDistance;
         //loop on stop areas associated with the onode
-        foreach (IDestinationParkingNodeWrapper oStopAreaNode in oStopAreaNodes) {
+        foreach (IParkAndRideNodeWrapper oStopAreaNode in oStopAreaNodes) {
           int oParkAndRideStopAreaKey = oStopAreaNode.NearestStopAreaId;
           if (eligibleTerminals.Values.FirstOrDefault(t => t.Key == oParkAndRideStopAreaKey) == default(ITransitStopArea)) {  // no bikeonboard terminals available at this node
             continue;
@@ -2586,13 +2584,13 @@ namespace DaySim.PathTypeModels {
             dBikeDistance *= 2;  //round trip
             int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
             int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-            IEnumerable<IDestinationParkingNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
+            IEnumerable<IParkAndRideNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
             if (dStopAreaNodes == null) {
               continue;
             }
             double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
             //loop on stop areas associated with the dnode
-            foreach (IDestinationParkingNodeWrapper dStopAreaNode in dStopAreaNodes) {
+            foreach (IParkAndRideNodeWrapper dStopAreaNode in dStopAreaNodes) {
               int dParkAndRideStopAreaKey = dStopAreaNode.NearestStopAreaId;
               if (eligibleTerminals.Values.FirstOrDefault(t => t.Key == dParkAndRideStopAreaKey) == default(ITransitStopArea)) {  // no bikeonboard terminals available at this node
                 continue;

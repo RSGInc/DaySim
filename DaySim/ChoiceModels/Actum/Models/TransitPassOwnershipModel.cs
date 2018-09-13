@@ -13,6 +13,7 @@ using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
+using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Actum.Models {

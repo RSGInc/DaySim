@@ -9,9 +9,9 @@
 using System;
 using System.IO;
 using DaySim.Framework.Core;
+using DaySim.Framework.DomainModels.Wrappers;
 //using System.Linq;
 //using System.Text;
-using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ParkAndRideShadowPricing {
   public sealed class ParkAndRideShadowPriceWriter : IDisposable {
@@ -52,7 +52,7 @@ namespace DaySim.ParkAndRideShadowPricing {
       }
     }
 
-    public void Write(IDestinationParkingNodeWrapper node) {
+    public void Write(IParkAndRideNodeWrapper node) {
       if (node == null) {
         throw new ArgumentNullException("node");
       }

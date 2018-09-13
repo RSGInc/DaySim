@@ -19,15 +19,13 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     double[] ExogenousLoad { get; set; }
 
-    double[] ParkingLoad { get; set; }
+    double[] ParkAndRideLoad { get; set; }
 
     #endregion
 
     #region wrapper methods
 
-    void SetDestinationParkingShadowPricing(Dictionary<int, IDestinationParkingShadowPriceNode> destinationParkingShadowPrices);
-
-    double SetDestinationParkingEffectivePrice(int minArrive, int minDepart, int destPurpose);
+    void SetParkAndRideShadowPricing(Dictionary<int, IParkAndRideShadowPriceNode> parkAndRideShadowPrices);
 
     #endregion
   }

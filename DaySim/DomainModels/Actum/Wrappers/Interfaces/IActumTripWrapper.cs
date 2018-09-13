@@ -14,13 +14,13 @@ namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
 
     bool IsBusinessOriginPurpose();
 
-    new IActumHouseholdWrapper Household { get; set; }
+    //new IActumHouseholdWrapper Household { get; set; }
 
-    new IActumPersonWrapper Person { get; set; }
+    //new IActumPersonWrapper Person { get; set; }
 
-    new IActumPersonDayWrapper PersonDay { get; set; }
+    //new IActumPersonDayWrapper PersonDay { get; set; }
 
-    new IActumTourWrapper Tour { get; set; }
+    //new IActumTourWrapper Tour { get; set; }
 
   }
 }

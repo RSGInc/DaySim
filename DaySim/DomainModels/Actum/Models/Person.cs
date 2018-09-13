@@ -63,13 +63,13 @@ namespace DaySim.DomainModels.Actum.Models {
     public double AutoDistanceToUsualSchool { get; set; }
 
     [ColumnName("puwmode")]
-    public int UsualModeToWork { get; set; }
+    public double UsualModeToWork { get; set; }
 
     [ColumnName("puwarrp")]
-    public int UsualArrivalPeriodToWork { get; set; }
+    public double UsualArrivalPeriodToWork { get; set; }
 
     [ColumnName("puwdepp")]
-    public int UsualDeparturePeriodFromWork { get; set; }
+    public double UsualDeparturePeriodFromWork { get; set; }
 
     [ColumnName("ptpass")]
     public int TransitPassOwnership { get; set; }
@@ -78,10 +78,10 @@ namespace DaySim.DomainModels.Actum.Models {
     public int PaidParkingAtWorkplace { get; set; }
 
     [ColumnName("pdiary")]
-    public int PaperDiary { get; set; }
+    public double PaperDiary { get; set; }
 
     [ColumnName("pproxy")]
-    public int ProxyResponse { get; set; }
+    public double ProxyResponse { get; set; }
 
     [ColumnName("psexpfac")]
     public double ExpansionFactor { get; set; }

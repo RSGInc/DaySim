@@ -144,6 +144,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       return Mode == Global.Settings.Modes.HovPassenger;
     }
 
+    public virtual bool IsPaidRideShareMode() {
+      return Mode == Global.Settings.Modes.PaidRideShare;
+    }
     #endregion
 
 

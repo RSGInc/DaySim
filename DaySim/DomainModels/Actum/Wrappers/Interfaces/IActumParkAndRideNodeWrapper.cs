@@ -10,5 +10,6 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
   public interface IActumParkAndRideNodeWrapper : IParkAndRideNodeWrapper, IActumParkAndRideNode {
+
   }
 }
