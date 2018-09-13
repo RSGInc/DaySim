@@ -10,7 +10,7 @@ using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.ShadowPricing;
 
 namespace DaySim.Framework.DomainModels.Wrappers {
-  public interface IParkAndRideNodeWrapper : IParkAndRideNode {
+  public interface IDestinationParkingNodeWrapper : IDestinationParkingNode {
     #region flags/choice model/etc. properties
 
     double[] ShadowPriceDifference { get; set; }
@@ -19,14 +19,15 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     double[] ExogenousLoad { get; set; }
 
-    double[] ParkAndRideLoad { get; set; }
+    double[] ParkingLoad { get; set; }
 
     #endregion
 
     #region wrapper methods
 
-    void SetParkAndRideShadowPricing(Dictionary<int, IParkAndRideShadowPriceNode> parkAndRideShadowPrices);
+    void SetDestinationParkingShadowPricing(Dictionary<int, IDestinationParkingShadowPriceNode> destinationParkingShadowPrices);
 
+    double SetDestinationParkingEffectivePrice(int minArrive, int minDepart, int destPurpose);
     #endregion
   }
 }

@@ -466,7 +466,7 @@ namespace DaySim.PathTypeModels {
       if (!Global.Configuration.OverrideIntraParcelDefaultWalkDistance &&  //MB20180305 This code is wrong for microzones - for now putting in a switch to turn it off
           !useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
         //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
-        && Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone) {
+        && Global.Settings.DestinationScale != Global.Settings.DestinationScales.Zone) {
         _pathTime[pathType] = 1.0;
         _pathDistance[pathType] = 0.01 * Global.Settings.DistanceUnitsPerMile;  // JLBscale.  multiplied by distance units per mile
       }
@@ -1496,6 +1496,18 @@ namespace DaySim.PathTypeModels {
     }
     protected static double GetXYDistance(double x1, double y1, double x2, double y2) {
       return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+
+    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
+      throw new NotImplementedException("Implemented in Actum only");
+    }
+
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
+      throw new NotImplementedException("Implemented in Actum only");
+    }
+
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
+      throw new NotImplementedException("Implemented in Actum only");
     }
   }
 

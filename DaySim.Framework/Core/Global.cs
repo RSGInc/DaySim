@@ -12,6 +12,7 @@ using System.IO;
 using System.Reflection;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.DomainModels.Models;
+using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Sampling;
 
@@ -63,6 +64,10 @@ namespace DaySim.Framework.Core {
 
     public static Dictionary<int, int> TransitStopAreaMapping { get; set; }
 
+    public static Dictionary<int, ITransitStopAreaWrapper> TransitStopAreaDictionary { get; set; }
+
+    public static Dictionary<int, ITransitStopAreaWrapper>.ValueCollection TransitStopAreas { get; set; }
+
     public static Dictionary<int, int> MicrozoneMapping { get; set; }
 
     public static Dictionary<int, int> ParkAndRideNodeMapping { get; set; }
@@ -70,11 +75,14 @@ namespace DaySim.Framework.Core {
     public static int[] ParcelStopAreaParcelIds { get; set; }
     public static int[] ParcelStopAreaStopAreaKeys { get; set; }
     public static int[] ParcelStopAreaStopAreaIds { get; set; }
-    public static float[] ParcelStopAreaDistances { get; set; }
+    public static float[] ParcelStopAreaLengths { get; set; } /* lengths as read in without conversion */
+    public static float[] ParcelStopAreaDistances { get; set; } /* distance = lengths after division by Global.Settings.LengthUnitsPerFoot */
 
     public static int[] ParcelParkAndRideNodeIds { get; set; }
     public static int[] ParcelParkAndRideNodeSequentialIds { get; set; }
     public static float[] ParcelToBikeCarParkAndRideNodeDistance { get; set; }
+    public static float[] ParcelToBikeCarParkAndRideNodeLength { get; set; }
+
 
     public static double Coefficients_CostCoefficientIncomeMultipleMinimum => Math.Abs(Configuration.Coefficients_CostCoefficientIncomeMultipleMinimum) < Constants.EPSILON
                     ? 0.1

@@ -59,6 +59,27 @@ namespace DaySim {
     public IMinuteSpan LongestFeasibleWindow { get; private set; }
 
 
+    //JLB
+    public double TransitTime { get; private set; }
+    public double TransitDistance { get; private set; }
+    public double TransitCost { get; private set; }
+    public double TransitGeneralizedTime { get; private set; }
+    public double WalkTime { get; private set; }
+    public double WalkDistance { get; private set; }
+    public double BikeTime { get; private set; }
+    public double BikeDistance { get; private set; }
+    public double BikeCost { get; private set; }
+    public int OriginAccessMode { get; private set; }
+    public double OriginAccessTime { get; private set; }
+    public double OriginAccessDistance { get; private set; }
+    public double OriginAccessCost { get; private set; }
+    public int DestinationAccessMode { get; private set; }
+    public double DestinationAccessTime { get; private set; }
+    public double DestinationAccessDistance { get; private set; }
+    public double DestinationAccessCost { get; private set; }
+    public double PathDistance { get; private set; }
+    public double PathCost { get; private set; }
+
     public static HTourModeTime[][] ModeTimes { get; private set; }
 
     private void FindIndexForModeAndPeriods(int mode, int arrivalTime, int departureTime) {

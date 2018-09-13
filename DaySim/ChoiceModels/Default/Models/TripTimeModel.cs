@@ -132,7 +132,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           // if not the trip home, on a home-based tour, also include fastest time from the destinatinon to home
           //                    if (trip.Tour.IsHomeBasedTour && trip.DestinationPurpose != Global.Settings.Purposes.NoneOrHome) {
           //                        var fastestMode = Math.Min(trip.Tour.Mode, Global.Settings.Modes.Hov3);
-          //                         var pathTypeModel = PathTypeModelFactory.Model.Run(trip.DestinationParcel, trip.Household.ResidenceParcel, departurePeriod.Middle, 0, 
+          //                         var pathTypeModel = PathTypeModelFactory.Singleton.Run(trip.DestinationParcel, trip.Household.ResidenceParcel, departurePeriod.Middle, 0, 
           //                               trip.Tour.DestinationPurpose, trip.Tour.CostCoefficient, trip.Tour.TimeCoefficient, 
           //                                trip.Person.IsDrivingAge, trip.Household.VehiclesAvailable, trip.Tour.Person.TransitFareDiscountFraction, false, fastestMode).First();
           //                        travelDuration += (int) Math.Round(pathTypeModel.PathTime + 0.5);

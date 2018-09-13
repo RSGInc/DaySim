@@ -17,6 +17,8 @@ namespace DaySim.Framework.Factories {
 
     bool UseJointTours { get; }
 
+    int DestinationScale { get; }
+
     int OutOfRegionParcelId { get; }
 
     double GeneralizedTimeUnavailable { get; }
