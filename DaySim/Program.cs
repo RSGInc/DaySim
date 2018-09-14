@@ -77,6 +77,12 @@ namespace DaySim {
       Global.Configuration = configurationManager.ProcessPath(Global.Configuration, _configurationPath);
       Global.PrintFile = configurationManager.ProcessPrintPath(Global.PrintFile, _printFilePath);
 
+      string message = string.Format("--overrides = {0}", _overrides);
+      Console.WriteLine(message);
+      if (Global.PrintFile != null) {
+        Global.PrintFile.WriteLine(message);
+      }
+
       Engine.InitializeDaySim();
 
       Engine.BeginProgram(_start, _end, _index);
