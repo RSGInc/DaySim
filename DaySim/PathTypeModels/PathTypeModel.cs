@@ -466,7 +466,7 @@ namespace DaySim.PathTypeModels {
       if (!Global.Configuration.OverrideIntraParcelDefaultWalkDistance &&  //MB20180305 This code is wrong for microzones - for now putting in a switch to turn it off
           !useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
         //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
-        && Global.Settings.DestinationScale != Global.Settings.DestinationScales.Zone) {
+        && Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone) {
         _pathTime[pathType] = 1.0;
         _pathDistance[pathType] = 0.01 * Global.Settings.DistanceUnitsPerMile;  // JLBscale.  multiplied by distance units per mile
       }

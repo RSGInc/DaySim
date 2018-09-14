@@ -484,7 +484,7 @@ namespace DaySim.PathTypeModels {
       // a fix for intra-parcels, which happen once in a great while for school
       if (!useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
           //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
-          && Global.Settings.DestinationScale != Global.Settings.DestinationScales.Zone) {
+          && Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone) {
         _pathTime[pathType] = 1.0;
         _pathDistance[pathType] = 0.01 * Global.Settings.DistanceUnitsPerMile;  // JLBscale.  multiplied by distance units per mile
       }

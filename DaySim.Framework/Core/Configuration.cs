@@ -1606,6 +1606,9 @@ namespace DaySim.Framework.Core {
     public char MicrozoneToParkAndRideNodeIndexDelimiter { get; set; }
 
     [XmlAttribute]
+    public int DestinationScale { get; set; }
+
+    [XmlAttribute]
     public int MaximumParcelToStopAreaLengthUnitsToBike { get; set; }
 
     [XmlAttribute]

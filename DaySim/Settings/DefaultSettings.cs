@@ -47,8 +47,6 @@ namespace DaySim.Settings {
 
     public virtual bool UseJointTours => false;
 
-    public virtual int DestinationScale => 0;
-
     public virtual int OutOfRegionParcelId => -999;
 
     public virtual double GeneralizedTimeUnavailable => -999.0;
