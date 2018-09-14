@@ -61,7 +61,7 @@ namespace DaySim.ChoiceModels.Default {
       RunHouseholdModelSuite(_household);
 #if RELEASE
             } catch (Exception e) {
-                throw new HouseholdModelException(string.Format("Error running household models for {0}.", _household), e);
+                throw new Framework.Exceptions.HouseholdModelException(string.Format("Error running household models for {0}.", _household), e);
             }
 #endif
     }
