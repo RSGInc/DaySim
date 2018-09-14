@@ -186,6 +186,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainModels\Actum\ModelModule.cs" />
+    <Compile Include="DomainModels\Actum\Models\DestinationParkingNode.cs" />
     <Compile Include="DomainModels\Actum\Models\FullHalfTour.cs" />
     <Compile Include="DomainModels\Actum\Models\Household.cs" />
     <Compile Include="DomainModels\Actum\Models\HouseholdDay.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="DomainModels\Actum\Models\Interfaces\IActumJointTour.cs" />
     <Compile Include="DomainModels\Actum\Models\Interfaces\IActumParcel.cs" />
     <Compile Include="DomainModels\Actum\Models\Interfaces\IActumParcelNode.cs" />
+    <Compile Include="DomainModels\Actum\Models\Interfaces\IActumDestinationParkingNode.cs" />
     <Compile Include="DomainModels\Actum\Models\Interfaces\IActumParkAndRideNode.cs" />
     <Compile Include="DomainModels\Actum\Models\Interfaces\IActumPartialHalfTour.cs" />
     <Compile Include="DomainModels\Actum\Models\Interfaces\IActumPerson.cs" />
@@ -216,6 +218,7 @@
     <Compile Include="DomainModels\Actum\Models\TransitStopArea.cs" />
     <Compile Include="DomainModels\Actum\Models\Trip.cs" />
     <Compile Include="DomainModels\Actum\Models\Zone.cs" />
+    <Compile Include="DomainModels\Actum\Wrappers\DestinationParkingNodeWrapper.cs" />
     <Compile Include="DomainModels\Actum\Wrappers\FullHalfTourWrapper.cs" />
     <Compile Include="DomainModels\Actum\Wrappers\HouseholdDayWrapper.cs" />
     <Compile Include="DomainModels\Actum\Wrappers\HouseholdWrapper.cs" />
@@ -225,6 +228,7 @@
     <Compile Include="DomainModels\Actum\Wrappers\Interfaces\IActumJointTourWrapper.cs" />
     <Compile Include="DomainModels\Actum\Wrappers\Interfaces\IActumParcelNodeWrapper.cs" />
     <Compile Include="DomainModels\Actum\Wrappers\Interfaces\IActumParcelWrapper.cs" />
+    <Compile Include="DomainModels\Actum\Wrappers\Interfaces\IActumDestinationParkingNodeWrapper.cs" />
     <Compile Include="DomainModels\Actum\Wrappers\Interfaces\IActumParkAndRideNodeWrapper.cs" />
     <Compile Include="DomainModels\Actum\Wrappers\Interfaces\IActumPartialHalfTourWrapper.cs" />
     <Compile Include="DomainModels\Actum\Wrappers\Interfaces\IActumPersonDayWrapper.cs" />
