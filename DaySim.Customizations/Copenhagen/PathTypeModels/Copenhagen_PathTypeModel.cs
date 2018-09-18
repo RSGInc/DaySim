@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DaySim.ChoiceModels;
 using DaySim.DomainModels.Actum.Models.Interfaces;
+using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
@@ -24,8 +25,8 @@ namespace DaySim.PathTypeModels {
     private const double MAX_UTILITY = 80D;
     private const double MIN_UTILITY = -80D;
 
-    private IActumParcelWrapper _originParcel;
-    private IActumParcelWrapper _destinationParcel;
+    private ParcelWrapper _originParcel;
+    private ParcelWrapper _destinationParcel;
     private int _originZoneId;
     private int _destinationZoneId;
     private int _outboundTime;
@@ -173,7 +174,7 @@ namespace DaySim.PathTypeModels {
       //			var list = new List<PathTypeModel_Actum>();
 
       foreach (int mode in modes) {
-        PathTypeModel_Actum pathTypeModel = new PathTypeModel_Actum { _originParcel = (IActumParcelWrapper)originParcel, _destinationParcel = (IActumParcelWrapper)destinationParcel, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _isDrivingAge = isDrivingAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _transitDiscountFraction = transitDiscountFraction, _randomChoice = randomChoice, Mode = mode };
+        PathTypeModel_Actum pathTypeModel = new PathTypeModel_Actum { _originParcel = (ParcelWrapper)originParcel, _destinationParcel = (ParcelWrapper)destinationParcel, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _isDrivingAge = isDrivingAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _transitDiscountFraction = transitDiscountFraction, _randomChoice = randomChoice, Mode = mode };
         pathTypeModel.RunModel(randomUtility);
 
         list.Add(pathTypeModel);
@@ -1204,7 +1205,7 @@ namespace DaySim.PathTypeModels {
         //}
 
         // use the nearest stop area for transit LOS  
-        IActumParcelWrapper parkAndRideParcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
+        ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
         int parkAndRideZoneId = node.ZoneId;
         int parkAndRideStopAreaKey = node.NearestStopAreaId;
         int parkAndRideStopArea = Global.TransitStopAreaMapping[node.NearestStopAreaId];
@@ -1692,7 +1693,7 @@ namespace DaySim.PathTypeModels {
       public double Utility { get; set; }
     }
 
-    private PathTypeModel_Actum.AutoPath GetAutoPath(int skimModeIn, int pathType, double votValue, bool useZones, bool useAVVOT, int originZoneId, int destinationZoneId, IActumParcelWrapper originParcel, IActumParcelWrapper destinationParcel) {
+    private PathTypeModel_Actum.AutoPath GetAutoPath(int skimModeIn, int pathType, double votValue, bool useZones, bool useAVVOT, int originZoneId, int destinationZoneId, ParcelWrapper originParcel, ParcelWrapper destinationParcel) {
 
       bool useAVSkims = (useAVVOT && Global.Configuration.AV_UseSeparateAVSkimMatrices);
 
@@ -1974,7 +1975,7 @@ namespace DaySim.PathTypeModels {
       foreach (IActumParkAndRideNodeWrapper node in carParkAndRideNodes) {
 
         // use the nearest stop area for transit LOS  
-        IActumParcelWrapper parkAndRideParcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
+        ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
         int parkAndRideZoneId = node.ZoneId;
         int parkAndRideStopAreaKey = node.NearestStopAreaId;
         int parkAndRideStopArea = Global.TransitStopAreaMapping[node.NearestStopAreaId];
