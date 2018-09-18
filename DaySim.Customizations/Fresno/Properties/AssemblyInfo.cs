@@ -19,6 +19,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3d0bf5c8-440a-417e-8856-fc7373f4d488")]
+[assembly: Guid("90168D65-90C9-452A-81A3-98790A643DE3")]
 
 // All version information will be injected by GitVersion Task http://gitversion.readthedocs.io/
