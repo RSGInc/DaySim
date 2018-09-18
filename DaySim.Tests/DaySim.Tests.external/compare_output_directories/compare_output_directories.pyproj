@@ -13,7 +13,7 @@
     <Name>compare_output_directories</Name>
     <RootNamespace>compare_output_directories</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-v --configuration_file ..\..\..\..\sacog_daysim_test\daysim\sacog_regress.properties  --configuration_file ..\..\..\..\FresnoABM\Scenarios\FC14_BASE\11_DaySim\Configuration_regress.properties      </CommandLineArguments>
+    <CommandLineArguments>-v --configuration_file ..\..\..\..\sacog_daysim_test\daysim\sacog_regress.properties  --configuration_file ..\..\..\..\FresnoABM\Scenarios\FC14_BASE\11_DaySim\Configuration_regress.properties        --configuration_file ..\..\..\..\Copenhagen_DaySim_Test\Copenhagen_regress.properties  </CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>

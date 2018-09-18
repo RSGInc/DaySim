@@ -1581,35 +1581,32 @@ namespace DaySim {
       //after all dependency injection established, verify
       Global.ContainerDaySim.Verify();
 
-      if (!string.IsNullOrEmpty(Global.Configuration.CustomizationDll)) {
-        if (Global.Configuration.DVRPC || Global.Configuration.JAX || Global.Configuration.Nashville || Global.Configuration.PSRC || Global.Configuration.SFCTA) {
-          throw new Exception("Region specific flag is set such as DVRPC, JAX, Nashville, PSRC or SFCTA but CustomizationDll is already set to: " + Global.Configuration.CustomizationDll);
-        }
+      int totalCustomizationFlagsSet = Convert.ToInt32(Global.Configuration.Copenhagen)
+        + Convert.ToInt32(Global.Configuration.DVRPC)
+        + Convert.ToInt32(Global.Configuration.Fresno)
+        + Convert.ToInt32(Global.Configuration.JAX)
+        + Convert.ToInt32(Global.Configuration.Nashville)
+        + Convert.ToInt32(Global.Configuration.PSRC)
+        + Convert.ToInt32(Global.Configuration.SFCTA);
+
+      if (!string.IsNullOrEmpty(Global.Configuration.CustomizationDll) && (totalCustomizationFlagsSet != 0)) {
+        throw new Exception("Region specific flag is set such as Copenhagen , DVRPC, Fresno, JAX, Nashville, PSRC or SFCTA but CustomizationDll is already set to: " + Global.Configuration.CustomizationDll);
+      } else if (totalCustomizationFlagsSet > 1) {
+        throw new Exception("More than one region specific flag such as Copenhagen, DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
+      } else if (Global.Configuration.Copenhagen) {
+        Global.Configuration.CustomizationDll = "Copenhagen.dll";
       } else if (Global.Configuration.DVRPC) {
         Global.Configuration.CustomizationDll = "DVRPC.dll";
-        if (Global.Configuration.JAX || Global.Configuration.Nashville || Global.Configuration.PSRC || Global.Configuration.SFCTA) {
-          throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
-        }
+      } else if (Global.Configuration.Fresno) {
+        Global.Configuration.CustomizationDll = "Fresno.dll";
       } else if (Global.Configuration.JAX) {
         Global.Configuration.CustomizationDll = "JAX.dll";
-        if (Global.Configuration.DVRPC || Global.Configuration.Nashville || Global.Configuration.PSRC || Global.Configuration.SFCTA) {
-          throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
-        }
       } else if (Global.Configuration.Nashville) {
         Global.Configuration.CustomizationDll = "Nashville.dll";
-        if (Global.Configuration.DVRPC || Global.Configuration.JAX || Global.Configuration.PSRC || Global.Configuration.SFCTA) {
-          throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
-        }
       } else if (Global.Configuration.PSRC) {
         Global.Configuration.CustomizationDll = "PSRC.dll";
-        if (Global.Configuration.DVRPC || Global.Configuration.JAX || Global.Configuration.Nashville || Global.Configuration.SFCTA) {
-          throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
-        }
       } else if (Global.Configuration.SFCTA) {
         Global.Configuration.CustomizationDll = "SFCTA.dll";
-        if (Global.Configuration.DVRPC || Global.Configuration.JAX || Global.Configuration.Nashville || Global.Configuration.PSRC) {
-          throw new Exception("More than one region specific flag such as DVRPC, JAX, Nashville, PSRC, or SFCTA was specified in configuration file.");
-        }
       }
     }
 

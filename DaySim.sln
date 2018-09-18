@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Copenhagen", "DaySim.Customizations\Copenhagen\Copenhagen.csproj", "{04CE08B4-0E58-4667-BB20-68431CCB1882}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -54,7 +56,6 @@ Global
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Release|x64.Deploy.0 = Debug|x64
 		{66B71A86-D772-4A33-B182-760B912CD7F3}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{66B71A86-D772-4A33-B182-760B912CD7F3}.Release|x64.ActiveCfg = Debug|Any CPU
-		{66B71A86-D772-4A33-B182-760B912CD7F3}.Release|x64.Deploy.0 = Release|Any CPU
 		{881E7750-B121-46EA-ACB3-F039E2919767}.Debug|x64.ActiveCfg = Debug|x64
 		{881E7750-B121-46EA-ACB3-F039E2919767}.Debug|x64.Build.0 = Debug|x64
 		{881E7750-B121-46EA-ACB3-F039E2919767}.Release|x64.ActiveCfg = Debug|x64
@@ -79,6 +80,10 @@ Global
 		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Debug|x64.Build.0 = Debug|x64
 		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Release|x64.ActiveCfg = Debug|x64
 		{179D1DAD-6DC3-469F-9AF0-07E21C17B249}.Release|x64.Build.0 = Debug|x64
+		{04CE08B4-0E58-4667-BB20-68431CCB1882}.Debug|x64.ActiveCfg = Debug|x64
+		{04CE08B4-0E58-4667-BB20-68431CCB1882}.Debug|x64.Build.0 = Debug|x64
+		{04CE08B4-0E58-4667-BB20-68431CCB1882}.Release|x64.ActiveCfg = Debug|x64
+		{04CE08B4-0E58-4667-BB20-68431CCB1882}.Release|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

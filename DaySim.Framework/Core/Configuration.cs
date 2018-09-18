@@ -1536,9 +1536,15 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public string PathTypeModel { get; set; }
 
+    [XmlAttribute]
+    public bool Copenhagen { get; set; }
+
     //new since 203
     [XmlAttribute]
     public bool DVRPC { get; set; }
+
+    [XmlAttribute]
+    public bool Fresno { get; set; }
 
     [XmlAttribute]
     public bool JAX { get; set; }

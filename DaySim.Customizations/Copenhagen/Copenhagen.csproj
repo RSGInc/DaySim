@@ -6,11 +6,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{41DA73F7-DA85-4726-9C2C-2A8599848784}</ProjectGuid>
+    <ProjectGuid>{04CE08B4-0E58-4667-BB20-68431CCB1882}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFCTA</RootNamespace>
-    <AssemblyName>SFCTA</AssemblyName>
+    <RootNamespace>Copenhagen</RootNamespace>
+    <AssemblyName>Copenhagen</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -73,16 +73,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChoiceModels\Default\Models\SFCTA_OtherTourDestinationModel.cs" />
-    <Compile Include="ChoiceModels\Default\Models\SFCTA_AutoOwnershipModel.cs" />
-    <Compile Include="ChoiceModels\Default\Models\SFCTA_WorkLocationModel.cs" />
+    <Compile Include="PathTypeModels\Copenhagen_PathTypeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Daysim.Framework\DaySim.Framework.csproj">

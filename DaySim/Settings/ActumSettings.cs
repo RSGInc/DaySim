@@ -21,6 +21,7 @@ namespace DaySim.Settings {
     public override double DistanceUnitsPerMile => 1.60934;
 
     public override double MonetaryUnitsPerDollar => 5.75;
+
   }
 
   public class ActumModes : DefaultModes {
@@ -32,9 +33,11 @@ namespace DaySim.Settings {
     //get { throw new NotImplementedException(); }
     //}
 
-    public override int TotalModes => 13;
+    public override int TotalModes => 15;
 
-    public override int MaxMode => 13;
+    public override int RosterModes => 15;
+
+    public override int MaxMode => 14;
 
     public override int Walk => 1;
 
@@ -62,6 +65,9 @@ namespace DaySim.Settings {
 
     public override int WalkRideBike => 13;
 
+    public override int PaidRideShare => 14;
+
+    public override int AV => 14;
 
   }
 }
