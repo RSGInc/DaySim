@@ -50,6 +50,9 @@ namespace DaySim.PathTypeModels {
 
       ModelType = Global.Configuration.getAssignableObjectType(typeof(IPathTypeModel));
 
+      if (ModelType == null || ModelType.IsInterface) {
+        ModelType = typeof(PathTypeModel);
+      }
       Singleton = New(new object[] { });
     }   //end PathTypeModelFactory
   }   //end class
