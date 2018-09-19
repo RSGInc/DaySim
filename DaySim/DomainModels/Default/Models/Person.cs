@@ -13,7 +13,7 @@ using DaySim.Framework.Persistence;
 namespace DaySim.DomainModels.Default.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Default)]
-  public sealed class Person : IPerson {
+  public class Person : IPerson {
     [ColumnName("id")]
     public int Id { get; set; }
 
@@ -63,13 +63,13 @@ namespace DaySim.DomainModels.Default.Models {
     public double AutoDistanceToUsualSchool { get; set; }
 
     [ColumnName("puwmode")]
-    public double UsualModeToWork { get; set; }
+    public int UsualModeToWork { get; set; }
 
     [ColumnName("puwarrp")]
-    public double UsualArrivalPeriodToWork { get; set; }
+    public int UsualArrivalPeriodToWork { get; set; }
 
     [ColumnName("puwdepp")]
-    public double UsualDeparturePeriodFromWork { get; set; }
+    public int UsualDeparturePeriodFromWork { get; set; }
 
     [ColumnName("ptpass")]
     public int TransitPassOwnership { get; set; }
@@ -78,10 +78,10 @@ namespace DaySim.DomainModels.Default.Models {
     public int PaidParkingAtWorkplace { get; set; }
 
     [ColumnName("pdiary")]
-    public double PaperDiary { get; set; }
+    public int PaperDiary { get; set; }
 
     [ColumnName("pproxy")]
-    public double ProxyResponse { get; set; }
+    public int ProxyResponse { get; set; }
 
     [ColumnName("psexpfac")]
     public double ExpansionFactor { get; set; }

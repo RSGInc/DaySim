@@ -37,19 +37,19 @@ namespace DaySim.Framework.DomainModels.Models {
 
     double AutoDistanceToUsualSchool { get; set; }
 
-    double UsualModeToWork { get; set; }
+    int UsualModeToWork { get; set; }
 
-    double UsualArrivalPeriodToWork { get; set; }
+    int UsualArrivalPeriodToWork { get; set; }
 
-    double UsualDeparturePeriodFromWork { get; set; }
+    int UsualDeparturePeriodFromWork { get; set; }
 
     int TransitPassOwnership { get; set; }
 
     int PaidParkingAtWorkplace { get; set; }
 
-    double PaperDiary { get; set; }
+    int PaperDiary { get; set; }
 
-    double ProxyResponse { get; set; }
+    int ProxyResponse { get; set; }
 
     double ExpansionFactor { get; set; }
   }

@@ -9,6 +9,7 @@ using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumHouseholdDay : IHouseholdDay {
+    //JLB20160323
     int SharedActivityHomeStays { get; set; }
 
     int NumberInLargestSharedHomeStay { get; set; }

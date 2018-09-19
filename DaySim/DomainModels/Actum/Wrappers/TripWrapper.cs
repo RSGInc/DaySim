@@ -47,7 +47,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     #endregion
 
     #region domain model properies
-
+    //JLB20160323
     public int BikePTCombination {
       get => _trip.BikePTCombination;
       set => _trip.BikePTCombination = value;
@@ -124,34 +124,54 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     #region wrapper methods
 
     public override void SetDriverOrPassenger(List<ITripWrapper> trips) {
-      if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Transit || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
+      if (Mode == Global.Settings.Modes.PaidRideShare) {
+        //set main and other passenger randomly by tour purpose to get right percentage of trips to assign to network
+        double randomNumber = Household.RandomUtility.Uniform01();
+        DriverType =
+             (Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < 0.98
+             || Tour.DestinationPurpose == Global.Settings.Purposes.Business && randomNumber < 0.8
+             || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < 0.32
+             || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < 0.4
+             || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < 0.70
+             || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < 0.73
+             || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < 0.62) ?
+             Global.Settings.DriverTypes.Driver : Global.Settings.DriverTypes.Passenger;
+        if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
+          DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
+        }
+      } else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Transit || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
         DriverType = Global.Settings.DriverTypes.NotApplicable;
       } else if (Mode == Global.Settings.Modes.Sov || Mode == Global.Settings.Modes.HovDriver) {
         DriverType = Global.Settings.DriverTypes.Driver;
       } else if (Mode == Global.Settings.Modes.HovPassenger) {
         DriverType = Global.Settings.DriverTypes.Passenger;
       }
-      if (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3 && Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
-        DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
-      }
-      if ((Mode == Global.Settings.Modes.PaidRideShare) && (Global.Configuration.AV_PaidRideShareModeUsesAVs)) {
+      if (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.HovPassenger && Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
         DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
       }
     }
 
-    public override void SetTripValueOfTime() {
-      double costDivisor =
-                Mode == Global.Settings.Modes.HovDriver && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
-                    ? Global.Configuration.Coefficients_HOV2CostDivisor_Work
-                    : Mode == Global.Settings.Modes.HovDriver && Tour.DestinationPurpose != Global.Settings.Purposes.Work && Tour.DestinationPurpose != Global.Settings.Purposes.Business
-                        ? Global.Configuration.Coefficients_HOV2CostDivisor_Other
-                        : Mode == Global.Settings.Modes.HovPassenger && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
-                            ? Global.Configuration.Coefficients_HOV3CostDivisor_Work
-                            : Mode == Global.Settings.Modes.HovPassenger && Tour.DestinationPurpose != Global.Settings.Purposes.Work && Tour.DestinationPurpose != Global.Settings.Purposes.Business
-                                ? Global.Configuration.Coefficients_HOV3CostDivisor_Other
-                                : 1.0;
 
-      ValueOfTime = (Tour.TimeCoefficient * 60) / (Tour.CostCoefficient / costDivisor);
+    //JLB 20160323
+    public virtual void SetTripValueOfTime() {
+      double costDivisor =
+                 Mode == Global.Settings.Modes.HovDriver && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
+                      ? Global.Configuration.Coefficients_HOV2CostDivisor_Work
+                      : Mode == Global.Settings.Modes.HovDriver && Tour.DestinationPurpose != Global.Settings.Purposes.Work && Tour.DestinationPurpose != Global.Settings.Purposes.Business
+                            ? Global.Configuration.Coefficients_HOV2CostDivisor_Other
+                            : Mode == Global.Settings.Modes.HovPassenger && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
+                                 ? Global.Configuration.Coefficients_HOV3CostDivisor_Work
+                                 : Mode == Global.Settings.Modes.HovPassenger && Tour.DestinationPurpose != Global.Settings.Purposes.Work && Tour.DestinationPurpose != Global.Settings.Purposes.Business
+                                      ? Global.Configuration.Coefficients_HOV3CostDivisor_Other
+                                      : 1.0;
+
+      //			ValueOfTime = (Tour.TimeCoefficient * 60) / (Tour.CostCoefficient / costDivisor);
+
+      double AVFactor = ((Global.Configuration.AV_IncludeAutoTypeChoice && Household.OwnsAutomatedVehicles > 0 && Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3)
+                             || (Global.Configuration.AV_PaidRideShareModeUsesAVs && Mode == Global.Settings.Modes.PaidRideShare))
+                             ? (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : 1.0;
+
+      ValueOfTime = (Tour.TimeCoefficient * 60) * AVFactor / (Tour.CostCoefficient / costDivisor);
     }
 
     public virtual bool IsBusinessDestinationPurpose() {

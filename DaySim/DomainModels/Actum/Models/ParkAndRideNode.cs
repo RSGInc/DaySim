@@ -6,7 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Runtime.InteropServices;
-using DaySim.Framework.DomainModels.Models;
+using DaySim.DomainModels.Actum.Models.Interfaces;
 //using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
@@ -14,35 +14,25 @@ using DaySim.Framework.Persistence;
 namespace DaySim.DomainModels.Actum.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
-  public sealed class ParkAndRideNode : IParkAndRideNode {
-    //	public sealed class ParkAndRideNode {     //JLB 201505 Removed interface requirement so I could eliminate zoneID, and x and y coordinates
-
-    [ColumnName("id")]               //sequential ID of parking node not in raw input, added by RawConverter
-    public int Id { get; set; }
+  public sealed class ParkAndRideNode : DomainModels.Default.Models.ParkAndRideNode, IActumParkAndRideNode {
 
     [ColumnName("ParkAndRideNodeId")]
-    public int ZoneId { get; set; }
-
-    [ColumnName("xcoord")]   // included for compatibility with IParkAndRideNode; not in input data
-    public int XCoordinate { get; set; }
-
-    [ColumnName("ycoord")]   // included for compatibility with IParkAndRideNode; not in input data
-    public int YCoordinate { get; set; }
+    public override int ZoneId { get; set; }
 
     //[ColumnName("TerminalName")]
     //public string TerminalName { get; set; }
 
     [ColumnName("TerminalId")]
-    public int NearestStopAreaId { get; set; }
+    public override int NearestStopAreaId { get; set; }
 
     [ColumnName("MicroZoneId")]
-    public int NearestParcelId { get; set; }
+    public override int NearestParcelId { get; set; }
 
     [ColumnName("ParkingTypeId")]
     public int ParkingTypeId { get; set; }
 
     [ColumnName("Capacity")]
-    public int Capacity { get; set; }
+    public override int Capacity { get; set; }
 
     [ColumnName("CostPerHour08_18")]
     public double CostPerHour08_18 { get; set; }
@@ -57,7 +47,7 @@ namespace DaySim.DomainModels.Actum.Models {
     public double CostAnnual { get; set; }
 
     [ColumnName("CostDaily")]
-    public int Cost { get; set; }
+    public override int Cost { get; set; }
 
     [ColumnName("PRFacility")]
     public int PRFacility { get; set; }
@@ -67,11 +57,5 @@ namespace DaySim.DomainModels.Actum.Models {
 
     [ColumnName("Auto")]
     public int Auto { get; set; }
-
-
-
-
-
-
   }
 }

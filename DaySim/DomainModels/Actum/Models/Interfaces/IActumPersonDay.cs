@@ -9,6 +9,10 @@ using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumPersonDay : IPersonDay {
+    //JLB 20160323
+
+    int PatternType { get; set; }
+
     int WorkHomeAllDay { get; set; }
 
     int MinutesStudiedHome { get; set; }

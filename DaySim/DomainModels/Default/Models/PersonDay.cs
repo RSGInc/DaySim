@@ -13,7 +13,7 @@ using DaySim.Framework.Persistence;
 namespace DaySim.DomainModels.Default.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Default)]
-  public sealed class PersonDay : IPersonDay {
+  public class PersonDay : IPersonDay {
     [ColumnName("id")]
     public int Id { get; set; }
 

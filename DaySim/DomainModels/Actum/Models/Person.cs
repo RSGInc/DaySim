@@ -13,78 +13,22 @@ using DaySim.Framework.Persistence;
 namespace DaySim.DomainModels.Actum.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
-  public sealed class Person : IActumPerson {
-    [ColumnName("id")]
-    public int Id { get; set; }
-
-    [ColumnName("hhno")]
-    public int HouseholdId { get; set; }
-
-    [ColumnName("pno")]
-    public int Sequence { get; set; }
-
-    [ColumnName("pptyp")]
-    public int PersonType { get; set; }
-
-    [ColumnName("pagey")]
-    public int Age { get; set; }
-
-    [ColumnName("pgend")]
-    public int Gender { get; set; }
-
-    [ColumnName("pwtyp")]
-    public int WorkerType { get; set; }
-
-    [ColumnName("pwpcl")]
-    public int UsualWorkParcelId { get; set; }
-
-    [ColumnName("pwtaz")]
-    public int UsualWorkZoneKey { get; set; }
-
-    [ColumnName("pwautime")]
-    public double AutoTimeToUsualWork { get; set; }
-
-    [ColumnName("pwaudist")]
-    public double AutoDistanceToUsualWork { get; set; }
-
-    [ColumnName("pstyp")]
-    public int StudentType { get; set; }
-
-    [ColumnName("pspcl")]
-    public int UsualSchoolParcelId { get; set; }
-
-    [ColumnName("pstaz")]
-    public int UsualSchoolZoneKey { get; set; }
-
-    [ColumnName("psautime")]
-    public double AutoTimeToUsualSchool { get; set; }
-
-    [ColumnName("psaudist")]
-    public double AutoDistanceToUsualSchool { get; set; }
+  public sealed class Person : DomainModels.Default.Models.Person, IActumPerson {
 
     [ColumnName("puwmode")]
-    public double UsualModeToWork { get; set; }
+    public new double UsualModeToWork { get; set; }
 
     [ColumnName("puwarrp")]
-    public double UsualArrivalPeriodToWork { get; set; }
+    public new double UsualArrivalPeriodToWork { get; set; }
 
     [ColumnName("puwdepp")]
-    public double UsualDeparturePeriodFromWork { get; set; }
-
-    [ColumnName("ptpass")]
-    public int TransitPassOwnership { get; set; }
-
-    [ColumnName("ppaidprk")]
-    public int PaidParkingAtWorkplace { get; set; }
+    public new double UsualDeparturePeriodFromWork { get; set; }
 
     [ColumnName("pdiary")]
-    public double PaperDiary { get; set; }
+    public new double PaperDiary { get; set; }
 
     [ColumnName("pproxy")]
-    public double ProxyResponse { get; set; }
-
-    [ColumnName("psexpfac")]
-    public double ExpansionFactor { get; set; }
+    public new double ProxyResponse { get; set; }
 
     [ColumnName("ppriocc")]
     public int MainOccupation { get; set; }

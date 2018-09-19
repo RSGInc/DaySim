@@ -18,7 +18,7 @@ namespace DaySim.DomainModels.Default.Models {
     public int Id { get; set; }
 
     [ColumnName("zone_id")]
-    public int ZoneId { get; set; }
+    public virtual int ZoneId { get; set; }
 
     [ColumnName("xcoord")]
     public int XCoordinate { get; set; }
@@ -27,15 +27,15 @@ namespace DaySim.DomainModels.Default.Models {
     public int YCoordinate { get; set; }
 
     [ColumnName("capacity")]
-    public int Capacity { get; set; }
+    public virtual int Capacity { get; set; }
 
     [ColumnName("cost")]
-    public int Cost { get; set; }
+    public virtual int Cost { get; set; }
 
     [ColumnName("nearest_parcel_id")]
-    public int NearestParcelId { get; set; }
+    public virtual int NearestParcelId { get; set; }
 
     [ColumnName("nearest_stoparea_id")]
-    public int NearestStopAreaId { get; set; }
+    public virtual int NearestStopAreaId { get; set; }
   }
 }
