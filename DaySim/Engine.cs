@@ -15,6 +15,7 @@ using System.Threading;
 using DaySim.AggregateLogsums;
 using DaySim.ChoiceModels;
 using DaySim.DestinationParkingShadowPricing;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Factories;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
@@ -1081,6 +1082,7 @@ namespace DaySim {
           //Console.WriteLine(parcelId);
           parcel = ChoiceModelFactory.Parcels[parcelId];
           parcel.FirstPositionInStopAreaDistanceArray = arrayIndex;
+          parcel.StopAreaDistanceArrayPositionsSet = true;
           lastParcelId = parcelId;
         }
         parcel.LastPositionInStopAreaDistanceArray = arrayIndex;
@@ -1136,7 +1138,7 @@ namespace DaySim {
 
       string line;
       int lastParcelId = -1;
-      IParcelWrapper parcel = null;
+      IActumParcelWrapper parcel = null;
       int arrayIndex = 0;
       //start arrays at index 0 with dummy values, since valid indices start with 1
       //parcelIds.Add(0);
@@ -1152,11 +1154,12 @@ namespace DaySim {
         int parcelId = int.Parse(tokens[0]);
         if (parcelId != lastParcelId) {
           //Console.WriteLine(parcelId);
-          parcel = ChoiceModelFactory.Parcels[parcelId];
-          parcel.FirstPositionInStopAreaDistanceArray = arrayIndex;
+          parcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[parcelId];
+          parcel.FirstPositionInParkAndRideNodeDistanceArray = arrayIndex;
+          parcel.ParkAndRideNodeDistanceArrayPositionsSet = true;
           lastParcelId = parcelId;
         }
-        parcel.LastPositionInStopAreaDistanceArray = arrayIndex;
+        parcel.LastPositionInParkAndRideNodeDistanceArray = arrayIndex;
 
         //parcelIds.Add(int.Parse(tokens[0]));
         int parkAndRideNodeId = int.Parse(tokens[1]);

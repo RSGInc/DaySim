@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
+﻿// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
 // Copyright 2011-2013 John Bowman, Mark Bradley, and RSG, Inc.
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
@@ -570,11 +570,11 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public int District { get; set; }
 
-    public bool StopAreaDistanceArrayPositionsSet { get; set; }
+    public bool StopAreaDistanceArrayPositionsSet { get; set; } = false;
 
-    public int FirstPositionInStopAreaDistanceArray { get; set; }
+    public int FirstPositionInStopAreaDistanceArray { get; set; } = -1;
 
-    public int LastPositionInStopAreaDistanceArray { get; set; }
+    public int LastPositionInStopAreaDistanceArray { get; set; } = -1;
 
     #endregion
 
