@@ -5,12 +5,15 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using System.Collections.Generic;
+using System.Linq;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
+using DaySim.PathTypeModels;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
@@ -57,6 +60,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
 
     #region flags/choice model/etc. properties
+
+    //JLB 20160323
 
     public int HalfTour1AccessMode { get; set; }
 
@@ -132,19 +137,107 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       return segment;
     }
 
-    public virtual bool IsBusinessPurpose() {
+    public override void UpdateTourValues() {
+      if (Global.Configuration.IsInEstimationMode || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) {
+        return;
+      }
+
+      IEnumerable<IPathTypeModel> pathTypeModels =
+      PathTypeModelFactory.Singleton
+          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
+
+      IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
+
+      AutoTimeOneWay = autoPathRoundTrip.PathTime / 2.0;
+      AutoCostOneWay = autoPathRoundTrip.PathCost / 2.0;
+      AutoDistanceOneWay = autoPathRoundTrip.PathDistance / 2.0;
+
+      if (HalfTourFromOrigin == null || HalfTourFromDestination == null) {
+        return;
+      }
+
+      List<ITripWrapper> trips =
+                HalfTourFromOrigin
+                    .Trips
+                    .Union(HalfTourFromDestination.Trips)
+                    .ToList();
+
+      for (int i = 0; i < trips.Count; i++) {
+        // sets the driver or passenger flag for each trip
+        trips[i].SetDriverOrPassenger(trips);
+
+        // sets the activity end time for each trip
+        if (trips[i].IsHalfTourFromOrigin) {
+          // for trips to intermediate stops on first half tour, use "arrival" time at stop
+          if (i > 0) {
+            trips[i].SetActivityEndTime(trips[i - 1].ArrivalTime);
+          }
+          // for trip to primary destination on tours without subtours, use departure time from prim.dest.
+          else if (Subtours == null || Subtours.Count == 0) {
+            trips[i].SetActivityEndTime(DestinationDepartureTime);
+          }
+          // for trip to primary destination on tours with subtours, use departure time for first subtour
+          else {
+            int nextDepartureTime = Global.Settings.Times.MinutesInADay;
+
+            foreach (ITourWrapper subtour in Subtours) {
+              if (subtour != null && subtour.OriginDepartureTime > trips[i].DepartureTime && subtour.OriginDepartureTime < nextDepartureTime) {
+                nextDepartureTime = subtour.OriginDepartureTime;
+              }
+            }
+
+            trips[i].SetActivityEndTime(nextDepartureTime);
+          }
+        } else {
+          //second half tour
+          // for trips to intermediate stops on second half tour, use departure time from stop
+          if (i < trips.Count - 1) {
+            trips[i].SetActivityEndTime(trips[i + 1].DepartureTime);
+          }
+          // if a home-based tour, look for start of next home-based tour}
+          else if (ParentTour == null) {
+            int nextDepartureTime = Global.Settings.Times.MinutesInADay;
+
+            foreach (ITourWrapper otherTour in PersonDay.Tours) {
+              if (otherTour != null && otherTour != this
+                  && otherTour.OriginDepartureTime > trips[i].ArrivalTime
+                  && otherTour.OriginDepartureTime < nextDepartureTime) {
+                nextDepartureTime = otherTour.OriginDepartureTime;
+              }
+            }
+
+            trips[i].SetActivityEndTime(nextDepartureTime);
+          }
+          // otherwise, a subtour - look for other subtours, else departure from the parent tour dest.
+          else {
+            int nextDepartureTime = ParentTour.DestinationDepartureTime;
+            foreach (ITourWrapper otherSubtour in ParentTour.Subtours) {
+              if (otherSubtour != null && otherSubtour != this && otherSubtour.OriginDepartureTime > trips[i].ArrivalTime && otherSubtour.OriginDepartureTime < nextDepartureTime) {
+                nextDepartureTime = otherSubtour.OriginDepartureTime;
+              }
+            }
+
+            trips[i].SetActivityEndTime(nextDepartureTime);
+          }
+        }
+      }
+    }
+
+
+    //JLB 2016032
+    public bool IsBusinessPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Business;
     }
 
-    public virtual bool IsHovDriverMode() {
+    public bool IsHovDriverMode() {
       return Mode == Global.Settings.Modes.HovDriver;
     }
 
-    public virtual bool IsHovPassengerMode() {
+    public bool IsHovPassengerMode() {
       return Mode == Global.Settings.Modes.HovPassenger;
     }
 
-    public virtual bool IsPaidRideShareMode() {
+    public bool IsPaidRideShareMode() {
       return Mode == Global.Settings.Modes.PaidRideShare;
     }
     #endregion

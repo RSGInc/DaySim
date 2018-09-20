@@ -15,21 +15,6 @@ namespace DaySim.DomainModels.Actum.Models {
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
   public sealed class Person : DomainModels.Default.Models.Person, IActumPerson {
 
-    [ColumnName("puwmode")]
-    public new double UsualModeToWork { get; set; }
-
-    [ColumnName("puwarrp")]
-    public new double UsualArrivalPeriodToWork { get; set; }
-
-    [ColumnName("puwdepp")]
-    public new double UsualDeparturePeriodFromWork { get; set; }
-
-    [ColumnName("pdiary")]
-    public new double PaperDiary { get; set; }
-
-    [ColumnName("pproxy")]
-    public new double ProxyResponse { get; set; }
-
     [ColumnName("ppriocc")]
     public int MainOccupation { get; set; }
 

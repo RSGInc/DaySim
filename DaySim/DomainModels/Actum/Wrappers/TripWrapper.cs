@@ -153,7 +153,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
 
     //JLB 20160323
-    public virtual void SetTripValueOfTime() {
+    public override void SetTripValueOfTime() {
       double costDivisor =
                  Mode == Global.Settings.Modes.HovDriver && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
                       ? Global.Configuration.Coefficients_HOV2CostDivisor_Work
@@ -174,16 +174,16 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       ValueOfTime = (Tour.TimeCoefficient * 60) * AVFactor / (Tour.CostCoefficient / costDivisor);
     }
 
-    public virtual bool IsBusinessDestinationPurpose() {
+    public bool IsBusinessDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Business;
     }
 
-    public virtual bool IsBusinessOriginPurpose() {
+    public bool IsBusinessOriginPurpose() {
       return OriginPurpose == Global.Settings.Purposes.Business;
     }
 
 
-    public virtual void HPTBikeTourUpdateTripValues() {
+    public void HPTBikeTourUpdateTripValues() {
       //new version for trips on tours with mode 9, 10, 11, 13
       // for Actum 
       // assumes that mode and departure time have been set

@@ -17,6 +17,12 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("MicroZoneID")]
     public int Microzone { get; set; }
 
+    [ColumnName("POINT_X")]
+    public override int XCoordinate { get; set; }
+
+    [ColumnName("POINT_Y")]
+    public override int YCoordinate { get; set; }
+
     [ColumnName("Bike_on_board")]
     public int BikeOnBoardTerminal { get; set; }
 

@@ -27,9 +27,9 @@ namespace DaySim.DomainModels.Default.Models {
     //public bool External { get; set; }
 
     [ColumnName("xcoord")]
-    public int XCoordinate { get; set; }
+    public virtual int XCoordinate { get; set; }
 
     [ColumnName("ycoord")]
-    public int YCoordinate { get; set; }
+    public virtual int YCoordinate { get; set; }
   }
 }

@@ -281,7 +281,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     #region wrapper methods
 
-    public virtual bool IsOnlyFullOrPartTimeWorker() {
+    public bool IsOnlyFullOrPartTimeWorker() {
       return (IsFulltimeWorker || IsPartTimeWorker) && Household.HouseholdTotals.FullAndPartTimeWorkers == 1;
     }
 

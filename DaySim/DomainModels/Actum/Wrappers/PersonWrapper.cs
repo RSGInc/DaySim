@@ -88,41 +88,41 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region wrapper methods
 
-    public virtual bool BikeExists() {
+    public bool BikeExists() {
       return HasBike == 1;
     }
 
-    public virtual bool DriversLicenseExists() {
+    public bool DriversLicenseExists() {
       return HasDriversLicense == 1;
     }
 
-    public virtual bool CarShareExists() {
+    public bool CarShareExists() {
       return HasCarShare == 1;
     }
 
-    public virtual bool MCExists() {
+    public bool MCExists() {
       return HasMC == 1;
     }
 
-    public virtual bool MopedExists() {
+    public bool MopedExists() {
       return HasMoped == 1;
     }
 
-    public virtual bool WorkParkingExists() {
+    public bool WorkParkingExists() {
       return HasWorkParking == 1;
     }
 
-    public virtual bool SchoolParkingExists() {
+    public bool SchoolParkingExists() {
       return HasSchoolParking == 1;
     }
 
-    public virtual bool IsGymnasiumOrUniversityStudent() {
+    public bool IsGymnasiumOrUniversityStudent() {
       return
           PersonType == Global.Settings.PersonTypes.DrivingAgeStudent ||
           PersonType == Global.Settings.PersonTypes.UniversityStudent;
     }
 
-    public virtual int CollapseActumPersonTypes() {
+    public int CollapseActumPersonTypes() {
       return
           PersonType <= Global.Settings.PersonTypes.UniversityStudent
               ? PersonType

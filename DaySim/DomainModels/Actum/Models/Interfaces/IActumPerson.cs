@@ -10,16 +10,6 @@ using DaySim.Framework.DomainModels.Models;
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumPerson : IPerson {
 
-    new double UsualModeToWork { get; set; }
-
-    new double UsualArrivalPeriodToWork { get; set; }
-
-    new double UsualDeparturePeriodFromWork { get; set; }
-
-    new double PaperDiary { get; set; }
-
-    new double ProxyResponse { get; set; }
-
     //JLB 20160323
     int MainOccupation { get; set; }
 

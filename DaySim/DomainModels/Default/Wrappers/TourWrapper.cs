@@ -372,103 +372,103 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     #region wrapper methods
 
-    public virtual bool IsWorkPurpose() {
+    public bool IsWorkPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Work;
     }
 
-    public virtual bool IsSchoolPurpose() {
+    public bool IsSchoolPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.School;
     }
 
-    public virtual bool IsEscortPurpose() {
+    public bool IsEscortPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Escort;
     }
 
-    public virtual bool IsPersonalBusinessPurpose() {
+    public bool IsPersonalBusinessPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.PersonalBusiness;
     }
 
-    public virtual bool IsShoppingPurpose() {
+    public bool IsShoppingPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Shopping;
     }
 
-    public virtual bool IsMealPurpose() {
+    public bool IsMealPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Meal;
     }
 
-    public virtual bool IsSocialPurpose() {
+    public bool IsSocialPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Social;
     }
 
-    public virtual bool IsRecreationPurpose() {
+    public bool IsRecreationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Recreation;
     }
 
-    public virtual bool IsMedicalPurpose() {
+    public bool IsMedicalPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Medical;
     }
 
-    public virtual bool IsPersonalBusinessOrMedicalPurpose() {
+    public bool IsPersonalBusinessOrMedicalPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.PersonalBusiness || DestinationPurpose == Global.Settings.Purposes.Medical;
     }
 
-    public virtual bool IsSocialOrRecreationPurpose() {
+    public bool IsSocialOrRecreationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Social || DestinationPurpose == Global.Settings.Purposes.Recreation;
     }
 
-    public virtual bool IsWalkMode() {
+    public bool IsWalkMode() {
       return Mode == Global.Settings.Modes.Walk;
     }
 
-    public virtual bool IsBikeMode() {
+    public bool IsBikeMode() {
       return Mode == Global.Settings.Modes.Bike;
     }
 
-    public virtual bool IsSovMode() {
+    public bool IsSovMode() {
       return Mode == Global.Settings.Modes.Sov;
     }
 
-    public virtual bool IsHov2Mode() {
+    public bool IsHov2Mode() {
       return Mode == Global.Settings.Modes.Hov2;
     }
 
-    public virtual bool IsHov3Mode() {
+    public bool IsHov3Mode() {
       return Mode == Global.Settings.Modes.Hov3;
     }
 
-    public virtual bool IsTransitMode() {
+    public bool IsTransitMode() {
       return Mode == Global.Settings.Modes.Transit;
     }
 
-    public virtual bool IsParkAndRideMode() {
+    public bool IsParkAndRideMode() {
       return Mode == Global.Settings.Modes.ParkAndRide;
     }
 
-    public virtual bool IsSchoolBusMode() {
+    public bool IsSchoolBusMode() {
       return Mode == Global.Settings.Modes.SchoolBus;
     }
 
-    public virtual bool IsWalkOrBikeMode() {
+    public bool IsWalkOrBikeMode() {
       return Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike;
     }
 
-    public virtual bool SubtoursExist() {
+    public bool SubtoursExist() {
       return Subtours.Count > 0;
     }
 
-    public virtual bool IsAnHovMode() {
+    public bool IsAnHovMode() {
       return IsHov2Mode() || IsHov3Mode();
     }
 
-    public virtual bool IsAnAutoMode() {
+    public bool IsAnAutoMode() {
       return IsSovMode() || IsHov2Mode() || IsHov3Mode();
     }
 
-    public virtual bool UsesTransitModes() {
+    public bool UsesTransitModes() {
       return IsTransitMode() || IsParkAndRideMode();
     }
 
-    public virtual int GetTotalToursByPurpose() {
+    public int GetTotalToursByPurpose() {
       if (DestinationPurpose == Global.Settings.Purposes.Work) {
         return PersonDay.WorkTours;
       }
@@ -500,7 +500,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return 0;
     }
 
-    public virtual int GetTotalSimulatedToursByPurpose() {
+    public int GetTotalSimulatedToursByPurpose() {
       if (DestinationPurpose == Global.Settings.Purposes.Work) {
         return PersonDay.SimulatedWorkTours;
       }
@@ -532,14 +532,14 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return 0;
     }
 
-    public virtual int GetTourPurposeSegment() {
+    public int GetTourPurposeSegment() {
       return
           IsHomeBasedTour
               ? Global.Settings.Purposes.HomeBasedComposite
               : Global.Settings.Purposes.WorkBased;
     }
 
-    public virtual int GetTourCategory() {
+    public int GetTourCategory() {
       int tourCategory =
                 IsHomeBasedTour
                     ? PersonDay.SimulatedHomeBasedTours == 1
@@ -565,15 +565,15 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return segment;
     }
 
-    public virtual void SetHomeBasedIsSimulated() {
+    public void SetHomeBasedIsSimulated() {
       PersonDay.IncrementSimulatedTours(DestinationPurpose);
     }
 
-    public virtual void SetWorkBasedIsSimulated() {
+    public void SetWorkBasedIsSimulated() {
       PersonDay.IncrementSimulatedStops(DestinationPurpose);
     }
 
-    public virtual void SetHalfTours(int direction) {
+    public void SetHalfTours(int direction) {
       if (direction == Global.Settings.TourDirections.OriginToDestination) {
         HalfTourFromOrigin = new HalfTour(this);
 
