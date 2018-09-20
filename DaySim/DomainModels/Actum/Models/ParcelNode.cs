@@ -6,18 +6,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Runtime.InteropServices;
-using DaySim.Framework.DomainModels.Models;
+using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.Factories;
-using DaySim.Framework.Persistence;
 
 namespace DaySim.DomainModels.Actum.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
-  public sealed class ParcelNode : IParcelNode {
-    [ColumnName("id")]
-    public int Id { get; set; }
-
-    [ColumnName("node_id")]
-    public int NodeId { get; set; }
+  public sealed class ParcelNode : DaySim.DomainModels.Default.Models.ParcelNode, IActumParcelNode {
   }
 }

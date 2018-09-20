@@ -13,7 +13,7 @@ using DaySim.Framework.Persistence;
 namespace DaySim.DomainModels.Default.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Default)]
-  public sealed class Zone : IZone {
+  public class Zone : IZone {
     [ColumnName("id")]
     public int Id { get; set; }
 
@@ -39,6 +39,6 @@ namespace DaySim.DomainModels.Default.Models {
     public double FractionJobsFilledByWorkersFromOutsideRegion { get; set; }
 
     [ColumnName("nearest_stoparea_id")]
-    public int NearestStopAreaId { get; set; }
+    public virtual int NearestStopAreaId { get; set; }
   }
 }

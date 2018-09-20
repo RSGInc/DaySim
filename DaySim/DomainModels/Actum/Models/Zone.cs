@@ -6,42 +6,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Runtime.InteropServices;
-using DaySim.Framework.DomainModels.Models;
+using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
 
 namespace DaySim.DomainModels.Actum.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
-  public sealed class Zone : IZone {
-    [ColumnName("id")]
-    public int Id { get; set; }
-
-    [ColumnName("taz")]
-    public int Key { get; set; }
-
-    [ColumnName("Dest_eligible")]
-    public bool DestinationEligible { get; set; }
-
-    [ColumnName("External")]
-    public int External { get; set; }
-
-    [ColumnName("xcoord")]
-    public int XCoordinate { get; set; }
-
-    [ColumnName("ycoord")]
-    public int YCoordinate { get; set; }
-
-    //[ColumnName("terminal_id")]
-    //public int TerminalId { get; set; }
-
-    [ColumnName("fraction_with_jobs_outside")]
-    public double FractionWorkersWithJobsOutsideRegion { get; set; }
-
-    [ColumnName("fraction_filled_by_workers_from_outside")]
-    public double FractionJobsFilledByWorkersFromOutsideRegion { get; set; }
+  public sealed class Zone : DomainModels.Default.Models.Zone, IActumZone {
 
     [ColumnName("nearest_stop_area_id")]
-    public int NearestStopAreaId { get; set; }
+    public override int NearestStopAreaId { get; set; }
   }
 }
