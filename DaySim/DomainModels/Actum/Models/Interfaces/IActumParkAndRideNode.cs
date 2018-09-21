@@ -24,8 +24,6 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
     int LengthToStopArea { get; set; }
 
     int Auto { get; set; }
-
-
   }
 
 }
