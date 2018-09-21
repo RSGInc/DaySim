@@ -106,6 +106,10 @@ namespace DaySim.Framework.Sampling {
       _originParcel = originParcel;
       _originSegmentZone = _segmentZones[originParcel.ZoneId];
 
+      if (chosenParcel != null) {
+        _chosenParcel = chosenParcel;
+        _chosenSegmentZone = _segmentZones[chosenParcel.ZoneId];
+      }
       //JLB 20120329 removed these lines because usual work location model doesn't set a sampled dest to chosen when it is the residence location
       //            if (_choiceProbabilityCalculator.ModelIsInEstimationMode && chosenParcel == null) {
       //                throw new ChosenParcelNotSetInEstimationModeException();
