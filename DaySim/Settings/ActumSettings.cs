@@ -22,6 +22,7 @@ namespace DaySim.Settings {
 
     public override double MonetaryUnitsPerDollar => 5.75;
 
+    public override bool UseJointTours => true;
   }
 
   public class ActumModes : DefaultModes {
