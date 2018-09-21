@@ -7,16 +7,15 @@
 
 using System;
 using System.Collections.Generic;
+using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.ShadowPricing;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-  public class DestinationParkingNodeWrapper : IDestinationParkingNodeWrapper {
-    private readonly IDestinationParkingNode _destinationParkingNode;
+  public class DestinationParkingNodeWrapper : Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper {
+    private readonly IActumDestinationParkingNode _destinationParkingNode;
     private const int RESIDENTIAL_ON_STREET = 1;
     private const int FREE_ON_STREET = 2;
     private const int METERED_ON_STREET = 3;
@@ -25,8 +24,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
 
     [UsedImplicitly]
-    public DestinationParkingNodeWrapper(IDestinationParkingNode destinationParkingNode) {
-      _destinationParkingNode = destinationParkingNode;
+    public DestinationParkingNodeWrapper(Framework.DomainModels.Models.IDestinationParkingNode destinationParkingNode) {
+      _destinationParkingNode = (IActumDestinationParkingNode)destinationParkingNode;
     }
 
     #region domain model properies

@@ -13,8 +13,6 @@ using DaySim.DomainModels.Actum.Models;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
@@ -23,7 +21,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     private IActumPersonDay _personDay;
 
     [UsedImplicitly]
-    public PersonDayWrapper(IPersonDay personDay, IPersonWrapper personWrapper, IHouseholdDayWrapper householdDayWrapper)
+    public PersonDayWrapper(Framework.DomainModels.Models.IPersonDay personDay, Framework.DomainModels.Wrappers.IPersonWrapper personWrapper, Framework.DomainModels.Wrappers.IHouseholdDayWrapper householdDayWrapper)
         : base(personDay, personWrapper, householdDayWrapper) {
       _personDay = (IActumPersonDay)personDay;
     }
@@ -125,21 +123,20 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       return base.GetTotalSimulatedStops() + SimulatedBusinessStops;
     }
 
-
-    public override void GetMandatoryTourSimulatedData(IPersonDayWrapper personDay, List<ITourWrapper> tours) {
+    public override void GetMandatoryTourSimulatedData(Framework.DomainModels.Wrappers.IPersonDayWrapper personDay, List<Framework.DomainModels.Wrappers.ITourWrapper> tours) {
       tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Work, personDay.UsualWorkplaceTours));
 
-      foreach (ITourWrapper tour in tours) {
+      foreach (Framework.DomainModels.Wrappers.ITourWrapper tour in tours) {
         tour.DestinationParcel = personDay.Person.UsualWorkParcel;
         tour.DestinationParcelId = personDay.Person.UsualWorkParcelId;
         tour.DestinationZoneKey = ChoiceModelFactory.ZoneKeys[personDay.Person.UsualWorkParcel.ZoneId];
         tour.DestinationAddressType = Global.Settings.AddressTypes.UsualWorkplace;
       }
 
-      tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Business, ((PersonDayWrapper)personDay).BusinessTours));
+      tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.Business, ((PersonDayWrapper)personDay).BusinessTours)); //IMPORTANT - CUSTOMIZED FOR Copenhagen
       tours.AddRange(CreateToursByPurpose(Global.Settings.Purposes.School, personDay.SchoolTours));
 
-      foreach (ITourWrapper tour in tours.Where(tour => tour.DestinationPurpose == Global.Settings.Purposes.School)) {
+      foreach (Framework.DomainModels.Wrappers.ITourWrapper tour in tours.Where(tour => tour.DestinationPurpose == Global.Settings.Purposes.School)) {
         tour.DestinationParcel = personDay.Person.UsualSchoolParcel;
         tour.DestinationParcelId = personDay.Person.UsualSchoolParcelId;
         tour.DestinationZoneKey = ChoiceModelFactory.ZoneKeys[personDay.Person.UsualSchoolParcel.ZoneId];
@@ -189,7 +186,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       base.Reset();
     }
 
-    protected override IPersonDay ResetPersonDay() {
+    protected override Framework.DomainModels.Models.IPersonDay ResetPersonDay() {
       _personDay = new PersonDay {
         Id = Id,
         PersonId = PersonId,

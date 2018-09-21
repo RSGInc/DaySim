@@ -10,10 +10,8 @@ using System.Linq;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
-using DaySim.PathTypeModels;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
@@ -21,27 +19,27 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     private readonly IActumTour _tour;
 
     [UsedImplicitly]
-    public TourWrapper(ITour tour, IPersonWrapper personWrapper, IPersonDayWrapper personDayWrapper, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int destinationArrivalTime, int destinationDepartureTime, int destinationPurpose) : base(tour, personWrapper, personDayWrapper, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, destinationPurpose) {
+    public TourWrapper(Framework.DomainModels.Models.ITour tour, Framework.DomainModels.Wrappers.IPersonWrapper personWrapper, Framework.DomainModels.Wrappers.IPersonDayWrapper personDayWrapper, Framework.DomainModels.Wrappers.IParcelWrapper originParcel, Framework.DomainModels.Wrappers.IParcelWrapper destinationParcel, int destinationArrivalTime, int destinationDepartureTime, int destinationPurpose) : base(tour, personWrapper, personDayWrapper, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, destinationPurpose) {
       _tour = (IActumTour)tour;
     }
 
     [UsedImplicitly]
-    public TourWrapper(ITour subtour, ITourWrapper tourWrapper, bool suppressRandomVOT = false) : base(subtour, tourWrapper, Global.Settings.Purposes.PersonalBusiness, suppressRandomVOT) {
+    public TourWrapper(Framework.DomainModels.Models.ITour subtour, Framework.DomainModels.Wrappers.ITourWrapper tourWrapper, bool suppressRandomVOT = false) : base(subtour, tourWrapper, Global.Settings.Purposes.PersonalBusiness, suppressRandomVOT) {
       _tour = (IActumTour)subtour;
     }
 
     [UsedImplicitly]
-    public TourWrapper(ITour subtour, ITourWrapper tourWrapper, int purpose, bool suppressRandomVOT = false) : base(subtour, tourWrapper, purpose, suppressRandomVOT) {
+    public TourWrapper(Framework.DomainModels.Models.ITour subtour, Framework.DomainModels.Wrappers.ITourWrapper tourWrapper, int purpose, bool suppressRandomVOT = false) : base(subtour, tourWrapper, purpose, suppressRandomVOT) {
       _tour = (IActumTour)subtour;
     }
 
     [UsedImplicitly]
-    public TourWrapper(ITour tour, IPersonDayWrapper personDayWrapper, bool suppressRandomVOT = false) : base(tour, personDayWrapper, Global.Settings.Purposes.PersonalBusiness, suppressRandomVOT) {
+    public TourWrapper(Framework.DomainModels.Models.ITour tour, Framework.DomainModels.Wrappers.IPersonDayWrapper personDayWrapper, bool suppressRandomVOT = false) : base(tour, personDayWrapper, Global.Settings.Purposes.PersonalBusiness, suppressRandomVOT) {
       _tour = (IActumTour)tour;
     }
 
     [UsedImplicitly]
-    public TourWrapper(ITour tour, IPersonDayWrapper personDayWrapper, int purpose, bool suppressRandomVOT = false) : base(tour, personDayWrapper, purpose, suppressRandomVOT) {
+    public TourWrapper(Framework.DomainModels.Models.ITour tour, Framework.DomainModels.Wrappers.IPersonDayWrapper personDayWrapper, int purpose, bool suppressRandomVOT = false) : base(tour, personDayWrapper, purpose, suppressRandomVOT) {
       _tour = (IActumTour)tour;
     }
 
@@ -142,11 +140,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         return;
       }
 
-      IEnumerable<IPathTypeModel> pathTypeModels =
-      PathTypeModelFactory.Singleton
+      IEnumerable<PathTypeModels.IPathTypeModel> pathTypeModels =
+      PathTypeModels.PathTypeModelFactory.Singleton
           .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
 
-      IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
+      PathTypeModels.IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 
       AutoTimeOneWay = autoPathRoundTrip.PathTime / 2.0;
       AutoCostOneWay = autoPathRoundTrip.PathCost / 2.0;

@@ -5,7 +5,7 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using DaySim.DomainModels.Actum.Models;
+using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
@@ -14,11 +14,11 @@ using DaySim.Framework.Factories;
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
   public class ParkAndRideNodeWrapper : Default.Wrappers.ParkAndRideNodeWrapper, IActumParkAndRideNodeWrapper {
-    private readonly ParkAndRideNode _parkAndRideNode;
+    private readonly IActumParkAndRideNode _parkAndRideNode;
 
     [UsedImplicitly]
     public ParkAndRideNodeWrapper(IParkAndRideNode parkAndRideNode) : base(parkAndRideNode) {
-      _parkAndRideNode = (ParkAndRideNode)parkAndRideNode;
+      _parkAndRideNode = (IActumParkAndRideNode)parkAndRideNode;
     }
 
     #region domain model properies

@@ -5,20 +5,28 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.DomainModels.Actum.Models.Interfaces;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-  public class TransitStopAreaWrapper : Default.Wrappers.TransitStopAreaWrapper, ITransitStopAreaWrapper {
-    private readonly ITransitStopArea _transitStopArea;
+  public class TransitStopAreaWrapper : Default.Wrappers.TransitStopAreaWrapper, IActumTransitStopAreaWrapper {
+    private readonly IActumTransitStopArea _transitStopArea;
 
     [UsedImplicitly]
-    public TransitStopAreaWrapper(ITransitStopArea transitStopArea) : base(transitStopArea) {
-      _transitStopArea = transitStopArea;
+    public TransitStopAreaWrapper(Framework.DomainModels.Models.ITransitStopArea transitStopArea) : base(transitStopArea) {
+      _transitStopArea = (IActumTransitStopArea)transitStopArea;
     }
 
+    public int BikeOnBoardTerminal {
+      get => _transitStopArea.BikeOnBoardTerminal;
+      set => _transitStopArea.BikeOnBoardTerminal = value;
+    }
+    public int Microzone {
+      get => _transitStopArea.Microzone;
+      set => _transitStopArea.Microzone = value;
+    }
   }
 }

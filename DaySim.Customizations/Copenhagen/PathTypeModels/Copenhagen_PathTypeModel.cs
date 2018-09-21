@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaySim.ChoiceModels;
-using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
@@ -2550,7 +2549,7 @@ namespace DaySim.PathTypeModels {
       //					.GetInstance<IPersistenceFactory<ITransitStopArea>>()
       //					.Reader;
       //			var eligibleTerminals = stopAreaReader.Where(s => s.BikeOnBoardTerminal == 1).ToDictionary(z => z.Key, z => z);
-      Dictionary<int, ITransitStopAreaWrapper> eligibleTerminals = Global.TransitStopAreas.Where(s => ((IActumTransitStopArea)s).BikeOnBoardTerminal == 1).ToDictionary(z => z.Key, z => z);
+      Dictionary<int, ITransitStopAreaWrapper> eligibleTerminals = Global.TransitStopAreas.Where(s => ((TransitStopAreaWrapper)s).BikeOnBoardTerminal == 1).ToDictionary(z => z.Key, z => z);
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }

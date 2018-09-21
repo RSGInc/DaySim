@@ -8,8 +8,6 @@
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
@@ -18,7 +16,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     private readonly IActumPerson _person;
 
     [UsedImplicitly]
-    public PersonWrapper(IPerson person, IHouseholdWrapper householdWrapper) : base(person, householdWrapper) {
+    public PersonWrapper(Framework.DomainModels.Models.IPerson person, Framework.DomainModels.Wrappers.IHouseholdWrapper householdWrapper) : base(person, householdWrapper) {
       _person = (IActumPerson)person;
     }
 

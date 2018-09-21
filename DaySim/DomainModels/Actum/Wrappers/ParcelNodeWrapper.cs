@@ -5,6 +5,7 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
@@ -13,11 +14,11 @@ using DaySim.Framework.Factories;
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
   public class ParcelNodeWrapper : Default.Wrappers.ParcelNodeWrapper, IParcelNodeWrapper {
-    private readonly IParcelNode _parcelNode;
+    private readonly IActumParcelNode _parcelNode;
 
     [UsedImplicitly]
     public ParcelNodeWrapper(IParcelNode parcelNode) : base(parcelNode) {
-      _parcelNode = parcelNode;
+      _parcelNode = (IActumParcelNode)parcelNode;
     }
   }
 }

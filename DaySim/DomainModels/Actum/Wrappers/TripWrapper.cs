@@ -10,8 +10,6 @@ using System.Collections.Generic;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
@@ -20,10 +18,10 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     private readonly IActumTrip _trip;
 
     [UsedImplicitly]
-    public TripWrapper(IActumTrip trip, ITourWrapper tourWrapper, IHalfTour halfTour)
+    public TripWrapper(Framework.DomainModels.Models.ITrip trip, Framework.DomainModels.Wrappers.ITourWrapper tourWrapper, Framework.DomainModels.Models.IHalfTour halfTour)
         //public TripWrapper(IActumTrip trip, IActumTourWrapper tourWrapper, IHalfTour halfTour)
         : base(trip, tourWrapper, halfTour) {
-      _trip = trip;
+      _trip = (IActumTrip)trip;
     }
 
     #region relations properties
@@ -123,7 +121,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region wrapper methods
 
-    public override void SetDriverOrPassenger(List<ITripWrapper> trips) {
+    public override void SetDriverOrPassenger(List<Framework.DomainModels.Wrappers.ITripWrapper> trips) {
       if (Mode == Global.Settings.Modes.PaidRideShare) {
         //set main and other passenger randomly by tour purpose to get right percentage of trips to assign to network
         double randomNumber = Household.RandomUtility.Uniform01();

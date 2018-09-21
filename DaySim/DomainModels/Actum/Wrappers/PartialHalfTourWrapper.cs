@@ -8,8 +8,6 @@
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
@@ -18,7 +16,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     private readonly IActumPartialHalfTour _partialHalfTour;
 
     [UsedImplicitly]
-    public PartialHalfTourWrapper(IPartialHalfTour partialHalfTour, IHouseholdDayWrapper householdDayWrapper) : base(partialHalfTour, householdDayWrapper) {
+    public PartialHalfTourWrapper(Framework.DomainModels.Models.IPartialHalfTour partialHalfTour, Framework.DomainModels.Wrappers.IHouseholdDayWrapper householdDayWrapper) : base(partialHalfTour, householdDayWrapper) {
       _partialHalfTour = (IActumPartialHalfTour)partialHalfTour;
     }
   }
