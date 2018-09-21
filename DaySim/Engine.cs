@@ -301,6 +301,11 @@ namespace DaySim {
           .ContainerDaySim
           .GetInstance<IWrapperFactory<IPartialHalfTourCreator>>()
           .Initialize(Global.Configuration);
+
+      Global
+         .ContainerDaySim
+         .GetInstance<IWrapperFactory<ITransitStopAreaCreator>>()
+         .Initialize(Global.Configuration);
     }
 
     private static void InitializeSkimFactories() {
@@ -1297,6 +1302,20 @@ namespace DaySim {
                         .GetInstance<IPersistenceFactory<ITransitStopArea>>()
                         .Reader;
 
+        ITransitStopAreaCreator transitStopAreaCreator =
+                    Global
+                        .ContainerDaySim
+                        .GetInstance<IWrapperFactory<ITransitStopAreaCreator>>()
+                        .Creator;
+
+        Global.TransitStopAreaDictionary = new Dictionary<int, ITransitStopAreaWrapper>();
+        foreach (ITransitStopArea transitStopArea in transitStopAreaReader) {
+          ITransitStopAreaWrapper stopArea = transitStopAreaCreator.CreateWrapper(transitStopArea);
+          int id = stopArea.Id;
+          Global.TransitStopAreaDictionary.Add(id, stopArea);
+        }
+        Global.TransitStopAreas = Global.TransitStopAreaDictionary.Values;
+
         Global.TransitStopAreaMapping = new Dictionary<int, int>(transitStopAreaReader.Count);
 
         foreach (ITransitStopArea transitStopArea in transitStopAreaReader) {
@@ -1306,7 +1325,7 @@ namespace DaySim {
 
       Global.MicrozoneMapping = new Dictionary<int, int>();
 
-      if (Global.Configuration.UseMicrozoneSkims || Global.Configuration.UseMicrozoneSkimsForBikeMode || Global.Configuration.UseMicrozoneSkimsForWalkMode) {
+      if (Global.Configuration.UseMicrozoneSkims) {
         Framework.DomainModels.Persisters.IPersisterReader<IParcel> microzoneReader =
                     Global
                         .ContainerDaySim
@@ -1323,8 +1342,6 @@ namespace DaySim {
       }
 
       ImpedanceRoster.Initialize(zoneMapping, Global.TransitStopAreaMapping, Global.MicrozoneMapping);
-
-
     }
 
     private static void BeginCalculateAggregateLogsums(IRandomUtility randomUtility) {
