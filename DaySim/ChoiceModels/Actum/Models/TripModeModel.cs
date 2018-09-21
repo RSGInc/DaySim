@@ -116,7 +116,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           return;
         }
 
-        IEnumerable<dynamic> pathTypeModels =
+        IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton.RunAll(
                 trip.Household.RandomUtility,
                 originParcel,
@@ -148,7 +148,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         choiceProbabilityCalculator.WriteObservation();
       } else {
-        IEnumerable<dynamic> pathTypeModels =
+        IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton.RunAll(
                 trip.Household.RandomUtility,
                 originParcel,
@@ -197,14 +197,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //}
 
         else {
-          dynamic chosenPathType = pathTypeModels.First(x => x.Mode == choice);
+          IPathTypeModel chosenPathType = pathTypeModels.First(x => x.Mode == choice);
           trip.PathType = chosenPathType.PathType;
         }
       }
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TripWrapper trip,
-                                 IEnumerable<dynamic> pathTypeModels, IParcelWrapper originParcel,
+                                 IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper originParcel,
                                  IParcelWrapper destinationParcel,
                                  int choice = Constants.DEFAULT_VALUE) {
 
@@ -381,13 +381,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       ChoiceProbabilityCalculator.Alternative alternative;
 
-      foreach (dynamic pathTypeModel in pathTypeModels) {
-        dynamic mode = pathTypeModel.Mode;
-        dynamic available = pathTypeModel.Available && tripModeAvailable[mode]
+      foreach (IPathTypeModel pathTypeModel in pathTypeModels) {
+        int mode = pathTypeModel.Mode;
+        bool available = pathTypeModel.Available && tripModeAvailable[mode]
                              && (trip.IsHalfTourFromOrigin
                                       ? trip.LatestDepartureTime - pathTypeModel.PathTime >= trip.ArrivalTimeLimit
                                       : trip.EarliestDepartureTime + pathTypeModel.PathTime <= trip.ArrivalTimeLimit);
-        dynamic generalizedTimeLogsum = pathTypeModel.GeneralizedTimeLogsum;
+        double generalizedTimeLogsum = pathTypeModel.GeneralizedTimeLogsum;
 
         alternative = choiceProbabilityCalculator.GetAlternative(mode - 1, available, choice == mode);
         alternative.Choice = mode;

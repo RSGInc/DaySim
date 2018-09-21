@@ -848,7 +848,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         IParcelWrapper origin = (leg == 1) ? tripOrigin : tripDestination;
         IParcelWrapper destination = (leg == 1) ? tripDestination : tourOrigin;
 
-        IEnumerable<dynamic> pathTypeModels =
+        IEnumerable<IPathTypeModel> pathTypeModels =
            PathTypeModelFactory.Singleton.Run(
            randomUtility,
                origin,
@@ -866,7 +866,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                false /* randomChoice */,
                mode);
 
-        dynamic path = pathTypeModels.First();
+        IPathTypeModel path = pathTypeModels.First();
 
         if (path.Available) {
           dis = path.PathDistance;
