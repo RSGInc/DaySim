@@ -224,11 +224,15 @@ namespace DaySim.Framework.Sampling {
         TourSampleItem sampleItem;
 
         RandomUniform01 randomUniform01 = new RandomUniform01(samplingUtilities.SeedValues[i]);
+
         int nullDestinationCounter = 0;
         // draw repeatedly until a sample item is drawn
         do {
           sampleItem = GetDestination<TourSampleItem>(randomUniform01, _originParcel, _originSegmentZone, _excludedParcel, _excludedSegmentZone);
           if (sampleItem != null) {
+            sampleItems[i] = sampleItem;
+          } else {
+            ++nullDestinationCounter;
             if ((nullDestinationCounter % NULL_DESTINATION_WARNING) == 0) {
               OutputDebugForFailedDestination
                   (samplingUtilities, nullDestinationCounter);
@@ -240,6 +244,7 @@ namespace DaySim.Framework.Sampling {
           }   //end else got null returned
         } while (sampleItem == null);
       }   //end loop for _sampleSize
+
       Dictionary<TourSampleItem, int> sample = new Dictionary<TourSampleItem, int>();
 
       bool skipChoiceProbabilityCalculator = true;

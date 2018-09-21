@@ -32,7 +32,10 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     //public IActumPersonDayWrapper PersonDay { get; set; }
 
-    private new IActumTourWrapper Tour { get; set; }
+    private new IActumTourWrapper Tour {
+      get => (IActumTourWrapper)base.Tour;
+      set => base.Tour = value;
+    }
 
     //public IActumParcelWrapper OriginParcel { get; set; }
 
