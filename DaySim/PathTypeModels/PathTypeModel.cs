@@ -131,9 +131,9 @@ namespace DaySim.PathTypeModels {
     }
 
     public virtual List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
-      if (transitPassOwnership != 0) {
-        throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
-      }
+      //if (transitPassOwnership != 0) {
+      //  throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
+      //}
       List<int> modes = new List<int>();
 
       for (int mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.PaidRideShare; mode++) {
@@ -147,9 +147,9 @@ namespace DaySim.PathTypeModels {
     }
 
     public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
-      if (transitPassOwnership != 0) {
-        throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
-      }
+      //if (transitPassOwnership != 0) {
+      //  throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
+      //}
       List<IPathTypeModel> list = new List<IPathTypeModel>();
 
       foreach (int mode in modes) {
@@ -167,9 +167,9 @@ namespace DaySim.PathTypeModels {
 
 
     public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
-      if (transitPassOwnership != 0) {
-        throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
-      }
+      //if (transitPassOwnership != 0) {
+      //  throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
+      //}
       List<IPathTypeModel> list = new List<IPathTypeModel>();
 
       foreach (int mode in modes) {
