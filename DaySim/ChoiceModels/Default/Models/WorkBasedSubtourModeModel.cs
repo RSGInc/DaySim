@@ -71,6 +71,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 subtour.TimeCoefficient,
                 subtour.Person.IsDrivingAge,
                 subtour.Household.VehiclesAvailable,
+                 subtour.Person.TransitPassOwnership,
                 subtour.Household.OwnsAutomatedVehicles > 0,
                 subtour.Person.GetTransitFareDiscountFraction(),
                 false);
@@ -97,6 +98,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 subtour.TimeCoefficient,
                 subtour.Person.IsDrivingAge,
                 subtour.Household.VehiclesAvailable,
+                subtour.Person.TransitPassOwnership,
                 subtour.Household.OwnsAutomatedVehicles > 0,
                 subtour.Person.GetTransitFareDiscountFraction(),
                 false);
@@ -145,6 +147,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               subtour.TimeCoefficient,
               subtour.Person.IsDrivingAge,
               subtour.Household.VehiclesAvailable,
+               subtour.Person.TransitPassOwnership,
               subtour.Household.OwnsAutomatedVehicles > 0,
               subtour.Person.GetTransitFareDiscountFraction(),
               false);

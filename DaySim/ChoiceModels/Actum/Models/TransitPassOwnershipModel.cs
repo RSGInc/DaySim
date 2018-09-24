@@ -127,12 +127,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Purposes.Work,
                 Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
-                true /* isDrivingAge */,
-                1 /* householdCars */,
-                        1 /* transitPassOwnership */,
-                false /* carsAreAVs */,
-                        1.0 /*transitDiscountFraction */,
-                false /* randomChoice */,
+                /* isDrivingAge */ true,
+                /* householdCars */ 1,
+                /* transitPassOwnership */ 1,
+                /* carsAreAVs */ false,
+                /* transitDiscountFraction */ 1.0,
+                /* randomChoice */ false,
                 Global.Settings.Modes.Transit);
 
         path = pathTypeModels.First();

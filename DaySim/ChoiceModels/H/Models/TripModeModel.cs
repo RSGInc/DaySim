@@ -80,6 +80,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 trip.Tour.TimeCoefficient,
                 trip.Person.IsDrivingAge,
                 trip.Household.VehiclesAvailable,
+                trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
                 trip.Person.GetTransitFareDiscountFraction(),
                 false);
@@ -108,6 +109,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 trip.Tour.TimeCoefficient,
                 trip.Person.IsDrivingAge,
                 trip.Household.VehiclesAvailable,
+                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
                 trip.Person.GetTransitFareDiscountFraction(),
                 false);

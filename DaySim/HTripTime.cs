@@ -35,7 +35,7 @@ namespace DaySim {
     public bool Available;
 
     public IPathTypeModel ModeLOS;
-    
+
     //PathType_Actum uses these fields which used to be and should be private
     public int EarliestFeasibleDepatureTime { get; set; }
     public int LatestFeasibleDepartureTime { get; set; }
@@ -118,6 +118,7 @@ namespace DaySim {
                             tour.TimeCoefficient,
                             tour.Person.IsDrivingAge,
                             tour.Household.VehiclesAvailable,
+                            tour.Person.TransitPassOwnership,
                             tour.Household.OwnsAutomatedVehicles > 0,
                             tour.Person.GetTransitFareDiscountFraction(),
                             true,

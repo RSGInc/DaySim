@@ -944,9 +944,10 @@ namespace DaySim.ChoiceModels.H.Models {
                 purpose,
                 costCoef,
                 timeCoef,
-                true,
-                1,
-                false,
+                /* isDrivingAge */ true,
+                /* householdCars */ 1,
+                /* transitPassOwnership */ 0,
+                /* carsAreAvs */ false,
                 transitDiscountFraction,
                 false,
                 mode);

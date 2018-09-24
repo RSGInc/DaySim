@@ -194,6 +194,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 tour.TimeCoefficient,
                 tour.Person.IsDrivingAge,
                 tour.Household.VehiclesAvailable,
+                tour.Person.TransitPassOwnership,
                (tour.Household.OwnsAutomatedVehicles > 0),
                 tour.Person.GetTransitFareDiscountFraction(),
                 false,
