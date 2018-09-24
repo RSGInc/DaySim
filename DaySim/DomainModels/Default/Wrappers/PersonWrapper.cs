@@ -364,7 +364,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       if ((!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) && Household.ResidenceParcel != null && UsualWorkParcel != null) {
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton
-                .Run(Household.RandomUtility, Household.ResidenceParcel, UsualWorkParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.FivePM, Global.Settings.Purposes.Work, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Work, /* isDrivingAge */ true, /*householdCars */ 1, /* transitPassOwnsership */ 0, /*carsAreAvs */false, 0.0, false, Global.Settings.Modes.Sov);
+                .Run(Household.RandomUtility, Household.ResidenceParcel, UsualWorkParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.FivePM, Global.Settings.Purposes.Work, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Work, /* isDrivingAge */ true, /*householdCars */ 1, /* transitPassOwnership */ 0, /* carsAreAvs */false, 0.0, false, Global.Settings.Modes.Sov);
 
         IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 
@@ -378,7 +378,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       if ((!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) && Household.ResidenceParcel != null && UsualSchoolParcel != null) {
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton
-                .Run(Household.RandomUtility, Household.ResidenceParcel, UsualSchoolParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.ThreePM, Global.Settings.Purposes.School, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Other, /* isDrivingAge */ true, /*householdCars */ 1, /* transitPassOwnsership */ 0, /*carsAreAvs */false, 0.0, false, Global.Settings.Modes.Sov);
+                .Run(Household.RandomUtility, Household.ResidenceParcel, UsualSchoolParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.ThreePM, Global.Settings.Purposes.School, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Other, /* isDrivingAge */ true, /* householdCars */ 1, /* transitPassOwnership */ 0, /* carsAreAvs */false, 0.0, false, Global.Settings.Modes.Sov);
 
         IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 
