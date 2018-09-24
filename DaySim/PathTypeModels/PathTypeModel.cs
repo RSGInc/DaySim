@@ -176,7 +176,7 @@ namespace DaySim.PathTypeModels {
         object[] args = new object[] { originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitPassOwnership, carsAreAVs, transitDiscountFraction, randomChoice, mode };
         //IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
         IPathTypeModel pathTypeModel = PathTypeModelFactory.New(new object[] { });
-        ((PathTypeModel)pathTypeModel).initialize(originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, transitPassOwnership, householdCars, carsAreAVs, transitDiscountFraction, randomChoice, mode);
+        ((PathTypeModel)pathTypeModel).initialize(originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitPassOwnership, carsAreAVs, transitDiscountFraction, randomChoice, mode);
         pathTypeModel.RunModel(randomUtility, /* useZones */ true);
 
         list.Add(pathTypeModel);
