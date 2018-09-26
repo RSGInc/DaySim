@@ -1480,7 +1480,7 @@ namespace DaySim {
                 int ivcountLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
 
                 Console.Write(string.Format("\r{0:p}", (double)current / addedHousehouldCounter) +
-                    string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", current, addedHousehouldCounter, countStringLocal, countLocal) +
+                    string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0} ", current, addedHousehouldCounter, countStringLocal, countLocal) +
                     (Global.Configuration.ReportInvalidPersonDays
                         ? string.Format("Total Invalid Attempts: {0:n0}",
                             ivcountLocal)
@@ -1510,7 +1510,7 @@ namespace DaySim {
       string countString = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
       int ivcount = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalInvalidAttempts);
       Console.Write(string.Format("\r{0:p}", 1.0) +
-          string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0}", addedHousehouldCounter, addedHousehouldCounter, countString, count) +
+          string.Format(" Household: {0:n0}/{1:n0} Total {2} Days: {3:n0} ", addedHousehouldCounter, addedHousehouldCounter, countString, count) +
           (Global.Configuration.ReportInvalidPersonDays
               ? string.Format("Total Invalid Attempts: {0:n0}",
                   ivcount)
