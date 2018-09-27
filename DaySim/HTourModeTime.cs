@@ -272,6 +272,25 @@ namespace DaySim {
             modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
             modeTimes.ParkAndRideOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
             modeTimes.ParkAndRideDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
+            modeTimes.TransitTime = pathTypeModel.PathTransitTime;
+            modeTimes.TransitDistance = pathTypeModel.PathTransitDistance;
+            modeTimes.TransitCost = pathTypeModel.PathTransitCost;
+            modeTimes.TransitGeneralizedTime = pathTypeModel.PathTransitGeneralizedTime;
+            modeTimes.WalkTime = pathTypeModel.PathWalkTime;
+            modeTimes.WalkDistance = pathTypeModel.PathWalkDistance;
+            modeTimes.BikeTime = pathTypeModel.PathBikeTime;
+            modeTimes.BikeDistance = pathTypeModel.PathBikeDistance;
+            modeTimes.BikeCost = pathTypeModel.PathBikeCost;
+            modeTimes.OriginAccessMode = pathTypeModel.PathOriginAccessMode;
+            modeTimes.OriginAccessTime = pathTypeModel.PathOriginAccessTime;
+            modeTimes.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance;
+            modeTimes.OriginAccessCost = pathTypeModel.PathOriginAccessCost;
+            modeTimes.DestinationAccessMode = pathTypeModel.PathDestinationAccessMode;
+            modeTimes.DestinationAccessTime = pathTypeModel.PathDestinationAccessTime;
+            modeTimes.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance;
+            modeTimes.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost;
+            modeTimes.PathDistance = pathTypeModel.PathDistance;
+            modeTimes.PathCost = pathTypeModel.PathCost;
           }
         } else {
           // get times for each half tour separately, using HOV3 for school bus

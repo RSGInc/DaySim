@@ -36,9 +36,22 @@ namespace DaySim {
 
     public IPathTypeModel ModeLOS;
 
-    //PathType_Actum uses these fields which used to be and should be private
-    public int EarliestFeasibleDepatureTime { get; set; }
-    public int LatestFeasibleDepartureTime { get; set; }
+    public int EarliestFeasibleDepatureTime;
+
+    public int LatestFeasibleDepartureTime;
+
+    public int ParkAndRideOriginStopAreaKey { get; private set; }
+    public int ParkAndRideDestinationStopAreaKey { get; private set; }
+    public int OriginAccessMode { get; private set; }
+    public double OriginAccessTime { get; private set; }
+    public double OriginAccessDistance { get; private set; }
+    public double OriginAccessCost { get; private set; }
+    public int DestinationAccessMode { get; private set; }
+    public double DestinationAccessTime { get; private set; }
+    public double DestinationAccessDistance { get; private set; }
+    public double DestinationAccessCost { get; private set; }
+    public double PathDistance { get; private set; }
+    public double PathCost { get; private set; }
 
     private void FindPeriod(int departureTime) {
       foreach (MinuteSpan period in DayPeriod.HSmallDayPeriods.Where(period => departureTime.IsBetween(period.Start, period.End))) {
@@ -128,6 +141,19 @@ namespace DaySim {
 
         time.Available = pathTypeModel.Available;
         time.ModeLOS = pathTypeModel;
+
+        if (time.Available) {
+          time.ParkAndRideOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
+          time.ParkAndRideDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
+          time.OriginAccessMode = pathTypeModel.PathOriginAccessMode;
+          time.OriginAccessTime = pathTypeModel.PathOriginAccessTime;
+          time.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance;
+          time.OriginAccessCost = pathTypeModel.PathOriginAccessCost;
+          time.DestinationAccessMode = pathTypeModel.PathDestinationAccessMode;
+          time.DestinationAccessTime = pathTypeModel.PathDestinationAccessTime;
+          time.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance;
+          time.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost;
+        }
 
         //set the feasible window within the small period, accounting for travel time, and recheck availability
         if (time.Available) {

@@ -117,6 +117,40 @@ namespace DaySim.PathTypeModels {
 
     public virtual bool Available { get; protected set; }
 
+    public double PathTransitTime => throw new NotImplementedException();
+
+    public double PathTransitDistance => throw new NotImplementedException();
+
+    public double PathTransitCost => throw new NotImplementedException();
+
+    public double PathTransitGeneralizedTime => throw new NotImplementedException();
+
+    public double PathWalkTime => throw new NotImplementedException();
+
+    public double PathWalkDistance => throw new NotImplementedException();
+
+    public double PathBikeTime => throw new NotImplementedException();
+
+    public double PathBikeDistance => throw new NotImplementedException();
+
+    public double PathBikeCost => throw new NotImplementedException();
+
+    public int PathOriginAccessMode => throw new NotImplementedException();
+
+    public double PathOriginAccessTime => throw new NotImplementedException();
+
+    public double PathOriginAccessDistance => throw new NotImplementedException();
+
+    public double PathOriginAccessCost => throw new NotImplementedException();
+
+    public int PathDestinationAccessMode => throw new NotImplementedException();
+
+    public double PathDestinationAccessTime => throw new NotImplementedException();
+
+    public double PathDestinationAccessDistance => throw new NotImplementedException();
+
+    public double PathDestinationAccessCost => throw new NotImplementedException();
+
     public virtual List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
       List<int> modes = new List<int>();
 
