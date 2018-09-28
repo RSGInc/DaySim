@@ -329,7 +329,7 @@ namespace DaySim {
 
     private static void InitializeAggregateLogsumsFactories() {
       Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().Register("AggregateLogsumCalculator", new AggregateLogsumsCalculatorCreator());
-      Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().Register("AggregateLogsumCalculator_Actum", new AggregateLogsumsCalculatorCreator());
+      Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().Register("AggregateLogsumCalculator_Actum", new ActumAggregateLogsumsCalculatorCreator());
       Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().Register("OtherAggregateLogsumCalculator", new OtherAggregateLogsumsCalculatorCreator());
       Global.ContainerDaySim.GetInstance<AggregateLogsumsCalculatorFactory>().Initialize();
     }

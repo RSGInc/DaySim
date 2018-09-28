@@ -96,6 +96,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregateLogsums\ActumAggregateLogsumsCalculatorCreator.cs" />
     <Compile Include="AggregateLogsums\AggregateLogsumsCalculator_Actum.cs" />
     <Compile Include="ChoiceModels\Actum\ChoiceModelRunner.cs" />
     <Compile Include="ChoiceModels\Actum\Models\AutoOwnershipModel.cs" />
