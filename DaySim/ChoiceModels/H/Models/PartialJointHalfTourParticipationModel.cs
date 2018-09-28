@@ -277,7 +277,7 @@ namespace DaySim.ChoiceModels.H.Models {
             double zzDist = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, Global.Settings.Times.EightAM, pUsualLocationZoneId[t1], pUsualLocationZoneId[t2]).Variable;
             double circuityDistance =
                             (zzDist > Global.Configuration.MaximumBlendingDistance || Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Parcel)
-                                ? pUsualLocationParcel[t1].CalculateShortDistance(pUsualLocationParcel[t2])
+                                ? pUsualLocationParcel[t1].CalculateShortDistance(pUsualLocationParcel[t2], /* doNewCorrections */ false)
                                 : Constants.DEFAULT_VALUE;
             SkimValue skimValue =
                             Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Parcel

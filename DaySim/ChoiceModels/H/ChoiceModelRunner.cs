@@ -1185,7 +1185,7 @@ namespace DaySim.ChoiceModels.H {
               if (j == chauffeurOrder) {
                 distanceFromChauffeur[j] = -1;  // forces chauffeur to be first in pick sequence
               } else if (destinationParcel[j] != null) {
-                double circuityDistance = chauffeurParcel.CalculateShortDistance(destinationParcel[j]);
+                double circuityDistance = chauffeurParcel.CalculateShortDistance(destinationParcel[j], /* doNewCorrections */ false);
 
                 distanceFromChauffeur[j] = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 1, chauffeurParcel, destinationParcel[j], circuityDistance).Variable;
               }
@@ -1831,7 +1831,7 @@ namespace DaySim.ChoiceModels.H {
           pathType = Global.Settings.PathTypes.FullNetwork;
         }
 
-        double circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
+        double circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel, /* doNewCorrections */ false);
 
         if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
           if (!(Global.Configuration.IsInEstimationMode)) {
