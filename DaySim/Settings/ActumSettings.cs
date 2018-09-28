@@ -14,6 +14,7 @@ namespace DaySim.Settings {
   public class ActumSettings : DefaultSettings {
     public ActumSettings() {
       Modes = new ActumModes();
+      Times = new ActumTimes();
     }
 
     public override double LengthUnitsPerFoot => 0.3048;
