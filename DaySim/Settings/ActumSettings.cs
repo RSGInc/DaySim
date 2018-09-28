@@ -25,6 +25,10 @@ namespace DaySim.Settings {
     public override bool UseJointTours => true;
   }
 
+  public class ActumTimes : DefaultTimes {
+    public override int MinimumActivityDuration => 2;
+  }
+
   public class ActumModes : DefaultModes {
     //public override int Hov2 {
     //get { throw new NotImplementedException(); }
