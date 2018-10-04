@@ -22,6 +22,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.AggregateLogsums {
   public sealed class AggregateLogsumsCalculator : IAggregateLogsumsCalculator {
+    public static bool intenseDebugging = false;
     #region fields
 
     private const double UPPER_LIMIT = 88;
