@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
+// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
 // Copyright 2011-2013 John Bowman, Mark Bradley, and RSG, Inc.
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
@@ -16,7 +16,6 @@ using DaySim.DomainModels.Factories;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
-using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
@@ -288,8 +287,7 @@ namespace DaySim.AggregateLogsums {
       Framework.DomainModels.Persisters.IPersisterReader<IZone> zoneReader =
                 Global
                     .ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
-                    //					.Get<IPersistenceFactory<IZone>>()
-                    .Reader;
+                     .Reader;
 
       _eligibleZones = zoneReader.Where(z => z.DestinationEligible).ToDictionary(z => z.Id, z => z);
       _zoneCount = zoneReader.Count;
@@ -311,8 +309,6 @@ namespace DaySim.AggregateLogsums {
       Parallel.For(0, _zoneCount, new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.NThreads }, id => CalculateZone(randomUtility, id));
 
       for (int id = 0; id < _zoneCount; id++) {
-
-        //CalculateZone(randomUtility, id);    //instead of parallel for above; used in testing
 
         double[][][][] purposes = Global.AggregateLogsums[id];
 
@@ -672,7 +668,7 @@ namespace DaySim.AggregateLogsums {
                     .Creator;
 
       foreach (IParcel parcel in parcelReader) {
-        IParcelWrapper parcelWrapper = parcelCreator.CreateWrapper(parcel);
+        Framework.DomainModels.Wrappers.IParcelWrapper parcelWrapper = parcelCreator.CreateWrapper(parcel);
 
         ISubzone[] subzones = zoneSubzones[parcelWrapper.ZoneId];
         // var subzone = (parcel.GetDistanceToTransit() > 0 && parcel.GetDistanceToTransit() <= .5) ? 0 : 1;  
