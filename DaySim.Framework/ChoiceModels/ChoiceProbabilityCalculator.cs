@@ -903,6 +903,9 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void SumUtility(double utility) {
+        if (ChoiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("Alternative {0}.SumUtility(utility={1}, Nest==null? {2}, _level.DefaultSum={3}", this, utility, Nest == null, _level.DefaultSum);
+        }
         if (Nest == null) {
           _level.DefaultSum += utility;
         } else {
