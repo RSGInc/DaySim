@@ -730,9 +730,9 @@ namespace DaySim.PathTypeModels {
 
         double walkDistance = 2.0 * (
                      (Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                   ? parkingParcel.NodeToNodeDistance(_destinationParcel)
+                   ? parkingParcel.NodeToNodeDistance(_destinationParcel, /* doNewCorrections */ true)
                    : (Global.Configuration.UseShortDistanceCircuityMeasures)
-                   ? parkingParcel.CircuityDistance(_destinationParcel)
+                   ? parkingParcel.CircuityDistance(_destinationParcel, /* doNewCorrections */ true)
                    : xyDistNodeDest);
 
         double walkTime = walkDistance * Global.Configuration.PathImpedance_WalkMinutesPerMile;
@@ -1071,7 +1071,7 @@ namespace DaySim.PathTypeModels {
         double circuityDistance =
                   (zzDistPR > Global.Configuration.MaximumBlendingDistance || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(parkAndRideParcel);
+                    : _originParcel.CalculateShortDistance(parkAndRideParcel, /* doNewCorrections */ true);
 
         SkimValue skimValue
                   = useZones
@@ -1267,7 +1267,7 @@ namespace DaySim.PathTypeModels {
         double circuityDistance =
                     (zzDistPR > Global.Configuration.MaximumBlendingDistance || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(parkAndRideParcel);
+                    : _originParcel.CalculateShortDistance(parkAndRideParcel, /* doNewCorrections */ true);
 
         SkimValue skimValue
                     = useZones
@@ -1364,7 +1364,7 @@ namespace DaySim.PathTypeModels {
       double circuityDistance =
                 (zzDist < Constants.EPSILON || zzDist > Global.Configuration.MaximumBlendingDistance)
                     ? Constants.DEFAULT_VALUE
-                    : oParcel.CalculateShortDistance(dParcel);
+                    : oParcel.CalculateShortDistance(dParcel, /* doNewCorrections */ true);
       return circuityDistance;
     }
 

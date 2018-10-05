@@ -375,14 +375,21 @@ namespace DaySim.PathTypeModels {
 
     private void RunWalkBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
       double zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
+      //double circuityDistance =
+      //          (zzDist > Global.Configuration.MaximumBlendingDistance)
+      //              ? Constants.DEFAULT_VALUE
+      //              : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
+      //                  ? _originParcel.NodeToNodeDistance(_destinationParcel)
+      //                  : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
+      //                      ? _originParcel.CircuityDistance(_destinationParcel)
+      //                      : Constants.DEFAULT_VALUE;
+
+
       double circuityDistance =
-                (zzDist > Global.Configuration.MaximumBlendingDistance)
+                ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                        ? _originParcel.NodeToNodeDistance(_destinationParcel)
-                        : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-                            ? _originParcel.CircuityDistance(_destinationParcel)
-                            : Constants.DEFAULT_VALUE;
+                    : _originParcel.CalculateShortDistance(_destinationParcel, /* doNewCorrections */ false);
+
       //test output
       //var orth=(Math.Abs(_originParcel.XCoordinate - _destinationParcel.XCoordinate) + Math.Abs(_originParcel.YCoordinate - _destinationParcel.YCoordinate)) / 5280.0;
       //Global.PrintFile.WriteLine("Circuity distance for parcels {0} to {1} is {2} vs {3}",_originParcel.Id, _destinationParcel.Id, circuityDistance, orth);
@@ -577,14 +584,19 @@ namespace DaySim.PathTypeModels {
       }
 
       double zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
+      //double circuityDistance =
+      //          (zzDist > Global.Configuration.MaximumBlendingDistance)
+      //              ? Constants.DEFAULT_VALUE
+      //              : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
+      //                  ? _originParcel.NodeToNodeDistance(_destinationParcel)
+      //                  : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
+      //                      ? _originParcel.CircuityDistance(_destinationParcel)
+      //                      : Constants.DEFAULT_VALUE;
+
       double circuityDistance =
-                (zzDist > Global.Configuration.MaximumBlendingDistance)
+                ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                        ? _originParcel.NodeToNodeDistance(_destinationParcel)
-                        : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-                            ? _originParcel.CircuityDistance(_destinationParcel)
-                            : Constants.DEFAULT_VALUE;
+                    : _originParcel.CalculateShortDistance(_destinationParcel, /* doNewCorrections */ false);
 
       SkimValue skimValue1 =
                 useZones
@@ -1085,14 +1097,19 @@ namespace DaySim.PathTypeModels {
 
         double zzDist = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
 
+        //double circuityDistance =
+        //            (zzDist > Global.Configuration.MaximumBlendingDistance)
+        //                ? Constants.DEFAULT_VALUE
+        //                : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
+        //                    ? _originParcel.NodeToNodeDistance(parkAndRideParcel)
+        //                    : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
+        //                        ? _originParcel.CircuityDistance(parkAndRideParcel)
+        //                        : Constants.DEFAULT_VALUE;
+
         double circuityDistance =
-                    (zzDist > Global.Configuration.MaximumBlendingDistance)
-                        ? Constants.DEFAULT_VALUE
-                        : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                            ? _originParcel.NodeToNodeDistance(parkAndRideParcel)
-                            : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-                                ? _originParcel.CircuityDistance(parkAndRideParcel)
-                                : Constants.DEFAULT_VALUE;
+                  ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
+                      ? Constants.DEFAULT_VALUE
+                      : _originParcel.CalculateShortDistance(parkAndRideParcel, /* doNewCorrections */ false);
 
         SkimValue skimValue
                     = useZones
@@ -1406,14 +1423,19 @@ namespace DaySim.PathTypeModels {
 
         double stationWalkTime = 2.0 * Global.PathImpedance_WalkMinutesPerDistanceUnit * node.LengthToStopArea / Global.Settings.LengthUnitsPerFoot / 5280 * Global.Settings.DistanceUnitsPerMile;  // in DistanceUnits
 
+        //double circuityDistance =
+        //                (zzDist > Global.Configuration.MaximumBlendingDistance)
+        //                ? Constants.DEFAULT_VALUE
+        //                : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
+        //                    ? _originParcel.NodeToNodeDistance(parkAndRideParcel)
+        //                    : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
+        //                        ? _originParcel.CircuityDistance(parkAndRideParcel)
+        //                        : Constants.DEFAULT_VALUE;
+
         double circuityDistance =
-                        (zzDist > Global.Configuration.MaximumBlendingDistance)
-                        ? Constants.DEFAULT_VALUE
-                        : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                            ? _originParcel.NodeToNodeDistance(parkAndRideParcel)
-                            : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-                                ? _originParcel.CircuityDistance(parkAndRideParcel)
-                                : Constants.DEFAULT_VALUE;
+                  ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
+                      ? Constants.DEFAULT_VALUE
+                      : _originParcel.CalculateShortDistance(parkAndRideParcel, /* doNewCorrections */ false);
 
         SkimValue skimValue
                         = useZones
@@ -1704,14 +1726,19 @@ namespace DaySim.PathTypeModels {
 
       // calculate circuity distance for blending
       double zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, originZoneId, destinationZoneId).Variable;
+      //double circuityDistance =
+      //          (zzDist > Global.Configuration.MaximumBlendingDistance)
+      //              ? Constants.DEFAULT_VALUE
+      //              : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
+      //                  ? originParcel.NodeToNodeDistance(destinationParcel)
+      //                  : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
+      //                      ? originParcel.CircuityDistance(destinationParcel)
+      //                      : Constants.DEFAULT_VALUE;
+
       double circuityDistance =
-                (zzDist > Global.Configuration.MaximumBlendingDistance)
+                ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : (!useZones && Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                        ? originParcel.NodeToNodeDistance(destinationParcel)
-                        : (!useZones && Global.Configuration.UseShortDistanceCircuityMeasures)
-                            ? originParcel.CircuityDistance(destinationParcel)
-                            : Constants.DEFAULT_VALUE;
+                    : _originParcel.CalculateShortDistance(destinationParcel, /* doNewCorrections */ false);
 
       //calculate times and distances outbound
       SkimValue freeFlowSkimValue =
