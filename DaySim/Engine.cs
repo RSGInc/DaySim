@@ -1457,6 +1457,7 @@ namespace DaySim {
       //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
       ParallelUtility.AssignThreadIndex(numberOfChoiceModelThreads);
       List<Thread> threads = new List<Thread>();
+      int displayInterval = Math.Min(1000, Math.Max(1, addedHousehouldCounter / 100));
       for (int threadIndex = 0; threadIndex < numberOfChoiceModelThreads; ++threadIndex) {
         Thread myThread = new Thread(new ThreadStart(delegate {
           //retrieve threadAssignedIndexIndex so can see logging output
@@ -1473,7 +1474,7 @@ namespace DaySim {
             choiceModelRunner.RunChoiceModels();
 
             if (Global.Configuration.ShowRunChoiceModelsStatus) {
-              if (current % 1000 == 0) {
+              if ((current % displayInterval) == 0) {
                 int countLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) : ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalPersonDays);
                 //Actum and Default differ in that one Actum counts TotalHouseholdDays and Default counts TotalPersonDays
                 string countStringLocal = ChoiceModelFactory.GetTotal(ChoiceModelFactory.TotalHouseholdDays) > 0 ? "Household" : "Person";
