@@ -929,7 +929,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
     }
 
 
-    public virtual double CalculateShortDistance(IParcelWrapper destination, bool doNewCorrections = true) {
+    public double CalculateShortDistance(IParcelWrapper destination, bool doNewCorrections) {
       if (Global.Configuration.UseShortDistanceNodeToNodeMeasures) {
         return NodeToNodeDistance(destination, doNewCorrections);
       }
@@ -948,7 +948,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return Constants.DEFAULT_VALUE;
     }
 
-    public virtual double NodeToNodeDistance(IParcelWrapper destination, bool doNewCorrections = true) {
+    public double NodeToNodeDistance(IParcelWrapper destination, bool doNewCorrections) {
       if (doNewCorrections) {
         if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
           double calcDistance = (Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation)
@@ -1024,7 +1024,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return distance;
     }
 
-    public virtual double CircuityDistance(IParcelWrapper destination, bool doNewCorrections = true) {
+    public double CircuityDistance(IParcelWrapper destination, bool doNewCorrections) {
       if (doNewCorrections) {
         //added for intra-microzone distance, square root of area over 2
         if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
