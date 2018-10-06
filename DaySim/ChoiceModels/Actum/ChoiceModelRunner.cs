@@ -34,10 +34,6 @@ namespace DaySim.ChoiceModels.Actum {
               .ContainerDaySim.GetInstance<IWrapperFactory<IHouseholdCreator>>()
               .Creator
               .CreateWrapper(household);
-
-      int[] interestingHouseholds = { };
-      bool isInterestignHousehold = interestingHouseholds.Contains(_household.Id);
-      ChoiceProbabilityCalculator.intenseDebugging = isInterestignHousehold;
     }
 
     public void SetRandomSeed(int randomSeed) {

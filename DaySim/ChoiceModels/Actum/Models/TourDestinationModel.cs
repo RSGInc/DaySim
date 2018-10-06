@@ -156,8 +156,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int otherPatternFlag = personDay.GetIsOtherPattern().ToFlag();
       int jointTourFlag = (tour.JointTourSequence > 0).ToFlag();
 
-
-
       ChoiceModelUtility.DrawRandomTourTimePeriodsActum(tour, tourCategory);
 
       if (tour.Household.Id == 80049 && tour.PersonDay.Day == 1 && tour.Person.Sequence == 2 && tour.Sequence == 4) {
