@@ -158,7 +158,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 
 
-      ChoiceModelUtility.DrawRandomTourTimePeriods(tour, tourCategory);
+      ChoiceModelUtility.DrawRandomTourTimePeriodsActum(tour, tourCategory);
 
       if (tour.Household.Id == 80049 && tour.PersonDay.Day == 1 && tour.Person.Sequence == 2 && tour.Sequence == 4) {
       }

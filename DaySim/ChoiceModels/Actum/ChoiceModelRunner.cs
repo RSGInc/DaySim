@@ -2710,7 +2710,7 @@ namespace DaySim.ChoiceModels.Actum {
           //tour.DestinationAddressType = Global.Settings.AddressTypes.UsualSchool;
           //add code to set simulated times of day for mode choice
           int tourCategory = tour.GetTourCategory();
-          ChoiceModelUtility.DrawRandomTourTimePeriods(tour, tourCategory);
+          ChoiceModelUtility.DrawRandomTourTimePeriodsActum(tour, tourCategory);
         }
 
         return;
@@ -2916,7 +2916,7 @@ namespace DaySim.ChoiceModels.Actum {
           //subtour.DestinationAddressType = Global.Settings.AddressTypes.UsualSchool;
           //add code to set simulated times of day for mode choice
           int subtourCategory = subtour.GetTourCategory();
-          ChoiceModelUtility.DrawRandomTourTimePeriods(subtour, subtourCategory);
+          ChoiceModelUtility.DrawRandomTourTimePeriodsActum(subtour, subtourCategory);
         }
 
         return;

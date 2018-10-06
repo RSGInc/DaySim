@@ -141,7 +141,7 @@ namespace DaySim.ChoiceModels.H.Models {
       int otherPatternFlag = personDay.GetIsOtherPattern().ToFlag();
       int jointTourFlag = (tour.JointTourSequence > 0).ToFlag();
 
-      ChoiceModelUtility.DrawRandomTourTimePeriods(tour, tourCategory);
+      ChoiceModelUtility.DrawRandomTourTimePeriodsActum(tour, tourCategory);
 
       int segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
 

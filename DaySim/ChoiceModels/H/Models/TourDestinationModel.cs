@@ -145,7 +145,7 @@ namespace DaySim.ChoiceModels.H.Models {
       //            var primaryFlag = ChoiceModelUtility.GetPrimaryFlag(tourCategory);
       int secondaryFlag = ChoiceModelUtility.GetSecondaryFlag(tourCategory);
 
-      ChoiceModelUtility.DrawRandomTourTimePeriods(tour, tourCategory);
+      ChoiceModelUtility.DrawRandomTourTimePeriodsActum(tour, tourCategory);
 
       int segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
       DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, tour.OriginParcel);
