@@ -356,7 +356,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(176, originParcel.NetIntersectionDensity1());
           alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
           alternative.AddUtilityTerm(179, originParcel.MixedUse4Index1());
-          alternative.AddUtilityTerm(180, 1.0 * destinationParcel.MixedUse4Index1()
+          alternative.AddUtilityTerm(181, 1.0 * destinationParcel.MixedUse4Index1()
                                                    + 0.00001 * destinationParcel.TotalEmploymentDensity1()
                                                    + 0.001 * destinationParcel.NetIntersectionDensity1()
                                                    + 0.001 * originParcel.NetIntersectionDensity1()
