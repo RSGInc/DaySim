@@ -16,7 +16,7 @@ using DaySim.Framework.Exceptions;
 
 namespace DaySim.Framework.ChoiceModels {
   public sealed class ChoiceProbabilityCalculator {
-    public static bool intenseDebugging = false;
+    public bool intenseDebugging = false;
 
     private readonly object _getNestedAlternativeLock = new object();
     private readonly object _getLevelLock = new object();
@@ -63,6 +63,9 @@ namespace DaySim.Framework.ChoiceModels {
         throw new FileNotFoundException("The coefficient file was not found.");
       }
       _instanceId = _instance++;
+      int[] interesting = { };
+      bool isInteresting = interesting.Contains(_instanceId);
+      intenseDebugging = isInteresting;
 
       _modelIsInEstimationMode = modelIsInEstimationMode;
       _coefficients = coefficients;
@@ -557,6 +560,9 @@ namespace DaySim.Framework.ChoiceModels {
     }
 
     public Alternative GetAlternative(int index, bool available, bool isChosenAlternative = false) {
+      if (intenseDebugging) {
+        Global.PrintFile.WriteLine("_instanceId={4} {0}.GetAlternative(index={1}, available={2}, isChosenAlternative={3}", this, index, available, isChosenAlternative, _instanceId);
+      }
       Alternative alternative = _alternatives[index];
 
       if (alternative == null) {
@@ -577,6 +583,9 @@ namespace DaySim.Framework.ChoiceModels {
     }
 
     private NestedAlternative GetNestedAlternative(int id, int index, int levelIndex, int thetaParameter) {
+      if (intenseDebugging) {
+        Global.PrintFile.WriteLine("_instanceId={4} {0}.GetNestedAlternative(id={1}, index={2}, levelIndex={3}, thetaParameter={4}", this, id, index, levelIndex, thetaParameter, _instanceId);
+      }
 
       NestedAlternative nestedAlternative = _nestedAlternatives[index];
 
@@ -674,6 +683,9 @@ namespace DaySim.Framework.ChoiceModels {
     }
 
     public Alternative SimulateChoice(IRandomUtility randomUtility, int id = Constants.DEFAULT_VALUE, int observed = Constants.DEFAULT_VALUE) {
+      if (intenseDebugging) {
+        Global.PrintFile.WriteLine("_instanceId ={3} {0}.SimulateChoice(id={1}, observed={2}", this, id, observed, _instanceId);
+      }
 
       foreach (Alternative alternative in _alternatives.Where(a => a != null && a.Key == _key && a.Nest != null)) {
         alternative.Nest.UtilitySum = 0;
@@ -887,8 +899,8 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void Update(int key, bool available, bool isChosenAlternative) {
-        if (ChoiceProbabilityCalculator.intenseDebugging) {
-          Global.PrintFile.WriteLine("Alternative {0}.Update(key={1}, available={2}, isChosenAlternative={3}", this, key, available, isChosenAlternative);
+        if (_choiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("_instanceId ={4} {0}.Update(key={1}, available={2}, isChosenAlternative={3}", this, key, available, isChosenAlternative, _choiceProbabilityCalculator._instanceId);
         }
         Key = key;
         Size = 0;
@@ -903,8 +915,8 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void SumUtility(double utility) {
-        if (ChoiceProbabilityCalculator.intenseDebugging) {
-          Global.PrintFile.WriteLine("Alternative {0}.SumUtility(utility={1}, Nest==null? {2}, _level.DefaultSum={3}", this, utility, Nest == null, _level.DefaultSum);
+        if (_choiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("_instanceId ={4} {0}.SumUtility(utility={1}, Nest==null? {2}, _level.DefaultSum={3}", this, utility, Nest == null, _level.DefaultSum, _choiceProbabilityCalculator._instanceId);
         }
         if (Nest == null) {
           _level.DefaultSum += utility;
@@ -916,8 +928,8 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void AddUtilityTerm(int parameter, double value) {
-        if (ChoiceProbabilityCalculator.intenseDebugging) {
-          Global.PrintFile.WriteLine("Alternative {0}.AddUtilityTerm(parameter={1},value={2}", this, parameter, value);
+        if (_choiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("_instanceId ={3} {0}.AddUtilityTerm(parameter={1},value={2}", this, parameter, value, _choiceProbabilityCalculator._instanceId);
         }
 
         if (double.IsNaN(value)) {
@@ -951,7 +963,7 @@ namespace DaySim.Framework.ChoiceModels {
 
           _choiceProbabilityCalculator.AddObservation(utility);
         } else {
-          if (value == 0.0) {
+          if ((value == 0.0) && (Global.Configuration.DataType != "Actum")) {
             return;
           }
 
@@ -966,12 +978,15 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void AddNestedAlternative(int id, int index, int thetaParameter) {
+        if (_choiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("_instanceId={4} {0}.AddNestedAlternative(id={1}, index={2}, thetaParameter={3}", this, id, index, thetaParameter, _choiceProbabilityCalculator._instanceId);
+        }
         Nest = _choiceProbabilityCalculator.GetNestedAlternative(id, index, 1, thetaParameter);
       }
 
       public void AddUtilityComponent(Component component) {
-        if (ChoiceProbabilityCalculator.intenseDebugging) {
-          Global.PrintFile.WriteLine("Alternative {0}.AddUtilityComponent(component={1}", this, component);
+        if (_choiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("_instanceId={2} {0}.AddUtilityComponent(component={1}", this, component, _choiceProbabilityCalculator._instanceId);
         }
         if (_choiceProbabilityCalculator._modelIsInEstimationMode) {
           AltUtilityComponents.Add(component);
@@ -981,8 +996,8 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void AddSizeComponent(Component component) {
-        if (ChoiceProbabilityCalculator.intenseDebugging) {
-          Global.PrintFile.WriteLine("Alternative {0}.AddSizeComponent(component={1}", this, component);
+        if (_choiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("_instanceId={2} {0}.AddSizeComponent(component={1}", this, component, _choiceProbabilityCalculator._instanceId);
         }
         if (_choiceProbabilityCalculator._modelIsInEstimationMode) {
           AltSizeComponents.Add(component);
@@ -1054,6 +1069,9 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void SumUtility(double utility) {
+        if (_choiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("_instanceId={4} {0}.SumUtility(utility={1}, Nest==null? {2}, _level.DefaultSum={3}", this, utility, Nest == null, _level.DefaultSum, _choiceProbabilityCalculator._instanceId);
+        }
         if (Nest == null) {
           _level.DefaultSum += utility;
         } else {
@@ -1064,6 +1082,9 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void AddNestedAlternative(int id, int index, int thetaParameter) {
+        if (_choiceProbabilityCalculator.intenseDebugging) {
+          Global.PrintFile.WriteLine("_instanceId={4} {0}.AddNestedAlternative(id={1}, index={2}, thetaParameter={3}", this, id, index, thetaParameter, _choiceProbabilityCalculator._instanceId);
+        }
         Nest = _choiceProbabilityCalculator.GetNestedAlternative(id, index, LevelIndex + 1, thetaParameter);
       }
     }
@@ -1121,10 +1142,9 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       public void AddUtilityTerm(int parameter, double value) {
-        if (ChoiceProbabilityCalculator.intenseDebugging) {
+        if (_choiceProbabilityCalculator.intenseDebugging) {
           Global.PrintFile.WriteLine("Component {0}.AddUtilityTerm(parameter={1}, value={2}", this, parameter, value);
         }
-
         if (double.IsNaN(value)) {
           throw new ValueIsNaNException(string.Format(@"Value is NaN for component {0}, parameter {1}.", _index, parameter));
         }
@@ -1156,7 +1176,7 @@ namespace DaySim.Framework.ChoiceModels {
 
           _choiceProbabilityCalculator.AddObservation(utility);
         } else {
-          if (value == 0.0) {
+          if ((value == 0.0) && (Global.Configuration.DataType != "Actum")) {
             return;
           }
 
