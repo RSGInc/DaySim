@@ -747,8 +747,8 @@ namespace DaySim.Framework.ChoiceModels {
       }
 
       if (Global.Configuration.TraceSimulatedChoiceOutcomes && _key != 0) {
-        Global.PrintFile.WriteLine("> Key {0} Alternative {1} chosen for model {2}", _key,
-                                   chosenAlternative == null ? Constants.DEFAULT_VALUE : chosenAlternative.Id, _title);
+        Global.PrintFile.WriteLine("_instanceId ={3} > Key {0} Alternative {1} chosen for model {2}", _key,
+                                   chosenAlternative == null ? Constants.DEFAULT_VALUE : chosenAlternative.Id, _title, _instanceId);
       }
 
       if (chosenAlternative != null && Global.Configuration.TestEstimationModelInApplicationMode && observed >= 0 && _tempWriter != null) {
