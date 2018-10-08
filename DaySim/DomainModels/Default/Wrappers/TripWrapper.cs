@@ -239,7 +239,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     #region wrapper methods
 
-    public virtual bool IsNoneOrHomePurposeByOrigin() {
+    public bool IsNoneOrHomePurposeByOrigin() {
       int purpose =
                 IsHalfTourFromOrigin
                     ? DestinationPurpose
@@ -248,7 +248,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return purpose == Global.Settings.Purposes.NoneOrHome;
     }
 
-    public virtual bool IsWorkPurposeByOrigin() {
+    public bool IsWorkPurposeByOrigin() {
       int purpose =
                 IsHalfTourFromOrigin
                     ? DestinationPurpose
@@ -257,7 +257,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return purpose == Global.Settings.Purposes.Work;
     }
 
-    public virtual bool IsEscortPurposeByOrigin() {
+    public bool IsEscortPurposeByOrigin() {
       int purpose =
                 IsHalfTourFromOrigin
                     ? DestinationPurpose
@@ -266,7 +266,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return purpose == Global.Settings.Purposes.Escort;
     }
 
-    public virtual bool IsNoneOrHomePurposeByDestination() {
+    public bool IsNoneOrHomePurposeByDestination() {
       int purpose =
                 IsHalfTourFromOrigin
                     ? OriginPurpose
@@ -275,7 +275,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return purpose == Global.Settings.Purposes.NoneOrHome;
     }
 
-    public virtual bool IsWorkPurposeByDestination() {
+    public bool IsWorkPurposeByDestination() {
       int purpose =
                 IsHalfTourFromOrigin
                     ? OriginPurpose
@@ -284,7 +284,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return purpose == Global.Settings.Purposes.Work;
     }
 
-    public virtual bool IsEscortPurposeByDestination() {
+    public bool IsEscortPurposeByDestination() {
       int purpose =
                 IsHalfTourFromOrigin
                     ? OriginPurpose
@@ -293,129 +293,129 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return purpose == Global.Settings.Purposes.Escort;
     }
 
-    public virtual bool IsWorkDestinationPurpose() {
+    public bool IsWorkDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Work;
     }
 
-    public virtual bool IsSchoolDestinationPurpose() {
+    public bool IsSchoolDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.School;
     }
 
-    public virtual bool IsEscortDestinationPurpose() {
+    public bool IsEscortDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Escort;
     }
 
-    public virtual bool IsPersonalBusinessDestinationPurpose() {
+    public bool IsPersonalBusinessDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.PersonalBusiness;
     }
 
-    public virtual bool IsShoppingDestinationPurpose() {
+    public bool IsShoppingDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Shopping;
     }
 
-    public virtual bool IsMealDestinationPurpose() {
+    public bool IsMealDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Meal;
     }
 
-    public virtual bool IsSocialDestinationPurpose() {
+    public bool IsSocialDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Social;
     }
 
-    public virtual bool IsRecreationDestinationPurpose() {
+    public bool IsRecreationDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Recreation;
     }
 
-    public virtual bool IsMedicalDestinationPurpose() {
+    public bool IsMedicalDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Medical;
     }
 
-    public virtual bool IsPersonalBusinessOrMedicalDestinationPurpose() {
+    public bool IsPersonalBusinessOrMedicalDestinationPurpose() {
       return IsPersonalBusinessDestinationPurpose() || IsMedicalDestinationPurpose();
     }
 
-    public virtual bool IsWorkOrSchoolDestinationPurpose() {
+    public bool IsWorkOrSchoolDestinationPurpose() {
       return IsWorkDestinationPurpose() || IsSchoolDestinationPurpose();
     }
 
-    public virtual bool IsPersonalReasonsDestinationPurpose() {
+    public bool IsPersonalReasonsDestinationPurpose() {
       return IsMealDestinationPurpose() || IsPersonalBusinessDestinationPurpose() || IsShoppingDestinationPurpose() || IsSocialDestinationPurpose();
     }
 
-    public virtual bool IsWorkOriginPurpose() {
+    public bool IsWorkOriginPurpose() {
       return OriginPurpose == Global.Settings.Purposes.Work;
     }
 
-    public virtual bool IsSchoolOriginPurpose() {
+    public bool IsSchoolOriginPurpose() {
       return OriginPurpose == Global.Settings.Purposes.School;
     }
 
-    public virtual bool IsEscortOriginPurpose() {
+    public bool IsEscortOriginPurpose() {
       return OriginPurpose == Global.Settings.Purposes.Escort;
     }
 
-    public virtual bool IsShoppingOriginPurpose() {
+    public bool IsShoppingOriginPurpose() {
       return OriginPurpose == Global.Settings.Purposes.Shopping;
     }
 
-    public virtual bool IsPersonalBusinessOriginPurpose() {
+    public bool IsPersonalBusinessOriginPurpose() {
       return OriginPurpose == Global.Settings.Purposes.PersonalBusiness;
     }
 
-    public virtual bool IsMealOriginPurpose() {
+    public bool IsMealOriginPurpose() {
       return OriginPurpose == Global.Settings.Purposes.Meal;
     }
 
-    public virtual bool IsSocialOriginPurpose() {
+    public bool IsSocialOriginPurpose() {
       return OriginPurpose == Global.Settings.Purposes.Social;
     }
 
-    public virtual bool UsesSovOrHovModes() {
+    public bool UsesSovOrHovModes() {
       return IsSovMode() || IsHov2Mode() || IsHov3Mode();
     }
 
-    public virtual bool IsWalkMode() {
+    public bool IsWalkMode() {
       return Mode == Global.Settings.Modes.Walk;
     }
 
-    public virtual bool IsBikeMode() {
+    public bool IsBikeMode() {
       return Mode == Global.Settings.Modes.Bike;
     }
 
-    public virtual bool IsSovMode() {
+    public bool IsSovMode() {
       return Mode == Global.Settings.Modes.Sov;
     }
 
-    public virtual bool IsHov2Mode() {
+    public bool IsHov2Mode() {
       return Mode == Global.Settings.Modes.Hov2;
     }
 
-    public virtual bool IsHov3Mode() {
+    public bool IsHov3Mode() {
       return Mode == Global.Settings.Modes.Hov3;
     }
 
-    public virtual bool IsTransitMode() {
+    public bool IsTransitMode() {
       return Mode == Global.Settings.Modes.Transit;
     }
 
-    public virtual bool IsBeforeMandatoryDestination() {
+    public bool IsBeforeMandatoryDestination() {
       return Direction == 1 && (Tour.IsWorkPurpose() || Tour.IsSchoolPurpose());
     }
 
-    public virtual ITripWrapper GetPreviousTrip() {
+    public ITripWrapper GetPreviousTrip() {
       int index = Sequence - 1;
       int previousTripIndex = index - 1;
 
       return HalfTour.Trips[previousTripIndex];
     }
 
-    public virtual ITripWrapper GetNextTrip() {
+    public ITripWrapper GetNextTrip() {
       int index = Sequence - 1;
       int nextTripIndex = index + 1;
 
       return nextTripIndex < HalfTour.Trips.Count ? HalfTour.Trips[nextTripIndex] : null;
     }
 
-    public virtual int GetStartTime() {
+    public int GetStartTime() {
       if (IsHalfTourFromOrigin && Sequence == 1) {
         return Tour.DestinationArrivalTime;
       }
@@ -522,7 +522,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     }
 
-    public virtual void UpdateTripValues() {
+    public void UpdateTripValues() {
       if ((Global.Configuration.IsInEstimationMode && !Global.Configuration.ShouldOutputStandardFilesInEstimationMode)
           || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunIntermediateStopLocationModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripModeModel) || ((Global.Configuration.ShouldRunTourTripModels || Global.Configuration.ShouldRunSubtourTripModels) && !Global.Configuration.ShouldRunTripTimeModel)) {
         return;
@@ -636,7 +636,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
     }
 
-    public virtual void SetDestinationParkingStay(int min1, int min2) {
+    public void SetDestinationParkingStay(int min1, int min2) {
       if (!Global.DestinationParkingNodeIsEnabled || !Global.Configuration.ShouldUseDestinationParkingShadowPricing || Global.Configuration.IsInEstimationMode) {
         return;
       }
@@ -656,7 +656,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
     }
 
-    public virtual void HUpdateTripValues() {
+    public void HUpdateTripValues() {
       //new version for household models - assumes that mode and departure time have been set
 
       //time windows also reset in estimation mode  - this just resets for one window
@@ -805,7 +805,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
     }
 
-    public virtual void Invert(int sequence) {
+    public void Invert(int sequence) {
       int tempParcelId = OriginParcelId;
       OriginParcelId = DestinationParcelId;
       DestinationParcelId = tempParcelId;
@@ -833,7 +833,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       Sequence = sequence;
     }
 
-    public virtual ITripModeImpedance[] GetTripModeImpedances() {
+    public ITripModeImpedance[] GetTripModeImpedances() {
       ITripModeImpedance[] modeImpedances = new ITripModeImpedance[DayPeriod.SmallDayPeriods.Length];
       ITimeWindow availableMinutes = Tour.IsHomeBasedTour ? PersonDay.TimeWindow : Tour.ParentTour.TimeWindow;
 
@@ -855,15 +855,15 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return modeImpedances;
     }
 
-    public virtual void SetActivityEndTime(int activityEndTime) {
+    public void SetActivityEndTime(int activityEndTime) {
       ActivityEndTime = activityEndTime;  //.ToMinutesAfterMidnight(); redundant- done on output
     }
 
-    public virtual void SetOriginAddressType(int originAddressType) {
+    public void SetOriginAddressType(int originAddressType) {
       OriginAddressType = originAddressType;
     }
 
-    public virtual void SetTourSequence(int tourSequence) {
+    public void SetTourSequence(int tourSequence) {
       TourSequence = tourSequence;
     }
 

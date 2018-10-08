@@ -152,8 +152,6 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       }
     }
 
-
-    //JLB 20160323
     public override void SetTripValueOfTime() {
       double costDivisor =
                  Mode == Global.Settings.Modes.HovDriver && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
@@ -201,8 +199,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         // set availability
         if (period.End < EarliestDepartureTime || period.Start > LatestDepartureTime) {
           time.Available = false;
+        } else {
+          time.Available = true;
         }
-
 
         double travelTime = Direction == 1 ? Tour.HalfTour1TravelTime : Tour.HalfTour2TravelTime;
 
@@ -210,16 +209,16 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         if (time.Available) {
 
           time.EarliestFeasibleDepatureTime = Math.Max(period.Start,
-                  IsHalfTourFromOrigin
-                  //JLB 20130723 replace next line
-                  //? trip.ArrivalTimeLimit + - (int) (time.ModeLOS.PathTime + 0.5)
-                  ? ArrivalTimeLimit + (int)(travelTime + 0.5)
-                  : EarliestDepartureTime);
+                    IsHalfTourFromOrigin
+                    //JLB 20130723 replace next line
+                    //? trip.ArrivalTimeLimit + - (int) (time.ModeLOS.PathTime + 0.5)
+                    ? ArrivalTimeLimit + (int)(travelTime + 0.5)
+                    : EarliestDepartureTime);
 
           time.LatestFeasibleDepartureTime = Math.Min(period.End,
-                  IsHalfTourFromOrigin
-                  ? LatestDepartureTime
-                  : ArrivalTimeLimit - (int)(travelTime + 0.5));
+                    IsHalfTourFromOrigin
+                    ? LatestDepartureTime
+                    : ArrivalTimeLimit - (int)(travelTime + 0.5));
 
           time.Available = time.EarliestFeasibleDepatureTime < time.LatestFeasibleDepartureTime;
         }
@@ -237,6 +236,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         TravelCost = Tour.TravelCostForPTBikeTour / 2.0;
         TravelDistance = Tour.TravelDistanceForPTBikeTour / 2.0;
         PathType = Tour.PathType;
+
+        Mode = Tour.Mode;
 
         if (Direction == 1) {
           AccessCost = Tour.HalfTour1AccessCost;
@@ -280,50 +281,50 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         }
 
         ArrivalTime =
-            IsHalfTourFromOrigin
-                ? Math.Max(1, DepartureTime - duration)
-                : Math.Min(Global.Settings.Times.MinutesInADay, DepartureTime + duration);
+             IsHalfTourFromOrigin
+                  ? Math.Max(1, DepartureTime - duration)
+                  : Math.Min(Global.Settings.Times.MinutesInADay, DepartureTime + duration);
 
         /* doesn't have much effect - turn off for now
-                             if (!Global.Configuration.AllowTripArrivalTimeOverlaps && timeWindow.IsBusy(ArrivalTime))   {
-                                  // move entire trip up to 15 minutes later or earlier depending on half tour direction.  
-                                  // Find the smallest shift that will make the arrival time a non-busy minute while still leaving 
-                                  // a gap between the departure time and the arrival time at the trip origin (non-0 activity duration)
-                                  //NOTE: This was copied over from the old version above.
-                                  // This could possibly cause some inconsistencies for times for different people on joint tours, if it is done separately for each
-                                  // (will work better if done before cloning....)
-                                  const int moveLimit = 15;
+                        if (!Global.Configuration.AllowTripArrivalTimeOverlaps && timeWindow.IsBusy(ArrivalTime))   {
+                             // move entire trip up to 15 minutes later or earlier depending on half tour direction.  
+                             // Find the smallest shift that will make the arrival time a non-busy minute while still leaving 
+                             // a gap between the departure time and the arrival time at the trip origin (non-0 activity duration)
+                             //NOTE: This was copied over from the old version above.
+                             // This could possibly cause some inconsistencies for times for different people on joint tours, if it is done separately for each
+                             // (will work better if done before cloning....)
+                             const int moveLimit = 15;
 
-                                  if (IsHalfTourFromOrigin)     {
-                                        int originArrivalTime = Sequence == 1 ? Tour.DestinationDepartureTime : PreviousTrip.ArrivalTime;
-                                        int moveLater = 0;
-                                        do       {
-                                             moveLater++;
-                                        } while (moveLater <= moveLimit && DepartureTime + moveLater < originArrivalTime && timeWindow.IsBusy(ArrivalTime + moveLater));
+                             if (IsHalfTourFromOrigin)     {
+                                  int originArrivalTime = Sequence == 1 ? Tour.DestinationDepartureTime : PreviousTrip.ArrivalTime;
+                                  int moveLater = 0;
+                                  do       {
+                                        moveLater++;
+                                  } while (moveLater <= moveLimit && DepartureTime + moveLater < originArrivalTime && timeWindow.IsBusy(ArrivalTime + moveLater));
 
-                                        if (!timeWindow.IsBusy(ArrivalTime + moveLater)) {
-                                             ArrivalTime += moveLater;
-                                             DepartureTime += moveLater;
-                                             if (Sequence == 1) Tour.DestinationArrivalTime += moveLater;
-                                             if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved later by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveLater, DepartureTime, originArrivalTime);
-                                        }
-                                  }
-                                  else  {
-                                        int originArrivalTime = Sequence == 1 ? Tour.DestinationArrivalTime : PreviousTrip.ArrivalTime;
-                                        int moveEarlier = 0;
-                                        do   {
-                                             moveEarlier++;
-                                        } while (moveEarlier <= moveLimit && DepartureTime - moveEarlier > originArrivalTime && timeWindow.IsBusy(ArrivalTime - moveEarlier));
-
-                                        if (!timeWindow.IsBusy(ArrivalTime - moveEarlier))   {
-                                             ArrivalTime -= moveEarlier;
-                                             DepartureTime -= moveEarlier;
-                                             if (Sequence == 1) Tour.DestinationDepartureTime -= moveEarlier;
-                                             if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved earlier by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveEarlier, DepartureTime, originArrivalTime);
-                                        }
+                                  if (!timeWindow.IsBusy(ArrivalTime + moveLater)) {
+                                        ArrivalTime += moveLater;
+                                        DepartureTime += moveLater;
+                                        if (Sequence == 1) Tour.DestinationArrivalTime += moveLater;
+                                        if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved later by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveLater, DepartureTime, originArrivalTime);
                                   }
                              }
-        */
+                             else  {
+                                  int originArrivalTime = Sequence == 1 ? Tour.DestinationArrivalTime : PreviousTrip.ArrivalTime;
+                                  int moveEarlier = 0;
+                                  do   {
+                                        moveEarlier++;
+                                  } while (moveEarlier <= moveLimit && DepartureTime - moveEarlier > originArrivalTime && timeWindow.IsBusy(ArrivalTime - moveEarlier));
+
+                                  if (!timeWindow.IsBusy(ArrivalTime - moveEarlier))   {
+                                        ArrivalTime -= moveEarlier;
+                                        DepartureTime -= moveEarlier;
+                                        if (Sequence == 1) Tour.DestinationDepartureTime -= moveEarlier;
+                                        if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved earlier by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveEarlier, DepartureTime, originArrivalTime);
+                                  }
+                             }
+                        }
+  */
         //check again after possible adjustment
 
         if (!Global.Configuration.AllowTripArrivalTimeOverlaps && timeWindow.IsBusy(ArrivalTime)) {
@@ -335,7 +336,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
             PersonDay.IsValid = false;
           }
         } else //check if another trip needs to be scheduled and there only a few minutes left
-            if ((IsHalfTourFromOrigin && ArrivalTime < Tour.EarliestOriginDepartureTime + 3 && DestinationParcel != Tour.OriginParcel) || (!IsHalfTourFromOrigin && ArrivalTime > Tour.LatestOriginArrivalTime - 3 && DestinationParcel != Tour.OriginParcel)) {
+             if ((IsHalfTourFromOrigin && ArrivalTime < Tour.EarliestOriginDepartureTime + 3 && DestinationParcel != Tour.OriginParcel) || (!IsHalfTourFromOrigin && ArrivalTime > Tour.LatestOriginArrivalTime - 3 && DestinationParcel != Tour.OriginParcel)) {
           if (!Global.Configuration.IsInEstimationMode) {
             PersonDay.IsValid = false;
           }
@@ -343,7 +344,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
         if (Global.Configuration.TraceModelResultValidity) {
           if (PersonDay.HouseholdDay.AttemptedSimulations >= Global.Configuration.InvalidAttemptsBeforeTrace) {
-            Global.PrintFile.WriteLine("  >> HUpdateTripValues HH/P/T/Hf/T/Arrival time/valid {0} {1} {2} {3} {4} {5} {6}", Household.Id, Person.Sequence, Tour.Sequence, Direction, Sequence, ArrivalTime, PersonDay.IsValid);
+            Global.PrintFile.WriteLine("  >> HPTUpdateTripValues HH/P/T/Hf/T/Arrival time/valid {0} {1} {2} {3} {4} {5} {6}", Household.Id, Person.Sequence, Tour.Sequence, Direction, Sequence, ArrivalTime, PersonDay.IsValid);
           }
         }
 
@@ -363,18 +364,18 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
       //adjust the time window for busy minutes at the stop origin and during the trip - done also in estimation mode
       int earliestBusyMinute =
-                IsHalfTourFromOrigin
-                    ? ArrivalTime
-                    : Sequence == 1
-                        ? Tour.DestinationDepartureTime
-                        : GetPreviousTrip().ArrivalTime;
+                 IsHalfTourFromOrigin
+                      ? ArrivalTime
+                      : Sequence == 1
+                            ? Tour.DestinationDepartureTime
+                            : GetPreviousTrip().ArrivalTime;
 
       int latestBusyMinute =
-                !IsHalfTourFromOrigin
-                    ? ArrivalTime
-                    : Sequence == 1
-                        ? Tour.DestinationArrivalTime
-                        : GetPreviousTrip().ArrivalTime;
+                 !IsHalfTourFromOrigin
+                      ? ArrivalTime
+                      : Sequence == 1
+                            ? Tour.DestinationArrivalTime
+                            : GetPreviousTrip().ArrivalTime;
 
       timeWindow.SetBusyMinutes(earliestBusyMinute, latestBusyMinute + 1);
 
@@ -383,9 +384,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       }
 
       if (Tour.IsHomeBasedTour) {
-        Global.PrintFile.WriteLine("  >> HUpdateTripValues SetBusyMinutes HH/P/PDay/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, PersonDay.Id, earliestBusyMinute, latestBusyMinute + 1);
+        Global.PrintFile.WriteLine("  >> HPTUpdateTripValues SetBusyMinutes HH/P/PDay/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, PersonDay.Id, earliestBusyMinute, latestBusyMinute + 1);
       } else {
-        Global.PrintFile.WriteLine("  >> HUpdateTripValues SetBusyMinutes HH/P/TOUR/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, Tour.ParentTour.Sequence, earliestBusyMinute, latestBusyMinute + 1);
+        Global.PrintFile.WriteLine("  >> HPTUpdateTripValues SetBusyMinutes HH/P/TOUR/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, Tour.ParentTour.Sequence, earliestBusyMinute, latestBusyMinute + 1);
       }
     }
 
