@@ -187,8 +187,12 @@ namespace DaySim.Framework.Roster {
         //    (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate)) / 5280D);
         xyDistance = circuityDistance;
       } else {
-        // default is orthogonal distance, with a miniumum of 300 feet for intra-microzone
-        xyDistance = Math.Max(300D, (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate))) / 5280D;
+        if (Global.Configuration.DataType == "Actum") {
+          xyDistance = (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate)) / 5280D;
+        } else {
+          // default is orthogonal distance, with a miniumum of 300 feet for intra-microzone
+          xyDistance = Math.Max(300D, (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate))) / 5280D;
+        }
       }
 
       if (networkDistance >= Constants.EPSILON && xyDistance >= Constants.EPSILON) {
@@ -202,8 +206,9 @@ namespace DaySim.Framework.Roster {
       }
 
       if (!skimValue.BlendVariable.AlmostEquals(Constants.DEFAULT_VALUE)) {
+
         //new code for intrazonals allows overriding use of speed from skims
-        if (origin.ZoneId == destination.ZoneId) {
+        if (Global.Configuration.DataType != "Actum" && (origin.ZoneId == destination.ZoneId)) {
           double minutesPerMile =
               (mode == Global.Settings.Modes.Walk && Global.Configuration.IntrazonalWalkMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalWalkMinutesPerMile_OverrideSkims
             : (mode == Global.Settings.Modes.Bike && Global.Configuration.IntrazonalBikeMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalBikeMinutesPerMile_OverrideSkims
@@ -217,9 +222,7 @@ namespace DaySim.Framework.Roster {
           double minutesPerMile = skimValue.Variable / networkDistance;
           skimValue.Variable = skimValue.BlendVariable * minutesPerMile;
 
-        }
-          // if networkDistance is 0 or tiny, cannot use pivot method, multiply blend distance by default speed depending on mode
-          else {
+        } else { // if networkDistance is 0 or tiny, cannot use pivot method, multiply blend distance by default speed depending on mode
           // TODO: Make these constants for minutesPerMile configurable.
           double minutesPerMile = entry.Mode == Global.Settings.Modes.Walk ? 20.0 :
                                          entry.Mode == Global.Settings.Modes.Bike ? 6.0 : 3.0;
