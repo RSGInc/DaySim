@@ -11,6 +11,7 @@ using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
+using DaySim.PathTypeModels;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
@@ -172,6 +173,182 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
       ValueOfTime = (Tour.TimeCoefficient * 60) * AVFactor / (Tour.CostCoefficient / costDivisor);
     }
+
+    public override void HUpdateTripValues() {
+      //new version for household models - assumes that mode and departure time have been set
+
+      //time windows also reset in estimation mode  - this just resets for one window
+      ITimeWindow timeWindow = Tour.IsHomeBasedTour ? Tour.PersonDay.TimeWindow : Tour.ParentTour.TimeWindow;
+
+      if (!Global.Configuration.IsInEstimationMode) {
+        //some variables reset only in application mode
+        HTripTime time = new HTripTime(DepartureTime);
+
+        HTripTime.SetTimeImpedanceAndWindow(this, time);
+
+        if (!time.Available) {
+          if (!Global.Configuration.IsInEstimationMode) {
+            PersonDay.IsValid = false;
+          }
+
+          return;
+        }
+
+        IPathTypeModel modeImpedance = time.ModeLOS;
+
+        TravelTime = modeImpedance.PathTime;
+        TravelCost = modeImpedance.PathCost;
+        TravelDistance = modeImpedance.PathDistance;
+        PathType = modeImpedance.PathType;
+
+        if (Mode == Global.Settings.Modes.Transit) {
+          if (Direction == 1) {
+            AccessCost = time.DestinationAccessCost;
+            AccessDistance = time.DestinationAccessDistance;
+            AccessMode = time.DestinationAccessMode;
+            AccessStopArea = time.ParkAndRideDestinationStopAreaKey;
+            AccessTime = time.DestinationAccessTime;
+            EgressCost = time.OriginAccessCost;
+            EgressDistance = time.OriginAccessDistance;
+            EgressMode = time.OriginAccessMode;
+            EgressStopArea = time.ParkAndRideOriginStopAreaKey;
+            EgressTime = time.OriginAccessTime;
+
+          } else {
+            AccessCost = time.OriginAccessCost;
+            AccessDistance = time.OriginAccessDistance;
+            AccessMode = time.OriginAccessMode;
+            AccessStopArea = time.ParkAndRideOriginStopAreaKey;
+            AccessTime = time.OriginAccessTime;
+            EgressCost = time.DestinationAccessCost;
+            EgressDistance = time.DestinationAccessDistance;
+            EgressMode = time.DestinationAccessMode;
+            EgressStopArea = time.ParkAndRideDestinationStopAreaKey;
+            EgressTime = time.DestinationAccessTime;
+          }
+        }
+        int duration = (int)(TravelTime + 0.5);
+
+        if (duration == Constants.DEFAULT_VALUE && Global.Configuration.ReportInvalidPersonDays) {
+          Global.PrintFile.WriteDurationIsInvalidWarning("TripWrapper", "UpdateTripValues", PersonDay.Id, TravelTime, TravelCost, TravelDistance);
+
+          if (!Global.Configuration.IsInEstimationMode) {
+            PersonDay.IsValid = false;
+          }
+
+          return;
+        }
+
+        ArrivalTime =
+             IsHalfTourFromOrigin
+                  ? Math.Max(1, DepartureTime - duration)
+                  : Math.Min(Global.Settings.Times.MinutesInADay, DepartureTime + duration);
+
+        /* doesn't have much effect - turn off for now
+                        if (!Global.Configuration.AllowTripArrivalTimeOverlaps && timeWindow.IsBusy(ArrivalTime))   {
+                             // move entire trip up to 15 minutes later or earlier depending on half tour direction.  
+                             // Find the smallest shift that will make the arrival time a non-busy minute while still leaving 
+                             // a gap between the departure time and the arrival time at the trip origin (non-0 activity duration)
+                             //NOTE: This was copied over from the old version above.
+                             // This could possibly cause some inconsistencies for times for different people on joint tours, if it is done separately for each
+                             // (will work better if done before cloning....)
+                             const int moveLimit = 15;
+
+                             if (IsHalfTourFromOrigin)     {
+                                  int originArrivalTime = Sequence == 1 ? Tour.DestinationDepartureTime : PreviousTrip.ArrivalTime;
+                                  int moveLater = 0;
+                                  do       {
+                                        moveLater++;
+                                  } while (moveLater <= moveLimit && DepartureTime + moveLater < originArrivalTime && timeWindow.IsBusy(ArrivalTime + moveLater));
+
+                                  if (!timeWindow.IsBusy(ArrivalTime + moveLater)) {
+                                        ArrivalTime += moveLater;
+                                        DepartureTime += moveLater;
+                                        if (Sequence == 1) Tour.DestinationArrivalTime += moveLater;
+                                        if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved later by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveLater, DepartureTime, originArrivalTime);
+                                  }
+                             }
+                             else  {
+                                  int originArrivalTime = Sequence == 1 ? Tour.DestinationArrivalTime : PreviousTrip.ArrivalTime;
+                                  int moveEarlier = 0;
+                                  do   {
+                                        moveEarlier++;
+                                  } while (moveEarlier <= moveLimit && DepartureTime - moveEarlier > originArrivalTime && timeWindow.IsBusy(ArrivalTime - moveEarlier));
+
+                                  if (!timeWindow.IsBusy(ArrivalTime - moveEarlier))   {
+                                        ArrivalTime -= moveEarlier;
+                                        DepartureTime -= moveEarlier;
+                                        if (Sequence == 1) Tour.DestinationDepartureTime -= moveEarlier;
+                                        if (Global.Configuration.ReportInvalidPersonDays) Global.PrintFile.WriteLine("Tour {0}. Arrival time moved earlier by {1} minutes, New departure time {2}, Origin arrival {3}", Tour.Id, moveEarlier, DepartureTime, originArrivalTime);
+                                  }
+                             }
+                        }
+  */
+        //check again after possible adjustment
+
+        if (!Global.Configuration.AllowTripArrivalTimeOverlaps && timeWindow.IsBusy(ArrivalTime)) {
+          if (Global.Configuration.ReportInvalidPersonDays) {
+            Global.PrintFile.WriteLine("Arrival time {0} is busy for trip {1}.", ArrivalTime, Id);
+          }
+
+          if (!Global.Configuration.IsInEstimationMode) {
+            PersonDay.IsValid = false;
+          }
+        } else //check if another trip needs to be scheduled and there only a few minutes left
+             if ((IsHalfTourFromOrigin && ArrivalTime < Tour.EarliestOriginDepartureTime + 3 && DestinationParcel != Tour.OriginParcel) || (!IsHalfTourFromOrigin && ArrivalTime > Tour.LatestOriginArrivalTime - 3 && DestinationParcel != Tour.OriginParcel)) {
+          if (!Global.Configuration.IsInEstimationMode) {
+            PersonDay.IsValid = false;
+          }
+        }
+
+        if (Global.Configuration.TraceModelResultValidity) {
+          if (PersonDay.HouseholdDay.AttemptedSimulations >= Global.Configuration.InvalidAttemptsBeforeTrace) {
+            Global.PrintFile.WriteLine("  >> HUpdateTripValues HH/P/T/Hf/T/Arrival time/valid {0} {1} {2} {3} {4} {5} {6}", Household.Id, Person.Sequence, Tour.Sequence, Direction, Sequence, ArrivalTime, PersonDay.IsValid);
+          }
+        }
+
+        if (!PersonDay.IsValid) {
+          return;
+        }
+
+        //if first trip in half tour, use departure time to reset tour times
+        if (Sequence == 1) {
+          if (IsHalfTourFromOrigin) {
+            Tour.DestinationArrivalTime = DepartureTime;
+          } else {
+            Tour.DestinationDepartureTime = DepartureTime;
+          }
+        }
+      }
+
+      //adjust the time window for busy minutes at the stop origin and during the trip - done also in estimation mode
+      int earliestBusyMinute =
+                 IsHalfTourFromOrigin
+                      ? ArrivalTime
+                      : Sequence == 1
+                            ? Tour.DestinationDepartureTime
+                            : GetPreviousTrip().ArrivalTime;
+
+      int latestBusyMinute =
+                 !IsHalfTourFromOrigin
+                      ? ArrivalTime
+                      : Sequence == 1
+                            ? Tour.DestinationArrivalTime
+                            : GetPreviousTrip().ArrivalTime;
+
+      timeWindow.SetBusyMinutes(earliestBusyMinute, latestBusyMinute + 1);
+
+      if (!Global.Configuration.TraceModelResultValidity || PersonDay.HouseholdDay.AttemptedSimulations < Global.Configuration.InvalidAttemptsBeforeTrace) {
+        return;
+      }
+
+      if (Tour.IsHomeBasedTour) {
+        Global.PrintFile.WriteLine("  >> HUpdateTripValues SetBusyMinutes HH/P/PDay/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, PersonDay.Id, earliestBusyMinute, latestBusyMinute + 1);
+      } else {
+        Global.PrintFile.WriteLine("  >> HUpdateTripValues SetBusyMinutes HH/P/TOUR/Min1/Min2 {0} {1} {2} {3} {4}", Household.Id, Person.Sequence, Tour.ParentTour.Sequence, earliestBusyMinute, latestBusyMinute + 1);
+      }
+    }
+
 
     public bool IsBusinessDestinationPurpose() {
       return DestinationPurpose == Global.Settings.Purposes.Business;

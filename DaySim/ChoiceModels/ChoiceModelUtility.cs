@@ -251,7 +251,7 @@ namespace DaySim.ChoiceModels {
 
       double random = tour.Household.RandomUtility.Uniform01();
       double randomDaySimCopy = random;
-      bool checkAgainstDaySim = true;
+      bool checkAgainstDaySim = false;
       int arrivalPeriodIndex = startTimePeriod;
       int departurePeriodIndex = Constants.DEFAULT_VALUE;
 

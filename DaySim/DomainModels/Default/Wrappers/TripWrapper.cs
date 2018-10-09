@@ -656,7 +656,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
     }
 
-    public void HUpdateTripValues() {
+    public virtual void HUpdateTripValues() {
       //new version for household models - assumes that mode and departure time have been set
 
       //time windows also reset in estimation mode  - this just resets for one window
