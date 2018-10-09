@@ -349,7 +349,14 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(161, (class1Dist > 0).ToFlag());
           alternative.AddUtilityTerm(162, (class2Dist > 0).ToFlag());
           alternative.AddUtilityTerm(163, (worstDist > 0).ToFlag());
-        } else if (mode == Global.Settings.Modes.Walk) {
+          alternative.AddUtilityTerm(170, 1.0 * destinationParcel.MixedUse4Index1()
+                                                    + 0.00002 * destinationParcel.TotalEmploymentDensity1()
+                                                    + 0.001 * destinationParcel.NetIntersectionDensity1()
+                                                    + 0.001 * originParcel.NetIntersectionDensity1()
+                                                    + 0.0002 * originParcel.HouseholdDensity1()
+                                                    + 1.0 * originParcel.MixedUse4Index1());
+                }
+                else if (mode == Global.Settings.Modes.Walk) {
           alternative.AddUtilityTerm(70, 1);
           alternative.AddUtilityTerm(73, ageBetween51And98Flag);
           alternative.AddUtilityTerm(77, noCarsInHouseholdFlag); //for calibration
@@ -362,7 +369,14 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(176, originParcel.NetIntersectionDensity1());
           alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
           alternative.AddUtilityTerm(174, originParcel.MixedUse4Index1());
-        } else if (mode == Global.Settings.Modes.PaidRideShare) {
+          alternative.AddUtilityTerm(181, 1.0 * destinationParcel.MixedUse4Index1()
+                                                   + 0.00001 * destinationParcel.TotalEmploymentDensity1()
+                                                   + 0.001 * destinationParcel.NetIntersectionDensity1()
+                                                   + 0.001 * originParcel.NetIntersectionDensity1()
+                                                   + 0.0001 * originParcel.HouseholdDensity1()
+                                                   + 1.0 * originParcel.MixedUse4Index1());
+                }
+                else if (mode == Global.Settings.Modes.PaidRideShare) {
           if (Global.Configuration.PaidRideshare_UseEstimatedInsteadOfAssertedCoefficients) {
             alternative.AddUtilityTerm(80, 1.0);
             //alternative.AddUtilityTerm(81, tour.Person.AgeIsBetween26And35.ToFlag());
