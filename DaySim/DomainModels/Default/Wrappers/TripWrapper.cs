@@ -857,10 +857,9 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public void SetActivityEndTime(int activityEndTime) {
       if (Global.Configuration.DataType == "Actum") {
-        ActivityEndTime = activityEndTime.ToMinutesAfterMidnight(); //Actum compatibility
+        ActivityEndTime = activityEndTime.ToMinutesAfterMidnight(); //Actum compatibility -- keep BUG of calling .ToMinutesAfterMidnight() even though it is ALSO called by ActivityEndTime's 'Set' method
       } else {
-        ActivityEndTime = activityEndTime;  //.ToMinutesAfterMidnight(); redundant- done on output
-        //PCA thinks the comment above about redundancy is incorrect -- .ToMinutesAfterMidnight() NEVER called on ActivityEndTime and it is output to _trip.tsv as is
+        ActivityEndTime = activityEndTime;  //Corrected BUG: No need to call ToMinutesAfterMidnight() since the ActivityEndTime 'Set' already does this
       }
     }
 
