@@ -856,7 +856,12 @@ namespace DaySim.DomainModels.Default.Wrappers {
     }
 
     public void SetActivityEndTime(int activityEndTime) {
-      ActivityEndTime = activityEndTime;  //.ToMinutesAfterMidnight(); redundant- done on output
+      if (Global.Configuration.DataType == "Actum") {
+        ActivityEndTime = activityEndTime.ToMinutesAfterMidnight();
+      } else {
+        ActivityEndTime = activityEndTime;  //.ToMinutesAfterMidnight(); redundant- done on output
+        //PCA thinks the comment above about redundancy is incorrect -- .ToMinutesAfterMidnight() NEVER called on ActivityEndTime and it is output to _trip.tsv as is
+      }
     }
 
     public void SetOriginAddressType(int originAddressType) {
