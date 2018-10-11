@@ -2064,13 +2064,13 @@ namespace DaySim.PathTypeModels {
           dBikeDistance *= 2;  //round trip
           int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
           int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-          IEnumerable<IParkAndRideNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
-          if (dStopAreaNodes == null) {
-            continue;
-          }
           double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
           //loop on stop areas associated with the dnode
-          foreach (ParkAndRideNodeWrapper dStopAreaNode in dStopAreaNodes) {
+          foreach (ParkAndRideNodeWrapper parkAndRideNodeWrapper in bikeParkAndRideNodes) {
+            if (parkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
+              continue;
+            }
+            ParkAndRideNodeWrapper dStopAreaNode = parkAndRideNodeWrapper;
             int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
 
             TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
@@ -2194,13 +2194,13 @@ namespace DaySim.PathTypeModels {
         }
         oBikeDistance *= 2;  //round trip
         int oStopAreaNodeId = Global.ParcelParkAndRideNodeIds[oIndex];
-        IEnumerable<IParkAndRideNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
-        if (oStopAreaNodes == null) {
-          continue;
-        }
         double oBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * oBikeDistance;
         //loop on stop areas associated with the onode
-        foreach (ParkAndRideNodeWrapper oStopAreaNode in oStopAreaNodes) {
+        foreach (ParkAndRideNodeWrapper parkAndRideNodeWrapper in bikeParkAndRideNodes) {
+          if (parkAndRideNodeWrapper.ZoneId != oStopAreaNodeId) {
+            continue;
+          }
+          ParkAndRideNodeWrapper oStopAreaNode = parkAndRideNodeWrapper;
           int oParkAndRideStopArea = Global.TransitStopAreaMapping[oStopAreaNode.NearestStopAreaId];
           int oParkAndRideStopAreaKey = oStopAreaNode.NearestStopAreaId;
           double oParkAndRideParkingCost = Math.Min(oStopAreaNode.Cost, oStopAreaNode.CostAnnual / 100.0); //assume that cost for tour is one hundredth of annual cost
@@ -2329,13 +2329,13 @@ namespace DaySim.PathTypeModels {
         }
         oBikeDistance *= 2;  //round trip
         int oStopAreaNodeId = Global.ParcelParkAndRideNodeIds[oIndex];
-        IEnumerable<IParkAndRideNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
-        if (oStopAreaNodes == null) {
-          continue;
-        }
         double oBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * oBikeDistance;
         //loop on stop areas associated with the onode
-        foreach (ParkAndRideNodeWrapper oStopAreaNode in oStopAreaNodes) {
+        foreach (ParkAndRideNodeWrapper parkAndRideNodeWrapper in bikeParkAndRideNodes) {
+          if (parkAndRideNodeWrapper.ZoneId != oStopAreaNodeId) {
+            continue;
+          }
+          ParkAndRideNodeWrapper oStopAreaNode = parkAndRideNodeWrapper;
           int oParkAndRideStopArea = Global.TransitStopAreaMapping[oStopAreaNode.NearestStopAreaId];
           int oParkAndRideStopAreaKey = oStopAreaNode.NearestStopAreaId;
           double oParkAndRideParkingCost = Math.Min(oStopAreaNode.Cost, oStopAreaNode.CostAnnual / 100.0); //assume that cost for tour is one hundredth of annual cost
@@ -2359,13 +2359,13 @@ namespace DaySim.PathTypeModels {
             dBikeDistance *= 2;  //round trip
             int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
             int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-            IEnumerable<IParkAndRideNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
-            if (dStopAreaNodes == null) {
-              continue;
-            }
             double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
             //loop on stop areas associated with the dnode
-            foreach (ParkAndRideNodeWrapper dStopAreaNode in dStopAreaNodes) {
+            foreach (parkAndRideNodeWrapper in bikeParkAndRideNodes) {
+              if (parkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
+                continue;
+              }
+              ParkAndRideNodeWrapper dStopAreaNode = parkAndRideNodeWrapper;
               int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
               TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
               if (!transitPath.Available) {
@@ -2500,13 +2500,13 @@ namespace DaySim.PathTypeModels {
           dBikeDistance *= 2;  //round trip
           int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
           int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-          IEnumerable<IParkAndRideNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
-          if (dStopAreaNodes == null) {
-            continue;
-          }
           double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
           //loop on stop areas associated with the dnode
-          foreach (ParkAndRideNodeWrapper dStopAreaNode in dStopAreaNodes) {
+          foreach (ParkAndRideNodeWrapper parkAndRideNodeWrapper in bikeParkAndRideNodes) {
+            if (parkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
+              continue;
+            }
+            ParkAndRideNodeWrapper dStopAreaNode = parkAndRideNodeWrapper;
             int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
             TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dParkAndRideStopArea, _transitPassOwnership);
             if (!transitPath.Available) {
@@ -2631,13 +2631,14 @@ namespace DaySim.PathTypeModels {
         }
         oBikeDistance *= 2;  //round trip
         int oStopAreaNodeId = Global.ParcelParkAndRideNodeIds[oIndex];
-        IEnumerable<IParkAndRideNodeWrapper> oStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == oStopAreaNodeId);
-        if (oStopAreaNodes == null) {
-          continue;
-        }
         double oBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * oBikeDistance;
         //loop on stop areas associated with the onode
-        foreach (IParkAndRideNodeWrapper oStopAreaNode in oStopAreaNodes) {
+        foreach (ParkAndRideNodeWrapper parkAndRideNodeWrapper in bikeParkAndRideNodes) {
+          if (parkAndRideNodeWrapper.ZoneId != oStopAreaNodeId) {
+            continue;
+          }
+          ParkAndRideNodeWrapper oStopAreaNode = parkAndRideNodeWrapper;
+
           int oParkAndRideStopAreaKey = oStopAreaNode.NearestStopAreaId;
           if (eligibleTerminals.Values.FirstOrDefault(t => t.Key == oParkAndRideStopAreaKey) == default(ITransitStopArea)) {  // no bikeonboard terminals available at this node
             continue;
@@ -2661,13 +2662,14 @@ namespace DaySim.PathTypeModels {
             dBikeDistance *= 2;  //round trip
             int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
             int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-            IEnumerable<IParkAndRideNodeWrapper> dStopAreaNodes = bikeParkAndRideNodes.Where(n => n.ZoneId == dStopAreaNodeId);
-            if (dStopAreaNodes == null) {
-              continue;
-            }
             double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
             //loop on stop areas associated with the dnode
-            foreach (IParkAndRideNodeWrapper dStopAreaNode in dStopAreaNodes) {
+            foreach (parkAndRideNodeWrapper in bikeParkAndRideNodes) {
+              if (parkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
+                continue;
+              }
+              ParkAndRideNodeWrapper dStopAreaNode = parkAndRideNodeWrapper;
+
               int dParkAndRideStopAreaKey = dStopAreaNode.NearestStopAreaId;
               if (eligibleTerminals.Values.FirstOrDefault(t => t.Key == dParkAndRideStopAreaKey) == default(ITransitStopArea)) {  // no bikeonboard terminals available at this node
                 continue;
