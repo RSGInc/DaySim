@@ -2361,11 +2361,11 @@ namespace DaySim.PathTypeModels {
             int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
             double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
             //loop on stop areas associated with the dnode
-            foreach (parkAndRideNodeWrapper in bikeParkAndRideNodes) {
-              if (parkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
+            foreach (ParkAndRideNodeWrapper destinationParkAndRideNodeWrapper in bikeParkAndRideNodes) {
+              if (destinationParkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
                 continue;
               }
-              ParkAndRideNodeWrapper dStopAreaNode = parkAndRideNodeWrapper;
+              ParkAndRideNodeWrapper dStopAreaNode = destinationParkAndRideNodeWrapper;
               int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
               TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oParkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
               if (!transitPath.Available) {
@@ -2664,11 +2664,11 @@ namespace DaySim.PathTypeModels {
             int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
             double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
             //loop on stop areas associated with the dnode
-            foreach (parkAndRideNodeWrapper in bikeParkAndRideNodes) {
-              if (parkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
+            foreach (ParkAndRideNodeWrapper destinationParkAndRideNodeWrapper in bikeParkAndRideNodes) {
+              if (destinationParkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
                 continue;
               }
-              ParkAndRideNodeWrapper dStopAreaNode = parkAndRideNodeWrapper;
+              ParkAndRideNodeWrapper dStopAreaNode = destinationParkAndRideNodeWrapper;
 
               int dParkAndRideStopAreaKey = dStopAreaNode.NearestStopAreaId;
               if (eligibleTerminals.Values.FirstOrDefault(t => t.Key == dParkAndRideStopAreaKey) == default(ITransitStopArea)) {  // no bikeonboard terminals available at this node
