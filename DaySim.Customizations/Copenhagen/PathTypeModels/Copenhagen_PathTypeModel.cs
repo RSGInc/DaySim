@@ -66,9 +66,9 @@ namespace DaySim.PathTypeModels {
     private readonly double[] _pathDestinationAccessTime = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathDestinationAccessDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathDestinationAccessCost = new double[Global.Settings.PathTypes.TotalPathTypes];
-    private static List<IParkAndRideNodeWrapper> _parkAndRideNodesWithCapacity = new List<IParkAndRideNodeWrapper>();
-    private static List<IParkAndRideNodeWrapper> _parkAndRideAutoNodesWithCapacity = new List<IParkAndRideNodeWrapper>();
-    private static List<IParkAndRideNodeWrapper> _parkAndRideBikeNodesWithCapacity = new List<IParkAndRideNodeWrapper>();
+    private static List<ParkAndRideNodeWrapper> _parkAndRideNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
+    private static List<ParkAndRideNodeWrapper> _parkAndRideAutoNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
+    private static List<ParkAndRideNodeWrapper> _parkAndRideBikeNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
 
     static PathTypeModel_Actum() {
       foreach (ParkAndRideNodeWrapper node in ChoiceModelFactory.ParkAndRideNodeDao.Nodes) {
@@ -1068,7 +1068,7 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes;
+      List<ParkAndRideNodeWrapper> parkAndRideNodes;
 
       if (Global.Configuration.ShouldReadParkAndRideNodeSkim) {
         int nodeId =
@@ -1076,9 +1076,9 @@ namespace DaySim.PathTypeModels {
                         ? (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
                         : (int)ImpedanceRoster.GetValue("przone", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel).Variable;
 
-        IParkAndRideNodeWrapper node = ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
+        ParkAndRideNodeWrapper node = (ParkAndRideNodeWrapper)ChoiceModelFactory.ParkAndRideNodeDao.Get(nodeId);
 
-        parkAndRideNodes = new List<IParkAndRideNodeWrapper> { node };
+        parkAndRideNodes = new List<ParkAndRideNodeWrapper> { node };
       } else {
         parkAndRideNodes = _parkAndRideNodesWithCapacity;
       }
@@ -1199,7 +1199,7 @@ namespace DaySim.PathTypeModels {
         return;
       }
 
-      IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes = _parkAndRideAutoNodesWithCapacity;
+      List<ParkAndRideNodeWrapper> parkAndRideNodes = _parkAndRideAutoNodesWithCapacity;
 
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
@@ -1359,7 +1359,7 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IParkAndRideNodeWrapper> parkAndRideNodes = _parkAndRideAutoNodesWithCapacity;
+      List<ParkAndRideNodeWrapper> parkAndRideNodes = _parkAndRideAutoNodesWithCapacity;
 
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
@@ -1962,8 +1962,8 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IParkAndRideNodeWrapper> carParkAndRideNodes = _parkAndRideAutoNodesWithCapacity;
-      IEnumerable<IParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
+      List<ParkAndRideNodeWrapper> carParkAndRideNodes = _parkAndRideAutoNodesWithCapacity;
+      List<ParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
 
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
@@ -2150,7 +2150,7 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
+      List<ParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;
@@ -2287,7 +2287,7 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;      // valid node(s), and tour-level call  
+      List<ParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;      // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;
       //user-set limits on search - use high values if not set
@@ -2442,7 +2442,7 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
+      List<ParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;
@@ -2588,7 +2588,7 @@ namespace DaySim.PathTypeModels {
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
-      IEnumerable<IParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
+      List<ParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;

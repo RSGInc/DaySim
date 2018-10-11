@@ -690,8 +690,6 @@ namespace DaySim.PathTypeModels {
                            (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideshare_UseHOV3Skims) ? Global.Settings.Modes.Hov3 :
                            (skimModeIn == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.Hov2 : skimModeIn;
 
-      IEnumerable<IDestinationParkingNodeWrapper> destinationParkingNodes = ChoiceModelFactory.DestinationParkingNodeDao.Nodes.Where(n => n.Capacity > Constants.EPSILON);
-
       // valid node(s), and tour-level call  
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestNodeUtility = -99999D;
@@ -705,7 +703,7 @@ namespace DaySim.PathTypeModels {
 
       //double zzDistOD = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, _destinationZoneId).Variable;
 
-      foreach (IDestinationParkingNodeWrapper node in destinationParkingNodes) {
+      foreach (IDestinationParkingNodeWrapper node in ChoiceModelFactory.DestinationParkingNodeDao.Nodes) {
         // only look at nodes with positive capacity
         if (node.Capacity <= Constants.EPSILON) {
           continue;
