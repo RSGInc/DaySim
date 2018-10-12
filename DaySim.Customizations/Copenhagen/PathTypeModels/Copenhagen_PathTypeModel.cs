@@ -1959,190 +1959,192 @@ namespace DaySim.PathTypeModels {
     }
 
     private void RunStopAreaCarParkRideBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
-      if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
-        return;
-      }
-      List<ParkAndRideNodeWrapper> carParkAndRideNodes = _parkAndRideAutoNodesWithCapacity;
-      List<ParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
+      //PCA 2018-10-12 THIS MODE IS NOT USED conclusion from conference call
+      return;
+      //if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
+      //  return;
+      //}
+      //List<ParkAndRideNodeWrapper> carParkAndRideNodes = _parkAndRideAutoNodesWithCapacity;
+      //List<ParkAndRideNodeWrapper> bikeParkAndRideNodes = _parkAndRideBikeNodesWithCapacity;
 
-      // valid node(s), and tour-level call  
-      double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
-      double bestPathUtility = -99999D;
-      int originZoneId = useZones ? _originZoneId : _originParcel.ZoneId;
-      int destinationZoneId = useZones ? _destinationZoneId : _destinationParcel.ZoneId;
-      double zzDist2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, destinationZoneId).Variable;
+      //// valid node(s), and tour-level call  
+      //double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
+      //double bestPathUtility = -99999D;
+      //int originZoneId = useZones ? _originZoneId : _originParcel.ZoneId;
+      //int destinationZoneId = useZones ? _destinationZoneId : _destinationParcel.ZoneId;
+      //double zzDist2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, destinationZoneId).Variable;
 
 
-      //user-set limits on search - use high values if not set
-      int maxStopAreasToSearch = (Global.Configuration.MaximumStopAreasToSearchParkAndRide > 0) ? Global.Configuration.MaximumStopAreasToSearchParkAndRide : 99;
-      int maxStopAreaBikeLength = (Global.Configuration.MaximumParcelToStopAreaLengthUnitsToBike > 0) ? Global.Configuration.MaximumParcelToStopAreaLengthUnitsToBike : 99999;
-      int minStopAreaBikeLength = (Global.Configuration.MinimumParcelToStopAreaLengthUnitsToBike > 0) ? Global.Configuration.MinimumParcelToStopAreaLengthUnitsToBike : 0;
-      double maxDistanceUnitsToDrive = (Global.Configuration.MaximumDistanceUnitsToDriveToParkAndRide > 0) ? Global.Configuration.MaximumDistanceUnitsToDriveToParkAndRide : 999D;
-      double maxDistanceRatio = (Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination > 0) ? Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination : 99D;
+      ////user-set limits on search - use high values if not set
+      //int maxStopAreasToSearch = (Global.Configuration.MaximumStopAreasToSearchParkAndRide > 0) ? Global.Configuration.MaximumStopAreasToSearchParkAndRide : 99;
+      //int maxStopAreaBikeLength = (Global.Configuration.MaximumParcelToStopAreaLengthUnitsToBike > 0) ? Global.Configuration.MaximumParcelToStopAreaLengthUnitsToBike : 99999;
+      //int minStopAreaBikeLength = (Global.Configuration.MinimumParcelToStopAreaLengthUnitsToBike > 0) ? Global.Configuration.MinimumParcelToStopAreaLengthUnitsToBike : 0;
+      //double maxDistanceUnitsToDrive = (Global.Configuration.MaximumDistanceUnitsToDriveToParkAndRide > 0) ? Global.Configuration.MaximumDistanceUnitsToDriveToParkAndRide : 999D;
+      //double maxDistanceRatio = (Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination > 0) ? Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination : 99D;
 
-      //_destinationParcel. SetFirstAndLastStopAreaDistanceIndexes();
-      int dFirst = _destinationParcel.FirstPositionInParkAndRideNodeDistanceArray;
-      int dLast = Math.Min(_destinationParcel.LastPositionInParkAndRideNodeDistanceArray, dFirst + maxStopAreasToSearch - 1);
+      ////_destinationParcel. SetFirstAndLastStopAreaDistanceIndexes();
+      //int dFirst = _destinationParcel.FirstPositionInParkAndRideNodeDistanceArray;
+      //int dLast = Math.Min(_destinationParcel.LastPositionInParkAndRideNodeDistanceArray, dFirst + maxStopAreasToSearch - 1);
 
-      if (dFirst <= 0) {
-        return;
-      }
-      foreach (ParkAndRideNodeWrapper node in carParkAndRideNodes) {
+      //if (dFirst <= 0) {
+      //  return;
+      //}
+      //foreach (ParkAndRideNodeWrapper carParkAndRideNode in carParkAndRideNodes) {
 
-        // use the nearest stop area for transit LOS  
-        ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
-        int parkAndRideZoneId = node.ZoneId;
-        int parkAndRideStopAreaKey = node.NearestStopAreaId;
-        int parkAndRideStopArea = Global.TransitStopAreaMapping[node.NearestStopAreaId];
-        //JLB 201508 logic in followign line replaced with new cost logic further below
-        double carParkAndRideParkingCost = 0.0;   //node.Cost / 100.0;    // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
+      //  // use the nearest stop area for transit LOS  
+      //  ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[carParkAndRideNode.NearestParcelId];
+      //  int parkAndRideZoneId = carParkAndRideNode.ZoneId;
+      //  int parkAndRideStopAreaKey = carParkAndRideNode.NearestStopAreaId;
+      //  int parkAndRideStopArea = Global.TransitStopAreaMapping[carParkAndRideNode.NearestStopAreaId];
+      //  //JLB 201508 logic in followign line replaced with new cost logic further below
+      //  double carParkAndRideParkingCost = 0.0;   //node.Cost / 100.0;    // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
-        //test distance to park and ride against user-set limits
-        double zzDist = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
+      //  //test distance to park and ride against user-set limits
+      //  double zzDist = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, originZoneId, parkAndRideZoneId).Variable;
 
-        if (zzDist > maxDistanceUnitsToDrive) {
-          continue;
-        }
+      //  if (zzDist > maxDistanceUnitsToDrive) {
+      //    continue;
+      //  }
 
-        if (zzDist / Math.Max(zzDist2, 1.0) > maxDistanceRatio) {
-          continue;
-        }
-        double duration = 0.0;
-        if (node.ParkingTypeId == 2 || node.ParkingTypeId == 3) { // TODO:  should make list of settings or constants for node.ParkingTypeIs, as is done for e.g. Purposes
-          if (_returnTime <= 0) {
-            if (_purpose == Global.Settings.Purposes.Work) {
-              duration = 8.0;
-            } else if (_purpose == Global.Settings.Purposes.School) {
-              duration = 6.0;
-            } else if (_purpose == Global.Settings.Purposes.Social) {
-              duration = 3.0;
-            } else {
-              duration = 2.0;
-            }
-          } else {
-            duration = (_returnTime - _outboundTime) / 60.0;
-          }
-        }
-        if (node.ParkingTypeId == 3 && duration > 2.0 + Constants.EPSILON) {
-          continue;      // parking duration limited to 2 hours for TypeId 3 lot so this lot is not available
-        } else {
-          carParkAndRideParkingCost =
-              (node.ParkingTypeId == 1 || node.ParkingTypeId == 3)
-                  ? 0.0
-                  : _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.ElevenPM, Global.Settings.Times.MinutesInADay)
-                      ? node.CostPerHour23_08 * duration
-                      : _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.ThreeAM, Global.Settings.Times.EightAM)
-                          ? node.CostPerHour23_08 * duration
-                          : _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.EightAM, Global.Settings.Times.SixPM)
-                              ? node.CostPerHour08_18 * duration
-                              : node.CostPerHour18_23 * duration;
-        }
+      //  if (zzDist / Math.Max(zzDist2, 1.0) > maxDistanceRatio) {
+      //    continue;
+      //  }
+      //  double duration = 0.0;
+      //  if (carParkAndRideNode.ParkingTypeId == 2 || carParkAndRideNode.ParkingTypeId == 3) { // TODO:  should make list of settings or constants for node.ParkingTypeIs, as is done for e.g. Purposes
+      //    if (_returnTime <= 0) {
+      //      if (_purpose == Global.Settings.Purposes.Work) {
+      //        duration = 8.0;
+      //      } else if (_purpose == Global.Settings.Purposes.School) {
+      //        duration = 6.0;
+      //      } else if (_purpose == Global.Settings.Purposes.Social) {
+      //        duration = 3.0;
+      //      } else {
+      //        duration = 2.0;
+      //      }
+      //    } else {
+      //      duration = (_returnTime - _outboundTime) / 60.0;
+      //    }
+      //  }
+      //  if (carParkAndRideNode.ParkingTypeId == 3 && duration > 2.0 + Constants.EPSILON) {
+      //    continue;      // parking duration limited to 2 hours for TypeId 3 lot so this lot is not available
+      //  } else {
+      //    carParkAndRideParkingCost =
+      //        (carParkAndRideNode.ParkingTypeId == 1 || carParkAndRideNode.ParkingTypeId == 3)
+      //            ? 0.0
+      //            : _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.ElevenPM, Global.Settings.Times.MinutesInADay)
+      //                ? carParkAndRideNode.CostPerHour23_08 * duration
+      //                : _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.ThreeAM, Global.Settings.Times.EightAM)
+      //                    ? carParkAndRideNode.CostPerHour23_08 * duration
+      //                    : _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.EightAM, Global.Settings.Times.SixPM)
+      //                        ? carParkAndRideNode.CostPerHour08_18 * duration
+      //                        : carParkAndRideNode.CostPerHour18_23 * duration;
+      //  }
 
-        double oStationWalkDistance = 2.0 * node.LengthToStopArea / Global.Settings.LengthUnitsPerFoot / 5280 * Global.Settings.DistanceUnitsPerMile;  // in DistanceUnits
-        double oStationWalkTime = oStationWalkDistance * Global.PathImpedance_WalkMinutesPerDistanceUnit;
+      //  double oStationWalkDistance = 2.0 * carParkAndRideNode.LengthToStopArea / Global.Settings.LengthUnitsPerFoot / 5280 * Global.Settings.DistanceUnitsPerMile;  // in DistanceUnits
+      //  double oStationWalkTime = oStationWalkDistance * Global.PathImpedance_WalkMinutesPerDistanceUnit;
 
-        bool useAVVOT = false;
-        AutoPath autoPath = GetAutoPath(Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, useZones, useAVVOT, originZoneId, parkAndRideZoneId, _originParcel, parkAndRideParcel);
+      //  bool useAVVOT = false;
+      //  AutoPath autoPath = GetAutoPath(Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, votValue, useZones, useAVVOT, originZoneId, parkAndRideZoneId, _originParcel, parkAndRideParcel);
 
-        //loop on bike parking nodes near destination
-        for (int dIndex = dFirst; dIndex <= dLast; dIndex++) {
-          if (dIndex < 0) {
-            continue;
-          }
-          float dBikeLength = Global.ParcelToBikeCarParkAndRideNodeLength[dIndex];
-          if (dBikeLength > maxStopAreaBikeLength) {
-            break;
-          }
-          if (dBikeLength < minStopAreaBikeLength) {    // This excludes very short bike distances and still allows up to the maximum number of allowed stop areas
-            dLast = Math.Min(_destinationParcel.LastPositionInParkAndRideNodeDistanceArray, dLast + 1);
-            continue;
-          }
-          double dBikeDistance = dBikeLength / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile;  // round trip
-          if (dBikeDistance / Math.Max(zzDist2, 1.0) > maxDistanceRatio) {
-            break;
-          }
-          dBikeDistance *= 2;  //round trip
-          int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
-          int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
-          double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
-          //loop on stop areas associated with the dnode
-          foreach (ParkAndRideNodeWrapper parkAndRideNodeWrapper in bikeParkAndRideNodes) {
-            if (parkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
-              continue;
-            }
-            ParkAndRideNodeWrapper dStopAreaNode = parkAndRideNodeWrapper;
-            int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
+      //  //loop on bike parking nodes near destination
+      //  for (int dIndex = dFirst; dIndex <= dLast; dIndex++) {
+      //    if (dIndex < 0) {
+      //      continue;
+      //    }
+      //    float dBikeLength = Global.ParcelToBikeCarParkAndRideNodeLength[dIndex];
+      //    if (dBikeLength > maxStopAreaBikeLength) {
+      //      break;
+      //    }
+      //    if (dBikeLength < minStopAreaBikeLength) {    // This excludes very short bike distances and still allows up to the maximum number of allowed stop areas
+      //      dLast = Math.Min(_destinationParcel.LastPositionInParkAndRideNodeDistanceArray, dLast + 1);
+      //      continue;
+      //    }
+      //    double dBikeDistance = dBikeLength / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile;  // round trip
+      //    if (dBikeDistance / Math.Max(zzDist2, 1.0) > maxDistanceRatio) {
+      //      break;
+      //    }
+      //    dBikeDistance *= 2;  //round trip
+      //    int dStopAreaNodeId = Global.ParcelParkAndRideNodeIds[dIndex];
+      //    int dStopAreaNodeKey = Global.ParcelParkAndRideNodeSequentialIds[dIndex];
+      //    double dBikeTime = Global.Configuration.PathImpedance_BikeMinutesPerDistanceUnit * dBikeDistance;
+      //    //loop on stop areas associated with the dnode
+      //    foreach (ParkAndRideNodeWrapper bikeParkAndRideNodeWrapper in bikeParkAndRideNodes) {
+      //      if (bikeParkAndRideNodeWrapper.ZoneId != dStopAreaNodeId) {
+      //        continue;
+      //      }
+      //      ParkAndRideNodeWrapper dStopAreaNode = bikeParkAndRideNodeWrapper;
+      //      int dParkAndRideStopArea = Global.TransitStopAreaMapping[dStopAreaNode.NearestStopAreaId];
 
-            TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
-            if (!transitPath.Available) {
-              continue;
-            }
+      //      TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideStopArea, dParkAndRideStopArea, _transitPassOwnership);
+      //      if (!transitPath.Available) {
+      //        continue;
+      //      }
 
-            int parkMinute = (int)(_outboundTime - (transitPath.Time / 2.0) - 3); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
-            int dParkAndRideStopAreaKey = dStopAreaNode.NearestStopAreaId;
-            double dParkAndRideParkingCost = Math.Min(dStopAreaNode.Cost, dStopAreaNode.CostAnnual / 100.0); //assume that cost for tour is one hundredth of annual cost
+      //      int parkMinute = (int)(_outboundTime - (transitPath.Time / 2.0) - 3); // estimate of change mode activity time, same as assumed when setting trip departure time in ChoiceModelRunner.
+      //      int dParkAndRideStopAreaKey = dStopAreaNode.NearestStopAreaId;
+      //      double dParkAndRideParkingCost = Math.Min(dStopAreaNode.Cost, dStopAreaNode.CostAnnual / 100.0); //assume that cost for tour is one hundredth of annual cost
 
-            double dStationWalkDistance = 2.0 * dStopAreaNode.LengthToStopArea / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile;
-            double dStationWalkTime = dStationWalkDistance * Global.Configuration.PathImpedance_WalkMinutesPerDistanceUnit;
+      //      double dStationWalkDistance = 2.0 * dStopAreaNode.LengthToStopArea / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile;
+      //      double dStationWalkTime = dStationWalkDistance * Global.Configuration.PathImpedance_WalkMinutesPerDistanceUnit;
 
-            // set utility  
-            double pathTime = transitPath.Time + autoPath.Time + oStationWalkTime + dStationWalkTime + dBikeTime;
-            double pathDistance = autoPath.Distance + oStationWalkDistance + transitPath.Distance + dStationWalkDistance + dBikeDistance;
-            double pathCost = transitPath.Cost + autoPath.Cost + carParkAndRideParkingCost + dParkAndRideParkingCost;
+      //      // set utility  
+      //      double pathTime = transitPath.Time + autoPath.Time + oStationWalkTime + dStationWalkTime + dBikeTime;
+      //      double pathDistance = autoPath.Distance + oStationWalkDistance + transitPath.Distance + dStationWalkDistance + dBikeDistance;
+      //      double pathCost = transitPath.Cost + autoPath.Cost + carParkAndRideParkingCost + dParkAndRideParkingCost;
 
-            if (pathTime > pathTimeLimit) {
-              continue;
-            }
+      //      if (pathTime > pathTimeLimit) {
+      //        continue;
+      //      }
 
-            double pathUtility = transitPath.Utility + autoPath.Utility +
-                            Global.Configuration.PathImpedance_PathChoiceScaleFactor *
-                            (_tourCostCoefficient *
-                                (carParkAndRideParkingCost + dParkAndRideParkingCost) +
-                            _tourTimeCoefficient *
-                                (Global.Configuration.PathImpedance_WalkAccessTimeWeight * (oStationWalkTime + dStationWalkTime)
-                                + Global.Configuration.PathImpedance_BikeAccessTimeWeight * dBikeTime
-                                )
-                            );
+      //      double pathUtility = transitPath.Utility + autoPath.Utility +
+      //                      Global.Configuration.PathImpedance_PathChoiceScaleFactor *
+      //                      (_tourCostCoefficient *
+      //                          (carParkAndRideParkingCost + dParkAndRideParkingCost) +
+      //                      _tourTimeCoefficient *
+      //                          (Global.Configuration.PathImpedance_WalkAccessTimeWeight * (oStationWalkTime + dStationWalkTime)
+      //                          + Global.Configuration.PathImpedance_BikeAccessTimeWeight * dBikeTime
+      //                          )
+      //                      );
 
-            if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !Global.Configuration.IsInEstimationMode) {
-              pathUtility += node.ShadowPrice[parkMinute];
-            }
+      //      if (Global.Configuration.ShouldUseParkAndRideShadowPricing && !Global.Configuration.IsInEstimationMode) {
+      //        pathUtility += carParkAndRideNode.ShadowPrice[parkMinute];
+      //      }
 
-            // if the best path so far, reset pathType properties
-            if (pathUtility <= bestPathUtility) {
-              continue;
-            }
-            bestPathUtility = pathUtility;
-            _pathParkAndRideNodeId[pathType] = node.Id;
-            _pathOriginStopAreaKey[pathType] = parkAndRideStopAreaKey;
-            _pathDestinationStopAreaKey[pathType] = dStopAreaNodeKey;
-            _pathTime[pathType] = pathTime;
-            _pathDistance[pathType] = pathDistance;
-            _pathCost[pathType] = pathCost;
-            _pathTransitTime[pathType] = transitPath.Time;
-            _pathTransitDistance[pathType] = transitPath.Distance;
-            _pathTransitCost[pathType] = transitPath.Cost;
-            _pathTransitUtility[pathType] = transitPath.Utility;
-            _pathWalkTime[pathType] = oStationWalkTime + dStationWalkTime;
-            _pathWalkDistance[pathType] = oStationWalkDistance + dStationWalkDistance;
-            _pathBikeTime[pathType] = dBikeTime;
-            _pathBikeDistance[pathType] = dBikeDistance;
-            _pathBikeCost[pathType] = dParkAndRideParkingCost;
-            _utility[pathType] = pathUtility;
-            _expUtility[pathType] = pathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : pathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(pathUtility);
-            _pathOriginAccessMode[pathType] = Global.Settings.Modes.Sov;
-            _pathOriginAccessTime[pathType] = autoPath.Time;
-            _pathOriginAccessDistance[pathType] = autoPath.Distance;
-            _pathOriginAccessCost[pathType] = autoPath.Cost;
-            _pathDestinationAccessMode[pathType] = Global.Settings.Modes.Bike;
-            _pathDestinationAccessTime[pathType] = dBikeTime;
-            _pathDestinationAccessDistance[pathType] = dBikeDistance;
-            _pathDestinationAccessCost[pathType] = 0.0;
+      //      // if the best path so far, reset pathType properties
+      //      if (pathUtility <= bestPathUtility) {
+      //        continue;
+      //      }
+      //      bestPathUtility = pathUtility;
+      //      _pathParkAndRideNodeId[pathType] = carParkAndRideNode.Id;
+      //      _pathOriginStopAreaKey[pathType] = parkAndRideStopAreaKey;
+      //      _pathDestinationStopAreaKey[pathType] = dStopAreaNodeKey;
+      //      _pathTime[pathType] = pathTime;
+      //      _pathDistance[pathType] = pathDistance;
+      //      _pathCost[pathType] = pathCost;
+      //      _pathTransitTime[pathType] = transitPath.Time;
+      //      _pathTransitDistance[pathType] = transitPath.Distance;
+      //      _pathTransitCost[pathType] = transitPath.Cost;
+      //      _pathTransitUtility[pathType] = transitPath.Utility;
+      //      _pathWalkTime[pathType] = oStationWalkTime + dStationWalkTime;
+      //      _pathWalkDistance[pathType] = oStationWalkDistance + dStationWalkDistance;
+      //      _pathBikeTime[pathType] = dBikeTime;
+      //      _pathBikeDistance[pathType] = dBikeDistance;
+      //      _pathBikeCost[pathType] = dParkAndRideParkingCost;
+      //      _utility[pathType] = pathUtility;
+      //      _expUtility[pathType] = pathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : pathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(pathUtility);
+      //      _pathOriginAccessMode[pathType] = Global.Settings.Modes.Sov;
+      //      _pathOriginAccessTime[pathType] = autoPath.Time;
+      //      _pathOriginAccessDistance[pathType] = autoPath.Distance;
+      //      _pathOriginAccessCost[pathType] = autoPath.Cost;
+      //      _pathDestinationAccessMode[pathType] = Global.Settings.Modes.Bike;
+      //      _pathDestinationAccessTime[pathType] = dBikeTime;
+      //      _pathDestinationAccessDistance[pathType] = dBikeDistance;
+      //      _pathDestinationAccessCost[pathType] = 0.0;
 
-            //}
-          }
-        }
-      }
+      //      //}
+      //    }
+      //  }
+      //}
     }
 
 
