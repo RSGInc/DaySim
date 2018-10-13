@@ -4,11 +4,11 @@ using DaySim.Framework.Roster;
 namespace DaySim.PathTypeModels {
   internal class DVRPC_PathTypeModel : PathTypeModel {
     protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
-      //Global.PrintFile.WriteLine("DVRPC_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
-      //this is the outer weight on the sum of all the path specific terms
+            //Global.PrintFile.WriteLine("DVRPC_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
+            //this is the outer weight on the sum of all the path specific terms
       pathTypeSpecificTimeWeight = 1.0;
       pathTypeSpecificTime = 0.0;
-      if (!Global.Configuration.IsInEstimationMode) {
+      if (!Global.Configuration.IsInEstimationMode && !Global.Configuration.PathImpedance_DVRPC_UseSingleWeightedTransitIVTSkim) { 
         pathTypeSpecificTime =
         Global.Configuration.PathImpedance_TransitLightRailTimeAdditiveWeight * ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
       + Global.Configuration.PathImpedance_TransitSubwayTimeAdditiveWeight * ImpedanceRoster.GetValue("subtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable
