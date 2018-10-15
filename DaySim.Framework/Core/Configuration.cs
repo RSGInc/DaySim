@@ -794,8 +794,11 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double PathImpedance_TransitPassCostPercentChangeVersusBase { get; set; }
 
-
     [XmlAttribute]
+    public bool PathImpedance_DVRPC_UseSingleWeightedTransitIVTSkim { get; set; }
+
+
+        [XmlAttribute]
     public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
 
     [XmlAttribute]
