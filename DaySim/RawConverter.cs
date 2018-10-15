@@ -70,11 +70,6 @@ namespace DaySim {
 
       Dictionary<int, Tuple<int, int, int>> destinationParkingNodes = ConvertDestinationParkingNodeFile();
 
-      Dictionary<int, Tuple<int, int, int, int, int>> parkAndRideNodes = new Dictionary<int, Tuple<int, int, int, int, int>>();
-      if (!(Global.Configuration.DataType == "Actum")) {
-        parkAndRideNodes = ImportParkAndRideNodes();
-      }
-
       Dictionary<int, int> parcelNodes = ImportParcelNodes();
 
       ConvertParcelNodeFile(parcelNodes);
@@ -89,6 +84,7 @@ namespace DaySim {
         parcels = ConvertActumParcelFile(parcelNodes, zones);
         ConvertActumParkAndRideNodeFile(parcels, transitStopAreas);
       } else {
+        Dictionary<int, Tuple<int, int, int, int, int>> parkAndRideNodes = ImportParkAndRideNodes();
         zones = ConvertZoneFile(ref ixxi, ref parkAndRideNodes, ref transitStopAreas);
         parcels = ConvertParcelFile(parcelNodes, zones);
         ConvertParkAndRideNodeFile(parkAndRideNodes, parcels, transitStopAreas);
