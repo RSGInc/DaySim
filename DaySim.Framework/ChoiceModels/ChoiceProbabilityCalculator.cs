@@ -963,7 +963,7 @@ namespace DaySim.Framework.ChoiceModels {
 
           _choiceProbabilityCalculator.AddObservation(utility);
         } else {
-          if ((value == 0.0) && (Global.Configuration.DataType != "Actum")) {
+          if (value == 0.0) {
             return;
           }
 
@@ -1176,7 +1176,7 @@ namespace DaySim.Framework.ChoiceModels {
 
           _choiceProbabilityCalculator.AddObservation(utility);
         } else {
-          if ((value == 0.0) && (Global.Configuration.DataType != "Actum")) {
+          if (value == 0.0) {
             return;
           }
 
