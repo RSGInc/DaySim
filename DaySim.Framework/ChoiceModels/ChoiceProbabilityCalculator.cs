@@ -704,7 +704,7 @@ namespace DaySim.Framework.ChoiceModels {
         int levelIndex = i;
 
         foreach (NestedAlternative nestedAlternative in _nestedAlternatives.Where(na => na != null && na.Key == _key && na.LevelIndex == levelIndex)) {
-          if ((nestedAlternative.UtilitySum >= Constants.EPSILON) || (Global.Configuration.DataType == "Actum")) {
+          if (nestedAlternative.UtilitySum >= Constants.EPSILON) {
             nestedAlternative.Utility = Math.Exp(nestedAlternative.Theta * Math.Log(nestedAlternative.UtilitySum));
             nestedAlternative.SumUtility(nestedAlternative.Utility);
           } else {
