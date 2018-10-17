@@ -856,11 +856,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
     }
 
     public void SetActivityEndTime(int activityEndTime) {
-      if (Global.Configuration.DataType == "Actum") {
-        ActivityEndTime = activityEndTime.ToMinutesAfterMidnight(); //Actum compatibility -- keep BUG of calling .ToMinutesAfterMidnight() even though it is ALSO called by ActivityEndTime's 'Set' method
-      } else {
-        ActivityEndTime = activityEndTime;  //Corrected BUG: No need to call ToMinutesAfterMidnight() since the ActivityEndTime 'Set' already does this
-      }
+      ActivityEndTime = activityEndTime;  //Corrected BUG: No need to call ToMinutesAfterMidnight() since the ActivityEndTime 'Set' already does this
     }
 
     public void SetOriginAddressType(int originAddressType) {
