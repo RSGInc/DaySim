@@ -187,12 +187,8 @@ namespace DaySim.Framework.Roster {
         //    (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate)) / 5280D);
         xyDistance = circuityDistance;
       } else {
-        if (Global.Configuration.DataType == "Actum") {
-          xyDistance = (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate)) / 5280D;
-        } else {
-          // default is orthogonal distance, with a miniumum of 300 feet for intra-microzone
-          xyDistance = Math.Max(300D, (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate))) / 5280D;
-        }
+        // default is orthogonal distance, with a miniumum of 300 feet for intra-microzone
+        xyDistance = Math.Max(300D, (Math.Abs(origin.XCoordinate - destination.XCoordinate) + Math.Abs(origin.YCoordinate - destination.YCoordinate))) / 5280D;
       }
 
       if (networkDistance >= Constants.EPSILON && xyDistance >= Constants.EPSILON) {
