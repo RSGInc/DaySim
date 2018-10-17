@@ -204,7 +204,7 @@ namespace DaySim.Framework.Roster {
       if (!skimValue.BlendVariable.AlmostEquals(Constants.DEFAULT_VALUE)) {
 
         //new code for intrazonals allows overriding use of speed from skims
-        if (Global.Configuration.DataType != "Actum" && (origin.ZoneId == destination.ZoneId)) {
+        if (origin.ZoneId == destination.ZoneId) {
           double minutesPerMile =
               (mode == Global.Settings.Modes.Walk && Global.Configuration.IntrazonalWalkMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalWalkMinutesPerMile_OverrideSkims
             : (mode == Global.Settings.Modes.Bike && Global.Configuration.IntrazonalBikeMinutesPerMile_OverrideSkims > Constants.EPSILON) ? Global.Configuration.IntrazonalBikeMinutesPerMile_OverrideSkims
