@@ -719,7 +719,7 @@ namespace DaySim {
           .Importer
           .Import();
 
-      if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum")) {
+      if (!Global.StopAreaIsEnabled) {
         return;
       }
 
@@ -1115,7 +1115,7 @@ namespace DaySim {
     }
 
     private static void BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances() {
-      if (!Global.StopAreaIsEnabled || !(Global.Configuration.DataType == "Actum")) {
+      if (!Global.StopAreaIsEnabled) {
         return;
       }
       if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToParkAndRideNodeIndexPath)) {
