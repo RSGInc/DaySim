@@ -14,7 +14,7 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
 
-namespace DaySim {
+namespace DaySim.ChoiceModels.H {
   public sealed class HTourModeTime {
     public static readonly int TotalTourModeTimes = DayPeriod.H_BIG_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS * Global.Settings.Modes.MaxMode;
 

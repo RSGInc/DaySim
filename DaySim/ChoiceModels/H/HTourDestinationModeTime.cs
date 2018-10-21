@@ -8,7 +8,7 @@
 
 using DaySim.Framework.DomainModels.Wrappers;
 
-namespace DaySim {
+namespace DaySim.ChoiceModels.H {
   public sealed class HTourDestinationModeTime {
 
 

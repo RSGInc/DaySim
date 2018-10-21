@@ -7,6 +7,7 @@
 
 
 using System;
+using DaySim.ChoiceModels.H;
 using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;

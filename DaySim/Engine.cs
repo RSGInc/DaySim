@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Threading;
 using DaySim.AggregateLogsums;
 using DaySim.ChoiceModels;
+using DaySim.ChoiceModels.H;
 using DaySim.DestinationParkingShadowPricing;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Factories;

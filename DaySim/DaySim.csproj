@@ -255,8 +255,8 @@
     <Compile Include="DomainModels\Default\Wrappers\DestinationParkingNodeWrapper.cs" />
     <Compile Include="DomainModels\Factories\ModuleFactory.cs" />
     <Compile Include="DomainModels\Persisters\DestinationParkingNodePersister.cs" />
-    <Compile Include="HTourDestinationModeTime.cs" />
-    <Compile Include="HTourModeTime.cs">
+    <Compile Include="ChoiceModels\H\HTourDestinationModeTime.cs" />
+    <Compile Include="ChoiceModels\H\HTourModeTime.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ITransitStopArea.cs" />
@@ -323,7 +323,7 @@
     <Compile Include="DomainModels\Persisters\TourPersister.cs" />
     <Compile Include="DomainModels\Persisters\HouseholdPersister.cs" />
     <Compile Include="FlagUtility.cs" />
-    <Compile Include="HTripTime.cs" />
+    <Compile Include="ChoiceModels\H\HTripTime.cs" />
     <Compile Include="AggregateLogsums\IAggregateLogsumsCalculator.cs" />
     <Compile Include="AggregateLogsums\IAggregateLogsumsCalculatorCreator.cs" />
     <Compile Include="InputTester.cs" />

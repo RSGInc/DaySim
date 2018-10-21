@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using DaySim.ChoiceModels.H;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;

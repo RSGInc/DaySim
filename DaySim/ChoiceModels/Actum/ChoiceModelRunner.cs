@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaySim.ChoiceModels.Actum.Models;
+using DaySim.ChoiceModels.H;
 //using DaySim.ChoiceModels.Default.Models;
 using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;

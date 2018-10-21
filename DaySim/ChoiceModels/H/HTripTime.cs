@@ -13,7 +13,7 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
 
-namespace DaySim {
+namespace DaySim.ChoiceModels.H {
   public sealed class HTripTime {
     public const int TOTAL_TRIP_TIMES = DayPeriod.H_SMALL_DAY_PERIOD_TOTAL_TRIP_TIMES;
 
