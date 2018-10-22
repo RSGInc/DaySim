@@ -6,7 +6,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using DaySim.Framework.Core;
 using NDesk.Options;
 
@@ -66,6 +68,15 @@ namespace DaySim {
         Environment.Exit(exitCode);
       } //end if _showVersion
 
+      // Issue #164 Force use of decimal separator for numerical values
+      bool needToChangeDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator != ".";
+      if (needToChangeDecimalSeparator) {
+        //needs to be done very early before configuration file read in
+        CultureInfo ci = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+        ci.NumberFormat.NumberDecimalSeparator = ".";
+        Thread.CurrentThread.CurrentCulture = ci;
+      }
+
       Console.WriteLine("Configuration file: " + _configurationPath);
       if (!File.Exists(_configurationPath)) {
         throw new Exception("Configuration file '" + _configurationPath + "' does not exist. You must pass in a DaySim configuration file with -c or --configuration");
@@ -81,6 +92,15 @@ namespace DaySim {
       Console.WriteLine(message);
       if (Global.PrintFile != null) {
         Global.PrintFile.WriteLine(message);
+      }
+
+      if (needToChangeDecimalSeparator) {
+        //separator was already changed above but printfile was not ready so outputting warning message here.
+        string decimalSeparatorMessage = string.Format("WARNING: default NumberDecimalSeparator is being overriden to use a comma since DaySim requires this.");
+        Console.WriteLine(decimalSeparatorMessage);
+        if (Global.PrintFile != null) {
+          Global.PrintFile.WriteLine(decimalSeparatorMessage);
+        }
       }
 
       Engine.InitializeDaySim();
