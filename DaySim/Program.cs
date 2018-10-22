@@ -96,7 +96,7 @@ namespace DaySim {
 
       if (needToChangeDecimalSeparator) {
         //separator was already changed above but printfile was not ready so outputting warning message here.
-        string decimalSeparatorMessage = string.Format("WARNING: default NumberDecimalSeparator is being overriden to use a comma since DaySim requires this.");
+        string decimalSeparatorMessage = string.Format("WARNING: default NumberDecimalSeparator is being overriden to use a period for the decimal point since DaySim requires this.");
         Console.WriteLine(decimalSeparatorMessage);
         if (Global.PrintFile != null) {
           Global.PrintFile.WriteLine(decimalSeparatorMessage);
