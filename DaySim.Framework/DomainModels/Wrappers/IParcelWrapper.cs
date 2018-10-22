@@ -153,11 +153,11 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     void AddStudentsK12Prediction(double studentsK12Prediction);
 
-    double CalculateShortDistance(IParcelWrapper destination, bool doNewCorrections);
+    double CalculateShortDistance(IParcelWrapper destination);
 
-    double NodeToNodeDistance(IParcelWrapper destination, bool doNewCorrections);
+    double NodeToNodeDistance(IParcelWrapper destination);
 
-    double CircuityDistance(IParcelWrapper destination, bool doNewCorrections);
+    double CircuityDistance(IParcelWrapper destination);
 
     //        void SetFirstAndLastStopAreaDistanceIndexes();
 

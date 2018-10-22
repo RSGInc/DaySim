@@ -403,7 +403,7 @@ namespace DaySim.PathTypeModels {
       double circuityDistance =
                 ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(_destinationParcel, /* doNewCorrections */ false);
+                    : _originParcel.CalculateShortDistance(_destinationParcel);
 
       //test output
       //var orth=(Math.Abs(_originParcel.XCoordinate - _destinationParcel.XCoordinate) + Math.Abs(_originParcel.YCoordinate - _destinationParcel.YCoordinate)) / 5280.0;
@@ -611,7 +611,7 @@ namespace DaySim.PathTypeModels {
       double circuityDistance =
                 ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(_destinationParcel, /* doNewCorrections */ false);
+                    : _originParcel.CalculateShortDistance(_destinationParcel);
 
       SkimValue skimValue1 =
                 useZones
@@ -1124,7 +1124,7 @@ namespace DaySim.PathTypeModels {
         double circuityDistance =
                   ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                       ? Constants.DEFAULT_VALUE
-                      : _originParcel.CalculateShortDistance(parkAndRideParcel, /* doNewCorrections */ false);
+                      : _originParcel.CalculateShortDistance(parkAndRideParcel);
 
         SkimValue skimValue
                     = useZones
@@ -1450,7 +1450,7 @@ namespace DaySim.PathTypeModels {
         double circuityDistance =
                   ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                       ? Constants.DEFAULT_VALUE
-                      : _originParcel.CalculateShortDistance(parkAndRideParcel, /* doNewCorrections */ false);
+                      : _originParcel.CalculateShortDistance(parkAndRideParcel);
 
         SkimValue skimValue
                         = useZones
@@ -1753,7 +1753,7 @@ namespace DaySim.PathTypeModels {
       double circuityDistance =
                 ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(destinationParcel, /* doNewCorrections */ false);
+                    : _originParcel.CalculateShortDistance(destinationParcel);
 
       //calculate times and distances outbound
       SkimValue freeFlowSkimValue =
