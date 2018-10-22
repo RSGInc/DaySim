@@ -728,9 +728,9 @@ namespace DaySim.PathTypeModels {
 
         double walkDistance = 2.0 * (
                      (Global.Configuration.UseShortDistanceNodeToNodeMeasures)
-                   ? parkingParcel.NodeToNodeDistance(_destinationParcel, /* doNewCorrections */ true)
+                   ? parkingParcel.NodeToNodeDistance(_destinationParcel)
                    : (Global.Configuration.UseShortDistanceCircuityMeasures)
-                   ? parkingParcel.CircuityDistance(_destinationParcel, /* doNewCorrections */ true)
+                   ? parkingParcel.CircuityDistance(_destinationParcel)
                    : xyDistNodeDest);
 
         double walkTime = walkDistance * Global.Configuration.PathImpedance_WalkMinutesPerMile;
@@ -1069,7 +1069,7 @@ namespace DaySim.PathTypeModels {
         double circuityDistance =
                   (zzDistPR > Global.Configuration.MaximumBlendingDistance || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(parkAndRideParcel, /* doNewCorrections */ true);
+                    : _originParcel.CalculateShortDistance(parkAndRideParcel);
 
         SkimValue skimValue
                   = useZones
@@ -1265,7 +1265,7 @@ namespace DaySim.PathTypeModels {
         double circuityDistance =
                     (zzDistPR > Global.Configuration.MaximumBlendingDistance || useZones)
                     ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(parkAndRideParcel, /* doNewCorrections */ true);
+                    : _originParcel.CalculateShortDistance(parkAndRideParcel);
 
         SkimValue skimValue
                     = useZones
@@ -1362,7 +1362,7 @@ namespace DaySim.PathTypeModels {
       double circuityDistance =
                 (zzDist < Constants.EPSILON || zzDist > Global.Configuration.MaximumBlendingDistance)
                     ? Constants.DEFAULT_VALUE
-                    : oParcel.CalculateShortDistance(dParcel, /* doNewCorrections */ true);
+                    : oParcel.CalculateShortDistance(dParcel);
       return circuityDistance;
     }
 

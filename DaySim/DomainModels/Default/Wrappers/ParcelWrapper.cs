@@ -929,33 +929,29 @@ namespace DaySim.DomainModels.Default.Wrappers {
     }
 
 
-    public double CalculateShortDistance(IParcelWrapper destination, bool doNewCorrections) {
+    public double CalculateShortDistance(IParcelWrapper destination) {
       if (Global.Configuration.UseShortDistanceNodeToNodeMeasures) {
-        return NodeToNodeDistance(destination, doNewCorrections);
+        return NodeToNodeDistance(destination);
       }
       if (Global.Configuration.UseShortDistanceCircuityMeasures) {
-        return CircuityDistance(destination, doNewCorrections);
+        return CircuityDistance(destination);
       }
-      if (doNewCorrections) {
-        // if corrected calculation becomes default, move this to top of this method and remove from top of two methods below
-        if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON && Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation) {
-          double calcDistance = (Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation)
-                   ? Math.Sqrt(1000 * ThousandsSquareLengthUnits) / (2.0 * 5280 * Global.Settings.DistanceUnitsPerMile)
-                   : Math.Sqrt(ThousandsSquareLengthUnits) / (2.0);
-          return Math.Max(calcDistance, Global.Configuration.MinimumIntraParcelDistanceCutoff);
-        }
+      // if corrected calculation becomes default, move this to top of this method and remove from top of two methods below
+      if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON && Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation) {
+        double calcDistance = (Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation)
+                 ? Math.Sqrt(1000 * ThousandsSquareLengthUnits) / (2.0 * 5280 * Global.Settings.DistanceUnitsPerMile)
+                 : Math.Sqrt(ThousandsSquareLengthUnits) / (2.0);
+        return Math.Max(calcDistance, Global.Configuration.MinimumIntraParcelDistanceCutoff);
       }
       return Constants.DEFAULT_VALUE;
     }
 
-    public double NodeToNodeDistance(IParcelWrapper destination, bool doNewCorrections) {
-      if (doNewCorrections) {
-        if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
-          double calcDistance = (Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation)
-                   ? Math.Sqrt(1000 * ThousandsSquareLengthUnits) / (2.0 * 5280 * Global.Settings.DistanceUnitsPerMile)
-                   : Math.Sqrt(ThousandsSquareLengthUnits) / (2.0);
-          return Math.Max(calcDistance, Global.Configuration.MinimumIntraParcelDistanceCutoff);
-        }
+    public double NodeToNodeDistance(IParcelWrapper destination) {
+      if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
+        double calcDistance = (Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation)
+                 ? Math.Sqrt(1000 * ThousandsSquareLengthUnits) / (2.0 * 5280 * Global.Settings.DistanceUnitsPerMile)
+                 : Math.Sqrt(ThousandsSquareLengthUnits) / (2.0);
+        return Math.Max(calcDistance, Global.Configuration.MinimumIntraParcelDistanceCutoff);
       }
       int threadAssignedIndex = ParallelUtility.threadLocalAssignedIndex.Value;
       //added for intra-microzone distance, square root of area over 2   MB 20180305 This code is wrong - should also divide by 5280. Use a configuration override for now.
@@ -1024,15 +1020,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return distance;
     }
 
-    public double CircuityDistance(IParcelWrapper destination, bool doNewCorrections) {
-      if (doNewCorrections) {
-        //added for intra-microzone distance, square root of area over 2
-        if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
-          double calcDistance = (Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation)
-                    ? Math.Sqrt(1000 * ThousandsSquareLengthUnits) / (2.0 * 5280 * Global.Settings.DistanceUnitsPerMile)
-                    : Math.Sqrt(ThousandsSquareLengthUnits) / (2.0);
-          return Math.Max(calcDistance, Global.Configuration.MinimumIntraParcelDistanceCutoff);
-        }
+    public double CircuityDistance(IParcelWrapper destination) {
+      //added for intra-microzone distance, square root of area over 2
+      if (Id == destination.Id && ThousandsSquareLengthUnits > Constants.EPSILON) {
+        double calcDistance = (Global.Configuration.CorrectIntraParcelAreaToDistanceCalculation)
+                  ? Math.Sqrt(1000 * ThousandsSquareLengthUnits) / (2.0 * 5280 * Global.Settings.DistanceUnitsPerMile)
+                  : Math.Sqrt(ThousandsSquareLengthUnits) / (2.0);
+        return Math.Max(calcDistance, Global.Configuration.MinimumIntraParcelDistanceCutoff);
       }
       // JLBscale:  change so calculations work in length units instead of ft.
       double maxCircLength = 10560.0 * Global.Settings.LengthUnitsPerFoot; // only apply circuity multiplier out to 2 miles = 10560 feet

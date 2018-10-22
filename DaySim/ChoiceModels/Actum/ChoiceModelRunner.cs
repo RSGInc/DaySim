@@ -1167,7 +1167,7 @@ namespace DaySim.ChoiceModels.Actum {
                 //                                      : (Global.Configuration.UseShortDistanceCircuityMeasures)
                 //                                                ? chauffeurParcel.CircuityDistance(destinationParcel[j])
                 //                                                : Constants.DEFAULT_VALUE;
-                double circuityDistance = chauffeurParcel.CalculateShortDistance(destinationParcel[j], /* doNewCorrections */ false);
+                double circuityDistance = chauffeurParcel.CalculateShortDistance(destinationParcel[j]);
 
                 distanceFromChauffeur[j] = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 1, chauffeurParcel, destinationParcel[j], circuityDistance).Variable;
               }
@@ -1855,11 +1855,11 @@ namespace DaySim.ChoiceModels.Actum {
         }
 
         //double circuityDistance = Global.Configuration.UseShortDistanceNodeToNodeMeasures
-        //                                        ? tour[i - 1].DestinationParcel.NodeToNodeDistance(tour[i].DestinationParcel, doNewCorrections=false)
+        //                                        ? tour[i - 1].DestinationParcel.NodeToNodeDistance(tour[i].DestinationParcel)
         //                                        : (Global.Configuration.UseShortDistanceCircuityMeasures)
         //                                        ? tour[i - 1].DestinationParcel.CircuityDistance(tour[i].DestinationParcel)
         //                                        : Constants.DEFAULT_VALUE;
-        double circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel, /* doNewCorrections */ false);
+        double circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
 
         //if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
         if (i == 2) {
