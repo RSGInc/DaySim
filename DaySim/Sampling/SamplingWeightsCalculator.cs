@@ -90,24 +90,24 @@ namespace DaySim.Sampling {
     private static void CalculateSegment(SamplingWeightsCalculator samplingWeightsCalculator, int segment) {
       FileInfo file = new FileInfo(string.Format(Global.SamplingWeightsPath, segment));
 
-      if (Global.Configuration.ShouldLoadSamplingWeightsFromFile && file.Exists) {
-        Global.SegmentZones[segment] = LoadSamplingWeightsFromFile(file);
+      //if (Global.Configuration.ShouldLoadSamplingWeightsFromFile && file.Exists) {
+      //  Global.SegmentZones[segment] = LoadSamplingWeightsFromFile(file);
 
-        return;
-      }
+      //  return;
+      //}
 
       Global.SegmentZones[segment] = samplingWeightsCalculator.ComputeSegment(segment);
 
-      if (Global.Configuration.ShouldLoadSamplingWeightsFromFile && !file.Exists) {
-        SaveSamplingWeightsToFile(file, segment);
-      }
+      //if (Global.Configuration.ShouldLoadSamplingWeightsFromFile && !file.Exists) {
+      //  SaveSamplingWeightsToFile(file, segment);
+      //}
     }
 
-    private static SegmentZone[] LoadSamplingWeightsFromFile(FileInfo file) {
-      using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
-        return SegmentZoneFormatter.Deserialize(stream);
-      }
-    }
+    //private static SegmentZone[] LoadSamplingWeightsFromFile(FileInfo file) {
+    //  using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
+    //    return SegmentZoneFormatter.Deserialize(stream);
+    //  }
+    //}
 
     private static void SaveSamplingWeightsToFile(FileInfo file, int segment) {
       using (FileStream stream = file.Open(FileMode.Create, FileAccess.Write, FileShare.Read)) {

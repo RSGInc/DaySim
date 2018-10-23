@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
+﻿// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
 // Copyright 2011-2013 John Bowman, Mark Bradley, and RSG, Inc.
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
@@ -280,9 +280,9 @@ namespace DaySim.AggregateLogsums {
     public AggregateLogsumsCalculator_Actum() {
       FileInfo file = Global.AggregateLogsumsPath.ToFile();
 
-      if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
-        return;
-      }
+      //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
+      //  return;
+      //}
 
       Framework.DomainModels.Persisters.IPersisterReader<IZone> zoneReader =
                 Global
@@ -298,11 +298,11 @@ namespace DaySim.AggregateLogsums {
     public void Calculate(IRandomUtility randomUtility) {
       FileInfo file = Global.AggregateLogsumsPath.ToFile();
 
-      if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
-        Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
+      //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
+     //   Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
 
-        return;
-      }
+     //   return;
+     // }
 
       Global.AggregateLogsums = new double[_zoneCount][][][][];
 
@@ -329,22 +329,22 @@ namespace DaySim.AggregateLogsums {
         }
       }
 
-      if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && !file.Exists) {
-        SaveAggregateLogsumsToFile(file);
-      }
+      //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && !file.Exists) {
+      //  SaveAggregateLogsumsToFile(file);
+      //}
     }
 
     private void CalculateZone(IRandomUtility randomUtility, int id) {
       Global.AggregateLogsums[id] = ComputeZone(randomUtility, id);
     }
 
-    private double[][][][][] LoadAggregateLogsumsFromFile(FileInfo file) {
-      using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
-        BinaryFormatter formatter = new BinaryFormatter();
+    //private double[][][][][] LoadAggregateLogsumsFromFile(FileInfo file) {
+    //  using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
+    //    BinaryFormatter formatter = new BinaryFormatter();
 
-        return (double[][][][][])formatter.Deserialize(stream);
-      }
-    }
+    //    return (double[][][][][])formatter.Deserialize(stream);
+    //  }
+    //}
 
     private void SaveAggregateLogsumsToFile(FileInfo file) {
       using (FileStream stream = file.Open(FileMode.Create, FileAccess.Write, FileShare.Read)) {

@@ -281,9 +281,9 @@ namespace DaySim.AggregateLogsums {
     public AggregateLogsumsCalculator() {
       FileInfo file = Global.AggregateLogsumsPath.ToFile();
 
-      if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
-        return;
-      }
+      //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
+      //  return;
+      //}
 
       Framework.DomainModels.Persisters.IPersisterReader<IZone> zoneReader =
                 Global
@@ -299,11 +299,11 @@ namespace DaySim.AggregateLogsums {
     public void Calculate(IRandomUtility randomUtility) {
       FileInfo file = Global.AggregateLogsumsPath.ToFile();
 
-      if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
-        Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
+      //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
+      //  Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
 
-        return;
-      }
+     //   return;
+     // }
 
       Global.AggregateLogsums = new double[_zoneCount][][][][];
 
@@ -329,9 +329,9 @@ namespace DaySim.AggregateLogsums {
         }
       }
 
-      if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && !file.Exists) {
-        SaveAggregateLogsumsToFile(file);
-      }
+      //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && !file.Exists) {
+      //  SaveAggregateLogsumsToFile(file);
+      //}
     }
 
     private void CalculateZone(IRandomUtility randomUtility, int id) {

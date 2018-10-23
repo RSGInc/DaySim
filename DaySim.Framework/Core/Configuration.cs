@@ -1000,8 +1000,8 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public int RandomSeed { get; set; }
 
-    [XmlAttribute]
-    public bool ShouldLoadAggregateLogsumsFromFile { get; set; }
+    //[XmlAttribute]
+    //public bool ShouldLoadAggregateLogsumsFromFile { get; set; }
 
     [XmlAttribute]
     public bool ShouldOutputAggregateLogsums { get; set; }
@@ -1010,8 +1010,8 @@ namespace DaySim.Framework.Core {
     public string OutputAggregateLogsumsPath { get; set; }
 
 
-    [XmlAttribute]
-    public bool ShouldLoadSamplingWeightsFromFile { get; set; }
+    //[XmlAttribute]
+    //public bool ShouldLoadSamplingWeightsFromFile { get; set; }
 
     [XmlAttribute]
     public bool ShouldOutputSamplingWeights { get; set; }

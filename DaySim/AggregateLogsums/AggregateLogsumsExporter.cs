@@ -45,7 +45,11 @@ namespace DaySim.AggregateLogsums {
         FileInfo file = new FileInfo(Path.Combine(directory, string.Format("{0}.{1}{2}", filename, purpose, extension)));
 
         using (StreamWriter writer = new StreamWriter(file.Open(FileMode.Create, FileAccess.Write, FileShare.Read))) {
-          writer.WriteLine("ZONE\tCHILD/SHO\tCHILD/LON\tCHILD/NAV\tNOCAR/SHO\tNOCAR/LON\tNOCAR/NAV\tCCOMP/SHO\tCCOMP/LON\tCCOMP/NAV\tCFULL/SHO\tCFULL/LON\tCFULL/NAV");
+         writer.Write("ZONE\t");
+         writer.Write("CHILD/LVOT/CLOSE\tCHILD/LVOT/FAR\tCHILD/LVOT/NAV\tCHILD/MVOT/CLOSE\tCHILD/MVOT/FAR\tCHILD/MVOT/NAV\tCHILD/HVOT/CLOSE\tCHILD/HVOT/FAR\tCHILD/HVOT/NAV\t");
+         writer.Write("NOCAR/LVOT/CLOSE\tNOCAR/LVOT/FAR\tNOCAR/LVOT/NAV\tNOCAR/MVOT/CLOSE\tNOCAR/MVOT/FAR\tNOCAR/MVOT/NAV\tNOCAR/HVOT/CLOSE\tNOCAR/HVOT/FAR\tNOCAR/HVOT/NAV\t");
+         writer.Write("CCOMP/LVOT/CLOSE\tCCOMP/LVOT/FAR\tCCOMP/LVOT/NAV\tCCOMP/MVOT/CLOSE\tCCOMP/MVOT/FAR\tCCOMP/MVOT/NAV\tCCOMP/HVOT/CLOSE\tCCOMP/HVOT/FAR\tCCOMP/HVOT/NAV\t");
+         writer.WriteLine("FULLCO/LVOT/CLOSE\tFULLCO/LVOT/FAR\tFULLCO/LVOT/NAV\tFULLCO/MVOT/CLOSE\tFULLCO/MVOT/FAR\tFULLCO/MVOT/NAV\tFULLCO/HVOT/CLOSE\tFULLCO/HVOT/FAR\tFULLCO/HVOT/NAV");
 
           for (int id = 0; id < zoneCount; id++) {
             IZone zone = zoneReader.Seek(id);
@@ -64,7 +68,9 @@ namespace DaySim.AggregateLogsums {
                 for (int transitAccess = Global.Settings.TransitAccesses.Gt0AndLteQtrMi; transitAccess < Global.Settings.TransitAccesses.TotalTransitAccesses; transitAccess++) {
                   writer.Write(string.Format("{0,9:f5}", transitAccesses[transitAccess]));
 
-                  if ((carOwnership + 1) * (transitAccess + 1) != Global.Settings.CarOwnerships.TotalCarOwnerships * Global.Settings.TransitAccesses.TotalTransitAccesses) {
+                  if (carOwnership + 1 != Global.Settings.CarOwnerships.TotalCarOwnerships ||
+                      votALSegment + 1 != Global.Settings.VotALSegments.TotalVotALSegments ||
+                      transitAccess + 1 != Global.Settings.TransitAccesses.TotalTransitAccesses) { 
                     writer.Write("\t");
                   }
                 }
