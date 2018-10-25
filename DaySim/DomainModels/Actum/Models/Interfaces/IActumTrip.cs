@@ -10,9 +10,6 @@ using DaySim.Framework.DomainModels.Models;
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumTrip : ITrip {
     //JLB20160323
-    int EscortedDestinationPurpose { get; set; }
-
-    int BikePTCombination { get; set; }
 
     int AccessMode { get; set; }
 
@@ -37,5 +34,10 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
     double EgressDistance { get; set; }
 
     int EgressStopArea { get; set; }
+
+    int AutoType { get; set; }
+
+    int AutoOccupancy { get; set; }
+
   }
 }

@@ -152,12 +152,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
           ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, residenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, Global.Settings.Purposes.Work);
           workLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
         }
-        if (person.Age >= 18 && person.EducationLevel >= 12) {
-          hasAdultEducLevel12 = 1;
-        }
+        //if (person.Age >= 18 && person.EducationLevel >= 12) {
+        //  hasAdultEducLevel12 = 1;
+        //}
 
-        if (person.Age >= 18 && person.EducationLevel < 12) {
-        }
+        //if (person.Age >= 18 && person.EducationLevel < 12) {
+        //}
 
         if (person.Age < youngestAge) {
           youngestAge = person.Age;

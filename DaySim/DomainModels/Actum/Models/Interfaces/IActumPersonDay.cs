@@ -13,18 +13,6 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
 
     int PatternType { get; set; }
 
-    int WorkHomeAllDay { get; set; }
-
-    int MinutesStudiedHome { get; set; }
-
-    int DiaryWeekday { get; set; }
-
-    int DiaryDaytype { get; set; }
-
-    int DayStartPurpose { get; set; }
-
-    int DayJourneyType { get; set; }
-
     int BusinessTours { get; set; }
 
     int BusinessStops { get; set; }

@@ -18,13 +18,8 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("hmuncode")]
     public int MunicipalCode { get; set; }
 
-    [ColumnName("hdisstat")]
-    public double StationDistance { get; set; }
+    [ColumnName("autotype")]
+    public int AutoType { get; set; }
 
-    [ColumnName("hparkpos")]
-    public int ParkingAvailability { get; set; }
-
-    [ColumnName("inetpaym")]
-    public int InternetPaymentMethod { get; set; }
   }
 }

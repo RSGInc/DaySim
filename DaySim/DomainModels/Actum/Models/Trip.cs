@@ -15,12 +15,6 @@ namespace DaySim.DomainModels.Actum.Models {
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
   public sealed class Trip : DomainModels.Default.Models.Trip, IActumTrip {
 
-    [ColumnName("tdescpur")]
-    public int EscortedDestinationPurpose { get; set; }
-
-    [ColumnName("tptbicty")]
-    public int BikePTCombination { get; set; }
-
     [ColumnName("acmode")]
     public int AccessMode { get; set; }
 
@@ -56,5 +50,12 @@ namespace DaySim.DomainModels.Actum.Models {
 
     [ColumnName("egstopar")]
     public int EgressStopArea { get; set; }
+
+    [ColumnName("autotype")]
+    public int AutoType { get; set; }
+
+    [ColumnName("autoocc")]
+    public int AutoOccupancy { get; set; }
+
   }
 }

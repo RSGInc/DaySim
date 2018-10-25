@@ -102,8 +102,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       foreach (PersonWrapper person in householdDay.Household.Persons) {
         // set characteristics here that depend on person characteristics
-        if (person.Age >= 18 && person.EducationLevel >= 12) {
-        }
+        //if (person.Age >= 18 && person.EducationLevel >= 12) {
+        //}
         //if (person.Age >= 18 && person.EducationLevel < 12) allAdultEducLevel12 = 0;
         if (person.Age < youngestAge) {
           youngestAge = person.Age;

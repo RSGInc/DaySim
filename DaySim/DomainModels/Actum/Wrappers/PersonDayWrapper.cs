@@ -41,36 +41,6 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region domain model properies
 
-    public int WorkHomeAllDay {
-      get => _personDay.WorkHomeAllDay;
-      set => _personDay.WorkHomeAllDay = value;
-    }
-
-    public int MinutesStudiedHome {
-      get => _personDay.MinutesStudiedHome;
-      set => _personDay.MinutesStudiedHome = value;
-    }
-
-    public int DiaryWeekday {
-      get => _personDay.DiaryWeekday;
-      set => _personDay.DiaryWeekday = value;
-    }
-
-    public int DiaryDaytype {
-      get => _personDay.DiaryDaytype;
-      set => _personDay.DiaryDaytype = value;
-    }
-
-    public int DayStartPurpose {
-      get => _personDay.DayStartPurpose;
-      set => _personDay.DayStartPurpose = value;
-    }
-
-    public int DayJourneyType {
-      get => _personDay.DayJourneyType;
-      set => _personDay.DayJourneyType = value;
-    }
-
     public int BusinessTours {
       get => _personDay.BusinessTours;
       set => _personDay.BusinessTours = value;

@@ -18,24 +18,6 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("ppattype")]
     public int PatternType { get; set; }
 
-    [ColumnName("pwrkhday")]
-    public int WorkHomeAllDay { get; set; }
-
-    [ColumnName("pschhmin")]
-    public int MinutesStudiedHome { get; set; }
-
-    [ColumnName("pweekday")]
-    public int DiaryWeekday { get; set; }
-
-    [ColumnName("pdaytype")]
-    public int DiaryDaytype { get; set; }
-
-    [ColumnName("pdayspurp")]
-    public int DayStartPurpose { get; set; }
-
-    [ColumnName("pdayjtyp")]
-    public int DayJourneyType { get; set; }
-
     [ColumnName("butours")]
     public int BusinessTours { get; set; }
 

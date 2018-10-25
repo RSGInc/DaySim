@@ -22,97 +22,22 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region domain model properies
 
-    public int MainOccupation {
-      get => _person.MainOccupation;
-      set => _person.MainOccupation = value;
-    }
-
-    public int EducationLevel {
-      get => _person.EducationLevel;
-      set => _person.EducationLevel = value;
-    }
-
-    public int HasBike {
-      get => _person.HasBike;
-      set => _person.HasBike = value;
-    }
 
     public int HasDriversLicense {
       get => _person.HasDriversLicense;
       set => _person.HasDriversLicense = value;
     }
 
-    public int HasCarShare {
-      get => _person.HasCarShare;
-      set => _person.HasCarShare = value;
-    }
-
-    public int Income {
-      get => _person.Income;
-      set => _person.Income = value;
-    }
-
-    public int HasMC {
-      get => _person.HasMC;
-      set => _person.HasMC = value;
-    }
-
-    public int HasMoped {
-      get => _person.HasMoped;
-      set => _person.HasMoped = value;
-    }
-
-    public int HasWorkParking {
-      get => _person.HasWorkParking;
-      set => _person.HasWorkParking = value;
-    }
-
-    public int WorkHoursPerWeek {
-      get => _person.WorkHoursPerWeek;
-      set => _person.WorkHoursPerWeek = value;
-    }
-
-    public int FlexibleWorkHours {
-      get => _person.FlexibleWorkHours;
-      set => _person.FlexibleWorkHours = value;
-    }
-
-    public int HasSchoolParking {
-      get => _person.HasSchoolParking;
-      set => _person.HasSchoolParking = value;
-    }
 
     #endregion
 
     #region wrapper methods
 
-    public bool BikeExists() {
-      return HasBike == 1;
-    }
-
+ 
     public bool DriversLicenseExists() {
       return HasDriversLicense == 1;
     }
 
-    public bool CarShareExists() {
-      return HasCarShare == 1;
-    }
-
-    public bool MCExists() {
-      return HasMC == 1;
-    }
-
-    public bool MopedExists() {
-      return HasMoped == 1;
-    }
-
-    public bool WorkParkingExists() {
-      return HasWorkParking == 1;
-    }
-
-    public bool SchoolParkingExists() {
-      return HasSchoolParking == 1;
-    }
 
     public bool IsGymnasiumOrUniversityStudent() {
       return

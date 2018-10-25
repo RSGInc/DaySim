@@ -28,19 +28,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _household.MunicipalCode = value;
     }
 
-    public double StationDistance {
-      get => _household.StationDistance;
-      set => _household.StationDistance = value;
-    }
-
-    public int ParkingAvailability {
-      get => _household.ParkingAvailability;
-      set => _household.ParkingAvailability = value;
-    }
-
-    public int InternetPaymentMethod {
-      get => _household.InternetPaymentMethod;
-      set => _household.InternetPaymentMethod = value;
+    public int AutoType {
+      get => _household.AutoType;
+      set => _household.AutoType = value;
     }
 
     #endregion

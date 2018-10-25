@@ -51,14 +51,14 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region domain model properies
     //JLB20160323
-    public int BikePTCombination {
-      get => _trip.BikePTCombination;
-      set => _trip.BikePTCombination = value;
+    public int AutoType {
+      get => _trip.AutoType;
+      set => _trip.AutoType = value;
     }
 
-    public int EscortedDestinationPurpose {
-      get => _trip.EscortedDestinationPurpose;
-      set => _trip.EscortedDestinationPurpose = value;
+    public int AutoOccupancy {
+      get => _trip.AutoOccupancy;
+      set => _trip.AutoOccupancy = value;
     }
 
     public int AccessMode {
