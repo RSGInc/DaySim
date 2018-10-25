@@ -66,7 +66,6 @@ namespace DaySim.Framework.Roster {
       //with a zone mapping vector.  However, this is ignored since DaySim also has one.
       //Therefore, it is assumed the OMX matrix does not skip rows/cols and every row/col
       //corresponds to an actual zone in the DaySim zone mapping file by index
-      //Scaling should be set to TRUE since OMX stores doubles (not scaled integers)
       double[,] dataArray = new double[nRows, nCols];
       H5Array<double> wrapArray = new H5Array<double>(dataArray);
       H5DataTypeId tid1 = H5D.getType(dataSet);
