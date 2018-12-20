@@ -2,7 +2,7 @@
 
   - [Documentation](https://github.com/RSGInc/DaySim/wiki)
   - Build Status
-    - Master (Release) Branch: automatically merged when develop branch passes tests
+    - Master (Release) Branch: automatically merged when develop branch passes tests.
     - Develop Branch: ![Build Status Unavailable](http://wrjmdlppw01.rsginc.com:8080/buildStatus/icon?job=DaySim_all_regions)
   - DaySim [Maintenance](https://github.com/RSGInc/DaySim/wiki/Maintenance) is supported by:
     - [Puget Sound Regional Council](https://www.psrc.org): ![PSRC Build Status Unavailable](http://wrjmdlppw01.rsginc.com:8080/buildStatus/icon?job=PSRC)
