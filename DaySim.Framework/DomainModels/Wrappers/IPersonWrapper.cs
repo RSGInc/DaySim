@@ -17,6 +17,7 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     IParcelWrapper UsualSchoolParcel { get; set; }
 
+  
     #endregion
 
     #region flags/choice model/etc. properties
@@ -107,6 +108,8 @@ namespace DaySim.Framework.DomainModels.Wrappers {
     void SetWorkParcelPredictions();
 
     void SetSchoolParcelPredictions();
+
+    int GetPersonalIncome();
 
     #endregion
 

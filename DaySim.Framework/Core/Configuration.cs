@@ -905,6 +905,11 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double Coefficients_HOV3CostDivisor_Other { get; set; }
 
+
+
+
+
+
     [XmlAttribute]
     public bool HOVPassengersIncurCosts { get; set; }
 
@@ -1880,6 +1885,91 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public bool HDF5SkimScaledAndCondensed { get; set; } = false;
+
+
+    [XmlAttribute]
+    public double COMPASS_BaseTimeCoefficientPerMinute { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Work { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Education { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Shop { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_HBOther { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_NonHB { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientIncomeLevel_Work { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientIncomeLevel_Education { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientIncomeLevel_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientIncomeLevel_Shop { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientIncomeLevel_HBOther { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientIncomeLevel_NonHB { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientIncomeMultipleMinimum { get; set; }
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientIncomeMultipleMaximum { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientIncomeElasticity_Commute { get; set; }
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientIncomeElasticity_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientIncomeElasticity_Leisure { get; set; }
+
+
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientDistanceLevel_Work { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientDistanceLevel_Education { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientDistanceLevel_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientDistanceLevel_Shop { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientDistanceLevel_HBOther { get; set; }
+    [XmlAttribute]
+    public double COMPASS_BaseCostCoefficientDistanceLevel_NonHB { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientDistanceMultipleMinimum { get; set; }
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientDistanceMultipleMaximum { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientDistanceElasticity_Commute { get; set; }
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientDistanceElasticity_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_CostCoefficientDistanceElasticity_Leisure { get; set; }
+
+
+    [XmlAttribute]
+    public double COMPASS_HOVDriverCostDivisor_Commute { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVDriverCostDivisor_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVDriverCostDivisor_Leisure { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVPassengerCostDivisor_Commute { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVPassengerCostDivisor_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVPassengerCostDivisor_Leisure { get; set; }
+
+
+
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
 

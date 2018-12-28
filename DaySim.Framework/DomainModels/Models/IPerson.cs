@@ -52,5 +52,6 @@ namespace DaySim.Framework.DomainModels.Models {
     double ProxyResponse { get; set; }
 
     double ExpansionFactor { get; set; }
+
   }
 }

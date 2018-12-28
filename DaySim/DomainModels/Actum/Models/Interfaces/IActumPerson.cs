@@ -11,6 +11,10 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumPerson : IPerson {
  
    int HasDriversLicense { get; set; }
-  
+
+   int PersonalIncome { get; set; }
+
+   int OccupationCode { get; set; }
+
   }
 }

@@ -28,14 +28,28 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _person.HasDriversLicense = value;
     }
 
+    public int PersonalIncome {
+      get => _person.PersonalIncome;
+      set => _person.PersonalIncome = value;
+    }
+
+    public int OccupationCode {
+      get => _person.OccupationCode;
+      set => _person.OccupationCode = value;
+    }
+
 
     #endregion
 
     #region wrapper methods
 
- 
+
     public bool DriversLicenseExists() {
       return HasDriversLicense == 1;
+    }
+
+    public override int GetPersonalIncome() {
+      return PersonalIncome;
     }
 
 

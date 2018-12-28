@@ -420,6 +420,11 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
     }
 
+    public virtual int GetPersonalIncome() {
+      return Household.Income;
+    }
+
+
     #endregion
 
     #region init/utility/export methods

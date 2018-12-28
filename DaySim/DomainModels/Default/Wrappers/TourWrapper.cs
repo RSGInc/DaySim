@@ -903,7 +903,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
     }
 
-    private void SetValueOfTimeCoefficients(int purpose, bool suppressRandomVOT) {
+    public virtual void SetValueOfTimeCoefficients(int purpose, bool suppressRandomVOT) {
       bool randomVot = !Global.Configuration.IsInEstimationMode && Global.Configuration.UseRandomVotDistribution && !suppressRandomVOT;
 
       double income =

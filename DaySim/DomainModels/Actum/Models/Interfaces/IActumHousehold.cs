@@ -11,6 +11,8 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumHousehold : IHousehold {
     int MunicipalCode { get; set; }
 
+    int Persons16to17 { get; set; }
+
     int AutoType { get; set; }
 
   }

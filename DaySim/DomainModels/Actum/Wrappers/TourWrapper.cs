@@ -5,6 +5,8 @@
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaySim.DomainModels.Actum.Models.Interfaces;
@@ -134,6 +136,48 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
       return segment;
     }
+
+    public override void SetValueOfTimeCoefficients(int purpose, bool suppressRandomVOT) {
+
+      double timeCoefficient = Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute;
+
+      TimeCoefficient = timeCoefficient;
+
+      double income = (purpose == Global.Settings.Purposes.Business ||
+                       purpose == Global.Settings.Purposes.School ||
+                       purpose == Global.Settings.Purposes.Work)
+                       ? Person.GetPersonalIncome()     // use trace to see where this goes               
+                       : Household.Income;
+
+      double baseIncomeLevel = (purpose == Global.Settings.Purposes.Work) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Work
+                             : (purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Education
+                             : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Business
+                             : (purpose == Global.Settings.Purposes.Shopping) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Shop
+                             : (ParentTour != null) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_NonHB  
+                             : Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_HBOther;
+
+      double baseIncomeCoefficient = (purpose == Global.Settings.Purposes.Work) ? Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Work
+                             : (purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Education
+                             : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Business
+                             : (purpose == Global.Settings.Purposes.Shopping) ? Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Shop
+                             : (ParentTour != null) ? Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_NonHB
+                             : Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_HBOther;
+
+      double incomeMultiple = (income < 0) ? 1.0 :
+               Math.Min(Math.Max(income / baseIncomeLevel, Global.Configuration.COMPASS_CostCoefficientIncomeMultipleMinimum), Global.Configuration.COMPASS_CostCoefficientIncomeMultipleMaximum); // ranges for extreme values
+
+      double incomeElasticity = (purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_CostCoefficientIncomeElasticity_Commute
+                              : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_CostCoefficientIncomeElasticity_Business
+                              : Global.Configuration.COMPASS_CostCoefficientIncomeElasticity_Leisure;
+
+      double costCoefficient = baseIncomeCoefficient * Math.Pow(incomeMultiple, incomeElasticity);
+
+      CostCoefficient = costCoefficient;
+
+      // still need to adjust the cost coefficient for distance and occupancy in PathTypeModel
+
+    }
+
 
     public override void UpdateTourValues() {
       if (Global.Configuration.IsInEstimationMode || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) {

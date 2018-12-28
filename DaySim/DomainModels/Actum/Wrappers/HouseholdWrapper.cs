@@ -28,6 +28,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _household.MunicipalCode = value;
     }
 
+    public int Persons16to17 {
+      get => _household.Persons16to17;
+      set => _household.Persons16to17 = value;
+    }
+
     public int AutoType {
       get => _household.AutoType;
       set => _household.AutoType = value;

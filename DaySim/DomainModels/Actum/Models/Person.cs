@@ -18,5 +18,11 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("pdrivlic")]
     public int HasDriversLicense { get; set; }
 
-    }
+    [ColumnName("pinc")]
+    public int PersonalIncome { get; set; }
+
+    [ColumnName("plmaid")]
+    public int OccupationCode { get; set; }
+
+  }
 }
