@@ -46,19 +46,37 @@ namespace DaySim.Framework.Settings {
 
     int KissAndRide { get; }
 
-    int CarParkRideWalk { get; }
-
-    int CarKissRideWalk { get; }
-
-    int CarParkRideBike { get; }
+    int WalkRideWalk { get; }
 
     int WalkRideBike { get; }
 
-    int BikeParkRideWalk { get; }
+    int WalkRideShare { get; }
 
-    int BikeParkRideBike { get; }
+    int BikeParkRideWalk { get; } 
+
+    int BikeParkRideBike { get; } 
+
+    int BikeParkRideShare { get; }
 
     int BikeOnTransit { get; }
+
+    int ShareRideWalk { get; }
+
+    int ShareRideBike { get; }
+
+    int ShareRideShare { get; } 
+
+    int CarKissRideWalk { get; } 
+
+    int CarKissRideBike { get; } 
+
+    int CarKissRideShare { get; } 
+
+    int CarParkRideWalk { get; } 
+
+    int CarParkRideBike { get; } 
+
+    int CarParkRideShare { get; } 
 
 
   }

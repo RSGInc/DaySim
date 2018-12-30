@@ -222,19 +222,37 @@ namespace DaySim.Settings {
 
     public virtual int KissAndRide => throw new NotImplementedException();
 
+    public virtual int WalkRideWalk => throw new NotImplementedException();
+
+    public virtual int WalkRideBike => throw new NotImplementedException();
+
+    public virtual int WalkRideShare => throw new NotImplementedException();
+
     public virtual int BikeParkRideWalk => throw new NotImplementedException();
 
     public virtual int BikeParkRideBike => throw new NotImplementedException();
 
+    public virtual int BikeParkRideShare => throw new NotImplementedException();
+
     public virtual int BikeOnTransit => throw new NotImplementedException();
 
-    public virtual int CarParkRideWalk => throw new NotImplementedException();
+    public virtual int ShareRideWalk => throw new NotImplementedException();
+
+    public virtual int ShareRideBike => throw new NotImplementedException();
+
+    public virtual int ShareRideShare => throw new NotImplementedException();
 
     public virtual int CarKissRideWalk => throw new NotImplementedException();
 
+    public virtual int CarKissRideBike => throw new NotImplementedException();
+
+    public virtual int CarKissRideShare => throw new NotImplementedException();
+
+    public virtual int CarParkRideWalk => throw new NotImplementedException();
+
     public virtual int CarParkRideBike => throw new NotImplementedException();
 
-    public virtual int WalkRideBike => throw new NotImplementedException();
+    public virtual int CarParkRideShare => throw new NotImplementedException();
 
 
 

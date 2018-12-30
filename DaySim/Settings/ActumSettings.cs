@@ -39,11 +39,11 @@ namespace DaySim.Settings {
     //get { throw new NotImplementedException(); }
     //}
 
-    public override int TotalModes => 15;
+    public override int TotalModes => 23;
 
     public override int RosterModes => 15;
 
-    public override int MaxMode => 14;
+    public override int MaxMode => 22;
 
     public override int Walk => 1;
 
@@ -55,25 +55,43 @@ namespace DaySim.Settings {
 
     public override int HovPassenger => 5;
 
-    public override int Transit => 6;
+    public override int PaidRideShare => 6;
 
-    public override int CarParkRideWalk => 7;
+    public override int Transit => 7;
 
-    public override int CarKissRideWalk => 8;
+    public override int WalkRideWalk => 7;
 
-    public override int BikeParkRideWalk => 9;
+    public override int WalkRideBike => 8;
 
-    public override int BikeParkRideBike => 10;
+    public override int WalkRideShare => 9;
 
-    public override int BikeOnTransit => 11;
+    public override int BikeParkRideWalk => 10;
 
-    public override int CarParkRideBike => 12;
+    public override int BikeParkRideBike => 11;
 
-    public override int WalkRideBike => 13;
+    public override int BikeParkRideShare => 12;
 
-    public override int PaidRideShare => 14;
+    public override int BikeOnTransit => 13;
 
-    public override int AV => 14;
+    public override int ShareRideWalk => 14;
+
+    public override int ShareRideBike => 15;
+
+    public override int ShareRideShare => 16;
+
+    public override int CarKissRideWalk => 17;
+
+    public override int CarKissRideBike => 18;
+
+    public override int CarKissRideShare => 19;
+
+    public override int CarParkRideWalk => 20;
+       
+    public override int CarParkRideBike => 21;
+
+    public override int CarParkRideShare => 22;
+
+
 
   }
 }
