@@ -78,7 +78,9 @@ namespace DaySim {
       BeginLoadNodeIndex();
       BeginLoadNodeDistances();
       BeginLoadNodeStopAreaDistances();
-      BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances();
+      BeginLoadMicrozoneToAutoParkAndRideNodeDistances();
+      BeginLoadMicrozoneToBikeParkAndRideNodeDistances();
+      BeginLoadMicrozoneToAutoKissAndRideNodeDistances();
 
       BeginCalculateAggregateLogsums(randomUtility);
       BeginOutputAggregateLogsums();
@@ -1081,7 +1083,7 @@ namespace DaySim {
       lengths.Add(0F);
 
       while ((line = reader.ReadLine()) != null) {
-        string[] tokens = line.Split(new[] { ' ' });
+        string[] tokens = line.Split(new[] { Global.Configuration.NodeStopAreaIndexDelimiter });
 
         arrayIndex++;
         int parcelId = int.Parse(tokens[0]);
@@ -1114,25 +1116,25 @@ namespace DaySim {
       Global.ParcelStopAreaDistances = distances.ToArray();
     }
 
-    private static void BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances() {
+    private static void BeginLoadMicrozoneToAutoParkAndRideNodeDistances() {
       if (!Global.StopAreaIsEnabled|| Global.Configuration.DataType != "Actum") {
         return;
       }
-      if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToParkAndRideNodeIndexPath)) {
-        throw new ArgumentNullException("MicrozoneToParkAndRideNodeIndexPath");
+      if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToAutoParkAndRideNodePath)) {
+        throw new ArgumentNullException("MicrozoneToAutoParkAndRideNodePath");
       }
 
-      Timer timer = new Timer("MicrozoneToParkAndRideNode distances...");
-      string filename = Global.GetInputPath(Global.Configuration.MicrozoneToParkAndRideNodeIndexPath);
+      Timer timer = new Timer("MicrozoneToAutoParkAndRideNode distances...");
+      string filename = Global.GetInputPath(Global.Configuration.MicrozoneToAutoParkAndRideNodePath);
       using (StreamReader reader = File.OpenText(filename)) {
-        InitializeMicrozoneToBikeCarParkAndRideNodeIndex(reader);
+        InitializeMicrozoneToAutoParkAndRideNodeDistances(reader);
       }
 
       timer.Stop();
       overallDaySimTimer.Print();
     }
 
-    public static void InitializeMicrozoneToBikeCarParkAndRideNodeIndex(TextReader reader) {
+    public static void InitializeMicrozoneToAutoParkAndRideNodeDistances(TextReader reader) {
 
       //var parcelIds = new List<int>();  
       List<int> nodeSequentialIds = new List<int>();
@@ -1155,18 +1157,18 @@ namespace DaySim {
       lengths.Add(0F);
 
       while ((line = reader.ReadLine()) != null) {
-        string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToParkAndRideNodeIndexDelimiter });
+        string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToAutoParkAndRideNodeDelimiter });
 
         arrayIndex++;
         int parcelId = int.Parse(tokens[0]);
         if (parcelId != lastParcelId) {
           //Console.WriteLine(parcelId);
           parcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[parcelId];
-          parcel.FirstPositionInParkAndRideNodeDistanceArray = arrayIndex;
-          parcel.ParkAndRideNodeDistanceArrayPositionsSet = true;
+          parcel.FirstPositionInAutoParkAndRideNodeDistanceArray = arrayIndex;
+          parcel.AutoParkAndRideNodeDistanceArrayPositionsSet = true;
           lastParcelId = parcelId;
         }
-        parcel.LastPositionInParkAndRideNodeDistanceArray = arrayIndex;
+        parcel.LastPositionInAutoParkAndRideNodeDistanceArray = arrayIndex;
 
         //parcelIds.Add(int.Parse(tokens[0]));
         int parkAndRideNodeId = int.Parse(tokens[1]);
@@ -1180,13 +1182,158 @@ namespace DaySim {
         distances.Add(distance);
       }
 
-      Global.ParcelParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
-      Global.ParcelParkAndRideNodeSequentialIds = nodeSequentialIds.ToArray();
-      Global.ParcelToBikeCarParkAndRideNodeLength = lengths.ToArray();
-      Global.ParcelToBikeCarParkAndRideNodeDistance = distances.ToArray();
+      Global.ParcelToAutoParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
+      Global.ParcelToAutoParkAndRideTerminalIds = nodeSequentialIds.ToArray();
+      Global.ParcelToAutoParkAndRideNodeLength = lengths.ToArray();
+      Global.ParcelToAutoParkAndRideNodeDistance = distances.ToArray();
 
     }
 
+    private static void BeginLoadMicrozoneToBikeParkAndRideNodeDistances() {
+      if (!Global.StopAreaIsEnabled || Global.Configuration.DataType != "Actum") {
+        return;
+      }
+      if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToBikeParkAndRideNodePath)) {
+        throw new ArgumentNullException("MicrozoneToBikeParkAndRideNodePath");
+      }
+
+      Timer timer = new Timer("MicrozoneToBikeParkAndRideNode distances...");
+      string filename = Global.GetInputPath(Global.Configuration.MicrozoneToBikeParkAndRideNodePath);
+      using (StreamReader reader = File.OpenText(filename)) {
+        InitializeMicrozoneToBikeParkAndRideNodeDistances(reader);
+      }
+
+      timer.Stop();
+      overallDaySimTimer.Print();
+    }
+
+    public static void InitializeMicrozoneToBikeParkAndRideNodeDistances(TextReader reader) {
+
+      //var parcelIds = new List<int>();  
+      List<int> nodeSequentialIds = new List<int>();
+      List<int> parkAndRideNodeIds = new List<int>();
+      List<float> lengths = new List<float>(); /* raw values */
+      List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
+
+      // read header
+      reader.ReadLine();
+
+      string line;
+      int lastParcelId = -1;
+      IActumParcelWrapper parcel = null;
+      int arrayIndex = 0;
+      //start arrays at index 0 with dummy values, since valid indices start with 1
+      //parcelIds.Add(0);
+      nodeSequentialIds.Add(0);
+      parkAndRideNodeIds.Add(0);
+      distances.Add(0F);
+      lengths.Add(0F);
+
+      while ((line = reader.ReadLine()) != null) {
+        string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToBikeParkAndRideNodeDelimiter });
+
+        arrayIndex++;
+        int parcelId = int.Parse(tokens[0]);
+        if (parcelId != lastParcelId) {
+          //Console.WriteLine(parcelId);
+          parcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[parcelId];
+          parcel.FirstPositionInBikeParkAndRideNodeDistanceArray = arrayIndex;
+          parcel.BikeParkAndRideNodeDistanceArrayPositionsSet = true;
+          lastParcelId = parcelId;
+        }
+        parcel.LastPositionInBikeParkAndRideNodeDistanceArray = arrayIndex;
+
+        //parcelIds.Add(int.Parse(tokens[0]));
+        int parkAndRideNodeId = int.Parse(tokens[1]);
+        parkAndRideNodeIds.Add(parkAndRideNodeId);
+        //mb changed this array to use mapping of stop area ids 
+        int nodeSequentialIndex = Global.ParkAndRideNodeMapping[parkAndRideNodeId];
+        nodeSequentialIds.Add(nodeSequentialIndex);
+        float length = float.Parse(tokens[2]);
+        lengths.Add(length);
+        float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
+        distances.Add(distance);
+      }
+
+      Global.ParcelToBikeParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
+      Global.ParcelToBikeParkAndRideTerminalIds = nodeSequentialIds.ToArray();
+      Global.ParcelToBikeParkAndRideNodeLength = lengths.ToArray();
+      Global.ParcelToBikeParkAndRideNodeDistance = distances.ToArray();
+
+    }
+
+    private static void BeginLoadMicrozoneToAutoKissAndRideNodeDistances() {
+      if (!Global.StopAreaIsEnabled || Global.Configuration.DataType != "Actum") {
+        return;
+      }
+      if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToAutoKissAndRideNodePath)) {
+        throw new ArgumentNullException("MicrozoneToAutoKissAndRideNodePath");
+      }
+
+      Timer timer = new Timer("MicrozoneToAutoKissAndRideTerminal distances...");
+      string filename = Global.GetInputPath(Global.Configuration.MicrozoneToAutoKissAndRideNodePath);
+      using (StreamReader reader = File.OpenText(filename)) {
+        InitializeMicrozoneToAutoKissAndRideNodeDistances(reader);
+      }
+
+      timer.Stop();
+      overallDaySimTimer.Print();
+    }
+
+    public static void InitializeMicrozoneToAutoKissAndRideNodeDistances(TextReader reader) {
+
+      //var parcelIds = new List<int>();  
+      List<int> nodeSequentialIds = new List<int>();
+      List<int> parkAndRideNodeIds = new List<int>();
+      List<float> lengths = new List<float>(); /* raw values */
+      List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
+
+      // read header
+      reader.ReadLine();
+
+      string line;
+      int lastParcelId = -1;
+      IActumParcelWrapper parcel = null;
+      int arrayIndex = 0;
+      //start arrays at index 0 with dummy values, since valid indices start with 1
+      //parcelIds.Add(0);
+      nodeSequentialIds.Add(0);
+      parkAndRideNodeIds.Add(0);
+      distances.Add(0F);
+      lengths.Add(0F);
+
+      while ((line = reader.ReadLine()) != null) {
+        string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToAutoKissAndRideNodeDelimiter });
+
+        arrayIndex++;
+        int parcelId = int.Parse(tokens[0]);
+        if (parcelId != lastParcelId) {
+          //Console.WriteLine(parcelId);
+          parcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[parcelId];
+          parcel.FirstPositionInAutoKissAndRideTerminalDistanceArray = arrayIndex;
+          parcel.AutoKissAndRideTerminalDistanceArrayPositionsSet = true;
+          lastParcelId = parcelId;
+        }
+        parcel.LastPositionInAutoKissAndRideTerminalDistanceArray = arrayIndex;
+
+        //parcelIds.Add(int.Parse(tokens[0]));
+        int parkAndRideNodeId = int.Parse(tokens[1]);
+        parkAndRideNodeIds.Add(parkAndRideNodeId);
+        //mb changed this array to use mapping of stop area ids 
+        int nodeSequentialIndex = Global.ParkAndRideNodeMapping[parkAndRideNodeId];
+        nodeSequentialIds.Add(nodeSequentialIndex);
+        float length = float.Parse(tokens[2]);
+        lengths.Add(length);
+        float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
+        distances.Add(distance);
+      }
+
+      Global.ParcelToAutoKissAndRideNodeIds = parkAndRideNodeIds.ToArray();
+      Global.ParcelToAutoKissAndRideTerminalIds = nodeSequentialIds.ToArray();
+      Global.ParcelToAutoKissAndRideNodeLength = lengths.ToArray();
+      Global.ParcelToAutoKissAndRideNodeDistance = distances.ToArray();
+
+    }
 
     private static void LoadNodeDistancesFromText() {
       FileInfo file = new FileInfo(Global.GetInputPath(Global.Configuration.NodeDistancesPath));

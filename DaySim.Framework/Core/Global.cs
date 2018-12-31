@@ -78,11 +78,20 @@ namespace DaySim.Framework.Core {
     public static float[] ParcelStopAreaLengths { get; set; } /* lengths as read in without conversion */
     public static float[] ParcelStopAreaDistances { get; set; } /* distance = lengths after division by Global.Settings.LengthUnitsPerFoot */
 
-    public static int[] ParcelParkAndRideNodeIds { get; set; }
-    public static int[] ParcelParkAndRideNodeSequentialIds { get; set; }
-    public static float[] ParcelToBikeCarParkAndRideNodeDistance { get; set; }
-    public static float[] ParcelToBikeCarParkAndRideNodeLength { get; set; }
+    public static int[] ParcelToAutoParkAndRideNodeIds { get; set; }
+    public static int[] ParcelToAutoParkAndRideTerminalIds { get; set; }
+    public static float[] ParcelToAutoParkAndRideNodeDistance { get; set; }
+    public static float[] ParcelToAutoParkAndRideNodeLength { get; set; }
 
+    public static int[] ParcelToBikeParkAndRideNodeIds { get; set; }
+    public static int[] ParcelToBikeParkAndRideTerminalIds { get; set; }
+    public static float[] ParcelToBikeParkAndRideNodeDistance { get; set; }
+    public static float[] ParcelToBikeParkAndRideNodeLength { get; set; }
+
+    public static int[] ParcelToAutoKissAndRideNodeIds { get; set; }
+    public static int[] ParcelToAutoKissAndRideTerminalIds { get; set; }
+    public static float[] ParcelToAutoKissAndRideNodeDistance { get; set; }
+    public static float[] ParcelToAutoKissAndRideNodeLength { get; set; }
 
     public static double Coefficients_CostCoefficientIncomeMultipleMinimum => Math.Abs(Configuration.Coefficients_CostCoefficientIncomeMultipleMinimum) < Constants.EPSILON
                     ? 0.1

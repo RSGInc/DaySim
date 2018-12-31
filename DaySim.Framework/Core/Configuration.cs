@@ -1581,18 +1581,31 @@ namespace DaySim.Framework.Core {
 
     //new since 203
     [XmlAttribute]
-    public int MaximumParcelToStopAreaLengthUnits { get; set; }
-    [XmlAttribute]
     public int MaximumParcelToStopAreaDistance { get; set; }
     [XmlAttribute]
-    public int MaximumStopAreasToSearch { get; set; }
-    [XmlAttribute]
     public int MaximumParcelToStopAreaDistanceParkAndRide { get; set; }
+    [XmlAttribute]
+    public int MaximumParcelToStopAreaLengthUnits { get; set; }
     [XmlAttribute]
     public int MaximumParcelToStopAreaLengthUnitsParkAndRide { get; set; }
 
     [XmlAttribute]
+    public double MaximumParcelToStopAreaDistanceWalk { get; set; }
+    [XmlAttribute]
+    public double MaximumParcelToParkingNodeDistanceBike { get; set; }
+    [XmlAttribute]
+    public double MaximumParcelToParkingNodeDistanceParkAndRide { get; set; }
+    [XmlAttribute]
+    public double MaximumParcelToParkingNodeDistanceKissAndRide { get; set; }
+
+    [XmlAttribute]
+    public int MaximumStopAreasToSearch { get; set; }
+    [XmlAttribute]
+    public int MaximumStopAreasToSearchBike { get; set; }
+    [XmlAttribute]
     public int MaximumStopAreasToSearchParkAndRide { get; set; }
+    [XmlAttribute]
+    public int MaximumStopAreasToSearchKissAndRide { get; set; }
 
     [XmlAttribute]
     public double MaximumDistanceUnitsToDriveToParkAndRide { get; set; }
@@ -1600,6 +1613,10 @@ namespace DaySim.Framework.Core {
     public double MaximumMilesToDriveToParkAndRide { get; set; }
     [XmlAttribute]
     public double MaximumRatioDriveToParkAndRideVersusDriveToDestination { get; set; }
+    [XmlAttribute]
+    public double MaximumRatioDriveToKissAndRideVersusDriveToDestination { get; set; }
+    [XmlAttribute]
+    public double MaximumRatioBikeToParkAndRideVersusDriveToDestination { get; set; }
 
     [XmlAttribute]
     public bool WriteStopAreaIDsInsteadOfZonesForTransitTrips { get; set; }
@@ -1618,6 +1635,28 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public char MicrozoneToParkAndRideNodeIndexDelimiter { get; set; }
+
+    [XmlAttribute]
+    public string MicrozoneToAutoParkAndRideNodePath { get; set; }
+
+    [XmlAttribute]
+    public char MicrozoneToAutoParkAndRideNodeDelimiter { get; set; }
+
+    [XmlAttribute]
+    public string MicrozoneToBikeParkAndRideNodePath { get; set; }
+
+    [XmlAttribute]
+    public char MicrozoneToBikeParkAndRideNodeDelimiter { get; set; }
+
+    [XmlAttribute]
+    public string MicrozoneToAutoKissAndRideNodePath { get; set; }
+
+    [XmlAttribute]
+    public char MicrozoneToAutoKissAndRideNodeDelimiter { get; set; }
+
+
+    [XmlAttribute]
+    public char NodeStopAreaIndexDelimiter { get; set; }
 
     [XmlAttribute]
     public int DestinationScale { get; set; }
@@ -1684,6 +1723,8 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double PaidRideShare_DensityMeasureCapValue { get; set; }
 
+    [XmlAttribute]
+    public bool ShareModeIsAvailableForTransit { get; set; }
 
     [XmlAttribute]
     public bool PaidRideShareModeIsAvailable { get; set; }

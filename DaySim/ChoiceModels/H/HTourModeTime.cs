@@ -239,8 +239,8 @@ namespace DaySim.ChoiceModels.H {
         }
         //ACTUM must also use round trip path type to preserve the tour-based nonlinear gamma utility functions
         //else if (mode == Global.Settings.Modes.ParkAndRide) {
-        else if (mode == Global.Settings.Modes.ParkAndRide || Global.Configuration.PathImpedance_UtilityForm_Auto == 1 ||
-                 Global.Configuration.PathImpedance_UtilityForm_Transit == 1) {
+        else if (false) /* (mode == Global.Settings.Modes.ParkAndRide || Global.Configuration.PathImpedance_UtilityForm_Auto == 1 ||
+                 Global.Configuration.PathImpedance_UtilityForm_Transit == 1)*/ {
           // park and ride has to use round-trip path type, approximate each half 
           IEnumerable<IPathTypeModel> pathTypeModels =
               PathTypeModelFactory.Singleton.Run(

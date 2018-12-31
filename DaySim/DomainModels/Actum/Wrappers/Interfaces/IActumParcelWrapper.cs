@@ -56,11 +56,22 @@ namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
     double ParkingSearchTime17_18Buffer2 { get; set; }
     double ParkingSearchTime18_21Buffer2 { get; set; }
 
-    int FirstPositionInParkAndRideNodeDistanceArray { get; set; }
+    int FirstPositionInAutoParkAndRideNodeDistanceArray { get; set; }
 
-    int LastPositionInParkAndRideNodeDistanceArray { get; set; }
+    int LastPositionInAutoParkAndRideNodeDistanceArray { get; set; }
 
-    bool ParkAndRideNodeDistanceArrayPositionsSet { get; set; }
+    bool AutoParkAndRideNodeDistanceArrayPositionsSet { get; set; }
 
+    int FirstPositionInBikeParkAndRideNodeDistanceArray { get; set; }
+
+    int LastPositionInBikeParkAndRideNodeDistanceArray { get; set; }
+
+    bool BikeParkAndRideNodeDistanceArrayPositionsSet { get; set; }
+
+    int FirstPositionInAutoKissAndRideTerminalDistanceArray { get; set; }
+
+    int LastPositionInAutoKissAndRideTerminalDistanceArray { get; set; }
+
+    bool AutoKissAndRideTerminalDistanceArrayPositionsSet { get; set; }
   }
 }

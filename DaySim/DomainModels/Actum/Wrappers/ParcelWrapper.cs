@@ -235,10 +235,29 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _parcel.OpenSpaceType2Buffer2 = value;
     }
 
-    public int FirstPositionInParkAndRideNodeDistanceArray { get; set; } = -1;
+    //public int FirstPositionInParkAndRideNodeDistanceArray { get; set; } = -1;
 
-    public int LastPositionInParkAndRideNodeDistanceArray { get; set; } = -1;
+    //public int LastPositionInParkAndRideNodeDistanceArray { get; set; } = -1;
 
-    public bool ParkAndRideNodeDistanceArrayPositionsSet { get; set; } = false;
+    //public bool ParkAndRideNodeDistanceArrayPositionsSet { get; set; } = false;
+
+    public int FirstPositionInAutoParkAndRideNodeDistanceArray { get; set; } = -1;
+
+    public int LastPositionInAutoParkAndRideNodeDistanceArray { get; set; } = -1;
+
+    public bool AutoParkAndRideNodeDistanceArrayPositionsSet { get; set; } = false;
+
+    public int FirstPositionInBikeParkAndRideNodeDistanceArray { get; set; } = -1;
+
+    public int LastPositionInBikeParkAndRideNodeDistanceArray { get; set; } = -1;
+
+    public bool BikeParkAndRideNodeDistanceArrayPositionsSet { get; set; } = false;
+
+    public int FirstPositionInAutoKissAndRideTerminalDistanceArray { get; set; } = -1;
+
+    public int LastPositionInAutoKissAndRideTerminalDistanceArray { get; set; } = -1;
+
+    public bool AutoKissAndRideTerminalDistanceArrayPositionsSet { get; set; } = false;
+
   }
 }
