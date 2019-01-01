@@ -73,9 +73,7 @@ namespace DaySim.Framework.Roster {
       H5D.read(dataSet, tid1, wrapArray);
 
       for (int row = 0; row < nRows; row++) {
-        if (_mapping.ContainsKey(row + 1)) {
           for (int col = 0; col < nCols; col++) {
-            if (_mapping.ContainsKey(col + 1)) {
               double value = dataArray[row, col] * scale;
 
               if (value > 0) {
@@ -83,11 +81,9 @@ namespace DaySim.Framework.Roster {
                   value = ushort.MaxValue - 1;
                 }
 
-                _matrix[_mapping[row + 1]][_mapping[col + 1]] = (ushort)value;
+                _matrix[row][col] = (ushort)value;
               }
-            }
           }
-        }
       }
 
       SkimMatrix skimMatrix = new SkimMatrix(_matrix);
