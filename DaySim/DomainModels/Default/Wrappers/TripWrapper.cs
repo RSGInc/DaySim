@@ -997,7 +997,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton
-                .Run(Household.RandomUtility, origin, destination, minute, minute2, DestinationPurpose, costCoefficient, timeCoefficient, /* isDrivingAge */ true, /* householdVehicles */ 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.GetTransitFareDiscountFraction(), false, useMode);
+                .Run(Household.RandomUtility, origin, destination, minute, minute2, DestinationPurpose, costCoefficient, timeCoefficient, /* isDrivingAge */ 22, /* householdVehicles */ 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.PersonType, false, useMode);
         pathType = pathTypeModels.First();
 
         modeImpedance.TravelTime = pathType.PathTime;

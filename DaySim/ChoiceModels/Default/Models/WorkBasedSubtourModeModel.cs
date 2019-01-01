@@ -69,11 +69,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                 subtour.DestinationPurpose,
                 subtour.CostCoefficient,
                 subtour.TimeCoefficient,
-                subtour.Person.IsDrivingAge,
+                subtour.Person.Age,
                 subtour.Household.VehiclesAvailable,
                  subtour.Person.TransitPassOwnership,
                 subtour.Household.OwnsAutomatedVehicles > 0,
-                subtour.Person.GetTransitFareDiscountFraction(),
+                subtour.Person.PersonType,
                 false);
 
         IPathTypeModel pathTypeModel = pathTypeModels.First(x => x.Mode == subtour.Mode);
@@ -96,11 +96,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                 subtour.DestinationPurpose,
                 subtour.CostCoefficient,
                 subtour.TimeCoefficient,
-                subtour.Person.IsDrivingAge,
+                subtour.Person.Age,
                 subtour.Household.VehiclesAvailable,
                 subtour.Person.TransitPassOwnership,
                 subtour.Household.OwnsAutomatedVehicles > 0,
-                subtour.Person.GetTransitFareDiscountFraction(),
+                subtour.Person.PersonType,
                 false);
 
         RunModel(choiceProbabilityCalculator, subtour, pathTypeModels, subtour.DestinationParcel, subtour.ParentTour.Mode);
@@ -145,11 +145,11 @@ namespace DaySim.ChoiceModels.Default.Models {
               subtour.DestinationPurpose,
               subtour.CostCoefficient,
               subtour.TimeCoefficient,
-              subtour.Person.IsDrivingAge,
+              subtour.Person.Age,
               subtour.Household.VehiclesAvailable,
                subtour.Person.TransitPassOwnership,
               subtour.Household.OwnsAutomatedVehicles > 0,
-              subtour.Person.GetTransitFareDiscountFraction(),
+              subtour.Person.PersonType,
               false);
 
       RunModel(choiceProbabilityCalculator, subtour, pathTypeModels, destinationParcel, subtour.ParentTour.Mode);

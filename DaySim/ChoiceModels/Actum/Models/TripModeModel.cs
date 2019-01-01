@@ -126,11 +126,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 trip.Tour.DestinationPurpose,
                 trip.Tour.CostCoefficient,
                 trip.Tour.TimeCoefficient,
-                trip.Person.IsDrivingAge,
+                trip.Person.Age,
                 trip.Household.VehiclesAvailable,
                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
-                trip.Person.GetTransitFareDiscountFraction(),
+                trip.Person.PersonType,
                 false);
 
         // GV, July 9th: COMPAS modes are: Bike, Walk, PT, SOV (car driver alone), HOV2 (car driver in a car with a passenger) and HOV3 (car passenger) 
@@ -158,11 +158,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 trip.Tour.DestinationPurpose,
                 trip.Tour.CostCoefficient,
                 trip.Tour.TimeCoefficient,
-                trip.Person.IsDrivingAge,
+                trip.Person.Age,
                 trip.Household.VehiclesAvailable,
                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
-                trip.Person.GetTransitFareDiscountFraction(),
+                trip.Person.PersonType,
                 false);
 
         RunModel(choiceProbabilityCalculator, trip, pathTypeModels, originParcel, destinationParcel);

@@ -129,11 +129,11 @@ namespace DaySim.ChoiceModels.H {
                             tour.DestinationPurpose,
                             tour.CostCoefficient,
                             tour.TimeCoefficient,
-                            tour.Person.IsDrivingAge,
+                            tour.Person.Age,
                             tour.Household.VehiclesAvailable,
                             tour.Person.TransitPassOwnership,
                             tour.Household.OwnsAutomatedVehicles > 0,
-                            tour.Person.GetTransitFareDiscountFraction(),
+                            tour.Person.PersonType,
                             true,
                             pathMode);
 

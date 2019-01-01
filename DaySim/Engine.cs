@@ -81,6 +81,7 @@ namespace DaySim {
       BeginLoadMicrozoneToAutoParkAndRideNodeDistances();
       BeginLoadMicrozoneToBikeParkAndRideNodeDistances();
       BeginLoadMicrozoneToAutoKissAndRideNodeDistances();
+      BeginLoadTransitPricesByFareZones();
 
       BeginCalculateAggregateLogsums(randomUtility);
       BeginOutputAggregateLogsums();
@@ -1333,6 +1334,69 @@ namespace DaySim {
       Global.ParcelToAutoKissAndRideNodeLength = lengths.ToArray();
       Global.ParcelToAutoKissAndRideNodeDistance = distances.ToArray();
 
+    }
+
+    private static void BeginLoadTransitPricesByFareZones() {
+      if (!Global.StopAreaIsEnabled || Global.Configuration.DataType != "Actum") {
+        return;
+      }
+      if (string.IsNullOrEmpty(Global.Configuration.TransitPricesByFareZonesPath)) {
+        throw new ArgumentNullException("TransitPricesByFareZonesPath");
+      }
+
+      Timer timer = new Timer("Transit Prices By Fare Zones...");
+      string filename = Global.GetInputPath(Global.Configuration.TransitPricesByFareZonesPath);
+      using (StreamReader reader = File.OpenText(filename)) {
+        InitializeTransitPricesByFareZones(reader);
+      }
+
+      timer.Stop();
+      overallDaySimTimer.Print();
+    }
+
+    public static void InitializeTransitPricesByFareZones(TextReader reader) {
+
+      //var parcelIds = new List<int>();  
+      int arrayLength = Global.Configuration.COMPASS_MaximumTransitPathFareZones + 1;
+      float[] field1 = new float[arrayLength];
+      float[] field2 = new float[arrayLength];
+      float[] field3 = new float[arrayLength];
+      float[] field4 = new float[arrayLength];
+      float[] field5 = new float[arrayLength];
+      float[] field6 = new float[arrayLength];
+      float[] field7 = new float[arrayLength];
+      float[] field8 = new float[arrayLength];
+      float[] field9 = new float[arrayLength];
+
+      // read header
+      reader.ReadLine();
+
+      string line;
+ 
+      while ((line = reader.ReadLine()) != null) {
+        string[] tokens = line.Split(new[] { Global.Configuration.TransitPricesByFareZonesDelimiter });
+
+        int arrayIndex = int.Parse(tokens[0]); //number of fare zones
+        field1[arrayIndex] = float.Parse(tokens[1]);
+        field2[arrayIndex] = float.Parse(tokens[2]);
+        field3[arrayIndex] = float.Parse(tokens[3]);
+        field4[arrayIndex] = float.Parse(tokens[4]);
+        field5[arrayIndex] = float.Parse(tokens[5]);
+        field6[arrayIndex] = float.Parse(tokens[6]);
+        field7[arrayIndex] = float.Parse(tokens[7]);
+        field8[arrayIndex] = float.Parse(tokens[8]);
+        field9[arrayIndex] = float.Parse(tokens[9]);
+      }
+
+      Global.TransitBaseFare_Adult = field1;
+      Global.TransitBaseFare_ChildDiscount = field2;
+      Global.TransitBaseFare_OffPeakDiscount = field3;
+      Global.TransitMonthlyPrice_AdultCommuteCard = field4;
+      Global.TransitMonthlyPrice_ChildCommuteCard = field5;
+      Global.TransitMonthlyPrice_SeniorCard = field6;
+      Global.TransitMonthlyPrice_YouthCardUniversity = field7;
+      Global.TransitMonthlyPrice_YouthCardGymnasium = field8;
+      Global.TransitMonthlyPrice_YouthCardNonStudent = field9;
     }
 
     private static void LoadNodeDistancesFromText() {

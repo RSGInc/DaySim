@@ -87,11 +87,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                 trip.Tour.DestinationPurpose,
                 trip.Tour.CostCoefficient,
                 trip.Tour.TimeCoefficient,
-                trip.Person.IsDrivingAge,
+                trip.Person.Age,
                 trip.Household.VehiclesAvailable,
                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
-                trip.Person.GetTransitFareDiscountFraction(),
+                trip.Person.PersonType,
                 false);
 
         // there is no path type model for school bus, use HOV3
@@ -116,11 +116,11 @@ namespace DaySim.ChoiceModels.Default.Models {
               trip.Tour.DestinationPurpose,
               trip.Tour.CostCoefficient,
               trip.Tour.TimeCoefficient,
-              trip.Person.IsDrivingAge,
+              trip.Person.Age,
               trip.Household.VehiclesAvailable,
                trip.Person.TransitPassOwnership,
               trip.Household.OwnsAutomatedVehicles > 0,
-              trip.Person.GetTransitFareDiscountFraction(),
+              trip.Person.PersonType,
               false);
 
         RunModel(choiceProbabilityCalculator, trip, pathTypeModels, originParcel, destinationParcel, departureTime);

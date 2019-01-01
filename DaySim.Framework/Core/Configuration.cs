@@ -1659,6 +1659,13 @@ namespace DaySim.Framework.Core {
     public char NodeStopAreaIndexDelimiter { get; set; }
 
     [XmlAttribute]
+    public string TransitPricesByFareZonesPath { get; set; }
+
+    [XmlAttribute]
+    public char TransitPricesByFareZonesDelimiter { get; set; }
+
+
+    [XmlAttribute]
     public int DestinationScale { get; set; }
 
     [XmlAttribute]
@@ -2009,6 +2016,35 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double COMPASS_HOVPassengerCostDivisor_Leisure { get; set; }
 
+    [XmlAttribute]
+    public int COMPASS_MaximumTransitPathFareZones { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareAMPeakPeriodStartMinute { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareAMPeakPeriodEndMinute { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFarePMPeakPeriodStartMinute { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFarePMPeakPeriodEndMinute { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareMaximumAgeForChildDiscount { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareMaximumAgeForFreeTravel { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareMaximumAgeForYouthNonStudentCard { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareMinimumAgeForSeniorCard { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareDefaultNumberOfZonesForSeniorCard { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardUniversity { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardGymnasium { get; set; }
+    [XmlAttribute]
+    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardNonStudent { get; set; }
+
+    [XmlAttribute]
+    public int COMPASS_MinimumAutoDrivingAge { get; set; }
 
 
 

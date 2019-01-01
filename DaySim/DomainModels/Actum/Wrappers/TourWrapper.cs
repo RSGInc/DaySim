@@ -186,7 +186,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
       IEnumerable<PathTypeModels.IPathTypeModel> pathTypeModels =
       PathTypeModels.PathTypeModelFactory.Singleton
-          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, true, 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.GetTransitFareDiscountFraction(), false, Global.Settings.Modes.Sov);
+          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, 22, 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.PersonType, false, Global.Settings.Modes.Sov);
 
       PathTypeModels.IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 

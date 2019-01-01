@@ -252,11 +252,11 @@ namespace DaySim.ChoiceModels.H {
                   tour.DestinationPurpose,
                   tour.CostCoefficient,
                   tour.TimeCoefficient,
-                  tour.Person.IsDrivingAge,
+                  tour.Person.Age,
                   householdCars,
                   tour.Person.TransitPassOwnership,
                   tour.Household.OwnsAutomatedVehicles > 0,
-                  transitDiscountFraction,
+                  tour.Person.PersonType,
                   false,
                   mode);
 
@@ -309,11 +309,11 @@ namespace DaySim.ChoiceModels.H {
                             tour.DestinationPurpose,
                             tour.CostCoefficient,
                             tour.TimeCoefficient,
-                            tour.Person.IsDrivingAge,
+                            tour.Person.Age,
                             householdCars,
                             tour.Person.TransitPassOwnership,
                             tour.Household.OwnsAutomatedVehicles > 0,
-                            transitDiscountFraction,
+                            tour.Person.PersonType,
                             false,
                             pathMode);
 
@@ -336,11 +336,11 @@ namespace DaySim.ChoiceModels.H {
                   tour.DestinationPurpose,
                   tour.CostCoefficient,
                   tour.TimeCoefficient,
-                  tour.Person.IsDrivingAge,
+                  tour.Person.Age,
                   householdCars,
                   tour.Person.TransitPassOwnership,
                   tour.Household.OwnsAutomatedVehicles > 0,
-                  transitDiscountFraction,
+                  tour.Person.PersonType,
                   false,
                   pathMode);
 

@@ -92,6 +92,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double workGenTimeNoPass = -99.0;
       double workGenTimeWithPass = -99.0;
 
+      int drivingAge = 22;
+      int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
+      int freeFareType = Global.Settings.PersonTypes.ChildUnder5;
+
       if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
         IEnumerable<IPathTypeModel> pathTypeModels =
@@ -104,11 +108,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Purposes.Work,
                 Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
-                true,
+                drivingAge,
                 1,
                 0,
                 false,
-                0.0,
+                fullFareType,
                 false,
                 Global.Settings.Modes.Transit);
 
@@ -127,11 +131,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Purposes.Work,
                 Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
-                /* isDrivingAge */ true,
+                /* isDrivingAge */ drivingAge,
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 1,
                 /* carsAreAVs */ false,
-                /* transitDiscountFraction */ 1.0,
+                /* transitDiscountFraction */ freeFareType,
                 /* randomChoice */ false,
                 Global.Settings.Modes.Transit);
 
@@ -156,11 +160,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Purposes.School,
                 Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Other,
-                true,
+                drivingAge,
                 1,
                 1,
                 false,
-                1.0,
+                freeFareType,
                 false,
                 Global.Settings.Modes.Transit);
 

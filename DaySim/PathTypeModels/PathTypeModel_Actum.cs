@@ -32,11 +32,11 @@ namespace DaySim.PathTypeModels {
     private int _purpose;
     private double _tourCostCoefficient;
     private double _tourTimeCoefficient;
-    private bool _isDrivingAge;
+    private int _personAge;
     private int _householdCars;
     private bool _carsAreAVs;
     private int _transitPassOwnership;
-    private double _transitDiscountFraction;
+    private int _personType;
     private bool _randomChoice;
     private int _choice;
 
@@ -140,29 +140,29 @@ namespace DaySim.PathTypeModels {
 
     public double PathTransitWalkAccessEgressTime => throw new NotImplementedException("Not Implemented in Actum");
 
-    public List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
-      //return (RunAllPlusParkAndRide(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, /*transitPassOwnership*/ 0, carsAreAVs, transitDiscountFraction, randomChoice));
+    public List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, bool carsAreAVs, int personType, bool randomChoice) {
+      //return (RunAllPlusParkAndRide(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, /*transitPassOwnership*/ 0, carsAreAVs, personType, randomChoice));
       throw new NotImplementedException("This needs to pass in TransitPassOwnership");
     }
 
-    public List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
-      //		public List<PathTypeModel_Actum> RunAllPlusParkAndRide(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice) {
+    public List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice) {
+      //		public List<PathTypeModel_Actum> RunAllPlusParkAndRide(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int personType, bool randomChoice) {
       List<int> modes = new List<int>();
 
       for (int mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.ParkAndRide; mode++) {
         modes.Add(mode);
       }
 
-      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitPassOwnership, carsAreAVs, transitDiscountFraction, randomChoice, modes.ToArray());
+      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, modes.ToArray());
     }
 
-    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
-      //return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars,  /*transitPassOwnership*/ 0, carsAreAVs, transitDiscountFraction, randomChoice);
+    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, bool carsAreAVs, int personType, bool randomChoice) {
+      //return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars,  /*transitPassOwnership*/ 0, carsAreAVs, personType, randomChoice);
       throw new NotImplementedException("This needs to pass in TransitPassOwnership");
     }
 
-    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice) {
-      //		public List<PathTypeModel_Actum> RunAll(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice) {
+    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice) {
+      //		public List<PathTypeModel_Actum> RunAll(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int personType, bool randomChoice) {
       List<int> modes = new List<int>();
 
       //for (var mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.Transit; mode++) {
@@ -177,16 +177,16 @@ namespace DaySim.PathTypeModels {
       }
 
 
-      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, isDrivingAge, householdCars, transitPassOwnership, carsAreAVs, transitDiscountFraction, randomChoice, modes.ToArray());
+      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, modes.ToArray());
     }
 
-    public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
-      //		public List<PathTypeModel_Actum> Run(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, double transitDiscountFraction, bool randomChoice, params int[] modes) {
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, params int[] modes) {
+      //		public List<PathTypeModel_Actum> Run(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int personType, bool randomChoice, params int[] modes) {
       List<IPathTypeModel> list = new List<IPathTypeModel>();
       //			var list = new List<PathTypeModel_Actum>();
 
       foreach (int mode in modes) {
-        PathTypeModel_Actum pathTypeModel = new PathTypeModel_Actum { _originParcel = (ParcelWrapper)originParcel, _destinationParcel = (ParcelWrapper)destinationParcel, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _isDrivingAge = isDrivingAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _transitDiscountFraction = transitDiscountFraction, _randomChoice = randomChoice, Mode = mode };
+        PathTypeModel_Actum pathTypeModel = new PathTypeModel_Actum { _originParcel = (ParcelWrapper)originParcel, _destinationParcel = (ParcelWrapper)destinationParcel, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _personAge = personAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _personType = personType, _randomChoice = randomChoice, Mode = mode };
         pathTypeModel.RunModel(randomUtility);
 
         list.Add(pathTypeModel);
@@ -195,10 +195,10 @@ namespace DaySim.PathTypeModels {
       return list;
     }
 
-    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, bool isDrivingAge, int householdCars, int transitPassOwnership, bool carsAreAVs, double transitDiscountFraction, bool randomChoice, params int[] modes) {
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, params int[] modes) {
       List<IPathTypeModel> list = new List<IPathTypeModel>();
 
-      foreach (PathTypeModel_Actum pathTypeModel in modes.Select(mode => new PathTypeModel_Actum { _originZoneId = originZoneId, _destinationZoneId = destinationZoneId, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _isDrivingAge = isDrivingAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _transitDiscountFraction = transitDiscountFraction, _randomChoice = randomChoice, Mode = mode })) {
+      foreach (PathTypeModel_Actum pathTypeModel in modes.Select(mode => new PathTypeModel_Actum { _originZoneId = originZoneId, _destinationZoneId = destinationZoneId, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _personAge = personAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _personType = personType, _randomChoice = randomChoice, Mode = mode })) {
         pathTypeModel.RunModel(randomUtility, true);
 
         list.Add(pathTypeModel);
@@ -269,7 +269,7 @@ namespace DaySim.PathTypeModels {
         if (Mode == Global.Settings.Modes.HovDriver
           || Mode == Global.Settings.Modes.HovPassenger
           || Mode == Global.Settings.Modes.PaidRideShare
-          || (Mode == Global.Settings.Modes.Sov && _isDrivingAge && _householdCars > 0)) {
+          || (Mode == Global.Settings.Modes.Sov && _personAge>=Global.Configuration.COMPASS_MinimumAutoDrivingAge && _householdCars > 0)) {
           RunAutoModel(skimMode, pathType, votValue, useZones);
         } else
         if (Mode == Global.Settings.Modes.Transit) {
@@ -557,15 +557,39 @@ namespace DaySim.PathTypeModels {
         genTime += skimValue.Variable;
       }
 
-      varname = "farecard10";
+      double fareCost = 0;
+      varname = "farezones";
       skimValue =
              ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId);
-      double fareCost = skimValue.Variable;
-
+      int fareZones = (int)Math.Round(skimValue.Variable);
+      if (fareZones > _transitPassOwnership && _personAge > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel) {
+        double fare = Global.TransitBaseFare_Adult[fareZones];
+        if (_personAge <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
+          fare = fare * (1 - Global.TransitBaseFare_ChildDiscount[fareZones] / 100.0);
+        }
+        if (_outboundTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
+          (_outboundTime + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && _outboundTime + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
+          || _outboundTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) {
+          fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
+        }
+        fareCost = fare;
+      }
       if (_returnTime > 0) {
         skimValue =
-             ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, _returnTime, _originZoneId, _destinationZoneId);
-        fareCost += skimValue.Variable;
+           ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, _returnTime, _destinationZoneId, _originZoneId);
+        fareZones = (int)Math.Round(skimValue.Variable);
+        if (fareZones > _transitPassOwnership && _personAge > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel) {
+          double fare = Global.TransitBaseFare_Adult[fareZones];
+          if (_personAge <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
+            fare = fare * (1 - Global.TransitBaseFare_ChildDiscount[fareZones] / 100.0);
+          }
+          if (_returnTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
+            (_returnTime + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && _returnTime + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
+            || _returnTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) {
+            fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
+          }
+          fareCost += fare;
+        }
       }
 
       _pathParkAndRideNodeId[pathType] = 0;
@@ -1107,16 +1131,37 @@ namespace DaySim.PathTypeModels {
       }
 
       path.Cost = 0;
-      if (_transitPassOwnership > 0) {
-        varname = "farecard10";
-        skimValue =
+      varname = "farezones";
+      skimValue =
              ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId);
-        path.Cost = skimValue.Variable;
-
-        if (_returnTime > 0) {
-          skimValue =
-             ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId);
-          path.Cost += skimValue.Variable;
+      int fareZones = (int) Math.Round(skimValue.Variable);
+      if (fareZones > transitPassOwnership && _personAge > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel) {
+        double fare = Global.TransitBaseFare_Adult[fareZones];
+        if (_personAge <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
+          fare = fare * (1 - Global.TransitBaseFare_ChildDiscount[fareZones] / 100.0);
+        }
+        if (outboundTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
+          (outboundTime + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && outboundTime + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
+          || outboundTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) {
+          fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
+        }
+        path.Cost = fare;
+      }
+      if (_returnTime > 0) {
+        skimValue =
+           ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId);
+        fareZones = (int)Math.Round(skimValue.Variable);
+        if (fareZones > transitPassOwnership && _personAge > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel) {
+          double fare = Global.TransitBaseFare_Adult[fareZones];
+          if (_personAge <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
+            fare = fare * (1 - Global.TransitBaseFare_ChildDiscount[fareZones] / 100.0);
+          }
+          if (returnTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
+            (returnTime + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && returnTime + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
+            || returnTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) {
+            fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
+          }
+          path.Cost += fare;
         }
       }
 
@@ -1457,7 +1502,7 @@ namespace DaySim.PathTypeModels {
          }
 
          double fare = transitPassOwnership == 1 ? 0.0 : fareCard10 + extraFareCard10; // assumes that marginal cost is zero for pass holders
-         fare = fare * (1.0 - _transitDiscountFraction); //fare adjustment
+         fare = fare * (1.0 - _personType); //fare adjustment
 
          //determine utility components 
          //accessEgressTime = accessEgressTime

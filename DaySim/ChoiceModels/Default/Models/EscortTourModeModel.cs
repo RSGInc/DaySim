@@ -56,11 +56,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                 tour.DestinationPurpose,
                 tour.CostCoefficient,
                 tour.TimeCoefficient,
-                tour.Person.IsDrivingAge,
+                tour.Person.Age,
                 tour.Household.VehiclesAvailable,
                 tour.Person.TransitPassOwnership,
                 (tour.Household.OwnsAutomatedVehicles > 0),
-                tour.Person.GetTransitFareDiscountFraction(),
+                tour.Person.PersonType,
                 false,
                 Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);
 
@@ -84,11 +84,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                 tour.DestinationPurpose,
                 tour.CostCoefficient,
                 tour.TimeCoefficient,
-                tour.Person.IsDrivingAge,
+                tour.Person.Age,
                 tour.Household.VehiclesAvailable,
                 tour.Person.TransitPassOwnership,
                (tour.Household.OwnsAutomatedVehicles > 0),
-                 tour.Person.GetTransitFareDiscountFraction(),
+                 tour.Person.PersonType,
                 false,
                 Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);
 
@@ -129,11 +129,11 @@ namespace DaySim.ChoiceModels.Default.Models {
               Global.Settings.Purposes.Escort,
               tour.CostCoefficient,
               tour.TimeCoefficient,
-              tour.Person.IsDrivingAge,
+              tour.Person.Age,
               tour.Household.VehiclesAvailable,
                tour.Person.TransitPassOwnership,
              (tour.Household.OwnsAutomatedVehicles > 0),
-               tour.Person.GetTransitFareDiscountFraction(),
+               tour.Person.PersonType,
               false,
               Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);
 

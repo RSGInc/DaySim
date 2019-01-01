@@ -88,6 +88,10 @@ namespace DaySim.ChoiceModels.H.Models {
         schoolTranDist = schoolParcel.GetDistanceToTransit();
       }
 
+      int drivingAge = 22;
+      int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
+      int freeFareType = Global.Settings.PersonTypes.ChildUnder5;
+
       double workGenTimeNoPass = -99.0;
       double workGenTimeWithPass = -99.0;
 
@@ -102,11 +106,11 @@ namespace DaySim.ChoiceModels.H.Models {
                 Global.Settings.Purposes.Work,
                 Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
-                /* isDrivingAge */ true,
+                /* isDrivingAge */ drivingAge,
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
-                0.0,
+                fullFareType,
                 false,
                 Global.Settings.Modes.Transit);
 
@@ -123,11 +127,11 @@ namespace DaySim.ChoiceModels.H.Models {
                 Global.Settings.Purposes.Work,
                 Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
-                /* isDrivingAge */ true,
+                /* isDrivingAge */ drivingAge,
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
-                1.0,
+                freeFareType,
                 false,
                 Global.Settings.Modes.Transit);
 
@@ -151,11 +155,11 @@ namespace DaySim.ChoiceModels.H.Models {
               Global.Settings.Purposes.School,
               Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
               Global.Configuration.Coefficients_MeanTimeCoefficient_Other,
-                /* isDrivingAge */ true,
+                /* isDrivingAge */ drivingAge,
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
-              1.0,
+              freeFareType,
               false,
               Global.Settings.Modes.Transit);
 

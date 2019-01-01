@@ -245,16 +245,16 @@ namespace DaySim.ChoiceModels.Default.Models {
         int purpose = tour.DestinationPurpose;
 
         if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, _trip.OriginParcel, _trip.OriginParcel, out wdis0, out wtime0, out gwtime0);
-          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out wdis1, out wtime1, out gwtime1);
-          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, transitDiscountFraction, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out wdis2, out wtime2, out gwtime2);
+          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, _trip.OriginParcel, _trip.OriginParcel, out wdis0, out wtime0, out gwtime0);
+          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out wdis1, out wtime1, out gwtime1);
+          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out wdis2, out wtime2, out gwtime2);
           adis0 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tour.OriginParcel, _trip.OriginParcel).Variable;
           adis1 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tour.OriginParcel, destinationParcel).Variable;
           adis2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, _trip.OriginParcel).Variable;
         } else {
-          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, tour.OriginParcel, tour.OriginParcel, out wdis0, out wtime0, out gwtime0);
-          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out wdis1, out wtime1, out gwtime1);
-          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, transitDiscountFraction, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out wdis2, out wtime2, out gwtime2);
+          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, tour.OriginParcel, tour.OriginParcel, out wdis0, out wtime0, out gwtime0);
+          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out wdis1, out wtime1, out gwtime1);
+          GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out wdis2, out wtime2, out gwtime2);
           adis0 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, _trip.OriginParcel, tour.OriginParcel).Variable;
           adis1 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, _trip.OriginParcel, destinationParcel).Variable;
           adis2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tour.OriginParcel).Variable;
@@ -287,11 +287,11 @@ namespace DaySim.ChoiceModels.Default.Models {
           double gbtime2;
 
           if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Bike, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out bdis1, out btime1, out gbtime1);
-            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Bike, purpose, costCoef, timeCoef, transitDiscountFraction, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out bdis2, out btime2, out gbtime2);
+            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Bike, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out bdis1, out btime1, out gbtime1);
+            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Bike, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out bdis2, out btime2, out gbtime2);
           } else {
-            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Bike, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out bdis1, out btime1, out gbtime1);
-            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Bike, purpose, costCoef, timeCoef, transitDiscountFraction, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out bdis2, out btime2, out gbtime2);
+            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Bike, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out bdis1, out btime1, out gbtime1);
+            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Bike, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out bdis2, out btime2, out gbtime2);
           }
 
           ttim1 = btime1;
@@ -306,11 +306,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             gtim2 = gwtime2;
           } else {
             if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
             } else {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
             }
 
             ttim1 = d1Time1;
@@ -326,11 +326,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             gtim2 = gwtime2;
           } else {
             if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1, _destinationDepartureTime, parkingTime);
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2, _destinationDepartureTime, parkingTime);
             } else {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1, _destinationDepartureTime, parkingTime);
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2, _destinationDepartureTime, parkingTime);
             }
 
             ttim1 = d1Time1;
@@ -353,11 +353,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             double d2Time1;
 
             if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov2, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d2Dis1, out d2Time1, out gd2Time1, _destinationDepartureTime, parkingTime);
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov2, purpose, costCoef, timeCoef, transitDiscountFraction, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d2Dis2, out d2Time2, out gd2Time2, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov2, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d2Dis1, out d2Time1, out gd2Time1, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov2, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d2Dis2, out d2Time2, out gd2Time2, _destinationDepartureTime, parkingTime);
             } else {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov2, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d2Dis1, out d2Time1, out gd2Time1, _destinationDepartureTime, parkingTime);
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov2, purpose, costCoef, timeCoef, transitDiscountFraction, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d2Dis2, out d2Time2, out gd2Time2, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov2, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d2Dis1, out d2Time1, out gd2Time1, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov2, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d2Dis2, out d2Time2, out gd2Time2, _destinationDepartureTime, parkingTime);
             }
 
             ttim1 = d2Time1;
@@ -380,11 +380,11 @@ namespace DaySim.ChoiceModels.Default.Models {
             double d2Time1;
 
             if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov3, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d2Dis1, out d2Time1, out gd2Time1, _destinationDepartureTime, parkingTime);
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov3, purpose, costCoef, timeCoef, transitDiscountFraction, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d2Dis2, out d2Time2, out gd2Time2, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov3, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d2Dis1, out d2Time1, out gd2Time1, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov3, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d2Dis2, out d2Time2, out gd2Time2, _destinationDepartureTime, parkingTime);
             } else {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov3, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d2Dis1, out d2Time1, out gd2Time1, _destinationDepartureTime, parkingTime);
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov3, purpose, costCoef, timeCoef, transitDiscountFraction, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d2Dis2, out d2Time2, out gd2Time2, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov3, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d2Dis1, out d2Time1, out gd2Time1, _destinationDepartureTime, parkingTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Hov3, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d2Dis2, out d2Time2, out gd2Time2, _destinationDepartureTime, parkingTime);
             }
 
             ttim1 = d2Time1;
@@ -399,11 +399,11 @@ namespace DaySim.ChoiceModels.Default.Models {
           double gwttime1;
 
           if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Transit, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out wtdis1, out wttime1, out gwttime1, _destinationDepartureTime);
-            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Transit, purpose, costCoef, timeCoef, transitDiscountFraction, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out wtdis2, out wttime2, out gwttime2, _destinationDepartureTime);
+            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Transit, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out wtdis1, out wttime1, out gwttime1, _destinationDepartureTime);
+            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Transit, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out wtdis2, out wttime2, out gwttime2, _destinationDepartureTime);
           } else {
-            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Transit, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out wtdis1, out wttime1, out gwttime1, _destinationDepartureTime);
-            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Transit, purpose, costCoef, timeCoef, transitDiscountFraction, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out wtdis2, out wttime2, out gwttime2, _destinationDepartureTime);
+            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Transit, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out wtdis1, out wttime1, out gwttime1, _destinationDepartureTime);
+            GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Transit, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out wtdis2, out wttime2, out gwttime2, _destinationDepartureTime);
           }
           if (wdis1 < WTHRESH && wdis1 > Constants.EPSILON) {
             ttim1 = wtime1;
@@ -413,9 +413,9 @@ namespace DaySim.ChoiceModels.Default.Models {
             gtim1 = gwttime1;
           } else {
             if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1, _destinationDepartureTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1, _destinationDepartureTime);
             } else {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1, _destinationDepartureTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 1, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis1, out d1Time1, out gd1Time1, _destinationDepartureTime);
             }
 
             ttim1 = d1Time1;
@@ -430,9 +430,9 @@ namespace DaySim.ChoiceModels.Default.Models {
             gtim2 = gwttime2;
           } else {
             if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2, _destinationDepartureTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, tour.OriginParcel, destinationParcel, _trip.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2, _destinationDepartureTime);
             } else {
-              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, transitDiscountFraction, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2, _destinationDepartureTime);
+              GetGenTime(_trip.Household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, _trip.Person.PersonType, 2, _trip.OriginParcel, destinationParcel, tour.OriginParcel, out d1Dis2, out d1Time2, out gd1Time2, _destinationDepartureTime);
             }
 
             ttim2 = d1Time2;
@@ -857,7 +857,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         }
       }
 
-      private static void GetGenTime(IRandomUtility randomUtility, int mode, int purpose, double costCoef, double timeCoef, double transitDiscountFraction, int leg, IParcelWrapper tripOrigin, IParcelWrapper tripDestination, IParcelWrapper tourOrigin, out double dis, out double tim, out double gtim, int minute = -1, double parkHours = 0.0) {
+      private static void GetGenTime(IRandomUtility randomUtility, int mode, int purpose, double costCoef, double timeCoef, int personType, int leg, IParcelWrapper tripOrigin, IParcelWrapper tripDestination, IParcelWrapper tourOrigin, out double dis, out double tim, out double gtim, int minute = -1, double parkHours = 0.0) {
         if (minute < 0) {
           // default minute of day
           minute = DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Start;
@@ -876,11 +876,11 @@ namespace DaySim.ChoiceModels.Default.Models {
                 purpose,
                 costCoef,
                 timeCoef,
-                true,
+                22,
                  /* householdCars */ 1,
                   /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
-                transitDiscountFraction,
+                personType,
                 false,
                 mode);
 

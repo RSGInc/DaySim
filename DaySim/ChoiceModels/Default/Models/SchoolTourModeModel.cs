@@ -78,11 +78,11 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.DestinationPurpose,
               tour.CostCoefficient,
               tour.TimeCoefficient,
-              tour.Person.IsDrivingAge,
+              tour.Person.Age,
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
-              tour.Person.GetTransitFareDiscountFraction(),
+              tour.Person.PersonType,
               false);
         } else {
           pathTypeModels =
@@ -95,11 +95,11 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.DestinationPurpose,
               tour.CostCoefficient,
               tour.TimeCoefficient,
-              tour.Person.IsDrivingAge,
+              tour.Person.Age,
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
-              tour.Person.GetTransitFareDiscountFraction(),
+              tour.Person.PersonType,
               false);
         }
 
@@ -127,11 +127,11 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.DestinationPurpose,
               tour.CostCoefficient,
               tour.TimeCoefficient,
-              tour.Person.IsDrivingAge,
+              tour.Person.Age,
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
-              tour.Person.GetTransitFareDiscountFraction(),
+              tour.Person.PersonType,
               false);
         } else {
           pathTypeModels =
@@ -144,11 +144,11 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.DestinationPurpose,
               tour.CostCoefficient,
               tour.TimeCoefficient,
-              tour.Person.IsDrivingAge,
+              tour.Person.Age,
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
-              tour.Person.GetTransitFareDiscountFraction(),
+              tour.Person.PersonType,
               false);
         }
         RunModel(choiceProbabilityCalculator, tour, pathTypeModels, tour.DestinationParcel, tour.Household.VehiclesAvailable);
@@ -192,7 +192,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
       ITourWrapper tour = _creator.CreateWrapper(personDay.Person, personDay, originParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, Global.Settings.Purposes.School);
 
-      return RunNested(tour, destinationParcel, householdCars, tour.Person.GetTransitFareDiscountFraction());
+      return RunNested(tour, destinationParcel, householdCars, tour.Person.PersonType);
     }
 
     private ChoiceProbabilityCalculator.Alternative RunNested(ITourWrapper tour, IParcelWrapper destinationParcel, int householdCars, double transitDiscountFraction) {
@@ -208,11 +208,11 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.DestinationPurpose,
               tour.CostCoefficient,
               tour.TimeCoefficient,
-              tour.Person.IsDrivingAge,
+              tour.Person.Age,
               householdCars,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
-              transitDiscountFraction,
+              tour.Person.PersonType,
               false);
 
       RunModel(choiceProbabilityCalculator, tour, pathTypeModels, destinationParcel, householdCars);

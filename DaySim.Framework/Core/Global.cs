@@ -93,6 +93,17 @@ namespace DaySim.Framework.Core {
     public static float[] ParcelToAutoKissAndRideNodeDistance { get; set; }
     public static float[] ParcelToAutoKissAndRideNodeLength { get; set; }
 
+    public static float[] TransitBaseFare_Adult;
+    public static float[] TransitBaseFare_ChildDiscount;
+    public static float[] TransitBaseFare_OffPeakDiscount;
+    public static float[] TransitMonthlyPrice_AdultCommuteCard;
+    public static float[] TransitMonthlyPrice_ChildCommuteCard;
+    public static float[] TransitMonthlyPrice_SeniorCard;
+    public static float[] TransitMonthlyPrice_YouthCardUniversity;
+    public static float[] TransitMonthlyPrice_YouthCardGymnasium;
+    public static float[] TransitMonthlyPrice_YouthCardNonStudent;
+
+
     public static double Coefficients_CostCoefficientIncomeMultipleMinimum => Math.Abs(Configuration.Coefficients_CostCoefficientIncomeMultipleMinimum) < Constants.EPSILON
                     ? 0.1
                     : Configuration.Coefficients_CostCoefficientIncomeMultipleMinimum;

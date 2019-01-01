@@ -434,6 +434,11 @@ namespace DaySim.AggregateLogsums {
             int noCarCompetitionFlag = FlagUtility.GetNoCarCompetitionFlag(carOwnership);
             int carDeficitFlag = FlagUtility.GetCarDeficitFlag(carOwnership);
 
+            int drivingAge = 22;
+            //int nonDrivingAge = 10;
+            int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
+            int reducedFareType = Global.Settings.PersonTypes.RetiredAdult;
+
             double distanceParameter = distanceParameters[carOwnership][1] / 100D; // converts hundreths of minutes to minutes
 
             for (int votALSegment = Global.Settings.VotALSegments.Low; votALSegment < Global.Settings.VotALSegments.TotalVotALSegments; votALSegment++) {
@@ -471,14 +476,14 @@ namespace DaySim.AggregateLogsums {
                     IEnumerable<IPathTypeModel> pathTypeModels;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                         costCoefficient, timeCoefficient, /* isDrivingAge */ true, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, 0.0, false, Global.Settings.Modes.Walk);
+                         costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.Walk);
                     IPathTypeModel walkPath = pathTypeModels.First();
 
                     walkGenTime = walkPath.GeneralizedTimeLogsum;
 
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                        costCoefficient, timeCoefficient, /* isDrivingAge */ true, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, 0.0, false, Global.Settings.Modes.Sov);
+                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.Sov);
                     IPathTypeModel sovPath = pathTypeModels.First();
 
                     double sovDistanceFromOrigin = (sovPath.PathDistance / Global.Settings.DistanceUnitsPerMile) / 2D;
@@ -487,7 +492,7 @@ namespace DaySim.AggregateLogsums {
                     sovGenTime = sovPath.GeneralizedTimeLogsum;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                                            costCoefficient, timeCoefficient, /* isDrivingAge */ true, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, 0.0, false, Global.Settings.Modes.Hov2);
+                                            costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.Hov2);
                     IPathTypeModel hov2Path = pathTypeModels.First();
 
                     hov2GenTime = hov2Path.GeneralizedTimeLogsum;
@@ -501,7 +506,7 @@ namespace DaySim.AggregateLogsums {
                                             : id;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, transitOid, transitDid, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                        costCoefficient, timeCoefficient, /* isDrivingAge */ true, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, Global.Configuration.Policy_UniversalTransitFareDiscountFraction, false, Global.Settings.Modes.Transit);
+                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, reducedFareType, false, Global.Settings.Modes.Transit);
                     IPathTypeModel transitPath = pathTypeModels.First();
 
                     transitGenTime = transitPath.GeneralizedTimeLogsum;
