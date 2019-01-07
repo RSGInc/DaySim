@@ -36,7 +36,7 @@ namespace DaySim.PathTypeModels {
     private int _householdCars;
     private bool _carsAreAVs;
     private int _transitPassOwnership;
-    private int _personType;
+    private int _personType; 
     private bool _randomChoice;
     private int _choice;
 
