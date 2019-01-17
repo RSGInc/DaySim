@@ -1282,6 +1282,8 @@ namespace DaySim {
       overallDaySimTimer.Print();
     }
 
+    // create separate bike to terminal connectors for bike on board?
+
     public static void InitializeMicrozoneToAutoKissAndRideNodeDistances(TextReader reader) {
 
       //var parcelIds = new List<int>();  
