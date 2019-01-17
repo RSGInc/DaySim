@@ -20,226 +20,144 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       _parcel = (IActumParcel)parcel;
     }
 
+
+   
     //See RawConverter, where the Actum input names are renamed to the Default names, which are then used in the Actum Parcel class. 
     //The following wrapper methods rename them back to the names used by Actum version.  
-    public double ParkingCostPerHour8_18 {
-      get => _parcel.CircuityRatio_E1;
+    public int DistrictID {
+      get => (int) _parcel.CircuityRatio_E1;
       set => _parcel.CircuityRatio_E1 = value;
     }
 
-    public double ParkingCostPerHour18_23 {
-      get => _parcel.CircuityRatio_E2;
+    public int ParkingDataAvailable {
+      get => (int) _parcel.CircuityRatio_E2;
       set => _parcel.CircuityRatio_E2 = value;
     }
 
-    public double ParkingCostPerHour23_08 {
+    public double ResidentialPermitOnlyParkingSpaces {
       get => _parcel.CircuityRatio_E3;
       set => _parcel.CircuityRatio_E3 = value;
     }
 
-    public double ResidentAnnualParkingCost {
+    public double PublicWithResidentialPermitAllowedParkingSpaces {
       get => _parcel.CircuityRatio_NE1;
       set => _parcel.CircuityRatio_NE1 = value;
     }
 
-    public double ParkingSearchTime21_05 {
+    public double PublicNoResidentialPermitAllowedParkingSpaces {
       get => _parcel.CircuityRatio_NE2;
       set => _parcel.CircuityRatio_NE2 = value;
     }
 
-    public double ParkingSearchTime05_06 {
+    public double EmployeeOnlyParkingSpaces {
       get => _parcel.CircuityRatio_NE3;
       set => _parcel.CircuityRatio_NE3 = value;
     }
 
-    public double ParkingSearchTime06_07 {
+    public double ElectricVehicleOnlyParkingSpaces {
       get => _parcel.CircuityRatio_N1;
       set => _parcel.CircuityRatio_N1 = value;
     }
 
-    public double ParkingSearchTime07_08 {
+    public double ResidentialPermitDailyParkingPrices {
       get => _parcel.CircuityRatio_N2;
       set => _parcel.CircuityRatio_N2 = value;
     }
 
-    public double ParkingSearchTime08_09 {
+    public double PublicParkingHourlyPrice {
       get => _parcel.CircuityRatio_N3;
       set => _parcel.CircuityRatio_N3 = value;
     }
 
-    public double ParkingSearchTime09_15 {
+    public double ResidentialPermitOnlyParkingSpacesBuffer1 {
       get => _parcel.CircuityRatio_NW1;
       set => _parcel.CircuityRatio_NW1 = value;
     }
 
-    public double ParkingSearchTime15_16 {
+    public double PublicWithResidentialPermitAllowedParkingSpacesBuffer1 {
       get => _parcel.CircuityRatio_NW2;
       set => _parcel.CircuityRatio_NW2 = value;
     }
 
-    public double ParkingSearchTime16_17 {
+    public double PublicNoResidentialPermitAllowedParkingSpacesBuffer1 {
       get => _parcel.CircuityRatio_NW3;
       set => _parcel.CircuityRatio_NW3 = value;
     }
 
-    public double ParkingSearchTime17_18 {
+    public double EmployeeOnlyParkingSpacesBuffer1 {
       get => _parcel.CircuityRatio_W1;
       set => _parcel.CircuityRatio_W1 = value;
     }
 
-    public double ParkingSearchTime18_21 {
+    public double ElectricVehicleOnlyParkingSpacesBuffer1 {
       get => _parcel.CircuityRatio_W2;
       set => _parcel.CircuityRatio_W2 = value;
     }
 
 
-    public double ParkingCostPerHour8_18Buffer1 {
+    public double ResidentialPermitDailyParkingPricesBuffer1 {
       get => _parcel.CircuityRatio_W3;
       set => _parcel.CircuityRatio_W3 = value;
     }
 
-    public double ParkingCostPerHour18_23Buffer1 {
+    public double PublicParkingHourlyPriceBuffer1 {
       get => _parcel.CircuityRatio_SW1;
       set => _parcel.CircuityRatio_SW1 = value;
     }
 
-    public double ParkingCostPerHour23_08Buffer1 {
+    public double ResidentialPermitOnlyParkingSpacesBuffer2 {
       get => _parcel.CircuityRatio_SW2;
       set => _parcel.CircuityRatio_SW2 = value;
     }
 
-    public double ResidentAnnualParkingCostBuffer1 {
+    public double PublicWithResidentialPermitAllowedParkingSpacesBuffer2 {
       get => _parcel.CircuityRatio_SW3;
       set => _parcel.CircuityRatio_SW3 = value;
     }
 
-    public double ParkingSearchTime21_05Buffer1 {
+    public double PublicNoResidentialPermitAllowedParkingSpacesBuffer2 {
       get => _parcel.CircuityRatio_S1;
       set => _parcel.CircuityRatio_S1 = value;
     }
 
-    public double ParkingSearchTime05_06Buffer1 {
+    public double EmployeeOnlyParkingSpacesBuffer2 {
       get => _parcel.CircuityRatio_S2;
       set => _parcel.CircuityRatio_S2 = value;
     }
 
-    public double ParkingSearchTime06_07Buffer1 {
+    public double ElectricVehicleOnlyParkingSpacesBuffer2 {
       get => _parcel.CircuityRatio_S3;
       set => _parcel.CircuityRatio_S3 = value;
     }
 
-    public double ParkingSearchTime07_08Buffer1 {
+    public double ResidentialPermitDailyParkingPricesBuffer2 {
       get => _parcel.CircuityRatio_SE1;
       set => _parcel.CircuityRatio_SE1 = value;
     }
 
-    public double ParkingSearchTime08_09Buffer1 {
+    public double PublicParkingHourlyPriceBuffer2 {
       get => _parcel.CircuityRatio_SE2;
       set => _parcel.CircuityRatio_SE2 = value;
     }
 
-    public double ParkingSearchTime09_15Buffer1 {
-      get => _parcel.CircuityRatio_SE3;
+    public int DistrictID2  {
+      get => (int) _parcel.CircuityRatio_SE3;
       set => _parcel.CircuityRatio_SE3 = value;
     }
 
-    public double ParkingSearchTime15_16Buffer1 {
-      get => _parcel.DistanceToFerry;
-      set => _parcel.DistanceToFerry = value;
-    }
-
-    public double ParkingSearchTime16_17Buffer1 {
-      get => _parcel.DistanceToLightRail;
-      set => _parcel.DistanceToLightRail = value;
-    }
-
-    public double ParkingSearchTime17_18Buffer1 {
-      get => _parcel.ParkingOffStreetPaidDailySpaces;
-      set => _parcel.ParkingOffStreetPaidDailySpaces = value;
-    }
-
-    public double ParkingSearchTime18_21Buffer1 {
-      get => _parcel.ParkingOffStreetPaidHourlySpaces;
-      set => _parcel.ParkingOffStreetPaidHourlySpaces = value;
-    }
-
-
-
-    public double ParkingCostPerHour8_18Buffer2 {
-      get => _parcel.ParkingOffStreetPaidDailyPrice;
-      set => _parcel.ParkingOffStreetPaidDailyPrice = value;
-    }
-
-    public double ParkingCostPerHour18_23Buffer2 {
-      get => _parcel.ParkingOffStreetPaidHourlyPrice;
-      set => _parcel.ParkingOffStreetPaidHourlyPrice = value;
-    }
-
-    public double ParkingCostPerHour23_08Buffer2 {
-      get => _parcel.ParkingOffStreetPaidDailySpacesBuffer1;
-      set => _parcel.ParkingOffStreetPaidDailySpacesBuffer1 = value;
-    }
-
-    public double ResidentAnnualParkingCostBuffer2 {
-      get => _parcel.ParkingOffStreetPaidHourlySpacesBuffer1;
-      set => _parcel.ParkingOffStreetPaidHourlySpacesBuffer1 = value;
-    }
-
-    public double ParkingSearchTime21_05Buffer2 {
-      get => _parcel.ParkingOffStreetPaidDailyPriceBuffer1;
-      set => _parcel.ParkingOffStreetPaidDailyPriceBuffer1 = value;
-    }
-
-    public double ParkingSearchTime05_06Buffer2 {
-      get => _parcel.ParkingOffStreetPaidHourlyPriceBuffer1;
-      set => _parcel.ParkingOffStreetPaidHourlyPriceBuffer1 = value;
-    }
-
-    public double ParkingSearchTime06_07Buffer2 {
-      get => _parcel.ParkingOffStreetPaidDailySpacesBuffer2;
-      set => _parcel.ParkingOffStreetPaidDailySpacesBuffer2 = value;
-    }
-
-    public double ParkingSearchTime07_08Buffer2 {
-      get => _parcel.ParkingOffStreetPaidHourlySpacesBuffer2;
-      set => _parcel.ParkingOffStreetPaidHourlySpacesBuffer2 = value;
-    }
-
-    public double ParkingSearchTime08_09Buffer2 {
-      get => _parcel.ParkingOffStreetPaidDailyPriceBuffer2;
-      set => _parcel.ParkingOffStreetPaidDailyPriceBuffer2 = value;
-    }
-
-    public double ParkingSearchTime09_15Buffer2 {
-      get => _parcel.ParkingOffStreetPaidHourlyPriceBuffer2;
-      set => _parcel.ParkingOffStreetPaidHourlyPriceBuffer2 = value;
-    }
-
-    public double ParkingSearchTime15_16Buffer2 {
-      get => _parcel.OpenSpaceType1Buffer1;
-      set => _parcel.OpenSpaceType1Buffer1 = value;
-    }
-
-    public double ParkingSearchTime16_17Buffer2 {
-      get => _parcel.OpenSpaceType2Buffer1;
-      set => _parcel.OpenSpaceType2Buffer1 = value;
-    }
-
-    public double ParkingSearchTime17_18Buffer2 {
-      get => _parcel.OpenSpaceType1Buffer2;
-      set => _parcel.OpenSpaceType1Buffer2 = value;
-    }
-
-    public double ParkingSearchTime18_21Buffer2 {
-      get => _parcel.OpenSpaceType2Buffer2;
-      set => _parcel.OpenSpaceType2Buffer2 = value;
-    }
-
+  
     //public int FirstPositionInParkAndRideNodeDistanceArray { get; set; } = -1;
 
     //public int LastPositionInParkAndRideNodeDistanceArray { get; set; } = -1;
 
     //public bool ParkAndRideNodeDistanceArrayPositionsSet { get; set; } = false;
+
+
+    //public int FirstPositionInStopAreaDistanceArray { get; set; } = -1;
+
+    //public int LastPositionInStopAreaDistanceArray { get; set; } = -1;
+
+    //public bool StopAreaDistanceArrayPositionsSet { get; set; } = false;
 
     public int FirstPositionInAutoParkAndRideNodeDistanceArray { get; set; } = -1;
 

@@ -157,6 +157,7 @@ namespace DaySim.AggregateLogsums {
     private const double PSG126 = -2.30761023730;
     private const double PSG129 = -3.23454701949;
     private const double PSG130 = -1.93793528420;
+    private const double PSG131 = -0.23; //new size added for open space-recreation, exp(1) relative to HH (PG129)
 
     private static readonly double[][][] _distanceParameters =
         new[] {
@@ -287,7 +288,7 @@ namespace DaySim.AggregateLogsums {
       Framework.DomainModels.Persisters.IPersisterReader<IZone> zoneReader =
                 Global
                     .ContainerDaySim.GetInstance<IPersistenceFactory<IZone>>()
-                     .Reader;
+                    .Reader;
 
       _eligibleZones = zoneReader.Where(z => z.DestinationEligible).ToDictionary(z => z.Id, z => z);
       _zoneCount = zoneReader.Count;
@@ -299,17 +300,16 @@ namespace DaySim.AggregateLogsums {
       FileInfo file = Global.AggregateLogsumsPath.ToFile();
 
       //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
-     //   Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
+      //  Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
 
-     //   return;
-     // }
+      //   return;
+      // }
 
       Global.AggregateLogsums = new double[_zoneCount][][][][];
 
       Parallel.For(0, _zoneCount, new ParallelOptions { MaxDegreeOfParallelism = ParallelUtility.NThreads }, id => CalculateZone(randomUtility, id));
 
       for (int id = 0; id < _zoneCount; id++) {
-
         double[][][][] purposes = Global.AggregateLogsums[id];
 
         for (int purpose = Global.Settings.Purposes.HomeBasedComposite; purpose <= Global.Settings.Purposes.Social; purpose++) {
@@ -338,13 +338,13 @@ namespace DaySim.AggregateLogsums {
       Global.AggregateLogsums[id] = ComputeZone(randomUtility, id);
     }
 
-    //private double[][][][][] LoadAggregateLogsumsFromFile(FileInfo file) {
-    //  using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
-    //    BinaryFormatter formatter = new BinaryFormatter();
+    private double[][][][][] LoadAggregateLogsumsFromFile(FileInfo file) {
+      using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)) {
+        BinaryFormatter formatter = new BinaryFormatter();
 
-    //    return (double[][][][][])formatter.Deserialize(stream);
-    //  }
-    //}
+        return (double[][][][][])formatter.Deserialize(stream);
+      }
+    }
 
     private void SaveAggregateLogsumsToFile(FileInfo file) {
       using (FileStream stream = file.Open(FileMode.Create, FileAccess.Write, FileShare.Read)) {
@@ -391,12 +391,13 @@ namespace DaySim.AggregateLogsums {
         //const double parkingCost = 0;
 
         // mode impedance
-        double sovInVehicleTimeFromOrigin = ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, _middayStartMinute, id, destination.Id).Variable;
+        double sovInVehicleTimeFromOrigin = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, _middayStartMinute, id, destination.Id).Variable;
         double scaledSovDistanceFromOrigin = 0D;
         double transitGenTime = 0D;
         double walkGenTime = 0D;
+        double bikeGenTime = 0D;
         double sovGenTime = 0D;
-        double hov2GenTime = 0D;
+        double hovGenTime = 0D;
 
         for (int purpose = Global.Settings.Purposes.HomeBasedComposite; purpose <= Global.Settings.Purposes.Social; purpose++) {
           double[][][] carOwnerships = purposes[purpose];
@@ -434,11 +435,6 @@ namespace DaySim.AggregateLogsums {
             int noCarCompetitionFlag = FlagUtility.GetNoCarCompetitionFlag(carOwnership);
             int carDeficitFlag = FlagUtility.GetCarDeficitFlag(carOwnership);
 
-            int drivingAge = 22;
-            //int nonDrivingAge = 10;
-            int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
-            int reducedFareType = Global.Settings.PersonTypes.RetiredAdult;
-
             double distanceParameter = distanceParameters[carOwnership][1] / 100D; // converts hundreths of minutes to minutes
 
             for (int votALSegment = Global.Settings.VotALSegments.Low; votALSegment < Global.Settings.VotALSegments.TotalVotALSegments; votALSegment++) {
@@ -475,12 +471,22 @@ namespace DaySim.AggregateLogsums {
                     // intermediate variable of type IEnumerable<IPathTypeModel> is needed to acquire First() method as extension
                     IEnumerable<IPathTypeModel> pathTypeModels;
 
+                    int drivingAge = 22;
+                    //int nonDrivingAge = 10;
+                    int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
+                    int reducedFareType = Global.Settings.PersonTypes.RetiredAdult;
+
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                         costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.Walk);
+                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.Walk);
                     IPathTypeModel walkPath = pathTypeModels.First();
 
                     walkGenTime = walkPath.GeneralizedTimeLogsum;
 
+                    pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
+                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.Bike);
+                    IPathTypeModel bikePath = pathTypeModels.First();
+
+                    bikeGenTime = bikePath.GeneralizedTimeLogsum;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
                         costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.Sov);
@@ -492,15 +498,15 @@ namespace DaySim.AggregateLogsums {
                     sovGenTime = sovPath.GeneralizedTimeLogsum;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                                            costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.Hov2);
-                    IPathTypeModel hov2Path = pathTypeModels.First();
+                                            costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, fullFareType, false, Global.Settings.Modes.HovPassenger);
+                    IPathTypeModel hovPath = pathTypeModels.First();
 
-                    hov2GenTime = hov2Path.GeneralizedTimeLogsum;
+                    hovGenTime = hovPath.GeneralizedTimeLogsum;
 
                     //if using stop areas, use stop area nearest to the zone centroid
                     int transitOid = (!Global.StopAreaIsEnabled) ? id
-                                            : (origin.NearestStopAreaId > 0) ? Global.TransitStopAreaMapping[origin.NearestStopAreaId]
-                                            : id;
+                                                                : (origin.NearestStopAreaId > 0) ? Global.TransitStopAreaMapping[origin.NearestStopAreaId]
+                                                                : id;
                     int transitDid = (!Global.StopAreaIsEnabled) ? destination.Id
                                             : (destination.NearestStopAreaId > 0) ? Global.TransitStopAreaMapping[destination.NearestStopAreaId]
                                             : id;
@@ -526,12 +532,12 @@ namespace DaySim.AggregateLogsums {
                   }
 
                   // HOV
-                  if (hov2GenTime != Global.Settings.GeneralizedTimeUnavailable) {
+                  if (hovGenTime != Global.Settings.GeneralizedTimeUnavailable) {
                     modeUtilitySum += ComputeUtility(
                         //p01 * ((OPERATING_COST_PER_MILE * hov2Distance + hov2Toll) / CP_FACTOR) +
                         //p01 * parkingCost / CP_FACTOR +
                         //p02 * hov2InVehicleTime +
-                        timeCoefficient * hov2GenTime +
+                        timeCoefficient * hovGenTime +
                         p21 +
                         p22 * childFlag +
                         p23 * noCarsFlag +
@@ -551,6 +557,13 @@ namespace DaySim.AggregateLogsums {
                         p33 * noCarsFlag +
                         p34 * carCompetitionFlag +
                         p37 * hasNoTransitAccessFlag);
+                  }
+
+                  // BIKE
+                  if (bikeGenTime != Global.Settings.GeneralizedTimeUnavailable) {
+                    modeUtilitySum += ComputeUtility(
+                        //p03 * walkDistance * 20);
+                        timeCoefficient * bikeGenTime);
                   }
 
                   // WALK
@@ -693,9 +706,9 @@ namespace DaySim.AggregateLogsums {
         subzones[subzone].EmploymentRetail += parcelWrapper.EmploymentRetail;
         subzones[subzone].EmploymentService += parcelWrapper.EmploymentService;
         subzones[subzone].EmploymentTotal += parcelWrapper.EmploymentTotal;
-        //Removed following that are not defined the same way in actum.  Need to accommodate parking soem other way
-        //subzones[subzone].ParkingOffStreetPaidDailySpaces += parcelWrapper.ParkingOffStreetPaidDailySpaces;
-        //subzones[subzone].ParkingOffStreetPaidHourlySpaces += parcelWrapper.ParkingOffStreetPaidHourlySpaces;
+        subzones[subzone].ParkingOffStreetPaidDailySpaces += parcelWrapper.ParkingOffStreetPaidDailySpaces;
+        subzones[subzone].ParkingOffStreetPaidHourlySpaces += parcelWrapper.ParkingOffStreetPaidHourlySpaces;
+        subzones[subzone].OpenSpace += (Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? parcelWrapper.LandUseCode : 0.0;
       }
 
       foreach (ISubzone[] subzones in _eligibleZones.Values.Select(zone => zoneSubzones[zone.Id])) {
@@ -712,14 +725,12 @@ namespace DaySim.AggregateLogsums {
           double ret = subzones[subzone].EmploymentRetail;
           double ser = subzones[subzone].EmploymentService;
           double tot = subzones[subzone].EmploymentTotal;
+          double osp = subzones[subzone].OpenSpace;
           const double oth = 0;
 
           double subtotal = foo + ret + ser + med;
 
-
-          //subzones[subzone].MixedUseMeasure = Math.Log(1 + subtotal * (subzones[subzone]).ParkingOffStreetPaidHourlySpaces * 100 / Math.Max(subtotal + (subzones[subzone]).ParkingOffStreetPaidHourlySpaces * 100, Constants.EPSILON));
-          //zeroed out above MixedUseMeasure because it relies on parking variable not available for actum
-          subzones[subzone].MixedUseMeasure = 0;
+          subzones[subzone].MixedUseMeasure = Math.Log(1 + subtotal * (subzones[subzone]).ParkingOffStreetPaidHourlySpaces * 100 / Math.Max(subtotal + (subzones[subzone]).ParkingOffStreetPaidHourlySpaces * 100, Constants.EPSILON));
 
           subzones[subzone].SetSize(Global.Settings.Purposes.HomeBasedComposite, ComputeSize(Math.Exp(HBG019) * edu + Math.Exp(HBG020) * foo + Math.Exp(HBG021) * gov + Math.Exp(HBG022) * off + Math.Exp(HBG023) * oth + Math.Exp(HBG024) * ret + Math.Exp(HBG025) * ser + Math.Exp(HBG026) * med + Math.Exp(HBG027) * ind + Math.Exp(HBG029) * hou + Math.Exp(HBG030) * uni + Math.Exp(HBG031) * k12));
           subzones[subzone].SetSize(Global.Settings.Purposes.WorkBased, ComputeSize(Math.Exp(WBG019) * edu + Math.Exp(WBG020) * foo + Math.Exp(WBG021) * gov + Math.Exp(WBG022) * off + Math.Exp(WBG023) * oth + Math.Exp(WBG024) * ret + Math.Exp(WBG025) * ser + Math.Exp(WBG026) * med + Math.Exp(WBG027) * ind + Math.Exp(WBG029) * hou + Math.Exp(WBG030) * uni));
@@ -727,7 +738,7 @@ namespace DaySim.AggregateLogsums {
           subzones[subzone].SetSize(Global.Settings.Purposes.PersonalBusiness, ComputeSize(Math.Exp(PSG080) * edu + Math.Exp(PSG081) * foo + Math.Exp(PSG082) * gov + Math.Exp(PSG083) * off + Math.Exp(PSG084) * oth + Math.Exp(PSG085) * ret + Math.Exp(PSG086) * ser + Math.Exp(PSG087) * med + Math.Exp(PSG088) * ind + Math.Exp(PSG090) * hou + Math.Exp(PSG091) * uni));
           subzones[subzone].SetSize(Global.Settings.Purposes.Shopping, ComputeSize(Math.Exp(PSG094) * foo + Math.Exp(PSG095) * gov + Math.Exp(PSG097) * oth + Math.Exp(PSG098) * ret + Math.Exp(PSG099) * ser + Math.Exp(PSG100) * med + Math.Exp(PSG103) * hou + Math.Exp(PSG105) * k12));
           subzones[subzone].SetSize(Global.Settings.Purposes.Meal, ComputeSize(Math.Exp(PSG107) * foo + Math.Exp(PSG115) * tot + Math.Exp(PSG117) * uni));
-          subzones[subzone].SetSize(Global.Settings.Purposes.Social, ComputeSize(Math.Exp(PSG119) * edu + Math.Exp(PSG120) * foo + Math.Exp(PSG121) * gov + Math.Exp(PSG122) * off + Math.Exp(PSG123) * oth + Math.Exp(PSG125) * ser + Math.Exp(PSG126) * med + Math.Exp(PSG129) * hou + Math.Exp(PSG130) * uni));
+          subzones[subzone].SetSize(Global.Settings.Purposes.Social, ComputeSize(Math.Exp(PSG119) * edu + Math.Exp(PSG120) * foo + Math.Exp(PSG121) * gov + Math.Exp(PSG122) * off + Math.Exp(PSG123) * oth + Math.Exp(PSG125) * ser + Math.Exp(PSG126) * med + Math.Exp(PSG129) * hou + Math.Exp(PSG130) * uni + Math.Exp(PSG131) * Math.Log(osp + 1.0)));
         }
       }
 

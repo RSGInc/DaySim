@@ -1644,11 +1644,38 @@ namespace DaySim {
 
           writer.Write("zone_id");
 
-        } else if (fields[i] == "ParkingCostPerHour8_18_p") { writer.Write("Circ_E1"); } else if (fields[i] == "ParkingCostPerHour18_23_p") { writer.Write("Circ_E2"); } else if (fields[i] == "ParkingCostPerHour23_08_p") { writer.Write("Circ_E3"); } else if (fields[i] == "ResidentAnnualParkingCost_p") { writer.Write("Circ_NE1"); } else if (fields[i] == "PSearchTime21_05_p") { writer.Write("Circ_NE2"); } else if (fields[i] == "PSearchTime05_06_p") { writer.Write("Circ_NE3"); } else if (fields[i] == "PSearchTime06_07_p") { writer.Write("Circ_N1"); } else if (fields[i] == "PSearchTime07_08_p") { writer.Write("Circ_N2"); } else if (fields[i] == "PSearchTime08_09_p") { writer.Write("Circ_N3"); } else if (fields[i] == "PSearchTime09_15_p") { writer.Write("Circ_NW1"); } else if (fields[i] == "PSearchTime15_16_p") { writer.Write("Circ_NW2"); } else if (fields[i] == "PSearchTime16_17_p") { writer.Write("Circ_NW3"); } else if (fields[i] == "PSearchTime17_18_p") { writer.Write("Circ_W1"); } else if (fields[i] == "PSearchTime18_21_p") { writer.Write("Circ_W2"); } else if (fields[i] == "ParkingCostPerHour8_18_1") { writer.Write("Circ_W3"); } else if (fields[i] == "ParkingCostPerHour18_23_1") { writer.Write("Circ_SW1"); } else if (fields[i] == "ParkingCostPerHour23_08_1") { writer.Write("Circ_SW2"); } else if (fields[i] == "ResidentAnnualParkingCost_1") { writer.Write("Circ_SW3"); } else if (fields[i] == "PSearchTime21_05_1") { writer.Write("Circ_S1"); } else if (fields[i] == "PSearchTime05_06_1") { writer.Write("Circ_S2"); } else if (fields[i] == "PSearchTime06_07_1") { writer.Write("Circ_S3"); } else if (fields[i] == "PSearchTime07_08_1") { writer.Write("Circ_SE1"); } else if (fields[i] == "PSearchTime08_09_1") { writer.Write("Circ_SE2"); } else if (fields[i] == "PSearchTime09_15_1") { writer.Write("Circ_SE3"); } else if (fields[i] == "PSearchTime15_16_1") { writer.Write("dist_fry"); } else if (fields[i] == "PSearchTime16_17_1") { writer.Write("dist_lrt"); } else if (fields[i] == "PSearchTime17_18_1") { writer.Write("parkdy_p"); } else if (fields[i] == "PSearchTime18_21_1") { writer.Write("parkhr_p"); } else if (fields[i] == "ParkingCostPerHour8_18_2") { writer.Write("ppricdyp"); } else if (fields[i] == "ParkingCostPerHour18_23_2") { writer.Write("pprichrp"); } else if (fields[i] == "ParkingCostPerHour23_08_2") { writer.Write("parkdy_1"); } else if (fields[i] == "ResidentAnnualParkingCost_2") { writer.Write("parkhr_1"); } else if (fields[i] == "PSearchTime21_05_2") { writer.Write("ppricdy1"); } else if (fields[i] == "PSearchTime05_06_2") { writer.Write("pprichr1"); } else if (fields[i] == "PSearchTime06_07_2") { writer.Write("parkdy_2"); } else if (fields[i] == "PSearchTime07_08_2") { writer.Write("parkhr_2"); } else if (fields[i] == "PSearchTime08_09_2") { writer.Write("ppricdy2"); } else if (fields[i] == "PSearchTime09_15_2") { writer.Write("pprichr2"); } else if (fields[i] == "PSearchTime15_16_2") { writer.Write("nparks_1"); } else if (fields[i] == "PSearchTime16_17_2") { writer.Write("aparks_1"); } else if (fields[i] == "PSearchTime17_18_2") { writer.Write("nparks_2"); } else if (fields[i] == "PSearchTime18_21_2") { writer.Write("aparks_2"); } else { writer.Write(fields[i]); }
+        }
+        else if (fields[i] == "District_p") { writer.Write("Circ_E1"); } 
+        else if (fields[i] == "PkDatAv_p") { writer.Write("Circ_E2"); } 
+        else if (fields[i] == "ResPk_p") { writer.Write("Circ_E3"); } 
+        else if (fields[i] == "PubResPk_p") { writer.Write("Circ_NE1"); } 
+        else if (fields[i] == "PubPk_p") { writer.Write("Circ_NE2"); } 
+        else if (fields[i] == "EmpPk_p") { writer.Write("Circ_NE3"); } 
+        else if (fields[i] == "ElecPk_p") { writer.Write("Circ_N1"); } 
+        else if (fields[i] == "ResDayPr_p") { writer.Write("Circ_N2"); } 
+        else if (fields[i] == "PubHrPr_p") { writer.Write("Circ_N3"); } 
+        else if (fields[i] == "ResPk_1") { writer.Write("Circ_NW1"); } 
+        else if (fields[i] == "PubResPk_1") { writer.Write("Circ_NW2"); } 
+        else if (fields[i] == "PubPk_1") { writer.Write("Circ_NW3"); } 
+        else if (fields[i] == "EmpPk_1") { writer.Write("Circ_W1"); } 
+        else if (fields[i] == "ElecPk_1") { writer.Write("Circ_W2"); } 
+        else if (fields[i] == "ResDayPr_1") { writer.Write("Circ_W3"); } 
+        else if (fields[i] == "PubHrPr_1") { writer.Write("Circ_SW1"); } 
+        else if (fields[i] == "ResPk_2") { writer.Write("Circ_SW2"); } 
+        else if (fields[i] == "PubResPk_2") { writer.Write("Circ_SW3"); } 
+        else if (fields[i] == "PubPk_2") { writer.Write("Circ_S1"); } 
+        else if (fields[i] == "EmpPk_2") { writer.Write("Circ_S2"); } 
+        else if (fields[i] == "ElecPk_2") { writer.Write("Circ_S3"); } 
+        else if (fields[i] == "ResDayPr_2") { writer.Write("Circ_SE1"); } 
+        else if (fields[i] == "PubHrPr_2") { writer.Write("Circ_SE2"); } 
+        else if (fields[i] == "District2_p") { writer.Write("Circ_SE3"); } 
+        else { writer.Write(fields[i]); }
 
         if (i < fields.Length - 1) { writer.Write(Global.Configuration.InputParcelDelimiter); } else { writer.WriteLine(); }
       }
     }
+                            
+
 
 
     private static void ConvertParkAndRideNodeFile(Dictionary<int, Tuple<int, int, int, int, int>> parkAndRideNodes,

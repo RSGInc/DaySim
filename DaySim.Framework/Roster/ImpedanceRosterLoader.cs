@@ -329,7 +329,7 @@ namespace DaySim.Framework.Roster {
         }
         Dictionary<int, int> mapping = zoneMapping;
 
-        bool useTransitStopAreaMapping = (entry.Length == "transitstop");
+        bool useTransitStopAreaMapping = (entry.Length == "transitstop" || entry.Length == "stoparea");
         if (useTransitStopAreaMapping) {
           mapping = transitStopAreaMapping;
         }

@@ -419,9 +419,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
           int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
 
-          totalCommuteTime += ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Configuration.VotHighVeryHigh - 0.5,
+          totalCommuteTime += ImpedanceRoster.GetValue("time", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Configuration.VotHighVeryHigh - 0.5,
             destinationArrivalTime, household.ResidenceParcel, person.UsualWorkParcel).Variable;
-          totalCommuteTime += ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Configuration.VotHighVeryHigh - 0.5,
+          totalCommuteTime += ImpedanceRoster.GetValue("time", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Configuration.VotHighVeryHigh - 0.5,
             destinationDepartureTime, person.UsualWorkParcel, household.ResidenceParcel).Variable;
         }
       }

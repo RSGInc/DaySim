@@ -11,50 +11,60 @@ using DaySim.Framework.DomainModels.Wrappers;
 namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
   public interface IActumParcelWrapper : IParcelWrapper, IActumParcel {
     // for actum
-    double ParkingCostPerHour8_18 { get; set; }
-    double ParkingCostPerHour18_23 { get; set; }
-    double ParkingCostPerHour23_08 { get; set; }
-    double ResidentAnnualParkingCost { get; set; }
-    double ParkingSearchTime21_05 { get; set; }
-    double ParkingSearchTime05_06 { get; set; }
-    double ParkingSearchTime06_07 { get; set; }
-    double ParkingSearchTime07_08 { get; set; }
-    double ParkingSearchTime08_09 { get; set; }
-    double ParkingSearchTime09_15 { get; set; }
-    double ParkingSearchTime15_16 { get; set; }
-    double ParkingSearchTime16_17 { get; set; }
-    double ParkingSearchTime17_18 { get; set; }
-    double ParkingSearchTime18_21 { get; set; }
 
-    double ParkingCostPerHour8_18Buffer1 { get; set; }
-    double ParkingCostPerHour18_23Buffer1 { get; set; }
-    double ParkingCostPerHour23_08Buffer1 { get; set; }
-    double ResidentAnnualParkingCostBuffer1 { get; set; }
-    double ParkingSearchTime21_05Buffer1 { get; set; }
-    double ParkingSearchTime05_06Buffer1 { get; set; }
-    double ParkingSearchTime06_07Buffer1 { get; set; }
-    double ParkingSearchTime07_08Buffer1 { get; set; }
-    double ParkingSearchTime08_09Buffer1 { get; set; }
-    double ParkingSearchTime09_15Buffer1 { get; set; }
-    double ParkingSearchTime15_16Buffer1 { get; set; }
-    double ParkingSearchTime16_17Buffer1 { get; set; }
-    double ParkingSearchTime17_18Buffer1 { get; set; }
-    double ParkingSearchTime18_21Buffer1 { get; set; }
+    int DistrictID { get; set; }
 
-    double ParkingCostPerHour8_18Buffer2 { get; set; }
-    double ParkingCostPerHour18_23Buffer2 { get; set; }
-    double ParkingCostPerHour23_08Buffer2 { get; set; }
-    double ResidentAnnualParkingCostBuffer2 { get; set; }
-    double ParkingSearchTime21_05Buffer2 { get; set; }
-    double ParkingSearchTime05_06Buffer2 { get; set; }
-    double ParkingSearchTime06_07Buffer2 { get; set; }
-    double ParkingSearchTime07_08Buffer2 { get; set; }
-    double ParkingSearchTime08_09Buffer2 { get; set; }
-    double ParkingSearchTime09_15Buffer2 { get; set; }
-    double ParkingSearchTime15_16Buffer2 { get; set; }
-    double ParkingSearchTime16_17Buffer2 { get; set; }
-    double ParkingSearchTime17_18Buffer2 { get; set; }
-    double ParkingSearchTime18_21Buffer2 { get; set; }
+    int ParkingDataAvailable { get; set; }
+
+    double ResidentialPermitOnlyParkingSpaces { get; set; }
+
+    double PublicWithResidentialPermitAllowedParkingSpaces { get; set; }
+
+    double PublicNoResidentialPermitAllowedParkingSpaces { get; set; }
+
+    double EmployeeOnlyParkingSpaces { get; set; }
+
+    double ElectricVehicleOnlyParkingSpaces { get; set; }
+
+    double ResidentialPermitDailyParkingPrices { get; set; }
+
+    double PublicParkingHourlyPrice { get; set; }
+
+    double ResidentialPermitOnlyParkingSpacesBuffer1 { get; set; }
+
+    double PublicWithResidentialPermitAllowedParkingSpacesBuffer1 { get; set; }
+
+    double PublicNoResidentialPermitAllowedParkingSpacesBuffer1 { get; set; }
+
+    double EmployeeOnlyParkingSpacesBuffer1 { get; set; }
+
+    double ElectricVehicleOnlyParkingSpacesBuffer1 { get; set; }
+
+    double ResidentialPermitDailyParkingPricesBuffer1 { get; set; }
+
+    double PublicParkingHourlyPriceBuffer1 { get; set; }
+
+    double ResidentialPermitOnlyParkingSpacesBuffer2 { get; set; }
+
+    double PublicWithResidentialPermitAllowedParkingSpacesBuffer2 { get; set; }
+
+    double PublicNoResidentialPermitAllowedParkingSpacesBuffer2 { get; set; }
+
+    double EmployeeOnlyParkingSpacesBuffer2 { get; set; }
+
+    double ElectricVehicleOnlyParkingSpacesBuffer2 { get; set; }
+
+    double ResidentialPermitDailyParkingPricesBuffer2 { get; set; }
+
+    double PublicParkingHourlyPriceBuffer2 { get; set; }
+
+    int DistrictID2 { get; set; }
+
+    //int FirstPositionInStopAreaDistanceArray { get; set; } 
+
+    //int LastPositionInStopAreaDistanceArray { get; set; }
+
+    //bool StopAreaDistanceArrayPositionsSet { get; set; }
 
     int FirstPositionInAutoParkAndRideNodeDistanceArray { get; set; }
 

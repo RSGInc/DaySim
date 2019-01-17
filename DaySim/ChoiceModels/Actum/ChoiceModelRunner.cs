@@ -1830,26 +1830,26 @@ namespace DaySim.ChoiceModels.Actum {
           mode = Global.Settings.Modes.Bike;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[i - 1].Mode == Global.Settings.Modes.Sov) {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           mode = Global.Settings.Modes.Sov;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[i - 1].Mode == Global.Settings.Modes.HovDriver) {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           mode = Global.Settings.Modes.HovDriver;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[i - 1].Mode == Global.Settings.Modes.HovPassenger || tour[i - 1].Mode == Global.Settings.Modes.SchoolBus || tour[i - 1].Mode == Global.Settings.Modes.Other) {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           mode = Global.Settings.Modes.HovPassenger;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[i - 1].Mode == Global.Settings.Modes.Transit || tour[i - 1].Mode == Global.Settings.Modes.ParkAndRide) {
-          impedanceVariable = "ivtime"; // TODO:  logic that uses this SHOULD also include initial wait time and transfer time
+          impedanceVariable = "time"; // TODO:  logic that uses this SHOULD also include initial wait time and transfer time
                                         //JLB 20160323 substitute HOV Passenger for Transit for now.  Logic that uses this should use transit total ivtime plus wait and transfer times 
                                         //mode = Global.Settings.Modes.Transit;
                                         //pathType = Global.Settings.PathTypes.LocalBus;
           mode = Global.Settings.Modes.HovPassenger;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           mode = Global.Settings.Modes.HovPassenger;
           pathType = Global.Settings.PathTypes.FullNetwork;
         }
@@ -2010,26 +2010,26 @@ namespace DaySim.ChoiceModels.Actum {
           mode = Global.Settings.Modes.Bike;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[1].Mode == Global.Settings.Modes.Sov) {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           mode = Global.Settings.Modes.Sov;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[1].Mode == Global.Settings.Modes.HovDriver) {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           mode = Global.Settings.Modes.HovDriver;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[1].Mode == Global.Settings.Modes.HovPassenger || tour[1].Mode == Global.Settings.Modes.SchoolBus || tour[1].Mode == Global.Settings.Modes.Other) {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           mode = Global.Settings.Modes.HovPassenger;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[1].Mode == Global.Settings.Modes.Transit || tour[1].Mode == Global.Settings.Modes.ParkAndRide) {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           //JLB 20160323 substitute HOV Passenger for Transit for now.  Logic that uses this should use transit total ivtime plus wait and transfer times 
           //mode = Global.Settings.Modes.Transit;
           //pathType = Global.Settings.PathTypes.LocalBus;
           mode = Global.Settings.Modes.HovPassenger;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else {
-          impedanceVariable = "ivtime";
+          impedanceVariable = "time";
           mode = Global.Settings.Modes.HovPassenger;
           pathType = Global.Settings.PathTypes.FullNetwork;
         }
@@ -3541,7 +3541,7 @@ namespace DaySim.ChoiceModels.Actum {
       int minimumTimeForIntermediateStop = 0;
       if (!trip.IsToTourOrigin && trip.DestinationParcel != null && tour.OriginParcel != null) {
 
-        double fastestTravelTime = ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Hov3, Global.Settings.PathTypes.FullNetwork, 20.0, 1,
+        double fastestTravelTime = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Hov3, Global.Settings.PathTypes.FullNetwork, 20.0, 1,
                     trip.IsHalfTourFromOrigin ? tour.OriginParcel : trip.DestinationParcel,
                     trip.IsHalfTourFromOrigin ? trip.DestinationParcel : tour.OriginParcel,
                     Constants.DEFAULT_VALUE).Variable;

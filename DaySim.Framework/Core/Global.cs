@@ -88,7 +88,7 @@ namespace DaySim.Framework.Core {
     public static float[] ParcelToBikeParkAndRideNodeDistance { get; set; }
     public static float[] ParcelToBikeParkAndRideNodeLength { get; set; }
 
-    public static int[] ParcelToAutoKissAndRideNodeIds { get; set; }
+    public static int[] ParcelToAutoKissAndRideMicrozoneIds { get; set; }
     public static int[] ParcelToAutoKissAndRideTerminalIds { get; set; }
     public static float[] ParcelToAutoKissAndRideNodeDistance { get; set; }
     public static float[] ParcelToAutoKissAndRideNodeLength { get; set; }

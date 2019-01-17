@@ -70,7 +70,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         person.UsualWorkParcel = choice;
         person.UsualWorkZoneKey = ChoiceModelFactory.ZoneKeys[choice.ZoneId];
 
-        SkimValue skimValue = ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 1, person.Household.ResidenceParcel, choice);
+        SkimValue skimValue = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 1, person.Household.ResidenceParcel, choice);
 
         person.AutoTimeToUsualWork = skimValue.Variable;
         person.AutoDistanceToUsualWork = skimValue.BlendVariable;

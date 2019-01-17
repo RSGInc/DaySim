@@ -13,11 +13,7 @@ namespace DaySim.DomainModels.Actum.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
   public sealed class Parcel : DaySim.DomainModels.Default.Models.Parcel, IActumParcel {
-    public bool StopAreaDistanceArrayPositionsSet { get; set; } = false;
 
-    public int FirstPositionInStopAreaDistanceArray { get; set; } = -1;
-
-    public int LastPositionInStopAreaDistanceArray { get; set; } = -1;
-
-  }
+ 
+ }
 }

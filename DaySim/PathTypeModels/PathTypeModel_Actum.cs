@@ -467,16 +467,7 @@ namespace DaySim.PathTypeModels {
       if ((skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) || skimModeIn == Global.Settings.Modes.PaidRideShare) {
       } else {
         if (!useZones) {
-          parkingCost =  // hourly
-              _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.ElevenPM, Global.Settings.Times.MinutesInADay)
-                  ? _destinationParcel.ParkingCostPerHour23_08
-                  : _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.ThreeAM, Global.Settings.Times.EightAM)
-                      ? _destinationParcel.ParkingCostPerHour23_08
-                      : _outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.EightAM, Global.Settings.Times.SixPM)
-                          ? _destinationParcel.ParkingCostPerHour8_18
-                      : //_outboundTime.IsLeftExclusiveBetween(Global.Settings.Times.SixPM, Global.Settings.Times.ElevenPM)
-                        //?
-                      _destinationParcel.ParkingCostPerHour18_23;
+          parkingCost = _destinationParcel.PublicParkingHourlyPriceBuffer1;
           int parkingDuration = 1; // assume 1 hour if return time isn't known
           if (_returnTime > 0) {
             parkingDuration = (_returnTime - _outboundTime) / 60;
@@ -535,7 +526,7 @@ namespace DaySim.PathTypeModels {
       }
       double walkTime = originWalkTime + destinationWalkTime;
 
-      string varname = "tottime";
+      string varname = "time";
       SkimValue skimValue =
               ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId);
       double pathTime = skimValue.Variable;
@@ -769,14 +760,13 @@ namespace DaySim.PathTypeModels {
           accessParkAndRideNodeID = nodeId;
         }
         else if (hovAccess || shareAccess) {
-          int nodeId = Global.ParcelToAutoKissAndRideNodeIds[indexAccess];
-          ParkAndRideNodeWrapper node = bikeParkAndRideNodes.First(x => x.ZoneId == nodeId);
-          ParcelWrapper kissAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
+          int terminalId = Global.ParcelToAutoKissAndRideTerminalIds[indexAccess];
+          int terminalMicrozoneId = Global.ParcelToAutoKissAndRideMicrozoneIds[indexAccess];
+          ParcelWrapper kissAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
           AutoPath accessPath = GetAutoPath(Global.Settings.Modes.HovPassenger, pathTypeAccEgr, votValue, useZones, false, _outboundTime, _returnTime, 0, 0, tourOriginParcel, kissAndRideParcel);
           accessTime = accessPath.Time;
           accessCost = accessPath.Cost;
           accessUtility = accessPath.Utility;
-          accessParkAndRideNodeID = nodeId;
         }
 
         for (int indexEgress = firstIndexEgress; indexEgress <= LastIndexEgress; indexEgress++) {
@@ -821,9 +811,9 @@ namespace DaySim.PathTypeModels {
             egressUtility = egressPath.Utility;
           }
           if (shareEgress) {
-            int nodeId = Global.ParcelToAutoKissAndRideNodeIds[indexEgress];
-            ParkAndRideNodeWrapper node = bikeParkAndRideNodes.First(x => x.ZoneId == nodeId);
-            ParcelWrapper kissAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
+            int terminalId = Global.ParcelToAutoKissAndRideTerminalIds[indexEgress];
+            int terminalMicrozoneId = Global.ParcelToAutoKissAndRideMicrozoneIds[indexEgress];
+            ParcelWrapper kissAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
             AutoPath egressPath = GetAutoPath(Global.Settings.Modes.HovPassenger, pathTypeAccEgr, votValue, useZones, false, _outboundTime, _returnTime, 0, 0, kissAndRideParcel, nonTourOriginParcel);
             egressTime = egressPath.Time;
             egressCost = egressPath.Cost;
@@ -991,7 +981,7 @@ namespace DaySim.PathTypeModels {
                     ? Constants.DEFAULT_VALUE
                     : _originParcel.CalculateShortDistance(_destinationParcel);
 
-      string varname = commuter ? "ivtime-co" : business ? "ivtime-bu" : "ivtime";
+      string varname = commuter ? "time-co" : business ? "time-bu" : "time";
       SkimValue skimValue =
                 useZones
                     ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originZoneId, destinationZoneId)
@@ -1085,7 +1075,9 @@ namespace DaySim.PathTypeModels {
 
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (returnTime > 0 ? 2 : 1);
 
-      string varname = "distance";
+      bool commuter = (_purpose == Global.Settings.Purposes.Work || _purpose == Global.Settings.Purposes.School || _purpose == Global.Settings.Purposes.Business);
+      string varname = commuter ? "distance-co" : "distance";
+
       SkimValue skimValue =
         ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId);
       double outboundDistance = skimValue.Variable;
@@ -1104,7 +1096,7 @@ namespace DaySim.PathTypeModels {
         path.Distance += returnDistance;
       }
 
-      varname = "tottime";
+      varname = commuter ? "time-co" : "time";
       skimValue =
               ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId);
       path.Time = skimValue.Variable;
@@ -1119,7 +1111,7 @@ namespace DaySim.PathTypeModels {
         return path;
       }
 
-      varname = "gentime";
+      varname = commuter ? "gentime-co" : "gentime";
       skimValue =
            ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId);
       path.GenTime = skimValue.Variable;
