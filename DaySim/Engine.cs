@@ -1283,6 +1283,7 @@ namespace DaySim {
     }
 
     // create separate bike to terminal connectors for bike on board?
+    // would speed up that mode
 
     public static void InitializeMicrozoneToAutoKissAndRideNodeDistances(TextReader reader) {
 
