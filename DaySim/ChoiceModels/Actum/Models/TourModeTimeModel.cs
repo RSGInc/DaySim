@@ -665,7 +665,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
               && (mode > Global.Settings.Modes.Transit)) {
             available = false;
           }
-
+          if (tour.JointTourSequence > 0 
+            && (mode == Global.Settings.Modes.Sov || mode == Global.Settings.Modes.HovPassenger) 
+            && (constrainedMode != Global.Settings.Modes.HovPassenger)) {
+            available = false;
+          }
           //further limit availability:  kissAndRide and carParkRideBike are not supported 
           //available = (available == true) && (mode != Global.Settings.Modes.CarKissRideWalk) && (mode != Global.Settings.Modes.CarParkRideBike);
 

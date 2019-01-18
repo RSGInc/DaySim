@@ -2514,7 +2514,8 @@ namespace DaySim.ChoiceModels.Actum {
                 if (householdDay.IsValid == false) {
                   return;
                 }
-                SetTourModeAndTime(householdDay, tour[i], tour[iOldest].Mode, tour[iOldest].DestinationArrivalTime, tour[iOldest].DestinationDepartureTime);
+                int constrainedMode = (tour[iOldest].Mode == Global.Settings.Modes.HovDriver) ? Global.Settings.Modes.HovPassenger : tour[iOldest].Mode;
+                SetTourModeAndTime(householdDay, tour[i], constrainedMode, tour[iOldest].DestinationArrivalTime, tour[iOldest].DestinationDepartureTime);
               }
               if (householdDay.IsValid == false) {
                 return;
@@ -3594,9 +3595,11 @@ namespace DaySim.ChoiceModels.Actum {
           // 201603 JLB
           //				else if (trip.Tour.Mode == Global.Settings.Modes.BikeOnTransit || trip.Tour.Mode == Global.Settings.Modes.BikeParkRideBike
           //					|| trip.Tour.Mode == Global.Settings.Modes.BikeParkRideWalk || trip.Tour.Mode == Global.Settings.Modes.WalkRideBike) {
-          else if (tour.Mode == Global.Settings.Modes.BikeOnTransit || tour.Mode == Global.Settings.Modes.BikeParkRideBike
+        else if (tour.Mode == Global.Settings.Modes.BikeOnTransit || tour.Mode == Global.Settings.Modes.BikeParkRideBike
               || tour.Mode == Global.Settings.Modes.BikeParkRideWalk || tour.Mode == Global.Settings.Modes.WalkRideBike) {
           trip.Mode = Global.Settings.Modes.Transit;
+        } else if (tour.JointTourSequence > 0) {
+            trip.Mode = tour.Mode;
         } else {
 
           ChoiceModelFactory.TotalTimesTripModeModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
@@ -3826,7 +3829,7 @@ namespace DaySim.ChoiceModels.Actum {
         Global.PrintFile.WriteLine("> > > > > > CloneTripModeAndTime Tour {0} Direction {1} Trip {2}", trip.Tour.Sequence, trip.Direction, trip.Sequence);
       }
 
-      trip.Mode = sourceTrip.Mode;
+      trip.Mode = (sourceTrip.Mode == Global.Settings.Modes.HovDriver) ? Global.Settings.Modes.HovPassenger : sourceTrip.Mode; ;
       trip.PathType = sourceTrip.PathType;
 
       trip.DepartureTime = sourceTrip.DepartureTime;
