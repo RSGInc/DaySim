@@ -1649,12 +1649,18 @@ namespace DaySim.Framework.Core {
     public char MicrozoneToBikeParkAndRideNodeDelimiter { get; set; }
 
     [XmlAttribute]
-    public string MicrozoneToAutoKissAndRideNodePath { get; set; }
+    public string MicrozoneToAutoKissAndRideTerminalPath { get; set; }
 
     [XmlAttribute]
-    public char MicrozoneToAutoKissAndRideNodeDelimiter { get; set; }
+    public char MicrozoneToAutoKissAndRideTerminalDelimiter { get; set; }
 
+    [XmlAttribute]
+    public string MicrozoneToBikeOnBoardTerminalPath { get; set; }
 
+    [XmlAttribute]
+    public char MicrozoneToBikeOnBoardTerminalDelimiter { get; set; }
+
+    
     [XmlAttribute]
     public char NodeStopAreaIndexDelimiter { get; set; }
 
