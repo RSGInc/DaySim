@@ -88,10 +88,15 @@ namespace DaySim.Framework.Core {
     public static float[] ParcelToBikeParkAndRideNodeDistance { get; set; }
     public static float[] ParcelToBikeParkAndRideNodeLength { get; set; }
 
-    public static int[] ParcelToAutoKissAndRideNodeIds { get; set; }
+    public static int[] ParcelToAutoKissAndRideMicrozoneIds { get; set; }
     public static int[] ParcelToAutoKissAndRideTerminalIds { get; set; }
-    public static float[] ParcelToAutoKissAndRideNodeDistance { get; set; }
-    public static float[] ParcelToAutoKissAndRideNodeLength { get; set; }
+    public static float[] ParcelToAutoKissAndRideTerminalDistance { get; set; }
+    public static float[] ParcelToAutoKissAndRideTerminalLength { get; set; }
+
+    public static int[] ParcelToBikeOnBoardMicrozoneIds { get; set; }
+    public static int[] ParcelToBikeOnBoardTerminalIds { get; set; }
+    public static float[] ParcelToBikeOnBoardTerminalDistance { get; set; }
+    public static float[] ParcelToBikeOnBoardTerminalLength { get; set; }
 
     public static float[] TransitBaseFare_Adult;
     public static float[] TransitBaseFare_ChildDiscount;

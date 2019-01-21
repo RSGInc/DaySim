@@ -189,8 +189,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
 
         double fastestTravelTime =
-                  ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Hov3, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, fastestAvailableTimeOfDay, tour.OriginParcel, destinationParcel).Variable +
-                  ImpedanceRoster.GetValue("ivtime", Global.Settings.Modes.Hov3, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, fastestAvailableTimeOfDay, destinationParcel, tour.OriginParcel).Variable;
+                  ImpedanceRoster.GetValue("time", Global.Settings.Modes.Hov3, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, fastestAvailableTimeOfDay, tour.OriginParcel, destinationParcel).Variable +
+                  ImpedanceRoster.GetValue("time", Global.Settings.Modes.Hov3, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, fastestAvailableTimeOfDay, destinationParcel, tour.OriginParcel).Variable;
 
         if (fastestTravelTime >= maxAvailableMinutes) {
           alternative.Available = false;

@@ -46,7 +46,7 @@ namespace DaySim.DomainModels.Actum.Models {
     public double CostAnnual { get; set; }
 
     [ColumnName("CostDaily")]
-    public override int Cost { get; set; }
+    public override int CostDaily { get; set; }
 
     [ColumnName("PRFacility")]
     public int PRFacility { get; set; }

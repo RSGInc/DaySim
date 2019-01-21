@@ -35,6 +35,8 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     #region flags/choice model/etc. properties
 
+    int hovOccupancy { get; set; }
+
     bool IsHomeBasedTour { get; set; }
 
     ITimeWindow TimeWindow { get; set; }

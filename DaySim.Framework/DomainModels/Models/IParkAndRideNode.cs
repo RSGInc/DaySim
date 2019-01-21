@@ -9,7 +9,7 @@ namespace DaySim.Framework.DomainModels.Models {
   public interface IParkAndRideNode : IModel, IPoint {
     int Capacity { get; set; }
 
-    int Cost { get; set; }
+    int CostDaily { get; set; }
 
     int NearestParcelId { get; set; }
 

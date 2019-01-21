@@ -80,7 +80,8 @@ namespace DaySim {
       BeginLoadNodeStopAreaDistances();
       BeginLoadMicrozoneToAutoParkAndRideNodeDistances();
       BeginLoadMicrozoneToBikeParkAndRideNodeDistances();
-      BeginLoadMicrozoneToAutoKissAndRideNodeDistances();
+      BeginLoadMicrozoneToAutoKissAndRideTerminalDistances();
+      BeginLoadMicrozoneToBikeOnBoardTerminalDistances();
       BeginLoadTransitPricesByFareZones();
 
       BeginCalculateAggregateLogsums(randomUtility);
@@ -315,6 +316,7 @@ namespace DaySim {
     private static void InitializeSkimFactories() {
       Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("text_ij", new TextIJSkimFileReaderCreator());
       Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("visum-bin", new VisumSkimReaderCreator());
+      Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("daysim-bin", new BinarySkimFileReaderCreator());
       Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("bin", new BinarySkimFileReaderCreator());
       Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("emme", new EMMEReaderCreator());
       Global.ContainerDaySim.GetInstance<SkimFileReaderFactory>().Register("hdf5", new HDF5ReaderCreator());
@@ -1263,16 +1265,16 @@ namespace DaySim {
 
     }
 
-    private static void BeginLoadMicrozoneToAutoKissAndRideNodeDistances() {
+    private static void BeginLoadMicrozoneToAutoKissAndRideTerminalDistances() {
       if (!Global.StopAreaIsEnabled || Global.Configuration.DataType != "Actum") {
         return;
       }
-      if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToAutoKissAndRideNodePath)) {
-        throw new ArgumentNullException("MicrozoneToAutoKissAndRideNodePath");
+      if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToAutoKissAndRideTerminalPath)) {
+        throw new ArgumentNullException("MicrozoneToAutoKissAndRideTerminalPath");
       }
 
       Timer timer = new Timer("MicrozoneToAutoKissAndRideTerminal distances...");
-      string filename = Global.GetInputPath(Global.Configuration.MicrozoneToAutoKissAndRideNodePath);
+      string filename = Global.GetInputPath(Global.Configuration.MicrozoneToAutoKissAndRideTerminalPath);
       using (StreamReader reader = File.OpenText(filename)) {
         InitializeMicrozoneToAutoKissAndRideNodeDistances(reader);
       }
@@ -1281,11 +1283,14 @@ namespace DaySim {
       overallDaySimTimer.Print();
     }
 
+    // create separate bike to terminal connectors for bike on board?
+    // would speed up that mode
+
     public static void InitializeMicrozoneToAutoKissAndRideNodeDistances(TextReader reader) {
 
       //var parcelIds = new List<int>();  
       List<int> nodeSequentialIds = new List<int>();
-      List<int> parkAndRideNodeIds = new List<int>();
+      List<int> nodeMicrozoneIds = new List<int>();
       List<float> lengths = new List<float>(); /* raw values */
       List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
 
@@ -1299,12 +1304,12 @@ namespace DaySim {
       //start arrays at index 0 with dummy values, since valid indices start with 1
       //parcelIds.Add(0);
       nodeSequentialIds.Add(0);
-      parkAndRideNodeIds.Add(0);
+      nodeMicrozoneIds.Add(0);
       distances.Add(0F);
       lengths.Add(0F);
 
       while ((line = reader.ReadLine()) != null) {
-        string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToAutoKissAndRideNodeDelimiter });
+        string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToAutoKissAndRideTerminalDelimiter });
 
         arrayIndex++;
         int parcelId = int.Parse(tokens[0]);
@@ -1318,21 +1323,99 @@ namespace DaySim {
         parcel.LastPositionInAutoKissAndRideTerminalDistanceArray = arrayIndex;
 
         //parcelIds.Add(int.Parse(tokens[0]));
-        int parkAndRideNodeId = int.Parse(tokens[1]);
-        parkAndRideNodeIds.Add(parkAndRideNodeId);
-        //mb changed this array to use mapping of stop area ids 
-        int nodeSequentialIndex = Global.ParkAndRideNodeMapping[parkAndRideNodeId];
+        int nodeSequentialIndex = int.Parse(tokens[1]);
         nodeSequentialIds.Add(nodeSequentialIndex);
+        int nodeMicrozoneIndex = int.Parse(tokens[3]);
+        nodeMicrozoneIds.Add(nodeMicrozoneIndex);
+        //parkAndRideNodeIds.Add(parkAndRideNodeId);
+        //int nodeSequentialIndex = Global.ParkAndRideNodeMapping[parkAndRideNodeId];
         float length = float.Parse(tokens[2]);
         lengths.Add(length);
         float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
         distances.Add(distance);
       }
 
-      Global.ParcelToAutoKissAndRideNodeIds = parkAndRideNodeIds.ToArray();
+      Global.ParcelToAutoKissAndRideMicrozoneIds = nodeMicrozoneIds.ToArray();
       Global.ParcelToAutoKissAndRideTerminalIds = nodeSequentialIds.ToArray();
-      Global.ParcelToAutoKissAndRideNodeLength = lengths.ToArray();
-      Global.ParcelToAutoKissAndRideNodeDistance = distances.ToArray();
+      Global.ParcelToAutoKissAndRideTerminalLength = lengths.ToArray();
+      Global.ParcelToAutoKissAndRideTerminalDistance = distances.ToArray();
+
+    }
+
+    private static void BeginLoadMicrozoneToBikeOnBoardTerminalDistances() {
+      if (!Global.StopAreaIsEnabled || Global.Configuration.DataType != "Actum") {
+        return;
+      }
+      if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToBikeOnBoardTerminalPath)) {
+        throw new ArgumentNullException("MicrozoneToBikeOnBoardTerminalPath");
+      }
+
+      Timer timer = new Timer("MicrozoneToBikeOnBoardTerminal distances...");
+      string filename = Global.GetInputPath(Global.Configuration.MicrozoneToBikeOnBoardTerminalPath);
+      using (StreamReader reader = File.OpenText(filename)) {
+        InitializeMicrozoneToBikeOnBoardTerminalDistances(reader);
+      }
+
+      timer.Stop();
+      overallDaySimTimer.Print();
+    }
+
+    // create separate bike to terminal connectors for bike on board?
+    // would speed up that mode
+
+    public static void InitializeMicrozoneToBikeOnBoardTerminalDistances(TextReader reader) {
+
+      //var parcelIds = new List<int>();  
+      List<int> nodeSequentialIds = new List<int>();
+      List<int> nodeMicrozoneIds = new List<int>();
+      List<float> lengths = new List<float>(); /* raw values */
+      List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
+
+      // read header
+      reader.ReadLine();
+
+      string line;
+      int lastParcelId = -1;
+      IActumParcelWrapper parcel = null;
+      int arrayIndex = 0;
+      //start arrays at index 0 with dummy values, since valid indices start with 1
+      //parcelIds.Add(0);
+      nodeSequentialIds.Add(0);
+      nodeMicrozoneIds.Add(0);
+      distances.Add(0F);
+      lengths.Add(0F);
+
+      while ((line = reader.ReadLine()) != null) {
+        string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToBikeOnBoardTerminalDelimiter });
+
+        arrayIndex++;
+        int parcelId = int.Parse(tokens[0]);
+        if (parcelId != lastParcelId) {
+          //Console.WriteLine(parcelId);
+          parcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[parcelId];
+          parcel.FirstPositionInBikeOnBoardTerminalDistanceArray = arrayIndex;
+          parcel.BikeOnBoardTerminalDistanceArrayPositionsSet = true;
+          lastParcelId = parcelId;
+        }
+        parcel.LastPositionInBikeOnBoardTerminalDistanceArray = arrayIndex;
+
+        //parcelIds.Add(int.Parse(tokens[0]));
+        int nodeSequentialIndex = int.Parse(tokens[1]);
+        nodeSequentialIds.Add(nodeSequentialIndex);
+        int nodeMicrozoneIndex = int.Parse(tokens[3]);
+        nodeMicrozoneIds.Add(nodeMicrozoneIndex);
+        //parkAndRideNodeIds.Add(parkAndRideNodeId);
+        //int nodeSequentialIndex = Global.ParkAndRideNodeMapping[parkAndRideNodeId];
+        float length = float.Parse(tokens[2]);
+        lengths.Add(length);
+        float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
+        distances.Add(distance);
+      }
+
+      Global.ParcelToBikeOnBoardMicrozoneIds = nodeMicrozoneIds.ToArray();
+      Global.ParcelToBikeOnBoardTerminalIds = nodeSequentialIds.ToArray();
+      Global.ParcelToBikeOnBoardTerminalLength = lengths.ToArray();
+      Global.ParcelToBikeOnBoardTerminalDistance = distances.ToArray();
 
     }
 
@@ -1583,7 +1666,8 @@ namespace DaySim {
     private static void BeginCalculateSamplingWeights() {
       Timer timer = new Timer("Calculating sampling weights...");
 
-      SamplingWeightsCalculator.Calculate("ivtime", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 180);
+      string impedanceVariable = (Global.Configuration.DataType == "Actum") ? "time" : "ivtime";
+      SamplingWeightsCalculator.Calculate(impedanceVariable, Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, 180);
 
       timer.Stop();
       overallDaySimTimer.Print();

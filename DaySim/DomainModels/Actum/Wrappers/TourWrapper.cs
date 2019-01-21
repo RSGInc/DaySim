@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DaySim.ChoiceModels;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
@@ -62,6 +63,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     #region flags/choice model/etc. properties
 
     //JLB 20160323
+    public int HovOccupancy { get; set; }
 
     public int HalfTour1AccessMode { get; set; }
 
@@ -173,6 +175,51 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       double costCoefficient = baseIncomeCoefficient * Math.Pow(incomeMultiple, incomeElasticity);
 
       CostCoefficient = costCoefficient;
+
+      // set occupancy
+      if (Global.Configuration.ShouldSynchronizeRandomSeed && PersonDay != null) {
+        PersonDay.ResetRandom(10 + Sequence - 1);
+      }
+
+      if (JointTourSequence > 0 ){
+        HovOccupancy = 0;
+        foreach (IPersonDayWrapper pDay in PersonDay.HouseholdDay.PersonDays) {
+          ITourWrapper tInJoint =
+            pDay.Tours.Find(t => t.JointTourSequence == JointTourSequence);
+          if (tInJoint != null) {
+            HovOccupancy = HovOccupancy + 1;
+          }
+        }
+
+      } else if (FullHalfTour1Sequence > 0 || FullHalfTour2Sequence > 0 || PartialHalfTour1Sequence > 0 || PartialHalfTour2Sequence > 0) {
+        HovOccupancy = 0;
+        foreach (IPersonDayWrapper pDay in PersonDay.HouseholdDay.PersonDays) {
+          ITourWrapper tInJoint =
+              pDay.Tours.Find(t => (t.FullHalfTour1Sequence == FullHalfTour1Sequence || t.FullHalfTour2Sequence == FullHalfTour2Sequence
+                                 || t.PartialHalfTour1Sequence == PartialHalfTour1Sequence || t.PartialHalfTour2Sequence == PartialHalfTour2Sequence));
+          // does this need to all for more types of combinations (full for 1 person and partial for the other person)?
+          if (tInJoint != null) {
+            HovOccupancy = HovOccupancy + 1;
+          }
+        }
+
+      } else  { // set randomly
+        double randomNumber = 0.5; // Household.RandomUtility.Uniform01();
+
+        double fraction2Occ = DestinationPurpose == Global.Settings.Purposes.Work ? Global.Configuration.COMPASS_HOVFraction2Occupants_Commute
+                            : DestinationPurpose == Global.Settings.Purposes.Business ? Global.Configuration.COMPASS_HOVFraction2Occupants_Business
+                                                                                   : Global.Configuration.COMPASS_HOVFraction2Occupants_Leisure;
+        double fraction3Occ = DestinationPurpose == Global.Settings.Purposes.Work ? Global.Configuration.COMPASS_HOVFraction3Occupants_Commute
+                            : DestinationPurpose == Global.Settings.Purposes.Business ? Global.Configuration.COMPASS_HOVFraction3Occupants_Business
+                                                                                   : Global.Configuration.COMPASS_HOVFraction3Occupants_Leisure;
+        double fraction4Occ = DestinationPurpose == Global.Settings.Purposes.Work ? Global.Configuration.COMPASS_HOVFraction4Occupants_Commute
+                            : DestinationPurpose == Global.Settings.Purposes.Business ? Global.Configuration.COMPASS_HOVFraction4Occupants_Business
+                                                                                   : Global.Configuration.COMPASS_HOVFraction4Occupants_Leisure;
+        HovOccupancy = randomNumber < fraction2Occ ? 2
+                     : randomNumber < fraction2Occ + fraction3Occ ? 3
+                     : randomNumber < fraction2Occ + fraction3Occ + fraction4Occ ? 4 : 5;
+
+      }
 
       // still need to adjust the cost coefficient for distance and occupancy in PathTypeModel
 
