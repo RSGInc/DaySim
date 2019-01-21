@@ -202,6 +202,10 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         TravelDistance = modeImpedance.PathDistance;
         PathType = modeImpedance.PathType;
 
+        AutoOccupancy =
+          Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger ? Tour.HovOccupancy :
+          Mode == Global.Settings.Modes.PaidRideShare ? 2 : 1;
+
         if (Mode == Global.Settings.Modes.Transit) {
           if (Direction == 1) {
             AccessCost = time.DestinationAccessCost;

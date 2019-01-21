@@ -208,6 +208,28 @@ namespace DaySim.PathTypeModels {
     }
 
     public void RunModel(IRandomUtility randomUtility, bool useZones = false) {
+
+      //adjust cost coefficient for the distance effect
+      if (!useZones) {
+        double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable;
+
+
+        double baseDistance = (_purpose == Global.Settings.Purposes.Work) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Work
+                             : (_purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Education
+                             : (_purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Business
+                             : (_purpose == Global.Settings.Purposes.Shopping) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Shop
+                             : Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_HBOther;
+
+        double distanceMultiple =
+               Math.Min(Math.Max(mzDistance / baseDistance, Global.Configuration.COMPASS_CostCoefficientDistanceMultipleMinimum), Global.Configuration.COMPASS_CostCoefficientDistanceMultipleMaximum); // ranges for extreme values
+
+        double distanceElasticity = (_purpose == Global.Settings.Purposes.Work || _purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Commute
+                                : (_purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Business
+                                : Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Leisure;
+
+        _tourCostCoefficient = _tourCostCoefficient * Math.Pow(distanceMultiple, distanceElasticity);
+      }
+      /* this is not used
       if (Mode == Global.Settings.Modes.Hov2) {
         _tourCostCoefficient
             = _tourCostCoefficient /
@@ -221,7 +243,7 @@ namespace DaySim.PathTypeModels {
                   ? Global.Configuration.Coefficients_HOV3CostDivisor_Work
                   : Global.Configuration.Coefficients_HOV3CostDivisor_Other);
       }
-
+      */
 
       double votValue = 60; // (60.0 * _tourTimeCoefficient) / _tourCostCoefficient; // not using skims by vot group
 
@@ -476,13 +498,33 @@ namespace DaySim.PathTypeModels {
         }
       }
 
+      double costFraction = 1.0;
+      if (skimModeIn == Global.Settings.Modes.HovDriver || skimModeIn == Global.Settings.Modes.HovPassenger) {
+        int hovOccupancy = 2; // will pass in later
+        costFraction = _purpose == Global.Settings.Purposes.Work ?
+          (hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Commute
+          : hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Commute
+         : hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Commute
+         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Commute)
+        : _purpose == Global.Settings.Purposes.Business ?
+          (hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Business
+          : hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Business
+         : hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Business
+         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Business)
+        :
+          (hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Leisure
+          : hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Leisure
+         : hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Leisure
+         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Leisure);
+      }
+
 
       //set pathType properties
       _pathTime[pathType] = path.Time;
       _pathDistance[pathType] = path.Distance;
       _pathCost[pathType] = path.Cost + parkingCost;
       _utility[pathType] = path.Utility
-                         + parkingCost * _tourCostCoefficient;
+                         + parkingCost * costFraction * _tourCostCoefficient;
 
       _expUtility[pathType] = _utility[pathType] > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : _utility[pathType] < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(_utility[pathType]);
 
@@ -558,9 +600,13 @@ namespace DaySim.PathTypeModels {
         if (_personAge <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
           fare = fare * (1 - Global.TransitBaseFare_ChildDiscount[fareZones] / 100.0);
         }
-        if (_outboundTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
+        double outboundTime2 = _outboundTime - pathTime; 
+        if ((_outboundTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
           (_outboundTime + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && _outboundTime + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
-          || _outboundTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) {
+          || _outboundTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) &&
+          (outboundTime2 + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
+          (outboundTime2 + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && outboundTime2 + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
+          || outboundTime2 + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute)){
           fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
         }
         fareCost = fare;
@@ -574,10 +620,14 @@ namespace DaySim.PathTypeModels {
           if (_personAge <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
             fare = fare * (1 - Global.TransitBaseFare_ChildDiscount[fareZones] / 100.0);
           }
-          if (_returnTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
+          double returnTime2 = _returnTime + pathTime;
+          if ((_returnTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
             (_returnTime + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && _returnTime + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
-            || _returnTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) {
-            fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
+            || _returnTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) &&
+            (returnTime2 + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
+            (returnTime2 + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && returnTime2 + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
+            || returnTime2 + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute))  {
+              fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
           }
           fareCost += fare;
         }
@@ -684,22 +734,26 @@ namespace DaySim.PathTypeModels {
 
 
       int firstIndexAccess = walkAccess ? tourOriginParcel.FirstPositionInStopAreaDistanceArray
+                      : bikeOnBoard ? tourOriginParcel.FirstPositionInBikeOnBoardTerminalDistanceArray
                       : bikeAccess ? tourOriginParcel.FirstPositionInBikeParkAndRideNodeDistanceArray
                       : sovAccess ? tourOriginParcel.FirstPositionInAutoParkAndRideNodeDistanceArray
                       : tourOriginParcel.FirstPositionInAutoKissAndRideTerminalDistanceArray;
 
       int LastIndexAccess  = Math.Min(firstIndexAccess + maxStopAreasToSearchAccess - 1,
                         walkAccess ? tourOriginParcel.LastPositionInStopAreaDistanceArray
+                      : bikeOnBoard ? tourOriginParcel.LastPositionInBikeOnBoardTerminalDistanceArray
                       : bikeAccess ? tourOriginParcel.LastPositionInBikeParkAndRideNodeDistanceArray
                       : sovAccess ? tourOriginParcel.LastPositionInAutoParkAndRideNodeDistanceArray
                       : tourOriginParcel.LastPositionInAutoKissAndRideTerminalDistanceArray);
 
       int firstIndexEgress = walkEgress ? nonTourOriginParcel.FirstPositionInStopAreaDistanceArray
+                      : bikeOnBoard ? nonTourOriginParcel.FirstPositionInBikeOnBoardTerminalDistanceArray
                       : bikeEgress ? nonTourOriginParcel.FirstPositionInBikeParkAndRideNodeDistanceArray
                       : nonTourOriginParcel.FirstPositionInAutoKissAndRideTerminalDistanceArray;
 
       int LastIndexEgress = Math.Min(firstIndexEgress + maxStopAreasToSearchEgress - 1,
                         walkEgress ? nonTourOriginParcel.LastPositionInStopAreaDistanceArray
+                      : bikeOnBoard ? nonTourOriginParcel.LastPositionInBikeOnBoardTerminalDistanceArray
                       : bikeEgress ? nonTourOriginParcel.LastPositionInBikeParkAndRideNodeDistanceArray
                       : nonTourOriginParcel.LastPositionInAutoKissAndRideTerminalDistanceArray);
 
@@ -715,6 +769,7 @@ namespace DaySim.PathTypeModels {
       for (int indexAccess = firstIndexAccess ; indexAccess <= LastIndexAccess; indexAccess++) {
 
         double stopAreaLengthAccess = (walkAccess ? Global.ParcelStopAreaLengths[indexAccess]
+                       : bikeOnBoard ? Global.ParcelToBikeOnBoardTerminalLength[indexAccess]
                        : bikeAccess ? Global.ParcelToBikeParkAndRideNodeLength[indexAccess]
                        : sovAccess ? Global.ParcelToAutoParkAndRideNodeLength[indexAccess]
                        : Global.ParcelToAutoKissAndRideTerminalLength[indexAccess]) /1000.0; //convert to km
@@ -724,6 +779,7 @@ namespace DaySim.PathTypeModels {
         }
 
         int terminalKeyAccess = walkAccess ? Global.ParcelStopAreaStopAreaIds[indexAccess]
+                       : bikeOnBoard ? Global.ParcelToBikeOnBoardTerminalIds[indexAccess]
                        : bikeAccess ? Global.ParcelToBikeParkAndRideTerminalIds[indexAccess]
                        : sovAccess ? Global.ParcelToAutoParkAndRideTerminalIds[indexAccess]
                        : Global.ParcelToAutoKissAndRideTerminalIds[indexAccess];
@@ -755,7 +811,7 @@ namespace DaySim.PathTypeModels {
           ParkAndRideNodeWrapper node = bikeParkAndRideNodes.First(x => x.ZoneId == nodeId);
           ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
           WalkBikePath accessPath = GetWalkBikePath(accessMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, tourOriginParcel, parkAndRideParcel);
-          double parkingCost = node.Cost;
+          double parkingCost = node.CostDaily;
           accessTime = accessPath.Time;
           accessCost = parkingCost;
           accessUtility = accessPath.Utility;
@@ -790,7 +846,7 @@ namespace DaySim.PathTypeModels {
                                 ? node.CostPerHour08_18 * duration
                                 : node.CostPerHour18_23 * duration;
 
-          double parkingCost = Math.Min(parkingCostByTheHour, node.Cost);
+          double parkingCost = Math.Min(parkingCostByTheHour, node.CostDaily);
 
           accessTime = accessPath.Time;
           accessCost = accessPath.Cost + parkingCost;
@@ -811,6 +867,7 @@ namespace DaySim.PathTypeModels {
 
 
           double stopAreaLengthEgress = (walkEgress ? Global.ParcelStopAreaLengths[indexEgress]
+                         : bikeOnBoard ? Global.ParcelToBikeOnBoardTerminalLength[indexEgress]
                          : bikeEgress ? Global.ParcelToBikeParkAndRideNodeLength[indexEgress]
                          : Global.ParcelToAutoKissAndRideTerminalLength[indexEgress]) / 1000.0; //convert to km
 
@@ -819,6 +876,7 @@ namespace DaySim.PathTypeModels {
           }
 
           int terminalKeyEgress = walkEgress ? Global.ParcelStopAreaStopAreaIds[indexEgress]
+               : bikeOnBoard ? Global.ParcelToBikeOnBoardTerminalIds[indexEgress]
                : bikeEgress ? Global.ParcelToBikeParkAndRideTerminalIds[indexEgress]
                : Global.ParcelToAutoKissAndRideTerminalIds[indexEgress];
 
@@ -911,6 +969,7 @@ namespace DaySim.PathTypeModels {
 
     }
 
+   
     public class WalkBikePath {
       public bool Available { get; set; }
       public double Time { get; set; }
@@ -930,70 +989,93 @@ namespace DaySim.PathTypeModels {
 
       double zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
 
-      double circuityDistance =
+      bool intraZonal = (_originZoneId == _destinationZoneId);
+      if (intraZonal && !useZones) {
+        double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
+        double trips = (_returnTime > 0) ? 2.0 : 1.0;
+        if (_originParcel.Id != _destinationParcel.Id) {
+          mzDistance = mzDistance * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor;
+        }
+        path.Distance = mzDistance * trips;
+
+        if (skimMode == Global.Settings.Modes.Walk) {
+          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Walk
+                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Walk;
+          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Walk
+                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Walk;
+
+        } else {
+          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Bike
+                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Bike;
+          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Bike
+                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Bike;
+        }
+
+      } else {
+        double circuityDistance =
                 ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                     ? Constants.DEFAULT_VALUE
                     : _originParcel.CalculateShortDistance(_destinationParcel);
 
 
-      string varname = commuter ? "time-co" : "time";
-      SkimValue skimValue =
+        string varname = commuter ? "time-co" : "time";
+        SkimValue skimValue =
                 useZones
                     ? ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId)
-                    : ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originParcel, destinationParcel, circuityDistance);
-      path.Time = skimValue.Variable;
+                     : ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originParcel, destinationParcel, circuityDistance);
+        path.Time = skimValue.Variable;
 
-      if (_returnTime > 0) {
-        skimValue =
+        if (_returnTime > 0) {
+          skimValue =
             useZones
                 ? ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId)
                 : ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationParcel, originParcel, circuityDistance);
-        path.Time += skimValue.Variable;
-      }
+          path.Time += skimValue.Variable;
+        }
 
-      if (path.Time > pathTimeLimit ) {
-        return path;
-      }
+        if (path.Time > pathTimeLimit) {
+          return path;
+        }
 
-      varname = commuter ? "distance-co" : "distance";
-      skimValue =
+        varname = commuter ? "distance-co" : "distance";
+        skimValue =
           useZones
               ? ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId)
               : ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originParcel, destinationParcel, circuityDistance);
-      path.Distance = skimValue.Variable;
+        path.Distance = skimValue.Variable;
 
-      if (_returnTime > 0) {
-        skimValue =
+        if (_returnTime > 0) {
+          skimValue =
             useZones
                 ? ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId)
                 : ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationParcel, originParcel, circuityDistance);
-        path.Distance += skimValue.Variable;
-      }
+          path.Distance += skimValue.Variable;
+        }
 
-      varname = commuter ? "lstime-co" : "lstime";
-      skimValue =
+        varname = commuter ? "lstime-co" : "lstime";
+        skimValue =
           useZones
               ? ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId)
               : ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originParcel, destinationParcel, circuityDistance);
-      path.GenTime = skimValue.Variable;
+        path.GenTime = skimValue.Variable;
 
-      if (_returnTime > 0) {
-        skimValue =
+        if (_returnTime > 0) {
+          skimValue =
             useZones
                 ? ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId)
                 : ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationParcel, originParcel, circuityDistance);
-        path.GenTime += skimValue.Variable;
-      }
+          path.GenTime += skimValue.Variable;
+        }
 
 
-      // a fix for intra-parcels, which happen once in a great while for school
-      if (!useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
+        /* a fix for intra-parcels, which happen once in a great while for school
+        if (!useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
           //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
           && Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone) {
-        path.Time = 1.0;
-        path.Distance = 0.01 * Global.Settings.DistanceUnitsPerMile;  // JLBscale.  multiplied by distance units per mile
+          path.Time = 1.0;
+          path.Distance = 0.01 * Global.Settings.DistanceUnitsPerMile;  // JLBscale.  multiplied by distance units per mile
+        }*/
       }
-
       path.Utility = path.GenTime * _tourTimeCoefficient;
 
       path.Available = true;
@@ -1023,81 +1105,101 @@ namespace DaySim.PathTypeModels {
 
       double zzDist = ImpedanceRoster.GetValue("distance", skimModeIn, pathType, votValue, outboundTime, _originZoneId, _destinationZoneId).Variable;
 
-      double circuityDistance =
+      bool intraZonal = (_originZoneId == _destinationZoneId);
+      if (intraZonal && !useZones) {
+        double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
+        double trips = (_returnTime > 0) ? 2.0 : 1.0;
+        if (_originParcel.Id != _destinationParcel.Id) {
+          mzDistance = mzDistance * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor;
+        }
+        path.Distance = mzDistance * trips;
+        if (skimModeIn == Global.Settings.Modes.Sov) {
+          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_SOV
+                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_SOV;
+          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV
+                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_SOV;
+        } else {
+          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_HOV
+                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_HOV;
+          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV
+                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_HOV;
+        }
+      } else {
+        double circuityDistance =
                 ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
                     ? Constants.DEFAULT_VALUE
                     : _originParcel.CalculateShortDistance(_destinationParcel);
 
-      string varname = commuter ? "time-co" : business ? "time-bu" : "time";
-      SkimValue skimValue =
+        string varname = commuter ? "time-co" : business ? "time-bu" : "time";
+        SkimValue skimValue =
                 useZones
                     ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originZoneId, destinationZoneId)
                     : ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originParcel, destinationParcel, circuityDistance);
-      if (skimValue.Variable < Constants.EPSILON) {
-        return path;
-      }
-      path.Time = skimValue.Variable;
+        //if (skimValue.Variable < Constants.EPSILON) {
+        //  return path;
+        //}
+        path.Time = skimValue.Variable;
 
-      if (_returnTime > 0) {
-        skimValue =
+        if (_returnTime > 0) {
+          skimValue =
             useZones
                 ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, returnTime, destinationZoneId, originZoneId)
                 : ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, returnTime, destinationParcel, originParcel, circuityDistance);
-        if (skimValue.Variable < Constants.EPSILON) {
+          //if (skimValue.Variable < Constants.EPSILON) {
+          //  return path;
+          //}
+          path.Time += skimValue.Variable;
+        }
+
+        if (path.Time > pathTimeLimit) {
           return path;
         }
-        path.Time += skimValue.Variable;
-      }
 
-      if (path.Time > pathTimeLimit) {
-        return path;
-      }
-
-      varname = commuter ? "distance-co" : business ? "distance-bu" : "distance";
-      skimValue =
+        varname = commuter ? "distance-co" : business ? "distance-bu" : "distance";
+        skimValue =
           useZones
               ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originZoneId, destinationZoneId)
               : ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originParcel, destinationParcel, circuityDistance);
-      path.Distance = skimValue.Variable;
+        path.Distance = skimValue.Variable;
 
-      if (_returnTime > 0) {
-        skimValue =
+        if (_returnTime > 0) {
+          skimValue =
             useZones
                 ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, returnTime, destinationZoneId, originZoneId)
                 : ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, returnTime, destinationParcel, originParcel, circuityDistance);
-        path.Distance += skimValue.Variable;
-      }
+          path.Distance += skimValue.Variable;
+        }
 
-      varname = commuter ? "lstime-co" : business ? "lstime-bu" : "lstime";
-      skimValue =
+        varname = commuter ? "lstime-co" : business ? "lstime-bu" : "lstime";
+        skimValue =
           useZones
               ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originZoneId, destinationZoneId)
               : ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originParcel, destinationParcel, circuityDistance);
-      path.GenTime = skimValue.Variable;
+        path.GenTime = skimValue.Variable;
 
-      if (_returnTime > 0) {
-        skimValue =
+        if (_returnTime > 0) {
+          skimValue =
             useZones
                 ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, returnTime, destinationZoneId, originZoneId)
                 : ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, returnTime, destinationParcel, originParcel, circuityDistance);
-        path.GenTime += skimValue.Variable;
-      }
+          path.GenTime += skimValue.Variable;
+        }
 
-      varname = commuter ? "toll-co" : business ? "toll-bu" : "toll";
-      skimValue =
+        varname = commuter ? "toll-co" : business ? "toll-bu" : "toll";
+        skimValue =
           useZones
               ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originZoneId, destinationZoneId)
               : ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, outboundTime, originParcel, destinationParcel, circuityDistance);
-      path.Cost = skimValue.Variable;
+        path.Cost = skimValue.Variable;
 
-      if (_returnTime > 0) {
-        skimValue =
+        if (_returnTime > 0) {
+          skimValue =
             useZones
                 ? ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, returnTime, destinationZoneId, originZoneId)
                 : ImpedanceRoster.GetValue(varname, skimModeIn, pathType, votValue, returnTime, destinationParcel, originParcel, circuityDistance);
-        path.Cost += skimValue.Variable;
+          path.Cost += skimValue.Variable;
+        }
       }
-
       path.Utility = path.GenTime * _tourTimeCoefficient;
       
       path.Available = true;
@@ -1541,7 +1643,7 @@ namespace DaySim.PathTypeModels {
          }
 
          double fare = transitPassOwnership == 1 ? 0.0 : fareCard10 + extraFareCard10; // assumes that marginal cost is zero for pass holders
-         fare = fare * (1.0 - _personType); //fare adjustment
+         fare = fare * (1.0 - _hovOccupancy); //fare adjustment
 
          //determine utility components 
          //accessEgressTime = accessEgressTime

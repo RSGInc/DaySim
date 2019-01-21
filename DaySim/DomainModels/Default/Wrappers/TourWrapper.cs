@@ -366,6 +366,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public bool IsMissingData { get; set; }
 
+    public int hovOccupancy { get; set; }
 
 
     #endregion

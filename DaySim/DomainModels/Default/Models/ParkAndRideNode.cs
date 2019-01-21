@@ -30,7 +30,7 @@ namespace DaySim.DomainModels.Default.Models {
     public virtual int Capacity { get; set; }
 
     [ColumnName("cost")]
-    public virtual int Cost { get; set; }
+    public virtual int CostDaily { get; set; }
 
     [ColumnName("nearest_parcel_id")]
     public virtual int NearestParcelId { get; set; }

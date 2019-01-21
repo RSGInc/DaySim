@@ -50,9 +50,9 @@ namespace DaySim.DomainModels.Default.Wrappers {
       set => _parkAndRideNode.Capacity = value;
     }
 
-    public int Cost {
-      get => _parkAndRideNode.Cost;
-      set => _parkAndRideNode.Cost = value;
+    public int CostDaily {
+      get => _parkAndRideNode.CostDaily;
+      set => _parkAndRideNode.CostDaily = value;
     }
 
     public int NearestParcelId {

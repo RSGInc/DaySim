@@ -1079,7 +1079,7 @@ namespace DaySim.PathTypeModels {
         IParcelWrapper parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];
         double parkAndRideCost = knrPathType ? 0.0
                                            : tncPathType ? (Global.Configuration.TNCtoTransit_FixedCostPerRide + zzDistPR * Global.Configuration.TNCtoTransit_ExtraCostPerDistanceUnit)
-                                           : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
+                                           : node.CostDaily / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
         TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, parkAndRideZoneId, destinationZoneId);
         if (!transitPath.Available) {
@@ -1285,7 +1285,7 @@ namespace DaySim.PathTypeModels {
         int parkAndRideStopArea = Global.TransitStopAreaMapping[node.NearestStopAreaId];
         double parkAndRideCost = knrPathType ? 0.0
                                            : tncPathType ? (Global.Configuration.TNCtoTransit_FixedCostPerRide + zzDistPR * Global.Configuration.TNCtoTransit_ExtraCostPerDistanceUnit)
-                                           : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
+                                           : node.CostDaily / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
 
 
         double circuityDistance =

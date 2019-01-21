@@ -27,6 +27,8 @@ namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
 
     #region flags/choice model/etc. properties
 
+    int HovOccupancy { get; set; }
+
     int HalfTour1AccessMode { get; set; }
 
     int HalfTour1AccessPathType { get; set; }

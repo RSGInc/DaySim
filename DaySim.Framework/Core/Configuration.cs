@@ -2008,19 +2008,86 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double COMPASS_CostCoefficientDistanceElasticity_Leisure { get; set; }
 
+    [XmlAttribute]
+    public double COMPASS_HOVFraction2Occupants_Commute { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVFraction3Occupants_Commute { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVFraction4Occupants_Commute { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVFraction2Occupants_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVFraction3Occupants_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVFraction4Occupants_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVFraction2Occupants_Leisure { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVFraction3Occupants_Leisure { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVFraction4Occupants_Leisure { get; set; }
+
 
     [XmlAttribute]
-    public double COMPASS_HOVDriverCostDivisor_Commute { get; set; }
+    public double COMPASS_HOVCostShare2Occupants_Commute { get; set; }
     [XmlAttribute]
-    public double COMPASS_HOVDriverCostDivisor_Business { get; set; }
+    public double COMPASS_HOVCostShare3Occupants_Commute { get; set; }
     [XmlAttribute]
-    public double COMPASS_HOVDriverCostDivisor_Leisure { get; set; }
+    public double COMPASS_HOVCostShare4Occupants_Commute { get; set; }
     [XmlAttribute]
-    public double COMPASS_HOVPassengerCostDivisor_Commute { get; set; }
+    public double COMPASS_HOVCostShare5PlusOccupants_Commute { get; set; }
     [XmlAttribute]
-    public double COMPASS_HOVPassengerCostDivisor_Business { get; set; }
+    public double COMPASS_HOVCostShare2Occupants_Business { get; set; }
     [XmlAttribute]
-    public double COMPASS_HOVPassengerCostDivisor_Leisure { get; set; }
+    public double COMPASS_HOVCostShare3Occupants_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVCostShare4Occupants_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVCostShare5PlusOccupants_Business { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVCostShare2Occupants_Leisure { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVCostShare3Occupants_Leisure { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVCostShare4Occupants_Leisure { get; set; }
+    [XmlAttribute]
+    public double COMPASS_HOVCostShare5PlusOccupants_Leisure { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_IntrazonalStraightLineDistanceFactor { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesPerKM_Walk { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesExtra_Walk { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_Walk { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesExtra_Walk { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesPerKM_Bike { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesExtra_Bike { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_Bike { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesExtra_Bike { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesPerKM_SOV { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesExtra_SOV { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesExtra_SOV { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesPerKM_HOV { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesExtra_HOV { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV { get; set; }
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesExtra_HOV { get; set; }
+
 
     [XmlAttribute]
     public int COMPASS_MaximumTransitPathFareZones { get; set; }
