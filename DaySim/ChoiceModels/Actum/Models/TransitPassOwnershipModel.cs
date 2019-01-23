@@ -22,7 +22,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
-    private const int MAX_PARAMETER = 99;
+    private const int MAX_PARAMETER = 700;
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.TransitPassOwnershipModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -249,12 +249,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
       usualParcel = (usualParcel == null && person.UsualSchoolParcel != null) ? person.UsualSchoolParcel : null;
       int parkingSearchTime = 0;
       double commuteDistance = 0.0;
-      int parkingCost = 0;
+      double parkingCost = 0;
       int model = 3;
       if (usualParcel != null) {
         //parkingSearchTime = usualParcel.PSearchTime07_08; //uncomment when the new parcel attributes have been defined
-        commuteDistance = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, 1.0, Global.Settings.Times.EightAM, household.ResidenceParcel, usualParcel).Variable;
-        //parkingCost = usualParcel.ParkingCostPerHour8_18;  //uncomment when the new parcel attributes have been defined
+        commuteDistance = ImpedanceRoster.GetValue("distance-co", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, 1.0, Global.Settings.Times.EightAM, household.ResidenceParcel, usualParcel).Variable;
+        parkingCost = usualParcel.CircuityRatio_N3;  //fix this when new parcel attribute names have been fixed
         if (person.IsFulltimeWorker && usualParcel == person.UsualWorkParcel) {
           parkingCost = parkingCost * 8;
           model = 1;
