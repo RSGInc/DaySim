@@ -180,7 +180,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       if (Global.Configuration.ShouldSynchronizeRandomSeed && PersonDay != null) {
         PersonDay.ResetRandom(10 + Sequence - 1);
       }
-
+      /*
       if (JointTourSequence > 0 ){
         HovOccupancy = 0;
         foreach (IPersonDayWrapper pDay in PersonDay.HouseholdDay.PersonDays) {
@@ -203,7 +203,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           }
         }
 
-      } else  { // set randomly
+      } else */ { // set randomly
         double randomNumber = 0.5; // Household.RandomUtility.Uniform01();
 
         double fraction2Occ = DestinationPurpose == Global.Settings.Purposes.Work ? Global.Configuration.COMPASS_HOVFraction2Occupants_Commute

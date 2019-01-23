@@ -2128,7 +2128,7 @@ namespace DaySim.ChoiceModels.Actum {
       int tripDepartureTime = 0;
       for (int i = 1; i <= partialJointHalfTour.Participants; i++) {  // this loops on all participants
         for (int j = halfTourTrips[1] - halfTourTrips[i] + 1; j <= halfTourTrips[1]; j++) {  // this loops on the trips for the participant
-          TripWrapper trip = (TripWrapper)halfTour[i].Trips[j + halfTourTrips[i] - halfTourTrips[1] - 1];
+          TripWrapper trip = (TripWrapper)halfTour[i].Trips[j + halfTourTrips[i] - halfTourTrips[1] - 1];  //bug needs fixing!!
           halfTour[i].SimulatedTrips++;
           if (!Global.Configuration.IsInEstimationMode) {
             if (trip.IsHalfTourFromOrigin) {

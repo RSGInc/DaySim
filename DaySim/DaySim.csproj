@@ -112,11 +112,13 @@
     <Compile Include="ChoiceModels\Actum\Models\OtherHomeBasedTourModeTimeModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\PartialJointHalfTourChauffeurModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\PartialJointHalfTourParticipationModel.cs" />
+    <Compile Include="ChoiceModels\Actum\Models\PayToParkAtWorkplaceModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\PersonDayPatternModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\PersonDayPatternTypeModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\PersonTourGenerationModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\PrimaryPriorityTimeModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\PrimaryPriorityTimeScheduleModel.cs" />
+    <Compile Include="ChoiceModels\Actum\Models\SchoolLocationModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\SchoolTourModeTimeModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\TourDestinationModel.cs" />
     <Compile Include="ChoiceModels\Actum\Models\TourDestinationModeTimeModel.cs" />
