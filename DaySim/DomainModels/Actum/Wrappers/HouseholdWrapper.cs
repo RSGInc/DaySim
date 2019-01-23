@@ -28,10 +28,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _household.MunicipalCode = value;
     }
 
-    public int Persons16to17 {
-      get => _household.Persons16to17;
-      set => _household.Persons16to17 = value;
+    public int Persons6to17 {
+      get => _household.Persons6to17;
+      set => _household.Persons6to17 = value;
     }
+
 
     public int AutoType {
       get => _household.AutoType;
@@ -39,5 +40,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     }
 
     #endregion
+
+    #region flags/choice model/etc. properties
+
+  
+    #endregion
   }
+
 }
