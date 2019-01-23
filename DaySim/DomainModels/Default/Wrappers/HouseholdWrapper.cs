@@ -265,7 +265,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
     public bool HasChildren { get; set; }
 
     public int HouseholdType { get; set; }
-
+     
     #endregion
 
     #region random/seed synchronization properties
