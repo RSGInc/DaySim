@@ -264,13 +264,13 @@ namespace DaySim.ChoiceModels.Actum {
           }
         }
 
-        //if (Global.Configuration.ShouldRunSchoolLocationModel && person.IsStudent) {
+        if (Global.Configuration.ShouldRunSchoolLocationModel && person.IsStudent) {
         // sets a person's school location
 
-        //	ChoiceModelFactory.TotalTimesSchoolLocationModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+        	ChoiceModelFactory.TotalTimesSchoolLocationModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-        //	Global.ChoiceModelSession.Get<SchoolLocationModel>().Run(person, Global.Configuration.SchoolLocationModelSampleSize);
-        //}
+        	Global.ChoiceModelSession.Get<SchoolLocationModel>().Run(person, Global.Configuration.SchoolLocationModelSampleSize);
+        }
 
         if (Global.Configuration.ShouldRunWorkLocationModel && person.IsWorker && person.IsNotFullOrPartTimeWorker) {
           if (Global.Configuration.IsInEstimationMode || person.Household.RandomUtility.Uniform01() > household.FractionWorkersWithJobsOutsideRegion) {
@@ -284,16 +284,16 @@ namespace DaySim.ChoiceModels.Actum {
             }
           }
         }
-        //if (person.IsWorker && person.UsualWorkParcel != null // && person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer2 > 0 
-        //	 && Global.Configuration.IncludePayToParkAtWorkplaceModel) {
-        //	if (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel) {
-        //		ChoiceModelFactory.TotalTimesPaidParkingAtWorkplaceModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-        //		Global.ChoiceModelSession.Get<PayToParkAtWorkplaceModel>().Run(person);
-        //	}
-        //}
-        //else {
+        if (person.IsWorker && person.UsualWorkParcel != null // && person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer2 > 0 
+        	 && Global.Configuration.IncludePayToParkAtWorkplaceModel) {
+        	if (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel) {
+        		ChoiceModelFactory.TotalTimesPaidParkingAtWorkplaceModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+        		Global.ChoiceModelSession.Get<PayToParkAtWorkplaceModel>().Run(person);
+        	}
+        }
+        else {
         person.PaidParkingAtWorkplace = 1; // by default, people pay the parcel parking price
-                                           //}
+        }
       }
       // end work location person loop
 
