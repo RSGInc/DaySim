@@ -12,6 +12,7 @@ using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PayToParkAtWorkplaceModel : ChoiceModel {
@@ -58,7 +59,28 @@ namespace DaySim.ChoiceModels.Actum.Models {
       }
     }
 
-    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
+    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person_x, int choice = Constants.DEFAULT_VALUE) {
+      //MB check for access to new Actum person properties
+      //requres a changing name in call, and cast to a new variable called person, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
+      IActumPersonWrapper person = (IActumPersonWrapper)person_x;
+      int checkPersInc = person.PersonalIncome;
+      //end check
+      
+      //MB check for new hh properties
+      //requres a cast to a household, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
+      int checkKids6To17 = household.Persons6to17;
+      // end check
+
+      //MB check for access to new Actum parcel properties
+      //requires a cast and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header - use new variable workerUsualParcel...
+      if (person.UsualWorkParcel != null) {
+        IActumParcelWrapper workerUsualParcel = (IActumParcelWrapper)person.UsualWorkParcel;
+        double checkWorkMZParkCost = workerUsualParcel.PublicParkingHourlyPriceBuffer1;
+      }
+      //end check
+
+
       // 0 No paid parking at work
 
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
