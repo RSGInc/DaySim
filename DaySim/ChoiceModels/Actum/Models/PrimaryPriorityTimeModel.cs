@@ -11,6 +11,8 @@ using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
+
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PrimaryPriorityTimeModel : ChoiceModel {
@@ -113,8 +115,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int choice = Constants.DEFAULT_VALUE) {
 
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
-      Framework.DomainModels.Wrappers.IParcelWrapper residenceParcel = household.ResidenceParcel;
+      //JLB 20190126 adjusted Peter's version
+      //Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      //Framework.DomainModels.Wrappers.IParcelWrapper residenceParcel = household.ResidenceParcel;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
 
       // set household characteristics here that don't depend on person characteristics
 
@@ -136,6 +141,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       foreach (PersonDayWrapper personDay in householdDay.PersonDays) {
         double workLogsum = 0;
         PersonWrapper person = (PersonWrapper)personDay.Person;
+
         if (person.UsualWorkParcel == null || person.UsualWorkParcelId == household.ResidenceParcelId
             || (person.PersonType != Global.Settings.PersonTypes.FullTimeWorker
             && person.PersonType != Global.Settings.PersonTypes.PartTimeWorker))
