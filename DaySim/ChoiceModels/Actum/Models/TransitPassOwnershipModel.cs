@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -62,9 +63,27 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
-      Framework.DomainModels.Wrappers.IParcelWrapper homeParcel = person.Household.ResidenceParcel;
-      Framework.DomainModels.Wrappers.IParcelWrapper workParcel = person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel;
-      Framework.DomainModels.Wrappers.IParcelWrapper schoolParcel = person.IsUniversityStudent ? null : person.UsualSchoolParcel;
+      //MB check for access to new Actum person properties
+      int checkPersInc = person.PersonalIncome;  //does not need a cast in this case
+      //end check
+
+      //MB check for new hh properties
+      //requres a cast to a household, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
+      int checkKids6To17 = household.Persons6to17;
+      // end check
+
+
+
+      //MB check for access to new Actum parcel properties
+      //mb changed these to use ActumParcelWarraper, with using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
+      IActumParcelWrapper homeParcel = (IActumParcelWrapper) person.Household.ResidenceParcel;
+      IActumParcelWrapper workParcel = (IActumParcelWrapper) (person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel);
+      IActumParcelWrapper schoolParcel = (IActumParcelWrapper) (person.IsUniversityStudent ? null : person.UsualSchoolParcel);
+      if (workParcel != null) { 
+        double checkWorkMZParkCost = workParcel.PublicParkingHourlyPriceBuffer1;
+      }
+      //end check
 
       bool workParcelMissing = workParcel == null;
       bool schoolParcelMissing = schoolParcel == null;
@@ -202,7 +221,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       double workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
       double schoolTourLogsumDifference = 0D; // (school) full car ownership vs. no car ownership
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = person.Household;
+      //Framework.DomainModels.Wrappers.IHouseholdWrapper household = person.Household; MB already set above as an IActumParcelWrapper HH
       if (person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
         int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
         int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
