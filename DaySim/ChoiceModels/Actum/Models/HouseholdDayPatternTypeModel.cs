@@ -423,6 +423,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         throw new ArgumentNullException("householdDay");
       }
 
+
       int numberPersonsModeledJointly = 4;  // set this at compile time depending on whether we want to support 4 or 5 household members in this joint model
 
       householdDay.ResetRandom(902);
@@ -435,6 +436,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         int count = 0;
         foreach (PersonDayWrapper personDay in orderedPersonDays) {
           count++;
+
 
           if (personDay.WorkTours > 0 || personDay.SchoolTours > 0 || personDay.BusinessTours > 0) {
             personDay.PatternType = Global.Settings.PatternTypes.Mandatory;
@@ -497,6 +499,35 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int[,] altPTypes, int numberPersonsModeledJointly, int choice = Constants.DEFAULT_VALUE) {
+
+      //MB check for access to new household day properties
+      int checkPTFlag = householdDay.PrimaryPriorityTimeFlag;
+      //end check
+
+      //MB check for access to new PersonDay properties - requres a cast to a person day
+      IActumPersonDayWrapper personDayCh = (IActumPersonDayWrapper) householdDay.PersonDays.First();
+      int checkBusinessStops = personDayCh.BusinessStops;
+      // end check
+
+      //MB check for access to new Actum person properties - requres a cast to a person
+      IActumPersonWrapper personCh = (IActumPersonWrapper)personDayCh.Person;
+      int checkPersInc = personCh.PersonalIncome;
+      //end check
+
+      //MB check for new hh properties  - requires a cast to a household
+      IActumHouseholdWrapper householdCh = (IActumHouseholdWrapper)personCh.Household;
+      int checkKids6To17 = householdCh.Persons6to17;
+      // end check
+
+      //MB check for new parcel properties  - requires a cast
+      IActumParcelWrapper workParcelCh = (IActumParcelWrapper)personCh.UsualWorkParcel;
+      if (workParcelCh != null) {
+        double checkWorkMZParkCost = workParcelCh.PublicParkingHourlyPriceBuffer1;
+      }
+
+
+
+
       bool includeThreeWayInteractions = false;   // set this at compile time, dependign on whether we want to include or exclude 3-way interactions.
       int numberPersonTypes = 7;  // set this at compile time; 7 for Actum
       int numberAlternatives = numberPersonsModeledJointly == 4 ? 120 : 363;
@@ -506,7 +537,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //JLB 20190126 change to make actum-specific household variables available 
       //Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household; 
 
       int carOwnership =
                         household.VehiclesAvailable == 0

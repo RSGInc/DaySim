@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
@@ -81,6 +82,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false) {
+      //MB check for access to new Actum person properties
+      int checkPersInc = person.PersonalIncome;
+      //end check
+      //MB check for new hh properties
+      //requres a cast to a household, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
+      int checkKids6To17 = household.Persons6to17;
+      // end check
+
       int segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.School, Global.Settings.TourPriorities.UsualLocation, Global.Settings.Modes.Sov, person.PersonType);
       DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, person.Household.ResidenceParcel);
       int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
@@ -95,7 +105,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
         bool isChosen = sampleItem.Key.IsChosen;
         double adjustmentFactor = sampleItem.Key.AdjustmentFactor;
 
-        IParcelWrapper destinationParcel = ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
+        IActumParcelWrapper destinationParcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
+
+        //MB check for access to new Actum parcel properties
+        //requires a cast above (DaySim.DomainModels.Actum.Wrappers.Interfaces was already in header)-can keep using variable destinationParcel
+        double checkDestinationMZParkCost = destinationParcel.PublicParkingHourlyPriceBuffer1;
+        //end check
+
         //                var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
         ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(index++, available, isChosen);
 

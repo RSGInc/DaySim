@@ -8,6 +8,7 @@
 
 using System;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -73,6 +74,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //			//			var distanceToTransitQtrToHalfMile = household.ResidenceParcel.DistanceToTransitQtrToHalfMile();
       //var foodRetailServiceMedicalLogBuffer1 = household.ResidenceParcel.FoodRetailServiceMedicalLogBuffer1();
 
+      //MB check for new hh properties
+      int checkKids6To17 = household.Persons6to17; 
+      // end check
+
       double workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
       double schoolTourLogsumDifference = 0D; // (school) full car ownership vs. no car ownership
                                               //															 //			const double workTourOtherLogsumDifference = 0D; // (other workers) full car ownership vs. no car ownership
@@ -125,7 +130,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
       bool isMale = false;
 
       foreach (PersonWrapper person in household.Persons) {
+        //MB check for access to new Actum person properties
+        int checkPersInc = person.PersonalIncome;
+       //end check
+
         if (person.IsWorker && person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
+          //MB check for access to new Actum parcel properties
+          //requires a cast and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header - use new variable workerUsualParcel...
+          IActumParcelWrapper workerUsualParcel = (IActumParcelWrapper)person.UsualWorkParcel;
+          double checkWorkMZParkCost = workerUsualParcel.PublicParkingHourlyPriceBuffer1;
+          //end check
+
           int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
           int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
           //JLB 201602
@@ -139,6 +154,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
 
         if (person.IsDrivingAgeStudent && person.UsualSchoolParcel != null && person.UsualSchoolParcelId != household.ResidenceParcelId) {
+          //MB check for access to new Actum parcel properties
+          //requires a cast and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header - use new variable studentUsualParcel...
+          IActumParcelWrapper studentUsualParcel = (IActumParcelWrapper)person.UsualSchoolParcel;
+          double checkSchoolMZParkCost = studentUsualParcel.PublicParkingHourlyPriceBuffer1;
+          //end check
+
+
+
           int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
           int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.SchoolTourModeModel);
 
