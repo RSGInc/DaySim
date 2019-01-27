@@ -13,6 +13,8 @@ using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
+
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class HouseholdDayPatternTypeModel : ChoiceModel {
@@ -502,7 +504,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.Person.GetHouseholdDayPatternParticipationPriority()).ToList().Cast<PersonDayWrapper>();
       int hhsize = householdDay.Household.Size;
 
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
+      //JLB 20190126 change to make actum-specific household variables available 
+      //Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
 
       int carOwnership =
                         household.VehiclesAvailable == 0
@@ -1184,6 +1188,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
         // limit availability of work patterns for people who are neither worker nor student
         ct = 0;
         foreach (PersonDayWrapper personDay in orderedPersonDays) {
+
+          //JLB 20190126 new line to make Actum-specific Person attributes available
+          PersonWrapper person = (PersonWrapper) personDay.Person;
+          
           ct++;
           //if (ct <= 5 && altPTypes[alt, ct] == 1 && !personDay.Person.IsWorker && !personDay.Person.IsStudent) {
           if (ct <= numberPersonsModeledJointly && altPTypes[alt, ct] == 1 &&
