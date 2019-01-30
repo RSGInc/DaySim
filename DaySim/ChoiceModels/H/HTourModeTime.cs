@@ -237,10 +237,10 @@ namespace DaySim.ChoiceModels.H {
           modeTimes.ModeAvailableToDestination = false;
           modeTimes.ModeAvailableFromDestination = false;
         }
-        //ACTUM must also use round trip path type to preserve the tour-based nonlinear gamma utility functions
+        //ACTUM must also use round trip path type to preserve the tour-based nonlinear gamma utility functions - disabled MB
         //else if (mode == Global.Settings.Modes.ParkAndRide) {
-        else if (false) /* (mode == Global.Settings.Modes.ParkAndRide || Global.Configuration.PathImpedance_UtilityForm_Auto == 1 ||
-                 Global.Configuration.PathImpedance_UtilityForm_Transit == 1)*/ {
+        /*else if (mode == Global.Settings.Modes.ParkAndRide || Global.Configuration.PathImpedance_UtilityForm_Auto == 1 ||
+                 Global.Configuration.PathImpedance_UtilityForm_Transit == 1) {
           // park and ride has to use round-trip path type, approximate each half 
           IEnumerable<IPathTypeModel> pathTypeModels =
               PathTypeModelFactory.Singleton.Run(
@@ -292,7 +292,7 @@ namespace DaySim.ChoiceModels.H {
             modeTimes.PathDistance = pathTypeModel.PathDistance;
             modeTimes.PathCost = pathTypeModel.PathCost;
           }
-        } else {
+        }*/ else {
           // get times for each half tour separately, using HOV3 for school bus
           int pathMode = (mode == Global.Settings.Modes.SchoolBus) ? Global.Settings.Modes.Hov3 : mode;
 
