@@ -1574,7 +1574,7 @@ namespace DaySim.ChoiceModels.H {
         return;
       }
 
-      int[] tourPurpose = new int[11];
+      int[] tourPurpose = new int[99];
 
       //set choice array tourPurpose for estimation
       if (Global.Configuration.IsInEstimationMode) {
