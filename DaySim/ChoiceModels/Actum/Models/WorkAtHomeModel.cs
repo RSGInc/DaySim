@@ -8,6 +8,7 @@
 
 using System;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -81,34 +82,39 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int choice = Constants.DEFAULT_VALUE) {
 
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+      IActumParcelWrapper householdResidenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
+      IActumParcelWrapper personUsualWorkParcel = (IActumParcelWrapper) person.UsualWorkParcel;
+
+    
 
       // set household characteristics here that don't depend on person characteristics
-      bool available = (householdDay.Household.Size > 1);
+      bool available = (household.Size > 1);
 
       int hasAdultEducLevel12 = 0;
       //int allAdultEducLevel12 = 1;
       int youngestAge = 999;
 
-      foreach (PersonWrapper person in householdDay.Household.Persons) {
+      foreach (PersonWrapper person_x in household.Persons) {
         // set characteristics here that depend on person characteristics
 //        if (person.Age >= 18 && person.EducationLevel >= 12) {
 //          hasAdultEducLevel12 = 1;
 //        }
         //if (person.Age >= 18 && person.EducationLevel < 12) allAdultEducLevel12 = 0;
-        if (person.Age < youngestAge) {
-          youngestAge = person.Age;
+        if (person_x.Age < youngestAge) {
+          youngestAge = person_x.Age;
         }
       }
 
 
       double workTourLogsum;
-      if (personDay.Person.UsualWorkParcelId != Constants.DEFAULT_VALUE && personDay.Person.UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
+      if (person.UsualWorkParcelId != Constants.DEFAULT_VALUE && person.UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
         //JLB 201406
-        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(personDay.Person, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
+        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(person, person.Household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
         //JLB 201602
-        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
+        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
+        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, householdResidenceParcel, personUsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
         workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
       } else {
         workTourLogsum = 0;
@@ -131,14 +137,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
 
       int votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
-      double personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      int transitAccessSegment = householdResidenceParcel.TransitAccessSegment();
+      double personalBusinessAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
-      double shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double shoppingAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.Shopping][carOwnership][votALSegment][transitAccessSegment];
-      double mealAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double mealAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
-      double socialAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double socialAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
 
@@ -161,37 +167,37 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       alternative.AddUtilityTerm(1, 1.0);
 
-      alternative.AddUtilityTerm(2, householdDay.Household.HasChildrenUnder5.ToFlag());
+      alternative.AddUtilityTerm(2, household.HasChildrenUnder5.ToFlag());
 
       //GV: not sign. - 13. june 2016
-      //alternative.AddUtilityTerm(3, householdDay.Household.HasChildrenAge5Through15.ToFlag());
+      //alternative.AddUtilityTerm(3, household.HasChildrenAge5Through15.ToFlag());
 
-      alternative.AddUtilityTerm(4, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
-      alternative.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenUnder16).ToFlag());
+      alternative.AddUtilityTerm(4, (household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
+      alternative.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenUnder16).ToFlag());
 
       //GV: not sign. - 13. june 2016
-      //alternative.AddUtilityTerm(6, (householdDay.AdultsInSharedHomeStay == 2 && householdDay.Household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      //alternative.AddUtilityTerm(6, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
       //alternative.AddUtilityTerm(7, (householdDay.AdultsInSharedHomeStay == 2 && hasAdultEducLevel12 == 1).ToFlag());
 
       alternative.AddUtilityTerm(8, (youngestAge >= 40).ToFlag());
 
       //GV: not sign. - 13. june 2016
-      //alternative.AddUtilityTerm(10, (householdDay.Household.Income >= 300000 && householdDay.Household.Income < 600000).ToFlag());
-      //alternative.AddUtilityTerm(11, (householdDay.Household.Income >= 600000 && householdDay.Household.Income < 900000).ToFlag());
-      //alternative.AddUtilityTerm(12, (householdDay.Household.Income >= 900000).ToFlag());
+      //alternative.AddUtilityTerm(10, (household.Income >= 300000 && household.Income < 600000).ToFlag());
+      //alternative.AddUtilityTerm(11, (household.Income >= 600000 && household.Income < 900000).ToFlag());
+      //alternative.AddUtilityTerm(12, (household.Income >= 900000).ToFlag());
 
       alternative.AddUtilityTerm(15, householdDay.PrimaryPriorityTimeFlag);
 
       //GV: not sign. - 13. june 2016
-      //alternative.AddUtilityTerm(16, (householdDay.Household.Size == 2).ToFlag());
-      //alternative.AddUtilityTerm(17, (householdDay.Household.Size == 3).ToFlag());
-      //alternative.AddUtilityTerm(18, (householdDay.Household.Size >= 4).ToFlag());
-      ////alternative.AddUtilityTerm(18, (householdDay.Household.Size >= 5).ToFlag()); 
+      //alternative.AddUtilityTerm(16, (household.Size == 2).ToFlag());
+      //alternative.AddUtilityTerm(17, (household.Size == 3).ToFlag());
+      //alternative.AddUtilityTerm(18, (household.Size >= 4).ToFlag());
+      ////alternative.AddUtilityTerm(18, (household.Size >= 5).ToFlag()); 
 
-      alternative.AddUtilityTerm(21, personDay.Person.IsPartTimeWorker.ToFlag());
-      //alternative.AddUtilityTerm(2, personDay.Person.IsFulltimeWorker.ToFlag());
+      alternative.AddUtilityTerm(21, person.IsPartTimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(2, person.IsFulltimeWorker.ToFlag());
 
-      alternative.AddUtilityTerm(22, (personDay.Person.Gender == 1).ToFlag());
+      alternative.AddUtilityTerm(22, (person.Gender == 1).ToFlag());
       alternative.AddUtilityTerm(23, (hasAdultEducLevel12 == 1).ToFlag());
 
       //alternative.AddUtilityTerm(24, MandatoryTourDay);
@@ -208,8 +214,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: not sign. - 13. june 2016
       //alternative.AddUtilityTerm(27, compositeLogsum);
 
-      //alternative.AddUtilityTerm(27, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag()); //GV not significant
-      //alternative.AddUtilityTerm(28, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag()); //GV not significant
+      //alternative.AddUtilityTerm(27, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag()); //GV not significant
+      //alternative.AddUtilityTerm(28, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag()); //GV not significant
 
 
     }

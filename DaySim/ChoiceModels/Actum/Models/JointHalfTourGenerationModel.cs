@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -84,7 +85,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int nCallsForTour, bool[] available, int choice = Constants.DEFAULT_VALUE) {
       //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      IActumParcelWrapper householdResidenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
 
       double workTourLogsum = 0;
       double schoolTourLogsum = 0;
@@ -128,21 +130,21 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
 
       int votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
-      double personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      int transitAccessSegment = householdResidenceParcel.TransitAccessSegment();
+      double personalBusinessAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                 [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
-      double shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double shoppingAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                 [Global.Settings.Purposes.Shopping][carOwnership][votALSegment][transitAccessSegment];
-      double mealAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double mealAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                 [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
-      double socialAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double socialAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                 [Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
       double compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
 
       int youngestAge = 999;
 
-      foreach (PersonWrapper person in householdDay.Household.Persons) {
+      foreach (PersonWrapper person in household.Persons) {
         // set characteristics here that depend on person characteristics
         if (person.Age < youngestAge) {
           youngestAge = person.Age;
@@ -158,17 +160,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       alternative.AddUtilityTerm(1, (nCallsForTour > 1).ToFlag());
 
-      alternative.AddUtilityTerm(2, householdDay.Household.HasChildrenUnder5.ToFlag());
-      alternative.AddUtilityTerm(3, householdDay.Household.HasChildrenAge5Through15.ToFlag());
-      alternative.AddUtilityTerm(4, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
-      alternative.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenUnder16).ToFlag());
-      alternative.AddUtilityTerm(6, (householdDay.AdultsInSharedHomeStay == 2 && householdDay.Household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      alternative.AddUtilityTerm(2, household.HasChildrenUnder5.ToFlag());
+      alternative.AddUtilityTerm(3, household.HasChildrenAge5Through15.ToFlag());
+      alternative.AddUtilityTerm(4, (household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
+      alternative.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenUnder16).ToFlag());
+      alternative.AddUtilityTerm(6, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
       //alternative.AddUtilityTerm(7, (householdDay.AdultsInSharedHomeStay == 2 && hasAdultEducLevel12 == 1).ToFlag());
       //alternative.AddUtilityTerm(8, (youngestAge >= 40).ToFlag());
 
-      //alternative.AddUtilityTerm(10, (householdDay.Household.Income >= 300000 && householdDay.Household.Income < 600000).ToFlag());
-      //alternative.AddUtilityTerm(11, (householdDay.Household.Income >= 600000 && householdDay.Household.Income < 900000).ToFlag());
-      //alternative.AddUtilityTerm(12, (householdDay.Household.Income >= 900000).ToFlag());
+      //alternative.AddUtilityTerm(10, (household.Income >= 300000 && household.Income < 600000).ToFlag());
+      //alternative.AddUtilityTerm(11, (household.Income >= 600000 && household.Income < 900000).ToFlag());
+      //alternative.AddUtilityTerm(12, (household.Income >= 900000).ToFlag());
 
       //alternative.AddUtilityTerm(15, householdDay.PrimaryPriorityTimeFlag);
 
@@ -182,11 +184,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(25, nonMandatoryTourDay); //GV - Aks John to include peson.Day in the model
       //alternative.AddUtilityTerm(26, atHomeDay); //GV - Aks John to include peson.Day in the model
 
-      alternative.AddUtilityTerm(7, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
-      alternative.AddUtilityTerm(8, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
+      alternative.AddUtilityTerm(7, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
+      alternative.AddUtilityTerm(8, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
 
-      alternative.AddUtilityTerm(9, (householdDay.Household.Size == 3).ToFlag());
-      alternative.AddUtilityTerm(10, (householdDay.Household.Size >= 4).ToFlag());
+      alternative.AddUtilityTerm(9, (household.Size == 3).ToFlag());
+      alternative.AddUtilityTerm(10, (household.Size >= 4).ToFlag());
 
 
       // FULL PAIRED

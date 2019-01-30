@@ -69,7 +69,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //				if (householdDay.SharedActivityHomeStays >= 1 
         //					//&& householdDay.DurationMinutesSharedHomeStay >=60 
         //					&& householdDay.AdultsInSharedHomeStay >= 1 
-        //					&& householdDay.NumberInLargestSharedHomeStay >= (householdDay.Household.Size)
+        //					&& householdDay.NumberInLargestSharedHomeStay >= (household.Size)
         //                   )
         //				{
         //					householdDay.PrimaryPriorityTimeFlag = 1;  
@@ -243,18 +243,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
           componentIndex = 1;
           choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
           ChoiceProbabilityCalculator.Component pfptComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
-          pfptComponent.AddUtilityTerm(1, (householdDay.Household.Size == 3).ToFlag());
-          pfptComponent.AddUtilityTerm(2, (householdDay.Household.Size >= 4).ToFlag());
-          pfptComponent.AddUtilityTerm(3, householdDay.Household.HasChildrenUnder5.ToFlag());
-          pfptComponent.AddUtilityTerm(4, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenAge5Through15).ToFlag());
-          pfptComponent.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 2 && householdDay.Household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+          pfptComponent.AddUtilityTerm(1, (household.Size == 3).ToFlag());
+          pfptComponent.AddUtilityTerm(2, (household.Size >= 4).ToFlag());
+          pfptComponent.AddUtilityTerm(3, household.HasChildrenUnder5.ToFlag());
+          pfptComponent.AddUtilityTerm(4, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenAge5Through15).ToFlag());
+          pfptComponent.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
           pfptComponent.AddUtilityTerm(6, (householdDay.AdultsInSharedHomeStay == 2 && hasAdultEducLevel12 == 1).ToFlag());
-          pfptComponent.AddUtilityTerm(7, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
-          pfptComponent.AddUtilityTerm(8, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
+          pfptComponent.AddUtilityTerm(7, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
+          pfptComponent.AddUtilityTerm(8, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
 
-          pfptComponent.AddUtilityTerm(11, (householdDay.Household.Income >= 300000 && householdDay.Household.Income < 600000).ToFlag());
-          pfptComponent.AddUtilityTerm(12, (householdDay.Household.Income >= 600000 && householdDay.Household.Income < 900000).ToFlag());
-          pfptComponent.AddUtilityTerm(13, (householdDay.Household.Income >= 900000).ToFlag());
+          pfptComponent.AddUtilityTerm(11, (household.Income >= 300000 && household.Income < 600000).ToFlag());
+          pfptComponent.AddUtilityTerm(12, (household.Income >= 600000 && household.Income < 900000).ToFlag());
+          pfptComponent.AddUtilityTerm(13, (household.Income >= 900000).ToFlag());
 
           // OBS; 27. aug., work tour mode logsum does not work - see what happens in the old PFPT model 
           // GV, sep. 1st - it is not significant                    
@@ -281,36 +281,36 @@ namespace DaySim.ChoiceModels.Actum.Models {
           choiceProbabilityCalculator.CreateUtilityComponent(componentIndex);
           ChoiceProbabilityCalculator.Component jointComponent = choiceProbabilityCalculator.GetUtilityComponent(componentIndex);
 
-          jointComponent.AddUtilityTerm(21, (householdDay.Household.Size == 3).ToFlag());
-          jointComponent.AddUtilityTerm(22, (householdDay.Household.Size >= 4).ToFlag());
+          jointComponent.AddUtilityTerm(21, (household.Size == 3).ToFlag());
+          jointComponent.AddUtilityTerm(22, (household.Size >= 4).ToFlag());
 
           // GV: 1st sep.
-          //jointComponent.AddUtilityTerm(23, (householdDay.Household.Size == 2 && householdDay.Household.HasChildren).ToFlag());
-          //jointComponent.AddUtilityTerm(23, (householdDay.Household.Size >= 2 && householdDay.Household.HasChildren).ToFlag());
-          jointComponent.AddUtilityTerm(23, (householdDay.Household.HasChildren).ToFlag());
+          //jointComponent.AddUtilityTerm(23, (household.Size == 2 && household.HasChildren).ToFlag());
+          //jointComponent.AddUtilityTerm(23, (household.Size >= 2 && household.HasChildren).ToFlag());
+          jointComponent.AddUtilityTerm(23, (household.HasChildren).ToFlag());
 
-          //jointComponent.AddUtilityTerm(21, householdDay.Household.HasChildrenUnder5.ToFlag());
-          //jointComponent.AddUtilityTerm(22, householdDay.Household.HasChildrenAge5Through15.ToFlag());
+          //jointComponent.AddUtilityTerm(21, household.HasChildrenUnder5.ToFlag());
+          //jointComponent.AddUtilityTerm(22, household.HasChildrenAge5Through15.ToFlag());
 
-          //jointComponent.AddUtilityTerm(23, householdDay.Household.HasChildren.ToFlag());
+          //jointComponent.AddUtilityTerm(23, household.HasChildren.ToFlag());
 
-          jointComponent.AddUtilityTerm(24, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
-          //jointComponent.AddUtilityTerm(25, (householdDay.AdultsInSharedHomeStay == 2 && householdDay.Household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+          jointComponent.AddUtilityTerm(24, (household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
+          //jointComponent.AddUtilityTerm(25, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
           jointComponent.AddUtilityTerm(26, (householdDay.AdultsInSharedHomeStay == 2 && hasAdultEducLevel12 == 1).ToFlag());
 
-          //jointComponent.AddUtilityTerm(27, (householdDay.Household.Size == 2 && householdDay.Household.HasChildrenUnder5).ToFlag());
-          //jointComponent.AddUtilityTerm(28, (householdDay.Household.Size == 2 && householdDay.Household.HasChildrenAge5Through15).ToFlag());
-          //jointComponent.AddUtilityTerm(27, (householdDay.Household.Size == 2 && householdDay.Household.HasChildrenUnder16).ToFlag());
+          //jointComponent.AddUtilityTerm(27, (household.Size == 2 && household.HasChildrenUnder5).ToFlag());
+          //jointComponent.AddUtilityTerm(28, (household.Size == 2 && household.HasChildrenAge5Through15).ToFlag());
+          //jointComponent.AddUtilityTerm(27, (household.Size == 2 && household.HasChildrenUnder16).ToFlag());
 
-          jointComponent.AddUtilityTerm(29, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenUnder16).ToFlag());
+          jointComponent.AddUtilityTerm(29, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenUnder16).ToFlag());
 
-          //jointComponent.AddUtilityTerm(37, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
-          //jointComponent.AddUtilityTerm(38, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
-          jointComponent.AddUtilityTerm(30, (householdDay.Household.VehiclesAvailable >= 1 && household.Has2Drivers).ToFlag());
+          //jointComponent.AddUtilityTerm(37, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
+          //jointComponent.AddUtilityTerm(38, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
+          jointComponent.AddUtilityTerm(30, (household.VehiclesAvailable >= 1 && household.Has2Drivers).ToFlag());
 
-          jointComponent.AddUtilityTerm(31, (householdDay.Household.Income >= 300000 && householdDay.Household.Income < 600000).ToFlag());
-          jointComponent.AddUtilityTerm(32, (householdDay.Household.Income >= 600000 && householdDay.Household.Income < 900000).ToFlag());
-          jointComponent.AddUtilityTerm(33, (householdDay.Household.Income >= 900000).ToFlag());
+          jointComponent.AddUtilityTerm(31, (household.Income >= 300000 && household.Income < 600000).ToFlag());
+          jointComponent.AddUtilityTerm(32, (household.Income >= 600000 && household.Income < 900000).ToFlag());
+          jointComponent.AddUtilityTerm(33, (household.Income >= 900000).ToFlag());
 
           // GV, sep. 1st - it is not significant 
           //jointComponent.AddUtilityTerm(41, compositeLogsum);
@@ -352,12 +352,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           if (pfpt == 1 && jointTourFlag == 1) {
             alternative.AddUtilityTerm(71, 1);
-            //alternative.AddUtilityTerm(72, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
+            //alternative.AddUtilityTerm(72, (household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
 
             // GV: comented out sep. 1st    
             //GV: coeff. 73 is with a wrong sign - 13. june 2016
-            //alternative.AddUtilityTerm(73, householdDay.Household.HasChildren.ToFlag());
-            //alternative.AddUtilityTerm(74, householdDay.Household.HasChildrenUnder16.ToFlag());
+            //alternative.AddUtilityTerm(73, household.HasChildren.ToFlag());
+            //alternative.AddUtilityTerm(74, household.HasChildrenUnder16.ToFlag());
           }
 
         }
