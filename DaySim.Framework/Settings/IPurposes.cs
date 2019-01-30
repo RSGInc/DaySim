@@ -36,5 +36,6 @@ namespace DaySim.Framework.Settings {
     int ChangeMode { get; }
 
     int Business { get; }
+    int ALSBusiness { get; }
   }
 }

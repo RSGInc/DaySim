@@ -1551,7 +1551,7 @@ namespace DaySim.ChoiceModels.Actum {
         return;
       }
 
-      int[] tourPurpose = new int[11];
+      int[] tourPurpose = new int[99];
 
       //set choice array tourPurpose for estimation
       if (Global.Configuration.IsInEstimationMode) {
@@ -1859,11 +1859,13 @@ namespace DaySim.ChoiceModels.Actum {
         //                                        : (Global.Configuration.UseShortDistanceCircuityMeasures)
         //                                        ? tour[i - 1].DestinationParcel.CircuityDistance(tour[i].DestinationParcel)
         //                                        : Constants.DEFAULT_VALUE;
-        double circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
+        
+        // changed to deal with missing parcels in estimation model
+        double circuityDistance = (Global.Configuration.IsInEstimationMode)? Constants.DEFAULT_VALUE : tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
 
         //if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
         if (i == 2) {
-          if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
+         if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
             // set tour TOD for i.  If i == 2 then arrival and departure time are modeled
             SetTourModeAndTime(householdDay, tour[i], tour[i].Mode, 0, 0);
             if (householdDay.IsValid == false) {
@@ -2122,58 +2124,58 @@ namespace DaySim.ChoiceModels.Actum {
       //}
 
       // simulate halftour
+
       IParcelWrapper stopLocation = null;
       int stopPurpose = Global.Settings.Purposes.NoneOrHome;
       int tripMode = Global.Settings.Modes.None;
       int tripDepartureTime = 0;
       for (int i = 1; i <= partialJointHalfTour.Participants; i++) {  // this loops on all participants
-        for (int j = halfTourTrips[1] - halfTourTrips[i] + 1; j <= halfTourTrips[1]; j++) {  // this loops on the trips for the participant
-          TripWrapper trip = (TripWrapper)halfTour[i].Trips[j + halfTourTrips[i] - halfTourTrips[1] - 1];  //bug needs fixing!!
-          halfTour[i].SimulatedTrips++;
-          if (!Global.Configuration.IsInEstimationMode) {
-            if (trip.IsHalfTourFromOrigin) {
-              tour[i].HalfTour1Trips++;
-            } else {
-              tour[i].HalfTour2Trips++;
-            }
-          }
-          stopPurpose = j == halfTourTrips[1] ? Global.Settings.Purposes.NoneOrHome : Global.Settings.Purposes.Escort;
-          stopLocation = j == halfTourTrips[1] ? householdDay.Household.ResidenceParcel : destination[j + 1];
-          if (i == 1) {
-            if (tour[1].Mode == Global.Settings.Modes.HovDriver) {
-              if (travelers[j] == 1) {
-                tripMode = Global.Settings.Modes.Sov;
+          for (int j = halfTourTrips[1] - halfTourTrips[i] + 1; j <= halfTourTrips[1]; j++) {  // this loops on the trips for the participant
+            TripWrapper trip = (TripWrapper)halfTour[i].Trips[j + halfTourTrips[i] - halfTourTrips[1] - 1];  
+            halfTour[i].SimulatedTrips++;
+            if (!Global.Configuration.IsInEstimationMode) {
+              if (trip.IsHalfTourFromOrigin) {
+                tour[i].HalfTour1Trips++;
               } else {
-                tripMode = Global.Settings.Modes.HovDriver;
-              }
-            } else {
-              if (travelers[j] == 1) {
-                tripMode = tour[1].Mode;
-              } else {
-                tripMode = tour[2].Mode;
+                tour[i].HalfTour2Trips++;
               }
             }
+            stopPurpose = j == halfTourTrips[1] ? Global.Settings.Purposes.NoneOrHome : Global.Settings.Purposes.Escort;
+            stopLocation = j == halfTourTrips[1] ? householdDay.Household.ResidenceParcel : destination[j + 1];
+            if (i == 1) {
+              if (tour[1].Mode == Global.Settings.Modes.HovDriver) {
+                if (travelers[j] == 1) {
+                  tripMode = Global.Settings.Modes.Sov;
+                } else {
+                  tripMode = Global.Settings.Modes.HovDriver;
+                }
+              } else {
+                if (travelers[j] == 1) {
+                  tripMode = tour[1].Mode;
+                } else {
+                  tripMode = tour[2].Mode;
+                }
+              }
 
-          } else {
-            tripMode = tour[i].Mode;
+            } else {
+              tripMode = tour[i].Mode;
+            }
+            if (direction == 1) {
+              tripDepartureTime = tour[tourWithDestination[j]].DestinationArrivalTime;
+            } else {
+              tripDepartureTime = tour[tourWithDestination[j]].DestinationDepartureTime;
+            }
+            RunPartialHalfTourTripModelSuite(tour[i], halfTour[i], trip, stopPurpose, stopLocation, tripMode, tripDepartureTime);
           }
-          if (direction == 1) {
-            tripDepartureTime = tour[tourWithDestination[j]].DestinationArrivalTime;
+          if (direction == Global.Settings.TourDirections.OriginToDestination) {
+            tour[i].HalfTour1HasBeenSimulated = true;
           } else {
-            tripDepartureTime = tour[tourWithDestination[j]].DestinationDepartureTime;
+            tour[i].HalfTour2HasBeenSimulated = true;
           }
-          RunPartialHalfTourTripModelSuite(tour[i], halfTour[i], trip, stopPurpose, stopLocation, tripMode, tripDepartureTime);
-        }
-        if (direction == Global.Settings.TourDirections.OriginToDestination) {
-          tour[i].HalfTour1HasBeenSimulated = true;
-        } else {
-          tour[i].HalfTour2HasBeenSimulated = true;
-        }
-        tour[i].SetOriginTimes(direction);
-        if (tour[i].HalfTour1HasBeenSimulated && tour[i].HalfTour2HasBeenSimulated) {
-          UpdateTimeWindowForTourDestinationTimes(tour[i]);
-        }
-
+          tour[i].SetOriginTimes(direction);
+          if (tour[i].HalfTour1HasBeenSimulated && tour[i].HalfTour2HasBeenSimulated) {
+            UpdateTimeWindowForTourDestinationTimes(tour[i]);
+          }
       }
     }
 
@@ -2815,7 +2817,7 @@ namespace DaySim.ChoiceModels.Actum {
         HTourModeTime choice = new HTourModeTime(tour.Mode, tour.DestinationArrivalTime, tour.DestinationDepartureTime);
         ITimeWindow timeWindow = (constrainedArrivalTime <= 0 && constrainedDepartureTime <= 0 && constrainedMode <= 0) ?
                     tour.GetRelevantTimeWindow(householdDay) : new TimeWindow();
-        if (tour.Mode > 0) {   // JLB 20150828 prevents exception caused by mode == 0 in estimation data set
+        if (tour.Mode > 0 && tour.DestinationParcelId > 0 && tour.OriginParcelId > 0) {   // JLB 20150828 prevents exception caused by mode == 0 in estimation data set  //MB also changed to handle missing destinations
           HTourModeTime.SetImpedanceAndWindow(timeWindow, tour, choice, -1, -1.0);
         }
         if (choice != null && choice.LongestFeasibleWindow != null) {
@@ -2997,7 +2999,7 @@ namespace DaySim.ChoiceModels.Actum {
         }
         //set additional tour variables based on HTourModeTime object for chosen alternative
         HTourModeTime choice = new HTourModeTime(subtour.Mode, subtour.DestinationArrivalTime, subtour.DestinationDepartureTime);
-        if (choice != null && subtour.DestinationParcel != null && subtour.OriginParcel != null) {
+        if (choice != null && subtour.DestinationParcel != null && subtour.OriginParcel != null && subtour.Mode > 0) {
           HTourModeTime.SetImpedanceAndWindow(timeWindow, subtour, choice, -1, -1.0);
         }
         if (choice != null && choice.LongestFeasibleWindow != null) {

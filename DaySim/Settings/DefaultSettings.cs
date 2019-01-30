@@ -162,6 +162,8 @@ namespace DaySim.Settings {
     public virtual int ChangeMode => 10;
 
     public virtual int Business => 11;
+
+    public virtual int ALSBusiness => 11;
   }
 
   public class DefaultTourCatetories : ITourCategories {

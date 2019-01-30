@@ -2680,8 +2680,10 @@ namespace DaySim {
               writer.Write(tourId);
               writer.Write(Global.Configuration.InputTripDelimiter);
 
-              writer.Write(0);
-              writer.Write(Global.Configuration.InputTripDelimiter);
+              if (Global.Configuration.DataType != "Actum") {
+                writer.Write(0);
+                writer.Write(Global.Configuration.InputTripDelimiter);
+              }
 
               for (int i = 0; i < row.Length; i++) {
                 writer.Write(row[i]);
