@@ -2120,6 +2120,33 @@ namespace DaySim.Framework.Core {
     public int COMPASS_MinimumAutoDrivingAge { get; set; }
 
 
+    [XmlAttribute]
+    public int COMPASS_MaximumTerminalsToSearchWalk { get; set; }
+    [XmlAttribute]
+    public int COMPASS_MaximumTerminalsToSearchBikeOnTransit { get; set; }
+    [XmlAttribute]
+    public int COMPASS_MaximumTerminalsToSearchAutoKissAndRide { get; set; }
+    [XmlAttribute]
+    public int COMPASS_MaximumParkingNodesToSearchBikeParkAndRide { get; set; }
+    [XmlAttribute]
+    public int COMPASS_MaximumParkingNodesToSearchAutoParkAndRide { get; set; }
+    [XmlAttribute]
+    public double COMPASS_MaximumParcelToTerminalDistanceWalk { get; set; }
+    [XmlAttribute]
+    public double COMPASS_MaximumParcelToParkingNodeDistanceBike { get; set; }
+    [XmlAttribute]
+    public double COMPASS_MaximumParcelToParkingNodeDistanceParkAndRide { get; set; }
+    [XmlAttribute]
+    public double COMPASS_MaximumParcelToTerminalDistanceKissAndRide { get; set; }
+    [XmlAttribute]
+    public double COMPASS_MaximumRatioDriveToParkAndRideVersusDriveToDestination { get; set; }
+    [XmlAttribute]
+    public double COMPASS_MaximumRatioDriveToKissAndRideVersusDriveToDestination { get; set; }
+    [XmlAttribute]
+    public double COMPASS_MaximumRatioBikeToParkAndRideVersusDriveToDestination { get; set; }
+
+
+
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
 

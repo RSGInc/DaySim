@@ -591,7 +591,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
     public virtual double GetDistanceToTransit() {
       double distance = Constants.DEFAULT_VALUE;
 
-      if (DistanceToFerry >= 0) {
+      if (DistanceToFerry >= 0 && Global.Configuration.DataType != "Actum")  {
         distance = DistanceToFerry;
       }
 
