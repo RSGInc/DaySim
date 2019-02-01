@@ -677,32 +677,34 @@ namespace DaySim.PathTypeModels {
       bool bikeOnBoard = (skimMode == Global.Settings.Modes.BikeOnTransit);
 
       //user-set limits on search - use high values if not set
-      int maxStopAreasToSearchAccess = walkAccess ? Global.Configuration.MaximumStopAreasToSearch
-                                     : bikeAccess ? Global.Configuration.MaximumStopAreasToSearchBike
-                                     : sovAccess ? Global.Configuration.MaximumStopAreasToSearchParkAndRide
-                                     : Global.Configuration.MaximumStopAreasToSearchKissAndRide;
+      int maxStopAreasToSearchAccess = walkAccess ? Global.Configuration.COMPASS_MaximumTerminalsToSearchWalk
+                                     : bikeOnBoard ? Global.Configuration.COMPASS_MaximumTerminalsToSearchBikeOnTransit
+                                     : bikeAccess ? Global.Configuration.COMPASS_MaximumParkingNodesToSearchBikeParkAndRide
+                                     : sovAccess ? Global.Configuration.COMPASS_MaximumParkingNodesToSearchAutoParkAndRide
+                                     : Global.Configuration.COMPASS_MaximumTerminalsToSearchAutoKissAndRide;
       if (maxStopAreasToSearchAccess < Constants.EPSILON) {
         maxStopAreasToSearchAccess = 50;
       }
 
-      int maxStopAreasToSearchEgress = walkEgress ? Global.Configuration.MaximumStopAreasToSearch
-                               : bikeEgress ? Global.Configuration.MaximumStopAreasToSearchBike
-                               : Global.Configuration.MaximumStopAreasToSearchKissAndRide;
+      int maxStopAreasToSearchEgress = walkEgress ? Global.Configuration.COMPASS_MaximumTerminalsToSearchWalk
+                                     : bikeOnBoard ? Global.Configuration.COMPASS_MaximumTerminalsToSearchBikeOnTransit
+                                    : bikeEgress ? Global.Configuration.COMPASS_MaximumParkingNodesToSearchBikeParkAndRide
+                                    : Global.Configuration.COMPASS_MaximumTerminalsToSearchAutoKissAndRide;
       if (maxStopAreasToSearchEgress < Constants.EPSILON) {
         maxStopAreasToSearchEgress = 50;
       }
 
-      double maxStopAreaLengthAccess = walkAccess ? Global.Configuration.MaximumParcelToStopAreaDistanceWalk
-                                     : bikeAccess ? Global.Configuration.MaximumParcelToParkingNodeDistanceBike
-                                     : sovAccess ? Global.Configuration.MaximumParcelToParkingNodeDistanceParkAndRide
-                                     : Global.Configuration.MaximumParcelToParkingNodeDistanceKissAndRide; 
+      double maxStopAreaLengthAccess = walkAccess ? Global.Configuration.COMPASS_MaximumParcelToTerminalDistanceWalk
+                                     : bikeAccess ? Global.Configuration.COMPASS_MaximumParcelToParkingNodeDistanceBike
+                                     : sovAccess ? Global.Configuration.COMPASS_MaximumParcelToParkingNodeDistanceParkAndRide
+                                     : Global.Configuration.COMPASS_MaximumParcelToTerminalDistanceKissAndRide; 
       if (maxStopAreaLengthAccess < Constants.EPSILON) {
         maxStopAreaLengthAccess = 999.99;
       }
 
-      double maxStopAreaLengthEgress = walkEgress ? Global.Configuration.MaximumParcelToStopAreaDistance
-                                     : bikeEgress ? Global.Configuration.MaximumParcelToParkingNodeDistanceBike
-                                     : Global.Configuration.MaximumParcelToParkingNodeDistanceKissAndRide;
+      double maxStopAreaLengthEgress = walkEgress ? Global.Configuration.COMPASS_MaximumParcelToTerminalDistanceWalk
+                                     : bikeEgress ? Global.Configuration.COMPASS_MaximumParcelToParkingNodeDistanceBike
+                                     : Global.Configuration.COMPASS_MaximumParcelToTerminalDistanceKissAndRide;
       if (maxStopAreaLengthEgress < Constants.EPSILON) {
         maxStopAreaLengthEgress = 99999;
       }
@@ -714,20 +716,20 @@ namespace DaySim.PathTypeModels {
       double fullODDist = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.HovPassenger, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime,
         _originZoneId, _destinationZoneId).Variable;
 
-      double maxRatioLengthAccess = (sovAccess && Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination > 0)
-                              ? (fullODDist * Global.Configuration.MaximumRatioDriveToParkAndRideVersusDriveToDestination)
-                              : (bikeAccess && Global.Configuration.MaximumRatioBikeToParkAndRideVersusDriveToDestination > 0)
-                              ? (fullODDist * Global.Configuration.MaximumRatioBikeToParkAndRideVersusDriveToDestination)
-                              : ((hovAccess || shareAccess) && Global.Configuration.MaximumRatioDriveToKissAndRideVersusDriveToDestination > 0)
-                              ? (fullODDist * Global.Configuration.MaximumRatioDriveToKissAndRideVersusDriveToDestination)
+      double maxRatioLengthAccess = (sovAccess && Global.Configuration.COMPASS_MaximumRatioDriveToParkAndRideVersusDriveToDestination > 0)
+                              ? (fullODDist * Global.Configuration.COMPASS_MaximumRatioDriveToParkAndRideVersusDriveToDestination)
+                              : (bikeAccess && Global.Configuration.COMPASS_MaximumRatioBikeToParkAndRideVersusDriveToDestination > 0)
+                              ? (fullODDist * Global.Configuration.COMPASS_MaximumRatioBikeToParkAndRideVersusDriveToDestination)
+                              : ((hovAccess || shareAccess) && Global.Configuration.COMPASS_MaximumRatioDriveToKissAndRideVersusDriveToDestination > 0)
+                              ? (fullODDist * Global.Configuration.COMPASS_MaximumRatioDriveToKissAndRideVersusDriveToDestination)
                               : 999.99;
 
       maxStopAreaLengthAccess = Math.Min(maxStopAreaLengthAccess, maxRatioLengthAccess);
 
-      double maxRatioLengthEgress = (bikeEgress && Global.Configuration.MaximumRatioBikeToParkAndRideVersusDriveToDestination > 0)
-                              ? (fullODDist * Global.Configuration.MaximumRatioBikeToParkAndRideVersusDriveToDestination)
-                              : (shareEgress && Global.Configuration.MaximumRatioDriveToKissAndRideVersusDriveToDestination > 0)
-                              ? (fullODDist * Global.Configuration.MaximumRatioDriveToKissAndRideVersusDriveToDestination)
+      double maxRatioLengthEgress = (bikeEgress && Global.Configuration.COMPASS_MaximumRatioBikeToParkAndRideVersusDriveToDestination > 0)
+                              ? (fullODDist * Global.Configuration.COMPASS_MaximumRatioBikeToParkAndRideVersusDriveToDestination)
+                              : (shareEgress && Global.Configuration.COMPASS_MaximumRatioDriveToKissAndRideVersusDriveToDestination > 0)
+                              ? (fullODDist * Global.Configuration.COMPASS_MaximumRatioDriveToKissAndRideVersusDriveToDestination)
                               : 999.99;
 
       maxStopAreaLengthEgress = Math.Min(maxStopAreaLengthEgress, maxRatioLengthEgress);

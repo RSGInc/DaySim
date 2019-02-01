@@ -473,7 +473,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(70, 1.0);
           modeComponent.AddUtilityTerm(71, intraZonal);
           modeComponent.AddUtilityTerm(72, intraMicrozonal);
-          modeComponent.AddUtilityTerm(73, adultFlag*noCarsInHouseholdFlag);
+          modeComponent.AddUtilityTerm(73, adultFlag * noCarsInHouseholdFlag);
           modeComponent.AddUtilityTerm(74, adultFlag * carsLessThanDriversFlag);
           modeComponent.AddUtilityTerm(75, nonAdultFlag);
           modeComponent.AddUtilityTerm(76, HHwithLowIncomeFlag);
@@ -486,6 +486,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(175, homeBasedTourFlag * shoppingTourFlag);
           modeComponent.AddUtilityTerm(176, homeBasedTourFlag * socialTourFlag);
           modeComponent.AddUtilityTerm(177, workBasedTourFlag);
+          modeComponent.AddUtilityTerm(178, jointTourFlag);
 
           //GV: Testing female variable again; 26. may 2016 - not sign.
           //modeComponent.AddUtilityTerm(71, femaleFlag);
@@ -515,6 +516,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(165, homeBasedTourFlag * shoppingTourFlag);
           modeComponent.AddUtilityTerm(166, homeBasedTourFlag * socialTourFlag);
           modeComponent.AddUtilityTerm(167, workBasedTourFlag);
+          modeComponent.AddUtilityTerm(168, jointTourFlag);
 
           //modeComponent.AddUtilityTerm(61, femaleFlag);
           //modeComponent.AddUtilityTerm(62, childrenUnder5);
@@ -566,6 +568,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(145, homeBasedTourFlag * shoppingTourFlag);
           modeComponent.AddUtilityTerm(146, homeBasedTourFlag * socialTourFlag);
           modeComponent.AddUtilityTerm(147, workBasedTourFlag);
+          modeComponent.AddUtilityTerm(148, jointTourFlag);
 
           //modeComponent.AddUtilityTerm(41, maleFlag);
           //modeComponent.AddUtilityTerm(41, onePersonHouseholdFlag);
@@ -584,22 +587,23 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //modeComponent.AddUtilityTerm(48, noCarsInHouseholdFlag);
           //modeComponent.AddUtilityTerm(49, carsLessThanDriversFlag);
         } else if (mode == Global.Settings.Modes.HovPassenger) {
-          modeComponent.AddUtilityTerm(40, 1);
-          modeComponent.AddUtilityTerm(41, intraZonal);
-          modeComponent.AddUtilityTerm(42, intraMicrozonal);
-          modeComponent.AddUtilityTerm(43, adultFlag * noCarsInHouseholdFlag);
-          modeComponent.AddUtilityTerm(44, adultFlag * carsLessThanDriversFlag);
-          modeComponent.AddUtilityTerm(45, nonAdultFlag);
-          modeComponent.AddUtilityTerm(46, HHwithLowIncomeFlag);
-          modeComponent.AddUtilityTerm(47, HHwithHighIncomeFlag);
-          modeComponent.AddUtilityTerm(48, HHwithMissingIncomeFlag);
-          modeComponent.AddUtilityTerm(141, homeBasedTourFlag * workTourFlag);
-          modeComponent.AddUtilityTerm(142, homeBasedTourFlag * businessTourFlag);
-          modeComponent.AddUtilityTerm(143, homeBasedTourFlag * educationTourFlag);
-          modeComponent.AddUtilityTerm(144, homeBasedTourFlag * escortTourFlag);
-          modeComponent.AddUtilityTerm(145, homeBasedTourFlag * shoppingTourFlag);
-          modeComponent.AddUtilityTerm(146, homeBasedTourFlag * socialTourFlag);
-          modeComponent.AddUtilityTerm(147, workBasedTourFlag);
+          modeComponent.AddUtilityTerm(30, 1);
+          modeComponent.AddUtilityTerm(31, intraZonal);
+          modeComponent.AddUtilityTerm(32, intraMicrozonal);
+          modeComponent.AddUtilityTerm(33, adultFlag * noCarsInHouseholdFlag);
+          modeComponent.AddUtilityTerm(34, adultFlag * carsLessThanDriversFlag);
+          modeComponent.AddUtilityTerm(35, nonAdultFlag);
+          modeComponent.AddUtilityTerm(36, HHwithLowIncomeFlag);
+          modeComponent.AddUtilityTerm(37, HHwithHighIncomeFlag);
+          modeComponent.AddUtilityTerm(38, HHwithMissingIncomeFlag);
+          modeComponent.AddUtilityTerm(131, homeBasedTourFlag * workTourFlag);
+          modeComponent.AddUtilityTerm(132, homeBasedTourFlag * businessTourFlag);
+          modeComponent.AddUtilityTerm(133, homeBasedTourFlag * educationTourFlag);
+          modeComponent.AddUtilityTerm(134, homeBasedTourFlag * escortTourFlag);
+          modeComponent.AddUtilityTerm(135, homeBasedTourFlag * shoppingTourFlag);
+          modeComponent.AddUtilityTerm(136, homeBasedTourFlag * socialTourFlag);
+          modeComponent.AddUtilityTerm(137, workBasedTourFlag);
+          modeComponent.AddUtilityTerm(138, jointTourFlag);
           //modeComponent.AddUtilityTerm(30, 1);
           //modeComponent.AddUtilityTerm(31, childrenUnder5);
           //modeComponent.AddUtilityTerm(32, childrenAge5Through15);
@@ -626,10 +630,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(150, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());
           modeComponent.AddUtilityTerm(150, Global.Configuration.PaidRideShare_Age18to25Coefficient * tour.Person.AgeIsBetween18And25.ToFlag());
           modeComponent.AddUtilityTerm(150, Global.Configuration.PaidRideShare_AgeOver65Coefficient * (tour.Person.Age >= 65).ToFlag());
-        } else if (mode == Global.Settings.Modes.WalkRideWalk) {
+        } else if (mode >= Global.Settings.Modes.WalkRideWalk) {
           modeComponent.AddUtilityTerm(20, 1);
-          modeComponent.AddUtilityTerm(21, intraZonal);
-          modeComponent.AddUtilityTerm(22, intraMicrozonal);
+          //modeComponent.AddUtilityTerm(21, intraZonal);
+          //modeComponent.AddUtilityTerm(22, intraMicrozonal);
           modeComponent.AddUtilityTerm(23, adultFlag * noCarsInHouseholdFlag);
           modeComponent.AddUtilityTerm(24, adultFlag * carsLessThanDriversFlag);
           modeComponent.AddUtilityTerm(25, nonAdultFlag);
@@ -643,6 +647,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(125, homeBasedTourFlag * shoppingTourFlag);
           modeComponent.AddUtilityTerm(126, homeBasedTourFlag * socialTourFlag);
           modeComponent.AddUtilityTerm(127, workBasedTourFlag);
+          modeComponent.AddUtilityTerm(128, jointTourFlag);
           //modeComponent.AddUtilityTerm(21, femaleFlag);
           //modeComponent.AddUtilityTerm(22, retiredAdultFlag);
 
@@ -664,38 +669,46 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           //modeComponent.AddUtilityTerm(26, noCarsInHouseholdFlag);
           //modeComponent.AddUtilityTerm(29, carsLessThanDriversFlag);
-        } else if (mode == Global.Settings.Modes.WalkRideBike) {
-          modeComponent.AddUtilityTerm(101, 1.0);
-        } else if (mode == Global.Settings.Modes.WalkRideShare) {
-          modeComponent.AddUtilityTerm(102, 1.0);
-        } else if (mode == Global.Settings.Modes.BikeParkRideWalk) {
-          modeComponent.AddUtilityTerm(103, 1.0);
-        } else if (mode == Global.Settings.Modes.BikeParkRideBike) {
-          modeComponent.AddUtilityTerm(104, 1.0);
-        } else if (mode == Global.Settings.Modes.BikeParkRideShare) {
-          modeComponent.AddUtilityTerm(105, 1.0);
-        } else if (mode == Global.Settings.Modes.BikeOnTransit) {
-          modeComponent.AddUtilityTerm(106, 1.0);
-        } else if (mode == Global.Settings.Modes.ShareRideWalk) {
-          modeComponent.AddUtilityTerm(107, 1.0);
-        } else if (mode == Global.Settings.Modes.ShareRideBike) {
-          modeComponent.AddUtilityTerm(108, 1.0);
-        } else if (mode == Global.Settings.Modes.ShareRideShare) {
-          modeComponent.AddUtilityTerm(109, 1.0);
-        } else if (mode == Global.Settings.Modes.CarKissRideWalk) {
-          modeComponent.AddUtilityTerm(110, 1.0);
-        } else if (mode == Global.Settings.Modes.CarKissRideBike) {
-          modeComponent.AddUtilityTerm(111, 1.0);
-        } else if (mode == Global.Settings.Modes.CarKissRideShare) {
-          modeComponent.AddUtilityTerm(112, 1.0);
-        } else if (mode == Global.Settings.Modes.CarParkRideWalk) {
-          modeComponent.AddUtilityTerm(113, 1.0);
-        } else if (mode == Global.Settings.Modes.CarParkRideBike) {
-          modeComponent.AddUtilityTerm(114, 1.0);
-        } else if (mode == Global.Settings.Modes.CarParkRideShare) {
-          modeComponent.AddUtilityTerm(115, 1.0);
+          if (mode == Global.Settings.Modes.WalkRideBike) {
+            modeComponent.AddUtilityTerm(108, 1.0);
+          } else if (mode == Global.Settings.Modes.WalkRideShare) {
+            modeComponent.AddUtilityTerm(109, 1.0);
+          } else if (mode == Global.Settings.Modes.BikeParkRideWalk) {
+            modeComponent.AddUtilityTerm(102, 1.0);
+          } else if (mode == Global.Settings.Modes.BikeParkRideBike) {
+            modeComponent.AddUtilityTerm(102, 1.0);
+            modeComponent.AddUtilityTerm(108, 1.0);
+          } else if (mode == Global.Settings.Modes.BikeParkRideShare) {
+            modeComponent.AddUtilityTerm(102, 1.0);
+            modeComponent.AddUtilityTerm(109, 1.0);
+          } else if (mode == Global.Settings.Modes.BikeOnTransit) {
+            modeComponent.AddUtilityTerm(106, 1.0);
+          } else if (mode == Global.Settings.Modes.ShareRideWalk) {
+            modeComponent.AddUtilityTerm(103, 1.0);
+          } else if (mode == Global.Settings.Modes.ShareRideBike) {
+            modeComponent.AddUtilityTerm(103, 1.0);
+            modeComponent.AddUtilityTerm(108, 1.0);
+          } else if (mode == Global.Settings.Modes.ShareRideShare) {
+            modeComponent.AddUtilityTerm(103, 1.0);
+            modeComponent.AddUtilityTerm(109, 1.0);
+          } else if (mode == Global.Settings.Modes.CarKissRideWalk) {
+            modeComponent.AddUtilityTerm(104, 1.0);
+          } else if (mode == Global.Settings.Modes.CarKissRideBike) {
+            modeComponent.AddUtilityTerm(104, 1.0);
+            modeComponent.AddUtilityTerm(108, 1.0);
+          } else if (mode == Global.Settings.Modes.CarKissRideShare) {
+            modeComponent.AddUtilityTerm(104, 1.0);
+            modeComponent.AddUtilityTerm(109, 1.0);
+          } else if (mode == Global.Settings.Modes.CarParkRideWalk) {
+            modeComponent.AddUtilityTerm(105, 1.0);
+          } else if (mode == Global.Settings.Modes.CarParkRideBike) {
+            modeComponent.AddUtilityTerm(105, 1.0);
+            modeComponent.AddUtilityTerm(108, 1.0);
+          } else if (mode == Global.Settings.Modes.CarParkRideShare) {
+            modeComponent.AddUtilityTerm(105, 1.0);
+            modeComponent.AddUtilityTerm(109, 1.0);
+          }
         }
-
           //GV: Estimation of importance of "purpose" per mode - SOV is zero-alt and Work is zero-alt 
         //if (mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.Hov2
         //     || mode == Global.Settings.Modes.Hov3 || mode == Global.Settings.Modes.Transit) {
@@ -736,8 +749,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 
           //limit availability based on mode and tour purpose
-          bool available = (mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.CarParkRideBike || mode == Global.Settings.Modes.WalkRideBike)
-              && (!(tour.IsWorkPurpose() || tour.IsSchoolPurpose())) ? false : true;
+          bool available = true;
+
+          //if (mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.CarParkRideBike || mode == Global.Settings.Modes.WalkRideBike)
+          //    && (!(tour.IsWorkPurpose() || tour.IsSchoolPurpose())) ? false : true;
 
           //further limit availability on mode
           if (mode == Global.Settings.Modes.PaidRideShare && !Global.Configuration.PaidRideShareModeIsAvailable) {
@@ -767,13 +782,20 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           //further limit availabillity based on time window variables and any constrained choices
           available = (available == true)
-              && (modeTimes.LongestFeasibleWindow != null) && (mode > 0)
-              //&& (mode <= Global.Settings.Modes.Transit)
-              && (person.Age >= 18 || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
+              && (modeTimes.LongestFeasibleWindow != null) 
+              && (mode > 0)
+              && (person.Age >= Global.Configuration.COMPASS_MinimumAutoDrivingAge || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
               && (constrainedMode > 0 || mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.HovDriver || mode == Global.Settings.Modes.Transit || !partialHalfTour)
               && (constrainedMode <= 0 || constrainedMode == mode)
               && (constrainedArrivalTime <= 0 || (constrainedArrivalTime >= arrivalPeriod.Start && constrainedArrivalTime <= arrivalPeriod.End))
               && (constrainedDepartureTime <= 0 || (constrainedDepartureTime >= departurePeriod.Start && constrainedDepartureTime <= departurePeriod.End));
+
+          if (modeTimes.GeneralizedTimeToDestination < Constants.EPSILON ||
+              modeTimes.GeneralizedTimeFromDestination < Constants.EPSILON ||
+              modeTimes.GeneralizedTimeToDestination > Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit ||
+              modeTimes.GeneralizedTimeFromDestination > Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit) {
+            available = false;
+          }
 
           ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available,
                                                                                                      choice != null && choice.Index == altIndex);
@@ -829,7 +851,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             continue;
           }
 
-          //GV and JB: the parking cost are handled as part of genaralised time
+              //GV and JB: the parking cost are handled as part of genaralised time
 
           double minimumTimeNeeded = modeTimes.TravelTimeToDestination + modeTimes.TravelTimeFromDestination + Global.Settings.Times.MinimumActivityDuration;
 
@@ -838,23 +860,54 @@ namespace DaySim.ChoiceModels.Actum.Models {
                          : (mode == Global.Settings.Modes.Sov) ? 5
                          : (mode == Global.Settings.Modes.HovDriver) ? 4
                          : (mode == Global.Settings.Modes.HovPassenger) ? 4
-                         : (mode == Global.Settings.Modes.WalkRideWalk) ? 2 : 1;
-           alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
+                         : (mode >= Global.Settings.Modes.WalkRideWalk) ? 1 : 2;
+          alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
 
+          if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare ) {
+            alternative.AddUtilityTerm(11, modeTimes.OriginAccessTime);
+          }
+          if (mode == Global.Settings.Modes.BikeParkRideWalk || mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.BikeParkRideShare ) {
+            alternative.AddUtilityTerm(12, modeTimes.OriginAccessTime);
+          }
+          if (mode == Global.Settings.Modes.ShareRideWalk || mode == Global.Settings.Modes.ShareRideBike || mode == Global.Settings.Modes.ShareRideShare)  {
+            alternative.AddUtilityTerm(13, modeTimes.OriginAccessTime);
+          }
+          if (mode == Global.Settings.Modes.CarKissRideWalk || mode == Global.Settings.Modes.CarKissRideBike || mode == Global.Settings.Modes.CarKissRideShare) {
+            alternative.AddUtilityTerm(14, modeTimes.OriginAccessTime);
+          }
+          if (mode == Global.Settings.Modes.CarParkRideWalk || mode == Global.Settings.Modes.CarParkRideBike || mode == Global.Settings.Modes.CarParkRideShare ) {
+            alternative.AddUtilityTerm(15, modeTimes.OriginAccessTime);
+          }
+          if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.BikeParkRideWalk || mode == Global.Settings.Modes.ShareRideWalk
+             || mode == Global.Settings.Modes.CarKissRideWalk || mode == Global.Settings.Modes.CarParkRideWalk) {
+            alternative.AddUtilityTerm(16, modeTimes.DestinationAccessTime);
+          }
+          if (mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.ShareRideBike
+             || mode == Global.Settings.Modes.CarKissRideBike || mode == Global.Settings.Modes.CarParkRideBike ) {
+            alternative.AddUtilityTerm(17, modeTimes.DestinationAccessTime);
+          }
+          if (mode == Global.Settings.Modes.WalkRideShare || mode == Global.Settings.Modes.BikeParkRideShare || mode == Global.Settings.Modes.ShareRideShare
+             || mode == Global.Settings.Modes.CarKissRideShare || mode == Global.Settings.Modes.CarParkRideShare) {
+            alternative.AddUtilityTerm(18, modeTimes.DestinationAccessTime);
+          }
+          if (mode == Global.Settings.Modes.BikeOnTransit) {
+            alternative.AddUtilityTerm(12, modeTimes.OriginAccessTime);
+            alternative.AddUtilityTerm(17, modeTimes.DestinationAccessTime);
+          }
           //alternative.AddUtilityTerm(3,
           //                           Math.Log(modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start -
-          //                                    minimumTimeNeeded + 1.0));
+           //                                   minimumTimeNeeded + 1.0));
 
           // JLB 20140204 replaced coeff 3 with a different time window formulation:  time pressure
           //    instead of having positive utility for increasing time window, have negative utility for decreasing time window
-          //alternative.AddUtilityTerm(3,
-          //        Math.Log(Math.Max(Constants.EPSILON, 1 -
-          //        Math.Pow(minimumTimeNeeded / (Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)), 0.8)
-           //       )));
+          alternative.AddUtilityTerm(1,
+                  Math.Log(Math.Max(Constants.EPSILON, 1 -
+                  Math.Pow(minimumTimeNeeded / (Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)), 0.8)
+                 )));
 
 
 
-          //alternative.AddUtilityTerm(4, Math.Log((totalMinutesAvailableInDay + 1.0) / (minimumTimeNeeded + 1.0)));
+          alternative.AddUtilityTerm(2, Math.Log((totalMinutesAvailableInDay + 1.0) / (minimumTimeNeeded + 1.0)));
 
           //alternative.AddUtilityTerm(5,
           //                                    (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&
