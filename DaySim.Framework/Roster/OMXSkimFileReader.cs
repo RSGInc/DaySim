@@ -38,7 +38,6 @@ namespace DaySim.Framework.Roster {
       filename = filename.Substring(hdf5NameEnd);
 
       string hdfFile = Path.Combine(_path, HDFName);
-      Console.WriteLine("Loading skim file: {0}.", hdfFile);
 
       FileInfo file = new FileInfo(hdfFile);
       if (!file.Exists) {
@@ -53,6 +52,7 @@ namespace DaySim.Framework.Roster {
       long nCols = size2[1];
       long numZones = _mapping.Count();
 
+      Console.WriteLine("Loading skim file: {0} dataset: {1} with nRows={2}, nCols={3} and will read data for {4} zones", hdfFile, filename, nRows, nCols, numZones);
       // if the count in the hdf5 file is larger than the number of
       // tazs in the mapping, ignore the values over the total number
       //of tazs in the mapping because these are not valid zones.
@@ -72,18 +72,18 @@ namespace DaySim.Framework.Roster {
 
       H5D.read(dataSet, tid1, wrapArray);
 
-      for (int row = 0; row < nRows; row++) {
-          for (int col = 0; col < nCols; col++) {
-              double value = dataArray[row, col] * scale;
+      for (int row = 0; row < numZones; row++) {
+        for (int col = 0; col < numZones; col++) {
+          double value = dataArray[row, col] * scale;
 
-              if (value > 0) {
-                if (value > ushort.MaxValue - 1) {
-                  value = ushort.MaxValue - 1;
-                }
+          if (value > 0) {
+            if (value > ushort.MaxValue - 1) {
+              value = ushort.MaxValue - 1;
+            }
 
-                _matrix[row][col] = (ushort)value;
-              }
+            _matrix[row][col] = (ushort)value;
           }
+        }
       }
 
       SkimMatrix skimMatrix = new SkimMatrix(_matrix);
