@@ -72,16 +72,20 @@ namespace DaySim.Framework.Roster {
 
       H5D.read(dataSet, tid1, wrapArray);
 
-      for (int row = 0; row < numZones; row++) {
-        for (int col = 0; col < numZones; col++) {
-          double value = dataArray[row, col] * scale;
+      for (int row = 0; row < nRows; row++) {
+        if (_mapping.TryGetValue(row + 1, out int mappedRow)) {
+          for (int col = 0; col < nCols; col++) {
+            if (_mapping.TryGetValue(col + 1, out int mappedCol)) {
+              double value = dataArray[row, col] * scale;
 
-          if (value > 0) {
-            if (value > ushort.MaxValue - 1) {
-              value = ushort.MaxValue - 1;
+              if (value > 0) {
+                if (value > ushort.MaxValue - 1) {
+                  value = ushort.MaxValue - 1;
+                }
+
+                _matrix[mappedRow][mappedCol] = (ushort)value;
+              }
             }
-
-            _matrix[row][col] = (ushort)value;
           }
         }
       }
