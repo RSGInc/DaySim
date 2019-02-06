@@ -50,28 +50,6 @@ namespace DaySim.Framework.Roster {
         throw new FileNotFoundException(string.Format("The skim file {0} could not be found.", file.FullName));
       }
 
-
-      //string lookupMapName = null;
-      //OmxReadStream rs = OmxFile.OpenReadOnly(hdfFile);
-      //Console.WriteLine("OMX version is {0}", rs.OmxVersion);
-      //Console.WriteLine("mat shape is {0},{1}", rs.Shape[0], rs.Shape[1]);
-      //Console.WriteLine("first mat names is {0}", rs.MatrixNames[0]);
-      //Console.WriteLine("first mat data type is {0}", H5T.getClass(rs.GetMatrixDataType(rs.MatrixNames[0])));
-      //List<string> lookupMapNames = rs.IndexMapNames;
-      //if (lookupMapNames.Count == 1) {
-      //  lookupMapName = lookupMapNames.First();
-      //  H5DataTypeId lookupMapDataType = rs.GetMappingDataType(lookupMapName);
-      //  H5DataTypeId lookupMapNativeDataType = H5T.getNativeType(lookupMapDataType, H5T.Direction.DEFAULT);
-      //  if (false && lookupMapDataType.Equals(H5T.H5Type.NATIVE_INT)) {
-      //    lookupMap = rs.GetMapping<int>(lookupMapName);
-      //  } else if (true || lookupMapDataType.Equals(H5T.H5Type.NATIVE_SCHAR)) {
-      //    string[] lookupMapStrings = rs.GetMapping<string>(lookupMapName);
-      //    lookupMap = Array.ConvertAll<string, int>(lookupMapStrings, int.Parse);
-      //  }
-      //}
-      //rs.Close();
-
-
       H5FileId dataFile = H5F.open(hdfFile, H5F.OpenMode.ACC_RDONLY);
       H5DataSetId dataSet = H5D.open(dataFile, groupAndDataTable);
       H5DataSpaceId space = H5D.getSpace(dataSet);
