@@ -8,6 +8,7 @@
 
 using System;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -72,8 +73,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay,
                                  int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
       //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
-
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
       int carOwnership =
                 household.VehiclesAvailable == 0
                     ? Global.Settings.CarOwnerships.NoCars
@@ -85,15 +86,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
 
       int votALSegment = Global.Settings.VotALSegments.Medium; // TODO:  calculate a VOT segment that depends on household income
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
-      double personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      int transitAccessSegment = residenceParcel.TransitAccessSegment();
+      double personalBusinessAggregateLogsum = Global.AggregateLogsums[residenceParcel.ZoneId]
                 [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
-      double shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double shoppingAggregateLogsum = Global.AggregateLogsums[residenceParcel.ZoneId]
                 //[Global.Settings.Purposes.Shopping][carOwnership][votALSegment][transitAccessSegment];
                 [Global.Settings.Purposes.Shopping][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
-      double mealAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double mealAggregateLogsum = Global.AggregateLogsums[residenceParcel.ZoneId]
                 [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
-      double socialAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double socialAggregateLogsum = Global.AggregateLogsums[residenceParcel.ZoneId]
                 [Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
       double compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];

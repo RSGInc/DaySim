@@ -69,21 +69,22 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TourWrapper tour, HouseholdDayWrapper householdDay, int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
       PersonWrapper person = (PersonWrapper)tour.Person;
       PersonDayWrapper personDay = (PersonDayWrapper)tour.PersonDay;
+      ParcelWrapper tourDestinationParcel = (ParcelWrapper) tour.DestinationParcel;
 
-      //			var foodRetailServiceMedicalQtrMileLog = tour.DestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
-      //			var mixedUseIndex = tour.DestinationParcel.MixedUse4Index1();
-      double k8HighSchoolQtrMileLog = tour.DestinationParcel.K8HighSchoolQtrMileLogBuffer1();
+      //			var foodRetailServiceMedicalQtrMileLog = tourDestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
+      //			var mixedUseIndex = tourDestinationParcel.MixedUse4Index1();
+      double k8HighSchoolQtrMileLog = tourDestinationParcel.K8HighSchoolQtrMileLogBuffer1();
       //var carOwnership = person.CarOwnershipSegment;
       int carOwnership = 0;
 
       int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
-      //			var notUsualWorkParcelFlag = tour.DestinationParcel.NotUsualWorkParcelFlag(person.UsualWorkParcelId);
+      //			var notUsualWorkParcelFlag = tourDestinationParcel.NotUsualWorkParcelFlag(person.UsualWorkParcelId);
 
       int votALSegment = tour.GetVotALSegment();
 
-      int workTaSegment = tour.DestinationParcel.TransitAccessSegment();
-      double workAggregateLogsum = Global.AggregateLogsums[tour.DestinationParcel.ZoneId][Global.Settings.Purposes.WorkBased][carOwnership][votALSegment][workTaSegment];
+      int workTaSegment = tourDestinationParcel.TransitAccessSegment();
+      double workAggregateLogsum = Global.AggregateLogsums[tourDestinationParcel.ZoneId][Global.Settings.Purposes.WorkBased][carOwnership][votALSegment][workTaSegment];
 
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
@@ -113,8 +114,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(11, (householdDay.Household.Size == 2).ToFlag());
       //alternative.AddUtilityTerm(12, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
 
-      //alternative.AddUtilityTerm(14, personDay.Person.WorksAtHome.ToFlag());
-      //alternative.AddUtilityTerm(15, personDay.Person.IsNonworkingAdult.ToFlag());
+      //alternative.AddUtilityTerm(14, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(15, person.IsNonworkingAdult.ToFlag());
 
       //alternative.AddUtilityTerm(15, (person.IsNonworkingAdult).ToFlag()); //out of scope, non available
 
@@ -134,14 +135,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(22, (person.FlexibleWorkHours == 1).ToFlag());
       //alternative.AddUtilityTerm(23, (person.EducationLevel >= 12).ToFlag());
 
-      //alternative.AddUtilityTerm(24, personDay.Person.IsPartTimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(24, person.IsPartTimeWorker.ToFlag());
 
       //GV, 16. june 2016 - cannot be estimated
       //alternative.AddUtilityTerm(24, (person.WorksAtHome).ToFlag());
-      ////alternative.AddUtilityTerm(25, personDay.Person.IsFulltimeWorker.ToFlag());
+      ////alternative.AddUtilityTerm(25, person.IsFulltimeWorker.ToFlag());
       //alternative.AddUtilityTerm(26, (person.MainOccupation == 50).ToFlag()); // self employed
 
-      alternative.AddUtilityTerm(27, (personDay.Person.Gender == 1).ToFlag());
+      alternative.AddUtilityTerm(27, (person.Gender == 1).ToFlag());
       //alternative.AddUtilityTerm(44, (hasAdultEducLevel12 == 1).ToFlag());
 
       //GV. 16. june 2016 - not signif.
