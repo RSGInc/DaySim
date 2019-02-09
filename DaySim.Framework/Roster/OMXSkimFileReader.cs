@@ -115,7 +115,7 @@ namespace DaySim.Framework.Roster {
                   value = ushort.MaxValue - 1;
                 }
 
-                _matrix[mappedRow][mappedCol] = Convert.ToUInt16(value);
+                _matrix[mappedRow][mappedCol] = (ushort)value; //bug #208 deferred but this will eventually changed be Convert.ToUInt16 to avoid 0.57*100=56 bug
               }
             }
           }
