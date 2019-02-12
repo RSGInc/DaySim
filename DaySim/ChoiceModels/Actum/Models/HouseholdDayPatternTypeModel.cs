@@ -596,7 +596,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int[] utmis = new int[6];
       int[] pfpt = new int[6];
       int[] CPH = new int[6];
-
+      int[] sfemp = new int[6];
 
       int ct = 0;
       int currentBatch = ParallelUtility.threadLocalAssignedIndex.Value;
@@ -688,6 +688,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           // CPHcity
           CPH[ct] = (hhLivesInCPHCity) ? 1 : 0;
 
+          //GV: 12.2.2019, incl. self empluyed
+          sfemp[ct] = (person.OccupationCode == 8) ? 1 : 0;
 
         }
       }
@@ -958,10 +960,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 73, stmis[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 74, utmis[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 75, wknok[p1]);
-          // TODO : Add more personPurpose component terms 
+          //GV: incl. self employed folk - 12.2.2019
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 76, sfemp[p1]);  
+          // TODO : Add more personPurpose component terms  
 
           //CPHcity - GV; 8. feb. 2019
-          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 81, pt[p1, 1] * CPH[p1]);
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 81, pt[p1, 1] * CPH[p1]); 
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 82, pt[p1, 2] * CPH[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 83, pt[p1, 3] * CPH[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 84, pt[p1, 4] * CPH[p1]);
