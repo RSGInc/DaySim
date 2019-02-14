@@ -401,15 +401,19 @@ namespace DaySim.PathTypeModels {
 
       double circuityDistance = (useZones || useMicrozoneSkims) ? Constants.DEFAULT_VALUE : GetCircuityDistance(skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel);
 
+      bool setBreak = false;
+      if (useMicrozoneSkims) {
+        setBreak = true;
+        }
       SkimValue skimValue =
               useZones
                 ? ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId)
                 : useMicrozoneSkims
-                ? ImpedanceRoster.GetValue("time_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.Sequence, _destinationParcel.Sequence)
+                ? ImpedanceRoster.GetValue("time_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.SequenceFrom0, _destinationParcel.SequenceFrom0)
                 : ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel, circuityDistance);
 
       double skimTime = skimValue.Variable;
-      double skimDistance = useMicrozoneSkims ? ImpedanceRoster.GetValue("distance_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.Sequence, _destinationParcel.Sequence).Variable
+      double skimDistance = useMicrozoneSkims ? ImpedanceRoster.GetValue("distance_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.SequenceFrom0, _destinationParcel.SequenceFrom0).Variable
                          : skimValue.BlendVariable;
       _pathTime[pathType] = skimTime;
       _pathDistance[pathType] = skimDistance;

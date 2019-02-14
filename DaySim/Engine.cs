@@ -1339,7 +1339,7 @@ namespace DaySim {
         int mzSequence = 0;
         foreach (IParcel microzone in microzoneReader) {
           Global.MicrozoneMapping.Add(microzone.Id, mzSequence++);
-        }
+       }
 
       }
 
