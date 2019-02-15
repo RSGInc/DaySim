@@ -1132,6 +1132,9 @@ namespace DaySim {
                     writer.Write(id); // id
                     writer.Write(Global.Configuration.InputParcelDelimiter);
 
+                    writer.Write(parcels.Count - 1); // sequence0
+                    writer.Write(Global.Configuration.InputParcelDelimiter);
+
                     writer.Write(sequence); // sequence
                     writer.Write(Global.Configuration.InputParcelDelimiter);
 
@@ -1244,6 +1247,9 @@ namespace DaySim {
                     }
 
                     writer.Write(id); // id
+                    writer.Write(Global.Configuration.InputParcelDelimiter);
+
+                    writer.Write(parcels.Count - 1); // sequence0
                     writer.Write(Global.Configuration.InputParcelDelimiter);
 
                     writer.Write(sequence); // sequence
@@ -1482,6 +1488,9 @@ namespace DaySim {
             writer.Write("id");
             writer.Write(Global.Configuration.InputParcelDelimiter);
 
+            writer.Write("sequence0");
+            writer.Write(Global.Configuration.InputParcelDelimiter);
+
             writer.Write("sequence");
             writer.Write(Global.Configuration.InputParcelDelimiter);
 
@@ -1634,6 +1643,9 @@ namespace DaySim {
       for (int i = 0; i < fields.Length; i++) {
         if (i == 0) {
           writer.Write("id");
+          writer.Write(Global.Configuration.InputParcelDelimiter);
+
+          writer.Write("sequence0");
           writer.Write(Global.Configuration.InputParcelDelimiter);
 
           writer.Write("sequence");

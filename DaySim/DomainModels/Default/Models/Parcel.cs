@@ -17,6 +17,9 @@ namespace DaySim.DomainModels.Default.Models {
     [ColumnName("id")]
     public int Id { get; set; }
 
+    [ColumnName("sequence0")]
+    public int SequenceFrom0 { get; set; }
+
     [ColumnName("sequence")]
     public int Sequence { get; set; }
 
