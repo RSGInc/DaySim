@@ -8,6 +8,7 @@
 
 using System;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -199,9 +200,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, DayPattern[] dayPatterns, DayPattern choice = null) {
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = personDay.Household;
-      Framework.DomainModels.Wrappers.IParcelWrapper residenceParcel = household.ResidenceParcel;
-      Framework.DomainModels.Wrappers.IPersonWrapper person = personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper) personDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
+      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
 
       int carsPerDriver = household.GetCarsPerDriver();
       double mixedDensity = residenceParcel.MixedUse3Index2();
@@ -211,7 +212,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double[] atUsualLogsums = new double[3];
       //var carOwnership = person.CarOwnershipSegment; //GV: sat car ownership not to impact logsums
       int carOwnership = 0;
-      int votSegment = person.Household.GetVotALSegment();
+      int votSegment = household.GetVotALSegment();
       int transitAccess = residenceParcel.TransitAccessSegment();
 
       //GV: input 26. july 2013

@@ -209,12 +209,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
                                  int choice = Constants.DEFAULT_VALUE) {
 
 
-      IHouseholdWrapper household = trip.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper) trip.Household;
       Framework.DomainModels.Models.IHouseholdTotals householdTotals = household.HouseholdTotals;
-      IPersonWrapper person = trip.Person;
-      ITourWrapper tour = trip.Tour;
+      IActumPersonWrapper person = (IActumPersonWrapper) trip.Person;
+      IActumTourWrapper tour = (IActumTourWrapper) trip.Tour;
       Framework.DomainModels.Models.IHalfTour halfTour = trip.HalfTour;
-
       // household inputs
       int onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
       int HHwithChildrenFlag = household.HasChildren.ToFlag();
@@ -331,8 +330,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       // GV commented out park and ride for COMPAS1; JOHN restored it for COMPAS2
       //// if a park and ride tour, only car is available
       if (tour.Mode == Global.Settings.Modes.ParkAndRide) {
-        tripModeAvailable[Global.Settings.Modes.Sov] = tour.Household.VehiclesAvailable > 0 && person.Age >= 18;
-        tripModeAvailable[Global.Settings.Modes.HovDriver] = tour.Household.VehiclesAvailable > 0 && person.Age >= 18;
+        tripModeAvailable[Global.Settings.Modes.Sov] = household.VehiclesAvailable > 0 && person.Age >= 18;
+        tripModeAvailable[Global.Settings.Modes.HovDriver] = household.VehiclesAvailable > 0 && person.Age >= 18;
         tripModeAvailable[Global.Settings.Modes.HovPassenger] = !tripModeAvailable[Global.Settings.Modes.Sov];
       }
       //// if the last trip of the tour and tour mode not yet used, only the tour mode is available
@@ -565,9 +564,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
                      + Global.Configuration.PaidRideShare_DensityCoefficient * Math.Min(originParcel.HouseholdsBuffer2 + originParcel.StudentsUniversityBuffer2 + originParcel.EmploymentTotalBuffer2, 6000);
 
           alternative.AddUtilityTerm(80, modeConstant);
-          alternative.AddUtilityTerm(80, Global.Configuration.PaidRideShare_Age26to35Coefficient * tour.Person.AgeIsBetween26And35.ToFlag());
-          alternative.AddUtilityTerm(80, Global.Configuration.PaidRideShare_Age18to25Coefficient * tour.Person.AgeIsBetween18And25.ToFlag());
-          alternative.AddUtilityTerm(80, Global.Configuration.PaidRideShare_AgeOver65Coefficient * (tour.Person.Age >= 65).ToFlag());
+          alternative.AddUtilityTerm(80, Global.Configuration.PaidRideShare_Age26to35Coefficient * person.AgeIsBetween26And35.ToFlag());
+          alternative.AddUtilityTerm(80, Global.Configuration.PaidRideShare_Age18to25Coefficient * person.AgeIsBetween18And25.ToFlag());
+          alternative.AddUtilityTerm(80, Global.Configuration.PaidRideShare_AgeOver65Coefficient * (person.Age >= 65).ToFlag());
 
           alternative.AddUtilityTerm(100, paidRideShareTourFlag);
           alternative.AddUtilityTerm(102, (paidRideShareTourFlag * onlyTripOnFirstHalfFlag));
