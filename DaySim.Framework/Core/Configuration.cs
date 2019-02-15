@@ -2108,6 +2108,8 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public int COMPASS_TransitFareMinimumAgeForSeniorCard { get; set; }
     [XmlAttribute]
+    public int COMPASS_TransitFareDefaultNumberOfZonesForCommuterCard { get; set; }
+    [XmlAttribute]
     public int COMPASS_TransitFareDefaultNumberOfZonesForSeniorCard { get; set; }
     [XmlAttribute]
     public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardUniversity { get; set; }

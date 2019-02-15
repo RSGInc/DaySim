@@ -205,7 +205,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int maleFlag = person.IsMale.ToFlag();
       int femaleFlag = person.IsFemale.ToFlag();
 
-      int PTpass = person.TransitPassOwnership;
+      int PTpass = person.TransitPassOwnership >=1? 1 : 0;
 
       // person-day inputs
       int homeBasedToursOnlyFlag = personDay.OnlyHomeBasedToursExist().ToFlag();

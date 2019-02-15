@@ -36,7 +36,57 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       person.ResetRandom(3);
 
+      // Determine passCategory, fareZones and passPrice
+      int passCategory = -1;
+      int fareZones = -1;
+      double passPrice = -1.0;
+      //senior card
+      if (person.Age >= Global.Configuration.COMPASS_TransitFareMinimumAgeForSeniorCard) {
+        passCategory = 1;
+        fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForSeniorCard;
+        passPrice = Global.TransitMonthlyPrice_SeniorCard[fareZones];
+        //youth high school card
+      } else if (person.StudentType == 3) {
+        passCategory = 2;
+        fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardGymnasium;
+        passPrice = Global.TransitMonthlyPrice_YouthCardGymnasium[fareZones];
+        //university card
+      } else if (person.StudentType == 4) {
+        passCategory = 3;
+        fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardUniversity;
+        passPrice = Global.TransitMonthlyPrice_YouthCardUniversity[fareZones];
+        //youth non-student card
+      } else if (person.StudentType == 0 && person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForYouthNonStudentCard) {
+        passCategory = 4;
+        fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardNonStudent;
+        passPrice = Global.TransitMonthlyPrice_YouthCardNonStudent[fareZones];
+        //child commuter card
+      } else if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel && person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount
+        && !(person.UsualSchoolParcel == null)) {
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualSchoolParcel.ZoneId);
+        passCategory = 5;
+        fareZones = (int)Math.Round(skimValue.Variable);
+        passPrice = Global.TransitMonthlyPrice_ChildCommuteCard[fareZones];
+        //adult commuter card
+      } else if (!(person.UsualWorkParcel == null)) {
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualWorkParcel.ZoneId);
+        passCategory = 6;
+        fareZones = (int)Math.Round(skimValue.Variable);
+        passPrice = Global.TransitMonthlyPrice_AdultCommuteCard[fareZones];
+      } else if (person.WorkerType == 0) {
+        passCategory = 6;
+        fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForCommuterCard;
+        passPrice = Global.TransitMonthlyPrice_AdultCommuteCard[fareZones];
+      }
+
+
       if (Global.Configuration.IsInEstimationMode) {
+        
+        if(passCategory < 0) { //passCategory couldn't be determined because of missing usual location information
+          person.TransitPassOwnership = passCategory;
+        } else if (person.TransitPassOwnership > 0) {  //reset pass ownership of passholder to number of fare zones  
+          person.TransitPassOwnership = fareZones;
+        }
         if (!_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
           return;
         }
@@ -45,50 +95,40 @@ namespace DaySim.ChoiceModels.Actum.Models {
       ChoiceProbabilityCalculator choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(person.Id);
 
       if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-        if (person.TransitPassOwnership < 0 || person.TransitPassOwnership > 1) {
+        if (person.TransitPassOwnership < 0) {
           return;
         }
 
-        RunModel(choiceProbabilityCalculator, person, person.TransitPassOwnership);
+        int transitPassIndicator = person.TransitPassOwnership > 0 ? 1:0; 
+        RunModel(choiceProbabilityCalculator, person, passCategory, fareZones, passPrice, transitPassIndicator);
 
         choiceProbabilityCalculator.WriteObservation();
       } else {
-        RunModel(choiceProbabilityCalculator, person);
+        RunModel(choiceProbabilityCalculator, person, passCategory, fareZones, passPrice);
 
         ChoiceProbabilityCalculator.Alternative chosenAlternative = choiceProbabilityCalculator.SimulateChoice(person.Household.RandomUtility);
         int choice = (int)chosenAlternative.Choice;
-
+        if (choice > 0) { choice = fareZones; }  //set to number of farezones for person who chooses transit pass
         person.TransitPassOwnership = choice;
       }
     }
 
-    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
-      //MB check for access to new Actum person properties
-      int checkPersInc = person.PersonalIncome;  //does not need a cast in this case
-      //end check
+    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonWrapper person, int passCategory, int fareZones, double passPrice, int choice = Constants.DEFAULT_VALUE) {
 
-      //MB check for new hh properties
-      //requres a cast to a household, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
+      //Accessing COMPASS-specific properties requires a cast, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
       IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
-      int checkKids6To17 = household.Persons6to17;
-      // end check
+      IActumParcelWrapper homeParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      //IActumParcelWrapper workParcel = (IActumParcelWrapper)(person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel);
+      //IActumParcelWrapper schoolParcel = (IActumParcelWrapper)(person.IsUniversityStudent ? null : person.UsualSchoolParcel);
+      IActumParcelWrapper workParcel = (IActumParcelWrapper) person.UsualWorkParcel;
+      IActumParcelWrapper schoolParcel = (IActumParcelWrapper) person.UsualSchoolParcel;
 
-
-
-      //MB check for access to new Actum parcel properties
-      //mb changed these to use ActumParcelWarraper, with using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
-      IActumParcelWrapper homeParcel = (IActumParcelWrapper) person.Household.ResidenceParcel;
-      IActumParcelWrapper workParcel = (IActumParcelWrapper) (person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel);
-      IActumParcelWrapper schoolParcel = (IActumParcelWrapper) (person.IsUniversityStudent ? null : person.UsualSchoolParcel);
-      if (workParcel != null) { 
-        double checkWorkMZParkCost = workParcel.PublicParkingHourlyPriceBuffer1;
-      }
-      //end check
+      double workMZParkPrice = workParcel != null ? workParcel.PublicParkingHourlyPriceBuffer1 : 0;
 
       bool workParcelMissing = workParcel == null;
       bool schoolParcelMissing = schoolParcel == null;
 
-      const double maxTranDist = 1.5;
+      const double maxTranDist = 5.0;  //Goran, 5.0km might be the wrong max distance threshold
 
       double homeTranDist = 99.0;
 
@@ -119,7 +159,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton.Run(
-            person.Household.RandomUtility,
+            household.RandomUtility,
                 homeParcel,
                 workParcel,
                 Global.Settings.Times.EightAM,
@@ -142,7 +182,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         // intermediate variable of type IEnumerable<dynamic> is needed to acquire First() method as extension
         pathTypeModels =
             PathTypeModelFactory.Singleton.Run(
-            person.Household.RandomUtility,
+            household.RandomUtility,
                 homeParcel,
                 workParcel,
                 Global.Settings.Times.EightAM,
@@ -152,7 +192,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
                 /* isDrivingAge */ drivingAge,
                 /* householdCars */ 1,
-                /* transitPassOwnership */ 1,
+                /* transitPassOwnership */ fareZones,
                 /* carsAreAVs */ false,
                 /* transitDiscountFraction */ freeFareType,
                 /* randomChoice */ false,
@@ -171,7 +211,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton.Run(
-            person.Household.RandomUtility,
+            household.RandomUtility,
                 homeParcel,
                 schoolParcel,
                 Global.Settings.Times.EightAM,
@@ -181,7 +221,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Configuration.Coefficients_MeanTimeCoefficient_Other,
                 drivingAge,
                 1,
-                1,
+                fareZones,
                 false,
                 freeFareType,
                 false,
@@ -200,7 +240,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //			var workTranDist2 = Math.Pow(Math.Max(workTranDist - inflection, 0),0.5);
 
       const double minimumAggLogsum = -15.0;
-      int votSegment = person.Household.GetVotALSegment();
+      int votSegment = household.GetVotALSegment();
 
       int homeTaSegment = homeParcel.TransitAccessSegment();
       double homeAggregateLogsumNoCar = Math.Max(minimumAggLogsum, Global.AggregateLogsums[homeParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][homeTaSegment]);
@@ -217,75 +257,38 @@ namespace DaySim.ChoiceModels.Actum.Models {
                     ? 0
                     : Math.Max(minimumAggLogsum, Global.AggregateLogsums[schoolParcel.ZoneId][Global.Settings.Purposes.WorkBased][Global.Settings.CarOwnerships.NoCars][votSegment][schoolTaSegment]);
 
-      double transitPassCostChange = !Global.Configuration.IsInEstimationMode ? Global.Configuration.PathImpedance_TransitPassCostPercentChangeVersusBase : 0;
-
-      double workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
-      double schoolTourLogsumDifference = 0D; // (school) full car ownership vs. no car ownership
-      //Framework.DomainModels.Wrappers.IHouseholdWrapper household = person.Household; MB already set above as an IActumParcelWrapper HH
-      if (person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
-        int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
-        int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
-        //JLB 201602
-        //var nestedAlternative1 = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, 1.0);
-        //var nestedAlternative2 = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, 0.0);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative1 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, 1.0, Global.Settings.Purposes.Work);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative2 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualWorkParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, 0.0, Global.Settings.Purposes.Work);
-
-        workTourLogsumDifference = nestedAlternative1 == null ? 0 : nestedAlternative1.ComputeLogsum();
-        workTourLogsumDifference = nestedAlternative2 == null ? 0 : nestedAlternative2.ComputeLogsum();
-      }
-
-      if (person.UsualSchoolParcel != null && person.UsualSchoolParcelId != household.ResidenceParcelId) {
-        int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
-        int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.SchoolTourModeModel);
-
-        //JLB 201602
-        //var nestedAlternative1 = Global.ChoiceModelSession.Get<SchoolTourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, 1.0);
-        //var nestedAlternative2 = Global.ChoiceModelSession.Get<SchoolTourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, 0.0);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative1 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, 1.0, Global.Settings.Purposes.School);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative2 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.VehiclesAvailable, 0.0, Global.Settings.Purposes.School);
-
-        schoolTourLogsumDifference = nestedAlternative1 == null ? 0 : nestedAlternative1.ComputeLogsum();
-        schoolTourLogsumDifference = nestedAlternative2 == null ? 0 : nestedAlternative2.ComputeLogsum();
-      }
-
-
-
-
       //Stefan variables
-      double netIncomeNetCarOwnership = Math.Max(0, (person.Household.Income / 1000.0) / 2.0 - 2.441 * 15.0 * person.Household.VehiclesAvailable);  //net income minus annual cost to use household's cars in 1000s of DKK
-                                                                                                                                                    //set household characteristics here that depend on person characteristics
-      int numberAdults = 0;
-      int numberChildren = 0;
-      foreach (PersonWrapper p in person.Household.Persons) {
-        if (p.Age >= 18) {
-          numberAdults++;
-        } else {
-          numberChildren++;
-        }
-      }
+      //Goran, if you want to use Stefan's netIncomeNetCarOwnership variable, let me know.  If so, we should use user-controlled parameters instead of the following hard-coded constants
+      //double netIncomeNetCarOwnership = Math.Max(0, (household.Income / 1000.0) / 2.0 - 2.441 * 15.0 * household.VehiclesAvailable);  //net income minus annual cost to use household's cars in 1000s of DKK
+      int numberChildren = household.Persons6to17 + household.KidsBetween0And4;
+      int numberAdults = household.Size - numberChildren;
+
       Framework.DomainModels.Wrappers.IParcelWrapper usualParcel = person.IsFullOrPartTimeWorker ? person.UsualWorkParcel : null;
       usualParcel = (usualParcel == null && person.UsualSchoolParcel != null) ? person.UsualSchoolParcel : null;
-      int parkingSearchTime = 0;
       double commuteDistance = 0.0;
-      double parkingCost = 0;
-      int model = 3;
       if (usualParcel != null) {
-        //parkingSearchTime = usualParcel.PSearchTime07_08; //uncomment when the new parcel attributes have been defined
-        commuteDistance = ImpedanceRoster.GetValue("distance-co", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, 1.0, Global.Settings.Times.EightAM, household.ResidenceParcel, usualParcel).Variable;
-        parkingCost = usualParcel.CircuityRatio_N3;  //fix this when new parcel attribute names have been fixed
-        if (person.IsFulltimeWorker && usualParcel == person.UsualWorkParcel) {
-          parkingCost = parkingCost * 8;
-          model = 1;
-        } else if (person.IsPartTimeWorker && usualParcel == person.UsualWorkParcel) {
-          parkingCost = parkingCost * 4;
-          model = 1;
-        } else {
-          parkingCost = parkingCost * 6;  // parking for school
-          model = 2;
+        commuteDistance = ImpedanceRoster.GetValue("distance-co", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, 1.0, Global.Settings.Times.EightAM, homeParcel, usualParcel).Variable;
+      }
+
+      //pass category constants
+      int senior = passCategory == 1 ? 1 : 0;
+      int youthGymnasium = passCategory == 2 ? 1 : 0;
+      int youthUniversity = passCategory == 3 ? 1 : 0;
+      int youthNonStudent = passCategory == 4 ? 1 : 0;
+      int commuterChild = passCategory == 5 ? 1 : 0;
+      int commuterAdult = passCategory == 6 ? 1 : 0;
+
+      //fare without pass
+      double fare = 0.0;
+      if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel) {
+        fare = Global.TransitBaseFare_Adult[fareZones];
+        if (person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
+          fare = fare * (1 - Global.TransitBaseFare_ChildDiscount[fareZones] / 100.0);
         }
       }
 
+      double passPriceToFareRatio = 0;
+      if (fare > 0) { passPriceToFareRatio = passPrice / fare; }
 
       // 0 No transit pass
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
@@ -294,386 +297,64 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(1, 0.0);
 
       // 1 Transit pass
-
-      double stefanUtility = 0.0;
-
       alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
       alternative.Choice = 1;
 
-      if (model == 1 && person.Household.VehiclesAvailable == 0) {
-        double beta001 = -0.33;
-        double beta002 = -0.34;
-        double beta003 = -1.15;
-        double beta004 = -0.34;
-        double beta005 = 0.0;
-        double beta006 = 0.0;
-        double beta007 = 0.0;
-        double beta008 = 0.0;
-        double beta009 = 0.0;
-        double beta010 = 0.0;
-        double beta011 = 0.0;
-        double beta012 = 0.0;
-        stefanUtility =
-            beta001 * 1.0 +
-            beta002 * numberChildren +
-            beta003 * netIncomeNetCarOwnership +
-            beta004 * person.IsMale.ToFlag() +
-            beta005 * (person.IsAdultFemale && numberAdults == 1).ToFlag() +
-            beta006 * (person.IsAdultFemale && numberAdults > 1).ToFlag() +
-            beta007 * person.Age +
-            beta008 * Math.Pow(person.Age, 2.0) +
-            beta009 * (person.Household.VehiclesAvailable >= 2).ToFlag() +
-            beta010 * (person.IsAdultMale && numberAdults == 1).ToFlag() +
-            beta011 * Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0) +
-            beta012 * Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus) +
-            0.0;
-        //Stefan utility
-        //alternative.AddUtilityTerm(1, 1.0);
-        //alternative.AddUtilityTerm(2, numberChildren);
-        //alternative.AddUtilityTerm(3, netIncomeNetCarOwnership);
-        //alternative.AddUtilityTerm(4, person.IsMale.ToFlag());
-        //alternative.AddUtilityTerm(5, (person.IsAdultFemale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(6, (person.IsAdultFemale && numberAdults > 1).ToFlag());
-        //alternative.AddUtilityTerm(7, person.Age);
-        //alternative.AddUtilityTerm(8, Math.Pow(person.Age, 2.0));
-        //non-worker/non-student models only
-        //alternative.AddUtilityTerm(9, (person.Household.VehiclesAvailable >= 2).ToFlag());
-        //alternative.AddUtilityTerm(10, (person.IsAdultMale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(11, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0));
-        //alternative.AddUtilityTerm(12, Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(1, stefanUtility); // this composite replaces terms *1-*12 above
+      //passType-specific ASCs
+      alternative.AddUtilityTerm(1, 1.0);  //base is commuterAdult
+      alternative.AddUtilityTerm(2, commuterChild);
+      alternative.AddUtilityTerm(3, senior);
+      alternative.AddUtilityTerm(4, youthGymnasium);
+      alternative.AddUtilityTerm(5, youthUniversity);
+      alternative.AddUtilityTerm(6, youthNonStudent);
 
-        //Stefan impedance (try replacign these with logsums)
-        alternative.AddUtilityTerm(13, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(14, (commuteDistance > 0 && commuteDistance < 3).ToFlag());
-        alternative.AddUtilityTerm(15, (commuteDistance >= 7 && commuteDistance < 13).ToFlag());
-        alternative.AddUtilityTerm(16, (commuteDistance >= 13).ToFlag());
-        alternative.AddUtilityTerm(17, parkingCost);
-        alternative.AddUtilityTerm(18, parkingSearchTime);
-        //commute logsum difference variable (with and without transit pass)
-        alternative.AddUtilityTerm(19, workTourLogsumDifference);
-      } else if (model == 1 && person.Household.VehiclesAvailable == 1) {
-        double beta101 = -1.16;
-        int beta102 = 0;
-        int beta103 = 0;
-        int beta104 = 0;
-        int beta105 = 0;
-        double beta106 = 0.63;
-        double beta107 = -0.76;
-        double beta108 = 0.09;
-        int beta109 = 0;
-        int beta110 = 0;
-        int beta111 = 0;
-        int beta112 = 0;
-        stefanUtility =
-            beta101 * 1.0 +
-            beta102 * numberChildren +
-            beta103 * netIncomeNetCarOwnership +
-            beta104 * person.IsMale.ToFlag() +
-            beta105 * (person.IsAdultFemale && numberAdults == 1).ToFlag() +
-            beta106 * (person.IsAdultFemale && numberAdults > 1).ToFlag() +
-            beta107 * person.Age +
-            beta108 * Math.Pow(person.Age, 2.0) +
-            beta109 * (person.Household.VehiclesAvailable >= 2).ToFlag() +
-            beta110 * (person.IsAdultMale && numberAdults == 1).ToFlag() +
-            beta111 * Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0) +
-            beta112 * Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus) +
-            0.0;
-        //Stefan utility
-        //alternative.AddUtilityTerm(101, 1.0);
-        //alternative.AddUtilityTerm(102, numberChildren);
-        //alternative.AddUtilityTerm(103, netIncomeNetCarOwnership);
-        //alternative.AddUtilityTerm(104, person.IsMale.ToFlag());
-        //alternative.AddUtilityTerm(105, (person.IsAdultFemale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(106, (person.IsAdultFemale && numberAdults > 1).ToFlag());
-        //alternative.AddUtilityTerm(107, person.Age);
-        //alternative.AddUtilityTerm(108, Math.Pow(person.Age, 2.0));
-        ////non-worker/non-student models only
-        //alternative.AddUtilityTerm(109, (person.Household.VehiclesAvailable >= 2).ToFlag());
-        //alternative.AddUtilityTerm(110, (person.IsAdultMale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(111, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0));
-        //alternative.AddUtilityTerm(112, Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(101, stefanUtility); // this composite replaces terms *1-*12 above
-                                                        //Stefan impedance (try replacign these with logsums)
-        alternative.AddUtilityTerm(113, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(114, (commuteDistance > 0 && commuteDistance < 3).ToFlag());
-        alternative.AddUtilityTerm(115, (commuteDistance >= 7 && commuteDistance < 13).ToFlag());
-        alternative.AddUtilityTerm(116, (commuteDistance >= 13).ToFlag());
-        alternative.AddUtilityTerm(117, parkingCost);
-        alternative.AddUtilityTerm(118, parkingSearchTime);
-        //commute logsum difference variable (with and without transit pass)
-        alternative.AddUtilityTerm(119, workTourLogsumDifference);
-      } else if (model == 1 && person.Household.VehiclesAvailable >= 2) {
-        double beta201 = -0.54;
-        int beta202 = 0;
-        int beta203 = 0;
-        int beta204 = 0;
-        double beta205 = 1.35;
-        double beta206 = 0.42;
-        double beta207 = -1.5;
-        double beta208 = 0.17;
-        int beta209 = 0;
-        int beta210 = 0;
-        int beta211 = 0;
-        int beta212 = 0;
-        stefanUtility =
-            beta201 * 1.0 +
-            beta202 * numberChildren +
-            beta203 * netIncomeNetCarOwnership +
-            beta204 * person.IsMale.ToFlag() +
-            beta205 * (person.IsAdultFemale && numberAdults == 1).ToFlag() +
-            beta206 * (person.IsAdultFemale && numberAdults > 1).ToFlag() +
-            beta207 * person.Age +
-            beta208 * Math.Pow(person.Age, 2.0) +
-            beta209 * (person.Household.VehiclesAvailable >= 2).ToFlag() +
-            beta210 * (person.IsAdultMale && numberAdults == 1).ToFlag() +
-            beta211 * Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0) +
-            beta212 * Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus) +
-            0.0;
-        //Stefan utility
-        //alternative.AddUtilityTerm(201, 1.0);
-        //alternative.AddUtilityTerm(202, numberChildren);
-        //alternative.AddUtilityTerm(203, netIncomeNetCarOwnership);
-        //alternative.AddUtilityTerm(204, person.IsMale.ToFlag());
-        //alternative.AddUtilityTerm(205, (person.IsAdultFemale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(206, (person.IsAdultFemale && numberAdults > 1).ToFlag());
-        //alternative.AddUtilityTerm(207, person.Age);
-        //alternative.AddUtilityTerm(208, Math.Pow(person.Age, 2.0));
-        //non-worker/non-student models only
-        //alternative.AddUtilityTerm(209, (person.Household.VehiclesAvailable >= 2).ToFlag());
-        //alternative.AddUtilityTerm(210, (person.IsAdultMale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(211, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0));
-        //alternative.AddUtilityTerm(212, Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(201, stefanUtility); // this composite replaces terms *1-*12 above
-                                                        //Stefan impedance (try replacign these with logsums)
-        alternative.AddUtilityTerm(213, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(214, (commuteDistance > 0 && commuteDistance < 3).ToFlag());
-        alternative.AddUtilityTerm(215, (commuteDistance >= 7 && commuteDistance < 13).ToFlag());
-        alternative.AddUtilityTerm(216, (commuteDistance >= 13).ToFlag());
-        alternative.AddUtilityTerm(217, parkingCost);
-        alternative.AddUtilityTerm(218, parkingSearchTime);
-        //commute logsum difference variable (with and without transit pass)
-        alternative.AddUtilityTerm(219, workTourLogsumDifference);
-      } else if (model == 2 && person.Household.VehiclesAvailable == 0) {
-        double beta301 = 4.74;
-        double beta302 = 0.39;
-        int beta303 = 0;
-        int beta304 = 0;
-        int beta305 = 0;
-        int beta306 = 0;
-        double beta307 = -3.95;
-        double beta308 = 0.62;
-        int beta309 = 0;
-        int beta310 = 0;
-        int beta311 = 0;
-        int beta312 = 0;
-        stefanUtility =
-            beta301 * 1.0 +
-            beta302 * numberChildren +
-            beta303 * netIncomeNetCarOwnership +
-            beta304 * person.IsMale.ToFlag() +
-            beta305 * (person.IsAdultFemale && numberAdults == 1).ToFlag() +
-            beta306 * (person.IsAdultFemale && numberAdults > 1).ToFlag() +
-            beta307 * person.Age +
-            beta308 * Math.Pow(person.Age, 2.0) +
-            beta309 * (person.Household.VehiclesAvailable >= 2).ToFlag() +
-            beta310 * (person.IsAdultMale && numberAdults == 1).ToFlag() +
-            beta311 * Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0) +
-            beta312 * Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus) +
-            0.0;
-        //Stefan utility
-        //alternative.AddUtilityTerm(301, 1.0);
-        //alternative.AddUtilityTerm(302, numberChildren);
-        //alternative.AddUtilityTerm(303, netIncomeNetCarOwnership);
-        //alternative.AddUtilityTerm(304, person.IsMale.ToFlag());
-        //alternative.AddUtilityTerm(305, (person.IsAdultFemale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(306, (person.IsAdultFemale && numberAdults > 1).ToFlag());
-        //alternative.AddUtilityTerm(307, person.Age);
-        //alternative.AddUtilityTerm(308, Math.Pow(person.Age, 2.0));
-        ////non-worker/non-student models only
-        //alternative.AddUtilityTerm(309, (person.Household.VehiclesAvailable >= 2).ToFlag());
-        //alternative.AddUtilityTerm(310, (person.IsAdultMale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(311, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0));
-        //alternative.AddUtilityTerm(312, Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(301, stefanUtility); // this composite replaces terms *1-*12 above
-                                                        //Stefan impedance (try replacign these with logsums)
-        alternative.AddUtilityTerm(313, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(314, (commuteDistance > 0 && commuteDistance < 3).ToFlag());
-        alternative.AddUtilityTerm(315, (commuteDistance >= 7 && commuteDistance < 13).ToFlag());
-        alternative.AddUtilityTerm(316, (commuteDistance >= 13).ToFlag());
-        alternative.AddUtilityTerm(317, parkingCost);
-        alternative.AddUtilityTerm(318, parkingSearchTime);
-        //commute logsum difference variable (with and without transit pass)
-        alternative.AddUtilityTerm(319, schoolTourLogsumDifference);
-      } else if (model == 2 && person.Household.VehiclesAvailable >= 1) {
-        double beta401 = 3.75;
-        int beta402 = 0;
-        int beta403 = 0;
-        int beta404 = 0;
-        int beta405 = 0;
-        int beta406 = 0;
-        double beta407 = 2.81;
-        double beta408 = 0.33;
-        int beta409 = 0;
-        int beta410 = 0;
-        int beta411 = 0;
-        int beta412 = 0;
-        stefanUtility =
-            beta401 * 1.0 +
-            beta402 * numberChildren +
-            beta403 * netIncomeNetCarOwnership +
-            beta404 * person.IsMale.ToFlag() +
-            beta405 * (person.IsAdultFemale && numberAdults == 1).ToFlag() +
-            beta406 * (person.IsAdultFemale && numberAdults > 1).ToFlag() +
-            beta407 * person.Age +
-            beta408 * Math.Pow(person.Age, 2.0) +
-            beta409 * (person.Household.VehiclesAvailable >= 2).ToFlag() +
-            beta410 * (person.IsAdultMale && numberAdults == 1).ToFlag() +
-            beta411 * Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0) +
-            beta412 * Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus) +
-            0.0;
-        //Stefan utility
-        //alternative.AddUtilityTerm(401, 1.0);
-        //alternative.AddUtilityTerm(402, numberChildren);
-        //alternative.AddUtilityTerm(403, netIncomeNetCarOwnership);
-        //alternative.AddUtilityTerm(404, person.IsMale.ToFlag());
-        //alternative.AddUtilityTerm(405, (person.IsAdultFemale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(406, (person.IsAdultFemale && numberAdults > 1).ToFlag());
-        //alternative.AddUtilityTerm(407, person.Age);
-        //alternative.AddUtilityTerm(408, Math.Pow(person.Age, 2.0));
-        ////non-worker/non-student models only
-        //alternative.AddUtilityTerm(409, (person.Household.VehiclesAvailable >= 2).ToFlag());
-        //alternative.AddUtilityTerm(410, (person.IsAdultMale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(411, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0));
-        //alternative.AddUtilityTerm(412, Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(401, stefanUtility); // this composite replaces terms *1-*12 above
-                                                        //Stefan impedance (try replacign these with logsums)
-        alternative.AddUtilityTerm(413, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(414, (commuteDistance > 0 && commuteDistance < 3).ToFlag());
-        alternative.AddUtilityTerm(415, (commuteDistance >= 7 && commuteDistance < 13).ToFlag());
-        alternative.AddUtilityTerm(416, (commuteDistance >= 13).ToFlag());
-        alternative.AddUtilityTerm(417, parkingCost);
-        alternative.AddUtilityTerm(418, parkingSearchTime);
-        //commute logsum difference variable (with and without transit pass)
-        alternative.AddUtilityTerm(419, schoolTourLogsumDifference);
-      } else if (model == 3 && person.Household.VehiclesAvailable == 0) {
-        double beta501 = 0.05;
-        int beta502 = 0;
-        int beta503 = 0;
-        int beta504 = 0;
-        double beta505 = 0.56;
-        double beta506 = 0.41;
-        int beta507 = 0;
-        int beta508 = 0;
-        int beta509 = 0;
-        int beta510 = 0;
-        double beta511 = -0.45;
-        int beta512 = 0;
-        stefanUtility =
-            beta501 * 1.0 +
-            beta502 * numberChildren +
-            beta503 * netIncomeNetCarOwnership +
-            beta504 * person.IsMale.ToFlag() +
-            beta505 * (person.IsAdultFemale && numberAdults == 1).ToFlag() +
-            beta506 * (person.IsAdultFemale && numberAdults > 1).ToFlag() +
-            beta507 * person.Age +
-            beta508 * Math.Pow(person.Age, 2.0) +
-            beta509 * (person.Household.VehiclesAvailable >= 2).ToFlag() +
-            beta510 * (person.IsAdultMale && numberAdults == 1).ToFlag() +
-            beta511 * Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0) +
-            beta512 * Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus) +
-            0.0;
-        //Stefan utility
-        //alternative.AddUtilityTerm(501, 1.0);
-        //alternative.AddUtilityTerm(502, numberChildren);
-        //alternative.AddUtilityTerm(503, netIncomeNetCarOwnership);
-        //alternative.AddUtilityTerm(504, person.IsMale.ToFlag());
-        //alternative.AddUtilityTerm(505, (person.IsAdultFemale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(506, (person.IsAdultFemale && numberAdults > 1).ToFlag());
-        //alternative.AddUtilityTerm(507, person.Age);
-        //alternative.AddUtilityTerm(508, Math.Pow(person.Age, 2.0));
-        ////non-worker/non-student models only
-        //alternative.AddUtilityTerm(509, (person.Household.VehiclesAvailable >= 2).ToFlag());
-        //alternative.AddUtilityTerm(510, (person.IsAdultMale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(511, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0));
-        //alternative.AddUtilityTerm(512, Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(501, stefanUtility); // this composite replaces terms *1-*12 above
+      //Goran, consider augmenting some of the generic terms in the following sections with some pass-type-specific variables  
 
-      } else { //(model == 3 && person.Household.VehiclesAvailable >= 1)
-        double beta601 = -1.7;
-        int beta602 = 0;
-        double beta603 = 0.47;
-        int beta604 = 0;
-        double beta605 = 0.63;
-        double beta606 = 0.46;
-        int beta607 = 0;
-        int beta608 = 0;
-        double beta609 = -0.32;
-        double beta610 = 0.35;
-        double beta611 = -0.37;
-        double beta612 = -0.09;
-        stefanUtility =
-            beta601 * 1.0 +
-            beta602 * numberChildren +
-            beta603 * netIncomeNetCarOwnership +
-            beta604 * person.IsMale.ToFlag() +
-            beta605 * (person.IsAdultFemale && numberAdults == 1).ToFlag() +
-            beta606 * (person.IsAdultFemale && numberAdults > 1).ToFlag() +
-            beta607 * person.Age +
-            beta608 * Math.Pow(person.Age, 2.0) +
-            beta609 * (person.Household.VehiclesAvailable >= 2).ToFlag() +
-            beta610 * (person.IsAdultMale && numberAdults == 1).ToFlag() +
-            beta611 * Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0) +
-            beta612 * Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus) +
-            0.0;
-        //Stefan utility
-        //alternative.AddUtilityTerm(601, 1.0);
-        //alternative.AddUtilityTerm(602, numberChildren);
-        //alternative.AddUtilityTerm(603, netIncomeNetCarOwnership);
-        //alternative.AddUtilityTerm(604, person.IsMale.ToFlag());
-        //alternative.AddUtilityTerm(605, (person.IsAdultFemale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(606, (person.IsAdultFemale && numberAdults > 1).ToFlag());
-        //alternative.AddUtilityTerm(607, person.Age);
-        //alternative.AddUtilityTerm(608, Math.Pow(person.Age, 2.0));
-        //non-worker/non-student models only
-        //alternative.AddUtilityTerm(609, (person.Household.VehiclesAvailable >= 2).ToFlag());
-        //alternative.AddUtilityTerm(610, (person.IsAdultMale && numberAdults == 1).ToFlag());
-        //alternative.AddUtilityTerm(611, Math.Min(person.Household.ResidenceParcel.DistanceToLocalBus, 2.0));
-        //alternative.AddUtilityTerm(612, Math.Min(5.0, person.Household.ResidenceParcel.DistanceToExpressBus));
-        alternative.AddUtilityTerm(601, stefanUtility); // this composite replaces terms *1-*12 above
-      }
+      //Dummy variables
+      alternative.AddUtilityTerm(11, person.IsMale.ToFlag());  //Stefan
+      alternative.AddUtilityTerm(12, (person.IsAdultFemale && numberAdults == 1).ToFlag());   //Stefan
+      alternative.AddUtilityTerm(13, (person.IsAdultFemale && numberAdults > 1).ToFlag());   //Stefan
+      alternative.AddUtilityTerm(14, (person.IsAdultMale && numberAdults == 1).ToFlag());   //Stefan
+      alternative.AddUtilityTerm(15, (household.VehiclesAvailable == 0).ToFlag());  //Base is 1 vehicle
+      alternative.AddUtilityTerm(16, (household.VehiclesAvailable >= 2).ToFlag());  //Stefan
+      //Household and person characteristics
+      alternative.AddUtilityTerm(21, numberChildren);  //Stefan
+      //alternative.AddUtilityTerm(22, netIncomeNetCarOwnership);  //Stefan
+      alternative.AddUtilityTerm(22, (!(household.HasMissingIncome)).ToFlag() * Math.Log(Math.Max(1, household.Income))); //From default version
+      alternative.AddUtilityTerm(23, household.HasMissingIncome.ToFlag());  // nuisance parameter accounts for estimation cases with missing income
+      alternative.AddUtilityTerm(24, person.Age);   //Stefan
+      alternative.AddUtilityTerm(25, Math.Pow(person.Age, 2.0));  //Stefan
+      //Home accessibility
+      alternative.AddUtilityTerm(31, Math.Min(homeParcel.DistanceToLocalBus, 2.0));   //Stefan  (This is low frequency bus)
+      alternative.AddUtilityTerm(32, Math.Min(5.0, homeParcel.DistanceToExpressBus));   //Stefan (This is high frequency bus)
+                                                                                        //consider trying utility terms for the following:
+                                                                                        //homeParcel.DistanceToCommuterRail  (This is low freequency rail:  S-, Re-, local)
+                                                                                        //homeParcel.DistanceToLightRail (this is Metro)
+      alternative.AddUtilityTerm(33, Math.Min(homeParcel.DistanceToLocalBus, homeParcel.DistanceToExpressBus));   //Stefan 
+      alternative.AddUtilityTerm(34, (homeTranDist < 90.0) ? homeTranDist1 : 0); //From default version
+      alternative.AddUtilityTerm(35, (homeTranDist < 90.0) ? homeTranDist2 : 0); //From default version
+      alternative.AddUtilityTerm(36, (homeTranDist > 90.0) ? 1 : 0); //From default version
+                                                                     //In the following, review and consider revising the segment definitions, perhaps using passCategory dummies
+      alternative.AddUtilityTerm(37, homeAggregateLogsumNoCar * (person.IsFullOrPartTimeWorker || person.IsUniversityStudent).ToFlag()); //From default version
+      alternative.AddUtilityTerm(38, homeAggregateLogsumNoCar * (person.IsDrivingAgeStudent || person.IsChildUnder16).ToFlag()); //From default version
+      alternative.AddUtilityTerm(39, homeAggregateLogsumNoCar * (person.IsNonworkingAdult).ToFlag()); //From default version
+      alternative.AddUtilityTerm(40, homeAggregateLogsumNoCar * (person.IsRetiredAdult).ToFlag()); //From default version
+      //Accessibility at commute location
+      alternative.AddUtilityTerm(51, workParcelMissing ? 0 : workAggregateLogsumNoCar); //From default version
+      alternative.AddUtilityTerm(52, schoolParcelMissing ? 0 : schoolAggregateLogsumNoCar); //From default version
+      alternative.AddUtilityTerm(53, workMZParkPrice);
+      //Accessibility to commute location for workers and students
+      alternative.AddUtilityTerm(61, (!workParcelMissing && workGenTimeWithPass > -90) ? workGenTimeWithPass : 0); //From default version
+      alternative.AddUtilityTerm(62, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0); //From default version
+      alternative.AddUtilityTerm(63, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0); //From default version
+      alternative.AddUtilityTerm(64, (!schoolParcelMissing && schoolGenTimeWithPass > -90) ? schoolGenTimeWithPass : 0); //From default version
+      alternative.AddUtilityTerm(65, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0); //From default version
+      alternative.AddUtilityTerm(66, (person.WorkerType > 0 && workParcelMissing) ? 1:0);  //Nuisance parameter for missing location data
+      alternative.AddUtilityTerm(67, (person.StudentType > 0 && schoolParcelMissing) ? 1:0); //Nuisance parameter for missing location data 
+      //Price
+      alternative.AddUtilityTerm(71, passPriceToFareRatio);
 
-      //alternative.AddUtilityTerm(2, person.IsPartTimeWorker.ToFlag());
-      //alternative.AddUtilityTerm(3, (person.IsWorker && person.IsNotFullOrPartTimeWorker).ToFlag());
-      //alternative.AddUtilityTerm(4, person.IsUniversityStudent.ToFlag());
-      //alternative.AddUtilityTerm(5, person.IsRetiredAdult.ToFlag());
-      //alternative.AddUtilityTerm(6, person.IsNonworkingAdult.ToFlag());
-      //alternative.AddUtilityTerm(7, person.IsDrivingAgeStudent.ToFlag());
-      //alternative.AddUtilityTerm(8, person.IsChildUnder16.ToFlag());
-      //alternative.AddUtilityTerm(9, Math.Log(Math.Max(1, person.Household.Income)));
-      //alternative.AddUtilityTerm(10, person.Household.HasMissingIncome.ToFlag());
-      //alternative.AddUtilityTerm(11, workParcelMissing.ToFlag());
-      //alternative.AddUtilityTerm(12, schoolParcelMissing.ToFlag());
-      //alternative.AddUtilityTerm(13, (homeTranDist < 90.0) ? homeTranDist1 : 0);
-      //alternative.AddUtilityTerm(14, (homeTranDist < 90.0) ? homeTranDist2 : 0);
-      //alternative.AddUtilityTerm(15, (homeTranDist > 90.0) ? 1 : 0);
-      //			//alternative.AddUtility(16, (workTranDist < 90.0) ? workTranDist : 0);
-      //			//alternative.AddUtility(17, (workTranDist < 90.0) ? workTranDist2 : 0);
-      //			//alternative.AddUtility(18, (workTranDist > 90.0) ? 1 : 0);
-      //			//alternative.AddUtility(19, (schoolTranDist < 90.0) ? schoolTranDist : 0);
-      //			//alternative.AddUtility(20, (schoolTranDist > 90.0) ? 1 : 0);
-      //			//alternative.AddUtility(21, (!workParcelMissing && workGenTimeWithPass > -90 ) ? workGenTimeWithPass : 0);
-      //alternative.AddUtilityTerm(22, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0);
-      //alternative.AddUtilityTerm(23, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0);
-      //			//alternative.AddUtility(24, (!schoolParcelMissing && schoolGenTimeWithPass > -90 ) ? schoolGenTimeWithPass : 0);
-      //alternative.AddUtilityTerm(25, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0);
-      //alternative.AddUtilityTerm(26, homeAggregateLogsumNoCar * (person.IsFullOrPartTimeWorker || person.IsUniversityStudent).ToFlag());
-      //alternative.AddUtilityTerm(27, homeAggregateLogsumNoCar * (person.IsDrivingAgeStudent || person.IsChildUnder16).ToFlag());
-      //alternative.AddUtilityTerm(28, homeAggregateLogsumNoCar * (person.IsNonworkingAdult).ToFlag());
-      //alternative.AddUtilityTerm(29, homeAggregateLogsumNoCar * (person.IsRetiredAdult).ToFlag());
-      //alternative.AddUtilityTerm(30, workParcelMissing ? 0 : workAggregateLogsumNoCar);
-      //alternative.AddUtilityTerm(31, schoolParcelMissing ? 0 : schoolAggregateLogsumNoCar);
-      //alternative.AddUtilityTerm(32, transitPassCostChange);
     }
   }
 }
+

@@ -309,7 +309,7 @@ namespace DaySim.ChoiceModels.Actum {
       // begin transit pass ownership person loop
       foreach (PersonWrapper person in household.Persons) {
 
-        if (!person.IsChildUnder5 && Global.Configuration.IncludeTransitPassOwnershipModel) {
+        if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel && Global.Configuration.IncludeTransitPassOwnershipModel) {
           if (Global.Configuration.ShouldRunTransitPassOwnershipModel) {
 
             ChoiceModelFactory.TotalTimesTransitPassOwnershipModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
