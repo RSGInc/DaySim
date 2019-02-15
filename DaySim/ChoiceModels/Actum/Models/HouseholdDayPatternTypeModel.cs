@@ -22,7 +22,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private const int TOTAL_ALTERNATIVES = 363;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
-    private const int MAX_PARAMETER = 700;
+    private const int MAX_PARAMETER = 700; 
 
     private int[,,,,,,,,] i3;
     private int[,,] xt;
@@ -562,6 +562,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
       double compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
 
+      //GV: 8. feb. 2019
+      //bool hhLivesInCPHCity = false;
+      //if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+      //  hhLivesInCPHCity = true;
+
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
 
 
       int[,] pt = new int[6, 9];
@@ -586,6 +595,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int[] stmis = new int[6];
       int[] utmis = new int[6];
       int[] pfpt = new int[6];
+      int[] CPH = new int[6];
+      int[] sfemp = new int[6];
 
       int ct = 0;
       int currentBatch = ParallelUtility.threadLocalAssignedIndex.Value;
@@ -673,6 +684,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           // PFPT
           pfpt[ct] = (householdDay.PrimaryPriorityTimeFlag > 0) ? 1 : 0;
+
+          // CPHcity
+          CPH[ct] = (hhLivesInCPHCity) ? 1 : 0;
+
+          //GV: 12.2.2019, incl. self empluyed
+          sfemp[ct] = (person.OccupationCode == 8) ? 1 : 0;
 
         }
       }
@@ -943,8 +960,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 73, stmis[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 74, utmis[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 75, wknok[p1]);
-          // TODO : Add more personPurpose component terms
+          //GV: incl. self employed folk - 12.2.2019
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 76, sfemp[p1]);  
+          // TODO : Add more personPurpose component terms  
 
+          //CPHcity - GV; 8. feb. 2019
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 81, pt[p1, 1] * CPH[p1]); 
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 82, pt[p1, 2] * CPH[p1]);
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 83, pt[p1, 3] * CPH[p1]);
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 84, pt[p1, 4] * CPH[p1]);
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 85, pt[p1, 5] * CPH[p1]);
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 86, pt[p1, 6] * CPH[p1]);
+          choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 87, pt[p1, 7] * CPH[p1]);
 
           // set up 2-person and 3-person interaction components (always need to set them in estimation mode)
           if (hhsize >= 2 || Global.Configuration.IsInEstimationMode) {

@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
@@ -175,8 +176,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         bool available = sampleItem.Key.Available;
         bool isChosen = sampleItem.Key.IsChosen;
         double adjustmentFactor = sampleItem.Key.AdjustmentFactor;
-        IParcelWrapper destinationParcel = ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
-
+        IActumParcelWrapper destinationParcel = (IActumParcelWrapper) ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
         if (isChosen) {
           Global.PrintFile.WriteLine("Sequence {0}: Chosen parcel {1} Available {2} Sample item {3} of {4}", timesStartedRunModel, destinationParcel.Id, available, index, sampleItems.Count);
         }
@@ -566,7 +566,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       }
 
-      public static bool ShouldRunInEstimationModeForModel(DomainModels.Default.Wrappers.TourWrapper tour) {
+      public static bool ShouldRunInEstimationModeForModel(TourWrapper tour) {
         // determine validity and need, then characteristics
         // detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
         int excludeReason = 0;
