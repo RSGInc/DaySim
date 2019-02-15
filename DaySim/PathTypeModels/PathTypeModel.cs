@@ -426,7 +426,10 @@ namespace DaySim.PathTypeModels {
                                  (skimMode == Global.Settings.Modes.Bike && Global.Configuration.UseMicrozoneSkimsForBikeMode));
 
       double circuityDistance = (useZones || useMicrozoneSkims) ? Constants.DEFAULT_VALUE : GetCircuityDistance(skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel);
-
+      bool setBreak = false;
+      if (useMicrozoneSkims) {
+        setBreak = true;
+      }
       SkimValue skimValue =
               useZones
                 ? ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId)
