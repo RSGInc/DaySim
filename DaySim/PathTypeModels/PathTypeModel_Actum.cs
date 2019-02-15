@@ -991,35 +991,45 @@ namespace DaySim.PathTypeModels {
 
       double zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
 
+      bool blendMZ = (!useZones && zzDist > Constants.EPSILON && zzDist < Global.Configuration.MaximumBlendingDistance);
+
       bool intraZonal = (_originZoneId == _destinationZoneId);
-      if (intraZonal && !useZones) {
-        double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
-        double trips = (_returnTime > 0) ? 2.0 : 1.0;
+
+      double mzDistance = 0.0;
+      double mzTime = 0.0;
+      double mzGenTime = 0.0;
+
+      if ((intraZonal || blendMZ) && !useZones) {
+        mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
+        double roundTripFactor = (_returnTime > 0) ? 2.0 : 1.0;
         if (_originParcel.Id != _destinationParcel.Id) {
           mzDistance = mzDistance * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor;
         }
-        path.Distance = mzDistance * trips;
 
         if (skimMode == Global.Settings.Modes.Walk) {
-          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Walk
-                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Walk;
-          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Walk
-                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Walk;
+          mzTime = mzDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Walk
+                              + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Walk;
+          mzGenTime = mzTime * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Walk
+                             + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Walk;
 
         } else {
-          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Bike
-                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Bike;
-          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Bike
-                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Bike;
+          mzTime = mzDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Bike
+                              + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Bike;
+          mzGenTime = mzTime * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Bike
+                             + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Bike;
         }
+        mzDistance = mzDistance * roundTripFactor;
+        mzTime     = mzTime     * roundTripFactor;
+        mzGenTime  = mzGenTime  * roundTripFactor;
+      }
 
-      } else {
-        double circuityDistance =
-                ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
-                    ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(_destinationParcel);
+      double circuityDistance = Constants.DEFAULT_VALUE;
 
-
+      if (intraZonal) {
+        path.Distance = mzDistance;
+        path.Time = mzTime;
+        path.GenTime = mzGenTime;
+      } else { 
         string varname = commuter ? "time-co" : "time";
         SkimValue skimValue =
                 useZones
@@ -1070,6 +1080,15 @@ namespace DaySim.PathTypeModels {
         }
 
 
+        //if blending factor down and blend with mz values
+        if (blendMZ) {
+          double zoneFactor = zzDist / Math.Max(Global.Configuration.MaximumBlendingDistance, Constants.EPSILON);
+
+          path.Distance = zoneFactor * path.Distance + (1.0 - zoneFactor) * mzDistance;
+          path.Time     = zoneFactor * path.Time     + (1.0 - zoneFactor) * mzTime;
+          path.GenTime  = zoneFactor * path.GenTime  + (1.0 - zoneFactor) * mzGenTime;
+        }
+
         /* a fix for intra-parcels, which happen once in a great while for school
         if (!useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
           //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
@@ -1106,31 +1125,35 @@ namespace DaySim.PathTypeModels {
       bool business = (_purpose == Global.Settings.Purposes.Business);
 
       double zzDist = ImpedanceRoster.GetValue("distance", skimModeIn, pathType, votValue, outboundTime, _originZoneId, _destinationZoneId).Variable;
-
+      
       bool intraZonal = (_originZoneId == _destinationZoneId);
+
+      double mzDistance = 0.0;
+      double mzTime = 0.0;
+      double mzGenTime = 0.0;
+
       if (intraZonal && !useZones) {
-        double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
-        double trips = (_returnTime > 0) ? 2.0 : 1.0;
+        mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
+        double roundTripFactor = (_returnTime > 0) ? 2.0 : 1.0;
         if (_originParcel.Id != _destinationParcel.Id) {
           mzDistance = mzDistance * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor;
         }
-        path.Distance = mzDistance * trips;
         if (skimModeIn == Global.Settings.Modes.Sov) {
-          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_SOV
-                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_SOV;
-          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV
-                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_SOV;
+          mzTime = mzDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_SOV
+                              + Global.Configuration.COMPASS_IntrazonalMinutesExtra_SOV;
+          mzGenTime = mzTime * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV
+                             + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_SOV;
         } else {
-          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_HOV
-                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_HOV;
-          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV
-                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_HOV;
+          mzTime = mzDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_HOV
+                              + Global.Configuration.COMPASS_IntrazonalMinutesExtra_HOV;
+          mzGenTime = mzTime * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV
+                             + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_HOV;
         }
+        path.Distance = mzDistance * roundTripFactor;
+        path.Time = mzTime * roundTripFactor;
+        path.GenTime = mzGenTime * roundTripFactor;
       } else {
-        double circuityDistance =
-                ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
-                    ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(_destinationParcel);
+        double circuityDistance = Constants.DEFAULT_VALUE;
 
         string varname = commuter ? "time-co" : business ? "time-bu" : "time";
         SkimValue skimValue =
