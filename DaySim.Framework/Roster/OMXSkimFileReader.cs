@@ -1,11 +1,10 @@
-﻿// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
+// Copyright 2005-2008 Mark A. Bradley and John L. Bowman
 // Copyright 2011-2013 John Bowman, Mark Bradley, and RSG, Inc.
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -83,7 +82,6 @@ namespace DaySim.Framework.Roster {
         }
       }
 
-      Console.WriteLine("Loading skim file: {0} dataset: {1} with nRows={2}, nCols={3} and will read data for {4} zones. {5}", hdfFile, groupAndDataTable, nRows, nCols, numZones, lookupMap != null ? string.Format("Using lookupMap {0}.", lookupMapName) : "No lookupMap.");
       // if the count in the hdf5 file is larger than the number of
       // tazs in the mapping, ignore the values over the total number
       //of tazs in the mapping because these are not valid zones.
@@ -103,6 +101,7 @@ namespace DaySim.Framework.Roster {
 
       H5D.read(dataSet, tid1, wrapArray);
 
+      long numSuccessfuLookups = 0;
       for (int row = 0; row < nRows; row++) {
         int mappingKey = (lookupMap == null) ? (row + 1) : lookupMap[row];
         if (_mapping.TryGetValue(mappingKey, out int mappedRow)) {
@@ -110,7 +109,7 @@ namespace DaySim.Framework.Roster {
             mappingKey = (lookupMap == null) ? (col + 1) : lookupMap[col];
             if (_mapping.TryGetValue(mappingKey, out int mappedCol)) {
               double value = dataArray[row, col] * scale;
-
+              ++numSuccessfuLookups;
               if (value > 0) {
                 if (value > ushort.MaxValue - 1) {
                   value = ushort.MaxValue - 1;
@@ -119,16 +118,15 @@ namespace DaySim.Framework.Roster {
                 _matrix[mappedRow][mappedCol] = (ushort)value; //bug #208 deferred but this will eventually changed be Convert.ToUInt16 to avoid 0.57*100=56 bug
               }
             }
-          }
+          } //for col
         }
-      }
+      } //for row
+
+      Global.PrintFile.WriteLine(string.Format("Loaded skim file: {0} dataset: {1}, scale={6} with input matrix size={2} and DaySim matrix size={3} zones. Percentage successful mappings {4}. {5}", hdfFile, groupAndDataTable, nRows, numZones, (numSuccessfuLookups / (nRows * nCols)) * 100.0, lookupMap != null ? string.Format("Using lookupMap {0}.", lookupMapName) : "No lookupMap.", scale), true);
 
       SkimMatrix skimMatrix = new SkimMatrix(_matrix);
       return skimMatrix;
-
     }
-
   }
-
 }
 
