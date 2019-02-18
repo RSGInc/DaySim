@@ -136,7 +136,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int numberChildren = 0;
       int numberChildrenUnder5 = 0;
       int numberSelfEmpl = 0;
-
+      int numberParent = 0;
+      int numberAdult = 0;
 
       //bool hhLivesInCPHCity = false;
       //if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
@@ -189,8 +190,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         if (person.OccupationCode == 8) {    
              numberSelfEmpl++;
-               } 
+               }
 
+        //GV: Number of Parents in the HH - 14. feb. 2019
+        if (person.Age > 25) {
+          numberParent++;
+               }
+
+        //GV: Number of Adults in the HH - 14. feb. 2019
+        if (person.Age > 18) {
+          numberAdult++;
+        }
+                          
         if (person.Age >= 18) {
           numberAdults++;
           if (person.PersonType == Global.Settings.PersonTypes.FullTimeWorker
@@ -270,6 +281,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
           pfptComponent.AddUtilityTerm(3, household.HasChildrenUnder5.ToFlag());
           pfptComponent.AddUtilityTerm(4, household.HasChildrenAge5Through15.ToFlag());
 
+          //GV: 14. fwb. 2019 - HH==2, one parent and 1 child
+          pfptComponent.AddUtilityTerm(5, (household.Size >=2 && numberParent == 1 && household.HasChildren).ToFlag());
+          //GV: 14. fwb. 2019 - HH==2, both adults
+          pfptComponent.AddUtilityTerm(6, (household.Size == 2 && numberAdult == 2).ToFlag()); //GV: HH==2 plus boh are adults
+          
           //GV: JBsmail fromfeb. 6. 2019 explains that "AdultsInSharedHomeStay" is endogenous and cannot be used for estimaions
           //pfptComponent.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenUnder16).ToFlag());
           //pfptComponent.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenAge5Through15).ToFlag());
@@ -294,23 +310,21 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //pfptComponent.AddUtilityTerm(17, (household.Income >= 900000).ToFlag());
           //pfptComponent.AddUtilityTerm(16, (household.Income >= 600000).ToFlag());
 
-          // OBS; 27. aug., work tour mode logsum does not work - see what happens in the old PFPT model 
-          // GV, sep. 1st - it is not significant                    
-          pfptComponent.AddUtilityTerm(18, (firstWorkLogsum + secondWorkLogsum) *
-               (workingCoupleNoChildren || workingCoupleAllChildrenUnder5).ToFlag());
-          pfptComponent.AddUtilityTerm(18, (firstWorkLogsum + secondWorkLogsum) * otherHouseholdWithPTFTWorkers.ToFlag());
+          pfptComponent.AddUtilityTerm(17, (firstWorkLogsum + secondWorkLogsum) *
+                                           (workingCoupleNoChildren || workingCoupleAllChildrenUnder5).ToFlag());
+          pfptComponent.AddUtilityTerm(17, (firstWorkLogsum + secondWorkLogsum) * otherHouseholdWithPTFTWorkers.ToFlag());
 
-          // dette er gamle at-work logsum - it should be plus and significant
-          //alternative.AddUtilityTerm(31, (firstWorkLogsum + secondWorkLogsum) *
+          //GV: 15, feb 2019 - CPHcity included in the logsum
+          pfptComponent.AddUtilityTerm(18, (firstWorkLogsum + secondWorkLogsum) * (hhLivesInCPHCity).ToFlag());
           //(workingCoupleNoChildren || workingCoupleAllChildrenUnder5).ToFlag());
-          //alternative.AddUtilityTerm(31, (firstWorkLogsum + secondWorkLogsum) * otherHouseholdWithPTFTWorkers.ToFlag());
+          //pfptComponent.AddUtilityTerm(18, (firstWorkLogsum + secondWorkLogsum) * otherHouseholdWithPTFTWorkers.ToFlag());
+
+          //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+          pfptComponent.AddUtilityTerm(19, compositeLogsum * (hhLivesInCPHCity).ToFlag());
 
           // at-home logsum works
-          pfptComponent.AddUtilityTerm(19, compositeLogsum);
-
-          //pfpt constant
-          pfptComponent.AddUtilityTerm(51, 1);
-
+          pfptComponent.AddUtilityTerm(20, compositeLogsum);
+                        
         }
       }
       for (int jointTourFlag = 0; jointTourFlag < 2; jointTourFlag++) {
@@ -354,6 +368,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //jointComponent.AddUtilityTerm(30, (household.VehiclesAvailable >= 1 && household.Has2Drivers).ToFlag());
           jointComponent.AddUtilityTerm(27, (household.VehiclesAvailable >= 1).ToFlag());
 
+          //GV: 14. feb. 2019 - HH==2, one parent and one child
+          jointComponent.AddUtilityTerm(28, (household.Size >= 2 && numberParent == 1 && household.HasChildren).ToFlag());
+          //GV: 14. fwb. 2019 - HH==2, both adults
+          jointComponent.AddUtilityTerm(29, (household.Size == 2 && numberAdult == 2).ToFlag()); //GV: HH==2 plus boh are adults
+
           //jointComponent.AddUtilityTerm(28, (household.PartTimeWorkers >= 1).ToFlag());
 
           //GV; 4. feb. 2019, CPHcity constant
@@ -364,8 +383,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //jointComponent.AddUtilityTerm(33, (household.Income >= 900000).ToFlag());
           jointComponent.AddUtilityTerm(32, (household.Income >= 600000).ToFlag());
 
-          // GV, sep. 1st - it is not significant 
-          //jointComponent.AddUtilityTerm(41, compositeLogsum);
+          //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+          jointComponent.AddUtilityTerm(41, compositeLogsum * (hhLivesInCPHCity).ToFlag());
+
+          jointComponent.AddUtilityTerm(42, compositeLogsum);
 
           // joint non-mandatory tour constant
           jointComponent.AddUtilityTerm(61, 1); 
