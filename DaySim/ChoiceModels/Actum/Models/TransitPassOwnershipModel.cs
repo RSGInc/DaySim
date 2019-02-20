@@ -45,8 +45,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
         passCategory = 1;
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForSeniorCard;
         passPrice = Global.TransitMonthlyPrice_SeniorCard[fareZones];
+        //child commuter card
+      } else if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel && person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount
+        && !(person.UsualSchoolParcel == null)) {
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualSchoolParcel.ZoneId);
+        passCategory = 5;
+        fareZones = (int)Math.Round(skimValue.Variable);
+        passPrice = Global.TransitMonthlyPrice_ChildCommuteCard[fareZones];
         //youth high school card
-      } else if (person.StudentType == 3) {
+      } else if (person.StudentType > 0 && person.StudentType <= 3) {
         passCategory = 2;
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardGymnasium;
         passPrice = Global.TransitMonthlyPrice_YouthCardGymnasium[fareZones];
@@ -56,24 +63,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardUniversity;
         passPrice = Global.TransitMonthlyPrice_YouthCardUniversity[fareZones];
         //youth non-student card
-      } else if (person.StudentType == 0 && person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForYouthNonStudentCard) {
+      } else if (person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForYouthNonStudentCard) {
         passCategory = 4;
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardNonStudent;
         passPrice = Global.TransitMonthlyPrice_YouthCardNonStudent[fareZones];
-        //child commuter card
-      } else if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel && person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount
-        && !(person.UsualSchoolParcel == null)) {
-        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualSchoolParcel.ZoneId);
-        passCategory = 5;
-        fareZones = (int)Math.Round(skimValue.Variable);
-        passPrice = Global.TransitMonthlyPrice_ChildCommuteCard[fareZones];
         //adult commuter card
       } else if (!(person.UsualWorkParcel == null)) {
         SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualWorkParcel.ZoneId);
         passCategory = 6;
         fareZones = (int)Math.Round(skimValue.Variable);
         passPrice = Global.TransitMonthlyPrice_AdultCommuteCard[fareZones];
-      } else if (person.WorkerType == 0) {
+      } else {
         passCategory = 6;
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForCommuterCard;
         passPrice = Global.TransitMonthlyPrice_AdultCommuteCard[fareZones];
