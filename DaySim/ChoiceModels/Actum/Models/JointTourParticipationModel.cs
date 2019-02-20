@@ -256,7 +256,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(04, pYouthMandatory[p]); // impact of youth with mandatory travel
         //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(05, pYouthNonMandatory[p]); // impact of youth with non-mandatory travel
         choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(5, pType7Mandatory[p]); // impact of Child5-16 with mandatory travel
-        choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(6, pType7NonMandatory[p]); // impact of Child5-16 with non-mandatory travel
+        //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(6, pType7NonMandatory[p]); // impact of Child5-16 with non-mandatory travel
 
         //GV: 16. june, not sign
         //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(7, pAdultFemale[p]); //female
@@ -327,7 +327,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(25, iMatchAdultNonMandatory[t1, t2]);
 
           // commented out 22nd, but they work well
-          //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(26, iMatchMandatory[t1, t2]);
+          choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(26, iMatchMandatory[t1, t2]);
           //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(27, iMatchNonMandatory[t1, t2]);
 
         }
@@ -387,9 +387,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
             choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(46, iCrossAdultFemaleWithChildUnder5[t1, t2]);
 
-            //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(47, iCrossYouthAndChildUnder5[t1, t2]);
+            //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(47, iCrossYouthAndChildUnder5[t1, t2]); 
             //GV: 16. june 2016 - not sign.
-            //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(47, iCrossChild5to16AndChildUnder5[t1, t2]);
+            //ttchoiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(47, iCrossChild5to16AndChildUnder5[t1, t2]);
 
             //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(45, iCrossAdultFemaleWithChild5to16[t1, t2]);
 
@@ -452,7 +452,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         //Add utility terms that are not in components
         //alternative.AddUtilityTerm(399, 0);
-        // OBS!!! This is new - 21nd January 2013 - it sais that these tris are less expected to be done with 3 or 4+ persons (compared to to people)
+        // OBS!!! This is new - 21nd January 2013 - it sais that these trips are less expected to be done with 3 or 4+ persons (compared to two people)
         alternative.AddUtilityTerm(59, altParticipants[alt][7] == 3 ? 1 : 0);
         alternative.AddUtilityTerm(60, altParticipants[alt][7] >= 4 ? 1 : 0);
 

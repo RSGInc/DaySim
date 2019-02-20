@@ -29,7 +29,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     public void Run(HouseholdWrapper household) {
       if (household == null) {
-        throw new ArgumentNullException("household");
+        throw new ArgumentNullException("household");  
       }
 
       household.ResetRandom(4);
@@ -212,12 +212,26 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //var threeVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning3Vehicles : 0;
       //var fourVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning4Vehicles : 0;
 
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
+               
+
       // 0 AUTOS
 
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
       alternative.Choice = 0;
       alternative.AddUtilityTerm(14, Math.Log(Math.Max(netIncome, 1)));
       alternative.AddUtilityTerm(15, workTourLogsumDifference);  // instead of all Stefan's work-related and logsum variables
+      
+      //GV: 20. feb. 2019 - CPHcity logsum
+      alternative.AddUtilityTerm(16, workTourLogsumDifference * (hhLivesInCPHCity).ToFlag());
+
+      //GV: 20. feb. 2019 - incme
+      alternative.AddUtilityTerm(17, (household.Income >= 300000 && household.Income < 600000).ToFlag());
+      alternative.AddUtilityTerm(18, (household.Income >= 600000).ToFlag());
+      
       alternative.AddUtilityTerm(90, 1); //calibration constant
       alternative.AddUtilityTerm(100, zeroVehAVEffect);
       alternative.AddUtilityTerm(100, zeroVehSEEffect);
@@ -317,6 +331,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(26, stefanOneCarUtility);  //this composite replaces above separate terms 10-25
 
       alternative.AddUtilityTerm(27, workTourLogsumDifference * household.HasMoreDriversThan1.ToFlag());  // instead of all Stefan's work-related and logsum variables
+
+      //GV: 20. feb. 2019 - CPHcity logsum
+      alternative.AddUtilityTerm(28, workTourLogsumDifference * household.HasMoreDriversThan1.ToFlag() * (hhLivesInCPHCity).ToFlag());
+
+      //GV: 20. feb. 2019 - incme
+      alternative.AddUtilityTerm(29, (household.Income >= 300000 && household.Income < 600000).ToFlag()); 
+      alternative.AddUtilityTerm(30, (household.Income >= 600000).ToFlag());
+      
       alternative.AddUtilityTerm(91, 1); //calibration constant
       alternative.AddUtilityTerm(100, oneVehAVEffect);
       alternative.AddUtilityTerm(100, oneVehSEEffect);
