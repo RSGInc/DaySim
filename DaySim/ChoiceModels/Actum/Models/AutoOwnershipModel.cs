@@ -228,10 +228,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 20. feb. 2019 - CPHcity logsum
       alternative.AddUtilityTerm(16, workTourLogsumDifference * (hhLivesInCPHCity).ToFlag());
 
-      //GV: 20. feb. 2019 - incme
+      //GV: 20. feb. 2019 - income
       alternative.AddUtilityTerm(17, (household.Income >= 300000 && household.Income < 600000).ToFlag());
       alternative.AddUtilityTerm(18, (household.Income >= 600000).ToFlag());
+
+      //GV: 20. feb. 2019 - HHsize 1 or 2
+      alternative.AddUtilityTerm(19, (household.Size <= 2).ToFlag());
       
+
       alternative.AddUtilityTerm(90, 1); //calibration constant
       alternative.AddUtilityTerm(100, zeroVehAVEffect);
       alternative.AddUtilityTerm(100, zeroVehSEEffect);
@@ -338,7 +342,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 20. feb. 2019 - incme
       alternative.AddUtilityTerm(29, (household.Income >= 300000 && household.Income < 600000).ToFlag()); 
       alternative.AddUtilityTerm(30, (household.Income >= 600000).ToFlag());
-      
+
+      //GV: 20. feb. 2019 - HHsize 3+
+      alternative.AddUtilityTerm(31, (household.Size >= 3).ToFlag());
+
+      //GV: 20. feb. 2019 - HH has child/children
+      alternative.AddUtilityTerm(32, (numberChildren >= 1).ToFlag());
+
       alternative.AddUtilityTerm(91, 1); //calibration constant
       alternative.AddUtilityTerm(100, oneVehAVEffect);
       alternative.AddUtilityTerm(100, oneVehSEEffect);
@@ -405,6 +415,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(54, household.ResidenceParcel.DistanceToExpressBus);
       //alternative.AddUtilityTerm(55, isInCopenhagenMunicipality.ToFlag());
       alternative.AddUtilityTerm(56, stefanTwoCarUtility);  //this composite replaces above separate terms 40-55
+
+      //GV: 20. feb. 2019 - HHsize 4+
+      alternative.AddUtilityTerm(57, (household.Size >= 4).ToFlag());
+
+      //GV: 20. feb. 2019 - HH has children
+      alternative.AddUtilityTerm(58, (numberChildren >= 2).ToFlag());
 
       //alternative.AddUtilityTerm(57, workTourLogsumDifference);
       alternative.AddUtilityTerm(92, 1); //new calibration constant - must be constrained to 0 in estimation
