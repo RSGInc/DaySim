@@ -1859,7 +1859,9 @@ namespace DaySim.ChoiceModels.Actum {
         //                                        : (Global.Configuration.UseShortDistanceCircuityMeasures)
         //                                        ? tour[i - 1].DestinationParcel.CircuityDistance(tour[i].DestinationParcel)
         //                                        : Constants.DEFAULT_VALUE;
-        double circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
+
+        //double circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
+        double circuityDistance = (Global.Configuration.UseShortDistanceNodeToNodeMeasures || Global.Configuration.UseShortDistanceCircuityMeasures) ? tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel) : Constants.DEFAULT_VALUE;
 
         //if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
         if (i == 2) {
