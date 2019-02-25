@@ -900,14 +900,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           // JLB 20140204 replaced coeff 3 with a different time window formulation:  time pressure
           //    instead of having positive utility for increasing time window, have negative utility for decreasing time window
-          alternative.AddUtilityTerm(1,
+          alternative.AddUtilityTerm(801,
                   Math.Log(Math.Max(Constants.EPSILON, 1 -
                   Math.Pow(minimumTimeNeeded / (Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)), 0.8)
                  )));
 
 
 
-          alternative.AddUtilityTerm(2, Math.Log((totalMinutesAvailableInDay + 1.0) / (minimumTimeNeeded + 1.0)));
+          alternative.AddUtilityTerm(802, Math.Log((totalMinutesAvailableInDay + 1.0) / (minimumTimeNeeded + 1.0)));
 
           //alternative.AddUtilityTerm(5,
           //                                    (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&

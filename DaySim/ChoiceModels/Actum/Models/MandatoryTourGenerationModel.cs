@@ -15,11 +15,11 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class MandatoryTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumMandatoryTourGenerationModel";
+    private const string CHOICE_MODEL_NAME = "ActumMandatoryTourGenerationModel"; 
     private const int TOTAL_ALTERNATIVES = 4;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
-    private const int MAX_PARAMETER = 60;
+    private const int MAX_PARAMETER = 60;   
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.MandatoryTourGenerationModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -140,6 +140,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
         schoolAvailableFlag = false;
       }
 
+      //GV: CPH city definiion
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
+
       // NONE_OR_HOME
 
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(Global.Settings.Purposes.NoneOrHome, nCallsForTour > 1, choice == Global.Settings.Purposes.NoneOrHome);
@@ -168,23 +174,33 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = 1;
       alternative.AddUtilityTerm(21, 1);
 
+      //GV: 21. feb. 2019 - coeff-. 23. 24 and 24 have no significance
       //alternative.AddUtilityTerm(22, person.IsChildUnder5.ToFlag());
-      alternative.AddUtilityTerm(23, person.WorksAtHome.ToFlag());
-      alternative.AddUtilityTerm(24, person.IsFulltimeWorker.ToFlag());
-      alternative.AddUtilityTerm(25, person.IsMale.ToFlag());
+      //alternative.AddUtilityTerm(23, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(24, person.IsFulltimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(25, person.IsMale.ToFlag());
       //alternative.AddUtilityTerm(4, person.IsPartTimeWorker.ToFlag());
 
-      alternative.AddUtilityTerm(26, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      //GV: 22. feb 2019 - cannot use "householdDay.AdultsInSharedHomeStay"
+      //alternative.AddUtilityTerm(25, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      //alternative.AddUtilityTerm(25, (household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      
       //alternative.AddUtilityTerm(14, (householdDay.AdultsInSharedHomeStay == 2).ToFlag());
       //alternative.AddUtilityTerm(15, (household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
-      alternative.AddUtilityTerm(27, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
 
-      alternative.AddUtilityTerm(28, workTourLogsum);
+      //GV: 22. feb 2019 - cannot use "householdDay.AdultsInSharedHomeStay"
+      //alternative.AddUtilityTerm(26, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
+      //alternative.AddUtilityTerm(26, (household.HasChildren).ToFlag());
+
+      alternative.AddUtilityTerm(27, workTourLogsum);
+
+      //GV: 21, feb 2019 - CPHcity included in the logsum
+      alternative.AddUtilityTerm(28, workTourLogsum * (hhLivesInCPHCity).ToFlag());
 
       //alternative.AddUtilityTerm(28, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
-      alternative.AddUtilityTerm(29, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
+      //alternative.AddUtilityTerm(29, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag()); 
 
-      alternative.AddUtilityTerm(30, householdDay.PrimaryPriorityTimeFlag);
+      //alternative.AddUtilityTerm(30, householdDay.PrimaryPriorityTimeFlag);
 
       //alternative.AddNestedAlternative(12, 1, 60);
 
@@ -194,21 +210,27 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(31, 1);
 
       //alternative.AddUtilityTerm(32, person.IsChildUnder5.ToFlag());
-      alternative.AddUtilityTerm(33, person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(32, person.WorksAtHome.ToFlag());
 
-      alternative.AddUtilityTerm(34, person.IsFulltimeWorker.ToFlag());
+      alternative.AddUtilityTerm(33, person.IsFulltimeWorker.ToFlag());
 
-      alternative.AddUtilityTerm(35, person.IsMale.ToFlag());
+      alternative.AddUtilityTerm(34, person.IsMale.ToFlag());
       //alternative.AddUtilityTerm(4, person.IsPartTimeWorker.ToFlag());
 
-      alternative.AddUtilityTerm(36, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      //GV: 22. feb 2019 - cannot use "householdDay.AdultsInSharedHomeStay"
+      //alternative.AddUtilityTerm(35, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      //alternative.AddUtilityTerm(35, (household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+
       //alternative.AddUtilityTerm(14, (householdDay.AdultsInSharedHomeStay == 2).ToFlag());
       //alternative.AddUtilityTerm(15, (household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
 
       //GV: 13. june 2016, not sign.
       //alternative.AddUtilityTerm(37, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
 
-      alternative.AddUtilityTerm(38, workTourLogsum);
+      alternative.AddUtilityTerm(37, workTourLogsum);
+
+      //GV: 21, feb 2019 - CPHcity included in the logsum
+      alternative.AddUtilityTerm(38, workTourLogsum * (hhLivesInCPHCity).ToFlag());
 
       //alternative.AddUtilityTerm(38, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
       alternative.AddUtilityTerm(39, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
@@ -218,7 +240,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddNestedAlternative(12, 1, 60);
 
       // SCHOOL
-      alternative = choiceProbabilityCalculator.GetAlternative(3, schoolAvailableFlag, choice == 3);
+      alternative = choiceProbabilityCalculator.GetAlternative(3, schoolAvailableFlag, choice == 3);   
       alternative.Choice = 3;
       alternative.AddUtilityTerm(41, 1);
 
@@ -233,7 +255,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(15, (household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
       //alternative.AddUtilityTerm(47, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
 
-      alternative.AddUtilityTerm(48, workTourLogsum);
+      alternative.AddUtilityTerm(47, workTourLogsum);
+
+      //GV: 21, feb 2019 - CPHcity included in the logsum
+      //alternative.AddUtilityTerm(48, workTourLogsum * (hhLivesInCPHCity).ToFlag());
+
       //GV: 13. june 2016, not sign.
       //alternative.AddUtilityTerm(49, schoolTourLogsum);
 
