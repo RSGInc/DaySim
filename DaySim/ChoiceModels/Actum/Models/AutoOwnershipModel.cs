@@ -420,9 +420,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(57, (household.Size >= 4).ToFlag());
 
       //GV: 20. feb. 2019 - HH has children
-      alternative.AddUtilityTerm(58, (numberChildren >= 2).ToFlag());
-
-      //alternative.AddUtilityTerm(57, workTourLogsumDifference);
+      alternative.AddUtilityTerm(58, (numberChildren >= 2).ToFlag());       //alternative.AddUtilityTerm(57, workTourLogsumDifference);
       alternative.AddUtilityTerm(92, 1); //new calibration constant - must be constrained to 0 in estimation
       alternative.AddUtilityTerm(100, twoVehSEEffect);
       alternative.AddUtilityTerm(201, municipality101.ToFlag());
