@@ -604,10 +604,16 @@ namespace DaySim.Framework.Core {
     public double PathImpedance_TransitPremiumBusPathConstant { get; set; }
 
     [XmlAttribute]
+    public double PathImpedance_TransitCirculatorBusPathConstant { get; set; }
+
+    [XmlAttribute]
     public double PathImpedance_TransitCommuterRailPathConstant { get; set; }
 
     [XmlAttribute]
     public double PathImpedance_TransitFerryPathConstant { get; set; }
+
+    [XmlAttribute]
+    public double PathImpedance_TransitOtherModePathConstant { get; set; }
 
     [XmlAttribute]
     public double PathImpedance_TransitType1PathConstant { get; set; }
@@ -692,7 +698,13 @@ namespace DaySim.Framework.Core {
     public double PathImpedance_TransitPremiumBusTimeAdditiveWeight { get; set; }
 
     [XmlAttribute]
+    public double PathImpedance_TransitCirculatorBusTimeAdditiveWeight { get; set; }
+
+    [XmlAttribute]
     public double PathImpedance_TransitLightRailTimeAdditiveWeight { get; set; }
+
+    [XmlAttribute]
+    public double PathImpedance_TransitOtherModeTimeAdditiveWeight { get; set; }
 
     [XmlAttribute]
     public double PathImpedance_TransitCommuterRailTimeAdditiveWeight { get; set; }
