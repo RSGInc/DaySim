@@ -1,4 +1,4 @@
-# DaySim Activity-Based Model 
+# DaySim Activity-Based Model
 
   - [Documentation](https://github.com/RSGInc/DaySim/wiki)
   - Build Status
