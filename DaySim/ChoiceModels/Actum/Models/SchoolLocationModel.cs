@@ -82,14 +82,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonWrapper person, int sampleSize, IParcelWrapper choice = null, bool choseHome = false) {
-      //MB check for access to new Actum person properties
-      int checkPersInc = person.PersonalIncome;
-      //end check
-      //MB check for new hh properties
-      //requres a cast to a household, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
       IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
-      int checkKids6To17 = household.Persons6to17;
-      // end check
+      int numberAdults = household.Size - household.KidsBetween0And4 - household.KidsBetween5And15 - household.Persons6to17;
+
+      bool isAge0to5 = person.PersonType == 8? true:false;
+      bool isPrimaryStudent = person.PersonType == 7? true:false;
+      bool isSecondaryStudent = person.PersonType == 6? true:false;
+      bool isUniversityStudent = person.PersonType == 5? true:false;
+
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
 
       int segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.School, Global.Settings.TourPriorities.UsualLocation, Global.Settings.Modes.Sov, person.PersonType);
       DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, person.Household.ResidenceParcel);
@@ -107,12 +108,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         IActumParcelWrapper destinationParcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
 
-        //MB check for access to new Actum parcel properties
-        //requires a cast above (DaySim.DomainModels.Actum.Wrappers.Interfaces was already in header)-can keep using variable destinationParcel
-        double checkDestinationMZParkCost = destinationParcel.PublicParkingHourlyPriceBuffer1;
-        //end check
-
-        //                var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
         ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(index++, available, isChosen);
 
         if (!available) {
@@ -121,13 +116,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         alternative.Choice = destinationParcel;
 
-        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, person.Household.ResidenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, person.Household.HouseholdTotals.DrivingAgeMembers, 0.0, Global.Settings.Purposes.School);
+        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, residenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, numberAdults, 0.0, Global.Settings.Purposes.School);
         double schoolTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
-        int votSegment = person.Household.GetVotALSegment();
+        int votSegment = household.GetVotALSegment();
         int taSegment = destinationParcel.TransitAccessSegment();
         double aggregateLogsum = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment];
 
-        double distanceFromOrigin = person.Household.ResidenceParcel.DistanceFromOrigin(destinationParcel, 1);
+        double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
         double distance1 = Math.Min(distanceFromOrigin, .1);
         double distance2 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .5 - .1));
         double distance3 = Math.Max(0, distanceFromOrigin - .5);
@@ -144,118 +139,73 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         // parcel buffers
         double educationBuffer1 = Math.Log(destinationParcel.EmploymentEducationBuffer1 + 1);
-        //var governmentBuffer1 = Math.Log(destinationParcel.EmploymentGovernmentBuffer1 + 1);
-        //var officeBuffer1 = Math.Log(destinationParcel.EmploymentOfficeBuffer1 + 1);
-        //var serviceBuffer1 = Math.Log(destinationParcel.EmploymentServiceBuffer1 + 1);
-        //var householdsBuffer1 = Math.Log(destinationParcel.HouseholdsBuffer1 + 1);
-        //var retailBuffer1 = Math.Log(destinationParcel.EmploymentRetailBuffer1 + 1);
-        //var industrialAgricultureConstructionBuffer1 = Math.Log(destinationParcel.EmploymentIndustrialBuffer1 + destinationParcel.EmploymentAgricultureConstructionBuffer1 + 1);
-        //var foodBuffer1 = Math.Log(destinationParcel.EmploymentFoodBuffer1 + 1);
-        //var medicalBuffer1 = Math.Log(destinationParcel.EmploymentMedicalBuffer1 + 1);
-        //var employmentTotalBuffer1 = Math.Log(destinationParcel.EmploymentTotalBuffer1 + 1);
+        double householdsBuffer1 = Math.Log(destinationParcel.HouseholdsBuffer1 + 1);
         double studentsUniversityBuffer1 = Math.Log(destinationParcel.StudentsUniversityBuffer1 + 1);
         double studentsK8Buffer1 = Math.Log(destinationParcel.StudentsK8Buffer1 + 1);
         double studentsHighSchoolBuffer1 = Math.Log(destinationParcel.StudentsHighSchoolBuffer1 + 1);
 
-        //var educationBuffer2 = Math.Log(destinationParcel.EmploymentEducationBuffer2 + 1);
-        //var governmentBuffer2 = Math.Log(destinationParcel.EmploymentGovernmentBuffer2 + 1);
-        //var officeBuffer2 = Math.Log(destinationParcel.EmploymentOfficeBuffer2 + 1);
-        //var serviceBuffer2 = Math.Log(destinationParcel.EmploymentServiceBuffer2 + 1);
+        double educationBuffer2 = Math.Log(destinationParcel.EmploymentEducationBuffer2 + 1);
         double householdsBuffer2 = Math.Log(destinationParcel.HouseholdsBuffer2 + 1);
-        //var retailBuffer2 = Math.Log(destinationParcel.EmploymentRetailBuffer2 + 1);
-        //var industrialAgricultureConstructionBuffer2 = Math.Log(destinationParcel.EmploymentIndustrialBuffer2 + destinationParcel.EmploymentAgricultureConstructionBuffer2 + 1);
-        //var foodBuffer2 = Math.Log(destinationParcel.EmploymentFoodBuffer2 + 1);
-        //var medicalBuffer2 = Math.Log(destinationParcel.EmploymentMedicalBuffer2 + 1);
         double employmentTotalBuffer2 = Math.Log(destinationParcel.EmploymentTotalBuffer2 + 1);
         double studentsUniversityBuffer2 = Math.Log(destinationParcel.StudentsUniversityBuffer2 + 1);
-        //var studentsK8Buffer2 = Math.Log(destinationParcel.StudentsK8Buffer2 + 1);
-        //var studentsHighSchoolBuffer2 = Math.Log(destinationParcel.StudentsHighSchoolBuffer2 + 1);
-
-        //                var educationBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentEducationBuffer1 - destinationParcel.EmploymentEducation)  + 1);
-        //                var governmentBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentGovernmentBuffer1 - destinationParcel.EmploymentGovernment)  + 1);
-        //                var officeBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentOfficeBuffer1 - destinationParcel.EmploymentOffice)  + 1);
-        //                var serviceBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentServiceBuffer1 - destinationParcel.EmploymentService)  + 1);
-        //                var householdsBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.HouseholdsBuffer1 - destinationParcel.Households)  + 1);
-        //                var retailBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentRetailBuffer1 - destinationParcel.EmploymentRetail)  + 1);
-        //                var industrialAgricultureConstructionBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentIndustrialBuffer1 + destinationParcel.EmploymentAgricultureConstructionBuffer1
-        //                    - destinationParcel.EmploymentIndustrial - destinationParcel.EmploymentAgricultureConstruction)    + 1);
-        //                var foodBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentFoodBuffer1 - destinationParcel.EmploymentFood)  + 1);
-        //                var medicalBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentMedicalBuffer1 - destinationParcel.EmploymentMedical)  + 1);
-        //                var employmentTotalBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentTotalBuffer1 - destinationParcel.EmploymentTotal)  + 1);
-        //                var studentsUniversityBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsUniversityBuffer1 - destinationParcel.StudentsUniversity)  + 1);
-        //                var studentsK8Buffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsK8Buffer1 - destinationParcel.StudentsK8)  + 1);
-        //                var studentsHighSchoolBuffer1 = Math.Log(Math.Max(0.0, destinationParcel.StudentsHighSchoolBuffer1 - destinationParcel.StudentsHighSchool)  + 1);
-        //
-        //                var educationBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentEducationBuffer2 - destinationParcel.EmploymentEducation)  + 1);
-        //                var governmentBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentGovernmentBuffer2 - destinationParcel.EmploymentGovernment)  + 1);
-        //                var officeBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentOfficeBuffer2 - destinationParcel.EmploymentOffice)  + 1);
-        //                var serviceBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentServiceBuffer2 - destinationParcel.EmploymentService)  + 1);
-        //                var householdsBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.HouseholdsBuffer2 - destinationParcel.Households)  + 1);
-        //                var retailBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentRetailBuffer2 - destinationParcel.EmploymentRetail)  + 1);
-        //                var industrialAgricultureConstructionBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentIndustrialBuffer2 + destinationParcel.EmploymentAgricultureConstructionBuffer2
-        //                    - destinationParcel.EmploymentIndustrial - destinationParcel.EmploymentAgricultureConstruction)    + 1);
-        //                var foodBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentFoodBuffer2 - destinationParcel.EmploymentFood)  + 1);
-        //                var medicalBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentMedicalBuffer2 - destinationParcel.EmploymentMedical)  + 1);
-        //                var employmentTotalBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.EmploymentTotalBuffer2 - destinationParcel.EmploymentTotal)  + 1);
-        //                var studentsUniversityBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsUniversityBuffer2 - destinationParcel.StudentsUniversity)  + 1);
-        //                var studentsK8Buffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsK8Buffer2 - destinationParcel.StudentsK8)  + 1);
-        //                var studentsHighSchoolBuffer2 = Math.Log(Math.Max(0.0, destinationParcel.StudentsHighSchoolBuffer2 - destinationParcel.StudentsHighSchool)  + 1);
+        double studentsK8Buffer2 = Math.Log(destinationParcel.StudentsK8Buffer2 + 1);
+        double studentsHighSchoolBuffer2 = Math.Log(destinationParcel.StudentsHighSchoolBuffer2 + 1);
 
         alternative.AddUtilityTerm(1, sampleItem.Key.AdjustmentFactor);
 
-        alternative.AddUtilityTerm(2, person.IsChildUnder5.ToFlag() * schoolTourLogsum);
-        alternative.AddUtilityTerm(3, person.IsChildAge5Through15.ToFlag() * schoolTourLogsum);
-        alternative.AddUtilityTerm(4, person.IsDrivingAgeStudent.ToFlag() * schoolTourLogsum);
-        alternative.AddUtilityTerm(5, person.IsUniversityStudent.ToFlag() * schoolTourLogsum);
+        alternative.AddUtilityTerm(2, isAge0to5.ToFlag() * schoolTourLogsum);
+        alternative.AddUtilityTerm(3, isPrimaryStudent.ToFlag() * schoolTourLogsum);
+        alternative.AddUtilityTerm(4, isSecondaryStudent.ToFlag() * schoolTourLogsum);
+        alternative.AddUtilityTerm(5, isUniversityStudent.ToFlag() * schoolTourLogsum);
         alternative.AddUtilityTerm(6, (!person.IsStudentAge).ToFlag() * schoolTourLogsum);
 
-        alternative.AddUtilityTerm(7, person.IsChildUnder5.ToFlag() * distance1);
-        alternative.AddUtilityTerm(8, person.IsChildUnder5.ToFlag() * distance2);
-        alternative.AddUtilityTerm(9, person.IsChildUnder5.ToFlag() * distance3);
-        alternative.AddUtilityTerm(10, person.IsChildAge5Through15.ToFlag() * distance1);
-        alternative.AddUtilityTerm(11, person.IsChildAge5Through15.ToFlag() * distance2);
-        alternative.AddUtilityTerm(12, person.IsChildAge5Through15.ToFlag() * distance3);
-        alternative.AddUtilityTerm(13, person.IsDrivingAgeStudent.ToFlag() * distanceLog);
-        alternative.AddUtilityTerm(14, person.IsUniversityStudent.ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(7, isAge0to5.ToFlag() * distance1);
+        alternative.AddUtilityTerm(8, isAge0to5.ToFlag() * distance2);
+        alternative.AddUtilityTerm(9, isAge0to5.ToFlag() * distance3);
+        alternative.AddUtilityTerm(10, isPrimaryStudent.ToFlag() * distance1);
+        alternative.AddUtilityTerm(11, isPrimaryStudent.ToFlag() * distance2);
+        alternative.AddUtilityTerm(12, isPrimaryStudent.ToFlag() * distance3);
+        alternative.AddUtilityTerm(13, isSecondaryStudent.ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(14, isUniversityStudent.ToFlag() * distanceLog);
         alternative.AddUtilityTerm(15, (!person.IsStudentAge).ToFlag() * distanceLog);
         alternative.AddUtilityTerm(16, (!person.IsStudentAge).ToFlag() * distanceFromWork);
 
-        alternative.AddUtilityTerm(17, person.IsChildUnder5.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(18, person.IsChildAge5Through15.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(19, person.IsDrivingAgeStudent.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(20, person.IsUniversityStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(17, isAge0to5.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(18, isPrimaryStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(19, isSecondaryStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(20, isUniversityStudent.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(21, (!person.IsStudentAge).ToFlag() * aggregateLogsum);
 
         //Neighborhood
-        alternative.AddUtilityTerm(30, person.IsChildUnder5.ToFlag() * householdsBuffer2);
-        alternative.AddUtilityTerm(31, person.IsChildUnder5.ToFlag() * studentsHighSchoolBuffer1);
-        alternative.AddUtilityTerm(32, person.IsChildUnder5.ToFlag() * employmentTotalBuffer2);
-        alternative.AddUtilityTerm(33, person.IsChildAge5Through15.ToFlag() * studentsK8Buffer1);
-        alternative.AddUtilityTerm(34, person.IsDrivingAgeStudent.ToFlag() * studentsHighSchoolBuffer1);
-        alternative.AddUtilityTerm(35, person.IsUniversityStudent.ToFlag() * educationBuffer1);
+        alternative.AddUtilityTerm(30, isAge0to5.ToFlag() * householdsBuffer2);
+        alternative.AddUtilityTerm(31, isAge0to5.ToFlag() * studentsHighSchoolBuffer1);
+        alternative.AddUtilityTerm(32, isAge0to5.ToFlag() * employmentTotalBuffer2);
+        alternative.AddUtilityTerm(33, isPrimaryStudent.ToFlag() * studentsK8Buffer1);
+        alternative.AddUtilityTerm(34, isSecondaryStudent.ToFlag() * studentsHighSchoolBuffer1);
+        alternative.AddUtilityTerm(35, person.IsAdult.ToFlag() * educationBuffer1);
         alternative.AddUtilityTerm(36, person.IsAdult.ToFlag() * studentsUniversityBuffer1);
         alternative.AddUtilityTerm(37, person.IsAdult.ToFlag() * studentsUniversityBuffer2);
         alternative.AddUtilityTerm(38, person.IsAdult.ToFlag() * studentsK8Buffer1);
 
         //Size
-        alternative.AddUtilityTerm(61, person.IsChildUnder5.ToFlag() * destinationParcel.EmploymentEducation);
-        alternative.AddUtilityTerm(62, person.IsChildUnder5.ToFlag() * destinationParcel.EmploymentService);
-        alternative.AddUtilityTerm(63, person.IsChildUnder5.ToFlag() * destinationParcel.EmploymentOffice);
-        alternative.AddUtilityTerm(64, person.IsChildUnder5.ToFlag() * destinationParcel.EmploymentTotal);
-        alternative.AddUtilityTerm(65, person.IsChildUnder5.ToFlag() * 10.0 * destinationParcel.Households);
-        alternative.AddUtilityTerm(66, person.IsChildUnder5.ToFlag() * destinationParcel.StudentsK8);
-        alternative.AddUtilityTerm(67, person.IsChildAge5Through15.ToFlag() * destinationParcel.EmploymentEducation);
-        alternative.AddUtilityTerm(68, person.IsChildAge5Through15.ToFlag() * destinationParcel.EmploymentService);
-        alternative.AddUtilityTerm(69, person.IsChildAge5Through15.ToFlag() * destinationParcel.StudentsHighSchool);
-        alternative.AddUtilityTerm(70, person.IsChildAge5Through15.ToFlag() * destinationParcel.EmploymentTotal);
-        alternative.AddUtilityTerm(71, person.IsChildAge5Through15.ToFlag() * 10.0 * destinationParcel.Households);
-        alternative.AddUtilityTerm(72, person.IsChildAge5Through15.ToFlag() * destinationParcel.StudentsK8);
-        alternative.AddUtilityTerm(73, person.IsDrivingAgeStudent.ToFlag() * destinationParcel.EmploymentEducation);
-        alternative.AddUtilityTerm(74, person.IsDrivingAgeStudent.ToFlag() * destinationParcel.EmploymentService);
-        alternative.AddUtilityTerm(75, person.IsDrivingAgeStudent.ToFlag() * destinationParcel.EmploymentOffice);
-        alternative.AddUtilityTerm(76, person.IsDrivingAgeStudent.ToFlag() * destinationParcel.EmploymentTotal);
-        alternative.AddUtilityTerm(77, person.IsDrivingAgeStudent.ToFlag() * 10.0 * destinationParcel.Households);
-        alternative.AddUtilityTerm(78, person.IsDrivingAgeStudent.ToFlag() * destinationParcel.StudentsHighSchool);
+        alternative.AddUtilityTerm(61, isAge0to5.ToFlag() * destinationParcel.EmploymentEducation);
+        alternative.AddUtilityTerm(62, isAge0to5.ToFlag() * destinationParcel.EmploymentService);
+        alternative.AddUtilityTerm(63, isAge0to5.ToFlag() * destinationParcel.EmploymentOffice);
+        alternative.AddUtilityTerm(64, isAge0to5.ToFlag() * destinationParcel.EmploymentTotal);
+        alternative.AddUtilityTerm(65, isAge0to5.ToFlag() * 10.0 * destinationParcel.Households);
+        alternative.AddUtilityTerm(66, isAge0to5.ToFlag() * destinationParcel.StudentsK8);
+        alternative.AddUtilityTerm(67, isPrimaryStudent.ToFlag() * destinationParcel.EmploymentEducation);
+        alternative.AddUtilityTerm(68, isPrimaryStudent.ToFlag() * destinationParcel.EmploymentService);
+        alternative.AddUtilityTerm(69, isPrimaryStudent.ToFlag() * destinationParcel.StudentsHighSchool);
+        alternative.AddUtilityTerm(70, isPrimaryStudent.ToFlag() * destinationParcel.EmploymentTotal);
+        alternative.AddUtilityTerm(71, isPrimaryStudent.ToFlag() * 10.0 * destinationParcel.Households);
+        alternative.AddUtilityTerm(72, isPrimaryStudent.ToFlag() * destinationParcel.StudentsK8);
+        alternative.AddUtilityTerm(73, isSecondaryStudent.ToFlag() * destinationParcel.EmploymentEducation);
+        alternative.AddUtilityTerm(74, isSecondaryStudent.ToFlag() * destinationParcel.EmploymentService);
+        alternative.AddUtilityTerm(75, isSecondaryStudent.ToFlag() * destinationParcel.EmploymentOffice);
+        alternative.AddUtilityTerm(76, isSecondaryStudent.ToFlag() * destinationParcel.EmploymentTotal);
+        alternative.AddUtilityTerm(77, isSecondaryStudent.ToFlag() * 10.0 * destinationParcel.Households);
+        alternative.AddUtilityTerm(78, isSecondaryStudent.ToFlag() * destinationParcel.StudentsHighSchool);
         alternative.AddUtilityTerm(79, person.IsAdult.ToFlag() * destinationParcel.EmploymentEducation);
         alternative.AddUtilityTerm(80, person.IsAdult.ToFlag() * destinationParcel.EmploymentService);
         alternative.AddUtilityTerm(81, person.IsAdult.ToFlag() * destinationParcel.EmploymentOffice);
@@ -278,13 +228,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       // JLB 20120403 added third call parameter to idenitfy whether this alt is chosen or not
       ChoiceProbabilityCalculator.Alternative homeAlternative = choiceProbabilityCalculator.GetAlternative(sampleSize, true, choseHome);
 
-      homeAlternative.Choice = person.Household.ResidenceParcel;
+      homeAlternative.Choice = household.ResidenceParcel;
 
       homeAlternative.AddUtilityTerm(50, 1);
       homeAlternative.AddUtilityTerm(51, (!person.IsStudentAge).ToFlag());
-      homeAlternative.AddUtilityTerm(52, person.Household.Size);
+      homeAlternative.AddUtilityTerm(52, household.Size);
       homeAlternative.AddUtilityTerm(97, 1); //new dummy size variable for oddball alt
-      homeAlternative.AddUtilityTerm(98, 100); //old dummy size variable for oddball alt
+      //homeAlternative.AddUtilityTerm(98, 100); //old dummy size variable for oddball alt
 
       //make oddball alt unavailable and remove nesting for estimation of conditional MNL 
       //            alternative.Available = false;
