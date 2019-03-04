@@ -95,11 +95,40 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double incomeDeficit1Car = !incomeMissing && netIncome -userCost < 0? userCost - netIncome: 0;
       double incomeDeficit2Cars = !incomeMissing && netIncome -2*userCost < 0? 2*userCost - netIncome: 0;
 
-      double resParkingSpacesPerHH = 
-        (Math.Max(1.0, residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer1 + residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1))/
-        (Math.Max(1.0, residenceParcel.HouseholdsBuffer1));
-      
+      //GV: 4. mar. 2019 - no. of parkig places in the residental area
+      double resNoParking = (residenceParcel.ResidentialPermitOnlyParkingSpaces +
+        residenceParcel.PublicWithResidentialPermitAllowedParkingSpaces +
+        residenceParcel.PublicNoResidentialPermitAllowedParkingSpaces +
+        residenceParcel.EmployeeOnlyParkingSpaces +
+        residenceParcel.ElectricVehicleOnlyParkingSpaces);
+
+      //GV: 4. mar. 2019 - no. of parkig places in Buffer1 area
+      double Bf1NoParking = (residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer1 +
+        residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1 +
+        residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1 +
+        residenceParcel.EmployeeOnlyParkingSpacesBuffer1 +
+        residenceParcel.ElectricVehicleOnlyParkingSpacesBuffer1);
+
+      //GV: 4. mar. 2019 - no. of parkig places in Buffer2 area
+      double Bf2NoParking = (residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer2 +
+        residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer2 +
+        residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer2 +
+        residenceParcel.EmployeeOnlyParkingSpacesBuffer2 +
+        residenceParcel.ElectricVehicleOnlyParkingSpacesBuffer2);
+
+      //GV: 4. mar. 2019 - no. of parkig places in the residental area per HH
+      double resParkingSpacesPerHH = (Math.Max(1.0, resNoParking)) / (Math.Max(1.0, residenceParcel.Households));
+
+      //GV: 4. mar. 2019 - no. of parkig places in the Buffer1 area per HH
+      double Bf1ParkingSpacesPerHH = (Math.Max(1.0, Bf1NoParking)) / (Math.Max(1.0, residenceParcel.HouseholdsBuffer1));
+
+      //GV: 4. mar. 2019 - no. of parkig places in the Buffer2 area per HH
+      double Bf2ParkingSpacesPerHH = (Math.Max(1.0, Bf2NoParking)) / (Math.Max(1.0, residenceParcel.HouseholdsBuffer2));
+
+
       bool isInCopenhagenMunicipality = household.MunicipalCode == 101;
+
+      bool isInFrederiksbergMunicipality = household.MunicipalCode == 147;
 
       bool municipality101 = household.MunicipalCode == 101;
       bool municipality147 = household.MunicipalCode == 147;
@@ -174,9 +203,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           IActumParcelWrapper studentUsualParcel = (IActumParcelWrapper)person.UsualSchoolParcel;
           double checkSchoolMZParkCost = studentUsualParcel.PublicParkingHourlyPriceBuffer1;
           //end check
-
-
-
+                   
           int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
           int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.SchoolTourModeModel);
 
@@ -234,12 +261,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //var threeVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning3Vehicles : 0;
       //var fourVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning4Vehicles : 0;
 
+      //GV: 29. feb. 2019 - CPH city veriab.
       bool hhLivesInCPHCity = false;
       if (residenceParcel.LandUseCode == 101 || residenceParcel.LandUseCode == 147) {
         hhLivesInCPHCity = true;
       }
-               
 
+      
       // 0 AUTOS
 
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
@@ -255,6 +283,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(14, Math.Log(Math.Max(netIncome, 1)));
 
       alternative.AddUtilityTerm(1, 1); //calibration constant. Constrain to zero for estimation
+      //GV: 28. feb. 2019 - HH==2, an adult and a child 
+      //alternative.AddUtilityTerm(3, (household.Size == 2 && numberAdults == 1 && numberChildren == 1).ToFlag()); //not significant 
       alternative.AddUtilityTerm(100, zeroVehEVEffect);
       alternative.AddUtilityTerm(100, zeroVehAVEffect);
       alternative.AddUtilityTerm(100, zeroVehSEEffect);
@@ -315,12 +345,32 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(23, residenceParcel.GetDistanceToTransit());  // distance to nearest PT
       alternative.AddUtilityTerm(24, residenceParcel.DistanceToLightRail);     // distance to Metro
       alternative.AddUtilityTerm(25, isInCopenhagenMunicipality.ToFlag());
-      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH));
-      alternative.AddUtilityTerm(27, (residenceParcel.ParkingDataAvailable == 0).ToFlag());
-      alternative.AddUtilityTerm(28, Math.Log(Math.Max(incomeRemainder1Car, 1)));  //should be positive coefficient
-      alternative.AddUtilityTerm(29, incomeDeficit1Car);  // should be negative coefficient
-      alternative.AddUtilityTerm(30, incomeMissing.ToFlag()); //nuisance parameter for missing income
-      //GV: 20. feb. 2019 - incme
+
+      //GV: 4. 3. 2019 - parking avail. in CPH
+      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in Frederiksberg
+      alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in the rest of GCA
+      alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (!hhLivesInCPHCity).ToFlag());
+      
+      alternative.AddUtilityTerm(29, (residenceParcel.ParkingDataAvailable == 0).ToFlag());
+      alternative.AddUtilityTerm(30, Math.Log(Math.Max(incomeRemainder1Car, 1)));  //should be positive coefficient
+      
+      //GV: change JBs coeff. 31 to Log
+      //alternative.AddUtilityTerm(31, incomeDeficit1Car);  // should be negative coefficient
+      alternative.AddUtilityTerm(31, Math.Log(Math.Max(incomeDeficit1Car, 1)));  
+
+      alternative.AddUtilityTerm(32, incomeMissing.ToFlag()); //nuisance parameter for missing income 
+
+      //OBS GV: 4.3.2019 - testing parking costs separately for CPH, Frederiksberg, and rest of GCA gave not effect for the last two
+      //GV: also, Parking Residental Permit happens only in the CPHcity, but the negative coeff. is not signf.
+      //alternative.AddUtilityTerm(33, residenceParcel.ParkingDataAvailable * residenceParcel.ResidentialPermitDailyParkingPrices * (hhLivesInCPHCity).ToFlag());
+      //alternative.AddUtilityTerm(34, residenceParcel.ParkingDataAvailable * residenceParcel.PublicParkingHourlyPrice);
+      alternative.AddUtilityTerm(33, residenceParcel.ParkingDataAvailable * (residenceParcel.ResidentialPermitDailyParkingPrices + residenceParcel.PublicParkingHourlyPrice));
+
+      //GV: 20. feb. 2019 - income
       //JB: 20190224 Goran, Stefan's spec already has income effects that confound with these variables.  
       //alternative.AddUtilityTerm(29, (household.Income >= 300000 && household.Income < 600000).ToFlag()); 
       //alternative.AddUtilityTerm(30, (household.Income >= 600000).ToFlag());
@@ -336,6 +386,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(100, oneVehEVEffect);
       alternative.AddUtilityTerm(100, oneVehAVEffect);
       alternative.AddUtilityTerm(100, oneVehSEEffect);
+
 
       // 2+ AUTOS
 
@@ -358,11 +409,33 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(63, residenceParcel.GetDistanceToTransit()* (numberAdults > 1).ToFlag());  // distance to nearest PT
       alternative.AddUtilityTerm(64, residenceParcel.DistanceToLightRail* (numberAdults > 1).ToFlag());     // distance to Metro
       alternative.AddUtilityTerm(65, isInCopenhagenMunicipality.ToFlag()* (numberAdults > 1).ToFlag());
-      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (numberAdults > 1).ToFlag());
-      alternative.AddUtilityTerm(67, (residenceParcel.ParkingDataAvailable == 0 ).ToFlag() * (numberAdults > 1).ToFlag());
-      alternative.AddUtilityTerm(68, Math.Log(Math.Max(incomeRemainder2Cars, 1))* (numberAdults > 1).ToFlag() ); //should be positive coeficient
-      alternative.AddUtilityTerm(69, incomeDeficit2Cars * (numberAdults > 1).ToFlag()  ); // should be negative coefficient
-      alternative.AddUtilityTerm(70, incomeMissing.ToFlag()* (numberAdults > 1).ToFlag()); //nuisance parameter for missing income
+            
+      //GV: 4. 3. 2019 - parking avail. in CPH
+      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in Frederiksberg
+      alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in the rest of GCA
+      alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag());
+            
+      alternative.AddUtilityTerm(69, (residenceParcel.ParkingDataAvailable == 0 ).ToFlag() * (numberAdults > 1).ToFlag());
+      alternative.AddUtilityTerm(70, Math.Log(Math.Max(incomeRemainder2Cars, 1)) * (numberAdults > 1).ToFlag()); //should be positive coeficient
+
+      //GV: change JBs coeff. 31 to Log
+      //alternative.AddUtilityTerm(31, incomeDeficit1Car);  // should be negative coefficient
+      //alternative.AddUtilityTerm(71, incomeDeficit2Cars * (numberAdults > 1).ToFlag()); // should be negative coefficient
+      alternative.AddUtilityTerm(71, Math.Log(Math.Max(incomeDeficit2Cars, 1)) * (numberAdults > 1).ToFlag());
+
+      alternative.AddUtilityTerm(72, incomeMissing.ToFlag() * (numberAdults > 1).ToFlag()); //nuisance parameter for missing income
+      //GV: 28. feb. 2019 - HH==2, both adults 
+      alternative.AddUtilityTerm(73, (household.Size == 2 && numberAdults == 2).ToFlag());
+
+      //OBS GV: 4.3.2019 - testing parking costs separately for CPH, Frederiksberg, and rest of GCA gave not effect for the last two
+      //GV: also, Parking Residental Permit happens only in the CPHcity, but the negative coeff. is not signf.
+      //alternative.AddUtilityTerm(33, residenceParcel.ParkingDataAvailable * residenceParcel.ResidentialPermitDailyParkingPrices * (hhLivesInCPHCity).ToFlag() * (numberAdults > 1).ToFlag());
+      //alternative.AddUtilityTerm(34, residenceParcel.ParkingDataAvailable * residenceParcel.PublicParkingHourlyPrice * (numberAdults > 1).ToFlag());
+      alternative.AddUtilityTerm(74, residenceParcel.ParkingDataAvailable * (residenceParcel.ResidentialPermitDailyParkingPrices + residenceParcel.PublicParkingHourlyPrice) * (numberAdults > 1).ToFlag());
 
       //GV: 20. feb. 2019 - HHsize 4+
       //JB: see above comments in 1-car utility
@@ -439,9 +512,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = 1;
       //utility is 0
 
+
       // 2--Electric Conventional autos
-
-
+      
       alternative = choiceProbabilityCalculator.GetAlternative(1, Global.Configuration.EV_ElectricConventionalVehicleAvailable, choice == 2);
       alternative.Choice = 2;
 
@@ -452,9 +525,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(100, Global.Configuration.EV_HHHeadOver65Coefficient * (ageOfHouseholdHead >= 65).ToFlag());
       alternative.AddUtilityTerm(100, Global.Configuration.EV_CoefficientPerHourCommuteTime * (totalCommuteTime / 60.0));
 
+
       // 3--AVs
-
-
+      
       alternative = choiceProbabilityCalculator.GetAlternative(2, Global.Configuration.AV_ElectricAutonomousVehicleAvailable, choice == 3);
       alternative.Choice = 3;
 

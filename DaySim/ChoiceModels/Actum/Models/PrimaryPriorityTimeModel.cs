@@ -281,10 +281,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
           pfptComponent.AddUtilityTerm(3, household.HasChildrenUnder5.ToFlag());
           pfptComponent.AddUtilityTerm(4, household.HasChildrenAge5Through15.ToFlag());
 
-          //GV: 14. fwb. 2019 - HH==2, one parent and 1 child
+          //GV: 14. feb. 2019 - HH==2, one parent and 1 child
           pfptComponent.AddUtilityTerm(5, (household.Size >=2 && numberParent == 1 && household.HasChildren).ToFlag());
-          //GV: 14. fwb. 2019 - HH==2, both adults
-          pfptComponent.AddUtilityTerm(6, (household.Size == 2 && numberAdult == 2).ToFlag()); //GV: HH==2 plus boh are adults
+          //GV: 14. feb. 2019 - HH==2, both adults
+          pfptComponent.AddUtilityTerm(6, (household.Size == 2 && numberAdult == 2).ToFlag()); //GV: HH==2 plus both are adults
           
           //GV: JBsmail fromfeb. 6. 2019 explains that "AdultsInSharedHomeStay" is endogenous and cannot be used for estimaions
           //pfptComponent.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenUnder16).ToFlag());
