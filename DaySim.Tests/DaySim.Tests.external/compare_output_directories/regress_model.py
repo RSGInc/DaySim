@@ -23,7 +23,8 @@ import utilities
 def compare_directories(old_dir, new_dir, isVerbose):
     import compare_output_directories
     function_parameters = ['--outputs_reference', old_dir
-                            ,'--outputs_new', new_dir]
+                            ,'--outputs_new', new_dir
+                            ]
     if isVerbose:
         function_parameters.append('-v')
 
@@ -54,7 +55,7 @@ def regress_model(parameters):
     script_directory = os.path.split(os.path.realpath(__file__))[0] + '/'
     parser = argparse.ArgumentParser(description='Run DaySim regression tests for specified model')
     parser.add_argument('--daysim_exe',
-                        help='location of DaySim executable [default: %(default)s]', default= script_directory + '../DaySim_dist/DaySim.exe')
+                        help='location of DaySim executable [default: %(default)s]', default= script_directory + '../../../DaySim_dist/DaySim.exe')
     parser.add_argument('--configuration_file',
                         help='path to configuration file to send to DaySim', default='configuration_regression.xml')
     parser.add_argument('--run_if_needed_to_create_baseline',
@@ -75,7 +76,7 @@ def regress_model(parameters):
     logging.debug('Current working directory: ' + os.getcwd())
     logging.debug('script_directory: ' + script_directory)
 
-    daysim_exe = os.path.normpath(os.path.abspath(args.daysim_exe))
+    daysim_exe =  os.path.normpath(os.path.abspath(args.daysim_exe))
     logging.debug('daysim_exe: ' + daysim_exe)
 
     if not os.path.isfile(daysim_exe):
@@ -111,8 +112,7 @@ def regress_model(parameters):
     current_configuration_results_dir_name = utilities.get_formatted_time() + '_' + configuration_filename
 
     regression_results_dir = os.path.join(today_regression_results_dir, current_configuration_results_dir_name + '_RUNNING')
-    #to make sure we don't leave directory labeled '_RUNNING' use a try/finally
-    #to rename to either passed or failed
+    #to make sure we don't leave directory labeled '_RUNNING' use a try/finally to rename to either passed or failed
     regression_passed = False
     try:
         os.makedirs(regression_results_dir)
@@ -125,27 +125,22 @@ def regress_model(parameters):
             if args.run_if_needed_to_create_baseline:
                 print('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" which does not exist. --run_if_needed_to_create_baseline is true so will run now...')
                 try:
-                    #due to bug DaySim needs to have the cwd be set to
-                    #configuration_file dir
-                    #https://github.com/RSGInc/DaySim/issues/52
+                    #due to bug DaySim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/DaySim/issues/52
                     old_cwd = os.getcwd()
                     os.chdir(configuration_file_folder)
                     return_code = run_process_with_realtime_output.run_process_with_realtime_output(daysim_exe + ' --configuration "' + configuration_file + '"')
                     print('return_code: ' + str(return_code) + ' after running the regress configuration for first time.')
                 finally:
                     os.chdir(old_cwd)
-                #return True even though we didn't really test -- this allows
-                #multiple configurations to be initialized in one regression
-                #pass
+                #return True even though we didn't really test -- this allows multiple configurations to be initialized in one regression pass
                 return True
             else:
                 raise Exception('configuration_file "' + configuration_file + '" specifies output subpath "' + output_subpath + '" but that folder does not exist so cannot be used for regression.')
 
         outputs_new_basename = os.path.basename(configured_output_path)
         outputs_new_dir = os.path.join(regression_results_dir, outputs_new_basename)
-        #compare the archived configuration file with the current one since
-        #this will find a very common error (different configuration) quickly
-        archive_configuration_file_path = os.path.join(configured_output_path, 'archive_' + configuration_filename)
+        #compare the archived configuration file with the current one since this will find a very common error (different configuration) quickly
+        archive_configuration_file_path = os.path.join(configured_output_path, 'archive_' +  configuration_filename)
         if not os.path.exists(archive_configuration_file_path):
             print('Skipping check for changed configuration file because "' + archive_configuration_file_path + '" does not exist in the reference output folder. A copy will be put in the outputs folder so that regression test can proceed.')
             shutil.copy(configuration_file, archive_configuration_file_path)
@@ -156,16 +151,14 @@ def regress_model(parameters):
  
         working_subpath = root.get('WorkingSubpath')
         if working_subpath is None:
-           #if working subpath does not exist look for deprecated working
-           #directory
+           #if working subpath does not exist look for deprecated working directory
            working_subpath = root.get('WorkingDirectory')
         configured_working_path = os.path.normpath(os.path.join(configuration_base_path, working_subpath))
         logging.debug('configured_working_path: ' + configured_working_path)
 
         working_new_basename = os.path.basename(configured_working_path)
         working_new_dir = os.path.join(regression_results_dir, working_new_basename)
-        #create new regression test working directory in case need to store
-        #shadow price files inside
+        #create new regression test working directory in case need to store shadow price files inside
         os.makedirs(working_new_dir)
 
         estimation_subpath = root.get('EstimationSubpath')
@@ -175,8 +168,7 @@ def regress_model(parameters):
         estimation_new_dir = os.path.join(regression_results_dir, estimation_new_basename)
 
         def check_all_configured_changeable_directories(parameter_value, parameter_type):
-            #check that the working, output and estimation paths have not been
-            #seen
+            #check that the working, output and estimation paths have not been seen
             if parameter_value in all_configured_changeable_directories:
                 previous_configuration_file, parameter_type = all_configured_changeable_directories.get(parameter_value)
                 raise Exception('Configuration file "' + configuration_file + '" specifies ' + parameter_type + ' which was used in a different configuration file: "' + previous_configuration_file + '" for ' + parameter_type)
@@ -187,8 +179,7 @@ def regress_model(parameters):
         check_all_configured_changeable_directories(configured_working_path, 'working')
         check_all_configured_changeable_directories(configured_estimation_path, 'estimation')
 
-        #need to see if outputs folder archived shadow prices file exists and
-        #if so copy to the input location for shadow prices
+        #need to see if outputs folder archived shadow prices file exists and if so copy to the input location for shadow prices
         archived_shadow_prices_file_path = os.path.join(configured_output_path, Const.ARCHIVE_SHADOW_PRICES_FILENAME)
         if os.path.isfile(archived_shadow_prices_file_path):
             shutil.copyfile(archived_shadow_prices_file_path, os.path.join(working_new_dir, Const.SHADOW_PRICES_FILENAME))
@@ -197,13 +188,14 @@ def regress_model(parameters):
         if os.path.isfile(archived_park_and_ride_shadow_prices_file_path):
             shutil.copyfile(archived_park_and_ride_shadow_prices_file_path, os.path.join(working_new_dir, Const.PARK_AND_RIDE_SHADOW_PRICES_FILENAME))
 
-        override_parameters = ['OutputSubpath=' + outputs_new_dir,
+        override_parameters = [
+                               'OutputSubpath=' + outputs_new_dir,
                                'WorkingSubpath=' + working_new_dir,
-                               'EstimationSubpath=' + estimation_new_dir,]
+                               'EstimationSubpath=' + estimation_new_dir,
+                              ]
     
         try:
-            #due to bug DaySim needs to have the cwd be set to
-            #configuration_file dir https://github.com/RSGInc/DaySim/issues/52
+            #due to bug DaySim needs to have the cwd be set to configuration_file dir https://github.com/RSGInc/DaySim/issues/52
             old_cwd = os.getcwd()
             os.chdir(configuration_file_folder)
 
@@ -219,41 +211,39 @@ def regress_model(parameters):
         results_label = 'PASSED' if regression_passed else 'FAILED'
         new_regression_results_dir = os.path.join(today_regression_results_dir, current_configuration_results_dir_name + '_' + results_label)
         os.rename(regression_results_dir, new_regression_results_dir)
-        print('Regression test using configuration file "' + configuration_filename + '": ' + results_label)
+        print('Regression test using configuration file "' + configuration_filename +  '": ' + results_label)
 
     if args.always_create_reports or not regression_passed:
         def make_report(daySim_reference_outputs, daySim_new_outputs, report_path):
             was_able_to_generate_report = False
             daySimSummaryPath = os.path.abspath(os.path.join(os.path.join(script_directory,'..'), 'DaySimSummaries_regress')) 
             rScript_file = os.path.join(daySimSummaryPath, 'main.R')
-            #if there is a template file, then substitute the current output
-            #directory
+            #if there is a template file, then substitute the current output directory
             config_template = 'daysim_output_config.template'
             config_template_path = os.path.join(daySimSummaryPath, config_template)
             with open(config_template_path, 'r') as template_file:
                 content = template_file.read()
             template_content = Template(content)
             report_copy_time = time.time()
-            replacement_dict = dict(#need to either escape backslashes or
-                                    #convert to forward slashes to use in R
+            replacement_dict = dict(
+                                    #need to either escape backslashes or convert to forward slashes to use in R
                                     daysim_reference_outputs=daySim_reference_outputs.replace('\\', '/')
                                 ,daysim_new_outputs=daySim_new_outputs.replace('\\', '/')
-                                ,daysim_report_directory=report_path.replace('\\', '/'))
+                                ,daysim_report_directory=report_path.replace('\\', '/')
+                                )
 
             config_output = os.path.join(new_regression_results_dir, config_template.replace('.template','.R'))
             with open(config_output, 'w') as config_file:
                 config_file.write(template_content.substitute(replacement_dict))
             return_code = run_process_with_realtime_output.run_process_with_realtime_output('Rscript ' + rScript_file + ' "' + config_output + '"')
-            #delete any files in report folder that were not modified by the
-            #report code
+            #delete any files in report folder that were not modified by the report code
             for f in os.listdir(report_path):
                 f = os.path.join(report_path, f)
                 if os.stat(f).st_mtime < report_copy_time:
                     os.remove(f)
 
             was_able_to_generate_report = return_code == 0
-            #clean up after DaySimSummaries_regress/main.R which leaves .RData
-            #files behind
+            #clean up after DaySimSummaries_regress/main.R which leaves .RData files behind
             utilities.delete_matching_files(daySim_reference_outputs, r'^.*[.]Rdata$')
             utilities.delete_matching_files(daySim_new_outputs, r'^.*[.]Rdata$')
             print(('Successfully generated report' if was_able_to_generate_report else 'Could not generate report') + ' comparing DaySim reference outputs "' + daySim_reference_outputs + '" to new outputs "' + daySim_new_outputs + '"')
@@ -270,7 +260,8 @@ if __name__ == "__main__":
         sys.exit(0 if model_regression_successful == True else 1)
      except Exception as ex:
         print("Exception in user code:")
-        print("-" * 60)
+        print("-"*60)
         traceback.print_exc(file=sys.stdout)
-        print("-" * 60)
+        print("-"*60)
         sys.exit(ex)
+
