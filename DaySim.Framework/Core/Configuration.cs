@@ -810,7 +810,7 @@ namespace DaySim.Framework.Core {
     public bool PathImpedance_DVRPC_UseSingleWeightedTransitIVTSkim { get; set; }
 
 
-        [XmlAttribute]
+    [XmlAttribute]
     public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
 
     [XmlAttribute]
@@ -1892,6 +1892,9 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public bool HDF5SkimScaledAndCondensed { get; set; } = false;
+
+    [XmlAttribute]
+    public bool SkipActumExtraTransitModes { get; set; } = false;
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
 

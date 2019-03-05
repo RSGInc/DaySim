@@ -2147,6 +2147,8 @@ namespace DaySim.PathTypeModels {
 
 
     private void RunStopAreaBikeParkRideWalkModel(int skimMode, int pathType, double votValue, bool useZones) {
+      if (Global.Configuration.SkipActumExtraTransitModes) { return; }
+
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
@@ -2284,6 +2286,8 @@ namespace DaySim.PathTypeModels {
     //		}
 
     private void RunStopAreaBikeParkRideBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
+      if (Global.Configuration.SkipActumExtraTransitModes) { return; }
+
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
@@ -2439,6 +2443,8 @@ namespace DaySim.PathTypeModels {
     //		}
 
     private void RunStopAreaWalkRideBikeModel(int skimMode, int pathType, double votValue, bool useZones) {
+      if (Global.Configuration.SkipActumExtraTransitModes) { return; }
+
       if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {
         return;
       }
@@ -2578,6 +2584,7 @@ namespace DaySim.PathTypeModels {
     //}}
 
     private void RunStopAreaBikeOnTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
+      if (Global.Configuration.SkipActumExtraTransitModes) { return; }
       //			var stopAreaReader =
       //				Global
       //					.ContainerDaySim
