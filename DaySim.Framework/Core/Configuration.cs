@@ -49,6 +49,9 @@ namespace DaySim.Framework.Core {
     public string NodeStopAreaIndexPath { get; set; }
 
     [XmlAttribute]
+    public char NodeStopAreaIndexPathDelimiter { get; set; } = ' ';
+
+    [XmlAttribute]
     //[Metadata("Foo...")]
     public string RosterPath { get; set; }
 

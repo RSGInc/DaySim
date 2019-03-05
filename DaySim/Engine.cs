@@ -1081,7 +1081,7 @@ namespace DaySim {
       lengths.Add(0F);
 
       while ((line = reader.ReadLine()) != null) {
-        string[] tokens = line.Split(new[] { ' ' });
+        string[] tokens = line.Split(new[] { Global.Configuration.NodeStopAreaIndexPathDelimiter });
 
         arrayIndex++;
         int parcelId = int.Parse(tokens[0]);
@@ -1115,7 +1115,7 @@ namespace DaySim {
     }
 
     private static void BeginLoadMicrozoneToBikeCarParkAndRideNodeDistances() {
-      if (!Global.StopAreaIsEnabled|| Global.Configuration.DataType != "Actum") {
+      if (!Global.StopAreaIsEnabled || Global.Configuration.DataType != "Actum") {
         return;
       }
       if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToParkAndRideNodeIndexPath)) {
@@ -1339,7 +1339,7 @@ namespace DaySim {
         int mzSequence = 0;
         foreach (IParcel microzone in microzoneReader) {
           Global.MicrozoneMapping.Add(microzone.Id, mzSequence++);
-       }
+        }
 
       }
 
