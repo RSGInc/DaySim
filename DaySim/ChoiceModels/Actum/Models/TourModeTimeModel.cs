@@ -861,7 +861,54 @@ namespace DaySim.ChoiceModels.Actum.Models {
                          : (mode == Global.Settings.Modes.HovDriver) ? 4
                          : (mode == Global.Settings.Modes.HovPassenger) ? 4
                          : (mode >= Global.Settings.Modes.WalkRideWalk) ? 1 : 2;
-          alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
+//          alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
+
+          double gentime = modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination;
+
+// Expand generalised time by purpose
+
+          if(gtVariable == 1) {
+            alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(202, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(202, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(203, HHwithMissingIncomeFlag * gentime);
+
+          }
+
+          if (gtVariable == 2) {
+            alternative.AddUtilityTerm(211, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(212, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(212, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(213, HHwithMissingIncomeFlag * gentime);
+          }
+
+          if (gtVariable == 4) {
+            alternative.AddUtilityTerm(231, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(232, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(232, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(233, HHwithMissingIncomeFlag * gentime);
+          }
+
+          if (gtVariable == 5) {
+            alternative.AddUtilityTerm(241, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(242, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(242, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(243, HHwithMissingIncomeFlag * gentime);
+          }
+
+          if (gtVariable == 6) {
+            alternative.AddUtilityTerm(251, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(251, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(251, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(251, HHwithMissingIncomeFlag * gentime);
+          }
+
+          if (gtVariable == 7) {
+            alternative.AddUtilityTerm(261, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(261, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(261, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(261, HHwithMissingIncomeFlag * gentime);
+          }
 
           if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare ) {
             alternative.AddUtilityTerm(11, modeTimes.OriginAccessTime);
