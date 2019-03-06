@@ -39,15 +39,15 @@ namespace DaySim {
     private static int _index = -1;
     private static Timer overallDaySimTimer = new Timer("DaySim...", true);
 
-    public static void BeginTestMode() {
-      RandomUtility randomUtility = new RandomUtility();
-      randomUtility.ResetUniform01(Global.Configuration.RandomSeed);
-      randomUtility.ResetHouseholdSynchronization(Global.Configuration.RandomSeed);
+    //public static void BeginTestMode() {
+    //  RandomUtility randomUtility = new RandomUtility();
+    //  randomUtility.ResetUniform01(Global.Configuration.RandomSeed);
+    //  randomUtility.ResetHouseholdSynchronization(Global.Configuration.RandomSeed);
 
-      BeginInitialize();
+    //  BeginInitialize();
 
-      //RawConverter.RunTestMode();
-    }
+    //  //RawConverter.RunTestMode();
+    //}
 
     public static void BeginProgram(int start, int end, int index) {
       _start = start;
@@ -118,6 +118,13 @@ namespace DaySim {
 
         if (Global.Configuration.IsInEstimationMode) {
           Global.PrintFile.WriteLine("Estimation model: {0}", Global.Configuration.EstimationModel);
+        }
+
+        bool usingASetRandomSeed = Global.Configuration.RandomSeed != Configuration.DefaultRandomSeedIfNotSet;
+        if (usingASetRandomSeed) {
+          Global.PrintFile.WriteLine(string.Format("randomSeed value of {0} WAS SET IN configuration file so runs will be repeatable.", Global.Configuration.RandomSeed), true);
+        } else {
+          Global.PrintFile.WriteLine(string.Format("randomSeed value WAS NOT SET in configuration file and has been dynamically set to {0}. Runs will not be repeatable unless the same seed is set.", Global.Configuration.RandomSeed), true);
         }
       }
 

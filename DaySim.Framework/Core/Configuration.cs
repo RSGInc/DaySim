@@ -1012,8 +1012,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool ShouldSynchronizeRandomSeed { get; set; }
 
+    public static int DefaultRandomSeedIfNotSet = Guid.NewGuid().GetHashCode();
     [XmlAttribute]
-    public int RandomSeed { get; set; } = Guid.NewGuid().GetHashCode();
+    public int RandomSeed { get; set; } = DefaultRandomSeedIfNotSet;
 
     //[XmlAttribute]
     //public bool ShouldLoadAggregateLogsumsFromFile { get; set; }
