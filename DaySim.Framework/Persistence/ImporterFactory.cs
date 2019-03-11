@@ -89,15 +89,13 @@ namespace DaySim.Framework.Persistence {
 
         try {
           element = index[attribute.ColumnName];
-        } catch (KeyNotFoundException) {
+        } catch (KeyNotFoundException keyNotFoundException) {
           string message = string.Format("The column '{0}' for object of type {1} was not found in filename: {2}", attribute.ColumnName, type, inputPath);
           Console.WriteLine(message);
           if (Global.PrintFile != null) {
             Global.PrintFile.WriteLine(message);
           }
-          Environment.Exit(0);
-
-          return;
+          throw new KeyNotFoundException(message, keyNotFoundException);
         }
 
         if (property.PropertyType == typeof(double)) {
