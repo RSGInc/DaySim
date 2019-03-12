@@ -8,7 +8,7 @@
 
 using System;
 using System.Collections.Generic;
-using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers; 
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
@@ -118,14 +118,51 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, residenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, numberAdults, 0.0, Global.Settings.Purposes.School);
         double schoolTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
-        int votSegment = household.GetVotALSegment();
-        int taSegment = destinationParcel.TransitAccessSegment();
+        //int votSegment = household.GetVotALSegment();
+        //GV: 12.3.2019 - getting values from MB's memo
+        int votSegment =
+          (household.Income <= 450000)
+                    ? Global.Settings.VotALSegments.Low
+                    : (household.Income <= 900000)
+                        ? Global.Settings.VotALSegments.Medium
+                        : Global.Settings.VotALSegments.High;
+
+        //int taSegment = destinationParcel.TransitAccessSegment();
+        //GV: 12.3.2019 - getting values from MB's memo
+        //OBS - it has to be in km
+        int taSegment =
+           destinationParcel.GetDistanceToTransit() >= 0 && destinationParcel.GetDistanceToTransit() <= 0.4
+              ? 0
+              : destinationParcel.GetDistanceToTransit() > 0.4 && destinationParcel.GetDistanceToTransit() <= 1.6 
+                  ? 1
+                  : 2; 
+               
+        
         double aggregateLogsum = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment];
 
         double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
-        double distance1 = Math.Min(distanceFromOrigin, .1);
-        double distance2 = Math.Max(0, Math.Min(distanceFromOrigin - .1, .5 - .1));
-        double distance3 = Math.Max(0, distanceFromOrigin - .5);
+
+        //GV: 8. 3. 2019 - Distance differt. per Age
+        //Kintergarder; 0.2 and 0.5 km
+        double distanceCh05_1 = Math.Min(distanceFromOrigin, .2);
+        double distanceCh05_2 = Math.Max(0, Math.Min(distanceFromOrigin - .2, .5 - .2)); 
+        double distanceCh05_3 = Math.Max(0, distanceFromOrigin - .5);
+
+        //Primary school; 0.25 and 0.8 km 
+        double distancePS_1 = Math.Min(distanceFromOrigin, .25);
+        double distancePS_2 = Math.Max(0, Math.Min(distanceFromOrigin - .25, .8 - .25));
+        double distancePS_3 = Math.Max(0, distanceFromOrigin - .8);
+
+        //Secondary school; 0.5 and 2.5 km
+        double distanceSS_1 = Math.Min(distanceFromOrigin, .5);
+        double distanceSS_2 = Math.Max(0, Math.Min(distanceFromOrigin - .5, 2.5 - .5));
+        double distanceSS_3 = Math.Max(0, distanceFromOrigin - 2.5);
+
+        //University; 2 and 5 km
+        double distanceUni_1 = Math.Min(distanceFromOrigin, 2);
+        double distanceUni_2 = Math.Max(0, Math.Min(distanceFromOrigin - 2, 5 - 2));
+        double distanceUni_3 = Math.Max(0, distanceFromOrigin - 5);
+
         double distanceLog = Math.Log(1 + distanceFromOrigin);
         double distanceFromWork = person.IsFullOrPartTimeWorker ? person.UsualWorkParcel.DistanceFromWorkLog(destinationParcel, 1) : 0;
         //                var millionsSquareFeet = destinationZoneTotals.MillionsSquareFeet();
@@ -151,30 +188,46 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double studentsK8Buffer2 = Math.Log(destinationParcel.StudentsK8Buffer2 + 1);
         double studentsHighSchoolBuffer2 = Math.Log(destinationParcel.StudentsHighSchoolBuffer2 + 1);
 
-        alternative.AddUtilityTerm(1, sampleItem.Key.AdjustmentFactor);
+        alternative.AddUtilityTerm(1, sampleItem.Key.AdjustmentFactor);  
 
+        //GV: 7. mar. 2019 - estimate coeff. 2-5
         alternative.AddUtilityTerm(2, isAge0to5.ToFlag() * schoolTourLogsum);
         alternative.AddUtilityTerm(3, isPrimaryStudent.ToFlag() * schoolTourLogsum);
         alternative.AddUtilityTerm(4, isSecondaryStudent.ToFlag() * schoolTourLogsum);
         alternative.AddUtilityTerm(5, isUniversityStudent.ToFlag() * schoolTourLogsum);
+
         alternative.AddUtilityTerm(6, (!person.IsStudentAge).ToFlag() * schoolTourLogsum);
 
-        alternative.AddUtilityTerm(7, isAge0to5.ToFlag() * distance1);
-        alternative.AddUtilityTerm(8, isAge0to5.ToFlag() * distance2);
-        alternative.AddUtilityTerm(9, isAge0to5.ToFlag() * distance3);
-        alternative.AddUtilityTerm(10, isPrimaryStudent.ToFlag() * distance1);
-        alternative.AddUtilityTerm(11, isPrimaryStudent.ToFlag() * distance2);
-        alternative.AddUtilityTerm(12, isPrimaryStudent.ToFlag() * distance3);
-        alternative.AddUtilityTerm(13, isSecondaryStudent.ToFlag() * distanceLog);
-        alternative.AddUtilityTerm(14, isUniversityStudent.ToFlag() * distanceLog);
-        alternative.AddUtilityTerm(15, (!person.IsStudentAge).ToFlag() * distanceLog);
-        alternative.AddUtilityTerm(16, (!person.IsStudentAge).ToFlag() * distanceFromWork);
+        //GV: 12.3.2019 - piecewise linear specificaion, in km
+        alternative.AddUtilityTerm(7, isAge0to5.ToFlag() * distanceCh05_1);
+        alternative.AddUtilityTerm(8, isAge0to5.ToFlag() * distanceCh05_2);
+        alternative.AddUtilityTerm(9, isAge0to5.ToFlag() * distanceCh05_3);
 
-        alternative.AddUtilityTerm(17, isAge0to5.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(18, isPrimaryStudent.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(19, isSecondaryStudent.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(20, isUniversityStudent.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(21, (!person.IsStudentAge).ToFlag() * aggregateLogsum);
+        //GV: 12.3.2019 - piecewise linear specificaion, in km
+        alternative.AddUtilityTerm(10, isPrimaryStudent.ToFlag() * distancePS_1);
+        alternative.AddUtilityTerm(11, isPrimaryStudent.ToFlag() * distancePS_2);
+        alternative.AddUtilityTerm(12, isPrimaryStudent.ToFlag() * distancePS_3);
+
+        //GV: 12.3.2019 - piecewise linear specificaion, in km
+        alternative.AddUtilityTerm(13, isSecondaryStudent.ToFlag() * distanceSS_1);
+        alternative.AddUtilityTerm(14, isSecondaryStudent.ToFlag() * distanceSS_2);
+        alternative.AddUtilityTerm(15, isSecondaryStudent.ToFlag() * distanceSS_3);
+
+        //GV: 12.3.2019 - piecewise linear specificaion, in km
+        alternative.AddUtilityTerm(16, isUniversityStudent.ToFlag() * distanceUni_1);
+        alternative.AddUtilityTerm(17, isUniversityStudent.ToFlag() * distanceUni_2);
+        alternative.AddUtilityTerm(18, isUniversityStudent.ToFlag() * distanceUni_3);
+                       
+        //alternative.AddUtilityTerm(13, isSecondaryStudent.ToFlag() * distanceLog);
+        //alternative.AddUtilityTerm(14, isUniversityStudent.ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(19, (!person.IsStudentAge).ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(20, (!person.IsStudentAge).ToFlag() * distanceFromWork);
+
+        alternative.AddUtilityTerm(21, isAge0to5.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(22, isPrimaryStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(23, isSecondaryStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(24, isUniversityStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(25, (!person.IsStudentAge).ToFlag() * aggregateLogsum);
 
         //Neighborhood
         alternative.AddUtilityTerm(30, isAge0to5.ToFlag() * householdsBuffer2);
