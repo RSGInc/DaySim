@@ -123,6 +123,32 @@ namespace DaySim {
         if (Global.Configuration.IsInEstimationMode) {
           Global.PrintFile.WriteLine("Estimation model: {0}", Global.Configuration.EstimationModel);
         }
+
+        bool usingASetRandomSeed = Global.Configuration.RandomSeed != Configuration.DefaultRandomSeedIfNotSet;
+        if (usingASetRandomSeed) {
+          Global.PrintFile.WriteLine(string.Format("randomSeed value of {0} WAS SET IN configuration file so runs will be repeatable.", Global.Configuration.RandomSeed), true);
+        } else {
+          Global.PrintFile.WriteLine(string.Format("randomSeed value WAS NOT SET in configuration file and has been dynamically set to {0}. Runs will not be repeatable unless the same seed is set.", Global.Configuration.RandomSeed), true);
+        }
+
+        if (!string.IsNullOrEmpty(Global.Configuration.EstimationModel)) {
+          /*
+          wish to check that the passed in EstimationModel exists.
+          The problem is that this may not be a full classname but a hybrid such as
+          'ActumTourModeTimeModel' or 'HTourModeTimeModel' or 'TourModeTimeModel'
+          So unless the passed in value contains a period which indicates a full class name
+          the name has to be massaged
+          */
+          string middlePartOfNameSpace = Global.Configuration.EstimationModel.StartsWith("Actum") ? "Actum" : Global.Configuration.EstimationModel.StartsWith("H") ? "H" : "Default";
+          string estimationModelClassName = Global.Configuration.EstimationModel.Contains(".") ? Global.Configuration.EstimationModel : string.Format("DaySim.ChoiceModels.{0}.Models.{1}", middlePartOfNameSpace, Global.Configuration.EstimationModel.Replace(middlePartOfNameSpace, ""));
+          Type estimationModelType = Type.GetType(estimationModelClassName);
+          if (estimationModelType == null) {
+            throw new Exception(string.Format("EstimationModel '{0}' was expected to represent class '{1}' but that does not exist.", Global.Configuration.EstimationModel, estimationModelClassName));
+          } else {
+            Global.PrintFile.WriteLine(string.Format("EstimationModel '{0}' resolved to be Class {1}", Global.Configuration.EstimationModel, estimationModelType), true);
+          }
+        }
+
       }
 
       InitializePersistenceFactories();
@@ -1120,7 +1146,7 @@ namespace DaySim {
     }
 
     private static void BeginLoadMicrozoneToAutoParkAndRideNodeDistances() {
-      if (!Global.StopAreaIsEnabled|| Global.Configuration.DataType != "Actum") {
+      if (!Global.StopAreaIsEnabled || Global.Configuration.DataType != "Actum") {
         return;
       }
       if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToAutoParkAndRideNodePath)) {
@@ -1455,7 +1481,7 @@ namespace DaySim {
       reader.ReadLine();
 
       string line;
- 
+
       while ((line = reader.ReadLine()) != null) {
         string[] tokens = line.Split(new[] { Global.Configuration.TransitPricesByFareZonesDelimiter });
 
@@ -1633,7 +1659,7 @@ namespace DaySim {
         int mzSequence = 0;
         foreach (IParcel microzone in microzoneReader) {
           Global.MicrozoneMapping.Add(microzone.Id, mzSequence++);
-       }
+        }
 
       }
 
