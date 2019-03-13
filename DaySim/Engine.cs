@@ -126,6 +126,25 @@ namespace DaySim {
         } else {
           Global.PrintFile.WriteLine(string.Format("randomSeed value WAS NOT SET in configuration file and has been dynamically set to {0}. Runs will not be repeatable unless the same seed is set.", Global.Configuration.RandomSeed), true);
         }
+
+        if (!string.IsNullOrEmpty(Global.Configuration.EstimationModel)) {
+          /*
+          wish to check that the passed in EstimationModel exists.
+          The problem is that this may not be a full classname but a hybrid such as
+          'ActumTourModeTimeModel' or 'HTourModeTimeModel' or 'TourModeTimeModel'
+          So unless the passed in value contains a period which indicates a full class name
+          the name has to be massaged
+          */
+          string middlePartOfNameSpace = Global.Configuration.EstimationModel.StartsWith("Actum") ? "Actum" : Global.Configuration.EstimationModel.StartsWith("H") ? "H" : "Default";
+          string estimationModelClassName = Global.Configuration.EstimationModel.Contains(".") ? Global.Configuration.EstimationModel : string.Format("DaySim.ChoiceModels.{0}.Models.{1}", middlePartOfNameSpace, Global.Configuration.EstimationModel.Replace(middlePartOfNameSpace, ""));
+          Type estimationModelType = Type.GetType(estimationModelClassName);
+          if (estimationModelType == null) {
+            throw new Exception(string.Format("EstimationModel '{0}' was expected to represent class '{1}' but that does not exist.", Global.Configuration.EstimationModel, estimationModelClassName));
+          } else {
+            Global.PrintFile.WriteLine(string.Format("EstimationModel '{0}' resolved to be Class {1}", Global.Configuration.EstimationModel, estimationModelType), true);
+          }
+        }
+
       }
 
       InitializePersistenceFactories();
