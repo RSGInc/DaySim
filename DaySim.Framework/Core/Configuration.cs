@@ -798,7 +798,7 @@ namespace DaySim.Framework.Core {
     public bool PathImpedance_DVRPC_UseSingleWeightedTransitIVTSkim { get; set; }
 
 
-        [XmlAttribute]
+    [XmlAttribute]
     public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
 
     [XmlAttribute]
@@ -1002,8 +1002,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool ShouldSynchronizeRandomSeed { get; set; }
 
+    public static int DefaultRandomSeedIfNotSet = Guid.NewGuid().GetHashCode();
     [XmlAttribute]
-    public int RandomSeed { get; set; }
+    public int RandomSeed { get; set; } = DefaultRandomSeedIfNotSet;
 
     //[XmlAttribute]
     //public bool ShouldLoadAggregateLogsumsFromFile { get; set; }
@@ -1660,7 +1661,7 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public char MicrozoneToBikeOnBoardTerminalDelimiter { get; set; }
 
-    
+
     [XmlAttribute]
     public char NodeStopAreaIndexDelimiter { get; set; }
 
