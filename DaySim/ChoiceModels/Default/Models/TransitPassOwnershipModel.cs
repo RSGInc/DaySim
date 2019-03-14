@@ -224,10 +224,10 @@ namespace DaySim.ChoiceModels.Default.Models {
       //            alternative.AddUtility(18, (workTranDist > 90.0) ? 1 : 0);
       //            alternative.AddUtility(19, (schoolTranDist < 90.0) ? schoolTranDist : 0);
       //            alternative.AddUtility(20, (schoolTranDist > 90.0) ? 1 : 0);
-      alternative.AddUtilityTerm(21, (!workParcelMissing && workGenTimeWithPass > -90 ) ? workGenTimeWithPass : 0);
+      alternative.AddUtilityTerm(21, (!workParcelMissing && workGenTimeWithPass > -90) ? workGenTimeWithPass : 0);
       alternative.AddUtilityTerm(22, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0);
       alternative.AddUtilityTerm(23, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0);
-      alternative.AddUtilityTerm(24, (!schoolParcelMissing && schoolGenTimeWithPass > -90 ) ? schoolGenTimeWithPass : 0);
+      alternative.AddUtilityTerm(24, (!schoolParcelMissing && schoolGenTimeWithPass > -90) ? schoolGenTimeWithPass : 0);
       alternative.AddUtilityTerm(25, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0);
       alternative.AddUtilityTerm(26, homeAggregateLogsumNoCar * (person.IsFullOrPartTimeWorker || person.IsUniversityStudent).ToFlag());
       alternative.AddUtilityTerm(27, homeAggregateLogsumNoCar * (person.IsDrivingAgeStudent || person.IsChildUnder16).ToFlag());

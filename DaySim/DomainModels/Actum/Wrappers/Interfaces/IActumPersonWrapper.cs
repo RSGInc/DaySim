@@ -10,7 +10,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
   public interface IActumPersonWrapper : IPersonWrapper, IActumPerson {
- 
+
     bool DriversLicenseExists();
   }
 }

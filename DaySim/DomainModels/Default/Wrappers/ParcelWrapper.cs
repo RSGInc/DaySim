@@ -585,7 +585,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     #region wrapper methods
 
- 
+
     public virtual int GetLandUseCode19() {
       return LandUseCode == 19 ? 1 : 0;
     }

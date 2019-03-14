@@ -299,10 +299,10 @@ namespace DaySim.AggregateLogsums {
       FileInfo file = Global.AggregateLogsumsPath.ToFile();
 
       //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
-     //   Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
+      //   Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
 
-     //   return;
-     // }
+      //   return;
+      // }
 
       Global.AggregateLogsums = new double[_zoneCount][][][][];
 

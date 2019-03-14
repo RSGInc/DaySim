@@ -45,7 +45,7 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     bool StopAreaDistanceArrayPositionsSet { get; set; }
 
-  
+
     #endregion
 
     #region wrapper methods

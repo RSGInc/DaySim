@@ -33,7 +33,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region wrapper methods
 
- 
+
     public bool DriversLicenseExists() {
       return HasDriversLicense == 1;
     }

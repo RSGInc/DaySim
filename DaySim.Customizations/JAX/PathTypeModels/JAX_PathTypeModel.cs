@@ -22,7 +22,7 @@ namespace DaySim.PathTypeModels {
           + Global.Configuration.PathImpedance_TransitCirculatorBusTimeAdditiveWeight * circTime
           + Global.Configuration.PathImpedance_TransitOtherModeTimeAdditiveWeight * othTime;
 
-      pathTypeSpecificTime +=  Math.Min((othTime > Constants.EPSILON).ToFlag() * Global.Configuration.PathImpedance_TransitOtherModePathConstant,
+      pathTypeSpecificTime += Math.Min((othTime > Constants.EPSILON).ToFlag() * Global.Configuration.PathImpedance_TransitOtherModePathConstant,
                                Math.Min((comTime > Constants.EPSILON).ToFlag() * Global.Configuration.PathImpedance_TransitCommuterRailPathConstant,
                                Math.Min((lrtTime > Constants.EPSILON).ToFlag() * Global.Configuration.PathImpedance_TransitLightRailPathConstant,
                                Math.Min((circTime > Constants.EPSILON).ToFlag() * Global.Configuration.PathImpedance_TransitCirculatorBusPathConstant,
