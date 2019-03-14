@@ -43,7 +43,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region flags/choice model/etc. properties
 
-  
+
     #endregion
   }
 

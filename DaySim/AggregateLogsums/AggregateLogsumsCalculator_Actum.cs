@@ -17,7 +17,6 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
 using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.Factories;
-using DaySim.Framework.Roster;
 using DaySim.PathTypeModels;
 
 namespace DaySim.AggregateLogsums {
@@ -30,53 +29,53 @@ namespace DaySim.AggregateLogsums {
     private const int TOTAL_SUBZONES = 2;
 
 
-   
-    //purpose   home-based all, work-based,escort,pers.bus.,shopping,business,social/rec
-    private static readonly double[] walk_constant = new[]    { 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-    private static readonly double[] walk_intrazonal = new[]  { 0, -3.61,   -3.36,    -5.32,  -4.02,    -5.09,  -0.248,   -2.65 };
-    private static readonly double[] walk_gen_time = new[]    { 0, -0.0446, -0.0428, -0.0590, -0.0470, -0.0568, -0.0282, -0.0379 };
-    private static readonly double[] bike_constant = new[]    { 0, -2.18, -2.6, 0.055, -1.63, -1.84, 0.141, -2.48 };
-    private static readonly double[] bike_lowincome = new[]   { 0, 0.0, 0.0, 0.397, 0.755, 0.0, 0.0, 0.0 };
-    private static readonly double[] bike_nocar = new[]       { 0, 0.525, 2.041, -0.224, 0.517, 0.0633, 0.0, 1.25 };
-    private static readonly double[] bike_carcomp = new[]     { 0, 0.388, 2.604, -0.512, 0.486, 0.316, 0.0, 0.735 };
-    private static readonly double[] bike_child = new[]       { 0, 1.05, 0.0, 0, 0.0, 0, 0.0, 1.74 };
-    private static readonly double[] bike_intrazonal = new[]  { 0, -3.8, -24.87, -6.95, -4.06, -5.37, -13.7, -3.15 };
-    private static readonly double[] bike_gen_time = new[]    { 0, -0.0500, -0.0441, -0.0821, -0.0525, -0.0704, -0.0292, -0.0438 };
-    private static readonly double[] sov_constant = new[]     { 0, -3.67, -3.135, -4.75, -2.52, -2.46, -1.15, -3.53 };
-    private static readonly double[] sov_highincome = new[]   { 0, 0.451,-1.00,0.875,0.431,0.0,0.755,0.337};
-    private static readonly double[] sov_nocar = new[]        { 0, -3.5,-1.641,-2.12,-3.46,-5.05,-4.07,-2.61};
-    private static readonly double[] sov_carcomp = new[]      { 0, -0.855,1.139,-1.05,-0.743,-1.04,-0.958,-0.676};
-    private static readonly double[] sov_intrazonal = new[]   { 0, -2.05,-23.08,-2.99,-2.86,-3.66,0.0904,-1.85};
-    private static readonly double[] sov_gen_time = new[]     { 0, -0.0303,-0.0273,-0.0502,-0.0322,-0.0483,-0.0125,-0.0286};
-    private static readonly double[] hov_constant = new[]     { 0, -3.28,-3.251,-2.08,-3.8,-4.94,-1.47,-3.93};
-    private static readonly double[] hov_nocar = new[]        { 0, -2.73,-0.911,-4.25,-2.72,-2.96,-2.89,-1.36};
-    private static readonly double[] hov_carcomp = new[]      { 0, -0.284,0.804,-1.26,0.346,0.0181,-1.31,0.117};
-    private static readonly double[] hov_child = new[]        { 0, -0.142,0.0,-0.637,0.0,0.18,0.0,0.812};
-    private static readonly double[] hov_intrazonal = new[]   { 0, -2.21,-0.264,-3.28,-2.49,-2.6,0.665,-1.77};
-    private static readonly double[] hov_gen_time = new[]     { 0, -0.0335,-0.0300,-0.0417,-0.0309,-0.0377,-0.0155,-0.0293};
-    private static readonly double[] transit_constant = new[] { 0, -9.18,-21.71,-11.6,-9.23,-9.34,-4.8,-9.02};
-    private static readonly double[] transit_lowincome = new[]{ 0, 0.0,-0.441,0.0,0.0,-0.877,0.0,-0.284};
-    private static readonly double[] transit_highincome=new[] { 0, 0.65,0.48,0.0,0.599,0.835,0.0,0.807};
-    private static readonly double[] transit_nocar = new[]    { 0, 1.5,13.11,1.1,1.99,0.9,0.464,2.08};
-    private static readonly double[] transit_carcomp = new[]  { 0, 0.541,14.61,0.0,1.34,-0.098,0.0,0.88};
-    private static readonly double[] transit_child = new[]    { 0, 1.23,0.0,0.0,1.61,1.19,0.0,1.58};
-    private static readonly double[] transit_gen_time = new[] { 0, -0.0266,-0.0254,-0.0246,-0.028,-0.0451,-0.0148,-0.0233};
-    private static readonly double[] transit_oclose = new[]   { 0, 0.285,1.768,0.662,0.593,-0.148,0.0973,0.405};
-    private static readonly double[] transit_dclose = new[]   { 0, 0.0462,0.79,0.45,0.175,-0.0044,0.484,-0.0212};
-    private static readonly double[] transit_ofar = new[]     { 0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0 };
-    private static readonly double[] transit_dfar = new[]     { 0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0 };
 
-    private static readonly double log_size_mult = 1.00 ;
-    private static readonly double[] size_service   = new[]   { 0,  1.000,1.000,1.000,1.000,1.000,1.000,1.000};
-    private static readonly double[] size_education = new[]   { 0, 0.267, 0.295, 6.959, 0.141, 0.000, 0.441, 4.855 };
-    private static readonly double[] size_food = new[]        { 0, 0.604, 0.582, 2.641, 0.582, 0.006, 0.000, 21.54 };
-    private static readonly double[] size_government = new[]  { 0, 0.026, 0.000, 0.000, 0.000, 0.002, 0.247, 0.411 };
-    private static readonly double[] size_industrial = new[]  { 0, 0.021, 0.000, 0.254, 0.061, 0.000, 0.357, 0.369 };
-    private static readonly double[] size_medical = new[]     { 0, 0.093, 0.394, 0.217, 0.756, 0.002, 0.307, 1.404 };
-    private static readonly double[] size_office = new[]      { 0, 0.008, 0.174, 0.000, 0.017, 0.001, 0.346, 0.170 };
-    private static readonly double[] size_retail = new[]      { 0, 0.470, 0.542, 0.636, 0.605, 0.333, 0.000, 1.597 };
-    private static readonly double[] size_households = new[]  { 0, 0.060, 0.000, 0.323, 0.061, 0.002, 0.000, 1.774 };
-    private static readonly double[] size_otheremp = new[]    { 0, 0.084, 0.000, 0.000, 0.113, 0.008, 0.000, 2.177 };
+    //purpose   home-based all, work-based,escort,pers.bus.,shopping,business,social/rec
+    private static readonly double[] walk_constant = new[] { 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+    private static readonly double[] walk_intrazonal = new[] { 0, -3.61, -3.36, -5.32, -4.02, -5.09, -0.248, -2.65 };
+    private static readonly double[] walk_gen_time = new[] { 0, -0.0446, -0.0428, -0.0590, -0.0470, -0.0568, -0.0282, -0.0379 };
+    private static readonly double[] bike_constant = new[] { 0, -2.18, -2.6, 0.055, -1.63, -1.84, 0.141, -2.48 };
+    private static readonly double[] bike_lowincome = new[] { 0, 0.0, 0.0, 0.397, 0.755, 0.0, 0.0, 0.0 };
+    private static readonly double[] bike_nocar = new[] { 0, 0.525, 2.041, -0.224, 0.517, 0.0633, 0.0, 1.25 };
+    private static readonly double[] bike_carcomp = new[] { 0, 0.388, 2.604, -0.512, 0.486, 0.316, 0.0, 0.735 };
+    private static readonly double[] bike_child = new[] { 0, 1.05, 0.0, 0, 0.0, 0, 0.0, 1.74 };
+    private static readonly double[] bike_intrazonal = new[] { 0, -3.8, -24.87, -6.95, -4.06, -5.37, -13.7, -3.15 };
+    private static readonly double[] bike_gen_time = new[] { 0, -0.0500, -0.0441, -0.0821, -0.0525, -0.0704, -0.0292, -0.0438 };
+    private static readonly double[] sov_constant = new[] { 0, -3.67, -3.135, -4.75, -2.52, -2.46, -1.15, -3.53 };
+    private static readonly double[] sov_highincome = new[] { 0, 0.451, -1.00, 0.875, 0.431, 0.0, 0.755, 0.337 };
+    private static readonly double[] sov_nocar = new[] { 0, -3.5, -1.641, -2.12, -3.46, -5.05, -4.07, -2.61 };
+    private static readonly double[] sov_carcomp = new[] { 0, -0.855, 1.139, -1.05, -0.743, -1.04, -0.958, -0.676 };
+    private static readonly double[] sov_intrazonal = new[] { 0, -2.05, -23.08, -2.99, -2.86, -3.66, 0.0904, -1.85 };
+    private static readonly double[] sov_gen_time = new[] { 0, -0.0303, -0.0273, -0.0502, -0.0322, -0.0483, -0.0125, -0.0286 };
+    private static readonly double[] hov_constant = new[] { 0, -3.28, -3.251, -2.08, -3.8, -4.94, -1.47, -3.93 };
+    private static readonly double[] hov_nocar = new[] { 0, -2.73, -0.911, -4.25, -2.72, -2.96, -2.89, -1.36 };
+    private static readonly double[] hov_carcomp = new[] { 0, -0.284, 0.804, -1.26, 0.346, 0.0181, -1.31, 0.117 };
+    private static readonly double[] hov_child = new[] { 0, -0.142, 0.0, -0.637, 0.0, 0.18, 0.0, 0.812 };
+    private static readonly double[] hov_intrazonal = new[] { 0, -2.21, -0.264, -3.28, -2.49, -2.6, 0.665, -1.77 };
+    private static readonly double[] hov_gen_time = new[] { 0, -0.0335, -0.0300, -0.0417, -0.0309, -0.0377, -0.0155, -0.0293 };
+    private static readonly double[] transit_constant = new[] { 0, -9.18, -21.71, -11.6, -9.23, -9.34, -4.8, -9.02 };
+    private static readonly double[] transit_lowincome = new[] { 0, 0.0, -0.441, 0.0, 0.0, -0.877, 0.0, -0.284 };
+    private static readonly double[] transit_highincome = new[] { 0, 0.65, 0.48, 0.0, 0.599, 0.835, 0.0, 0.807 };
+    private static readonly double[] transit_nocar = new[] { 0, 1.5, 13.11, 1.1, 1.99, 0.9, 0.464, 2.08 };
+    private static readonly double[] transit_carcomp = new[] { 0, 0.541, 14.61, 0.0, 1.34, -0.098, 0.0, 0.88 };
+    private static readonly double[] transit_child = new[] { 0, 1.23, 0.0, 0.0, 1.61, 1.19, 0.0, 1.58 };
+    private static readonly double[] transit_gen_time = new[] { 0, -0.0266, -0.0254, -0.0246, -0.028, -0.0451, -0.0148, -0.0233 };
+    private static readonly double[] transit_oclose = new[] { 0, 0.285, 1.768, 0.662, 0.593, -0.148, 0.0973, 0.405 };
+    private static readonly double[] transit_dclose = new[] { 0, 0.0462, 0.79, 0.45, 0.175, -0.0044, 0.484, -0.0212 };
+    private static readonly double[] transit_ofar = new[] { 0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0 };
+    private static readonly double[] transit_dfar = new[] { 0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0 };
+
+    private static readonly double log_size_mult = 1.00;
+    private static readonly double[] size_service = new[] { 0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
+    private static readonly double[] size_education = new[] { 0, 0.267, 0.295, 6.959, 0.141, 0.000, 0.441, 4.855 };
+    private static readonly double[] size_food = new[] { 0, 0.604, 0.582, 2.641, 0.582, 0.006, 0.000, 21.54 };
+    private static readonly double[] size_government = new[] { 0, 0.026, 0.000, 0.000, 0.000, 0.002, 0.247, 0.411 };
+    private static readonly double[] size_industrial = new[] { 0, 0.021, 0.000, 0.254, 0.061, 0.000, 0.357, 0.369 };
+    private static readonly double[] size_medical = new[] { 0, 0.093, 0.394, 0.217, 0.756, 0.002, 0.307, 1.404 };
+    private static readonly double[] size_office = new[] { 0, 0.008, 0.174, 0.000, 0.017, 0.001, 0.346, 0.170 };
+    private static readonly double[] size_retail = new[] { 0, 0.470, 0.542, 0.636, 0.605, 0.333, 0.000, 1.597 };
+    private static readonly double[] size_households = new[] { 0, 0.060, 0.000, 0.323, 0.061, 0.002, 0.000, 1.774 };
+    private static readonly double[] size_otheremp = new[] { 0, 0.084, 0.000, 0.000, 0.113, 0.008, 0.000, 2.177 };
 
 
     private readonly int _zoneCount;
@@ -227,10 +226,10 @@ namespace DaySim.AggregateLogsums {
 
               double timeCoefficient = Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute;
               double costCoefficient = (votALSegment == Global.Settings.VotALSegments.Low)
-                                                      ? timeCoefficient * 60.0/50.0
+                                                      ? timeCoefficient * 60.0 / 50.0
                                                       : (votALSegment == Global.Settings.VotALSegments.Medium)
-                                                            ? timeCoefficient * 60.0/60.0
-                                                            : timeCoefficient * 60.0/70.0;
+                                                            ? timeCoefficient * 60.0 / 60.0
+                                                            : timeCoefficient * 60.0 / 70.0;
 
               for (int transitAccess = Global.Settings.TransitAccesses.Gt0AndLteQtrMi; transitAccess < Global.Settings.TransitAccesses.TotalTransitAccesses; transitAccess++) {
                 double purposeUtility = 0D;
@@ -242,7 +241,7 @@ namespace DaySim.AggregateLogsums {
                 foreach (ISubzone subzone in subzones) {
                   double size = subzone.GetSize(purpose);
 
-                  if (size <= -50 ) {
+                  if (size <= -50) {
                     continue;
                   }
 
@@ -328,7 +327,7 @@ namespace DaySim.AggregateLogsums {
                         sov_nocar[purpose] * noCarsFlag +
                         sov_carcomp[purpose] * carCompetitionFlag +
                         sov_intrazonal[purpose] * intrazonalFlag +
-                        sov_gen_time[purpose] * sovGenTime );
+                        sov_gen_time[purpose] * sovGenTime);
                   }
 
                   // hov
@@ -354,7 +353,7 @@ namespace DaySim.AggregateLogsums {
                         transit_gen_time[purpose] * transitGenTime +
                         transit_oclose[purpose] * hasNearTransitAccessFlag +
                         transit_ofar[purpose] * hasNoTransitAccessFlag +
-                        transit_dfar[purpose] * hasNoTransitEgressFlag );
+                        transit_dfar[purpose] * hasNoTransitEgressFlag);
                   }
 
                   double modeLogsum = modeUtilitySum > Constants.EPSILON ? Math.Log(modeUtilitySum) : -30D;

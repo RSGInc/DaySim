@@ -76,8 +76,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int choice = Constants.DEFAULT_VALUE) {
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) personDay.Household;
-      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)personDay.Household;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
 
       double workTourLogsum;
       if (person.UsualWorkParcelId != Constants.DEFAULT_VALUE && person.UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {

@@ -69,7 +69,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TourWrapper tour, HouseholdDayWrapper householdDay, int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
       PersonWrapper person = (PersonWrapper)tour.Person;
       PersonDayWrapper personDay = (PersonDayWrapper)tour.PersonDay;
-      ParcelWrapper tourDestinationParcel = (ParcelWrapper) tour.DestinationParcel;
+      ParcelWrapper tourDestinationParcel = (ParcelWrapper)tour.DestinationParcel;
 
       //			var foodRetailServiceMedicalQtrMileLog = tourDestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
       //			var mixedUseIndex = tourDestinationParcel.MixedUse4Index1();

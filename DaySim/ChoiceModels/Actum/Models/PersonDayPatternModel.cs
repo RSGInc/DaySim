@@ -200,9 +200,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, DayPattern[] dayPatterns, DayPattern choice = null) {
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) personDay.Household;
-      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
-      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)personDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
 
       int carsPerDriver = household.GetCarsPerDriver();
       double mixedDensity = residenceParcel.MixedUse3Index2();

@@ -79,7 +79,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int jHTSimulated, int genChoice, int[] participants, int choice = Constants.DEFAULT_VALUE) {
 
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointHalfTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
-      HouseholdWrapper household = (HouseholdWrapper) householdDay.Household; 
+      HouseholdWrapper household = (HouseholdWrapper)householdDay.Household;
       int paired = genChoice == 1 ? 1 : 0;
       int halfTour1 = genChoice == 2 ? 1 : 0;
       int halfTour2 = genChoice == 3 ? 1 : 0;
@@ -114,7 +114,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int count = 0;
       foreach (PersonDayWrapper personDay in orderedPersonDays) {
-        PersonWrapper person = (PersonWrapper) personDay.Person;
+        PersonWrapper person = (PersonWrapper)personDay.Person;
         count++;
         if (count <= 5) {
           // set characteristics here that depend on person characteristics

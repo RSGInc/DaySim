@@ -77,10 +77,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //MB check for access to new Actum parcel properties
       //mb changed these to use ActumParcelWarraper, with using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
-      IActumParcelWrapper homeParcel = (IActumParcelWrapper) person.Household.ResidenceParcel;
-      IActumParcelWrapper workParcel = (IActumParcelWrapper) (person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel);
-      IActumParcelWrapper schoolParcel = (IActumParcelWrapper) (person.IsUniversityStudent ? null : person.UsualSchoolParcel);
-      if (workParcel != null) { 
+      IActumParcelWrapper homeParcel = (IActumParcelWrapper)person.Household.ResidenceParcel;
+      IActumParcelWrapper workParcel = (IActumParcelWrapper)(person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel);
+      IActumParcelWrapper schoolParcel = (IActumParcelWrapper)(person.IsUniversityStudent ? null : person.UsualSchoolParcel);
+      if (workParcel != null) {
         double checkWorkMZParkCost = workParcel.PublicParkingHourlyPriceBuffer1;
       }
       //end check

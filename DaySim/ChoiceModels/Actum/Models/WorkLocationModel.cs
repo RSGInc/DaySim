@@ -105,7 +105,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         bool available = sampleItem.Key.Available;
         bool isChosen = sampleItem.Key.IsChosen;
         double adjustmentFactor = sampleItem.Key.AdjustmentFactor;
-        IActumParcelWrapper destinationParcel = (IActumParcelWrapper) ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
+        IActumParcelWrapper destinationParcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
 
         //MB check for access to new Actum parcel properties
         //requires a cast above (DaySim.DomainModels.Actum.Wrappers.Interfaces was already in header)-can keep using variable destinationParcel
@@ -212,7 +212,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(15, person.IsFemale.ToFlag() * workTourLogsum);
         alternative.AddUtilityTerm(16, person.Age * workTourLogsum);
         //alternative.AddUtilityTerm(17, (person.MainOccupation == 50).ToFlag() * workTourLogsum); // self-employed
-                                                                                                 //Stefan's composite term 18 replaces terms 2-10 above
+        //Stefan's composite term 18 replaces terms 2-10 above
         alternative.AddUtilityTerm(18, stefanUtility); // see above for this composite function of StefanMabitt's utility function
 
         //alternative.AddUtilityTerm(2, person.IsFulltimeWorker.ToFlag() * workTourLogsum);
@@ -328,7 +328,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       homeAlternative.Choice = person.Household.ResidenceParcel;
 
       homeAlternative.AddUtilityTerm(41, 1);
-     // homeAlternative.AddUtilityTerm(42, (person.MainOccupation == 50).ToFlag()); // self-employed
+      // homeAlternative.AddUtilityTerm(42, (person.MainOccupation == 50).ToFlag()); // self-employed
 
       //homeAlternative.AddUtilityTerm(42, person.IsPartTimeWorker.ToFlag());
       //homeAlternative.AddUtilityTerm(43, person.IsStudentAge.ToFlag());

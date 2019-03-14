@@ -14,6 +14,6 @@ namespace DaySim.DomainModels.Actum.Models {
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
   public sealed class Parcel : DaySim.DomainModels.Default.Models.Parcel, IActumParcel {
 
- 
- }
+
+  }
 }

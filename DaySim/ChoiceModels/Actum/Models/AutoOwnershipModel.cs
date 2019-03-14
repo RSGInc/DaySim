@@ -75,7 +75,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //var foodRetailServiceMedicalLogBuffer1 = household.ResidenceParcel.FoodRetailServiceMedicalLogBuffer1();
 
       //MB check for new hh properties
-      int checkKids6To17 = household.Persons6to17; 
+      int checkKids6To17 = household.Persons6to17;
       // end check
 
       double workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
@@ -132,7 +132,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       foreach (PersonWrapper person in household.Persons) {
         //MB check for access to new Actum person properties
         int checkPersInc = person.PersonalIncome;
-       //end check
+        //end check
 
         if (person.IsWorker && person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
           //MB check for access to new Actum parcel properties

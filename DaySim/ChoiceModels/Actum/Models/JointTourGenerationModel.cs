@@ -73,8 +73,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay,
                                  int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
       //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
-      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
       int carOwnership =
                 household.VehiclesAvailable == 0
                     ? Global.Settings.CarOwnerships.NoCars

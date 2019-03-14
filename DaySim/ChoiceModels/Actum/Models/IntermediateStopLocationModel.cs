@@ -209,8 +209,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         HouseholdWrapper household = (HouseholdWrapper)_trip.Household;
         PersonWrapper person = (PersonWrapper)_trip.Person;
         TourWrapper tour = (TourWrapper)_trip.Tour;
-        IActumParcelWrapper tripOriginParcel = (IActumParcelWrapper) _trip.OriginParcel;
-        IActumParcelWrapper tourOriginParcel = (IActumParcelWrapper) tour.OriginParcel;
+        IActumParcelWrapper tripOriginParcel = (IActumParcelWrapper)_trip.OriginParcel;
+        IActumParcelWrapper tourOriginParcel = (IActumParcelWrapper)tour.OriginParcel;
 
 
         //#if TRACE				
@@ -891,7 +891,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         // determine validity and need, then characteristics
         // detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
         int excludeReason = 0;
-        IActumParcelWrapper tourOriginParcel = (IActumParcelWrapper) tour.OriginParcel;
+        IActumParcelWrapper tourOriginParcel = (IActumParcelWrapper)tour.OriginParcel;
 
         if (_maxZone == -1) {
           // TODO: Verify / Optimize

@@ -313,7 +313,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           throw new ArgumentNullException("sampleItem");
         }
 
-//        ChoiceProbabilityCalculator.Alternative alternative = sampleItem.Alternative;
+        //        ChoiceProbabilityCalculator.Alternative alternative = sampleItem.Alternative;
 
 
       }

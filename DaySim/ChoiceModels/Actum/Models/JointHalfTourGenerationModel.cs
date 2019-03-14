@@ -85,8 +85,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int nCallsForTour, bool[] available, int choice = Constants.DEFAULT_VALUE) {
       //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
-      IActumParcelWrapper householdResidenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
+      IActumParcelWrapper householdResidenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
 
       double workTourLogsum = 0;
       double schoolTourLogsum = 0;

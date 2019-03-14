@@ -17,7 +17,7 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     IParcelWrapper UsualSchoolParcel { get; set; }
 
-  
+
     #endregion
 
     #region flags/choice model/etc. properties

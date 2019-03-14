@@ -74,9 +74,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
 
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
-      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
-      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
 
       int carOwnership =
                             household.VehiclesAvailable == 0
@@ -120,7 +120,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double[] schoolLogsum = new double[8];
       int count = 0;
       foreach (PersonDayWrapper pDay in orderedPersonDays) {
-        IActumPersonWrapper person_x = (IActumPersonWrapper) pDay.Person;
+        IActumPersonWrapper person_x = (IActumPersonWrapper)pDay.Person;
         count++;
         if (count > 8) {
           break;

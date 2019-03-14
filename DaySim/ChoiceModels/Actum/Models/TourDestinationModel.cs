@@ -176,7 +176,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         bool available = sampleItem.Key.Available;
         bool isChosen = sampleItem.Key.IsChosen;
         double adjustmentFactor = sampleItem.Key.AdjustmentFactor;
-        IActumParcelWrapper destinationParcel = (IActumParcelWrapper) ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
+        IActumParcelWrapper destinationParcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[sampleItem.Key.ParcelId];
         if (isChosen) {
           Global.PrintFile.WriteLine("Sequence {0}: Chosen parcel {1} Available {2} Sample item {3} of {4}", timesStartedRunModel, destinationParcel.Id, available, index, sampleItems.Count);
         }
