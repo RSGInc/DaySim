@@ -17,7 +17,7 @@ using DaySim.Framework.Roster;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class AutoOwnershipModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumAutoOwnershipModel";
+    public const string CHOICE_MODEL_NAME = "ActumAutoOwnershipModel";
     private const int TOTAL_ALTERNATIVES = 3;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

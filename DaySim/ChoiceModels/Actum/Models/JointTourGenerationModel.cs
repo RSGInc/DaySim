@@ -15,7 +15,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class JointTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumJointTourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumJointTourGenerationModel";
     private readonly int _totalAlternatives = Global.Settings.Purposes.Medical;
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;

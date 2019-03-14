@@ -16,7 +16,7 @@ using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PayToParkAtWorkplaceModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumPayToParkAtWorkplaceModel";
+    public const string CHOICE_MODEL_NAME = "ActumPayToParkAtWorkplaceModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

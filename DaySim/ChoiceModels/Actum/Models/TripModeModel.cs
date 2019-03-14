@@ -18,7 +18,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TripModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumTripModeModel";
+    public const string CHOICE_MODEL_NAME = "ActumTripModeModel";
     private const int MAX_PARAMETER = 199;
 
     // this is Mark B (leave it out)

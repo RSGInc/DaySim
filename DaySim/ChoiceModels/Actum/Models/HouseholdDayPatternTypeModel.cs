@@ -18,7 +18,7 @@ using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class HouseholdDayPatternTypeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumHouseholdDayPatternTypeModel";
+    public const string CHOICE_MODEL_NAME = "ActumHouseholdDayPatternTypeModel";
     private const int TOTAL_ALTERNATIVES = 363;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

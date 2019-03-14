@@ -142,7 +142,7 @@ namespace DaySim {
             } else {
               Global.PrintFile.WriteLine(string.Format("EstimationModel '{0}' resolved to be Class {1}", Global.Configuration.EstimationModel, estimationModelType), true);
 
-              FieldInfo choiceModelNameFieldInfo = estimationModelType.GetField("CHOICE_MODEL_NAME", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+              FieldInfo choiceModelNameFieldInfo = estimationModelType.GetField("CHOICE_MODEL_NAME", BindingFlags.Public | BindingFlags.Static);
               if (choiceModelNameFieldInfo == null) {
                 throw new Exception(string.Format("EstimationModel '{0}' class '{1}' does not have expected constant field 'CHOICE_MODEL_NAME'.", Global.Configuration.EstimationModel, estimationModelClassName));
               } else {

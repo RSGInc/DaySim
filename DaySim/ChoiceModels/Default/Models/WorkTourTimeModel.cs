@@ -15,7 +15,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class WorkTourTimeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "WorkTourTimeModel";
+    public const string CHOICE_MODEL_NAME = "WorkTourTimeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     private const int MAX_PARAMETER = 180;

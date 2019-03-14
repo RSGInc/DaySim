@@ -15,7 +15,7 @@ using DaySim.Framework.Roster;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class TripTimeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "TripTimeModel";
+    public const string CHOICE_MODEL_NAME = "TripTimeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     private const int MAX_PARAMETER = 156;

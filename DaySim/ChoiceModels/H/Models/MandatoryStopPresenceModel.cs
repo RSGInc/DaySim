@@ -17,7 +17,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class MandatoryStopPresenceModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HMandatoryStopPresenceModel";
+    public const string CHOICE_MODEL_NAME = "HMandatoryStopPresenceModel";
     private const int TOTAL_ALTERNATIVES = 4;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

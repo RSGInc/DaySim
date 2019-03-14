@@ -14,13 +14,12 @@ using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
-using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TourModeTimeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumTourModeTimeModel";
+    public const string CHOICE_MODEL_NAME = "ActumTourModeTimeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 30;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 999;
@@ -220,9 +219,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //			int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, HTourModeTime choice = null) {
 
       IActumParcelWrapper destinationParcel = (IActumParcelWrapper)destinationParcel_x;
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) tour.Household;
-      IActumPersonWrapper person = (IActumPersonWrapper) tour.Person;
-      IActumPersonDayWrapper personDay = (IActumPersonDayWrapper) tour.PersonDay;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)tour.Household;
+      IActumPersonWrapper person = (IActumPersonWrapper)tour.Person;
+      IActumPersonDayWrapper personDay = (IActumPersonDayWrapper)tour.PersonDay;
       //IHouseholdTotals householdTotals = household.HouseholdTotals;
 
       // household inputs
@@ -242,8 +241,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int hhDrivers = household.Size - household.Persons6to17 - household.KidsBetween0And4;  //uses new household attribute
       int carsLessThanDriversFlag = (householdCars < hhDrivers).ToFlag();
 
-      int HHwithChildrenFlag = (household.KidsBetween0And4 + household.KidsBetween5And15>0).ToFlag();
-      int HHwithSmallChildrenFlag = (household.KidsBetween0And4>0).ToFlag();
+      int HHwithChildrenFlag = (household.KidsBetween0And4 + household.KidsBetween5And15 > 0).ToFlag();
+      int HHwithSmallChildrenFlag = (household.KidsBetween0And4 > 0).ToFlag();
 
       int HHwithLowIncomeFlag = (household.Income >= 0 && household.Income < 400000).ToFlag();
       int HHwithMidleIncomeFlag = (household.Income >= 400000 && household.Income < 800000).ToFlag();
@@ -709,22 +708,22 @@ namespace DaySim.ChoiceModels.Actum.Models {
             modeComponent.AddUtilityTerm(109, 1.0);
           }
         }
-          //GV: Estimation of importance of "purpose" per mode - SOV is zero-alt and Work is zero-alt 
+        //GV: Estimation of importance of "purpose" per mode - SOV is zero-alt and Work is zero-alt 
         //if (mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.Hov2
         //     || mode == Global.Settings.Modes.Hov3 || mode == Global.Settings.Modes.Transit) {
-          //int firstCoef = 200 + 10 * mode;
+        //int firstCoef = 200 + 10 * mode;
 
-          //modeComponent.AddUtilityTerm(firstCoef + 0, escortTourFlag);
-          //modeComponent.AddUtilityTerm(firstCoef + 1, shoppingTourFlag);
-          //modeComponent.AddUtilityTerm(firstCoef + 2, educationTourFlag);
-          //modeComponent.AddUtilityTerm(firstCoef + 3, socialTourFlag);
-          //modeComponent.AddUtilityTerm(firstCoef + 4, personalBusinessTourFlag);
-          //modeComponent.AddUtilityTerm(firstCoef + 5, businessTourFlag);
-          //modeComponent.AddUtilityTerm(firstCoef + 6, workTourFlag); //GV: "work" is zero alternative
+        //modeComponent.AddUtilityTerm(firstCoef + 0, escortTourFlag);
+        //modeComponent.AddUtilityTerm(firstCoef + 1, shoppingTourFlag);
+        //modeComponent.AddUtilityTerm(firstCoef + 2, educationTourFlag);
+        //modeComponent.AddUtilityTerm(firstCoef + 3, socialTourFlag);
+        //modeComponent.AddUtilityTerm(firstCoef + 4, personalBusinessTourFlag);
+        //modeComponent.AddUtilityTerm(firstCoef + 5, businessTourFlag);
+        //modeComponent.AddUtilityTerm(firstCoef + 6, workTourFlag); //GV: "work" is zero alternative
 
-          //modeComponent.AddUtilityTerm(firstCoef + 7, jointTourFlag);
-          //modeComponent.AddUtilityTerm(firstCoef + 8, Math.Min(partialHalfTour1Flag + partialHalfTour2Flag, 1.0));
-          //modeComponent.AddUtilityTerm(firstCoef + 9, Math.Min(fullHalfTour1Flag + fullHalfTour2Flag, 1.0));
+        //modeComponent.AddUtilityTerm(firstCoef + 7, jointTourFlag);
+        //modeComponent.AddUtilityTerm(firstCoef + 8, Math.Min(partialHalfTour1Flag + partialHalfTour2Flag, 1.0));
+        //modeComponent.AddUtilityTerm(firstCoef + 9, Math.Min(fullHalfTour1Flag + fullHalfTour2Flag, 1.0));
 
         //}
       }
@@ -772,8 +771,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
               && (mode > Global.Settings.Modes.Transit)) {
             available = false;
           }
-          if (tour.JointTourSequence > 0 
-            && (mode == Global.Settings.Modes.Sov || mode == Global.Settings.Modes.HovPassenger) 
+          if (tour.JointTourSequence > 0
+            && (mode == Global.Settings.Modes.Sov || mode == Global.Settings.Modes.HovPassenger)
             && (constrainedMode != Global.Settings.Modes.HovPassenger)) {
             available = false;
           }
@@ -782,7 +781,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           //further limit availabillity based on time window variables and any constrained choices
           available = (available == true)
-              && (modeTimes.LongestFeasibleWindow != null) 
+              && (modeTimes.LongestFeasibleWindow != null)
               && (mode > 0)
               && (person.Age >= Global.Configuration.COMPASS_MinimumAutoDrivingAge || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
               && (constrainedMode > 0 || mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.HovDriver || mode == Global.Settings.Modes.Transit || !partialHalfTour)
@@ -851,7 +850,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             continue;
           }
 
-              //GV and JB: the parking cost are handled as part of genaralised time
+          //GV and JB: the parking cost are handled as part of genaralised time
 
           double minimumTimeNeeded = modeTimes.TravelTimeToDestination + modeTimes.TravelTimeFromDestination + Global.Settings.Times.MinimumActivityDuration;
 
@@ -863,19 +862,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
                          : (mode >= Global.Settings.Modes.WalkRideWalk) ? 1 : 2;
           alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
 
-          if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare ) {
+          if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare) {
             alternative.AddUtilityTerm(11, modeTimes.OriginAccessTime);
           }
-          if (mode == Global.Settings.Modes.BikeParkRideWalk || mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.BikeParkRideShare ) {
+          if (mode == Global.Settings.Modes.BikeParkRideWalk || mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.BikeParkRideShare) {
             alternative.AddUtilityTerm(12, modeTimes.OriginAccessTime);
           }
-          if (mode == Global.Settings.Modes.ShareRideWalk || mode == Global.Settings.Modes.ShareRideBike || mode == Global.Settings.Modes.ShareRideShare)  {
+          if (mode == Global.Settings.Modes.ShareRideWalk || mode == Global.Settings.Modes.ShareRideBike || mode == Global.Settings.Modes.ShareRideShare) {
             alternative.AddUtilityTerm(13, modeTimes.OriginAccessTime);
           }
           if (mode == Global.Settings.Modes.CarKissRideWalk || mode == Global.Settings.Modes.CarKissRideBike || mode == Global.Settings.Modes.CarKissRideShare) {
             alternative.AddUtilityTerm(14, modeTimes.OriginAccessTime);
           }
-          if (mode == Global.Settings.Modes.CarParkRideWalk || mode == Global.Settings.Modes.CarParkRideBike || mode == Global.Settings.Modes.CarParkRideShare ) {
+          if (mode == Global.Settings.Modes.CarParkRideWalk || mode == Global.Settings.Modes.CarParkRideBike || mode == Global.Settings.Modes.CarParkRideShare) {
             alternative.AddUtilityTerm(15, modeTimes.OriginAccessTime);
           }
           if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.BikeParkRideWalk || mode == Global.Settings.Modes.ShareRideWalk
@@ -883,7 +882,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(16, modeTimes.DestinationAccessTime);
           }
           if (mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.ShareRideBike
-             || mode == Global.Settings.Modes.CarKissRideBike || mode == Global.Settings.Modes.CarParkRideBike ) {
+             || mode == Global.Settings.Modes.CarKissRideBike || mode == Global.Settings.Modes.CarParkRideBike) {
             alternative.AddUtilityTerm(17, modeTimes.DestinationAccessTime);
           }
           if (mode == Global.Settings.Modes.WalkRideShare || mode == Global.Settings.Modes.BikeParkRideShare || mode == Global.Settings.Modes.ShareRideShare
@@ -896,7 +895,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           }
           //alternative.AddUtilityTerm(3,
           //                           Math.Log(modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start -
-           //                                   minimumTimeNeeded + 1.0));
+          //                                   minimumTimeNeeded + 1.0));
 
           // JLB 20140204 replaced coeff 3 with a different time window formulation:  time pressure
           //    instead of having positive utility for increasing time window, have negative utility for decreasing time window

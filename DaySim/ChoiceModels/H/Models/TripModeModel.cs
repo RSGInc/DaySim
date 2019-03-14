@@ -17,7 +17,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class TripModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HTripModeModel";
+    public const string CHOICE_MODEL_NAME = "HTripModeModel";
     private const int MAX_PARAMETER = 199;
     private const int TOTAL_NESTED_ALTERNATIVES = 5;
     private const int TOTAL_LEVELS = 2;

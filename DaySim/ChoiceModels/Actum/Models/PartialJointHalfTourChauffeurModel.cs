@@ -16,7 +16,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PartialJointHalfTourChauffeurModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumPartialJointHalfTourChauffeurModel";
+    public const string CHOICE_MODEL_NAME = "ActumPartialJointHalfTourChauffeurModel";
     private const int TOTAL_ALTERNATIVES = 5;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

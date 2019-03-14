@@ -15,7 +15,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class MandatoryStopPresenceModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumMandatoryStopPresenceModel";
+    public const string CHOICE_MODEL_NAME = "ActumMandatoryStopPresenceModel";
     private const int TOTAL_ALTERNATIVES = 4;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
