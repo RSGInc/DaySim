@@ -124,11 +124,9 @@ namespace DaySim {
             wish to check that the passed in EstimationModel exists.
             The problem is that this may not be a full classname but a hybrid such as
             'ActumTourModeTimeModel' or 'HTourModeTimeModel' or 'TourModeTimeModel'
-            So unless the passed in value contains a period which indicates a full class name
-            the name has to be massaged
             */
             string middlePartOfNameSpace = Global.Configuration.EstimationModel.StartsWith("Actum") ? "Actum" : Global.Configuration.EstimationModel.StartsWith("H") ? "H" : "Default";
-            string estimationModelClassName = Global.Configuration.EstimationModel.Contains(".") ? Global.Configuration.EstimationModel : string.Format("DaySim.ChoiceModels.{0}.Models.{1}", middlePartOfNameSpace, Global.Configuration.EstimationModel.Replace(middlePartOfNameSpace, ""));
+            string estimationModelClassName = string.Format("DaySim.ChoiceModels.{0}.Models.{1}", middlePartOfNameSpace, Global.Configuration.EstimationModel.Replace(middlePartOfNameSpace, ""));
 
             if (middlePartOfNameSpace != Global.Configuration.ChoiceModelRunner) {
               throw new Exception(string.Format("ChoiceModelRunner '{0}' does not match the middle part of the namespace of the EstimationModel '{1}' which was calculated to be '{2}.",
@@ -139,9 +137,21 @@ namespace DaySim {
               throw new Exception(string.Format("EstimationModel '{0}' was expected to represent class '{1}' but that does not exist.", Global.Configuration.EstimationModel, estimationModelClassName));
             } else {
               Global.PrintFile.WriteLine(string.Format("EstimationModel '{0}' resolved to be Class {1}", Global.Configuration.EstimationModel, estimationModelType), true);
+
+              FieldInfo choiceModelNameFieldInfo = estimationModelType.GetField("CHOICE_MODEL_NAME", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+              if (choiceModelNameFieldInfo == null) {
+                throw new Exception(string.Format("EstimationModel '{0}' class '{1}' does not have expected constant field 'CHOICE_MODEL_NAME'.", Global.Configuration.EstimationModel, estimationModelClassName));
+              } else {
+                object choiceModelNameValue = choiceModelNameFieldInfo.GetValue(null);
+                if (choiceModelNameValue == null) {
+                  throw new Exception(string.Format("EstimationModel '{0}' class '{1}' constant field 'CHOICE_MODEL_NAME' value could not be found.", Global.Configuration.EstimationModel, estimationModelClassName));
+                } else if (choiceModelNameValue.ToString() != Global.Configuration.EstimationModel) {
+                  throw new Exception(string.Format("EstimationModel '{0}' class '{1}' constant field CHOICE_MODEL_NAME's value is not identical to EstimationModel but is {2} instead.", Global.Configuration.EstimationModel, estimationModelClassName, choiceModelNameValue.ToString()));
+                }
+              }
             }
           }
-        }
+        } //end EstimationModel checks
 
         bool usingASetRandomSeed = Global.Configuration.RandomSeed != Configuration.DefaultRandomSeedIfNotSet;
         if (usingASetRandomSeed) {
