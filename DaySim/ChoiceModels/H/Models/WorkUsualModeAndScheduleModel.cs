@@ -16,7 +16,7 @@ using DaySim.Framework.Factories;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class WorkUsualModeAndScheduleModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HWorkUsualModeAndScheduleModel";
+    public const string CHOICE_MODEL_NAME = "HWorkUsualModeAndScheduleModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 4;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 199;

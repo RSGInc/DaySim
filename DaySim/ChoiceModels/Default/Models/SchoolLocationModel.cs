@@ -19,7 +19,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class SchoolLocationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "SchoolLocationModel";
+    public const string CHOICE_MODEL_NAME = "SchoolLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 99;

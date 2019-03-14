@@ -14,7 +14,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class PayToParkAtWorkplaceModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HPayToParkAtWorkplaceModel";
+    public const string CHOICE_MODEL_NAME = "HPayToParkAtWorkplaceModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

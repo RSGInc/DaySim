@@ -17,7 +17,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class WorkBasedSubtourModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "WorkBasedSubtourModeModel";
+    public const string CHOICE_MODEL_NAME = "WorkBasedSubtourModeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 5;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 199;

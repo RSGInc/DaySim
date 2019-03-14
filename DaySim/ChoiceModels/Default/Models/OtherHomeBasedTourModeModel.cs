@@ -18,7 +18,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class OtherHomeBasedTourModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "OtherHomeBasedTourModeModel";
+    public const string CHOICE_MODEL_NAME = "OtherHomeBasedTourModeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 5;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 299;

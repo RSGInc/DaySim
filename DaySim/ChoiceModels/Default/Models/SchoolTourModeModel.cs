@@ -20,7 +20,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class SchoolTourModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "SchoolTourModeModel";
+    public const string CHOICE_MODEL_NAME = "SchoolTourModeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 6;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 199;

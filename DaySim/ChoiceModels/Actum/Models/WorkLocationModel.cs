@@ -20,7 +20,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkLocationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkLocationModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 99;

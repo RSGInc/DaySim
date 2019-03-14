@@ -17,7 +17,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class MandatoryTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HMandatoryTourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "HMandatoryTourGenerationModel";
     private const int TOTAL_ALTERNATIVES = 4;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
