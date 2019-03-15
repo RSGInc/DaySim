@@ -29,7 +29,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     public void Run(HouseholdWrapper household) {
       if (household == null) {
-        throw new ArgumentNullException("household");
+        throw new ArgumentNullException("household");  
       }
 
       household.ResetRandom(4);
@@ -44,7 +44,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         ChoiceProbabilityCalculator.Alternative chosenAlternative = AVchoiceProbabilityCalculator.SimulateChoice(household.RandomUtility);
         int choice = (int)chosenAlternative.Choice;
 
-        household.OwnsAutomatedVehicles = choice;
+        household.AutoType = choice;
+        household.OwnsAutomatedVehicles = choice == 3? 1:0;
       }
 
       ChoiceProbabilityCalculator choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(household.Id);
@@ -77,15 +78,59 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //MB check for new hh properties
       int checkKids6To17 = household.Persons6to17;
       // end check
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
+
 
       double workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
       double schoolTourLogsumDifference = 0D; // (school) full car ownership vs. no car ownership
                                               //															 //			const double workTourOtherLogsumDifference = 0D; // (other workers) full car ownership vs. no car ownership
                                               //
                                               // Stefan
-      double netIncome = (household.Income / 1000.0) / 2.0; // in 1000s of DKK
-      double userCost = 2.441 * 15.0;  //annual cost to use 1 car in 1000s of DKK
+
+      bool incomeMissing = household.Income < 0? true:false;
+      double netIncome = incomeMissing?  0 : (household.Income / 1000.0) * Global.Configuration.COMPASS_IncomeToNetIncomeMultiplier; // in 1000s of DKK
+      double userCost = Global.Configuration.COMPASS_AnnualCostToUseOneCarInMonetaryUnts / 1000.0;  //annual cost to use 1 car in 1000s of DKK
+      double incomeRemainder1Car = netIncome - userCost >= 0? netIncome-userCost: 0;
+      double incomeRemainder2Cars = netIncome - 2*userCost >= 0? netIncome-2*userCost: 0;
+      double incomeDeficit1Car = !incomeMissing && netIncome -userCost < 0? userCost - netIncome: 0;
+      double incomeDeficit2Cars = !incomeMissing && netIncome -2*userCost < 0? 2*userCost - netIncome: 0;
+
+      //GV: 4. mar. 2019 - no. of parkig places in the residental area
+      //JB: Employee parking places should not be used
+      double resNoParking = (residenceParcel.ResidentialPermitOnlyParkingSpaces +
+        residenceParcel.PublicWithResidentialPermitAllowedParkingSpaces +
+        residenceParcel.PublicNoResidentialPermitAllowedParkingSpaces +
+        //residenceParcel.EmployeeOnlyParkingSpaces +
+        residenceParcel.ElectricVehicleOnlyParkingSpaces);
+
+      //GV: 4. mar. 2019 - no. of parkig places in Buffer1 area
+      //JB: Employee parking places should not be used
+      double Bf1NoParking = (residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer1 +
+        residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1 +
+        residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1 +
+        //residenceParcel.EmployeeOnlyParkingSpacesBuffer1 +
+        residenceParcel.ElectricVehicleOnlyParkingSpacesBuffer1);
+
+      //GV: 4. mar. 2019 - no. of parkig places in Buffer2 area
+      //JB: Employee parking places should not be used
+      double Bf2NoParking = (residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer2 +
+        residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer2 +
+        residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer2 +
+        //residenceParcel.EmployeeOnlyParkingSpacesBuffer2 +
+        residenceParcel.ElectricVehicleOnlyParkingSpacesBuffer2);
+
+      //GV: 4. mar. 2019 - no. of parkig places in the residental area per HH
+      double resParkingSpacesPerHH = (Math.Max(1.0, resNoParking)) / (Math.Max(1.0, residenceParcel.Households));
+
+      //GV: 4. mar. 2019 - no. of parkig places in the Buffer1 area per HH
+      double Bf1ParkingSpacesPerHH = (Math.Max(1.0, Bf1NoParking)) / (Math.Max(1.0, residenceParcel.HouseholdsBuffer1));
+
+      //GV: 4. mar. 2019 - no. of parkig places in the Buffer2 area per HH
+      double Bf2ParkingSpacesPerHH = (Math.Max(1.0, Bf2NoParking)) / (Math.Max(1.0, residenceParcel.HouseholdsBuffer2));
+
       bool isInCopenhagenMunicipality = household.MunicipalCode == 101;
+
+      bool isInFrederiksbergMunicipality = household.MunicipalCode == 147;
 
       bool municipality101 = household.MunicipalCode == 101;
       bool municipality147 = household.MunicipalCode == 147;
@@ -122,17 +167,20 @@ namespace DaySim.ChoiceModels.Actum.Models {
       bool municipality336 = household.MunicipalCode == 336;
       bool municipality350 = household.MunicipalCode == 350;
 
-      int numberAdults = 0;
-      int numberChildren = 0;
+      int numberChildren = household.Persons6to17 + household.KidsBetween0And4;
+      int numberAdults = household.Size - numberChildren;
       int numberWorkers = 0;
       int sumAdultAges = 0;
       double averageAdultAge = 0.0;
       bool isMale = false;
 
+      int i = 0;
       foreach (PersonWrapper person in household.Persons) {
         //MB check for access to new Actum person properties
         int checkPersInc = person.PersonalIncome;
         //end check
+
+        i++;
 
         if (person.IsWorker && person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
           //MB check for access to new Actum parcel properties
@@ -153,19 +201,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
           workTourLogsumDifference -= nestedAlternative2 == null ? 0 : nestedAlternative2.ComputeLogsum();
         }
 
-        if (person.IsDrivingAgeStudent && person.UsualSchoolParcel != null && person.UsualSchoolParcelId != household.ResidenceParcelId) {
+        if (person.IsAdult && person.UsualSchoolParcel != null && person.UsualSchoolParcelId != household.ResidenceParcelId) {
           //MB check for access to new Actum parcel properties
           //requires a cast and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header - use new variable studentUsualParcel...
           IActumParcelWrapper studentUsualParcel = (IActumParcelWrapper)person.UsualSchoolParcel;
           double checkSchoolMZParkCost = studentUsualParcel.PublicParkingHourlyPriceBuffer1;
           //end check
-
-
-
+                   
           int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
           int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.SchoolTourModeModel);
 
-          //TODO: change the following school logsum retrievals when estimating this model after schoolTourModeTimeModel is enhanced for COMPAS2 
           ChoiceProbabilityCalculator.Alternative nestedAlternative1 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, household.HouseholdTotals.DrivingAgeMembers, 0.0, Global.Settings.Purposes.School);
           ChoiceProbabilityCalculator.Alternative nestedAlternative2 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, destinationArrivalTime, destinationDepartureTime, 0, 0.0, Global.Settings.Purposes.School);
 
@@ -173,7 +218,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           schoolTourLogsumDifference -= nestedAlternative2 == null ? 0 : nestedAlternative2.ComputeLogsum();
         }
         if (person.Age >= 18) {
-          numberAdults++;
+          //numberAdults++;
           sumAdultAges = sumAdultAges + person.Age;
           isMale = person.IsMale;
           if (person.PersonType == Global.Settings.PersonTypes.FullTimeWorker
@@ -182,12 +227,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
             numberWorkers++;
           }
         } else {
-          numberChildren++;
+          //numberChildren++;
         }
 
       }
-      averageAdultAge = sumAdultAges / Math.Max(numberAdults, 1);
 
+      averageAdultAge = sumAdultAges / Math.Max(numberAdults, 1);
+      //JB 20190224 if household persons are missing from sample we won't be able to use variables calculated in the above loop on persons 
+      bool hhPersonDataComplete = true;
+      if (i < household.Size) {
+        hhPersonDataComplete = false;
+      }
 
       // var votSegment = household.VotALSegment;
       //var taSegment = household.ResidenceParcel.TransitAccessSegment();
@@ -203,8 +253,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //var ruralFlag = household.ResidenceParcel.RuralFlag();
 
-      double zeroVehAVEffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0) ? Global.Configuration.AV_Own0VehiclesCoefficientForAVHouseholds : 0;
-      double oneVehAVEffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.OwnsAutomatedVehicles > 0) ? Global.Configuration.AV_Own1VehicleCoefficientForAVHouseholds : 0;
+      double zeroVehEVEffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.AutoType == 2) ? Global.Configuration.EV_Own0VehiclesCoefficientForAVHouseholds : 0;
+      double oneVehEVEffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.AutoType == 2) ? Global.Configuration.EV_Own1VehicleCoefficientForAVHouseholds : 0;
+
+      double zeroVehAVEffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.AutoType ==3) ? Global.Configuration.AV_Own0VehiclesCoefficientForAVHouseholds : 0;
+      double oneVehAVEffect = (Global.Configuration.AV_IncludeAutoTypeChoice && household.AutoType == 3) ? Global.Configuration.AV_Own1VehicleCoefficientForAVHouseholds : 0;
 
       double zeroVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_DensityCoefficientForOwning0Vehicles * Math.Min(household.ResidenceBuffer2Density, 6000) : 0;
       double oneVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning1Vehicle : 0;
@@ -212,13 +265,31 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //var threeVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning3Vehicles : 0;
       //var fourVehSEEffect = (Global.Configuration.PaidRideShareModeIsAvailable && Global.Configuration.AV_PaidRideShareModeUsesAVs) ? Global.Configuration.AV_SharingEconomy_ConstantForOwning4Vehicles : 0;
 
+      //GV: 29. feb. 2019 - CPH city veriab.
+      bool hhLivesInCPHCity = false;
+      if (residenceParcel.LandUseCode == 101 || residenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
+
+      
       // 0 AUTOS
 
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
       alternative.Choice = 0;
-      alternative.AddUtilityTerm(14, Math.Log(Math.Max(netIncome, 1)));
-      alternative.AddUtilityTerm(15, workTourLogsumDifference);  // instead of all Stefan's work-related and logsum variables
-      alternative.AddUtilityTerm(90, 1); //calibration constant
+
+      //JB 20190224 betas 3-5 confound with Stefan's variables
+      //GV: 20. feb. 2019 - income
+      //alternative.AddUtilityTerm(3, (household.Income >= 300000 && household.Income < 600000).ToFlag());
+      //alternative.AddUtilityTerm(4, (household.Income >= 600000).ToFlag());
+      //GV: 20. feb. 2019 - HHsize 1 or 2
+      //alternative.AddUtilityTerm(5, (household.Size <= 2).ToFlag());
+
+      //alternative.AddUtilityTerm(14, Math.Log(Math.Max(netIncome, 1)));
+
+      alternative.AddUtilityTerm(1, 1); //calibration constant. Constrain to zero for estimation
+      //GV: 28. feb. 2019 - HH==2, an adult and a child 
+      //alternative.AddUtilityTerm(3, (household.Size == 2 && numberAdults == 1 && numberChildren == 1).ToFlag()); //not significant 
+      alternative.AddUtilityTerm(100, zeroVehEVEffect);
       alternative.AddUtilityTerm(100, zeroVehAVEffect);
       alternative.AddUtilityTerm(100, zeroVehSEEffect);
       alternative.AddUtilityTerm(101, municipality101.ToFlag());
@@ -259,133 +330,146 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       // 1 AUTO
 
-      double beta010 = -6.59;
-      double beta011 = 4.25;
-      double beta012 = 5.53;
-      double beta013 = 6.54;
-      double beta014 = 1.17;
-      double beta015 = 0.54;
-      double beta016 = 0.81;
-      double beta017 = 1.20;
-      double beta018 = -0.54;
-      double beta019 = 0.0;
-      double beta020 = 0.45;
-      double beta021 = 0.0;
-      double beta022 = -0.04;
-      double beta023 = 0.57;
-      double beta024 = 0.18;
-      double beta025 = -0.82;
-
-      double stefanOneCarUtility =
-                beta010 * 1.0 +
-                beta011 * household.Has1Driver.ToFlag() +
-                beta012 * household.Has2Drivers.ToFlag() +
-                beta013 * (household.Has3Drivers || household.Has4OrMoreDrivers).ToFlag() +
-                beta014 * Math.Log(Math.Max(netIncome - userCost, 1)) +
-                beta015 * (numberChildren == 1).ToFlag() +
-                beta016 * (numberChildren == 2).ToFlag() +
-                beta017 * (numberChildren > 2).ToFlag() +
-                beta018 * (numberAdults == 1 && !isMale).ToFlag() +
-                beta019 * (numberAdults == 1 && isMale).ToFlag() +
-                beta020 * averageAdultAge / 10.0 +
-                beta021 * Math.Pow(averageAdultAge / 10.0, 2.0) +
-                beta022 * 0 + //household.ResidenceParcel.PSearchTime16_17 +  // Add this when new parcel variables with seach time are available
-                beta023 * household.ResidenceParcel.DistanceToLocalBus +
-                beta024 * household.ResidenceParcel.DistanceToExpressBus +
-                beta025 * isInCopenhagenMunicipality.ToFlag() +
-                0;
-
       alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
       alternative.Choice = 1;
-      //Stefan
-      //alternative.AddUtilityTerm(10, 1.0);
-      //alternative.AddUtilityTerm(11, household.Has1Driver.ToFlag());
-      //alternative.AddUtilityTerm(12, household.Has2Drivers.ToFlag());
-      //alternative.AddUtilityTerm(13, (household.Has3Drivers || household.Has4OrMoreDrivers).ToFlag());
-      //alternative.AddUtilityTerm(14, Math.Log(Math.Max(netIncome - userCost, 1)));
-      //alternative.AddUtilityTerm(15, (numberChildren == 1).ToFlag());
-      //alternative.AddUtilityTerm(16, (numberChildren == 2).ToFlag());
-      //alternative.AddUtilityTerm(17, (numberChildren > 2).ToFlag());
-      //alternative.AddUtilityTerm(18, (numberAdults == 1 && !isMale).ToFlag());
-      //alternative.AddUtilityTerm(19, (numberAdults == 1 && isMale).ToFlag());
-      //alternative.AddUtilityTerm(20, averageAdultAge / 10.0);
-      //alternative.AddUtilityTerm(21, Math.Pow(averageAdultAge / 10.0, 2.0));
-      ////alternative.AddUtilityTerm(22, household.ResidenceParcel.PSearchTime16_17);  // Add this when new parcel variables with seach time are available
-      //alternative.AddUtilityTerm(23, household.ResidenceParcel.DistanceToLocalBus);
-      //alternative.AddUtilityTerm(24, household.ResidenceParcel.DistanceToExpressBus);
-      //alternative.AddUtilityTerm(25, isInCopenhagenMunicipality.ToFlag());
-      alternative.AddUtilityTerm(26, stefanOneCarUtility);  //this composite replaces above separate terms 10-25
 
-      alternative.AddUtilityTerm(27, workTourLogsumDifference * household.HasMoreDriversThan1.ToFlag());  // instead of all Stefan's work-related and logsum variables
-      alternative.AddUtilityTerm(91, 1); //calibration constant
+      alternative.AddUtilityTerm(11, 1); //calibration constant.  Constrain to zero for estimation
+      alternative.AddUtilityTerm(12, (numberAdults <= 1).ToFlag());
+      alternative.AddUtilityTerm(13, (numberAdults == 2).ToFlag());
+      alternative.AddUtilityTerm(14, (numberAdults >= 3).ToFlag());
+      alternative.AddUtilityTerm(15, (numberChildren == 1).ToFlag());
+      alternative.AddUtilityTerm(16, (numberChildren == 2).ToFlag());
+      alternative.AddUtilityTerm(17, (numberChildren > 2).ToFlag());
+      alternative.AddUtilityTerm(18, (!hhPersonDataComplete).ToFlag()); //nuisance parameter for missing person records in TU data
+      alternative.AddUtilityTerm(19, (hhPersonDataComplete && numberAdults == 1 && !isMale).ToFlag());  // requires complete HH data
+      alternative.AddUtilityTerm(20, hhPersonDataComplete.ToFlag() * averageAdultAge / 10.0);  //JB--I don't like this variable.  //requires complete HH data  
+      alternative.AddUtilityTerm(21, hhPersonDataComplete.ToFlag() * workTourLogsumDifference); 
+      //GV: 20. feb. 2019 - CPHcity logsum
+      alternative.AddUtilityTerm(22, hhPersonDataComplete.ToFlag() * workTourLogsumDifference * (hhLivesInCPHCity).ToFlag());
+      alternative.AddUtilityTerm(23, residenceParcel.GetDistanceToTransit());  // distance to nearest PT
+      alternative.AddUtilityTerm(24, residenceParcel.DistanceToLightRail);     // distance to Metro
+      alternative.AddUtilityTerm(25, isInCopenhagenMunicipality.ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in CPH
+      //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
+      //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
+      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in Frederiksberg
+      //alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
+      //alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
+      alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in the rest of GCA
+      //alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (!hhLivesInCPHCity).ToFlag());
+      alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (!hhLivesInCPHCity).ToFlag());
+
+      alternative.AddUtilityTerm(29, (residenceParcel.ParkingDataAvailable == 0).ToFlag());
+      alternative.AddUtilityTerm(30, Math.Log(Math.Max(incomeRemainder1Car, 1)));  //should be positive coefficient
+
+      //GV: change JBs coeff. 31 to Log
+      //alternative.AddUtilityTerm(31, incomeDeficit1Car);  // should be negative coefficient 
+      //alternative.AddUtilityTerm(31, Math.Log(Math.Max(incomeDeficit1Car, 1))); //wrong sign  
+      //alternative.AddUtilityTerm(31, (Math.Max((incomeDeficit1Car * incomeDeficit1Car), 1)));
+
+      alternative.AddUtilityTerm(32, incomeMissing.ToFlag()); //nuisance parameter for missing income 
+
+      //OBS GV: 4.3.2019 - testing parking costs separately for CPH, Frederiksberg, and rest of GCA gave not effect for the last two
+      //GV: also, Parking Residental Permit happens only in the CPHcity, but the negative coeff. is not signf.
+      //alternative.AddUtilityTerm(33, residenceParcel.ParkingDataAvailable * residenceParcel.ResidentialPermitDailyParkingPrices * (hhLivesInCPHCity).ToFlag());
+      //alternative.AddUtilityTerm(34, residenceParcel.ParkingDataAvailable * residenceParcel.PublicParkingHourlyPrice);
+      //alternative.AddUtilityTerm(33, residenceParcel.ParkingDataAvailable * (residenceParcel.ResidentialPermitDailyParkingPrices + residenceParcel.PublicParkingHourlyPrice));
+      //alternative.AddUtilityTerm(33, residenceParcel.ParkingDataAvailable * (residenceParcel.ResidentialPermitDailyParkingPrices)); //wrong sign
+      alternative.AddUtilityTerm(34, residenceParcel.ParkingDataAvailable * (residenceParcel.PublicParkingHourlyPrice));
+
+      //GV: 20. feb. 2019 - income
+      //JB: 20190224 Goran, Stefan's spec already has income effects that confound with these variables.  
+      alternative.AddUtilityTerm(35, (household.Income >= 300000 && household.Income < 600000).ToFlag()); 
+      alternative.AddUtilityTerm(36, (household.Income >= 600000).ToFlag());
+
+      //GV: 20. feb. 2019 - HHsize 3+
+      //JB:  20190224 Stefan's spec already has household size-related variables that confound with this variable  
+      //alternative.AddUtilityTerm(31, (household.Size >= 3).ToFlag());
+
+      //GV: 20. feb. 2019 - HH has child/children
+      //JB:  20190224 Stefan's spec already has number of children variables that confound with this variable
+      //alternative.AddUtilityTerm(32, (numberChildren >= 1).ToFlag());
+
+      alternative.AddUtilityTerm(100, oneVehEVEffect);
       alternative.AddUtilityTerm(100, oneVehAVEffect);
       alternative.AddUtilityTerm(100, oneVehSEEffect);
 
-      //alternative.AddUtilityTerm(24, household.HouseholdTotals.RetiredAdultsPerDrivingAgeMembers);
-      //alternative.AddUtilityTerm(25, household.HouseholdTotals.UniversityStudentsPerDrivingAgeMembers);
-      //alternative.AddUtilityTerm(26, household.HouseholdTotals.DrivingAgeStudentsPerDrivingAgeMembers);
-      //alternative.AddUtilityTerm(27, household.HouseholdTotals.HomeBasedPersonsPerDrivingAgeMembers);
 
       // 2+ AUTOS
 
-      double beta040 = -9.540;
-      double beta041 = 2.79;
-      double beta042 = 6.09;
-      double beta043 = 7.77;
-      double beta045 = 0.35;
-      double beta046 = 0.81;
-      double beta047 = 1.33;
-      double beta048 = -1.13;
-      double beta049 = 0.60;
-      double beta050 = 0.92;
-      double beta051 = -0.05;
-      double beta052 = -0.09;
-      double beta053 = 0.94;
-      double beta054 = 0.31;
-      double beta055 = -1.54;
-
-      double stefanTwoCarUtility =
-                beta040 * 1.0 +
-                beta041 * household.Has1Driver.ToFlag() +
-                beta042 * household.Has2Drivers.ToFlag() +
-                beta043 * (household.Has3Drivers || household.Has4OrMoreDrivers).ToFlag() +
-                beta014 * Math.Log(Math.Max(netIncome - userCost * 2.0, 1)) +
-                beta045 * (numberChildren == 1).ToFlag() +
-                beta046 * (numberChildren == 2).ToFlag() +
-                beta047 * (numberChildren > 2).ToFlag() +
-                beta048 * (numberAdults == 1 && !isMale).ToFlag() +
-                beta049 * (numberAdults == 1 && isMale).ToFlag() +
-                beta050 * averageAdultAge / 10.0 +
-                beta051 * Math.Pow(averageAdultAge / 10.0, 2.0) +
-                beta052 * 0 + //household.ResidenceParcel.PSearchTime16_17 +  // Add this when new parcel variables with seach time are available
-                beta053 * household.ResidenceParcel.DistanceToLocalBus +
-                beta054 * household.ResidenceParcel.DistanceToExpressBus +
-                beta055 * isInCopenhagenMunicipality.ToFlag() +
-                0;
-
       alternative = choiceProbabilityCalculator.GetAlternative(2, true, choice == 2);
       alternative.Choice = 2;
-      //Stefan
-      //alternative.AddUtilityTerm(40, 1.0);
-      //alternative.AddUtilityTerm(41, household.Has1Driver.ToFlag());
-      //alternative.AddUtilityTerm(42, household.Has2Drivers.ToFlag());
-      //alternative.AddUtilityTerm(43, (household.Has3Drivers || household.Has4OrMoreDrivers).ToFlag());
-      //alternative.AddUtilityTerm(14, Math.Log(Math.Max(netIncome - userCost * 2.0, 1)));
-      //alternative.AddUtilityTerm(45, (numberChildren == 1).ToFlag());
-      //alternative.AddUtilityTerm(46, (numberChildren == 2).ToFlag());
-      //alternative.AddUtilityTerm(47, (numberChildren > 2).ToFlag());
-      //alternative.AddUtilityTerm(48, (numberAdults == 1 && !isMale).ToFlag());
-      //alternative.AddUtilityTerm(49, (numberAdults == 1 && isMale).ToFlag());
-      //alternative.AddUtilityTerm(50, averageAdultAge / 10.0);
-      //alternative.AddUtilityTerm(51, Math.Pow(averageAdultAge / 10.0, 2.0));
-      ////alternative.AddUtilityTerm(52, household.ResidenceParcel.PSearchTime16_17);  // Add this when new parcel variables with seach time are available
-      //alternative.AddUtilityTerm(53, household.ResidenceParcel.DistanceToLocalBus);
-      //alternative.AddUtilityTerm(54, household.ResidenceParcel.DistanceToExpressBus);
-      //alternative.AddUtilityTerm(55, isInCopenhagenMunicipality.ToFlag());
-      alternative.AddUtilityTerm(56, stefanTwoCarUtility);  //this composite replaces above separate terms 40-55
 
-      //alternative.AddUtilityTerm(57, workTourLogsumDifference);
-      alternative.AddUtilityTerm(92, 1); //new calibration constant - must be constrained to 0 in estimation
+      alternative.AddUtilityTerm(51, 1); //Calibration constant - must be constrained to 0 in estimation
+      alternative.AddUtilityTerm(52, (numberAdults <= 1).ToFlag());
+      alternative.AddUtilityTerm(53, (numberAdults == 2).ToFlag());
+      alternative.AddUtilityTerm(54, (numberAdults >= 3).ToFlag());
+      alternative.AddUtilityTerm(55, (numberChildren == 1).ToFlag());
+      alternative.AddUtilityTerm(56, (numberChildren == 2).ToFlag());
+      alternative.AddUtilityTerm(57, (numberChildren > 2).ToFlag());
+      alternative.AddUtilityTerm(58, (!hhPersonDataComplete).ToFlag()); //nuisance parameter for missing person records in TU data
+      alternative.AddUtilityTerm(59, (hhPersonDataComplete && numberAdults == 1 && !isMale).ToFlag());  // requires complete HH data
+      alternative.AddUtilityTerm(60, hhPersonDataComplete.ToFlag() * averageAdultAge / 10.0);  //JB--I don't like this variable.  //requires complete HH data  
+      alternative.AddUtilityTerm(61, hhPersonDataComplete.ToFlag() * workTourLogsumDifference * (numberAdults > 1).ToFlag()); 
+      //GV: 20. feb. 2019 - CPHcity logsum
+      alternative.AddUtilityTerm(62, hhPersonDataComplete.ToFlag() * workTourLogsumDifference * (numberAdults > 1).ToFlag() * (hhLivesInCPHCity).ToFlag());
+      alternative.AddUtilityTerm(63, residenceParcel.GetDistanceToTransit()* (numberAdults > 1).ToFlag());  // distance to nearest PT
+      alternative.AddUtilityTerm(64, residenceParcel.DistanceToLightRail* (numberAdults > 1).ToFlag());     // distance to Metro
+      alternative.AddUtilityTerm(65, isInCopenhagenMunicipality.ToFlag()* (numberAdults > 1).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in CPH
+      //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
+      //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
+      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in Frederiksberg
+      //alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
+      //alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
+      alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
+
+      //GV: 4. 3. 2019 - parking avail. in the rest of GCA
+      //alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag());
+      alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag());
+
+      alternative.AddUtilityTerm(69, (residenceParcel.ParkingDataAvailable == 0 ).ToFlag() * (numberAdults > 1).ToFlag());
+      alternative.AddUtilityTerm(70, Math.Log(Math.Max(incomeRemainder2Cars, 1)) * (numberAdults > 1).ToFlag()); //should be positive coeficient
+
+      //GV: change JBs coeff. 71 to Log
+      //alternative.AddUtilityTerm(31, incomeDeficit1Car);  // should be negative coefficient
+      //alternative.AddUtilityTerm(71, incomeDeficit2Cars * (numberAdults > 1).ToFlag()); // should be negative coefficient
+      //alternative.AddUtilityTerm(71, Math.Log(Math.Max(incomeDeficit2Cars, 1)) * (numberAdults > 1).ToFlag()); //wrong sign
+      //alternative.AddUtilityTerm(71, (Math.Max((incomeDeficit2Cars * incomeDeficit2Cars), 1)) * (numberAdults > 1).ToFlag());
+
+      alternative.AddUtilityTerm(72, incomeMissing.ToFlag() * (numberAdults > 1).ToFlag()); //nuisance parameter for missing income
+      //GV: 28. feb. 2019 - HH==2, both adults 
+      alternative.AddUtilityTerm(73, (household.Size == 2 && numberAdults == 2).ToFlag());
+
+      //OBS GV: 4.3.2019 - testing parking costs separately for CPH, Frederiksberg, and rest of GCA gave not effect for the last two
+      //GV: also, Parking Residental Permit happens only in the CPHcity, but the negative coeff. is not signf.
+      //alternative.AddUtilityTerm(33, residenceParcel.ParkingDataAvailable * residenceParcel.ResidentialPermitDailyParkingPrices * (hhLivesInCPHCity).ToFlag() * (numberAdults > 1).ToFlag());
+      //alternative.AddUtilityTerm(34, residenceParcel.ParkingDataAvailable * residenceParcel.PublicParkingHourlyPrice * (numberAdults > 1).ToFlag());
+      //alternative.AddUtilityTerm(74, residenceParcel.ParkingDataAvailable * (residenceParcel.ResidentialPermitDailyParkingPrices + residenceParcel.PublicParkingHourlyPrice) * (numberAdults > 1).ToFlag());
+      //alternative.AddUtilityTerm(74, residenceParcel.ParkingDataAvailable * (residenceParcel.ResidentialPermitDailyParkingPrices) * (numberAdults > 1).ToFlag()); //wrong sign
+      alternative.AddUtilityTerm(75, residenceParcel.ParkingDataAvailable * (residenceParcel.PublicParkingHourlyPrice) * (numberAdults > 1).ToFlag());
+
+      //GV: 20. feb. 2019 - income
+      //JB: 20190224 Goran, Stefan's spec already has income effects that confound with these variables.  
+      alternative.AddUtilityTerm(35, ((household.Income >= 300000 && household.Income < 600000).ToFlag()) * (numberAdults > 1).ToFlag());
+      alternative.AddUtilityTerm(36, ((household.Income >= 600000).ToFlag()) * (numberAdults > 1).ToFlag());
+
+      //GV: 20. feb. 2019 - HHsize 4+
+      //JB: see above comments in 1-car utility
+      //alternative.AddUtilityTerm(57, (household.Size >= 4).ToFlag());
+
+      //GV: 20. feb. 2019 - HH has children
+      //JB: see above comments in 1-car utility
+      //alternative.AddUtilityTerm(58, (numberChildren >= 2).ToFlag());
+
       alternative.AddUtilityTerm(100, twoVehSEEffect);
       alternative.AddUtilityTerm(201, municipality101.ToFlag());
       alternative.AddUtilityTerm(202, municipality147.ToFlag());
@@ -422,13 +506,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(233, municipality336.ToFlag());
       alternative.AddUtilityTerm(234, municipality350.ToFlag());
 
-      //alternative.AddUtilityTerm(44, household.HouseholdTotals.RetiredAdultsPerDrivingAgeMembers);
-      //alternative.AddUtilityTerm(45, household.HouseholdTotals.UniversityStudentsPerDrivingAgeMembers);
-      //alternative.AddUtilityTerm(46, household.HouseholdTotals.DrivingAgeStudentsPerDrivingAgeMembers);
-      //alternative.AddUtilityTerm(47, household.HouseholdTotals.HomeBasedPersonsPerDrivingAgeMembers);
-
     }
     private void RunAVModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IHouseholdWrapper household, int choice = Constants.DEFAULT_VALUE) {
+
+      int lowIncome = household.Income < 300000 ? 1 : 0;
+      int highIncome = household.Income > 900000 ? 1 : 0;
 
       int ageOfHouseholdHead = 0;
       double totalCommuteTime = 0;
@@ -449,19 +531,30 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
       }
 
-      // 0 Conventional auotos
+      // 1--Gas Conventional autos
 
-      ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
-      alternative.Choice = 0;
+      ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, Global.Configuration.GV_GasConventionalVehicleAvailable, choice == 1);
+      alternative.Choice = 1;
       //utility is 0
 
-      // 1 AVs
 
-      int lowIncome = household.Income < 300000 ? 1 : 0;
-      int highIncome = household.Income > 900000 ? 1 : 0;
+      // 2--Electric Conventional autos
+      
+      alternative = choiceProbabilityCalculator.GetAlternative(1, Global.Configuration.EV_ElectricConventionalVehicleAvailable, choice == 2);
+      alternative.Choice = 2;
 
-      alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
-      alternative.Choice = 1;
+      alternative.AddUtilityTerm(100, Global.Configuration.EV_AutoTypeConstant);
+      alternative.AddUtilityTerm(100, Global.Configuration.EV_HHIncomeUnder50KCoefficient * lowIncome);
+      alternative.AddUtilityTerm(100, Global.Configuration.EV_HHIncomeOver100KCoefficient * highIncome);
+      alternative.AddUtilityTerm(100, Global.Configuration.EV_HHHeadUnder35Coefficient * (ageOfHouseholdHead < 35).ToFlag());
+      alternative.AddUtilityTerm(100, Global.Configuration.EV_HHHeadOver65Coefficient * (ageOfHouseholdHead >= 65).ToFlag());
+      alternative.AddUtilityTerm(100, Global.Configuration.EV_CoefficientPerHourCommuteTime * (totalCommuteTime / 60.0));
+
+
+      // 3--AVs
+      
+      alternative = choiceProbabilityCalculator.GetAlternative(2, Global.Configuration.AV_ElectricAutonomousVehicleAvailable, choice == 3);
+      alternative.Choice = 3;
 
       alternative.AddUtilityTerm(100, Global.Configuration.AV_AutoTypeConstant);
       alternative.AddUtilityTerm(100, Global.Configuration.AV_HHIncomeUnder50KCoefficient * lowIncome);
@@ -470,10 +563,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(100, Global.Configuration.AV_HHHeadOver65Coefficient * (ageOfHouseholdHead >= 65).ToFlag());
       alternative.AddUtilityTerm(100, Global.Configuration.AV_CoefficientPerHourCommuteTime * (totalCommuteTime / 60.0));
 
-      // 2+ not available
-
-      alternative = choiceProbabilityCalculator.GetAlternative(2, false, choice == 2);
-      alternative.Choice = 2;
     }
   }
 }

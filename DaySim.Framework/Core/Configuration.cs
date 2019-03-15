@@ -1831,9 +1831,18 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool UseLogOfSquareFeetOpenSpaceInDestinationSampling { get; set; }
 
-    //new for AV capabilities
+    //new for AV capabilities    //JB 201902 added additional lines for EV capabilities
     [XmlAttribute]
     public bool AV_IncludeAutoTypeChoice { get; set; }
+
+    [XmlAttribute]
+    public bool GV_GasConventionalVehicleAvailable { get; set; } = true;
+
+    [XmlAttribute]
+    public bool EV_ElectricConventionalVehicleAvailable { get; set; } = true;
+
+    [XmlAttribute]
+    public bool AV_ElectricAutonomousVehicleAvailable { get; set; } = true;
 
     [XmlAttribute]
     public bool AV_UseSeparateAVSkimMatrices { get; set; }
@@ -1865,6 +1874,30 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public double AV_Own1VehicleCoefficientForAVHouseholds { get; set; }
+
+    [XmlAttribute]
+    public double EV_AutoTypeConstant { get; set; }
+
+    [XmlAttribute]
+    public double EV_HHIncomeUnder50KCoefficient { get; set; }
+
+    [XmlAttribute]
+    public double EV_HHIncomeOver100KCoefficient { get; set; }
+
+    [XmlAttribute]
+    public double EV_HHHeadUnder35Coefficient { get; set; }
+
+    [XmlAttribute]
+    public double EV_HHHeadOver65Coefficient { get; set; }
+
+    [XmlAttribute]
+    public double EV_CoefficientPerHourCommuteTime { get; set; }
+
+    [XmlAttribute]
+    public double EV_Own0VehiclesCoefficientForAVHouseholds { get; set; }
+
+    [XmlAttribute]
+    public double EV_Own1VehicleCoefficientForAVHouseholds { get; set; }
 
     [XmlAttribute]
     public double AV_InVehicleTimeCoefficientDiscountFactor { get; set; }
@@ -2109,6 +2142,8 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public int COMPASS_TransitFareMinimumAgeForSeniorCard { get; set; }
     [XmlAttribute]
+    public int COMPASS_TransitFareDefaultNumberOfZonesForCommuterCard { get; set; }
+    [XmlAttribute]
     public int COMPASS_TransitFareDefaultNumberOfZonesForSeniorCard { get; set; }
     [XmlAttribute]
     public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardUniversity { get; set; }
@@ -2145,6 +2180,13 @@ namespace DaySim.Framework.Core {
     public double COMPASS_MaximumRatioDriveToKissAndRideVersusDriveToDestination { get; set; }
     [XmlAttribute]
     public double COMPASS_MaximumRatioBikeToParkAndRideVersusDriveToDestination { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_IncomeToNetIncomeMultiplier { get; set; } = 0.5;
+    [XmlAttribute]
+    public double COMPASS_AnnualCostToUseOneCarInMonetaryUnts { get; set; } = 36615.0;
+
+
 
 
 

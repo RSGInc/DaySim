@@ -24,7 +24,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     public const string CHOICE_MODEL_NAME = "ActumWorkLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
-    private const int MAX_PARAMETER = 99;
+    private const int MAX_PARAMETER = 350;
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       int sampleSize = Global.Configuration.WorkLocationModelSampleSize;
@@ -87,13 +87,38 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //MB check for new hh properties
       //requres a cast to a household, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
       IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
       int checkKids6To17 = household.Persons6to17;
       // end check
 
+      bool incomeMissing = false;
+      bool lowIncome = false;
+      bool lowMediumIncome = false;
+      bool mediumHighIncome = false;
+      bool highIncome = false;
+      double income = -1;
 
+      int incomeBasis = 1;  // 1-person; 2-HH
+
+      if (incomeBasis == 1) { //person income is basis
+        income = person.PersonalIncome;
+        if (income < 0) {incomeMissing = true;}
+        else if (income < 300000) {lowIncome = true;}  // 20th percentile
+        else if (income < 400000) {lowMediumIncome = true;}  // 48th percentile
+        else if (income < 600000) {mediumHighIncome = true;}  // 82nd percentile
+        else {highIncome = true; }
+      }
+      else {  //household income is basis
+        income = household.Income;
+        if (income < 0) {incomeMissing = true;}
+        else if (income < 300000) {lowIncome = true;}
+        else if (income < 600000) {lowMediumIncome = true;}
+        else if (income < 900000) {mediumHighIncome = true;}
+        else {highIncome = true; }
+      }
 
       int segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.Work, Global.Settings.TourPriorities.HomeBasedTour, Global.Settings.Modes.Sov, person.PersonType);
-      DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, person.Household.ResidenceParcel);
+      DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, residenceParcel);
       int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
       int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
       WorkLocationUtilities workLocationUtilites = new WorkLocationUtilities(person, sampleSize, destinationArrivalTime, destinationDepartureTime);
@@ -122,15 +147,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         double workTourLogsum = 0D;
         //JLB 201602
-        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(person, person.Household.ResidenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, person.Household.HouseholdTotals.DrivingAgeMembers, 0.0);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, person.Household.ResidenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, person.Household.HouseholdTotals.DrivingAgeMembers, 0.0, Global.Settings.Purposes.Work);
+        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(person, residenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, household.HouseholdTotals.DrivingAgeMembers, 0.0);
+        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, residenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, household.HouseholdTotals.DrivingAgeMembers, 0.0, Global.Settings.Purposes.Work);
         workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 
-        int votSegment = person.Household.GetVotALSegment();
+        int votSegment = household.GetVotALSegment();
         int taSegment = destinationParcel.TransitAccessSegment();
         double aggregateLogsum = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment];
 
-        double distanceFromOrigin = person.Household.ResidenceParcel.DistanceFromOrigin(destinationParcel, 1);
+        double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
         double distance1 = Math.Min(distanceFromOrigin, .35);
         double distance2 = Math.Max(0, Math.Min(distanceFromOrigin - .35, 1 - .35));
         double distance3 = Math.Max(0, distanceFromOrigin - 1);
@@ -149,6 +174,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double industrialAgricultureConstructionBuffer = Math.Log(destinationParcel.EmploymentIndustrialBuffer2 + destinationParcel.EmploymentAgricultureConstructionBuffer2 + 1);
         double foodBuffer = Math.Log(destinationParcel.EmploymentFoodBuffer2 + 1);
         double medicalBuffer = Math.Log(destinationParcel.EmploymentMedicalBuffer2 + 1);
+        double employmentCommercialBuffer = Math.Log(destinationParcel.EmploymentRetailBuffer2 + destinationParcel.EmploymentServiceBuffer2 + 1);
         double employmentTotalBuffer = Math.Log(destinationParcel.EmploymentTotalBuffer2 + 1);
         double studentsUniversityBuffer = Math.Log(destinationParcel.StudentsUniversityBuffer2 + 1);
         double studentsK12Buffer = Math.Log(destinationParcel.StudentsK8Buffer2 + destinationParcel.StudentsHighSchoolBuffer2 + 1);
@@ -157,44 +183,76 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         //size attributes (derived)
         double employmentIndustrialAgricultureConstruction = destinationParcel.EmploymentIndustrial + destinationParcel.EmploymentAgricultureConstruction;
+        double employmentCommercial = destinationParcel.EmploymentRetail + destinationParcel.EmploymentService;
 
         // parking attributes
-        double parcelParkingDensity = destinationParcel.ParcelParkingPerTotalEmployment();
-
-        // connectivity attributes
-        double c34Ratio = destinationParcel.C34RatioBuffer1();
+        double parcelParkingDensity = destinationParcel.ParkingDataAvailable * destinationParcel.EmployeeOnlyParkingSpaces / Math.Max (1.0,destinationParcel.EmploymentTotal);
 
 
-        // Stefan
-        bool isInCopenhagenMunicipality = true; //destinationParcel.Municipality == 101;  Need to change this after Municipality property is added to Actum parcel file
-        double employmentCommercial = destinationParcel.EmploymentRetail + destinationParcel.EmploymentService;
-        double employmentCommercialBuffer1 = destinationParcel.EmploymentRetailBuffer1 + destinationParcel.EmploymentServiceBuffer1;
-
-        double beta00002 = -2.53;
-        double beta00003 = 2.65;
-        double beta00004 = 1.57;
-        double beta00005 = -0.18;
-        double beta00006 = -0.43;
-        double beta00007 = -0.19;
-        double beta00008 = 0.33;
-        double beta00009 = 0.007;
-
-        double stefanUtility =
-                beta00002 * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits +
-                beta00003 * (person.Household.Income < 300000).ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits +
-                beta00004 * person.IsFemale.ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits +
-                beta00005 * isInCopenhagenMunicipality.ToFlag() +
-                beta00006 * (person.Household.HasValidIncome && person.Household.Income < 300000).ToFlag() * isInCopenhagenMunicipality.ToFlag() +
-                beta00007 * (person.Household.HasValidIncome && person.Household.Income >= 300000 && person.Household.Income < 600000).ToFlag() * isInCopenhagenMunicipality.ToFlag() +
-                beta00008 * (person.Household.HasValidIncome && person.Household.Income >= 900000).ToFlag() * isInCopenhagenMunicipality.ToFlag() +
-                beta00009 * person.Age * isInCopenhagenMunicipality.ToFlag() +
-                0.0; // beta00010 * (person.Household.ResidenceParcel.Municipality == destination.Municipality).ToFlag();
+        bool workLocationIsInCPHMuni = false;
+        if (destinationParcel.LandUseCode == 101) {
+          workLocationIsInCPHMuni = true;
+        }
 
 
 
+        //non-size terms. 
 
-        //Stefan non-size terms. 
+        // sampling adjustment factor
         alternative.AddUtilityTerm(1, sampleItem.Key.AdjustmentFactor);
+        
+        // Residential density
+        alternative.AddUtilityTerm(2, destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits / 1000.0);
+        alternative.AddUtilityTerm(3, (lowIncome).ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits / 1000.0);
+        alternative.AddUtilityTerm(4, person.IsFemale.ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits / 1000.0);
+
+        //CPH Muni
+        alternative.AddUtilityTerm(5, workLocationIsInCPHMuni.ToFlag());
+        alternative.AddUtilityTerm(6, (lowIncome).ToFlag() * workLocationIsInCPHMuni.ToFlag());
+        alternative.AddUtilityTerm(7, (lowMediumIncome).ToFlag() * workLocationIsInCPHMuni.ToFlag());
+        alternative.AddUtilityTerm(8, (highIncome).ToFlag() * workLocationIsInCPHMuni.ToFlag());
+        alternative.AddUtilityTerm(9, (incomeMissing).ToFlag() * workLocationIsInCPHMuni.ToFlag());
+        alternative.AddUtilityTerm(10, person.Age * workLocationIsInCPHMuni.ToFlag());
+
+        //Live and work in same Muni
+        alternative.AddUtilityTerm(11, (residenceParcel.LandUseCode == destinationParcel.LandUseCode).ToFlag()); 
+
+        //Parking availability and price  (Goran, you need to add these, using parking attributes from COMPASS microzone file)
+
+
+        // Work tour logsum
+        alternative.AddUtilityTerm(20, workTourLogsum);  // base logsum term
+        alternative.AddUtilityTerm(21, (lowIncome).ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(22, (lowMediumIncome).ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(23, (highIncome).ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(24, incomeMissing.ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(25, person.IsFemale.ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(26, person.IsPartTimeWorker.ToFlag() * workTourLogsum );
+        alternative.AddUtilityTerm(27, person.IsNotFullOrPartTimeWorker.ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(28, (person.OccupationCode == 8).ToFlag() * workTourLogsum); // self-employed
+        alternative.AddUtilityTerm(29, person.Age * workTourLogsum);
+
+        // Distance
+        alternative.AddUtilityTerm(40, distanceLog);  // base distance term
+        alternative.AddUtilityTerm(41, (lowIncome).ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(42, (lowMediumIncome).ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(43, (highIncome).ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(44, incomeMissing.ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(45, person.IsFemale.ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(46, person.IsPartTimeWorker.ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(47, person.IsNotFullOrPartTimeWorker.ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(48, (person.OccupationCode == 8).ToFlag() * distanceLog); // self-employed
+        alternative.AddUtilityTerm(49, person.Age * distanceLog);
+        
+        //Distance from school for student worker
+        alternative.AddUtilityTerm(60, person.IsStudentAge.ToFlag() * distanceFromSchool);
+
+        //Aggregate logsum at work location
+        alternative.AddUtilityTerm(61, person.IsFulltimeWorker.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(62, person.IsPartTimeWorker.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(63, person.IsNotFullOrPartTimeWorker.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(64, parcelParkingDensity);
+=======
         //alternative.AddUtilityTerm(2, destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
         //alternative.AddUtilityTerm(3, (person.Household.Income < 300000).ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
         //alternative.AddUtilityTerm(4, person.IsFemale.ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
@@ -236,108 +294,112 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //alternative.AddUtilityTerm(20, c34Ratio);
 
         //Neighborhood
-        //alternative.AddUtilityTerm(21, person.Household.HasValidIncome.ToFlag() * serviceBuffer);
-        //alternative.AddUtilityTerm(22, person.Household.HasValidIncome.ToFlag() * educationBuffer);
-        //alternative.AddUtilityTerm(23, person.Household.HasValidIncome.ToFlag() * foodBuffer);
-        //alternative.AddUtilityTerm(24, person.Household.HasValidIncome.ToFlag() * governmentBuffer);
-        //alternative.AddUtilityTerm(25, person.Household.HasValidIncome.ToFlag() * officeBuffer);
-        //alternative.AddUtilityTerm(26, person.Household.HasValidIncome.ToFlag() * medicalBuffer);
-        //alternative.AddUtilityTerm(27, person.Household.HasValidIncome.ToFlag() * householdsBuffer);
-        //alternative.AddUtilityTerm(28, person.Household.HasValidIncome.ToFlag() * studentsUniversityBuffer);
+        // consider splitting into income categories
+        alternative.AddUtilityTerm(101, (!incomeMissing).ToFlag() * serviceBuffer);
+        alternative.AddUtilityTerm(102, (!incomeMissing).ToFlag() * educationBuffer);
+        alternative.AddUtilityTerm(103, (!incomeMissing).ToFlag() * foodBuffer);
+        alternative.AddUtilityTerm(104, (!incomeMissing).ToFlag() * governmentBuffer);
+        alternative.AddUtilityTerm(105, (!incomeMissing).ToFlag() * officeBuffer);
+        alternative.AddUtilityTerm(106, (!incomeMissing).ToFlag() * medicalBuffer);
+        alternative.AddUtilityTerm(107, (!incomeMissing).ToFlag() * householdsBuffer);
+        alternative.AddUtilityTerm(108, (!incomeMissing).ToFlag() * studentsUniversityBuffer);
 
-        //alternative.AddUtilityTerm(29, person.Household.HasValidIncome.ToFlag() * person.IsFulltimeWorker.ToFlag() * studentsK12Buffer);
-        //alternative.AddUtilityTerm(30, person.Household.HasValidIncome.ToFlag() * person.IsFulltimeWorker.ToFlag() * studentsUniversityBuffer);
-        //alternative.AddUtilityTerm(31, person.Household.HasValidIncome.ToFlag() * person.IsPartTimeWorker.ToFlag() * industrialAgricultureConstructionBuffer);
-        //alternative.AddUtilityTerm(32, person.Household.HasValidIncome.ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * foodBuffer);
-        //alternative.AddUtilityTerm(33, person.Household.HasValidIncome.ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * medicalBuffer);
+        alternative.AddUtilityTerm(150, (!incomeMissing).ToFlag() * person.IsFulltimeWorker.ToFlag() * studentsK12Buffer);
+        alternative.AddUtilityTerm(151, (!incomeMissing).ToFlag() * person.IsFulltimeWorker.ToFlag() * studentsUniversityBuffer);
+        alternative.AddUtilityTerm(152, (!incomeMissing).ToFlag() * person.IsPartTimeWorker.ToFlag() * industrialAgricultureConstructionBuffer);
+        alternative.AddUtilityTerm(153, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * foodBuffer);
+        alternative.AddUtilityTerm(154, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * medicalBuffer);
 
-        //alternative.AddUtilityTerm(34, person.IsFulltimeWorker.ToFlag() * person.Household.Has75KPlusIncome.ToFlag() * employmentTotalBuffer);
-        //alternative.AddUtilityTerm(35, person.IsNotFullOrPartTimeWorker.ToFlag() * person.Household.HasIncomeUnder50K.ToFlag() * governmentBuffer);
-        //alternative.AddUtilityTerm(36, person.IsNotFullOrPartTimeWorker.ToFlag() * person.Household.HasIncomeUnder50K.ToFlag() * employmentTotalBuffer);
+        alternative.AddUtilityTerm(160, incomeMissing.ToFlag() * employmentTotalBuffer);
+        alternative.AddUtilityTerm(161, incomeMissing.ToFlag() * studentsUniversityBuffer);
+        alternative.AddUtilityTerm(162, incomeMissing.ToFlag() * employmentCommercialBuffer);
 
+        
         //Size
-        // Stefan size terms.  
-        // Note:  the following assumes: (1) Stefan's size variables enter his utility function as a logsum, a la BAL; 
-        //                               (2) Jobs--commercial and Jobs--finance apply to hh w unknown incomes in Stefan's spec
-        //        If his size variables enter linearly, then if I want to replicate them I should not use alogit size functions.
-        //        If Jobs--commercial and Jobs--finance don't apply to missing incomes, then I need to change the size functions below
-        alternative.AddUtilityTerm(51, (person.Household.HasValidIncome && person.Household.Income < 300000).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial));
-        alternative.AddUtilityTerm(52, (person.Household.HasValidIncome && person.Household.Income >= 300000 && person.Household.Income < 600000).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial));
-        alternative.AddUtilityTerm(53, (person.Household.HasValidIncome && person.Household.Income >= 600000 && person.Household.Income < 900000).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial));
-        alternative.AddUtilityTerm(54, (person.Household.HasValidIncome && person.Household.Income >= 900000).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial));
-        alternative.AddUtilityTerm(55, (person.Household.HasValidIncome && person.Household.Income >= 900000).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial)); // second term allows first one to have base coef of 0
-        alternative.AddUtilityTerm(56, (person.Household.HasMissingIncome.ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial)));
-        alternative.AddUtilityTerm(57, (person.Household.HasValidIncome && person.Household.Income < 300000).ToFlag() * employmentCommercial);
-        alternative.AddUtilityTerm(58, (person.Household.HasValidIncome && person.Household.Income >= 300000 && person.Household.Income < 600000).ToFlag() * employmentCommercial);
-        alternative.AddUtilityTerm(59, (person.Household.HasValidIncome && person.Household.Income >= 600000 && person.Household.Income < 900000).ToFlag() * employmentCommercial);
-        alternative.AddUtilityTerm(60, (person.Household.HasValidIncome && person.Household.Income >= 900000).ToFlag() * employmentCommercial);
-        alternative.AddUtilityTerm(61, person.Household.HasMissingIncome.ToFlag() * employmentCommercial);
-        alternative.AddUtilityTerm(62, destinationParcel.EmploymentOffice);
-        //The following combine with 51-55, 56-60 and 61 to include size of entire buffer region in main size variables
-        alternative.AddUtilityTerm(63, (destinationParcel.EmploymentTotalBuffer1 - destinationParcel.EmploymentTotal) - (employmentCommercialBuffer1 - employmentCommercial));
-        alternative.AddUtilityTerm(64, employmentCommercialBuffer1 - employmentCommercial);
-        alternative.AddUtilityTerm(65, destinationParcel.EmploymentOfficeBuffer1 - destinationParcel.EmploymentOffice);
 
-        //alternative.AddUtilityTerm(51, person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentService);
-        //alternative.AddUtilityTerm(52, person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentEducation);
-        //alternative.AddUtilityTerm(53, person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentFood);
-        //alternative.AddUtilityTerm(54, person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentGovernment);
-        //alternative.AddUtilityTerm(55, person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentOffice);
-        //alternative.AddUtilityTerm(56, person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentRetail);
-        //alternative.AddUtilityTerm(57, person.Household.HasValidIncome.ToFlag() * destinationParcel.EmploymentMedical);
-        //alternative.AddUtilityTerm(58, person.Household.HasValidIncome.ToFlag() * employmentIndustrialAgricultureConstruction);
-        //alternative.AddUtilityTerm(59, person.Household.HasValidIncome.ToFlag() * destinationParcel.StudentsUniversity);
+        //The following set of terms comes from Stefan M's spec.  Consider trying them as a simpler alternative to the subsequent more detailed sets of size terms
+        //alternative.AddUtilityTerm(201, (lowIncome).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial));
+        //alternative.AddUtilityTerm(202, (lowMediumIncome).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial));
+        //alternative.AddUtilityTerm(203, (mediumHighIncome).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial));
+        //alternative.AddUtilityTerm(204, (highIncome).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial));
+        //alternative.AddUtilityTerm(205, (highIncome).ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial)); // second term allows first one to have base coef of 0
+        //alternative.AddUtilityTerm(206, (incomeMissing.ToFlag() * (destinationParcel.EmploymentTotal - employmentCommercial)));
+        //alternative.AddUtilityTerm(207, (lowIncome).ToFlag() * employmentCommercial);
+        //alternative.AddUtilityTerm(208, (lowMediumIncome).ToFlag() * employmentCommercial);
+        //alternative.AddUtilityTerm(209, (mediumHighIncome).ToFlag() * employmentCommercial);
+        //alternative.AddUtilityTerm(210, (highIncome).ToFlag() * employmentCommercial);
 
-        //alternative.AddUtilityTerm(60, person.Household.HasValidIncome.ToFlag() * person.IsFulltimeWorker.ToFlag() * destinationParcel.EmploymentGovernment);
-        //alternative.AddUtilityTerm(61, person.Household.HasValidIncome.ToFlag() * person.IsFulltimeWorker.ToFlag() * employmentIndustrialAgricultureConstruction);
-        //alternative.AddUtilityTerm(62, person.Household.HasValidIncome.ToFlag() * person.IsPartTimeWorker.ToFlag() * employmentIndustrialAgricultureConstruction);
-        //alternative.AddUtilityTerm(63, person.Household.HasValidIncome.ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * destinationParcel.EmploymentEducation);
-        //alternative.AddUtilityTerm(64, person.Household.HasValidIncome.ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * destinationParcel.EmploymentFood);
-        //alternative.AddUtilityTerm(65, person.Household.HasValidIncome.ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * destinationParcel.EmploymentRetail);
+        alternative.AddUtilityTerm(221, (lowIncome).ToFlag() * destinationParcel.EmploymentService);
+        alternative.AddUtilityTerm(222, (lowIncome).ToFlag() * destinationParcel.EmploymentEducation);
+        alternative.AddUtilityTerm(223, (lowIncome).ToFlag() * destinationParcel.EmploymentFood);
+        alternative.AddUtilityTerm(224, (lowIncome).ToFlag() * destinationParcel.EmploymentGovernment);
+        alternative.AddUtilityTerm(225, (lowIncome).ToFlag() * destinationParcel.EmploymentOffice);
+        alternative.AddUtilityTerm(226, (lowIncome).ToFlag() * destinationParcel.EmploymentRetail);
+        alternative.AddUtilityTerm(227, (lowIncome).ToFlag() * destinationParcel.EmploymentMedical);
+        alternative.AddUtilityTerm(228, (lowIncome).ToFlag() * employmentIndustrialAgricultureConstruction);
+        alternative.AddUtilityTerm(229, (lowIncome).ToFlag() * destinationParcel.StudentsUniversity);
 
-        //alternative.AddUtilityTerm(66, person.Household.HasIncomeUnder50K.ToFlag() * destinationParcel.EmploymentRetail);
-        //alternative.AddUtilityTerm(67, person.Household.HasIncomeUnder50K.ToFlag() * destinationParcel.EmploymentService);
-        //alternative.AddUtilityTerm(68, person.Household.Has50To75KIncome.ToFlag() * destinationParcel.EmploymentMedical);
-        //alternative.AddUtilityTerm(69, person.Household.Has50To75KIncome.ToFlag() * destinationParcel.EmploymentOffice);
-        //alternative.AddUtilityTerm(70, person.Household.Has75KPlusIncome.ToFlag() * destinationParcel.EmploymentEducation);
-        //alternative.AddUtilityTerm(71, person.Household.Has75KPlusIncome.ToFlag() * destinationParcel.EmploymentGovernment);
-        //alternative.AddUtilityTerm(72, person.Household.Has75KPlusIncome.ToFlag() * destinationParcel.EmploymentMedical);
-        //alternative.AddUtilityTerm(73, person.Household.Has75KPlusIncome.ToFlag() * destinationParcel.EmploymentOffice);
+        alternative.AddUtilityTerm(231, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentService);
+        alternative.AddUtilityTerm(232, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentEducation);
+        alternative.AddUtilityTerm(233, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentFood);
+        alternative.AddUtilityTerm(234, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentGovernment);
+        alternative.AddUtilityTerm(235, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentOffice);
+        alternative.AddUtilityTerm(236, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentRetail);
+        alternative.AddUtilityTerm(237, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentMedical);
+        alternative.AddUtilityTerm(238, (lowMediumIncome).ToFlag() * employmentIndustrialAgricultureConstruction);
+        alternative.AddUtilityTerm(239, (lowMediumIncome).ToFlag() * destinationParcel.StudentsUniversity);
 
-        //alternative.AddUtilityTerm(74, person.IsFulltimeWorker.ToFlag() * person.Household.Has75KPlusIncome.ToFlag() * destinationParcel.EmploymentGovernment);
-        //alternative.AddUtilityTerm(75, person.IsFulltimeWorker.ToFlag() * (!person.Household.Has75KPlusIncome).ToFlag() * employmentIndustrialAgricultureConstruction);
-        //alternative.AddUtilityTerm(76, person.IsPartTimeWorker.ToFlag() * (!person.Household.HasIncomeUnder50K).ToFlag() * destinationParcel.EmploymentMedical);
-        //alternative.AddUtilityTerm(77, (!person.IsFulltimeWorker).ToFlag() * person.Household.Has75KPlusIncome.ToFlag() * destinationParcel.EmploymentOffice);
-        //alternative.AddUtilityTerm(78, person.IsNotFullOrPartTimeWorker.ToFlag() * (!person.Household.HasIncomeUnder50K).ToFlag() * destinationParcel.EmploymentRetail);
+        alternative.AddUtilityTerm(241, (mediumHighIncome).ToFlag() * destinationParcel.EmploymentService);
+        alternative.AddUtilityTerm(242, (mediumHighIncome).ToFlag() * destinationParcel.EmploymentEducation);
+        alternative.AddUtilityTerm(243, (mediumHighIncome).ToFlag() * destinationParcel.EmploymentFood);
+        alternative.AddUtilityTerm(244, (mediumHighIncome).ToFlag() * destinationParcel.EmploymentGovernment);
+        alternative.AddUtilityTerm(245, (mediumHighIncome).ToFlag() * destinationParcel.EmploymentOffice);
+        alternative.AddUtilityTerm(246, (mediumHighIncome).ToFlag() * destinationParcel.EmploymentRetail);
+        alternative.AddUtilityTerm(247, (mediumHighIncome).ToFlag() * destinationParcel.EmploymentMedical);
+        alternative.AddUtilityTerm(248, (mediumHighIncome).ToFlag() * employmentIndustrialAgricultureConstruction);
+        alternative.AddUtilityTerm(249, (mediumHighIncome).ToFlag() * destinationParcel.StudentsUniversity);
 
-        //alternative.AddUtilityTerm(79, person.Household.HasMissingIncome.ToFlag() * destinationParcel.EmploymentTotal);
-        //alternative.AddUtilityTerm(80, person.Household.HasMissingIncome.ToFlag() * destinationParcel.StudentsUniversity);
+        alternative.AddUtilityTerm(251, (highIncome).ToFlag() * destinationParcel.EmploymentService);
+        alternative.AddUtilityTerm(252, (highIncome).ToFlag() * destinationParcel.EmploymentEducation);
+        alternative.AddUtilityTerm(253, (highIncome).ToFlag() * destinationParcel.EmploymentFood);
+        alternative.AddUtilityTerm(254, (highIncome).ToFlag() * destinationParcel.EmploymentGovernment);
+        alternative.AddUtilityTerm(255, (highIncome).ToFlag() * destinationParcel.EmploymentOffice);
+        alternative.AddUtilityTerm(256, (highIncome).ToFlag() * destinationParcel.EmploymentRetail);
+        alternative.AddUtilityTerm(257, (highIncome).ToFlag() * destinationParcel.EmploymentMedical);
+        alternative.AddUtilityTerm(258, (highIncome).ToFlag() * employmentIndustrialAgricultureConstruction);
+        alternative.AddUtilityTerm(259, (highIncome).ToFlag() * destinationParcel.StudentsUniversity);
+
+        alternative.AddUtilityTerm(260, (!incomeMissing).ToFlag() * person.IsFulltimeWorker.ToFlag() * destinationParcel.EmploymentGovernment);
+        alternative.AddUtilityTerm(261, (!incomeMissing).ToFlag() * person.IsFulltimeWorker.ToFlag() * employmentIndustrialAgricultureConstruction);
+        alternative.AddUtilityTerm(262, (!incomeMissing).ToFlag() * person.IsPartTimeWorker.ToFlag() * employmentIndustrialAgricultureConstruction);
+        alternative.AddUtilityTerm(263, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * destinationParcel.EmploymentEducation);
+        alternative.AddUtilityTerm(264, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * destinationParcel.EmploymentFood);
+        alternative.AddUtilityTerm(265, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * destinationParcel.EmploymentRetail);
+
+        alternative.AddUtilityTerm(281, incomeMissing.ToFlag() * destinationParcel.EmploymentTotal);
+        alternative.AddUtilityTerm(282, incomeMissing.ToFlag() * destinationParcel.StudentsUniversity);
+        alternative.AddUtilityTerm(283, incomeMissing.ToFlag() * employmentCommercial);
 
         // set shadow price depending on persontype and add it to utility
         // we are using the sampling adjustment factor assuming that it is 1
         alternative.AddUtilityTerm(1, destinationParcel.ShadowPriceForEmployment);
 
         //remove nesting for estimation of conditional MNL 
-        alternative.AddNestedAlternative(sampleSize + 2, 0, 98);
+        alternative.AddNestedAlternative(sampleSize + 2, 0, 350);
 
       }
 
       // JLB 20120329 added third call parameter to idenitfy whether this alt is chosen or not
       ChoiceProbabilityCalculator.Alternative homeAlternative = choiceProbabilityCalculator.GetAlternative(sampleSize, true, choseHome);
 
-      homeAlternative.Choice = person.Household.ResidenceParcel;
+      homeAlternative.Choice = residenceParcel;
 
-      homeAlternative.AddUtilityTerm(41, 1);
-      // homeAlternative.AddUtilityTerm(42, (person.MainOccupation == 50).ToFlag()); // self-employed
-
-      //homeAlternative.AddUtilityTerm(42, person.IsPartTimeWorker.ToFlag());
-      //homeAlternative.AddUtilityTerm(43, person.IsStudentAge.ToFlag());
-      //homeAlternative.AddUtilityTerm(44, person.IsFemale.ToFlag());
-      homeAlternative.AddUtilityTerm(90, 1);
+      homeAlternative.AddUtilityTerm(180, 1);  //ASC
+      homeAlternative.AddUtilityTerm(340, 1); //Size variable dummy 
 
       //make oddball alt unavailable and remove nesting for estimation of conditional MNL 
       //			alternative.Available = false;
-      homeAlternative.AddNestedAlternative(sampleSize + 3, 1, 98);
+      homeAlternative.AddNestedAlternative(sampleSize + 3, 1, 350);
     }
 
     private sealed class WorkLocationUtilities : ISamplingUtilities {
