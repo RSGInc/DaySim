@@ -169,6 +169,8 @@ namespace DaySim.PathTypeModels {
 
     public double PathOriginAccessCost => throw new NotImplementedException();
 
+    public double PathOriginAccessUtility => throw new NotImplementedException();
+
     public int PathDestinationAccessMode => throw new NotImplementedException();
 
     public double PathDestinationAccessTime => throw new NotImplementedException();
@@ -176,6 +178,8 @@ namespace DaySim.PathTypeModels {
     public double PathDestinationAccessDistance => throw new NotImplementedException();
 
     public double PathDestinationAccessCost => throw new NotImplementedException();
+
+    public double PathDestinationAccessUtility => throw new NotImplementedException();
 
     public virtual List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice) {
       List<int> modes = new List<int>();

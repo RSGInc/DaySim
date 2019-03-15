@@ -102,26 +102,25 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       if (incomeBasis == 1) { //person income is basis
         income = person.PersonalIncome;
-        if (income < 0) {incomeMissing = true;}
-        else if (income < 300000) {lowIncome = true;}  // 20th percentile
-        else if (income < 400000) {lowMediumIncome = true;}  // 48th percentile
-        else if (income < 600000) {mediumHighIncome = true;}  // 82nd percentile
-        else {highIncome = true; }
-      }
-      else {  //household income is basis
+        if (income < 0) { incomeMissing = true; } else if (income < 300000) { lowIncome = true; }  // 20th percentile
+                                                  else if (income < 400000) { lowMediumIncome = true; }  // 48th percentile
+                                                  else if (income < 600000) { mediumHighIncome = true; }  // 82nd percentile
+                                                  else { highIncome = true; }
+      } else {  //household income is basis
         income = household.Income;
         if (income < 0) {incomeMissing = true;}
         else if (income < 300000) {lowIncome = true;}
         else if (income < 600000) { lowMediumIncome = true; }
         else if (income < 900000) {mediumHighIncome = true;}
         else {highIncome = true; }
+
       }
 
       int segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.Work, Global.Settings.TourPriorities.HomeBasedTour, Global.Settings.Modes.Sov, person.PersonType);
       DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, residenceParcel);
       int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
       int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
-      
+
       WorkLocationUtilities workLocationUtilites = new WorkLocationUtilities(person, sampleSize, destinationArrivalTime, destinationDepartureTime);
       
       Dictionary<DestinationSampler.TourSampleItem, int> sampleItems = destinationSampler.SampleAndReturnTourDestinations(workLocationUtilites);
@@ -351,7 +350,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(61, person.IsFulltimeWorker.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(62, person.IsPartTimeWorker.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(63, person.IsNotFullOrPartTimeWorker.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(64, parcelParkingDensity); 
+        alternative.AddUtilityTerm(64, parcelParkingDensity);
 
         //Neighborhood
         // consider splitting into income categories

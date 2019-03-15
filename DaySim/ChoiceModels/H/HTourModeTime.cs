@@ -73,10 +73,12 @@ namespace DaySim.ChoiceModels.H {
     public double OriginAccessTime { get; private set; }
     public double OriginAccessDistance { get; private set; }
     public double OriginAccessCost { get; private set; }
+    public double OriginAccessUtility { get; private set; }
     public int DestinationAccessMode { get; private set; }
     public double DestinationAccessTime { get; private set; }
     public double DestinationAccessDistance { get; private set; }
     public double DestinationAccessCost { get; private set; }
+    public double DestinationAccessUtility { get; private set; }
     public double PathDistance { get; private set; }
     public double PathCost { get; private set; }
 
@@ -230,18 +232,16 @@ namespace DaySim.ChoiceModels.H {
 
 
         // set round trip mode LOS and mode availability
-        if (arrivalPeriodAvailableMinutes <= 0 || departurePeriodAvailableMinutes <= 0
-            || (mode == Global.Settings.Modes.ParkAndRide && tour.DestinationPurpose != Global.Settings.Purposes.Work)
-            || (mode == Global.Settings.Modes.SchoolBus && tour.DestinationPurpose != Global.Settings.Purposes.School)
-                || (Global.Configuration.IsInEstimationMode && destinationParcel == null)) {
+        if (((arrivalPeriodAvailableMinutes <= 0 || departurePeriodAvailableMinutes <= 0)
+           && (mode > Global.Settings.Modes.WalkRideWalk ))
+          //  || (mode == Global.Settings.Modes.ParkAndRide && tour.DestinationPurpose != Global.Settings.Purposes.Work)
+          //  || (mode == Global.Settings.Modes.SchoolBus && tour.DestinationPurpose != Global.Settings.Purposes.School)
+          || (Global.Configuration.IsInEstimationMode && destinationParcel == null)) {
           modeTimes.ModeAvailableToDestination = false;
           modeTimes.ModeAvailableFromDestination = false;
         }
-        //ACTUM must also use round trip path type to preserve the tour-based nonlinear gamma utility functions - disabled MB
-        //else if (mode == Global.Settings.Modes.ParkAndRide) {
-        /*else if (mode == Global.Settings.Modes.ParkAndRide || Global.Configuration.PathImpedance_UtilityForm_Auto == 1 ||
-                 Global.Configuration.PathImpedance_UtilityForm_Transit == 1) {
-          // park and ride has to use round-trip path type, approximate each half 
+        //ACTUM must use round trip path path type, approximate each half 
+        if (mode > Global.Settings.Modes.WalkRideWalk) {
           IEnumerable<IPathTypeModel> pathTypeModels =
               PathTypeModelFactory.Singleton.Run(
                   tour.Household.RandomUtility,
@@ -272,29 +272,31 @@ namespace DaySim.ChoiceModels.H {
             modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
             modeTimes.ParkAndRideOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
             modeTimes.ParkAndRideDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
-            modeTimes.TransitTime = pathTypeModel.PathTransitTime;
-            modeTimes.TransitDistance = pathTypeModel.PathTransitDistance;
-            modeTimes.TransitCost = pathTypeModel.PathTransitCost;
-            modeTimes.TransitGeneralizedTime = pathTypeModel.PathTransitGeneralizedTime;
-            modeTimes.WalkTime = pathTypeModel.PathWalkTime;
-            modeTimes.WalkDistance = pathTypeModel.PathWalkDistance;
-            modeTimes.BikeTime = pathTypeModel.PathBikeTime;
-            modeTimes.BikeDistance = pathTypeModel.PathBikeDistance;
-            modeTimes.BikeCost = pathTypeModel.PathBikeCost;
+            modeTimes.TransitTime = pathTypeModel.PathTransitTime / 2.0;
+            modeTimes.TransitDistance = pathTypeModel.PathTransitDistance / 2.0;
+            modeTimes.TransitCost = pathTypeModel.PathTransitCost / 2.0;
+            modeTimes.TransitGeneralizedTime = pathTypeModel.PathTransitGeneralizedTime / 2.0;
+            modeTimes.WalkTime = pathTypeModel.PathWalkTime / 2.0;
+            modeTimes.WalkDistance = pathTypeModel.PathWalkDistance / 2.0;
+            modeTimes.BikeTime = pathTypeModel.PathBikeTime / 2.0;
+            modeTimes.BikeDistance = pathTypeModel.PathBikeDistance / 2.0;
+            modeTimes.BikeCost = pathTypeModel.PathBikeCost / 2.0;
             modeTimes.OriginAccessMode = pathTypeModel.PathOriginAccessMode;
-            modeTimes.OriginAccessTime = pathTypeModel.PathOriginAccessTime;
-            modeTimes.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance;
-            modeTimes.OriginAccessCost = pathTypeModel.PathOriginAccessCost;
+            modeTimes.OriginAccessTime = pathTypeModel.PathOriginAccessTime / 2.0;
+            modeTimes.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance / 2.0;
+            modeTimes.OriginAccessCost = pathTypeModel.PathOriginAccessCost / 2.0;
+            modeTimes.OriginAccessUtility = pathTypeModel.PathOriginAccessUtility / 2.0;
             modeTimes.DestinationAccessMode = pathTypeModel.PathDestinationAccessMode;
-            modeTimes.DestinationAccessTime = pathTypeModel.PathDestinationAccessTime;
-            modeTimes.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance;
-            modeTimes.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost;
-            modeTimes.PathDistance = pathTypeModel.PathDistance;
-            modeTimes.PathCost = pathTypeModel.PathCost;
+            modeTimes.DestinationAccessTime = pathTypeModel.PathDestinationAccessTime / 2.0;
+            modeTimes.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance / 2.0;
+            modeTimes.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost / 2.0;
+            modeTimes.DestinationAccessUtility = pathTypeModel.PathDestinationAccessUtility / 2.0;
+            modeTimes.PathDistance = pathTypeModel.PathDistance / 2.0;
+            modeTimes.PathCost = pathTypeModel.PathCost / 2.0;
           }
-        }*/ else {
-          // get times for each half tour separately, using HOV3 for school bus
-          int pathMode = (mode == Global.Settings.Modes.SchoolBus) ? Global.Settings.Modes.Hov3 : mode;
+        } else {
+          // get times for each half tour separately, using HOV passenger for school bus and shared ride
+          int pathMode = (mode == Global.Settings.Modes.SchoolBus || mode == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.HovPassenger : mode;
 
           //if (tour.Household.Id == 80205 && tour.PersonDay.HouseholdDay.AttemptedSimulations == 9 && (pathMode == 1 || pathMode == 5)) {
           if (tour.Person.IsDrivingAge == true && tour.Household.VehiclesAvailable > 0 && pathMode == 3) {
