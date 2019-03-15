@@ -15,7 +15,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class JointTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumJointTourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumJointTourGenerationModel";
     private readonly int _totalAlternatives = Global.Settings.Purposes.Medical;
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
@@ -73,8 +73,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay,
                                  int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
       //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
-      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
       int carOwnership =
                 household.VehiclesAvailable == 0
                     ? Global.Settings.CarOwnerships.NoCars
@@ -111,6 +111,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
       }
 
+      //GV: CPH definition - 19. feb. 2019
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
+
+
       // NONE_OR_HOME
 
       bool noneOrHomeAvailable = true;
@@ -129,9 +136,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(2, noCarsFlag);
       //alternative.AddUtilityTerm(3, carCompetitionFlag);
       //alternative.AddUtilityTerm(4, householdDay.PrimaryPriorityTimeFlag);
-
-
-      //alternative.AddUtilityTerm(2, householdDay.Household.HasChildren.ToFlag());
+      
+      //GV: 20. feb. 2019
+      alternative.AddUtilityTerm(2, householdDay.Household.HasChildren.ToFlag());
+      //alternative.AddUtilityTerm(3, noCarsFlag); //GV: 20. feb 2019, bot signif.  
 
       //GV Sep 2014 - commented out
       //alternative.AddUtilityTerm(2, householdDay.Household.HasChildrenUnder5.ToFlag());
@@ -186,8 +194,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(24, (householdDay.Household.Size >= 4).ToFlag());
       alternative.AddUtilityTerm(28, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
       alternative.AddUtilityTerm(56, compositeLogsum);
-
-
+      //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+      alternative.AddUtilityTerm(57, compositeLogsum * (hhLivesInCPHCity).ToFlag());
 
       //alternative.AddUtilityTerm(25, (householdDay.Household.Size >= 5).ToFlag());
 
@@ -213,13 +221,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: NEW
       alternative.AddUtilityTerm(32, householdDay.PrimaryPriorityTimeFlag);
-      alternative.AddUtilityTerm(33, (householdDay.Household.Size == 3).ToFlag());
+      //alternative.AddUtilityTerm(33, (householdDay.Household.Size == 3).ToFlag()); //GV: 20. feb 2019, bot signif.
       alternative.AddUtilityTerm(34, (householdDay.Household.Size >= 4).ToFlag());
       alternative.AddUtilityTerm(37, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
-      alternative.AddUtilityTerm(59, compositeLogsum);
 
+      alternative.AddUtilityTerm(58, compositeLogsum);
 
-
+      //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+      alternative.AddUtilityTerm(59, compositeLogsum * (hhLivesInCPHCity).ToFlag());
 
       //alternative.AddUtilityTerm(35, (householdDay.Household.Size >= 5).ToFlag());
 
@@ -235,8 +244,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(37, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
       //alternative.AddUtilityTerm(38, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenUnder16).ToFlag());
 
-
-      //alternative.AddUtilityTerm(57, shoppingAggregateLogsum);
+      //alternative.AddUtilityTerm(57, shoppingAggregateLogsum);  
 
       //alternative.AddUtilityTerm(59, compositeLogsum);
 
@@ -259,10 +267,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: NEW
       //alternative.AddUtilityTerm(42, householdDay.PrimaryPriorityTimeFlag);
-      alternative.AddUtilityTerm(43, (householdDay.Household.Size == 3).ToFlag());
+      //alternative.AddUtilityTerm(43, (householdDay.Household.Size == 3).ToFlag()); //GV: 20. feb 2019, bot signif.
       alternative.AddUtilityTerm(44, (householdDay.Household.Size >= 4).ToFlag());
-
-
 
       //alternative.AddUtilityTerm(45, (householdDay.Household.Size >= 5).ToFlag());
 
@@ -283,7 +289,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(48, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenUnder16).ToFlag());
 
       //alternative.AddUtilityTerm(58, socialAggregateLogsum);
-      //alternative.AddUtilityTerm(58, compositeLogsum);
+      alternative.AddUtilityTerm(45, compositeLogsum);
+
+      //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+      alternative.AddUtilityTerm(46, compositeLogsum * (hhLivesInCPHCity).ToFlag());
+
 
       //alternative.AddNestedAlternative(12, 1, 60); 
 

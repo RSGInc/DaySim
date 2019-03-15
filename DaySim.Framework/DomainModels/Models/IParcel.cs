@@ -7,6 +7,8 @@
 
 namespace DaySim.Framework.DomainModels.Models {
   public interface IParcel : IModel, IPoint {
+    int SequenceFrom0 { get; set; }
+
     int Sequence { get; set; }
 
     double ZoneKey { get; set; }

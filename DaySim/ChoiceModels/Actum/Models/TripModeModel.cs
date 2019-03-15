@@ -18,7 +18,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TripModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumTripModeModel";
+    public const string CHOICE_MODEL_NAME = "ActumTripModeModel";
     private const int MAX_PARAMETER = 199;
 
     // this is Mark B (leave it out)
@@ -209,10 +209,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
                                  int choice = Constants.DEFAULT_VALUE) {
 
 
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) trip.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)trip.Household;
       Framework.DomainModels.Models.IHouseholdTotals householdTotals = household.HouseholdTotals;
-      IActumPersonWrapper person = (IActumPersonWrapper) trip.Person;
-      IActumTourWrapper tour = (IActumTourWrapper) trip.Tour;
+      IActumPersonWrapper person = (IActumPersonWrapper)trip.Person;
+      IActumTourWrapper tour = (IActumTourWrapper)trip.Tour;
       Framework.DomainModels.Models.IHalfTour halfTour = trip.HalfTour;
       // household inputs
       int onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
@@ -233,7 +233,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int maleFlag = person.IsMale.ToFlag();
       int femaleFlag = person.IsFemale.ToFlag();
 
-      int PTpass = person.TransitPassOwnership;
+      int PTpass = person.TransitPassOwnership >=1? 1:0;
 
       //var ageLessThan35Flag = person.AgeIsLessThan35.ToFlag();
 
@@ -244,7 +244,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int CarDrivNotAloneFlag = tour.IsHov2Mode().ToFlag();
       int CarPassengerFlag = tour.IsHov3Mode().ToFlag();
       int transitTourFlag = tour.IsTransitMode().ToFlag();
-      int paidRideShareTourFlag = ((IActumTourWrapper)tour).IsPaidRideShareMode().ToFlag();
+      int paidRideShareTourFlag = tour.IsPaidRideShareMode().ToFlag();
 
       int homeBasedWorkTourFlag = (tour.IsHomeBasedTour && tour.IsWorkPurpose()).ToFlag();
       int homeBasedSchoolTourFlag = (tour.IsHomeBasedTour && tour.IsSchoolPurpose()).ToFlag();

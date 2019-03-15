@@ -1132,6 +1132,9 @@ namespace DaySim {
                     writer.Write(id); // id
                     writer.Write(Global.Configuration.InputParcelDelimiter);
 
+                    writer.Write(parcels.Count - 1); // sequence0
+                    writer.Write(Global.Configuration.InputParcelDelimiter);
+
                     writer.Write(sequence); // sequence
                     writer.Write(Global.Configuration.InputParcelDelimiter);
 
@@ -1244,6 +1247,9 @@ namespace DaySim {
                     }
 
                     writer.Write(id); // id
+                    writer.Write(Global.Configuration.InputParcelDelimiter);
+
+                    writer.Write(parcels.Count - 1); // sequence0
                     writer.Write(Global.Configuration.InputParcelDelimiter);
 
                     writer.Write(sequence); // sequence
@@ -1482,6 +1488,9 @@ namespace DaySim {
             writer.Write("id");
             writer.Write(Global.Configuration.InputParcelDelimiter);
 
+            writer.Write("sequence0");
+            writer.Write(Global.Configuration.InputParcelDelimiter);
+
             writer.Write("sequence");
             writer.Write(Global.Configuration.InputParcelDelimiter);
 
@@ -1636,6 +1645,9 @@ namespace DaySim {
           writer.Write("id");
           writer.Write(Global.Configuration.InputParcelDelimiter);
 
+          writer.Write("sequence0");
+          writer.Write(Global.Configuration.InputParcelDelimiter);
+
           writer.Write("sequence");
           writer.Write(Global.Configuration.InputParcelDelimiter);
 
@@ -1644,37 +1656,12 @@ namespace DaySim {
 
           writer.Write("zone_id");
 
-        }
-        else if (fields[i] == "District_p") { writer.Write("Circ_E1"); } 
-        else if (fields[i] == "PkDatAv_p") { writer.Write("Circ_E2"); } 
-        else if (fields[i] == "ResPk_p") { writer.Write("Circ_E3"); } 
-        else if (fields[i] == "PubResPk_p") { writer.Write("Circ_NE1"); } 
-        else if (fields[i] == "PubPk_p") { writer.Write("Circ_NE2"); } 
-        else if (fields[i] == "EmpPk_p") { writer.Write("Circ_NE3"); } 
-        else if (fields[i] == "ElecPk_p") { writer.Write("Circ_N1"); } 
-        else if (fields[i] == "ResDayPr_p") { writer.Write("Circ_N2"); } 
-        else if (fields[i] == "PubHrPr_p") { writer.Write("Circ_N3"); } 
-        else if (fields[i] == "ResPk_1") { writer.Write("Circ_NW1"); } 
-        else if (fields[i] == "PubResPk_1") { writer.Write("Circ_NW2"); } 
-        else if (fields[i] == "PubPk_1") { writer.Write("Circ_NW3"); } 
-        else if (fields[i] == "EmpPk_1") { writer.Write("Circ_W1"); } 
-        else if (fields[i] == "ElecPk_1") { writer.Write("Circ_W2"); } 
-        else if (fields[i] == "ResDayPr_1") { writer.Write("Circ_W3"); } 
-        else if (fields[i] == "PubHrPr_1") { writer.Write("Circ_SW1"); } 
-        else if (fields[i] == "ResPk_2") { writer.Write("Circ_SW2"); } 
-        else if (fields[i] == "PubResPk_2") { writer.Write("Circ_SW3"); } 
-        else if (fields[i] == "PubPk_2") { writer.Write("Circ_S1"); } 
-        else if (fields[i] == "EmpPk_2") { writer.Write("Circ_S2"); } 
-        else if (fields[i] == "ElecPk_2") { writer.Write("Circ_S3"); } 
-        else if (fields[i] == "ResDayPr_2") { writer.Write("Circ_SE1"); } 
-        else if (fields[i] == "PubHrPr_2") { writer.Write("Circ_SE2"); } 
-        else if (fields[i] == "District2_p") { writer.Write("Circ_SE3"); } 
-        else { writer.Write(fields[i]); }
+        } else if (fields[i] == "District_p") { writer.Write("Circ_E1"); } else if (fields[i] == "PkDatAv_p") { writer.Write("Circ_E2"); } else if (fields[i] == "ResPk_p") { writer.Write("Circ_E3"); } else if (fields[i] == "PubResPk_p") { writer.Write("Circ_NE1"); } else if (fields[i] == "PubPk_p") { writer.Write("Circ_NE2"); } else if (fields[i] == "EmpPk_p") { writer.Write("Circ_NE3"); } else if (fields[i] == "ElecPk_p") { writer.Write("Circ_N1"); } else if (fields[i] == "ResDayPr_p") { writer.Write("Circ_N2"); } else if (fields[i] == "PubHrPr_p") { writer.Write("Circ_N3"); } else if (fields[i] == "ResPk_1") { writer.Write("Circ_NW1"); } else if (fields[i] == "PubResPk_1") { writer.Write("Circ_NW2"); } else if (fields[i] == "PubPk_1") { writer.Write("Circ_NW3"); } else if (fields[i] == "EmpPk_1") { writer.Write("Circ_W1"); } else if (fields[i] == "ElecPk_1") { writer.Write("Circ_W2"); } else if (fields[i] == "ResDayPr_1") { writer.Write("Circ_W3"); } else if (fields[i] == "PubHrPr_1") { writer.Write("Circ_SW1"); } else if (fields[i] == "ResPk_2") { writer.Write("Circ_SW2"); } else if (fields[i] == "PubResPk_2") { writer.Write("Circ_SW3"); } else if (fields[i] == "PubPk_2") { writer.Write("Circ_S1"); } else if (fields[i] == "EmpPk_2") { writer.Write("Circ_S2"); } else if (fields[i] == "ElecPk_2") { writer.Write("Circ_S3"); } else if (fields[i] == "ResDayPr_2") { writer.Write("Circ_SE1"); } else if (fields[i] == "PubHrPr_2") { writer.Write("Circ_SE2"); } else if (fields[i] == "District2_p") { writer.Write("Circ_SE3"); } else { writer.Write(fields[i]); }
 
         if (i < fields.Length - 1) { writer.Write(Global.Configuration.InputParcelDelimiter); } else { writer.WriteLine(); }
       }
     }
-                            
+
 
 
 

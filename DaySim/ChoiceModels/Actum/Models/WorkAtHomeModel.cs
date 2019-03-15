@@ -15,7 +15,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkAtHomeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkAtHomeModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkAtHomeModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -82,12 +82,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int choice = Constants.DEFAULT_VALUE) {
 
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
-      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
-      IActumParcelWrapper householdResidenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
-      IActumParcelWrapper personUsualWorkParcel = (IActumParcelWrapper) person.UsualWorkParcel;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
+      IActumParcelWrapper householdResidenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      IActumParcelWrapper personUsualWorkParcel = (IActumParcelWrapper)person.UsualWorkParcel;
 
-    
+
 
       // set household characteristics here that don't depend on person characteristics
       bool available = (household.Size > 1);
@@ -98,13 +98,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       foreach (PersonWrapper person_x in household.Persons) {
         // set characteristics here that depend on person characteristics
-//        if (person.Age >= 18 && person.EducationLevel >= 12) {
-//          hasAdultEducLevel12 = 1;
-//        }
+        //        if (person.Age >= 18 && person.EducationLevel >= 12) {
+        //          hasAdultEducLevel12 = 1;
+        //        }
         //if (person.Age >= 18 && person.EducationLevel < 12) allAdultEducLevel12 = 0;
         if (person_x.Age < youngestAge) {
           youngestAge = person_x.Age;
         }
+      }
+
+      int numberSelfEmpl = 0;
+      if (person.OccupationCode == 8) {
+        numberSelfEmpl++;
       }
 
 
@@ -153,8 +158,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;
       //var household = householdDay.Household;
 
+      //bool hhLivesInCPHCity = false;
+      //if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+      //  hhLivesInCPHCity = true;
 
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
 
+      
       // 0 Person doesn't work at home more than specified number of minutes
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
       alternative.Choice = 0;
@@ -167,39 +180,51 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       alternative.AddUtilityTerm(1, 1.0);
 
-      alternative.AddUtilityTerm(2, household.HasChildrenUnder5.ToFlag());
+      alternative.AddUtilityTerm(6, person.IsMale.ToFlag());
+      //GV; 12. feb. 2019, Self Employed in the HH 
+      alternative.AddUtilityTerm(7, (person.OccupationCode == 8).ToFlag());
+      //alternative.AddUtilityTerm(8, person.IsPartTimeWorker.ToFlag());
+
+      //alternative.AddUtilityTerm(9, (household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      //alternative.AddUtilityTerm(10, (household.HasChildren).ToFlag());
+
+      //GV: 13, feb 2019 - HH size
+      //alternative.AddUtilityTerm(30, (household.Size == 2 && numberAdult == 2).ToFlag()); //GV: HH==2 plus boh are adults
+      //alternative.AddUtilityTerm(11, (household.Size == 2).ToFlag());
+      //alternative.AddUtilityTerm(12, (household.Size == 3).ToFlag()); //GV; 16. april 2013, not significant
+      //alternative.AddUtilityTerm(13, (household.Size >= 4).ToFlag()); //GV; 16. april 2013, not significant
+
+      //alternative.AddUtilityTerm(27, (household.VehiclesAvailable == 1).ToFlag());
+      //alternative.AddUtilityTerm(28, (household.VehiclesAvailable >= 2).ToFlag());
+      //alternative.AddUtilityTerm(31, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
+      //alternative.AddUtilityTerm(14, (household.VehiclesAvailable == 0).ToFlag());
 
       //GV: not sign. - 13. june 2016
       //alternative.AddUtilityTerm(3, household.HasChildrenAge5Through15.ToFlag());
 
-      alternative.AddUtilityTerm(4, (household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
-      alternative.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenUnder16).ToFlag());
+      //GV: 18. feb 2019 - "householdDay.AdultsInSharedHomeStay" cannot be used
+      //alternative.AddUtilityTerm(4, (household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
+      //alternative.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenUnder16).ToFlag());
 
       //GV: not sign. - 13. june 2016
       //alternative.AddUtilityTerm(6, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
       //alternative.AddUtilityTerm(7, (householdDay.AdultsInSharedHomeStay == 2 && hasAdultEducLevel12 == 1).ToFlag());
 
-      alternative.AddUtilityTerm(8, (youngestAge >= 40).ToFlag());
+      //alternative.AddUtilityTerm(15, (youngestAge >= 40).ToFlag());
 
-      //GV: not sign. - 13. june 2016
-      //alternative.AddUtilityTerm(10, (household.Income >= 300000 && household.Income < 600000).ToFlag());
+      //GV: 18. feb. 2019 - non signif.
+      //alternative.AddUtilityTerm(16, (household.Income >= 300000 && household.Income < 600000).ToFlag());
       //alternative.AddUtilityTerm(11, (household.Income >= 600000 && household.Income < 900000).ToFlag());
-      //alternative.AddUtilityTerm(12, (household.Income >= 900000).ToFlag());
+      //alternative.AddUtilityTerm(17, (household.Income >= 600000).ToFlag());
 
-      alternative.AddUtilityTerm(15, householdDay.PrimaryPriorityTimeFlag);
+      alternative.AddUtilityTerm(18, householdDay.PrimaryPriorityTimeFlag);
 
       //GV: not sign. - 13. june 2016
       //alternative.AddUtilityTerm(16, (household.Size == 2).ToFlag());
       //alternative.AddUtilityTerm(17, (household.Size == 3).ToFlag());
       //alternative.AddUtilityTerm(18, (household.Size >= 4).ToFlag());
       ////alternative.AddUtilityTerm(18, (household.Size >= 5).ToFlag()); 
-
-      alternative.AddUtilityTerm(21, person.IsPartTimeWorker.ToFlag());
-      //alternative.AddUtilityTerm(2, person.IsFulltimeWorker.ToFlag());
-
-      alternative.AddUtilityTerm(22, (person.Gender == 1).ToFlag());
-      alternative.AddUtilityTerm(23, (hasAdultEducLevel12 == 1).ToFlag());
-
+            
       //alternative.AddUtilityTerm(24, MandatoryTourDay);
       alternative.AddUtilityTerm(25, nonMandatoryTourDay);
 
@@ -210,13 +235,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: put in instead of compositeLogsum - 13. june 2016
       alternative.AddUtilityTerm(27, workTourLogsum * MandatoryTourDay);
       alternative.AddUtilityTerm(28, workTourLogsum * nonMandatoryTourDay);
-
-      //GV: not sign. - 13. june 2016
-      //alternative.AddUtilityTerm(27, compositeLogsum);
-
-      //alternative.AddUtilityTerm(27, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag()); //GV not significant
-      //alternative.AddUtilityTerm(28, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag()); //GV not significant
-
+       
+      alternative.AddUtilityTerm(29, compositeLogsum);
+      
+      //GV: CPH logsum - 18. feb 2019 - not signif.
+      //alternative.AddUtilityTerm(30, workTourLogsum * MandatoryTourDay * (hhLivesInCPHCity).ToFlag());
+      //alternative.AddUtilityTerm(31, workTourLogsum * nonMandatoryTourDay * (hhLivesInCPHCity).ToFlag());
+           
+      //GV: CPH logsum - 18. feb. 2019 - not signif.
+      //alternative.AddUtilityTerm(32, compositeLogsum * (hhLivesInCPHCity).ToFlag());
 
     }
   }

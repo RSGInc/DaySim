@@ -159,7 +159,7 @@ namespace DaySim.ChoiceModels.Default {
         RunTourModelSuite(tour);
 
         if (!personDay.IsValid) {
-          if (Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "IntermediateStopLocationModel") {
+          if (Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == DaySim.ChoiceModels.Default.Models.IntermediateStopLocationModel.CHOICE_MODEL_NAME) {
             Global.PrintFile.WriteEstimationRecordExclusionMessage("ChoiceModelRunner", "RunTourModels", tour.Household.Id, tour.Person.Sequence, -1, tour.Sequence, -1, -1, tour.HalfTour1Trips + tour.HalfTour2Trips);
           }
 
@@ -769,7 +769,7 @@ namespace DaySim.ChoiceModels.Default {
           ChoiceModelFactory.TotalTimesNextTripIsNull[ParallelUtility.threadLocalAssignedIndex.Value]++;
         }
 
-        if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "IntermediateStopLocationModel") {
+        if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == DaySim.ChoiceModels.Default.Models.IntermediateStopLocationModel.CHOICE_MODEL_NAME) {
           Global.PrintFile.WriteEstimationRecordExclusionMessage("ChoiceModelRunner", "SetIntermediateStopDestination", trip.Household.Id, trip.Person.Sequence, trip.Day, trip.Tour.Sequence, trip.Direction, trip.Sequence, 1);
         }
 

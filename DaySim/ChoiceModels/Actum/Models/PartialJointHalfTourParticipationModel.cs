@@ -17,7 +17,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PartialJointHalfTourParticipationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumPartialJointHalfTourParticipationModel";
+    public const string CHOICE_MODEL_NAME = "ActumPartialJointHalfTourParticipationModel";
     private const int TOTAL_ALTERNATIVES = 32;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -127,7 +127,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int jHTSimulated, int genChoice, bool[,] jHTAvailable, bool[] pHTAvailable, int[][] altParticipants, int choice = Constants.DEFAULT_VALUE) {
 
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointHalfTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
 
       // set household characteristics here that don't depend on person characteristics
@@ -177,7 +177,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int count = 0;
       foreach (PersonDayWrapper personDay in orderedPersonDays) {
-        IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+        IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
         count++;
         if (count <= 5) {
 
@@ -246,7 +246,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(1, pAdultMandatory[p]); // impact of adult with mandatory travel 
         choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(2, pAdultNonMandatory[p]); // impact of adult with non-mandatory travel 
 
-        //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(3, pType8Mandatory[p]); // impact of child under 5 with mandatory travel
+        choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(3, pType8Mandatory[p]); // impact of child under 5 with mandatory travel
         //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(4, pType8NonMandatory[p]); // impact of child under 5 with non-mandatory travel
 
         //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(04, pYouthMandatory[p]); // impact of youth with mandatory travel
@@ -256,8 +256,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(7, pAdultFemale[p]); //female
 
-      }
-
+      } 
+      
       //create two-way match interaction utility components
 
       int[,] componentMatch = new int[6, 6];
@@ -375,14 +375,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
             componentCross[t1, t2] = componentIndex;
             choiceProbabilityCalculator.CreateUtilityComponent(componentCross[t1, t2]);
 
-            //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(41, iCrossAdultWithChildUnder5[t1, t2]);
-            //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(42, iCrossAdultWithChild5to16[t1, t2]);
+            choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(41, iCrossAdultWithChildUnder5[t1, t2]);
+            choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(42, iCrossAdultWithChild5to16[t1, t2]);
 
             //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(43, iCrossAdultMandatoryAndAdultNonMandatory[t1, t2]); //base alt.
 
             choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(46, iCrossAdultFemaleWithChildUnder5[t1, t2]);
 
-            //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(47, iCrossYouthAndChildUnder5[t1, t2]);
+            choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(47, iCrossYouthAndChildUnder5[t1, t2]);
             //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(47, iCrossChild5to16AndChildUnder5[t1, t2]);
 
             //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(45, iCrossAdultFemaleWithChild5to16[t1, t2]);
@@ -441,7 +441,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         if (altParticipants[alt][7] < 2) {
           available[alt] = false;
         }
-
+         
 
         // determine choice
         if (choice == alt) { chosen[alt] = true; }

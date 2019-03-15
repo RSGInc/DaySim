@@ -12,7 +12,6 @@ using System.Linq;
 using DaySim.ChoiceModels;
 using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.Framework.Core;
-using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Exceptions;
 using DaySim.Framework.Roster;
@@ -36,7 +35,7 @@ namespace DaySim.PathTypeModels {
     private int _householdCars;
     private bool _carsAreAVs;
     private int _transitPassOwnership;
-    private int _personType; 
+    private int _personType;
     private bool _randomChoice;
     private int _choice;
 
@@ -63,10 +62,12 @@ namespace DaySim.PathTypeModels {
     private readonly double[] _pathOriginAccessTime = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathOriginAccessDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathOriginAccessCost = new double[Global.Settings.PathTypes.TotalPathTypes];
+    private readonly double[] _pathOriginAccessUtility = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly int[] _pathDestinationAccessMode = new int[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathDestinationAccessTime = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathDestinationAccessDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathDestinationAccessCost = new double[Global.Settings.PathTypes.TotalPathTypes];
+    private readonly double[] _pathDestinationAccessUtility = new double[Global.Settings.PathTypes.TotalPathTypes];
     private static List<ParkAndRideNodeWrapper> _parkAndRideNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
     private static List<ParkAndRideNodeWrapper> _parkAndRideAutoNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
     private static List<ParkAndRideNodeWrapper> _parkAndRideBikeNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
@@ -113,10 +114,12 @@ namespace DaySim.PathTypeModels {
     public double PathOriginAccessTime { get; protected set; }
     public double PathOriginAccessDistance { get; protected set; }
     public double PathOriginAccessCost { get; protected set; }
+    public double PathOriginAccessUtility { get; protected set; }
     public int PathDestinationAccessMode { get; protected set; }
     public double PathDestinationAccessTime { get; protected set; }
     public double PathDestinationAccessDistance { get; protected set; }
     public double PathDestinationAccessCost { get; protected set; }
+    public double PathDestinationAccessUtility { get; protected set; }
 
     public bool Available { get; protected set; }
 
@@ -291,7 +294,7 @@ namespace DaySim.PathTypeModels {
         if (Mode == Global.Settings.Modes.HovDriver
           || Mode == Global.Settings.Modes.HovPassenger
           || Mode == Global.Settings.Modes.PaidRideShare
-          || (Mode == Global.Settings.Modes.Sov && _personAge>=Global.Configuration.COMPASS_MinimumAutoDrivingAge && _householdCars > 0)) {
+          || (Mode == Global.Settings.Modes.Sov && _personAge >= Global.Configuration.COMPASS_MinimumAutoDrivingAge && _householdCars > 0)) {
           RunAutoModel(skimMode, pathType, votValue, useZones);
         } else
         if (Mode == Global.Settings.Modes.Transit) {
@@ -420,10 +423,12 @@ namespace DaySim.PathTypeModels {
       PathOriginAccessTime = _pathOriginAccessTime[_choice];
       PathOriginAccessDistance = _pathOriginAccessDistance[_choice];
       PathOriginAccessCost = _pathOriginAccessCost[_choice];
+      PathOriginAccessUtility = _pathOriginAccessUtility[_choice];
       PathDestinationAccessMode = _pathDestinationAccessMode[_choice];
       PathDestinationAccessTime = _pathDestinationAccessTime[_choice];
       PathDestinationAccessDistance = _pathDestinationAccessDistance[_choice];
       PathDestinationAccessCost = _pathDestinationAccessCost[_choice];
+      PathDestinationAccessUtility = _pathDestinationAccessUtility[_choice];
     }
 
 
@@ -467,10 +472,12 @@ namespace DaySim.PathTypeModels {
       _pathOriginAccessTime[pathType] = 0.0;
       _pathOriginAccessDistance[pathType] = 0.0;
       _pathOriginAccessCost[pathType] = 0.0;
+      _pathOriginAccessUtility[pathType] = 0.0;
       _pathDestinationAccessMode[pathType] = Global.Settings.Modes.None;
       _pathDestinationAccessTime[pathType] = 0.0;
       _pathDestinationAccessDistance[pathType] = 0.0;
       _pathDestinationAccessCost[pathType] = 0.0;
+      _pathDestinationAccessUtility[pathType] = 0.0;
     }
 
     private void RunAutoModel(int skimModeIn, int pathType, double votValue, bool useZones) {
@@ -544,10 +551,12 @@ namespace DaySim.PathTypeModels {
       _pathOriginAccessTime[pathType] = 0.0;
       _pathOriginAccessDistance[pathType] = 0.0;
       _pathOriginAccessCost[pathType] = 0.0;
+      _pathOriginAccessUtility[pathType] = 0.0;
       _pathDestinationAccessMode[pathType] = Global.Settings.Modes.None;
       _pathDestinationAccessTime[pathType] = 0.0;
       _pathDestinationAccessDistance[pathType] = 0.0;
       _pathDestinationAccessCost[pathType] = 0.0;
+      _pathDestinationAccessUtility[pathType] = 0.0;
     }
 
     protected void RunZonalWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
@@ -600,13 +609,13 @@ namespace DaySim.PathTypeModels {
         if (_personAge <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
           fare = fare * (1 - Global.TransitBaseFare_ChildDiscount[fareZones] / 100.0);
         }
-        double outboundTime2 = _outboundTime - pathTime; 
+        double outboundTime2 = _outboundTime - pathTime;
         if ((_outboundTime + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
           (_outboundTime + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && _outboundTime + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
           || _outboundTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) &&
           (outboundTime2 + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
           (outboundTime2 + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && outboundTime2 + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
-          || outboundTime2 + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute)){
+          || outboundTime2 + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute)) {
           fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
         }
         fareCost = fare;
@@ -626,8 +635,8 @@ namespace DaySim.PathTypeModels {
             || _returnTime + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute) &&
             (returnTime2 + 180 < Global.Configuration.COMPASS_TransitFareAMPeakPeriodStartMinute ||
             (returnTime2 + 180 >= Global.Configuration.COMPASS_TransitFareAMPeakPeriodEndMinute - 180 && returnTime2 + 180 < Global.Configuration.COMPASS_TransitFarePMPeakPeriodStartMinute)
-            || returnTime2 + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute))  {
-              fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
+            || returnTime2 + 180 >= Global.Configuration.COMPASS_TransitFarePMPeakPeriodEndMinute)) {
+            fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
           }
           fareCost += fare;
         }
@@ -697,7 +706,7 @@ namespace DaySim.PathTypeModels {
       double maxStopAreaLengthAccess = walkAccess ? Global.Configuration.COMPASS_MaximumParcelToTerminalDistanceWalk
                                      : bikeAccess ? Global.Configuration.COMPASS_MaximumParcelToParkingNodeDistanceBike
                                      : sovAccess ? Global.Configuration.COMPASS_MaximumParcelToParkingNodeDistanceParkAndRide
-                                     : Global.Configuration.COMPASS_MaximumParcelToTerminalDistanceKissAndRide; 
+                                     : Global.Configuration.COMPASS_MaximumParcelToTerminalDistanceKissAndRide;
       if (maxStopAreaLengthAccess < Constants.EPSILON) {
         maxStopAreaLengthAccess = 999.99;
       }
@@ -741,7 +750,7 @@ namespace DaySim.PathTypeModels {
                       : sovAccess ? tourOriginParcel.FirstPositionInAutoParkAndRideNodeDistanceArray
                       : tourOriginParcel.FirstPositionInAutoKissAndRideTerminalDistanceArray;
 
-      int LastIndexAccess  = Math.Min(firstIndexAccess + maxStopAreasToSearchAccess - 1,
+      int LastIndexAccess = Math.Min(firstIndexAccess + maxStopAreasToSearchAccess - 1,
                         walkAccess ? tourOriginParcel.LastPositionInStopAreaDistanceArray
                       : bikeOnBoard ? tourOriginParcel.LastPositionInBikeOnBoardTerminalDistanceArray
                       : bikeAccess ? tourOriginParcel.LastPositionInBikeParkAndRideNodeDistanceArray
@@ -768,13 +777,13 @@ namespace DaySim.PathTypeModels {
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
       double bestPathUtility = -99999D;
 
-      for (int indexAccess = firstIndexAccess ; indexAccess <= LastIndexAccess; indexAccess++) {
+      for (int indexAccess = firstIndexAccess; indexAccess <= LastIndexAccess; indexAccess++) {
 
         double stopAreaLengthAccess = (walkAccess ? Global.ParcelStopAreaLengths[indexAccess]
                        : bikeOnBoard ? Global.ParcelToBikeOnBoardTerminalLength[indexAccess]
                        : bikeAccess ? Global.ParcelToBikeParkAndRideNodeLength[indexAccess]
                        : sovAccess ? Global.ParcelToAutoParkAndRideNodeLength[indexAccess]
-                       : Global.ParcelToAutoKissAndRideTerminalLength[indexAccess]) /1000.0; //convert to km
+                       : Global.ParcelToAutoKissAndRideTerminalLength[indexAccess]) / 1000.0; //convert to km
 
         if (stopAreaLengthAccess > maxStopAreaLengthAccess) {
           continue;
@@ -798,27 +807,24 @@ namespace DaySim.PathTypeModels {
         if (walkAccess) {
           accessTime = accessDistance * Global.PathImpedance_WalkMinutesPerDistanceUnit * roundTripFactor;
           accessUtility = accessTime * _tourTimeCoefficient * Global.Configuration.PathImpedance_WalkAccessTimeWeight;
-        } 
-        else if (bikeAccess && bikeOnBoard) {
+        } else if (bikeAccess && bikeOnBoard) {
           int terminalId = Global.ParcelToBikeOnBoardTerminalIds[indexAccess];
           int terminalMicrozoneId = Global.ParcelToBikeOnBoardMicrozoneIds[indexAccess];
           ParcelWrapper bikeOnBoardParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
           WalkBikePath accessPath = GetWalkBikePath(Global.Settings.Modes.HovPassenger, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, tourOriginParcel, bikeOnBoardParcel);
-          accessTime = accessPath.Time;
+          accessTime = accessPath.Time * roundTripFactor;
           accessCost = 0;
-          accessUtility = accessPath.Utility;
-        } 
-        else if (bikeAccess && !bikeOnBoard) {
+          accessUtility = accessPath.Utility * roundTripFactor;
+        } else if (bikeAccess && !bikeOnBoard) {
           int nodeId = Global.ParcelToBikeParkAndRideNodeIds[indexAccess];
           ParkAndRideNodeWrapper node = bikeParkAndRideNodes.First(x => x.ZoneId == nodeId);
           ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
           WalkBikePath accessPath = GetWalkBikePath(accessMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, tourOriginParcel, parkAndRideParcel);
           double parkingCost = node.CostDaily;
-          accessTime = accessPath.Time;
+          accessTime = accessPath.Time * roundTripFactor;
           accessCost = parkingCost;
-          accessUtility = accessPath.Utility;
-        }
-        else if (sovAccess) {
+          accessUtility = accessPath.Utility * roundTripFactor;
+        } else if (sovAccess) {
           int nodeId = Global.ParcelToAutoParkAndRideNodeIds[indexAccess];
           ParkAndRideNodeWrapper node = autoParkAndRideNodes.First(x => x.ZoneId == nodeId);
           ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
@@ -828,13 +834,13 @@ namespace DaySim.PathTypeModels {
           if (_returnTime > 0) {
             duration = 1.0 + Math.Truncate((_returnTime - _outboundTime) / 60.0);
           } else if (_purpose == Global.Settings.Purposes.Work) {
-              duration = 8.0;
+            duration = 8.0;
           } else if (_purpose == Global.Settings.Purposes.School) {
-              duration = 6.0;
+            duration = 6.0;
           } else if (_purpose == Global.Settings.Purposes.Social) {
-              duration = 3.0;
+            duration = 3.0;
           } else {
-              duration = 2.0;
+            duration = 2.0;
           }
 
           double parkingCostByTheHour =
@@ -850,19 +856,18 @@ namespace DaySim.PathTypeModels {
 
           double parkingCost = Math.Min(parkingCostByTheHour, node.CostDaily);
 
-          accessTime = accessPath.Time;
+          accessTime = accessPath.Time * roundTripFactor;
           accessCost = accessPath.Cost + parkingCost;
-          accessUtility = accessPath.Utility;
+          accessUtility = accessPath.Utility * roundTripFactor;
           accessParkAndRideNodeID = nodeId;
-        }
-        else if (hovAccess || shareAccess) {
+        } else if (hovAccess || shareAccess) {
           int terminalId = Global.ParcelToAutoKissAndRideTerminalIds[indexAccess];
           int terminalMicrozoneId = Global.ParcelToAutoKissAndRideMicrozoneIds[indexAccess];
           ParcelWrapper kissAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
           AutoPath accessPath = GetAutoPath(Global.Settings.Modes.HovPassenger, pathTypeAccEgr, votValue, useZones, false, _outboundTime, _returnTime, 0, 0, tourOriginParcel, kissAndRideParcel);
-          accessTime = accessPath.Time;
-          accessCost = accessPath.Cost;
-          accessUtility = accessPath.Utility;
+          accessTime = accessPath.Time * roundTripFactor;
+          accessCost = accessPath.Cost * roundTripFactor;
+          accessUtility = accessPath.Utility * roundTripFactor;
         }
 
         for (int indexEgress = firstIndexEgress; indexEgress <= LastIndexEgress; indexEgress++) {
@@ -899,32 +904,30 @@ namespace DaySim.PathTypeModels {
           if (walkEgress) {
             egressTime = egressDistance * Global.PathImpedance_WalkMinutesPerDistanceUnit * roundTripFactor;
             egressUtility = egressTime * _tourTimeCoefficient * Global.Configuration.PathImpedance_WalkAccessTimeWeight;
-          }
-          else if (bikeEgress && bikeOnBoard) {
+          } else if (bikeEgress && bikeOnBoard) {
             int terminalId = Global.ParcelToBikeOnBoardTerminalIds[indexEgress];
             int terminalMicrozoneId = Global.ParcelToBikeOnBoardMicrozoneIds[indexEgress];
             ParcelWrapper bikeOnBoardParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
             WalkBikePath egressPath = GetWalkBikePath(egressMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, bikeOnBoardParcel, nonTourOriginParcel);
-            egressTime = egressPath.Time;
+            egressTime = egressPath.Time * roundTripFactor;
             egressCost = 0;
-            egressUtility = egressPath.Utility;
-          }
-          else if (bikeEgress && !bikeOnBoard) {
+            egressUtility = egressPath.Utility * roundTripFactor;
+          } else if (bikeEgress && !bikeOnBoard) {
             int nodeId = Global.ParcelToBikeParkAndRideNodeIds[indexEgress];
             ParkAndRideNodeWrapper node = bikeParkAndRideNodes.First(x => x.ZoneId == nodeId);
             ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
-            WalkBikePath egressPath = GetWalkBikePath(egressMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, parkAndRideParcel,nonTourOriginParcel);
-            egressTime = egressPath.Time;
-            egressUtility = egressPath.Utility;
-          }
-          else if (shareEgress) {
+            WalkBikePath egressPath = GetWalkBikePath(egressMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, parkAndRideParcel, nonTourOriginParcel);
+            egressTime = egressPath.Time * roundTripFactor;
+            egressCost = 0;
+            egressUtility = egressPath.Utility * roundTripFactor;
+          } else if (shareEgress) {
             int terminalId = Global.ParcelToAutoKissAndRideTerminalIds[indexEgress];
             int terminalMicrozoneId = Global.ParcelToAutoKissAndRideMicrozoneIds[indexEgress];
             ParcelWrapper kissAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
             AutoPath egressPath = GetAutoPath(Global.Settings.Modes.HovPassenger, pathTypeAccEgr, votValue, useZones, false, _outboundTime, _returnTime, 0, 0, kissAndRideParcel, nonTourOriginParcel);
-            egressTime = egressPath.Time;
-            egressCost = egressPath.Cost;
-            egressUtility = egressPath.Utility;
+            egressTime = egressPath.Time * roundTripFactor;
+            egressCost = egressPath.Cost * roundTripFactor;
+            egressUtility = egressPath.Utility * roundTripFactor;
           }
 
           if (transitPath.Time + accessTime + egressTime > pathTimeLimit) {
@@ -933,7 +936,7 @@ namespace DaySim.PathTypeModels {
           // set utility
 
           double fullPathUtility = transitPath.Utility + accessUtility + egressUtility;
-            
+
           // if the best path so far, reset pathType properties
           if (fullPathUtility <= bestPathUtility) {
             continue;
@@ -948,7 +951,7 @@ namespace DaySim.PathTypeModels {
           _pathCost[pathType] = transitPath.Cost + accessCost + egressCost;
           _utility[pathType] = fullPathUtility;
           _expUtility[pathType] = fullPathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : fullPathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(fullPathUtility);
-          _pathWalkDistance[pathType] = ((walkAccess)? accessDistance : 0) + ((walkEgress) ? egressDistance : 0);
+          _pathWalkDistance[pathType] = ((walkAccess) ? accessDistance : 0) + ((walkEgress) ? egressDistance : 0);
           _pathWalkTime[pathType] = ((walkAccess) ? accessTime : 0) + ((walkEgress) ? egressTime : 0);
           _pathBikeDistance[pathType] = ((bikeAccess) ? accessDistance : 0) + ((bikeEgress) ? egressDistance : 0);
           _pathBikeTime[pathType] = ((bikeAccess) ? accessTime : 0) + ((bikeEgress) ? egressTime : 0);
@@ -961,17 +964,19 @@ namespace DaySim.PathTypeModels {
           _pathOriginAccessTime[pathType] = accessTime;
           _pathOriginAccessDistance[pathType] = accessDistance;
           _pathOriginAccessCost[pathType] = accessCost;
+          _pathOriginAccessUtility[pathType] = accessUtility;
           _pathDestinationAccessMode[pathType] = egressMode;
           _pathDestinationAccessTime[pathType] = egressTime;
           _pathDestinationAccessDistance[pathType] = egressDistance;
           _pathDestinationAccessCost[pathType] = egressCost;
+          _pathDestinationAccessUtility[pathType] = egressUtility;
           _pathParkAndRideNodeId[pathType] = accessParkAndRideNodeID;
         }
       }
 
     }
 
-   
+
     public class WalkBikePath {
       public bool Available { get; set; }
       public double Time { get; set; }
@@ -991,35 +996,45 @@ namespace DaySim.PathTypeModels {
 
       double zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable;
 
+      bool blendMZ = (!useZones && zzDist > Constants.EPSILON && zzDist < Global.Configuration.MaximumBlendingDistance);
+
       bool intraZonal = (_originZoneId == _destinationZoneId);
-      if (intraZonal && !useZones) {
-        double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
-        double trips = (_returnTime > 0) ? 2.0 : 1.0;
+
+      double mzDistance = 0.0;
+      double mzTime = 0.0;
+      double mzGenTime = 0.0;
+
+      if ((intraZonal || blendMZ) && !useZones) {
+        mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
+        double roundTripFactor = (_returnTime > 0) ? 2.0 : 1.0;
         if (_originParcel.Id != _destinationParcel.Id) {
           mzDistance = mzDistance * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor;
         }
-        path.Distance = mzDistance * trips;
 
         if (skimMode == Global.Settings.Modes.Walk) {
-          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Walk
-                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Walk;
-          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Walk
-                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Walk;
+          mzTime = mzDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Walk
+                              + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Walk;
+          mzGenTime = mzTime * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Walk
+                             + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Walk;
 
         } else {
-          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Bike
-                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Bike;
-          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Bike
-                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Bike;
+          mzTime = mzDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_Bike
+                              + Global.Configuration.COMPASS_IntrazonalMinutesExtra_Bike;
+          mzGenTime = mzTime * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_Bike
+                             + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_Bike;
         }
+        mzDistance = mzDistance * roundTripFactor;
+        mzTime = mzTime * roundTripFactor;
+        mzGenTime = mzGenTime * roundTripFactor;
+      }
 
+      double circuityDistance = Constants.DEFAULT_VALUE;
+
+      if (intraZonal) {
+        path.Distance = mzDistance;
+        path.Time = mzTime;
+        path.GenTime = mzGenTime;
       } else {
-        double circuityDistance =
-                ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
-                    ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(_destinationParcel);
-
-
         string varname = commuter ? "time-co" : "time";
         SkimValue skimValue =
                 useZones
@@ -1070,6 +1085,15 @@ namespace DaySim.PathTypeModels {
         }
 
 
+        //if blending factor down and blend with mz values
+        if (blendMZ) {
+          double zoneFactor = zzDist / Math.Max(Global.Configuration.MaximumBlendingDistance, Constants.EPSILON);
+
+          path.Distance = zoneFactor * path.Distance + (1.0 - zoneFactor) * mzDistance;
+          path.Time = zoneFactor * path.Time + (1.0 - zoneFactor) * mzTime;
+          path.GenTime = zoneFactor * path.GenTime + (1.0 - zoneFactor) * mzGenTime;
+        }
+
         /* a fix for intra-parcels, which happen once in a great while for school
         if (!useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
           //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
@@ -1108,29 +1132,33 @@ namespace DaySim.PathTypeModels {
       double zzDist = ImpedanceRoster.GetValue("distance", skimModeIn, pathType, votValue, outboundTime, _originZoneId, _destinationZoneId).Variable;
 
       bool intraZonal = (_originZoneId == _destinationZoneId);
+
+      double mzDistance = 0.0;
+      double mzTime = 0.0;
+      double mzGenTime = 0.0;
+
       if (intraZonal && !useZones) {
-        double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
-        double trips = (_returnTime > 0) ? 2.0 : 1.0;
+        mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, _outboundTime, _originParcel, _destinationParcel).Variable / 1000.0; //in km
+        double roundTripFactor = (_returnTime > 0) ? 2.0 : 1.0;
         if (_originParcel.Id != _destinationParcel.Id) {
           mzDistance = mzDistance * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor;
         }
-        path.Distance = mzDistance * trips;
         if (skimModeIn == Global.Settings.Modes.Sov) {
-          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_SOV
-                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_SOV;
-          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV
-                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_SOV;
+          mzTime = mzDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_SOV
+                              + Global.Configuration.COMPASS_IntrazonalMinutesExtra_SOV;
+          mzGenTime = mzTime * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV
+                             + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_SOV;
         } else {
-          path.Time = path.Distance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_HOV
-                                    + Global.Configuration.COMPASS_IntrazonalMinutesExtra_HOV;
-          path.GenTime = path.Time * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV
-                                    + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_HOV;
+          mzTime = mzDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_HOV
+                              + Global.Configuration.COMPASS_IntrazonalMinutesExtra_HOV;
+          mzGenTime = mzTime * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV
+                             + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_HOV;
         }
+        path.Distance = mzDistance * roundTripFactor;
+        path.Time = mzTime * roundTripFactor;
+        path.GenTime = mzGenTime * roundTripFactor;
       } else {
-        double circuityDistance =
-                ((zzDist > Global.Configuration.MaximumBlendingDistance) || useZones)
-                    ? Constants.DEFAULT_VALUE
-                    : _originParcel.CalculateShortDistance(_destinationParcel);
+        double circuityDistance = Constants.DEFAULT_VALUE;
 
         string varname = commuter ? "time-co" : business ? "time-bu" : "time";
         SkimValue skimValue =
@@ -1203,7 +1231,7 @@ namespace DaySim.PathTypeModels {
         }
       }
       path.Utility = path.GenTime * _tourTimeCoefficient;
-      
+
       path.Available = true;
       return path;
 
@@ -1221,7 +1249,7 @@ namespace DaySim.PathTypeModels {
     private TransitPath GetTransitPath(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int transitPassOwnership) {
 
       TransitPath path = new TransitPath {
-        Available = false 
+        Available = false
       };
 
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (returnTime > 0 ? 2 : 1);
@@ -1277,7 +1305,7 @@ namespace DaySim.PathTypeModels {
       varname = "farezones";
       skimValue =
              ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId);
-      int fareZones = (int) Math.Round(skimValue.Variable);
+      int fareZones = (int)Math.Round(skimValue.Variable);
       if (fareZones > transitPassOwnership && _personAge > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel) {
         double fare = Global.TransitBaseFare_Adult[fareZones];
         if (_personAge <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount) {
@@ -1315,102 +1343,102 @@ namespace DaySim.PathTypeModels {
 
       return path;
     }
-/*
-    private void RunStopAreaWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
+    /*
+        private void RunStopAreaWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
 
-      if (useZones) {
-        return;
-      }
-      //user-set limits on search - use high values if not set
-      int maxStopAreasToSearch = (Global.Configuration.MaximumStopAreasToSearch > 0) ? Global.Configuration.MaximumStopAreasToSearch : 99;
-      int maxStopAreaLength = (Global.Configuration.MaximumParcelToStopAreaLengthUnits > 0) ? Global.Configuration.MaximumParcelToStopAreaLengthUnits : 99999;
+          if (useZones) {
+            return;
+          }
+          //user-set limits on search - use high values if not set
+          int maxStopAreasToSearch = (Global.Configuration.MaximumStopAreasToSearch > 0) ? Global.Configuration.MaximumStopAreasToSearch : 99;
+          int maxStopAreaLength = (Global.Configuration.MaximumParcelToStopAreaLengthUnits > 0) ? Global.Configuration.MaximumParcelToStopAreaLengthUnits : 99999;
 
-      //_originParcel. SetFirstAndLastStopAreaDistanceIndexes();
-      int oFirst = _originParcel.FirstPositionInStopAreaDistanceArray;
-      int oLast = Math.Min(_originParcel.LastPositionInStopAreaDistanceArray, oFirst + maxStopAreasToSearch - 1);
+          //_originParcel. SetFirstAndLastStopAreaDistanceIndexes();
+          int oFirst = _originParcel.FirstPositionInStopAreaDistanceArray;
+          int oLast = Math.Min(_originParcel.LastPositionInStopAreaDistanceArray, oFirst + maxStopAreasToSearch - 1);
 
-      //_destinationParcel. SetFirstAndLastStopAreaDistanceIndexes();
-      int dFirst = _destinationParcel.FirstPositionInStopAreaDistanceArray;
-      int dLast = Math.Min(_destinationParcel.LastPositionInStopAreaDistanceArray, dFirst + maxStopAreasToSearch - 1);
+          //_destinationParcel. SetFirstAndLastStopAreaDistanceIndexes();
+          int dFirst = _destinationParcel.FirstPositionInStopAreaDistanceArray;
+          int dLast = Math.Min(_destinationParcel.LastPositionInStopAreaDistanceArray, dFirst + maxStopAreasToSearch - 1);
 
-      if (oFirst <= 0 || dFirst <= 0) {
-        return;
-      }
+          if (oFirst <= 0 || dFirst <= 0) {
+            return;
+          }
 
-      double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
-      double bestPathUtility = -99999D;
+          double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (_returnTime > 0 ? 2 : 1);
+          double bestPathUtility = -99999D;
 
-      for (int oIndex = oFirst; oIndex <= oLast; oIndex++) {
-        int oStopArea = Global.ParcelStopAreaStopAreaIds[oIndex];
-        int oStopAreaKey = Global.ParcelStopAreaStopAreaKeys[oIndex];
-        float oWalkLength = Global.ParcelStopAreaLengths[oIndex];
-        if (oWalkLength > maxStopAreaLength) {
-          continue;
+          for (int oIndex = oFirst; oIndex <= oLast; oIndex++) {
+            int oStopArea = Global.ParcelStopAreaStopAreaIds[oIndex];
+            int oStopAreaKey = Global.ParcelStopAreaStopAreaKeys[oIndex];
+            float oWalkLength = Global.ParcelStopAreaLengths[oIndex];
+            if (oWalkLength > maxStopAreaLength) {
+              continue;
+            }
+
+            for (int dIndex = dFirst; dIndex <= dLast; dIndex++) {
+              int dStopArea = Global.ParcelStopAreaStopAreaIds[dIndex];
+              int dStopAreaKey = Global.ParcelStopAreaStopAreaKeys[dIndex];
+              float dWalkLength = Global.ParcelStopAreaLengths[dIndex];
+              if (dWalkLength > maxStopAreaLength) {
+                continue;
+              }
+
+              double oWalkDistance = (oWalkLength) / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile * (_returnTime > 0 ? 2 : 1);
+              double dWalkDistance = (dWalkLength) / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile * (_returnTime > 0 ? 2 : 1);
+              double oWalkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * oWalkDistance;
+              double dWalkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * dWalkDistance;
+              double walkDistance = (oWalkDistance + dWalkDistance);
+              double walkTime = (oWalkTime + dWalkTime);
+
+              TransitPath path = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dStopArea, _transitPassOwnership);
+
+              if (!path.Available) {
+                continue;
+              }
+              // set utility
+
+              double fullPathUtility = path.Utility
+                 + walkTime * _tourTimeCoefficient * Global.Configuration.PathImpedance_WalkAccessTimeWeight;
+
+
+              // if the best path so far, reset pathType properties
+              if (fullPathUtility <= bestPathUtility) {
+                continue;
+              }
+
+              bestPathUtility = fullPathUtility;
+
+              _pathOriginStopAreaKey[pathType] = oStopAreaKey;
+              _pathDestinationStopAreaKey[pathType] = dStopAreaKey;
+              _pathDistance[pathType] = path.Distance + walkDistance;
+              _pathTime[pathType] = path.Time + walkTime;
+              _pathCost[pathType] = path.Cost;
+              _utility[pathType] = fullPathUtility;
+              _expUtility[pathType] = fullPathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : fullPathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(fullPathUtility);
+              _pathWalkDistance[pathType] = walkDistance;
+              _pathWalkTime[pathType] = walkTime;
+              _pathTransitTime[pathType] = path.Time;
+              _pathTransitDistance[pathType] = path.Distance;
+              _pathTransitCost[pathType] = path.Cost;
+              _pathTransitUtility[pathType] = path.Utility;
+              _pathOriginAccessMode[pathType] = Global.Settings.Modes.Walk;
+              _pathOriginAccessTime[pathType] = oWalkTime;
+              _pathOriginAccessDistance[pathType] = oWalkDistance;
+              _pathOriginAccessCost[pathType] = 0.0;
+              _pathDestinationAccessMode[pathType] = Global.Settings.Modes.Walk;
+              _pathDestinationAccessTime[pathType] = dWalkTime;
+              _pathDestinationAccessDistance[pathType] = dWalkDistance;
+              _pathDestinationAccessCost[pathType] = 0.0;
+            }
+          }
+          _pathParkAndRideNodeId[pathType] = 0;
+          _pathBikeCost[pathType] = 0;
+          _pathBikeTime[pathType] = 0;
+          _pathBikeDistance[pathType] = 0;
+
         }
-
-        for (int dIndex = dFirst; dIndex <= dLast; dIndex++) {
-          int dStopArea = Global.ParcelStopAreaStopAreaIds[dIndex];
-          int dStopAreaKey = Global.ParcelStopAreaStopAreaKeys[dIndex];
-          float dWalkLength = Global.ParcelStopAreaLengths[dIndex];
-          if (dWalkLength > maxStopAreaLength) {
-            continue;
-          }
-
-          double oWalkDistance = (oWalkLength) / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile * (_returnTime > 0 ? 2 : 1);
-          double dWalkDistance = (dWalkLength) / Global.Settings.LengthUnitsPerFoot / 5280.0 * Global.Settings.DistanceUnitsPerMile * (_returnTime > 0 ? 2 : 1);
-          double oWalkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * oWalkDistance;
-          double dWalkTime = Global.PathImpedance_WalkMinutesPerDistanceUnit * dWalkDistance;
-          double walkDistance = (oWalkDistance + dWalkDistance);
-          double walkTime = (oWalkTime + dWalkTime);
-
-          TransitPath path = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, oStopArea, dStopArea, _transitPassOwnership);
-
-          if (!path.Available) {
-            continue;
-          }
-          // set utility
-
-          double fullPathUtility = path.Utility
-             + walkTime * _tourTimeCoefficient * Global.Configuration.PathImpedance_WalkAccessTimeWeight;
-
-
-          // if the best path so far, reset pathType properties
-          if (fullPathUtility <= bestPathUtility) {
-            continue;
-          }
-
-          bestPathUtility = fullPathUtility;
-
-          _pathOriginStopAreaKey[pathType] = oStopAreaKey;
-          _pathDestinationStopAreaKey[pathType] = dStopAreaKey;
-          _pathDistance[pathType] = path.Distance + walkDistance;
-          _pathTime[pathType] = path.Time + walkTime;
-          _pathCost[pathType] = path.Cost;
-          _utility[pathType] = fullPathUtility;
-          _expUtility[pathType] = fullPathUtility > MAX_UTILITY ? Math.Exp(MAX_UTILITY) : fullPathUtility < MIN_UTILITY ? Math.Exp(MIN_UTILITY) : Math.Exp(fullPathUtility);
-          _pathWalkDistance[pathType] = walkDistance;
-          _pathWalkTime[pathType] = walkTime;
-          _pathTransitTime[pathType] = path.Time;
-          _pathTransitDistance[pathType] = path.Distance;
-          _pathTransitCost[pathType] = path.Cost;
-          _pathTransitUtility[pathType] = path.Utility;
-          _pathOriginAccessMode[pathType] = Global.Settings.Modes.Walk;
-          _pathOriginAccessTime[pathType] = oWalkTime;
-          _pathOriginAccessDistance[pathType] = oWalkDistance;
-          _pathOriginAccessCost[pathType] = 0.0;
-          _pathDestinationAccessMode[pathType] = Global.Settings.Modes.Walk;
-          _pathDestinationAccessTime[pathType] = dWalkTime;
-          _pathDestinationAccessDistance[pathType] = dWalkDistance;
-          _pathDestinationAccessCost[pathType] = 0.0;
-        }
-      }
-      _pathParkAndRideNodeId[pathType] = 0;
-      _pathBikeCost[pathType] = 0;
-      _pathBikeTime[pathType] = 0;
-      _pathBikeDistance[pathType] = 0;
-
-    }
-*/
+    */
     /*
     private void RunStopAreaParkAndRideModel(int skimMode, int pathType, double votValue, bool useZones) {
     if (ChoiceModelFactory.ParkAndRideNodeDao == null || _returnTime <= 0) {

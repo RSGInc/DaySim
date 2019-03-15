@@ -21,16 +21,16 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     }
 
 
-   
+
     //See RawConverter, where the Actum input names are renamed to the Default names, which are then used in the Actum Parcel class. 
     //The following wrapper methods rename them back to the names used by Actum version.  
     public int DistrictID {
-      get => (int) _parcel.CircuityRatio_E1;
+      get => (int)_parcel.CircuityRatio_E1;
       set => _parcel.CircuityRatio_E1 = value;
     }
 
     public int ParkingDataAvailable {
-      get => (int) _parcel.CircuityRatio_E2;
+      get => (int)_parcel.CircuityRatio_E2;
       set => _parcel.CircuityRatio_E2 = value;
     }
 
@@ -140,12 +140,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _parcel.CircuityRatio_SE2 = value;
     }
 
-    public int DistrictID2  {
-      get => (int) _parcel.CircuityRatio_SE3;
+    public int DistrictID2 {
+      get => (int)_parcel.CircuityRatio_SE3;
       set => _parcel.CircuityRatio_SE3 = value;
     }
 
-  
+
     //public int FirstPositionInParkAndRideNodeDistanceArray { get; set; } = -1;
 
     //public int LastPositionInParkAndRideNodeDistanceArray { get; set; } = -1;

@@ -14,7 +14,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class PayToParkAtWorkplaceModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "PayToParkAtWorkplaceModel";
+    public const string CHOICE_MODEL_NAME = "PayToParkAtWorkplaceModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -81,13 +81,13 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(7, Math.Log((person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer1 + 1.0) / (person.UsualWorkParcel.EmploymentTotalBuffer1 + 1.0)));
       alternative.AddUtilityTerm(8, person.UsualWorkParcel.ParkingOffStreetPaidDailyPriceBuffer1);
       alternative.AddUtilityTerm(9, person.UsualWorkParcel.EmploymentGovernmentBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
-      alternative.AddUtilityTerm(10, person.UsualWorkParcel.EmploymentOfficeBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
+      alternative.AddUtilityTerm(10, person.UsualWorkParcel.EmploymentOfficeBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
       alternative.AddUtilityTerm(11, (person.UsualWorkParcel.EmploymentRetailBuffer1
-                                     +person.UsualWorkParcel.EmploymentFoodBuffer1) / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
+                                     + person.UsualWorkParcel.EmploymentFoodBuffer1) / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
       alternative.AddUtilityTerm(12, person.UsualWorkParcel.EmploymentEducationBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
-      alternative.AddUtilityTerm(13, person.UsualWorkParcel.EmploymentIndustrialBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
-      alternative.AddUtilityTerm(14, person.UsualWorkParcel.EmploymentMedicalBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
-      alternative.AddUtilityTerm(15, person.UsualWorkParcel.EmploymentServiceBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1,1));
+      alternative.AddUtilityTerm(13, person.UsualWorkParcel.EmploymentIndustrialBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
+      alternative.AddUtilityTerm(14, person.UsualWorkParcel.EmploymentMedicalBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
+      alternative.AddUtilityTerm(15, person.UsualWorkParcel.EmploymentServiceBuffer1 / Math.Max(person.UsualWorkParcel.EmploymentTotalBuffer1, 1));
     }
   }
 }

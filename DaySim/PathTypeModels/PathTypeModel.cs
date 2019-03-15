@@ -72,14 +72,14 @@ namespace DaySim.PathTypeModels {
       _transitPassOwnership = transitPassOwnership;
       _carsAreAVs = carsAreAVs;
       _personType = personType;
- 
+
       _randomChoice = randomChoice;
-       Mode = mode;
+      Mode = mode;
       //moved this logic from person wrapper
       _transitDiscountFraction = !Global.Configuration.PathImpedance_TransitUseFareDiscountFractions
               ? 0.0
               : Global.Configuration.IncludeTransitPassOwnershipModel && transitPassOwnership > 0
-              ? ( 1.0 - Math.Min(1.0, (personType==Global.Settings.PersonTypes.FullTimeWorker || personType==Global.Settings.PersonTypes.PartTimeWorker) 
+              ? (1.0 - Math.Min(1.0, (personType == Global.Settings.PersonTypes.FullTimeWorker || personType == Global.Settings.PersonTypes.PartTimeWorker)
                 ? Global.Configuration.PathImpedance_TransitPassOwnerWorkerFareFactor : Global.Configuration.PathImpedance_TransitPassOwnerNonWorkerFareFactor))
                   : Math.Abs(Global.Configuration.Policy_UniversalTransitFareDiscountFraction) > Constants.EPSILON
                       ? Global.Configuration.Policy_UniversalTransitFareDiscountFraction
@@ -94,11 +94,11 @@ namespace DaySim.PathTypeModels {
                                       : personAge >= 65
                                           ? Global.Configuration.PathImpedance_TransitFareDiscountFractionAge65Up
                                           : 0.0;
-    
 
-  }
 
-  private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, int mode) {
+    }
+
+    private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, int mode) {
       initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, mode);
       _originParcel = originParcel;
       _destinationParcel = destinationParcel;
@@ -169,6 +169,8 @@ namespace DaySim.PathTypeModels {
 
     public double PathOriginAccessCost => throw new NotImplementedException();
 
+    public double PathOriginAccessUtility => throw new NotImplementedException();
+
     public int PathDestinationAccessMode => throw new NotImplementedException();
 
     public double PathDestinationAccessTime => throw new NotImplementedException();
@@ -176,6 +178,8 @@ namespace DaySim.PathTypeModels {
     public double PathDestinationAccessDistance => throw new NotImplementedException();
 
     public double PathDestinationAccessCost => throw new NotImplementedException();
+
+    public double PathDestinationAccessUtility => throw new NotImplementedException();
 
     public virtual List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice) {
       List<int> modes = new List<int>();
@@ -426,16 +430,15 @@ namespace DaySim.PathTypeModels {
                                  (skimMode == Global.Settings.Modes.Bike && Global.Configuration.UseMicrozoneSkimsForBikeMode));
 
       double circuityDistance = (useZones || useMicrozoneSkims) ? Constants.DEFAULT_VALUE : GetCircuityDistance(skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel);
-
       SkimValue skimValue =
               useZones
                 ? ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId)
                 : useMicrozoneSkims
-                ? ImpedanceRoster.GetValue("time_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.Sequence, _destinationParcel.Sequence)
+                ? ImpedanceRoster.GetValue("time_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.SequenceFrom0, _destinationParcel.SequenceFrom0)
                 : ImpedanceRoster.GetValue("time", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel, circuityDistance);
 
       double skimTime = skimValue.Variable;
-      double skimDistance = useMicrozoneSkims ? ImpedanceRoster.GetValue("distance_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.Sequence, _destinationParcel.Sequence).Variable
+      double skimDistance = useMicrozoneSkims ? ImpedanceRoster.GetValue("distance_mz", skimMode, pathType, votValue, _outboundTime, _originParcel.SequenceFrom0, _destinationParcel.SequenceFrom0).Variable
                          : skimValue.BlendVariable;
       _pathTime[pathType] = skimTime;
       _pathDistance[pathType] = skimDistance;

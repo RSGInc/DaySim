@@ -18,7 +18,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class FullJointHalfTourParticipationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumFullJointHalfTourParticipationModel";
+    public const string CHOICE_MODEL_NAME = "ActumFullJointHalfTourParticipationModel";
     private const int TOTAL_ALTERNATIVES = 32;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -128,7 +128,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int jHTSimulated, int genChoice, bool[,] jHTAvailable, bool[] fHTAvailable, int[][] altParticipants, int choice = Constants.DEFAULT_VALUE) {
 
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointHalfTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
 
       PersonDayWrapper pPersonDay = null;
@@ -181,9 +181,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       bool[] pHasMandatoryTourToUsualLocation = new bool[6];
       bool[] pIsDrivingAge = new bool[6];
 
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
+
       int count = 0;
       foreach (PersonDayWrapper personDay in orderedPersonDays) {
-        IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+        IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
         count++;
         if (count <= 5) {
           if (count == 1) {
@@ -265,8 +270,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(05, pYouthNonMandatory[p]); // impact of youth with non-mandatory travel
         choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(5, pType7Mandatory[p]); // impact of Child5-16 with mandatory travel
 
-        //GV: not significant, 14. june 2016
-        //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(6, pType7NonMandatory[p]); // impact of Child5-16 with non-mandatory travel
+        //GV: 19. feb. 2019 
+        choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(6, pType7NonMandatory[p]); // impact of Child5-16 with non-mandatory travel
 
         choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(7, pAdultFemale[p]); //female
 
@@ -337,10 +342,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(24, iMatchAdultMandatory[t1, t2]);
           //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(25, iMatchAdultNonMandatory[t1, t2]);
 
-          // commented out 22nd, but they work well
-          //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(26, iMatchMandatory[t1, t2]);
-          //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(27, iMatchNonMandatory[t1, t2]);
-
+          // GV: 19. feb. 2019 - commented out 22nd, but they work well
+          choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(26, iMatchMandatory[t1, t2]);
+          choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(27, iMatchNonMandatory[t1, t2]);
 
         }
       }
@@ -503,11 +507,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //Add utility terms that are not in components
         //alternative.AddUtilityTerm(399, 0);
 
-        // OBS!!! This is new - 21nd January 2013 - it sais that these tris are less expected to be done with 3 or 4+ persons (compared to to people)
+        // OBS!!! This is new - 21nd January 2013 - it sais that these trips are less expected to be done with 3 or 4+ persons (compared to two people)
         alternative.AddUtilityTerm(59, altParticipants[alt][7] >= 3 ? 1 : 0);
         //alternative.AddUtilityTerm(60, altParticipants[alt][7] >= 4 ? 1 : 0); // OBS! no observations with 4+ HHsize
         alternative.AddUtilityTerm(58, tourLogsum);
         //Add utility components
+
+        //GV: CPH logsum - 19. feb 2019 
+        alternative.AddUtilityTerm(60, tourLogsum * (hhLivesInCPHCity).ToFlag()); 
 
         for (int p = 1; p <= 5; p++) {
           if (altParticipants[alt][p] == 1) {
