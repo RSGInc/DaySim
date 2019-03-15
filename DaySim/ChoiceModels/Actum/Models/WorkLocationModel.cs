@@ -121,10 +121,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
       DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, residenceParcel);
       int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.WorkTourModeModel);
       int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
+      
       WorkLocationUtilities workLocationUtilites = new WorkLocationUtilities(person, sampleSize, destinationArrivalTime, destinationDepartureTime);
-
+      
       Dictionary<DestinationSampler.TourSampleItem, int> sampleItems = destinationSampler.SampleAndReturnTourDestinations(workLocationUtilites);
-
+           
       int index = 0;
       foreach (KeyValuePair<DestinationSampler.TourSampleItem, int> sampleItem in sampleItems) {
         bool available = sampleItem.Key.Available;
@@ -159,7 +160,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                     : (household.Income <= 900000)
                         ? Global.Settings.VotALSegments.Medium
                         : Global.Settings.VotALSegments.High;
-               
+
         //int taSegment = destinationParcel.TransitAccessSegment();
         //GV: 12.3.2019 - getting values from MB's memo
         //OBS - it has to be in km
@@ -169,7 +170,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
               : destinationParcel.GetDistanceToTransit() > 0.4 && destinationParcel.GetDistanceToTransit() <= 1.6
                   ? 1
                   : 2;
-        
+
         double aggregateLogsum = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment];
 
         double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
@@ -212,7 +213,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double employmentCommercial = destinationParcel.EmploymentRetail + destinationParcel.EmploymentService;
 
         // parking attributes
-        double parcelParkingDensity = destinationParcel.ParkingDataAvailable * destinationParcel.EmployeeOnlyParkingSpaces / Math.Max (1.0,destinationParcel.EmploymentTotal);
+        double parcelParkingDensity = destinationParcel.ParkingDataAvailable * destinationParcel.EmployeeOnlyParkingSpaces / Math.Max(1.0, destinationParcel.EmploymentTotal);
 
         bool workLocationIsInCPHMuni = false;
         if (destinationParcel.LandUseCode == 101) {
@@ -256,23 +257,23 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         //GV: 13. mar. 2019 - no. of parkig places in the destination area 
         //double resParkingSpacesPerHH = (Math.Max(1.0, resNoParking)) / (Math.Max(1.0, residenceParcel.Households));
-        double destParkingSpaces = (Math.Max(1.0, destNoParking)) ;
+        double destParkingSpaces = (Math.Max(1.0, destNoParking));
 
         //GV: 13. mar. 2019 - no. of parkig places in the Buffer1 area 
         //double Bf1ParkingSpacesPerHH = (Math.Max(1.0, Bf1NoParking)) / (Math.Max(1.0, residenceParcel.HouseholdsBuffer1));
-        double destBf1ParkingSpaces = (Math.Max(1.0, Bf1NoParking)) ;
+        double destBf1ParkingSpaces = (Math.Max(1.0, Bf1NoParking));
 
         //GV: 13. mar. 2019 - no. of parkig places in the Buffer2 area 
         //double Bf2ParkingSpacesPerHH = (Math.Max(1.0, Bf2NoParking)) / (Math.Max(1.0, residenceParcel.HouseholdsBuffer2));
-        double destBf2ParkingSpaces = (Math.Max(1.0, Bf2NoParking)) ;
+        double destBf2ParkingSpaces = (Math.Max(1.0, Bf2NoParking));
 
-                                    
+
 
         //non-size terms. 
 
         // sampling adjustment factor
         alternative.AddUtilityTerm(1, sampleItem.Key.AdjustmentFactor);
-        
+
         // Residential density
         alternative.AddUtilityTerm(2, destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits / 1000.0);
         alternative.AddUtilityTerm(3, (lowIncome).ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits / 1000.0);
@@ -321,7 +322,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(23, (highIncome).ToFlag() * workTourLogsum);
         alternative.AddUtilityTerm(24, incomeMissing.ToFlag() * workTourLogsum);
         alternative.AddUtilityTerm(25, person.IsFemale.ToFlag() * workTourLogsum);
-        alternative.AddUtilityTerm(26, person.IsPartTimeWorker.ToFlag() * workTourLogsum );
+        alternative.AddUtilityTerm(26, person.IsPartTimeWorker.ToFlag() * workTourLogsum);
         alternative.AddUtilityTerm(27, person.IsNotFullOrPartTimeWorker.ToFlag() * workTourLogsum);
         alternative.AddUtilityTerm(28, (person.OccupationCode == 8).ToFlag() * workTourLogsum); // self-employed
         alternative.AddUtilityTerm(29, person.Age * workTourLogsum);
@@ -342,55 +343,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(49, person.IsNotFullOrPartTimeWorker.ToFlag() * distanceLog);
         alternative.AddUtilityTerm(50, (person.OccupationCode == 8).ToFlag() * distanceLog); // self-employed
         alternative.AddUtilityTerm(51, person.Age * distanceLog);
-        
+
         //Distance from school for student worker
-        alternative.AddUtilityTerm(60, person.IsStudentAge.ToFlag() * distanceFromSchool); 
+        alternative.AddUtilityTerm(60, person.IsStudentAge.ToFlag() * distanceFromSchool);
 
         //Aggregate logsum at work location
         alternative.AddUtilityTerm(61, person.IsFulltimeWorker.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(62, person.IsPartTimeWorker.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(63, person.IsNotFullOrPartTimeWorker.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(64, parcelParkingDensity);
-=======
-        //alternative.AddUtilityTerm(2, destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
-        //alternative.AddUtilityTerm(3, (person.Household.Income < 300000).ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
-        //alternative.AddUtilityTerm(4, person.IsFemale.ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
-        //alternative.AddUtilityTerm(5, isInCopenhagenMunicipality.ToFlag());
-        //alternative.AddUtilityTerm(6, (person.Household.HasValidIncome && person.Household.Income < 300000).ToFlag() * isInCopenhagenMunicipality.ToFlag());
-        //alternative.AddUtilityTerm(7, (person.Household.HasValidIncome && person.Household.Income >= 300000 && person.Household.Income < 600000).ToFlag() * isInCopenhagenMunicipality.ToFlag());
-        //alternative.AddUtilityTerm(8, (person.Household.HasValidIncome && person.Household.Income >= 900000).ToFlag() * isInCopenhagenMunicipality.ToFlag());
-        //alternative.AddUtilityTerm(9, person.Age * isInCopenhagenMunicipality.ToFlag());
-        ////alternative.AddUtilityTerm(10, (person.Household.ResidenceParcel.Municipality == destination.Municipality).ToFlag());  // Acivate this after Municipality property is added to Actum parcel file
-        //following logsums replace Stefan's car and public transport times 
-        alternative.AddUtilityTerm(11, (person.Household.HasValidIncome && person.Household.Income < 300000).ToFlag() * workTourLogsum);
-        alternative.AddUtilityTerm(12, (person.Household.HasValidIncome && person.Household.Income >= 300000 && person.Household.Income < 600000).ToFlag() * workTourLogsum);
-        alternative.AddUtilityTerm(13, (person.Household.HasValidIncome && person.Household.Income >= 900000).ToFlag() * workTourLogsum);
-        alternative.AddUtilityTerm(14, person.Household.HasMissingIncome.ToFlag() * workTourLogsum);
-        alternative.AddUtilityTerm(15, person.IsFemale.ToFlag() * workTourLogsum);
-        alternative.AddUtilityTerm(16, person.Age * workTourLogsum);
-        //alternative.AddUtilityTerm(17, (person.MainOccupation == 50).ToFlag() * workTourLogsum); // self-employed
-        //Stefan's composite term 18 replaces terms 2-10 above
-        alternative.AddUtilityTerm(18, stefanUtility); // see above for this composite function of StefanMabitt's utility function
-
-        //alternative.AddUtilityTerm(2, person.IsFulltimeWorker.ToFlag() * workTourLogsum);
-        //alternative.AddUtilityTerm(3, person.IsPartTimeWorker.ToFlag() * workTourLogsum);
-        //alternative.AddUtilityTerm(4, person.IsNotFullOrPartTimeWorker.ToFlag() * workTourLogsum);
-        //alternative.AddUtilityTerm(5, distanceLog); // for distance calibration
-        //alternative.AddUtilityTerm(6, person.IsFulltimeWorker.ToFlag() * distance1);
-        //alternative.AddUtilityTerm(7, person.IsFulltimeWorker.ToFlag() * distance2);
-        //alternative.AddUtilityTerm(8, person.IsFulltimeWorker.ToFlag() * distance3);
-        //alternative.AddUtilityTerm(9, person.IsPartTimeWorker.ToFlag() * distanceLog);
-        //alternative.AddUtilityTerm(10, person.IsNotFullOrPartTimeWorker.ToFlag() * distanceLog);
-        //alternative.AddUtilityTerm(11, person.Household.Has0To15KIncome.ToFlag() * distanceLog);
-        //alternative.AddUtilityTerm(12, person.Household.Has50To75KIncome.ToFlag() * distanceLog);
-        //alternative.AddUtilityTerm(13, person.Household.Has75To100KIncome.ToFlag() * distanceLog);
-        //alternative.AddUtilityTerm(14, person.IsFemale.ToFlag() * distanceLog);
-        //alternative.AddUtilityTerm(15, person.IsStudentAge.ToFlag() * distanceFromSchool);
-        //alternative.AddUtilityTerm(16, person.IsFulltimeWorker.ToFlag() * aggregateLogsum);
-        //alternative.AddUtilityTerm(17, person.IsPartTimeWorker.ToFlag() * aggregateLogsum);
-        //alternative.AddUtilityTerm(18, person.IsNotFullOrPartTimeWorker.ToFlag() * aggregateLogsum);
-        //alternative.AddUtilityTerm(19, parcelParkingDensity);
-        //alternative.AddUtilityTerm(20, c34Ratio);
+        alternative.AddUtilityTerm(64, parcelParkingDensity); 
 
         //Neighborhood
         // consider splitting into income categories
