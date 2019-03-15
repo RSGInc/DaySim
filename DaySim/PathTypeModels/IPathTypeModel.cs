@@ -48,10 +48,12 @@ namespace DaySim.PathTypeModels {
     double PathOriginAccessTime { get; }
     double PathOriginAccessDistance { get; }
     double PathOriginAccessCost { get; }
+    double PathOriginAccessUtility { get; }
     int PathDestinationAccessMode { get; }
     double PathDestinationAccessTime { get; }
     double PathDestinationAccessDistance { get; }
     double PathDestinationAccessCost { get; }
+    double PathDestinationAccessUtility { get; }
 
 
 

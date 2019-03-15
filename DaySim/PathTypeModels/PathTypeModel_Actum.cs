@@ -62,10 +62,12 @@ namespace DaySim.PathTypeModels {
     private readonly double[] _pathOriginAccessTime = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathOriginAccessDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathOriginAccessCost = new double[Global.Settings.PathTypes.TotalPathTypes];
+    private readonly double[] _pathOriginAccessUtility = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly int[] _pathDestinationAccessMode = new int[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathDestinationAccessTime = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathDestinationAccessDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
     private readonly double[] _pathDestinationAccessCost = new double[Global.Settings.PathTypes.TotalPathTypes];
+    private readonly double[] _pathDestinationAccessUtility = new double[Global.Settings.PathTypes.TotalPathTypes];
     private static List<ParkAndRideNodeWrapper> _parkAndRideNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
     private static List<ParkAndRideNodeWrapper> _parkAndRideAutoNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
     private static List<ParkAndRideNodeWrapper> _parkAndRideBikeNodesWithCapacity = new List<ParkAndRideNodeWrapper>();
@@ -112,10 +114,12 @@ namespace DaySim.PathTypeModels {
     public double PathOriginAccessTime { get; protected set; }
     public double PathOriginAccessDistance { get; protected set; }
     public double PathOriginAccessCost { get; protected set; }
+    public double PathOriginAccessUtility { get; protected set; }
     public int PathDestinationAccessMode { get; protected set; }
     public double PathDestinationAccessTime { get; protected set; }
     public double PathDestinationAccessDistance { get; protected set; }
     public double PathDestinationAccessCost { get; protected set; }
+    public double PathDestinationAccessUtility { get; protected set; }
 
     public bool Available { get; protected set; }
 
@@ -419,10 +423,12 @@ namespace DaySim.PathTypeModels {
       PathOriginAccessTime = _pathOriginAccessTime[_choice];
       PathOriginAccessDistance = _pathOriginAccessDistance[_choice];
       PathOriginAccessCost = _pathOriginAccessCost[_choice];
+      PathOriginAccessUtility = _pathOriginAccessUtility[_choice];
       PathDestinationAccessMode = _pathDestinationAccessMode[_choice];
       PathDestinationAccessTime = _pathDestinationAccessTime[_choice];
       PathDestinationAccessDistance = _pathDestinationAccessDistance[_choice];
       PathDestinationAccessCost = _pathDestinationAccessCost[_choice];
+      PathDestinationAccessUtility = _pathDestinationAccessUtility[_choice];
     }
 
 
@@ -466,10 +472,12 @@ namespace DaySim.PathTypeModels {
       _pathOriginAccessTime[pathType] = 0.0;
       _pathOriginAccessDistance[pathType] = 0.0;
       _pathOriginAccessCost[pathType] = 0.0;
+      _pathOriginAccessUtility[pathType] = 0.0;
       _pathDestinationAccessMode[pathType] = Global.Settings.Modes.None;
       _pathDestinationAccessTime[pathType] = 0.0;
       _pathDestinationAccessDistance[pathType] = 0.0;
       _pathDestinationAccessCost[pathType] = 0.0;
+      _pathDestinationAccessUtility[pathType] = 0.0;
     }
 
     private void RunAutoModel(int skimModeIn, int pathType, double votValue, bool useZones) {
@@ -543,10 +551,12 @@ namespace DaySim.PathTypeModels {
       _pathOriginAccessTime[pathType] = 0.0;
       _pathOriginAccessDistance[pathType] = 0.0;
       _pathOriginAccessCost[pathType] = 0.0;
+      _pathOriginAccessUtility[pathType] = 0.0;
       _pathDestinationAccessMode[pathType] = Global.Settings.Modes.None;
       _pathDestinationAccessTime[pathType] = 0.0;
       _pathDestinationAccessDistance[pathType] = 0.0;
       _pathDestinationAccessCost[pathType] = 0.0;
+      _pathDestinationAccessUtility[pathType] = 0.0;
     }
 
     protected void RunZonalWalkTransitModel(int skimMode, int pathType, double votValue, bool useZones) {
@@ -802,18 +812,18 @@ namespace DaySim.PathTypeModels {
           int terminalMicrozoneId = Global.ParcelToBikeOnBoardMicrozoneIds[indexAccess];
           ParcelWrapper bikeOnBoardParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
           WalkBikePath accessPath = GetWalkBikePath(Global.Settings.Modes.HovPassenger, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, tourOriginParcel, bikeOnBoardParcel);
-          accessTime = accessPath.Time;
+          accessTime = accessPath.Time * roundTripFactor;
           accessCost = 0;
-          accessUtility = accessPath.Utility;
+          accessUtility = accessPath.Utility * roundTripFactor;
         } else if (bikeAccess && !bikeOnBoard) {
           int nodeId = Global.ParcelToBikeParkAndRideNodeIds[indexAccess];
           ParkAndRideNodeWrapper node = bikeParkAndRideNodes.First(x => x.ZoneId == nodeId);
           ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
           WalkBikePath accessPath = GetWalkBikePath(accessMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, tourOriginParcel, parkAndRideParcel);
           double parkingCost = node.CostDaily;
-          accessTime = accessPath.Time;
+          accessTime = accessPath.Time * roundTripFactor;
           accessCost = parkingCost;
-          accessUtility = accessPath.Utility;
+          accessUtility = accessPath.Utility * roundTripFactor;
         } else if (sovAccess) {
           int nodeId = Global.ParcelToAutoParkAndRideNodeIds[indexAccess];
           ParkAndRideNodeWrapper node = autoParkAndRideNodes.First(x => x.ZoneId == nodeId);
@@ -846,18 +856,18 @@ namespace DaySim.PathTypeModels {
 
           double parkingCost = Math.Min(parkingCostByTheHour, node.CostDaily);
 
-          accessTime = accessPath.Time;
+          accessTime = accessPath.Time * roundTripFactor;
           accessCost = accessPath.Cost + parkingCost;
-          accessUtility = accessPath.Utility;
+          accessUtility = accessPath.Utility * roundTripFactor;
           accessParkAndRideNodeID = nodeId;
         } else if (hovAccess || shareAccess) {
           int terminalId = Global.ParcelToAutoKissAndRideTerminalIds[indexAccess];
           int terminalMicrozoneId = Global.ParcelToAutoKissAndRideMicrozoneIds[indexAccess];
           ParcelWrapper kissAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
           AutoPath accessPath = GetAutoPath(Global.Settings.Modes.HovPassenger, pathTypeAccEgr, votValue, useZones, false, _outboundTime, _returnTime, 0, 0, tourOriginParcel, kissAndRideParcel);
-          accessTime = accessPath.Time;
-          accessCost = accessPath.Cost;
-          accessUtility = accessPath.Utility;
+          accessTime = accessPath.Time * roundTripFactor;
+          accessCost = accessPath.Cost * roundTripFactor;
+          accessUtility = accessPath.Utility * roundTripFactor;
         }
 
         for (int indexEgress = firstIndexEgress; indexEgress <= LastIndexEgress; indexEgress++) {
@@ -899,24 +909,25 @@ namespace DaySim.PathTypeModels {
             int terminalMicrozoneId = Global.ParcelToBikeOnBoardMicrozoneIds[indexEgress];
             ParcelWrapper bikeOnBoardParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
             WalkBikePath egressPath = GetWalkBikePath(egressMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, bikeOnBoardParcel, nonTourOriginParcel);
-            egressTime = egressPath.Time;
+            egressTime = egressPath.Time * roundTripFactor;
             egressCost = 0;
-            egressUtility = egressPath.Utility;
+            egressUtility = egressPath.Utility * roundTripFactor;
           } else if (bikeEgress && !bikeOnBoard) {
             int nodeId = Global.ParcelToBikeParkAndRideNodeIds[indexEgress];
             ParkAndRideNodeWrapper node = bikeParkAndRideNodes.First(x => x.ZoneId == nodeId);
             ParcelWrapper parkAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[node.NearestParcelId];
             WalkBikePath egressPath = GetWalkBikePath(egressMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, parkAndRideParcel, nonTourOriginParcel);
-            egressTime = egressPath.Time;
-            egressUtility = egressPath.Utility;
+            egressTime = egressPath.Time * roundTripFactor;
+            egressCost = 0;
+            egressUtility = egressPath.Utility * roundTripFactor;
           } else if (shareEgress) {
             int terminalId = Global.ParcelToAutoKissAndRideTerminalIds[indexEgress];
             int terminalMicrozoneId = Global.ParcelToAutoKissAndRideMicrozoneIds[indexEgress];
             ParcelWrapper kissAndRideParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[terminalMicrozoneId];
             AutoPath egressPath = GetAutoPath(Global.Settings.Modes.HovPassenger, pathTypeAccEgr, votValue, useZones, false, _outboundTime, _returnTime, 0, 0, kissAndRideParcel, nonTourOriginParcel);
-            egressTime = egressPath.Time;
-            egressCost = egressPath.Cost;
-            egressUtility = egressPath.Utility;
+            egressTime = egressPath.Time * roundTripFactor;
+            egressCost = egressPath.Cost * roundTripFactor;
+            egressUtility = egressPath.Utility * roundTripFactor;
           }
 
           if (transitPath.Time + accessTime + egressTime > pathTimeLimit) {
@@ -953,10 +964,12 @@ namespace DaySim.PathTypeModels {
           _pathOriginAccessTime[pathType] = accessTime;
           _pathOriginAccessDistance[pathType] = accessDistance;
           _pathOriginAccessCost[pathType] = accessCost;
+          _pathOriginAccessUtility[pathType] = accessUtility;
           _pathDestinationAccessMode[pathType] = egressMode;
           _pathDestinationAccessTime[pathType] = egressTime;
           _pathDestinationAccessDistance[pathType] = egressDistance;
           _pathDestinationAccessCost[pathType] = egressCost;
+          _pathDestinationAccessUtility[pathType] = egressUtility;
           _pathParkAndRideNodeId[pathType] = accessParkAndRideNodeID;
         }
       }

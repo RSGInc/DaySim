@@ -961,35 +961,35 @@ namespace DaySim.ChoiceModels.Actum.Models {
           }
 
           if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare) {
-            alternative.AddUtilityTerm(11, modeTimes.OriginAccessTime);
+            alternative.AddUtilityTerm(11, modeTimes.OriginAccessUtility);
           }
           if (mode == Global.Settings.Modes.BikeParkRideWalk || mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.BikeParkRideShare) {
-            alternative.AddUtilityTerm(12, modeTimes.OriginAccessTime);
+            alternative.AddUtilityTerm(12, modeTimes.OriginAccessUtility);
           }
           if (mode == Global.Settings.Modes.ShareRideWalk || mode == Global.Settings.Modes.ShareRideBike || mode == Global.Settings.Modes.ShareRideShare) {
-            alternative.AddUtilityTerm(13, modeTimes.OriginAccessTime);
+            alternative.AddUtilityTerm(13, modeTimes.OriginAccessUtility);
           }
           if (mode == Global.Settings.Modes.CarKissRideWalk || mode == Global.Settings.Modes.CarKissRideBike || mode == Global.Settings.Modes.CarKissRideShare) {
-            alternative.AddUtilityTerm(14, modeTimes.OriginAccessTime);
+            alternative.AddUtilityTerm(14, modeTimes.OriginAccessUtility);
           }
           if (mode == Global.Settings.Modes.CarParkRideWalk || mode == Global.Settings.Modes.CarParkRideBike || mode == Global.Settings.Modes.CarParkRideShare) {
-            alternative.AddUtilityTerm(15, modeTimes.OriginAccessTime);
+            alternative.AddUtilityTerm(15, modeTimes.OriginAccessUtility);
           }
           if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.BikeParkRideWalk || mode == Global.Settings.Modes.ShareRideWalk
              || mode == Global.Settings.Modes.CarKissRideWalk || mode == Global.Settings.Modes.CarParkRideWalk) {
-            alternative.AddUtilityTerm(16, modeTimes.DestinationAccessTime);
+            alternative.AddUtilityTerm(16, modeTimes.DestinationAccessUtility);
           }
           if (mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.BikeParkRideBike || mode == Global.Settings.Modes.ShareRideBike
              || mode == Global.Settings.Modes.CarKissRideBike || mode == Global.Settings.Modes.CarParkRideBike) {
-            alternative.AddUtilityTerm(17, modeTimes.DestinationAccessTime);
+            alternative.AddUtilityTerm(17, modeTimes.DestinationAccessUtility);
           }
           if (mode == Global.Settings.Modes.WalkRideShare || mode == Global.Settings.Modes.BikeParkRideShare || mode == Global.Settings.Modes.ShareRideShare
              || mode == Global.Settings.Modes.CarKissRideShare || mode == Global.Settings.Modes.CarParkRideShare) {
-            alternative.AddUtilityTerm(18, modeTimes.DestinationAccessTime);
+            alternative.AddUtilityTerm(18, modeTimes.DestinationAccessUtility);
           }
           if (mode == Global.Settings.Modes.BikeOnTransit) {
-            alternative.AddUtilityTerm(12, modeTimes.OriginAccessTime);
-            alternative.AddUtilityTerm(17, modeTimes.DestinationAccessTime);
+            alternative.AddUtilityTerm(12, modeTimes.OriginAccessUtility);
+            alternative.AddUtilityTerm(17, modeTimes.DestinationAccessUtility);
           }
           //alternative.AddUtilityTerm(3,
           //                           Math.Log(modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start -
