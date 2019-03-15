@@ -155,7 +155,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
                              : (purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Education
                              : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Business
                              : (purpose == Global.Settings.Purposes.Shopping) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Shop
-                             : (ParentTour != null) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_NonHB  
+                             : (ParentTour != null) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_NonHB
                              : Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_HBOther;
 
       double baseIncomeCoefficient = (purpose == Global.Settings.Purposes.Work) ? Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Work
@@ -203,7 +203,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           }
         }
 
-      } else */ { // set randomly
+      } else */
+      { // set randomly
         double randomNumber = 0.5; // Household.RandomUtility.Uniform01();
 
         double fraction2Occ = DestinationPurpose == Global.Settings.Purposes.Work ? Global.Configuration.COMPASS_HOVFraction2Occupants_Commute

@@ -8,15 +8,15 @@
 
 using System;
 using DaySim.DomainModels.Actum.Wrappers;
-using DaySim.Framework.ChoiceModels;  
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
+using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
-using DaySim.DomainModels.Actum.Wrappers.Interfaces; 
 
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PrimaryPriorityTimeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumPrimaryPriorityTimeModel";
+    public const string CHOICE_MODEL_NAME = "ActumPrimaryPriorityTimeModel";
     private const int TOTAL_ALTERNATIVES = 4;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -49,7 +49,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         } else {
           householdDay.PrimaryPriorityTimeFlag = 0;
         }
-         
+
         if (householdDay.JointTours > 0) {
           householdDay.JointTourFlag = 1;
         } else {
@@ -117,13 +117,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //JLB 20190126 adjusted Peter's version
       //Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
       //Framework.DomainModels.Wrappers.IParcelWrapper residenceParcel = household.ResidenceParcel;
-      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
-
-      // set household characteristics here that don't depend on person characteristics
-
-      int hasAdultEducLevel12 = 0;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
       int youngestAge = 999;
 
 
@@ -211,19 +207,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
           }
         } else {
 
- //         if (person.OccupationCode == 8) {    
- //             numberSelfEmpl++;
- //         } else {
+          //         if (person.OccupationCode == 8) {    
+          //             numberSelfEmpl++;
+          //         } else {
 
-            numberChildren++;
+          numberChildren++;
           if (person.PersonType == Global.Settings.PersonTypes.ChildUnder5) {
             numberChildrenUnder5++;
           }
-//        }
-        } 
+          //        }
         }
-        bool singleWorkerWithChildUnder5 = (numberAdults == numberWorkers && numberAdults == 1
-                && numberChildrenUnder5 > 0) ? true : false;
+      }
+      bool singleWorkerWithChildUnder5 = (numberAdults == numberWorkers && numberAdults == 1
+              && numberChildrenUnder5 > 0) ? true : false;
       bool workingCoupleNoChildren = (numberAdults == numberWorkers && numberAdults == 2
                 && numberChildren == 0) ? true : false;
       bool workingCoupleAllChildrenUnder5 = (numberAdults == numberWorkers && numberAdults == 2
@@ -297,11 +293,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           //pfptComponent.AddUtilityTerm(9, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
           pfptComponent.AddUtilityTerm(10, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
-      
+
           //GV; 5. feb. 2019, Self Employed in the HH 
           pfptComponent.AddUtilityTerm(11, (numberSelfEmpl >= 1).ToFlag());
           pfptComponent.AddUtilityTerm(12, (household.PartTimeWorkers >= 1).ToFlag());
-                   
+
           //GV; 4. feb. 2019, CPHcity constant
           pfptComponent.AddUtilityTerm(13, (hhLivesInCPHCity).ToFlag());
 
@@ -363,7 +359,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //GV; 5. feb. 2019, Self Employed in the HH 
           jointComponent.AddUtilityTerm(25, (numberSelfEmpl >= 1).ToFlag());
           jointComponent.AddUtilityTerm(26, (household.PartTimeWorkers >= 1).ToFlag());
-                           
+
           //GV; 4. feb. 2019, only HH car availability
           //jointComponent.AddUtilityTerm(30, (household.VehiclesAvailable >= 1 && household.Has2Drivers).ToFlag());
           jointComponent.AddUtilityTerm(27, (household.VehiclesAvailable >= 1).ToFlag());
@@ -389,7 +385,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           jointComponent.AddUtilityTerm(42, compositeLogsum);
 
           // joint non-mandatory tour constant
-          jointComponent.AddUtilityTerm(61, 1); 
+          jointComponent.AddUtilityTerm(61, 1);
 
         }
       }

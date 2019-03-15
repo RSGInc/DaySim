@@ -14,7 +14,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class PersonDayPatternModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HPersonDayPatternModel";
+    public const string CHOICE_MODEL_NAME = "HPersonDayPatternModel";
     private const int TOTAL_ALTERNATIVES = 3151;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

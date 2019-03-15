@@ -72,14 +72,14 @@ namespace DaySim.PathTypeModels {
       _transitPassOwnership = transitPassOwnership;
       _carsAreAVs = carsAreAVs;
       _personType = personType;
- 
+
       _randomChoice = randomChoice;
-       Mode = mode;
+      Mode = mode;
       //moved this logic from person wrapper
       _transitDiscountFraction = !Global.Configuration.PathImpedance_TransitUseFareDiscountFractions
               ? 0.0
               : Global.Configuration.IncludeTransitPassOwnershipModel && transitPassOwnership > 0
-              ? ( 1.0 - Math.Min(1.0, (personType==Global.Settings.PersonTypes.FullTimeWorker || personType==Global.Settings.PersonTypes.PartTimeWorker) 
+              ? (1.0 - Math.Min(1.0, (personType == Global.Settings.PersonTypes.FullTimeWorker || personType == Global.Settings.PersonTypes.PartTimeWorker)
                 ? Global.Configuration.PathImpedance_TransitPassOwnerWorkerFareFactor : Global.Configuration.PathImpedance_TransitPassOwnerNonWorkerFareFactor))
                   : Math.Abs(Global.Configuration.Policy_UniversalTransitFareDiscountFraction) > Constants.EPSILON
                       ? Global.Configuration.Policy_UniversalTransitFareDiscountFraction
@@ -94,11 +94,11 @@ namespace DaySim.PathTypeModels {
                                       : personAge >= 65
                                           ? Global.Configuration.PathImpedance_TransitFareDiscountFractionAge65Up
                                           : 0.0;
-    
 
-  }
 
-  private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, int mode) {
+    }
+
+    private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, int mode) {
       initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, mode);
       _originParcel = originParcel;
       _destinationParcel = destinationParcel;

@@ -585,7 +585,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     #region wrapper methods
 
- 
+
     public virtual int GetLandUseCode19() {
       return LandUseCode == 19 ? 1 : 0;
     }
@@ -597,7 +597,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
     public virtual double GetDistanceToTransit() {
       double distance = Constants.DEFAULT_VALUE;
 
-      if (DistanceToFerry >= 0 && Global.Configuration.DataType != "Actum")  {
+      if (DistanceToFerry >= 0 && Global.Configuration.DataType != "Actum") {
         distance = DistanceToFerry;
       }
 

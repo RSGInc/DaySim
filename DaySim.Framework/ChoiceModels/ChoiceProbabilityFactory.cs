@@ -6,6 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 
+using System;
 using System.IO;
 using DaySim.Framework.Coefficients;
 
@@ -33,13 +34,12 @@ namespace DaySim.Framework.ChoiceModels {
 
         if (file.Exists) {
           coefficientsReader = new CoefficientsReader();
-
+        } else {
+          string message = string.Format("No file exists at coefficientsPath '{0}'", coefficientsPath);
+          DaySim.Framework.Core.Global.PrintFile.WriteLine(message, true);
+          throw new Exception(message);
         }
       }
-      if (coefficientsReader == null) {
-
-      }
-
       if (coefficientsReader != null) {
 
         _coefficients = coefficientsReader.Read(coefficientsPath, out _title, out _sizeFunctionMultiplier,

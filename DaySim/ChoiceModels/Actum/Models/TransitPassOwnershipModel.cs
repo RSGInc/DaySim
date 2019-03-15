@@ -19,7 +19,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TransitPassOwnershipModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumTransitPassOwnershipModel";
+    public const string CHOICE_MODEL_NAME = "ActumTransitPassOwnershipModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

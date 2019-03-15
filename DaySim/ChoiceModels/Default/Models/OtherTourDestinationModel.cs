@@ -19,7 +19,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class OtherTourDestinationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "OtherTourDestinationModel";
+    public const string CHOICE_MODEL_NAME = "OtherTourDestinationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     // regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients

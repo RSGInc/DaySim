@@ -14,7 +14,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkBasedSubtourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkBasedSubtourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkBasedSubtourGenerationModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -69,7 +69,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
   private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TourWrapper tour, HouseholdDayWrapper householdDay, int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
       PersonWrapper person = (PersonWrapper)tour.Person;
       PersonDayWrapper personDay = (PersonDayWrapper)tour.PersonDay;
-      ParcelWrapper tourDestinationParcel = (ParcelWrapper) tour.DestinationParcel;
+      ParcelWrapper tourDestinationParcel = (ParcelWrapper)tour.DestinationParcel;
 
       //			var foodRetailServiceMedicalQtrMileLog = tourDestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
       //			var mixedUseIndex = tourDestinationParcel.MixedUse4Index1();
