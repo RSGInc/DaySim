@@ -459,7 +459,7 @@ namespace DaySim.ChoiceModels {
         IParcelWrapper parcelWrapper = parcelCreator.CreateWrapper(parcel);
 
         Parcels.Add(parcel.Id, parcelWrapper);
-        
+
 
         if (zones.TryGetValue(parcel.ZoneId, out IZone zone)) {
           parcelWrapper.District = zone.External;

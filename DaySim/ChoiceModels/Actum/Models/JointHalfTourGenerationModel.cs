@@ -17,7 +17,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class JointHalfTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumJointHalfTourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumJointHalfTourGenerationModel";
     private const int TOTAL_ALTERNATIVES = 7;
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
@@ -85,8 +85,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int nCallsForTour, bool[] available, int choice = Constants.DEFAULT_VALUE) {
       //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
-      IActumParcelWrapper householdResidenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
+      IActumParcelWrapper householdResidenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
 
       double workTourLogsum = 0;
       double schoolTourLogsum = 0;

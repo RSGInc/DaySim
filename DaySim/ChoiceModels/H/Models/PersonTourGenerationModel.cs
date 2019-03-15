@@ -17,7 +17,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class PersonTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HPersonTourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "HPersonTourGenerationModel";
 
     // Add one alternative for the stop choice; Change this hard code
     private const int TOTAL_ALTERNATIVES = 10;

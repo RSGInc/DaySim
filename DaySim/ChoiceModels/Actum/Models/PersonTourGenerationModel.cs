@@ -17,7 +17,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PersonTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumPersonTourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumPersonTourGenerationModel";
 
     // Add one alternative for the stop choice; Change this hard code
     private const int TOTAL_ALTERNATIVES = 10;
@@ -74,9 +74,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
 
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
-      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
-      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
 
       int carOwnership =
                             household.VehiclesAvailable == 0
@@ -129,7 +129,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double[] schoolLogsum = new double[8];
       int count = 0;
       foreach (PersonDayWrapper pDay in orderedPersonDays) {
-        IActumPersonWrapper person_x = (IActumPersonWrapper) pDay.Person;
+        IActumPersonWrapper person_x = (IActumPersonWrapper)pDay.Person;
         count++;
         if (count > 8) {
           break;

@@ -17,7 +17,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class WorkAtHomeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HWorkAtHomeModel";
+    public const string CHOICE_MODEL_NAME = "HWorkAtHomeModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

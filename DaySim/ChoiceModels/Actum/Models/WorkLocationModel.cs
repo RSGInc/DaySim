@@ -21,7 +21,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkLocationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkLocationModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 350; 
@@ -351,6 +351,46 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(62, person.IsPartTimeWorker.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(63, person.IsNotFullOrPartTimeWorker.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(64, parcelParkingDensity);
+=======
+        //alternative.AddUtilityTerm(2, destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
+        //alternative.AddUtilityTerm(3, (person.Household.Income < 300000).ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
+        //alternative.AddUtilityTerm(4, person.IsFemale.ToFlag() * destinationParcel.Households / destinationParcel.ThousandsSquareLengthUnits);
+        //alternative.AddUtilityTerm(5, isInCopenhagenMunicipality.ToFlag());
+        //alternative.AddUtilityTerm(6, (person.Household.HasValidIncome && person.Household.Income < 300000).ToFlag() * isInCopenhagenMunicipality.ToFlag());
+        //alternative.AddUtilityTerm(7, (person.Household.HasValidIncome && person.Household.Income >= 300000 && person.Household.Income < 600000).ToFlag() * isInCopenhagenMunicipality.ToFlag());
+        //alternative.AddUtilityTerm(8, (person.Household.HasValidIncome && person.Household.Income >= 900000).ToFlag() * isInCopenhagenMunicipality.ToFlag());
+        //alternative.AddUtilityTerm(9, person.Age * isInCopenhagenMunicipality.ToFlag());
+        ////alternative.AddUtilityTerm(10, (person.Household.ResidenceParcel.Municipality == destination.Municipality).ToFlag());  // Acivate this after Municipality property is added to Actum parcel file
+        //following logsums replace Stefan's car and public transport times 
+        alternative.AddUtilityTerm(11, (person.Household.HasValidIncome && person.Household.Income < 300000).ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(12, (person.Household.HasValidIncome && person.Household.Income >= 300000 && person.Household.Income < 600000).ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(13, (person.Household.HasValidIncome && person.Household.Income >= 900000).ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(14, person.Household.HasMissingIncome.ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(15, person.IsFemale.ToFlag() * workTourLogsum);
+        alternative.AddUtilityTerm(16, person.Age * workTourLogsum);
+        //alternative.AddUtilityTerm(17, (person.MainOccupation == 50).ToFlag() * workTourLogsum); // self-employed
+        //Stefan's composite term 18 replaces terms 2-10 above
+        alternative.AddUtilityTerm(18, stefanUtility); // see above for this composite function of StefanMabitt's utility function
+
+        //alternative.AddUtilityTerm(2, person.IsFulltimeWorker.ToFlag() * workTourLogsum);
+        //alternative.AddUtilityTerm(3, person.IsPartTimeWorker.ToFlag() * workTourLogsum);
+        //alternative.AddUtilityTerm(4, person.IsNotFullOrPartTimeWorker.ToFlag() * workTourLogsum);
+        //alternative.AddUtilityTerm(5, distanceLog); // for distance calibration
+        //alternative.AddUtilityTerm(6, person.IsFulltimeWorker.ToFlag() * distance1);
+        //alternative.AddUtilityTerm(7, person.IsFulltimeWorker.ToFlag() * distance2);
+        //alternative.AddUtilityTerm(8, person.IsFulltimeWorker.ToFlag() * distance3);
+        //alternative.AddUtilityTerm(9, person.IsPartTimeWorker.ToFlag() * distanceLog);
+        //alternative.AddUtilityTerm(10, person.IsNotFullOrPartTimeWorker.ToFlag() * distanceLog);
+        //alternative.AddUtilityTerm(11, person.Household.Has0To15KIncome.ToFlag() * distanceLog);
+        //alternative.AddUtilityTerm(12, person.Household.Has50To75KIncome.ToFlag() * distanceLog);
+        //alternative.AddUtilityTerm(13, person.Household.Has75To100KIncome.ToFlag() * distanceLog);
+        //alternative.AddUtilityTerm(14, person.IsFemale.ToFlag() * distanceLog);
+        //alternative.AddUtilityTerm(15, person.IsStudentAge.ToFlag() * distanceFromSchool);
+        //alternative.AddUtilityTerm(16, person.IsFulltimeWorker.ToFlag() * aggregateLogsum);
+        //alternative.AddUtilityTerm(17, person.IsPartTimeWorker.ToFlag() * aggregateLogsum);
+        //alternative.AddUtilityTerm(18, person.IsNotFullOrPartTimeWorker.ToFlag() * aggregateLogsum);
+        //alternative.AddUtilityTerm(19, parcelParkingDensity);
+        //alternative.AddUtilityTerm(20, c34Ratio);
 
         //Neighborhood
         // consider splitting into income categories

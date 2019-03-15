@@ -14,7 +14,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class WorkBasedSubtourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "WorkBasedSubtourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "WorkBasedSubtourGenerationModel";
     private readonly int _totalAlternatives = Global.Settings.Purposes.Social + 1;
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;

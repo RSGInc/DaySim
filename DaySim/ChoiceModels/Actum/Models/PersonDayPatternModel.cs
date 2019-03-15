@@ -15,7 +15,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PersonDayPatternModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumPersonDayPatternModel";
+    public const string CHOICE_MODEL_NAME = "ActumPersonDayPatternModel";
     private const int TOTAL_ALTERNATIVES = 214;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -200,9 +200,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, DayPattern[] dayPatterns, DayPattern choice = null) {
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) personDay.Household;
-      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
-      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)personDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
 
       int carsPerDriver = household.GetCarsPerDriver();
       double mixedDensity = residenceParcel.MixedUse3Index2();
