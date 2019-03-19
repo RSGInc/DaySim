@@ -17,7 +17,7 @@ using DaySim.Framework.Roster;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class AutoOwnershipModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumAutoOwnershipModel";
+    public const string CHOICE_MODEL_NAME = "ActumAutoOwnershipModel";
     private const int TOTAL_ALTERNATIVES = 3;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -76,7 +76,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //var foodRetailServiceMedicalLogBuffer1 = household.ResidenceParcel.FoodRetailServiceMedicalLogBuffer1();
 
       //MB check for new hh properties
-      int checkKids6To17 = household.Persons6to17; 
+      int checkKids6To17 = household.Persons6to17;
       // end check
       IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
 
@@ -179,7 +179,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //MB check for access to new Actum person properties
         int checkPersInc = person.PersonalIncome;
         //end check
+
         i++;
+
         if (person.IsWorker && person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
           //MB check for access to new Actum parcel properties
           //requires a cast and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header - use new variable workerUsualParcel...

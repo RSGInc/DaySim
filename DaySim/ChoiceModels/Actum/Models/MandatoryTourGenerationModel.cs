@@ -15,7 +15,10 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class MandatoryTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumMandatoryTourGenerationModel"; 
+
+
+    public const string CHOICE_MODEL_NAME = "ActumMandatoryTourGenerationModel";
+
     private const int TOTAL_ALTERNATIVES = 4;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -73,8 +76,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int nCallsForTour, int[] simulatedMandatoryTours, int choice = Constants.DEFAULT_VALUE) {
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) personDay.Household;
-      IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)personDay.Household;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
       double workTourLogsum;
       if (person.UsualWorkParcelId != Constants.DEFAULT_VALUE && person.UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
         //JLB 201406

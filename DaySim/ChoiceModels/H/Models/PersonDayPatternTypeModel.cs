@@ -16,7 +16,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class PersonDayPatternTypeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HPersonDayPatternTypeModel";
+    public const string CHOICE_MODEL_NAME = "HPersonDayPatternTypeModel";
     private const int TOTAL_ALTERNATIVES = 3;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

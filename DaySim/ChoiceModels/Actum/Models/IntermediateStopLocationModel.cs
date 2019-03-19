@@ -22,7 +22,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class IntermediateStopLocationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumIntermediateStopLocationModel";
+    public const string CHOICE_MODEL_NAME = "ActumIntermediateStopLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     private const int MAX_PARAMETER = 160;
@@ -209,8 +209,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         HouseholdWrapper household = (HouseholdWrapper)_trip.Household;
         PersonWrapper person = (PersonWrapper)_trip.Person;
         TourWrapper tour = (TourWrapper)_trip.Tour;
-        IActumParcelWrapper tripOriginParcel = (IActumParcelWrapper) _trip.OriginParcel;
-        IActumParcelWrapper tourOriginParcel = (IActumParcelWrapper) tour.OriginParcel;
+        IActumParcelWrapper tripOriginParcel = (IActumParcelWrapper)_trip.OriginParcel;
+        IActumParcelWrapper tourOriginParcel = (IActumParcelWrapper)tour.OriginParcel;
 
 
         //#if TRACE				
@@ -891,7 +891,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         // determine validity and need, then characteristics
         // detect and skip invalid trip records (error = true) and those that trips that don't require stop location choice (need = false)
         int excludeReason = 0;
-        IActumParcelWrapper tourOriginParcel = (IActumParcelWrapper) tour.OriginParcel;
+        IActumParcelWrapper tourOriginParcel = (IActumParcelWrapper)tour.OriginParcel;
 
         if (_maxZone == -1) {
           // TODO: Verify / Optimize

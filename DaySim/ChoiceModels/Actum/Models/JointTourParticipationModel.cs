@@ -17,7 +17,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class JointTourParticipationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumJointTourParticipationModel";
+    public const string CHOICE_MODEL_NAME = "ActumJointTourParticipationModel";
     private const int TOTAL_ALTERNATIVES = 32;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -130,7 +130,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int nCallsForTour, int[] purpose, int[][] altParticipants, int choice = Constants.DEFAULT_VALUE) {
 
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
-      IActumHouseholdWrapper household = (IActumHouseholdWrapper) householdDay.Household;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
       // set household characteristics here that don't depend on person characteristics
 
       int hhsize = household.Size;
@@ -179,7 +179,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int count = 0;
       foreach (PersonDayWrapper personDay in orderedPersonDays) {
-        IActumPersonWrapper person = (IActumPersonWrapper) personDay.Person;
+        IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
 
         count++;
         if (count <= 5) {

@@ -16,7 +16,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class WorkBasedSubtourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HWorkBasedSubtourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "HWorkBasedSubtourGenerationModel";
     private const int TOTAL_ALTERNATIVES = 10;
     private const int TOTAL_NESTED_ALTERNATIVES = 1;
     private const int TOTAL_LEVELS = 1;
