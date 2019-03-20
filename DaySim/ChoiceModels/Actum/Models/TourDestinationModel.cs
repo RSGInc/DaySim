@@ -447,6 +447,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(86, (householdHasChildren).ToFlag() * destinationParcel.EmploymentAgricultureConstruction);
           alternative.AddUtilityTerm(87, (householdHasChildren).ToFlag() * destinationParcel.EmploymentTotal);
           alternative.AddUtilityTerm(88, (householdHasChildren).ToFlag() * destinationParcel.Households);
+          alternative.AddUtilityTerm(89, (householdHasChildren).ToFlag() * destinationParcel.StudentsK8);
         } else if (tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
           alternative.AddUtilityTerm(90, piecewiseDistanceFrom0To2Km);
           //alternative.AddUtilityTerm(91, piecewiseDistanceFrom1To2Km);
@@ -531,7 +532,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(195, destinationParcel.EmploymentService);
           alternative.AddUtilityTerm(196, destinationParcel.EmploymentAgricultureConstruction);
           alternative.AddUtilityTerm(197, destinationParcel.EmploymentTotal);
-          alternative.AddUtilityTerm(198, destinationParcel.Households);
+          alternative.AddUtilityTerm(198, destinationParcel.Households);        
         }
       }
 
