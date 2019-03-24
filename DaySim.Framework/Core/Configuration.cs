@@ -2184,7 +2184,13 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double COMPASS_IncomeToNetIncomeMultiplier { get; set; } = 0.5;
     [XmlAttribute]
-    public double COMPASS_AnnualCostToUseOneCarInMonetaryUnts { get; set; } = 36615.0;
+    public double COMPASS_AnnualCostToUseOneGVInMonetaryUnits { get; set; } = 36615.0;
+    [XmlAttribute]
+    public double COMPASS_AnnualCostToUseOneEVInMonetaryUnits { get; set; } = 36615.0;
+    [XmlAttribute]
+    public double COMPASS_AnnualCostToUseOneAVInMonetaryUnits { get; set; } = 36615.0;
+    [XmlAttribute]
+    public double COMPASS_AnnualCostToUseCoefficient { get; set; } = -0.001;
 
 
 

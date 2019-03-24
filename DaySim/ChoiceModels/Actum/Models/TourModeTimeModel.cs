@@ -259,8 +259,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int fullTimeWorkerFlag = person.IsFulltimeWorker.ToFlag();
       int childAge5Through15Flag = person.IsChildAge5Through15.ToFlag();
       int childUnder5Flag = person.IsChildUnder5.ToFlag();
-      int adultFlag = person.IsAdult.ToFlag();
-      int nonAdultFlag = (!person.IsAdult).ToFlag();
+      int adultFlag = (person.Age >= 18).ToFlag();
+      int nonAdultFlag = (person.Age < 18).ToFlag();
 
       int maleFlag = person.IsMale.ToFlag();
       int femaleFlag = person.IsFemale.ToFlag();
@@ -919,9 +919,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           if(gtVariable == 1) {
             alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(202, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(202, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(203, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(201, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(201, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(201, HHwithMissingIncomeFlag * gentime);
 
           }
 

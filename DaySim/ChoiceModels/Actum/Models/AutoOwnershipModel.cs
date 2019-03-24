@@ -89,7 +89,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       bool incomeMissing = household.Income < 0? true:false;
       double netIncome = incomeMissing?  0 : (household.Income / 1000.0) * Global.Configuration.COMPASS_IncomeToNetIncomeMultiplier; // in 1000s of DKK
-      double userCost = Global.Configuration.COMPASS_AnnualCostToUseOneCarInMonetaryUnts / 1000.0;  //annual cost to use 1 car in 1000s of DKK
+      double annualCost = household.AutoType <= 1? Global.Configuration.COMPASS_AnnualCostToUseOneGVInMonetaryUnits:
+        household.AutoType == 2? Global.Configuration.COMPASS_AnnualCostToUseOneEVInMonetaryUnits:
+        Global.Configuration.COMPASS_AnnualCostToUseOneAVInMonetaryUnits;
+      double userCost = annualCost/ 1000.0;  //annual cost to use 1 car in 1000s of DKK
       double incomeRemainder1Car = netIncome - userCost >= 0? netIncome-userCost: 0;
       double incomeRemainder2Cars = netIncome - 2*userCost >= 0? netIncome-2*userCost: 0;
       double incomeDeficit1Car = !incomeMissing && netIncome -userCost < 0? userCost - netIncome: 0;
@@ -535,6 +538,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, Global.Configuration.GV_GasConventionalVehicleAvailable, choice == 1);
       alternative.Choice = 1;
+      alternative.AddUtilityTerm(100, Global.Configuration.COMPASS_AnnualCostToUseCoefficient * Global.Configuration.COMPASS_AnnualCostToUseOneGVInMonetaryUnits/1000);
       //utility is 0
 
 
@@ -549,6 +553,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(100, Global.Configuration.EV_HHHeadUnder35Coefficient * (ageOfHouseholdHead < 35).ToFlag());
       alternative.AddUtilityTerm(100, Global.Configuration.EV_HHHeadOver65Coefficient * (ageOfHouseholdHead >= 65).ToFlag());
       alternative.AddUtilityTerm(100, Global.Configuration.EV_CoefficientPerHourCommuteTime * (totalCommuteTime / 60.0));
+      alternative.AddUtilityTerm(100, Global.Configuration.COMPASS_AnnualCostToUseCoefficient * Global.Configuration.COMPASS_AnnualCostToUseOneEVInMonetaryUnits/1000);
 
 
       // 3--AVs
@@ -562,6 +567,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(100, Global.Configuration.AV_HHHeadUnder35Coefficient * (ageOfHouseholdHead < 35).ToFlag());
       alternative.AddUtilityTerm(100, Global.Configuration.AV_HHHeadOver65Coefficient * (ageOfHouseholdHead >= 65).ToFlag());
       alternative.AddUtilityTerm(100, Global.Configuration.AV_CoefficientPerHourCommuteTime * (totalCommuteTime / 60.0));
+      alternative.AddUtilityTerm(100, Global.Configuration.COMPASS_AnnualCostToUseCoefficient * Global.Configuration.COMPASS_AnnualCostToUseOneAVInMonetaryUnits/1000);
 
     }
   }
