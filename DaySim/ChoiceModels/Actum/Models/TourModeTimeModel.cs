@@ -706,6 +706,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(126, homeBasedTourFlag * socialTourFlag);
           modeComponent.AddUtilityTerm(127, workBasedTourFlag);
           modeComponent.AddUtilityTerm(128, jointTourFlag);
+          modeComponent.AddUtilityTerm(605, trnpassflag);
           //modeComponent.AddUtilityTerm(21, femaleFlag);
           //modeComponent.AddUtilityTerm(22, retiredAdultFlag);
 
@@ -927,19 +928,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
 // Expand generalised time by purpose
 
           if(gtVariable == 1) {
-            alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(211, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(211, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(211, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(211, HHwithMissingIncomeFlag * gentime);
 
           }
 
           if (gtVariable == 2) {
-            alternative.AddUtilityTerm(211, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(212, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(212, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(213, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(605, trnpassflag);
+            alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(202, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(202, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(203, HHwithMissingIncomeFlag * gentime);
           }
 
           if (gtVariable == 4) {
