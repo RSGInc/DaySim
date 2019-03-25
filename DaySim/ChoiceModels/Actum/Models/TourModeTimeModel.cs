@@ -277,6 +277,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int age3050flag = (person.Age >= 30 && person.Age < 50).ToFlag();
 
+      int parkwrkflag = (person.PaidParkingAtWorkplace == 1).ToFlag();
+      int trnpassflag = (person.TransitPassOwnership > 0).ToFlag();
+      int parkwrkmissflag = (person.PaidParkingAtWorkplace < 0).ToFlag();
 
 
 
@@ -597,6 +600,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           //GV: coeff. numbering changed, 26. may 2016
           //modeComponent.AddUtilityTerm(58, carsLessThanWorkersFlag);
+          modeComponent.AddUtilityTerm(601, parkwrkflag * workTourFlag);
+          modeComponent.AddUtilityTerm(602, parkwrkmissflag * workTourFlag);
+
         } else if (mode == Global.Settings.Modes.HovDriver) {
           modeComponent.AddUtilityTerm(40, 1);
           modeComponent.AddUtilityTerm(41, intraZonal);
@@ -615,8 +621,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(146, homeBasedTourFlag * socialTourFlag);
           modeComponent.AddUtilityTerm(147, workBasedTourFlag);
           modeComponent.AddUtilityTerm(148, jointTourFlag);
-          
-       
+          modeComponent.AddUtilityTerm(603, parkwrkflag * workTourFlag);
+          modeComponent.AddUtilityTerm(604, parkwrkmissflag * workTourFlag);
+
+
+
           //modeComponent.AddUtilityTerm(41, maleFlag);
           //modeComponent.AddUtilityTerm(41, onePersonHouseholdFlag);
 
@@ -697,6 +706,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(126, homeBasedTourFlag * socialTourFlag);
           modeComponent.AddUtilityTerm(127, workBasedTourFlag);
           modeComponent.AddUtilityTerm(128, jointTourFlag);
+          modeComponent.AddUtilityTerm(605, trnpassflag);
           //modeComponent.AddUtilityTerm(21, femaleFlag);
           //modeComponent.AddUtilityTerm(22, retiredAdultFlag);
 
@@ -918,18 +928,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
 // Expand generalised time by purpose
 
           if(gtVariable == 1) {
-            alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(211, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(211, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(211, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(211, HHwithMissingIncomeFlag * gentime);
 
           }
 
           if (gtVariable == 2) {
-            alternative.AddUtilityTerm(211, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(212, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(212, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(213, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
+            alternative.AddUtilityTerm(202, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(202, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(203, HHwithMissingIncomeFlag * gentime);
           }
 
           if (gtVariable == 4) {

@@ -235,9 +235,23 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
 
         //var purpose = tour.TourPurposeSegment;
-        int carOwnership = person.GetCarOwnershipSegment();
-        int votSegment = tour.GetVotALSegment();
-        int transitAccess = destinationParcel.TransitAccessSegment();
+        int carOwnership = person.Age < 18
+            ? Global.Settings.CarOwnerships.Child
+             : person.Age >=18 && household.VehiclesAvailable == 0
+             ? Global.Settings.CarOwnerships.NoCars
+             : person.Age >= 18 && household.VehiclesAvailable < household.HouseholdTotals.DrivingAgeMembers
+             ? Global.Settings.CarOwnerships.LtOneCarPerAdult
+             : Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult;
+        int votSegment = (household.Income <= 450000)
+                    ? Global.Settings.VotALSegments.Low
+                    : (household.Income <= 900000)
+                        ? Global.Settings.VotALSegments.Medium
+                        : Global.Settings.VotALSegments.High;
+        int transitAccess = destinationParcel.GetDistanceToTransit() >= 0 && destinationParcel.GetDistanceToTransit() <= 0.4
+              ? 0
+              : destinationParcel.GetDistanceToTransit() > 0.4 && destinationParcel.GetDistanceToTransit() <= 1.6
+                  ? 1
+                  : 2;
         //var aggregateLogsum = Global.AggregateLogsums[destinationParcel.ZoneId][purpose][carOwnership][votSegment][transitAccess];
         double aggregateLogsumHomeBased = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votSegment][transitAccess];
         double aggregateLogsumWorkBased = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.WorkBased][carOwnership][votSegment][transitAccess];
