@@ -306,12 +306,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
         int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
 
         alternative.AddUtilityTerm(2, household.Id);
-        alternative.AddUtilityTerm(3, personDay.Day);
-        alternative.AddUtilityTerm(4, person.Sequence);
-        alternative.AddUtilityTerm(5, tour.Sequence);
+        alternative.AddUtilityTerm(3, tour.DestinationPurpose);
+        alternative.AddUtilityTerm(4, person.PersonType);
+        alternative.AddUtilityTerm(5, distanceFromOrigin);
 
         alternative.AddUtilityTerm(8, adjustmentFactor);
         alternative.AddUtilityTerm(9, tourLogsum);
+
+        
+        
 
         // 3. new from GV: definition of Cph variables
 
@@ -392,20 +395,21 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(15, piecewiseDistanceFrom20KmToInfinity);
 
           //GV: june 2016 - not sign
-          //alternative.AddUtilityTerm(16, aggregateLogsumWorkBased);
+          alternative.AddUtilityTerm(16, aggregateLogsumWorkBased);
+          alternative.AddUtilityTerm(17, aggregateLogsumHomeBased);
 
           // Neighborhood
           //GV: commented out just temp.
-          //alternative.AddUtilityTerm(20, logOfOnePlusEducationK8Buffer2);
-          //alternative.AddUtilityTerm(21, logOfOnePlusEducationUniStuBuffer2);
-          //alternative.AddUtilityTerm(22, logOfOnePlusEmploymentEducationBuffer2);
+          alternative.AddUtilityTerm(20, logOfOnePlusEducationK8Buffer2);
+          alternative.AddUtilityTerm(21, logOfOnePlusEducationUniStuBuffer2);
+          alternative.AddUtilityTerm(22, logOfOnePlusEmploymentEducationBuffer2);
           alternative.AddUtilityTerm(23, logOfOnePlusEmploymentGovernmentBuffer2);
-          //alternative.AddUtilityTerm(24, logOfOnePlusEmploymentIndustrialBuffer2);
-          //alternative.AddUtilityTerm(25, logOfOnePlusEmploymentOfficeBuffer2);
-          //alternative.AddUtilityTerm(26, logOfOnePlusEmploymentRetailBuffer2);
+          alternative.AddUtilityTerm(24, logOfOnePlusEmploymentIndustrialBuffer2);
+          alternative.AddUtilityTerm(25, logOfOnePlusEmploymentOfficeBuffer2);
+          alternative.AddUtilityTerm(26, logOfOnePlusEmploymentRetailBuffer2);
           alternative.AddUtilityTerm(27, logOfOnePlusEmploymentServiceBuffer2);
-          //alternative.AddUtilityTerm(28, logOfOnePlusEmploymentAgrConstrBuffer2);
-          //alternative.AddUtilityTerm(29, logOfOnePlusEmploymentJobsBuffer2);
+          alternative.AddUtilityTerm(28, logOfOnePlusEmploymentAgrConstrBuffer2);
+          alternative.AddUtilityTerm(29, logOfOnePlusEmploymentJobsBuffer2);
 
           // Size terms
           alternative.AddUtilityTerm(30, destinationParcel.EmploymentEducation);
@@ -429,14 +433,27 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //alternative.AddUtilityTerm(55, piecewiseDistanceFrom20KmToInfinity);
 
           //GV: june 2016 - not sign
-          //alternative.AddUtilityTerm(56, aggregateLogsumHomeBased);
+          alternative.AddUtilityTerm(56, aggregateLogsumHomeBased);
 
           // Neighborhood
           //GV: commented out just temp.
-          alternative.AddUtilityTerm(60, householdHasNoChildren.ToFlag() * logOfOnePlusEmploymentJobsBuffer2);
+          //alternative.AddUtilityTerm(60, householdHasNoChildren.ToFlag() * logOfOnePlusEmploymentJobsBuffer2);
           //alternative.AddUtilityTerm(61, householdHasNoChildren.ToFlag() * logOfOnePlusHouseholdsBuffer2);
           //alternative.AddUtilityTerm(62, householdHasChildren.ToFlag() * logOfOnePlusHouseholdsBuffer2);
           //alternative.AddUtilityTerm(64, logOfOnePlusEmploymentJobsBuffer2);
+          alternative.AddUtilityTerm(60, householdHasChildren.ToFlag()*logOfOnePlusEducationK8Buffer2);
+          alternative.AddUtilityTerm(61, householdHasChildren.ToFlag() * logOfOnePlusEducationUniStuBuffer2);
+          alternative.AddUtilityTerm(62, householdHasChildren.ToFlag() * logOfOnePlusEmploymentEducationBuffer2);
+          alternative.AddUtilityTerm(63, householdHasChildren.ToFlag() * logOfOnePlusEmploymentServiceBuffer2);
+          alternative.AddUtilityTerm(64, householdHasChildren.ToFlag() * logOfOnePlusEmploymentJobsBuffer2);
+          alternative.AddUtilityTerm(65, householdHasNoChildren.ToFlag() * logOfOnePlusEducationUniStuBuffer2);
+          alternative.AddUtilityTerm(66, householdHasNoChildren.ToFlag() * logOfOnePlusEmploymentEducationBuffer2);
+          alternative.AddUtilityTerm(67, householdHasNoChildren.ToFlag() * logOfOnePlusEmploymentServiceBuffer2);
+          alternative.AddUtilityTerm(68, householdHasNoChildren.ToFlag() * logOfOnePlusEmploymentJobsBuffer2);
+
+
+
+      
 
           // Size terms
           // GV: no observations   
@@ -470,18 +487,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(95, piecewiseDistanceFrom10KmToInfinity);
 
           //GV: june 2016 - not sign
-          //alternative.AddUtilityTerm(96, aggregateLogsumHomeBased);
+          alternative.AddUtilityTerm(96, aggregateLogsumHomeBased);
 
           // Neighborhood
           //GV: commented out just temp.
-          //alternative.AddUtilityTerm(100, logOfOnePlusEmploymentEducationBuffer2);
-          //alternative.AddUtilityTerm(101, logOfOnePlusEmploymentGovernmentBuffer2);
-          //alternative.AddUtilityTerm(102, logOfOnePlusEmploymentIndustrialBuffer2);
+         // alternative.AddUtilityTerm(100, logOfOnePlusEmploymentEducationBuffer2);
+          alternative.AddUtilityTerm(101, logOfOnePlusEmploymentGovernmentBuffer2);
+          alternative.AddUtilityTerm(102, logOfOnePlusEmploymentIndustrialBuffer2);
           alternative.AddUtilityTerm(103, logOfOnePlusEmploymentOfficeBuffer2);
           alternative.AddUtilityTerm(104, logOfOnePlusEmploymentRetailBuffer2);
           alternative.AddUtilityTerm(105, logOfOnePlusEmploymentServiceBuffer2);
-          //alternative.AddUtilityTerm(106, logOfOnePlusEmploymentAgrConstrBuffer2);
-          //alternative.AddUtilityTerm(107, logOfOnePlusEmploymentJobsBuffer2);
+          alternative.AddUtilityTerm(106, logOfOnePlusEmploymentAgrConstrBuffer2);
+          alternative.AddUtilityTerm(107, logOfOnePlusEmploymentJobsBuffer2);
 
           // Size terms
           alternative.AddUtilityTerm(110, destinationParcel.EmploymentEducation);
@@ -503,7 +520,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(125, piecewiseDistanceFrom20KmToInfinity);
 
           //GV: june 2016 - not sign
-          //alternative.AddUtilityTerm(126, aggregateLogsumHomeBased);
+          alternative.AddUtilityTerm(126, aggregateLogsumHomeBased);
 
           // Neighborhood
           //GV: commented out just temp.
@@ -527,14 +544,20 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(175, piecewiseDistanceFrom20KmToInfinity);
 
           //GV: june 2016 - not sign
-          //alternative.AddUtilityTerm(176, aggregateLogsumHomeBased);
+          alternative.AddUtilityTerm(176, aggregateLogsumHomeBased);
 
           // Neighborhood
           //GV: commented out just temp.
-          //alternative.AddUtilityTerm(180, logOfOnePlusEmploymentOfficeBuffer2);
+          alternative.AddUtilityTerm(180, logOfOnePlusEmploymentOfficeBuffer2);
           alternative.AddUtilityTerm(181, logOfOnePlusEmploymentRetailBuffer2);
           alternative.AddUtilityTerm(182, logOfOnePlusEmploymentServiceBuffer2);
-          //alternative.AddUtilityTerm(183, logOfOnePlusEmploymentJobsBuffer2);
+          alternative.AddUtilityTerm(183, logOfOnePlusEmploymentEducationBuffer2);
+          alternative.AddUtilityTerm(184, logOfOnePlusEmploymentGovernmentBuffer2);
+          alternative.AddUtilityTerm(185, logOfOnePlusEmploymentIndustrialBuffer2);
+          alternative.AddUtilityTerm(186, logOfOnePlusEmploymentAgrConstrBuffer2);
+          alternative.AddUtilityTerm(187, logOfOnePlusEmploymentJobsBuffer2);
+
+
 
           // Size terms
           alternative.AddUtilityTerm(190, destinationParcel.EmploymentEducation);
