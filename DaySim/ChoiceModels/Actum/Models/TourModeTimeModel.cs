@@ -276,6 +276,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //age inputs (from apply)
 
       int age3050flag = (person.Age >= 30 && person.Age < 50).ToFlag();
+      int age65pflag = (person.Age >= 65).ToFlag();
+      int hhsizeone = (household.Size == 1).ToFlag();
 
       int parkwrkflag = (person.PaidParkingAtWorkplace == 1).ToFlag();
       int trnpassflag = (person.TransitPassOwnership > 0).ToFlag();
@@ -460,7 +462,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 combinationComponent.AddUtilityTerm(firstCoef + 55, educationTourFlag);                
               }
               if (periodComb == 11) {
-                combinationComponent.AddUtilityTerm(firstCoef + 56, escortTourFlag);                
+                combinationComponent.AddUtilityTerm(firstCoef + 56, escortTourFlag);
+                combinationComponent.AddUtilityTerm(firstCoef + 59, workTourFlag);
+                combinationComponent.AddUtilityTerm(firstCoef + 61, age65pflag);
+              }
+              if (periodComb == 12) {
+                combinationComponent.AddUtilityTerm(firstCoef + 60, shoppingTourFlag);               
               }
               if (periodComb == 15) {
                 combinationComponent.AddUtilityTerm(firstCoef + 57, shoppingTourFlag);
@@ -623,6 +630,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(148, jointTourFlag);
           modeComponent.AddUtilityTerm(603, parkwrkflag * workTourFlag);
           modeComponent.AddUtilityTerm(604, parkwrkmissflag * workTourFlag);
+          modeComponent.AddUtilityTerm(607, hhsizeone);
 
 
 
@@ -707,6 +715,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(127, workBasedTourFlag);
           modeComponent.AddUtilityTerm(128, jointTourFlag);
           modeComponent.AddUtilityTerm(605, trnpassflag);
+          modeComponent.AddUtilityTerm(606, fullTimeWorkerFlag);
           //modeComponent.AddUtilityTerm(21, femaleFlag);
           //modeComponent.AddUtilityTerm(22, retiredAdultFlag);
 

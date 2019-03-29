@@ -100,7 +100,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: 4. mar. 2019 - no. of parkig places in the residental area
       //JB: Employee parking places should not be used
-      double resNoParking = (residenceParcel.ResidentialPermitOnlyParkingSpaces +
+      double resNoParking = (residenceParcel.ResidentialPermitOnlyParkingSpaces + 
         residenceParcel.PublicWithResidentialPermitAllowedParkingSpaces +
         residenceParcel.PublicNoResidentialPermitAllowedParkingSpaces +
         //residenceParcel.EmployeeOnlyParkingSpaces +
