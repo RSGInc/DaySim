@@ -232,38 +232,10 @@ namespace DaySim.PathTypeModels {
 
         _tourCostCoefficient = _tourCostCoefficient * Math.Pow(distanceMultiple, distanceElasticity);
       }
-      /* this is not used
-      if (Mode == Global.Settings.Modes.Hov2) {
-        _tourCostCoefficient
-            = _tourCostCoefficient /
-              (_purpose == Global.Settings.Purposes.Work
-                  ? Global.Configuration.Coefficients_HOV2CostDivisor_Work
-                  : Global.Configuration.Coefficients_HOV2CostDivisor_Other);
-      } else if (Mode == Global.Settings.Modes.Hov3) {
-        _tourCostCoefficient
-            = _tourCostCoefficient /
-              (_purpose == Global.Settings.Purposes.Work
-                  ? Global.Configuration.Coefficients_HOV3CostDivisor_Work
-                  : Global.Configuration.Coefficients_HOV3CostDivisor_Other);
-      }
-      */
-
+     
       double votValue = 60; // (60.0 * _tourTimeCoefficient) / _tourCostCoefficient; // not using skims by vot group
 
-      /*ACTUM Begin
-      if (useZones == false && (Global.Configuration.PathImpedance_UtilityForm_Auto == 1
-          || Global.Configuration.PathImpedance_UtilityForm_Transit == 1)) {
-        if (_purpose == Global.Settings.Purposes.Work || _purpose == Global.Settings.Purposes.School || _purpose == Global.Settings.Purposes.Escort) {
-          votValue = Global.Configuration.VotMediumHigh - 0.5;
-        } else if (_purpose == Global.Settings.Purposes.Business) {
-          votValue = Global.Configuration.VotHighVeryHigh - 0.5;
-        } else {
-          votValue = Global.Configuration.VotLowMedium - 0.5;
-        }
-      }
-      ACTUM End
-      */
-      int skimMode = (Mode == Global.Settings.Modes.BikeOnTransit) ? Global.Settings.Modes.BikeOnTransit
+           int skimMode = (Mode == Global.Settings.Modes.BikeOnTransit) ? Global.Settings.Modes.BikeOnTransit
                 : (Mode == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.HovPassenger
                 : (Mode >= Global.Settings.Modes.Transit) ? Global.Settings.Modes.Transit
                 : Mode;

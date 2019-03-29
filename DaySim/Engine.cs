@@ -1794,7 +1794,7 @@ namespace DaySim {
       //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
       ParallelUtility.AssignThreadIndex(numberOfChoiceModelThreads);
       List<Thread> threads = new List<Thread>();
-      int displayInterval = Math.Min(1000, Math.Max(1, addedHousehouldCounter / 100));
+      int displayInterval = Global.Configuration.IsInEstimationMode ? 1 : Math.Min(1000, Math.Max(1, addedHousehouldCounter / 100));
       for (int threadIndex = 0; threadIndex < numberOfChoiceModelThreads; ++threadIndex) {
         Thread myThread = new Thread(new ThreadStart(delegate {
           //retrieve threadAssignedIndexIndex so can see logging output

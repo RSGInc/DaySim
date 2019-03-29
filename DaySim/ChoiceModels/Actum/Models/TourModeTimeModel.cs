@@ -54,7 +54,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         if (tour.DestinationModeAndTimeHaveBeenSimulated) {
           return;
         }
-        if (tour.DestinationParcel == null || tour.OriginParcel == null || tour.Mode < Global.Settings.Modes.Walk || tour.Mode > Global.Settings.Modes.WalkRideBike) {
+        if (tour.DestinationParcel == null || tour.OriginParcel == null || tour.Mode < Global.Settings.Modes.Walk || tour.Mode > Global.Settings.Modes.MaxMode) {
           return;
         }
       }
