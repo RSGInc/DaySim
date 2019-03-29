@@ -101,9 +101,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //JLB 201602
           //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
           ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
-          workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
+//          workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();  //JB 20190326 replaced to avoid zeroing out logsum
+          workTourLogsum = nestedAlternative == null ? workTourLogsum : nestedAlternative.ComputeLogsum();
         } else {
-          workTourLogsum = 0;
+//          workTourLogsum = 0;  // JB 20190326 commented out to avoid zeroing out the logsum 
         }
 
         if (personDay.Person.UsualSchoolParcelId != Constants.DEFAULT_VALUE && personDay.Person.UsualSchoolParcelId != Global.Settings.OutOfRegionParcelId) {
