@@ -57,6 +57,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         if (tour.DestinationParcel == null || tour.OriginParcel == null || tour.Mode < Global.Settings.Modes.Walk || tour.Mode > Global.Settings.Modes.MaxMode) { //changed
           return;
         }
+        //Global.PrintFile.WriteLine("** TourModeTime model for mode {0} from mz {1} to mz {2}", tour.Mode, tour.OriginParcel.Id, tour.DestinationParcel.Id);
+
       }
 
       // set remaining inputs
@@ -929,50 +931,50 @@ namespace DaySim.ChoiceModels.Actum.Models {
                          : (mode == Global.Settings.Modes.Sov) ? 5
                          : (mode == Global.Settings.Modes.HovDriver) ? 4
                          : (mode == Global.Settings.Modes.HovPassenger) ? 4
-                         : (mode >= Global.Settings.Modes.WalkRideWalk) ? 1 : 2;
+                         : (mode == Global.Settings.Modes.PaidRideShare) ? 2 : 1;
 //          alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
 
           double gentime = modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination;
 
-// Expand generalised time by purpose
+          // Expand generalised time by purpose
 
-          if(gtVariable == 1) {
+          if (gtVariable == 1) {
             alternative.AddUtilityTerm(211, HHwithLowIncomeFlag * gentime);
             alternative.AddUtilityTerm(211, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(211, HHwithHighIncomeFlag * gentime);
             alternative.AddUtilityTerm(211, HHwithMissingIncomeFlag * gentime);
-
           }
 
-          if (gtVariable == 2) {
+          else if (gtVariable == 2) {
+            alternative.AddUtilityTerm(200, 1.0);
             alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
             alternative.AddUtilityTerm(202, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(202, HHwithHighIncomeFlag * gentime);
             alternative.AddUtilityTerm(203, HHwithMissingIncomeFlag * gentime);
           }
 
-          if (gtVariable == 4) {
+          else if (gtVariable == 4) {
             alternative.AddUtilityTerm(231, HHwithLowIncomeFlag * gentime);
             alternative.AddUtilityTerm(232, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(232, HHwithHighIncomeFlag * gentime);
             alternative.AddUtilityTerm(233, HHwithMissingIncomeFlag * gentime);
           }
 
-          if (gtVariable == 5) {
+          else if (gtVariable == 5) {
             alternative.AddUtilityTerm(241, HHwithLowIncomeFlag * gentime);
             alternative.AddUtilityTerm(242, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(242, HHwithHighIncomeFlag * gentime);
             alternative.AddUtilityTerm(243, HHwithMissingIncomeFlag * gentime);
           }
 
-          if (gtVariable == 6) {
+          else if (gtVariable == 6) {
             alternative.AddUtilityTerm(251, HHwithLowIncomeFlag * gentime);
             alternative.AddUtilityTerm(251, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(251, HHwithHighIncomeFlag * gentime);
             alternative.AddUtilityTerm(251, HHwithMissingIncomeFlag * gentime);
           }
 
-          if (gtVariable == 7) {
+          else if (gtVariable == 7) {
             alternative.AddUtilityTerm(261, HHwithLowIncomeFlag * gentime);
             alternative.AddUtilityTerm(261, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(261, HHwithHighIncomeFlag * gentime);
