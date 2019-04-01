@@ -79,22 +79,22 @@ namespace DaySim.Framework.Core {
     public static float[] ParcelStopAreaDistances { get; set; } /* distance = lengths after division by Global.Settings.LengthUnitsPerFoot */
 
     public static int[] ParcelToAutoParkAndRideNodeIds { get; set; }
-    public static int[] ParcelToAutoParkAndRideTerminalIds { get; set; }
     public static float[] ParcelToAutoParkAndRideNodeDistance { get; set; }
     public static float[] ParcelToAutoParkAndRideNodeLength { get; set; }
 
     public static int[] ParcelToBikeParkAndRideNodeIds { get; set; }
-    public static int[] ParcelToBikeParkAndRideTerminalIds { get; set; }
     public static float[] ParcelToBikeParkAndRideNodeDistance { get; set; }
     public static float[] ParcelToBikeParkAndRideNodeLength { get; set; }
 
     public static int[] ParcelToAutoKissAndRideMicrozoneIds { get; set; }
-    public static int[] ParcelToAutoKissAndRideTerminalIds { get; set; }
+    public static int[] ParcelToAutoKissAndRideTerminalKeys { get; set; }
+    public static int[] ParcelToAutoKissAndRideTerminalIndices { get; set; }
     public static float[] ParcelToAutoKissAndRideTerminalDistance { get; set; }
     public static float[] ParcelToAutoKissAndRideTerminalLength { get; set; }
 
     public static int[] ParcelToBikeOnBoardMicrozoneIds { get; set; }
-    public static int[] ParcelToBikeOnBoardTerminalIds { get; set; }
+    public static int[] ParcelToBikeOnBoardTerminalKeys { get; set; }
+    public static int[] ParcelToBikeOnBoardTerminalIndices { get; set; }
     public static float[] ParcelToBikeOnBoardTerminalDistance { get; set; }
     public static float[] ParcelToBikeOnBoardTerminalLength { get; set; }
 
