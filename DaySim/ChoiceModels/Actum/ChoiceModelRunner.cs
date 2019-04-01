@@ -127,7 +127,10 @@ namespace DaySim.ChoiceModels.Actum {
             // after updating park and ride lot loads
             foreach (PersonDayWrapper personDay in householdDay.PersonDays) {
               if (!Global.Configuration.IsInEstimationMode && personDay.Tours != null) {
-                foreach (ITourWrapper tour in personDay.Tours.Where(tour => tour.Mode == Global.Settings.Modes.ParkAndRide)) {
+                foreach (ITourWrapper tour in personDay.Tours.Where(tour => 
+                (tour.Mode == Global.Settings.Modes.CarParkRideWalk ||
+                 tour.Mode == Global.Settings.Modes.CarParkRideBike ||
+                 tour.Mode == Global.Settings.Modes.CarParkRideShare))) {
                   tour.SetParkAndRideStay();
                 }
               }
@@ -3419,7 +3422,10 @@ namespace DaySim.ChoiceModels.Actum {
         // first, if it is the first trip on a park and ride half tour, then make it a change mode stop
         // TODO: this doesn't allow stops between the destination and the transit stop - can improve later
         int intermediateStopPurpose;
-        if (trip.Sequence == 1 && trip.Tour.Mode == Global.Settings.Modes.ParkAndRide) {
+        if (trip.Sequence == 1 && 
+          (trip.Tour.Mode == Global.Settings.Modes.CarParkRideWalk ||
+           trip.Tour.Mode == Global.Settings.Modes.CarParkRideBike ||
+           trip.Tour.Mode == Global.Settings.Modes.CarParkRideShare)) {
           intermediateStopPurpose = Global.Settings.Purposes.ChangeMode;
 
           ChoiceModelFactory.TotalTimesChangeModeStopGenerated[ParallelUtility.threadLocalAssignedIndex.Value]++;
@@ -3427,9 +3433,20 @@ namespace DaySim.ChoiceModels.Actum {
         } else if (trip.PersonDay.GetTotalStops() == 0) {
           intermediateStopPurpose = Global.Settings.Purposes.NoneOrHome;
         }
-          // 201603 JLB
-          else if (trip.Tour.Mode == Global.Settings.Modes.BikeOnTransit || trip.Tour.Mode == Global.Settings.Modes.BikeParkRideBike
-              || trip.Tour.Mode == Global.Settings.Modes.BikeParkRideWalk || trip.Tour.Mode == Global.Settings.Modes.WalkRideBike) {
+          // 201603 JLB  
+          // 201903 MB For now, extended to all transit modes except walk-transit-walk and park and ride (handled above)
+          else if (trip.Tour.Mode == Global.Settings.Modes.BikeOnTransit || 
+                   trip.Tour.Mode == Global.Settings.Modes.BikeParkRideBike ||
+                   trip.Tour.Mode == Global.Settings.Modes.BikeParkRideWalk ||
+                   trip.Tour.Mode == Global.Settings.Modes.BikeParkRideShare ||
+                   trip.Tour.Mode == Global.Settings.Modes.CarKissRideBike ||
+                   trip.Tour.Mode == Global.Settings.Modes.CarKissRideWalk ||
+                   trip.Tour.Mode == Global.Settings.Modes.CarKissRideShare ||
+                   trip.Tour.Mode == Global.Settings.Modes.ShareRideBike ||
+                   trip.Tour.Mode == Global.Settings.Modes.ShareRideWalk ||
+                   trip.Tour.Mode == Global.Settings.Modes.ShareRideShare ||
+                   trip.Tour.Mode == Global.Settings.Modes.WalkRideShare ||
+                   trip.Tour.Mode == Global.Settings.Modes.WalkRideBike) {
           intermediateStopPurpose = Global.Settings.Purposes.NoneOrHome;
         } else {
 
