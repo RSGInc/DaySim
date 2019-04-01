@@ -316,7 +316,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(42, workTourLogsum * (!hhLivesInCPHCity).ToFlag());
       //alternative.AddUtilityTerm(43, schoolTourLogsum);
       //GV: CPH diaggregate logsum - 18. feb 2019 
-      //alternative.AddUtilityTerm(43, workTourLogsum * (hhLivesInCPHCity).ToFlag());
+      //alternative.AddUtilityTerm(43, workTourLogsum * (hhLivesInCPHCity).ToFlag()); 
       alternative.AddUtilityTerm(43, workTourLogsum);
 
       alternative.AddUtilityTerm(54, householdDay.PrimaryPriorityTimeFlag); 

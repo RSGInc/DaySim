@@ -163,7 +163,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 
       double personalBusinessAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
-                 [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
+                 [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment]; 
       double shoppingAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.Shopping][carOwnership][votALSegment][transitAccessSegment];
       double mealAggregateLogsum = Global.AggregateLogsums[householdResidenceParcel.ZoneId]
