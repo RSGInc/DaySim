@@ -25,8 +25,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private const int MAX_PARAMETER = 999;
     private const int THETA_PARAMETER = 900;
     private const int THETA_PARAMETER2= 899;
-    private const int MODE_NESTS = 5;
-    private readonly int[] _nestedAlternativeIndexes = new[] { 0,  0, 1, 2, 3, 3,  3, 4, 4, 4, 4,  4, 4, 4, 4, 4,  4, 4, 4, 4, 4,  4, 4 };
+    private const int MODE_NESTS = 6;
+    private readonly int[] _nestedAlternativeIndexes = new[] { 0,  0, 1, 2, 3, 3,  4, 5, 1, 5, 1,  1, 1, 1, 4, 4,  4, 3, 3, 3, 2,  2, 2 };
 
 
     private readonly ITourCreator _creator =
