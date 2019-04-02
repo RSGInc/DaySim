@@ -873,10 +873,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
             available = false;
           }
 
-          ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available,
-                                                                                                     choice != null && choice.Index == altIndex);
+          ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available,choice != null && choice.Index == altIndex);
 
           alternative.Choice = modeTimes; // JLB added 20130420
+
 
           //alternative.AddNestedAlternative(HTourModeTime.TotalTourModeTimes + periodComb + 1, periodComb, THETA_PARAMETER);
           alternative.AddNestedAlternative(HTourModeTime.TotalTourModeTimes + mode, mode - 1, THETA_PARAMETER);
