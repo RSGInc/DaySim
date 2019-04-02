@@ -3613,8 +3613,7 @@ namespace DaySim.ChoiceModels.Actum {
         // 201603 JLB
         //				else if (trip.Tour.Mode == Global.Settings.Modes.BikeOnTransit || trip.Tour.Mode == Global.Settings.Modes.BikeParkRideBike
         //					|| trip.Tour.Mode == Global.Settings.Modes.BikeParkRideWalk || trip.Tour.Mode == Global.Settings.Modes.WalkRideBike) {
-        else if (tour.Mode == Global.Settings.Modes.BikeOnTransit || tour.Mode == Global.Settings.Modes.BikeParkRideBike
-              || tour.Mode == Global.Settings.Modes.BikeParkRideWalk || tour.Mode == Global.Settings.Modes.WalkRideBike) {
+        else if (tour.Mode >= Global.Settings.Modes.WalkRideBike && tour.Mode <= Global.Settings.Modes.MaxMode) {
           trip.Mode = Global.Settings.Modes.Transit;
         } else if (tour.JointTourSequence > 0) {
           trip.Mode = tour.Mode;

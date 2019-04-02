@@ -20,10 +20,14 @@ using DaySim.Framework.Factories;
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TourModeTimeModel : ChoiceModel {
     public const string CHOICE_MODEL_NAME = "ActumTourModeTimeModel";
-    private const int TOTAL_NESTED_ALTERNATIVES = 30;
-    private const int TOTAL_LEVELS = 2;
+    private const int TOTAL_NESTED_ALTERNATIVES = 120;
+    private const int TOTAL_LEVELS = 3;
     private const int MAX_PARAMETER = 999;
     private const int THETA_PARAMETER = 900;
+    private const int THETA_PARAMETER2= 899;
+    private const int MODE_NESTS = 5;
+    private readonly int[] _nestedAlternativeIndexes = new[] { 0,  0, 1, 2, 3, 3,  3, 4, 4, 4, 4,  4, 4, 4, 4, 4,  4, 4, 4, 4, 4,  4, 4 };
+
 
     private readonly ITourCreator _creator =
         Global
@@ -804,6 +808,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //loop on all alternatives, using modeTimes objects
       {
+        
         foreach (HTourModeTime modeTimes in HTourModeTime.ModeTimes[ParallelUtility.threadLocalAssignedIndex.Value]) {
           MinuteSpan arrivalPeriod = modeTimes.ArrivalPeriod;
           int arrivalPeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(arrivalPeriod.Start, arrivalPeriod.End);
@@ -868,15 +873,24 @@ namespace DaySim.ChoiceModels.Actum.Models {
             available = false;
           }
 
-          ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available,
-                                                                                                     choice != null && choice.Index == altIndex);
+          ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available,choice != null && choice.Index == altIndex);
 
           alternative.Choice = modeTimes; // JLB added 20130420
 
-          //alternative.AddNestedAlternative(HTourModeTime.TOTAL_TOUR_MODE_TIMES + periodComb + 1, periodComb, THETA_PARAMETER);
+
+          //alternative.AddNestedAlternative(HTourModeTime.TotalTourModeTimes + periodComb + 1, periodComb, THETA_PARAMETER);
           alternative.AddNestedAlternative(HTourModeTime.TotalTourModeTimes + mode, mode - 1, THETA_PARAMETER);
+          //ChoiceProbabilityCalculator.NestedAlternative modeNestAlternative = choiceProbabilityCalculator.GetNestedAlternative(HTourModeTime.TotalTourModeTimes + mode, mode - 1, 0, THETA_PARAMETER);
+          //modeNestAlternative.AddNestedAlternative(HTourModeTime.TotalTourModeTimes+Global.Settings.Modes.MaxMode+ _nestedAlternativeIndexes[mode]+1, _nestedAlternativeIndexes[mode], THETA_PARAMETER2);
+
+          //int modeNestIndex = periodComb * MODE_NESTS + _nestedAlternativeIndexes[mode];
+          //alternative.AddNestedAlternative(HTourModeTime.TotalTourModeTimes + modeNestIndex +1, modeNestIndex, THETA_PARAMETER);
+          //ChoiceProbabilityCalculator.NestedAlternative modeNestAlternative = choiceProbabilityCalculator.GetNestedAlternative(HTourModeTime.TotalTourModeTimes + modeNestIndex + 1, modeNestIndex, 2, THETA_PARAMETER);
+          //int lastModeNestID = HTourModeTime.TotalTourModeTimes + DayPeriod.H_BIG_DAY_PERIOD_TOTAL_TOUR_TIME_COMBINATIONS * MODE_NESTS;
+          //modeNestAlternative.AddNestedAlternative(lastModeNestID + periodComb + 1, modeNestIndex, THETA_PARAMETER);
 
           //if (Global.Configuration.IsInEstimationMode && altIndex == choice.Index) {
+
           //	Global.PrintFile.WriteLine("Aper Dper Mode {0} {1} {2} Travel Times {3} {4} Window {5} {6}",
           //										arrivalPeriod.Index, departurePeriod.Index, mode,
           //										modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -1,
