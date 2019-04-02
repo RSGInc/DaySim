@@ -768,8 +768,8 @@ namespace DaySim.PathTypeModels {
                        : Global.ParcelToAutoKissAndRideTerminalLength[indexAccess]) / 1000.0; //convert to km
 
         if (stopAreaLengthAccess > maxStopAreaLengthAccess) {
-          Global.PrintFile.WriteLine("Access mode {2} for mz {3} index {4}, distance {0} exceeds max {1}",
-                  stopAreaLengthAccess,maxStopAreaLengthAccess,accessMode,originParcelUsed.Id,indexAccess);
+         // Global.PrintFile.WriteLine("Access mode {2} for mz {3} index {4}, distance {0} exceeds max {1}",
+         //         stopAreaLengthAccess,maxStopAreaLengthAccess,accessMode,originParcelUsed.Id,indexAccess);
           continue;
         }
 
