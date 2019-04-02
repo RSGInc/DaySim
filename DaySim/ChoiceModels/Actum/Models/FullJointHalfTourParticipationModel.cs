@@ -137,11 +137,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int hhsize = household.Size;
 
-      int hhinc1 = household.Income <= 300000 ? 1 : 0;
-      int hhinc2 = (household.Income > 300000 && household.Income <= 600000) ? 1 : 0;
-      int hhinc3 = (household.Income > 600000 && household.Income <= 900000) ? 1 : 0;
-      //int hhinc4 = (household.Income > 900000 && household.Income <= 1200000) ? 1 : 0;
+      //GV: 2.4.2019
+      //int hhinc1 = household.Income <= 300000 ? 1 : 0;
+      //int hhinc2 = (household.Income > 300000 && household.Income <= 600000) ? 1 : 0;
+      //int hhinc3 = (household.Income > 600000 && household.Income <= 900000) ? 1 : 0;
+      //int hhinc4 = (household.Income > 900000) ? 1 : 0;
+      int hhinc1 = household.Income <= 450000 ? 1 : 0;
+      int hhinc2 = (household.Income > 450000 && household.Income <= 650000) ? 1 : 0;
+      int hhinc3 = (household.Income > 650000 && household.Income <= 900000) ? 1 : 0;
       int hhinc4 = (household.Income > 900000) ? 1 : 0;
+
 
       IParcelWrapper[] pUsualLocation = new IParcelWrapper[6];
       int[] pPatternType = new int[6];
@@ -397,7 +402,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             choiceProbabilityCalculator.CreateUtilityComponent(componentCross[t1, t2]);
 
             choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(41, iCrossAdultWithChildUnder5[t1, t2]);
-            choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(42, iCrossAdultWithChild5to16[t1, t2]);
+            choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(42, iCrossAdultWithChild5to16[t1, t2]); 
 
             //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(43, iCrossAdultMandatoryAndAdultNonMandatory[t1, t2]);
 
@@ -500,7 +505,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         if (choice == alt) { chosen[alt] = true; }
 
         //Get the alternative
-        ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(alt, available[alt], chosen[alt]);
+        ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(alt, available[alt], chosen[alt]); 
 
         alternative.Choice = alt;
 
@@ -510,15 +515,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
         // OBS!!! This is new - 21nd January 2013 - it sais that these trips are less expected to be done with 3 or 4+ persons (compared to two people)
         alternative.AddUtilityTerm(59, altParticipants[alt][7] >= 3 ? 1 : 0);
         //alternative.AddUtilityTerm(60, altParticipants[alt][7] >= 4 ? 1 : 0); // OBS! no observations with 4+ HHsize
-        alternative.AddUtilityTerm(58, tourLogsum);
+
+        //GV: 1.4.2019 - logsum for the rest of GCA
+        //alternative.AddUtilityTerm(58, tourLogsum);
+        alternative.AddUtilityTerm(58, tourLogsum * (!hhLivesInCPHCity).ToFlag());
         //Add utility components
 
         //GV: CPH logsum - 19. feb 2019 
-        alternative.AddUtilityTerm(60, tourLogsum * (hhLivesInCPHCity).ToFlag()); 
+        //alternative.AddUtilityTerm(60, tourLogsum * (hhLivesInCPHCity).ToFlag()); 
+        alternative.AddUtilityTerm(58, tourLogsum * (hhLivesInCPHCity).ToFlag()); 
 
         for (int p = 1; p <= 5; p++) {
           if (altParticipants[alt][p] == 1) {
-            alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]));
+            alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p])); 
           }
         }
         for (int t2 = 1; t2 <= 5; t2++) {
