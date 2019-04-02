@@ -582,7 +582,7 @@ namespace DaySim.Framework.ChoiceModels {
       return alternative;
     }
 
-    private NestedAlternative GetNestedAlternative(int id, int index, int levelIndex, int thetaParameter) {
+    public NestedAlternative GetNestedAlternative(int id, int index, int levelIndex, int thetaParameter) {
       if (intenseDebugging) {
         Global.PrintFile.WriteLine("_instanceId={4} {0}.GetNestedAlternative(id={1}, index={2}, levelIndex={3}, thetaParameter={4}", this, id, index, levelIndex, thetaParameter, _instanceId);
       }
