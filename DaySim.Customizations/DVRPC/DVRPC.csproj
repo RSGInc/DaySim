@@ -73,6 +73,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChoiceModels\Default\Models\DVRPC_OtherTourDestinationModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\DVRPC_WorkLocationModel.cs" />
     <Compile Include="PathTypeModels\DVRPC_PathTypeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
