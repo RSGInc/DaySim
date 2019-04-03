@@ -9,8 +9,8 @@ using DaySim.Framework.DomainModels.Models;
 
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumPerson : IPerson {
- 
-   int HasDriversLicense { get; set; }
-  
+
+    int HasDriversLicense { get; set; }
+
   }
 }

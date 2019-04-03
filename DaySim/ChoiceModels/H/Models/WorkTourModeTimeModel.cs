@@ -15,7 +15,7 @@ using DaySim.Framework.Factories;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class WorkTourModeTimeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HWorkTourModeTimeModel";
+    public const string CHOICE_MODEL_NAME = "HWorkTourModeTimeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 21;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 999;

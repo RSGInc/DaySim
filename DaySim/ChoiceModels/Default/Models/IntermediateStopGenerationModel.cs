@@ -14,7 +14,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class IntermediateStopGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "IntermediateStopGenerationModel";
+    public const string CHOICE_MODEL_NAME = "IntermediateStopGenerationModel";
     private const int TOTAL_ALTERNATIVES = 8;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

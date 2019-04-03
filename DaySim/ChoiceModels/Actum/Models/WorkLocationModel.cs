@@ -20,7 +20,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkLocationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkLocationModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 99;
@@ -195,7 +195,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(15, person.IsFemale.ToFlag() * workTourLogsum);
         alternative.AddUtilityTerm(16, person.Age * workTourLogsum);
         //alternative.AddUtilityTerm(17, (person.MainOccupation == 50).ToFlag() * workTourLogsum); // self-employed
-                                                                                                 //Stefan's composite term 18 replaces terms 2-10 above
+        //Stefan's composite term 18 replaces terms 2-10 above
         alternative.AddUtilityTerm(18, stefanUtility); // see above for this composite function of StefanMabitt's utility function
 
         //alternative.AddUtilityTerm(2, person.IsFulltimeWorker.ToFlag() * workTourLogsum);
@@ -311,7 +311,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       homeAlternative.Choice = person.Household.ResidenceParcel;
 
       homeAlternative.AddUtilityTerm(41, 1);
-     // homeAlternative.AddUtilityTerm(42, (person.MainOccupation == 50).ToFlag()); // self-employed
+      // homeAlternative.AddUtilityTerm(42, (person.MainOccupation == 50).ToFlag()); // self-employed
 
       //homeAlternative.AddUtilityTerm(42, person.IsPartTimeWorker.ToFlag());
       //homeAlternative.AddUtilityTerm(43, person.IsStudentAge.ToFlag());

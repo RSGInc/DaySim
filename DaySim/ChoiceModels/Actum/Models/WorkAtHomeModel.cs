@@ -14,7 +14,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkAtHomeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkAtHomeModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkAtHomeModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -92,9 +92,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       foreach (PersonWrapper person in householdDay.Household.Persons) {
         // set characteristics here that depend on person characteristics
-//        if (person.Age >= 18 && person.EducationLevel >= 12) {
-//          hasAdultEducLevel12 = 1;
-//        }
+        //        if (person.Age >= 18 && person.EducationLevel >= 12) {
+        //          hasAdultEducLevel12 = 1;
+        //        }
         //if (person.Age >= 18 && person.EducationLevel < 12) allAdultEducLevel12 = 0;
         if (person.Age < youngestAge) {
           youngestAge = person.Age;

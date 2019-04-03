@@ -302,8 +302,8 @@ namespace DaySim.AggregateLogsums {
       //if (Global.Configuration.ShouldLoadAggregateLogsumsFromFile && file.Exists) {
       //  Global.AggregateLogsums = LoadAggregateLogsumsFromFile(file);
 
-     //   return;
-     // }
+      //   return;
+      // }
 
       Global.AggregateLogsums = new double[_zoneCount][][][][];
 

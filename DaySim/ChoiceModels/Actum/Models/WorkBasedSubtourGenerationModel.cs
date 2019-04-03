@@ -14,7 +14,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkBasedSubtourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkBasedSubtourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkBasedSubtourGenerationModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;

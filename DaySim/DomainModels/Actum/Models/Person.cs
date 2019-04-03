@@ -18,5 +18,5 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("pdrivlic")]
     public int HasDriversLicense { get; set; }
 
-    }
+  }
 }

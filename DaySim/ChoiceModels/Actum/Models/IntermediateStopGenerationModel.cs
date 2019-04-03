@@ -33,7 +33,7 @@ using DaySim.Framework.Roster;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class IntermediateStopGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumIntermediateStopGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumIntermediateStopGenerationModel";
     //		private const int TOTAL_ALTERNATIVES = 20;
     //		private const int TOTAL_NESTED_ALTERNATIVES = 10;
     //		private const int TOTAL_LEVELS = 2;

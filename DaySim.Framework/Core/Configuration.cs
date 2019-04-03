@@ -49,6 +49,9 @@ namespace DaySim.Framework.Core {
     public string NodeStopAreaIndexPath { get; set; }
 
     [XmlAttribute]
+    public char NodeStopAreaIndexPathDelimiter { get; set; } = ' ';
+
+    [XmlAttribute]
     //[Metadata("Foo...")]
     public string RosterPath { get; set; }
 
@@ -810,7 +813,7 @@ namespace DaySim.Framework.Core {
     public bool PathImpedance_DVRPC_UseSingleWeightedTransitIVTSkim { get; set; }
 
 
-        [XmlAttribute]
+    [XmlAttribute]
     public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
 
     [XmlAttribute]
@@ -1009,8 +1012,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool ShouldSynchronizeRandomSeed { get; set; }
 
+    public static int DefaultRandomSeedIfNotSet = Guid.NewGuid().GetHashCode();
     [XmlAttribute]
-    public int RandomSeed { get; set; }
+    public int RandomSeed { get; set; } = DefaultRandomSeedIfNotSet;
 
     //[XmlAttribute]
     //public bool ShouldLoadAggregateLogsumsFromFile { get; set; }
@@ -1892,6 +1896,9 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public bool HDF5SkimScaledAndCondensed { get; set; } = false;
+
+    [XmlAttribute]
+    public bool SkipActumExtraTransitModes { get; set; } = false;
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
 

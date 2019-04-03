@@ -15,7 +15,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class AutoOwnershipModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HAutoOwnershipModel";
+    public const string CHOICE_MODEL_NAME = "HAutoOwnershipModel";
     private const int TOTAL_ALTERNATIVES = 5;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
