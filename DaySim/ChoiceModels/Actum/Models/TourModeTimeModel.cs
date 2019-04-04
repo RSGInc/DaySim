@@ -278,7 +278,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double pinc_linear = person.PersonalIncome;
       double hhsize = household.Size;
 
-
       //age inputs (from apply)
 
       int age3050flag = (person.Age >= 30 && person.Age < 50).ToFlag();
@@ -316,6 +315,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       }
 
       // tour inputs
+      int tourCategory = tour.GetTourCategory();
+      int notPrimaryTour = (tourCategory != Global.Settings.TourCategories.Primary).ToFlag();
+
       int escortTourFlag = tour.IsEscortPurpose().ToFlag();
       int shoppingTourFlag = tour.IsShoppingPurpose().ToFlag();
       int socialTourFlag = tour.IsSocialPurpose().ToFlag();
@@ -1037,10 +1039,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
                   Math.Pow(minimumTimeNeeded / (Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)), 0.8)
                  )));
 
+          alternative.AddUtilityTerm(803,
+                  notPrimaryTour * Math.Log(Math.Max(Constants.EPSILON, 1 -
+                  Math.Pow(minimumTimeNeeded / (Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)), 0.8)
+                 )));
 
 
           alternative.AddUtilityTerm(802, Math.Log((totalMinutesAvailableInDay + 1.0) / (minimumTimeNeeded + 1.0)));
 
+ 
+     
           //alternative.AddUtilityTerm(5,
           //                                    (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&
           //                                     arrivalPeriod.Index >= DayPeriod.EVENING)
