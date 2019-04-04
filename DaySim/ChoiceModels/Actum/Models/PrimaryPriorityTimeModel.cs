@@ -398,7 +398,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           jointComponent.AddUtilityTerm(42, compositeLogsum * (!hhLivesInCPHCity).ToFlag());
 
           // joint non-mandatory tour constant
-          jointComponent.AddUtilityTerm(61, 1);
+          //jointComponent.AddUtilityTerm(61, 1);
 
         }
       }
@@ -424,12 +424,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           if (pfpt == 1) {
             alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(1));
-            //alternative.AddUtilityTerm(20, 1);
+            alternative.AddUtilityTerm(51, 1);
 
           }
           if (jointTourFlag == 1) {
             alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(2));
-            //alternative.AddUtilityTerm(40, 1);
+            alternative.AddUtilityTerm(61, 1);
           }
 
           if (pfpt == 1 && jointTourFlag == 1) {
