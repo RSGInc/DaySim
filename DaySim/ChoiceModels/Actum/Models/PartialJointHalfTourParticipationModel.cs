@@ -32,7 +32,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         throw new ArgumentNullException("householdDay");
       }
 
-      // array associating alternative with the participation of each HH person in the joint half tour
+      // array associating alternative with the participation of each HH person in the joint half tour 
       //  also identifies minimum housheold size and number of participants for each alternative 
       //[alt,p1,p2,p3,p4,p5,MinHHSize,numPart]
       int[][] altParticipants = new int[32][];
@@ -134,12 +134,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int hhsize = household.Size;
 
-      int hhinc1 = household.Income <= 300000 ? 1 : 0;
-      int hhinc2 = (household.Income > 300000 && household.Income <= 600000) ? 1 : 0;
-      int hhinc3 = (household.Income > 600000 && household.Income <= 900000) ? 1 : 0;
-      //int hhinc4 = (household.Income > 900000 && household.Income <= 1200000) ? 1 : 0;
+      //GV: 3.4.2019 - changes in income groups
+      //int hhinc1 = household.Income <= 300000 ? 1 : 0;
+      //int hhinc2 = (household.Income > 300000 && household.Income <= 600000) ? 1 : 0;
+      //int hhinc3 = (household.Income > 600000 && household.Income <= 900000) ? 1 : 0;
+      //int hhinc4 = (household.Income > 900000) ? 1 : 0;
+      int hhinc1 = household.Income <= 450000 ? 1 : 0;
+      int hhinc2 = (household.Income > 450000 && household.Income <= 650000) ? 1 : 0;
+      int hhinc3 = (household.Income > 650000 && household.Income <= 900000) ? 1 : 0;
       int hhinc4 = (household.Income > 900000) ? 1 : 0;
-
+      
       int[] pUsualLocation = new int[6];
       int[] pPatternType = new int[6];
       int[] pConstant = new int[6];
