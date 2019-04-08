@@ -243,7 +243,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(16, (household.Size == 2).ToFlag());
       //alternative.AddUtilityTerm(17, (household.Size == 3).ToFlag());
       //alternative.AddUtilityTerm(18, (household.Size >= 4).ToFlag());
-      ////alternative.AddUtilityTerm(18, (household.Size >= 5).ToFlag()); 
+      ////alternative.AddUtilityTerm(18, (household.Size >= 5).ToFlag());   
             
       //alternative.AddUtilityTerm(24, MandatoryTourDay);
       alternative.AddUtilityTerm(25, nonMandatoryTourDay);
@@ -254,8 +254,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: put in instead of compositeLogsum - 13. june 2016
       alternative.AddUtilityTerm(27, workTourLogsum * MandatoryTourDay);
-      alternative.AddUtilityTerm(28, workTourLogsum * nonMandatoryTourDay);
-       
+      //: GV 8.4.2019 - comment from JB on 6.4.2019
+      //alternative.AddUtilityTerm(28, workTourLogsum * nonMandatoryTourDay);
+      alternative.AddUtilityTerm(27, workTourLogsum * nonMandatoryTourDay); 
+
       alternative.AddUtilityTerm(29, compositeLogsum);
       
       //GV: CPH logsum - 18. feb 2019 - not signif.
