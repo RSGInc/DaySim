@@ -110,13 +110,24 @@ namespace DaySim.ChoiceModels.Actum.Models {
         hhLivesInCPHCity = true;
       }
 
+
+      //JB: 9.4.2019
+      //Consider using (personDay.BusinessTours > 0).ToFlag() as a term in the Business and Business+School alternatives.
+      //And consider using (personDay.SchoolTours > 0).ToFlag() as a term in the School and Business+School alternatives.
+      //I would expect the signs to be positive.
+
       // No mandatory stops
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
       alternative.Choice = 0;
 
       //alternative.AddUtilityTerm(2, household.HasChildren.ToFlag());
       alternative.AddUtilityTerm(3, household.HasChildrenUnder5.ToFlag());
+
+      //GV: 8.4.2019 - JBs comment on "WorksAtHome"
+      //GV: the model is better with "person.WorksAtHome.ToFlag()"
       alternative.AddUtilityTerm(4, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(4, personDay.WorksAtHomeFlag);
+
       alternative.AddUtilityTerm(5, person.IsFemale.ToFlag());
       //alternative.AddUtilityTerm(4, household.HasChildrenAge5Through15.ToFlag());
       //alternative.AddUtilityTerm(6, household.HasChildrenUnder16.ToFlag());
@@ -149,19 +160,31 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(27, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
       alternative.AddUtilityTerm(26, (household.HasChildren).ToFlag());
 
-      alternative.AddUtilityTerm(27, workTourLogsum);
+      //GV: 9.4.2019 - impact of Man. Tour Generation
+      alternative.AddUtilityTerm(27, (personDay.BusinessTours > 0).ToFlag()); 
 
+      //GV: 9.4.201 - logsums non-significant in any form
+      //GV: 9.4.2019 - logsum for the rest of GCA
+      //alternative.AddUtilityTerm(27, workTourLogsum);
+      //alternative.AddUtilityTerm(27, workTourLogsum * (!hhLivesInCPHCity).ToFlag());
       //GV: 21, feb 2019 - CPHcity included in the logsum
-      alternative.AddUtilityTerm(28, workTourLogsum * (hhLivesInCPHCity).ToFlag());
-      
+      //alternative.AddUtilityTerm(27, workTourLogsum * (hhLivesInCPHCity).ToFlag());
+
       //alternative.AddUtilityTerm(28, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
+
+      //GV: 9.4.2019 - try with car >=1 - the model is much betetr with >=2
       alternative.AddUtilityTerm(29, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
+      //alternative.AddUtilityTerm(29, (household.VehiclesAvailable >= 2 && household.HasMoreDriversThan1).ToFlag());
+      //alternative.AddUtilityTerm(29, (household.VehiclesAvailable >= 1 && household.Has2Drivers).ToFlag());
 
 
       // School stop(s)
-      alternative = choiceProbabilityCalculator.GetAlternative(2, person.IsStudent, choice == 2);
+      alternative = choiceProbabilityCalculator.GetAlternative(2, person.IsStudent, choice == 2);  
       alternative.Choice = 2;
       alternative.AddUtilityTerm(41, 1);
+
+      //GV: 9.4.2019 - impact of Man. Tour Generation
+      alternative.AddUtilityTerm(42, (personDay.SchoolTours > 0).ToFlag());
 
       //alternative.AddUtilityTerm(43, person.WorksAtHome.ToFlag());
       //alternative.AddUtilityTerm(44, person.IsFulltimeWorker.ToFlag());
@@ -174,13 +197,22 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 
       // Business and school stops
-      alternative = choiceProbabilityCalculator.GetAlternative(3, (person.IsWorker && person.IsStudent), choice == 3);
+      alternative = choiceProbabilityCalculator.GetAlternative(3, (person.IsWorker && person.IsStudent), choice == 3); 
       alternative.Choice = 3;
       alternative.AddUtilityTerm(61, 1);
-      alternative.AddUtilityTerm(27, workTourLogsum);
 
+      //GV: 9.4.2019 - impact of Man. Tour Generation
+      alternative.AddUtilityTerm(27, (personDay.BusinessTours > 0).ToFlag());
+
+      //GV: 9.4.2019 - impact of Man. Tour Generation
+      alternative.AddUtilityTerm(42, (personDay.SchoolTours > 0).ToFlag());
+
+      //GV: 9.4.201 - logsums non-significant in any form
+      //GV: 9.4.2019 - logsum for the rest of GCA
+      //alternative.AddUtilityTerm(27, workTourLogsum);
+      //alternative.AddUtilityTerm(27, workTourLogsum * (!hhLivesInCPHCity).ToFlag());
       //GV: 21, feb 2019 - CPHcity included in the logsum
-      alternative.AddUtilityTerm(28, workTourLogsum * (hhLivesInCPHCity).ToFlag());
+      //alternative.AddUtilityTerm(27, workTourLogsum * (hhLivesInCPHCity).ToFlag());
 
       //GV: 15. june 2016, not sign.
       //alternative.AddUtilityTerm(48, schoolTourLogsum);
