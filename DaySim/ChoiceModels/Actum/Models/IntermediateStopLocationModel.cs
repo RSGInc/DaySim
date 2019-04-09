@@ -220,12 +220,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         // stop purpose
         int businessDestinationPurposeFlag = _trip.IsBusinessDestinationPurpose().ToFlag();
-        int schoolStopForChildUnderAge16 = (_trip.IsSchoolDestinationPurpose() && (person.IsChildAge5Through15 || person.IsChildUnder5)).ToFlag();
-        int schoolStopForDrivingAgeStudent = (_trip.IsSchoolDestinationPurpose() && person.IsDrivingAgeStudent).ToFlag();
+        int schoolStopForPreschoolOrPrimarySchoolChild = (_trip.IsSchoolDestinationPurpose() && (person.IsChildAge5Through15 || person.IsChildUnder5)).ToFlag();
+        int schoolStopForGymnasiumStudent = (_trip.IsSchoolDestinationPurpose() && person.IsDrivingAgeStudent).ToFlag();
         int schoolStopForAdult = (_trip.IsSchoolDestinationPurpose() && (!person.IsChildAge5Through15 && !person.IsChildUnder5) && !person.IsDrivingAgeStudent).ToFlag();
         //var workOrSchoolDestinationPurposeFlag = _trip.IsWorkOrSchoolDestinationPurpose.ToFlag();
-        int escortStop_HouseholdHasChildren = (_trip.IsEscortDestinationPurpose() && (household.HouseholdTotals.DrivingAgeStudents + household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 > 0)).ToFlag();
-        int escortStop_HouseholdHasNoChildren = (_trip.IsEscortDestinationPurpose() && (household.HouseholdTotals.DrivingAgeStudents + household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 == 0)).ToFlag();
+        //int escortStop_HouseholdHasChildren = (_trip.IsEscortDestinationPurpose() && (household.HouseholdTotals.DrivingAgeStudents + household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 > 0)).ToFlag();
+        int escortStop_HouseholdHasChildren = (_trip.IsEscortDestinationPurpose() && (household.KidsBetween0And4 > 0 || household.Persons6to17 > 0)).ToFlag();
+        //int escortStop_HouseholdHasNoChildren = (_trip.IsEscortDestinationPurpose() && (household.HouseholdTotals.DrivingAgeStudents + household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 == 0)).ToFlag();
+        int escortStop_HouseholdHasNoChildren = (_trip.IsEscortDestinationPurpose() && (household.KidsBetween0And4 <= 0 && household.Persons6to17 <= 0)).ToFlag();
         //#if TRACE
         int personalBusinessStopPurposeFlag = _trip.IsPersonalBusinessDestinationPurpose().ToFlag();
         //#endif
@@ -259,9 +261,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double logOfOnePlusHouseholdsBuffer1 = Math.Log(destinationParcel.HouseholdsBuffer1 + 1);
         double logOfOnePlusStudentsK12Buffer1 = Math.Log(destinationParcel.StudentsK8Buffer1 + destinationParcel.StudentsHighSchoolBuffer1 + 1);
         double logOfOnePlusStudentsUniversityBuffer1 = Math.Log(destinationParcel.StudentsUniversityBuffer1 + 1);
-        double logOfOnePlusParkingOffStreetPaidHourlySpacesBuffer1 = Math.Log(destinationParcel.ParkingOffStreetPaidHourlySpacesBuffer1 + 1);
-        int openSpaceType2IsPresentInBuffer1 = (destinationParcel.OpenSpaceType2Buffer1 > 0).ToFlag();
-        double numberOfNetworkNodesInBuffer1 = destinationParcel.NodesSingleLinkBuffer1 + destinationParcel.NodesThreeLinksBuffer1 + destinationParcel.NodesFourLinksBuffer1;
+       // double logOfOnePlusParkingOffStreetPaidHourlySpacesBuffer1 = Math.Log(destinationParcel.ParkingOffStreetPaidHourlySpacesBuffer1 + 1);
+       // int openSpaceType2IsPresentInBuffer1 = (destinationParcel.OpenSpaceType2Buffer1 > 0).ToFlag();
+       // double numberOfNetworkNodesInBuffer1 = destinationParcel.NodesSingleLinkBuffer1 + destinationParcel.NodesThreeLinksBuffer1 + destinationParcel.NodesFourLinksBuffer1;
 
         int stopOnJointTour = (tour.JointTourSequence > 0).ToFlag();
         int stopOnFullJointHalfTour = ((_trip.Direction == Global.Settings.TourDirections.OriginToDestination && tour.FullHalfTour1Sequence > 0)
@@ -339,26 +341,26 @@ namespace DaySim.ChoiceModels.Actum.Models {
           ttim2 = btime2;
           gtim1 = gbtime1;
           gtim2 = gbtime2;
-        } else if (tour.Mode == Global.Settings.Modes.SchoolBus) {
-          if (wdis1 < WTHRESH && wdis2 < WTHRESH && wdis1 > Constants.EPSILON && wdis2 > Constants.EPSILON) {
-            ttim1 = wtime1;
-            ttim2 = wtime2;
-            gtim1 = gwtime1;
-            gtim2 = gwtime2;
-          } else {
-            if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-              GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, destinationParcel, tripOriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
-              GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tourOriginParcel, destinationParcel, tripOriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
-            } else {
-              GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tripOriginParcel, destinationParcel, tourOriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
-              GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tripOriginParcel, destinationParcel, tourOriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
-            }
+      //  } else if (tour.Mode == Global.Settings.Modes.SchoolBus) {
+      //    if (wdis1 < WTHRESH && wdis2 < WTHRESH && wdis1 > Constants.EPSILON && wdis2 > Constants.EPSILON) {
+      //      ttim1 = wtime1;
+      //      ttim2 = wtime2;
+      //      gtim1 = gwtime1;
+      //      gtim2 = gwtime2;
+      //    } else {
+      //      if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
+      //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, destinationParcel, tripOriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
+      //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tourOriginParcel, destinationParcel, tripOriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
+      //      } else {
+      //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tripOriginParcel, destinationParcel, tourOriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
+      //       GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tripOriginParcel, destinationParcel, tourOriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
+      //      }
 
-            ttim1 = d1Time1;
-            ttim2 = d1Time2;
-            gtim1 = gd1Time1;
-            gtim2 = gd1Time2;
-          }
+      //      ttim1 = d1Time1;
+      //      ttim2 = d1Time2;
+      ///      gtim1 = gd1Time1;
+      //      gtim2 = gd1Time2;
+      //    }
         } else if (tour.Mode == Global.Settings.Modes.Sov || tour.Mode == Global.Settings.Modes.ParkAndRide || tour.Mode == Global.Settings.Modes.PaidRideShare) {
           if (wdis1 < WTHRESH && wdis2 < WTHRESH && wdis1 > Constants.EPSILON && wdis2 > Constants.EPSILON) {
             ttim1 = wtime1;
@@ -455,7 +457,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
 
         // calculate variables derived from ttim1, ttim2, gtim1 and gtim2
-        double dist = Math.Max(adis1 + adis2 - adis0, Math.Min(adis1 * 0.1, adis2 * 0.1)); // incremental distance (with imposed lower limit), in units of miles
+        double dist = Math.Max(adis1 + adis2 - adis0, Math.Min(adis1 * 0.1, adis2 * 0.1)); // incremental distance (with imposed lower limit), in units of miles (km for COMPASS)
         double gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes = (gtim1 + gtim2) / 100.0; // approximate incremental gtime, rescale to units of (100 minutes)  //rescale to units of (100 minutes
 
         gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes = gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes * dist / Math.Max(0.1, (adis1 + adis2)); // convert to approximate incremental gtime  
@@ -561,7 +563,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //				check1 = 0;
         //				}
 
-        int adultFemaleWithChildren = (person.Gender == Global.Settings.PersonGenders.Female && person.PersonType < Global.Settings.PersonTypes.DrivingAgeStudent && (household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 + household.HouseholdTotals.DrivingAgeStudents > 0)).ToFlag();
+       // int adultFemaleWithChildren = (person.Gender == Global.Settings.PersonGenders.Female && person.PersonType < Global.Settings.PersonTypes.DrivingAgeStudent && (household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 + household.HouseholdTotals.DrivingAgeStudents > 0)).ToFlag();
+        int adultFemaleWithChildren = (person.Gender == Global.Settings.PersonGenders.Female && person.PersonType < Global.Settings.PersonTypes.DrivingAgeStudent && (household.Persons6to17 > 0 || household.KidsBetween0And4 > 0)).ToFlag();
         //#if TRACE
         //				var wrkt = tour.IsWorkPurpose.ToFlag();
         //				var n34Qln = Math.Log(1 + destinationParcel.NodesThreeLinksBuffer1 / 2.0 + destinationParcel.NodesFourLinksBuffer1);
@@ -729,10 +732,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
         // Attributes specific to Auto tour modes
         alternative.AddUtilityTerm(18, tour.IsAnHovMode().ToFlag() * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
         alternative.AddUtilityTerm(19, tour.IsAnHovMode().ToFlag() * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
-        alternative.AddUtilityTerm(20, tour.IsAnAutoMode().ToFlag() * numberOfNetworkNodesInBuffer1);
+        //JB 20190409 following line lacks COMPASS data
+        //alternative.AddUtilityTerm(20, tour.IsAnAutoMode().ToFlag() * numberOfNetworkNodesInBuffer1);
         //				alternative.AddUtility(, tour.IsAnAutoMode.ToFlag() * destinationParcel.ParkingHourlyEmploymentCommercialMixBuffer1());
-        alternative.AddUtilityTerm(21, tour.IsSovMode().ToFlag() * destinationParcel.ParkingHourlyEmploymentCommercialMixBuffer1());
-        alternative.AddUtilityTerm(22, tour.IsAnAutoMode().ToFlag() * destinationParcel.ParkingHourlyEmploymentCommercialMixInParcel());
+        //JB 20190409 following two lines need to be redefined using one of the new COMPASS parking spaces attributes
+        //alternative.AddUtilityTerm(21, tour.IsSovMode().ToFlag() * destinationParcel.ParkingHourlyEmploymentCommercialMixBuffer1());
+        //alternative.AddUtilityTerm(22, tour.IsAnAutoMode().ToFlag() * destinationParcel.ParkingHourlyEmploymentCommercialMixInParcel());
+        
         //alternative.AddUtilityTerm(70, tour.IsAnAutoMode.ToFlag() * logOfOnePlusParkingOffStreetPaidHourlySpacesBuffer1);
         //				alternative.AddUtility(, tour.CarModeFlag * penpq);
 
@@ -907,7 +913,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           // set need = false if tour mode is unmodeled mode
           if (tourMode == Global.Settings.Modes.None) {
             excludeReason = 1;
-          } else if (tourMode >= Global.Settings.Modes.Other) {
+            // JB 20190409 revised mode exclusions
+            //} else if (tourMode >= Global.Settings.Modes.Other) {
+          } else if (tourMode > Global.Settings.Modes.WalkRideWalk && tourMode <= Global.Settings.Modes.CarKissRideShare){
             excludeReason = 2;
           } else if (tour.OriginParcelId > _maxParcel) {
             excludeReason = 3;
