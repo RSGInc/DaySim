@@ -414,7 +414,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       stopComponent.AddUtilityTerm(1715, compositeLogsum);
 
       // GV: 26 feb 2019 - CPHcity  
-      //stopComponent.AddUtilityTerm(1716, compositeLogsum * (hhLivesInCPHCity).ToFlag()); //GV: 26.03.2019, not significvant 
+      //stopComponent.AddUtilityTerm(1716, compositeLogsum * (hhLivesInCPHCity).ToFlag()); //GV: 26.03.2019, not significvant  
 
       //stopComponent.AddUtilityTerm(1716, person.TransitPassOwnershipFlag);
       //stopComponent.AddUtilityTerm(1716, primaryFamilyTimeFlag); //GV: 17.08.2013, the logsums are wrong
