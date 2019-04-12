@@ -145,10 +145,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         alternative.Choice = destinationParcel;
 
+        int hhDrivers = household.Size - household.Persons6to17 - household.KidsBetween0And4;  //uses new household attribute
+
         double workTourLogsum = 0D;
         //JLB 201602
         //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(person, residenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, household.HouseholdTotals.DrivingAgeMembers, 0.0);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, residenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, household.HouseholdTotals.DrivingAgeMembers, 0.0, Global.Settings.Purposes.Work);
+        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, residenceParcel, destinationParcel, destinationArrivalTime, destinationDepartureTime, hhDrivers, 0.0, Global.Settings.Purposes.Work);
         workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 
         //int votSegment = household.GetVotALSegment();
