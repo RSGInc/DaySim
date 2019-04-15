@@ -26,7 +26,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
     //private const int TOTAL_LEVELS = 2;
 
     // GV for tree Logit uncomment this
-    private const int TOTAL_NESTED_ALTERNATIVES = 6;
+    //private const int TOTAL_NESTED_ALTERNATIVES = 6;
+    //JB 20190415 fixed to include share as seventh nested alternative
+    private const int TOTAL_NESTED_ALTERNATIVES = 7;
     private const int TOTAL_LEVELS = 2;
     // GV for tree Logit comment out this
     //private const int TOTAL_NESTED_ALTERNATIVES = 0;
@@ -42,8 +44,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     // GVs Tree Logit uncomment this
     // 1 works: bike, walk and PT in one and all 3 car modes in one. Theta is estimated to 0.33 and significant
-    private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 20, 20, 19, 0, 0, 0, 0, 0, 0, 0, 20 };
-    private readonly int[] _nestedAlternativeIndexes = new[] { 0, 1, 1, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 2 };
+    //private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 20, 20, 19, 0, 0, 0, 0, 0, 0, 0, 20 };
+    //private readonly int[] _nestedAlternativeIndexes = new[] { 0, 1, 1, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 2 };
+    //JB20190415 fixed for share in car mode nest and PT in walk-bike nest
+    private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 20, 20, 20, 19, 0, 0, 0, 0, 0, 0, 20 };
+    private readonly int[] _nestedAlternativeIndexes = new[] { 0, 1, 1, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 2 };
 
     // 2 works: bike&walk in one, PT alone, CD1 (SOV) alone, and 2 car-Pass modes in one. Theta is estimated to 0.93 and significant
     // Structure-1 works much better than Structure-2
@@ -205,7 +210,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TripWrapper trip,
                                  IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper originParcel,
-                                 IParcelWrapper destinationParcel,
+                                 IParcelWrapper destinationParcel_In,
                                  int choice = Constants.DEFAULT_VALUE) {
 
 
@@ -213,20 +218,23 @@ namespace DaySim.ChoiceModels.Actum.Models {
       Framework.DomainModels.Models.IHouseholdTotals householdTotals = household.HouseholdTotals;
       IActumPersonWrapper person = (IActumPersonWrapper)trip.Person;
       IActumTourWrapper tour = (IActumTourWrapper)trip.Tour;
+      IActumParcelWrapper destinationParcel = (IActumParcelWrapper) destinationParcel_In;
       Framework.DomainModels.Models.IHalfTour halfTour = trip.HalfTour;
       // household inputs
       int onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
-      int HHwithChildrenFlag = household.HasChildren.ToFlag();
-      int HHwithSmallChildrenFlag = household.HasChildrenUnder5.ToFlag();
-      int childrenAge5Through15 = householdTotals.ChildrenAge5Through15;
+      //int HHwithChildrenFlag = household.HasChildren.ToFlag();
+      //int HHwithSmallChildrenFlag = household.HasChildrenUnder5.ToFlag();
+      //int childrenAge5Through15 = householdTotals.ChildrenAge5Through15;
+      int childrenAge6Through17 =  household.Persons6to17 > 0? 1: 0;
       int HHwithLowIncomeFlag = (household.Income >= 300000 && household.Income < 600000).ToFlag();
-      int HHwithMidleIncomeFlag = (household.Income >= 600000 && household.Income < 900000).ToFlag();
+      int HHwithMiddleIncomeFlag = (household.Income >= 600000 && household.Income < 900000).ToFlag();
       int HHwithHighIncomeFlag = (household.Income >= 900000).ToFlag();
-      int nonworkingAdults = householdTotals.NonworkingAdults;
-      int retiredAdults = householdTotals.RetiredAdults;
+      //int nonworkingAdults = householdTotals.NonworkingAdults;
+      //int retiredAdults = householdTotals.RetiredAdults;
       int twoPersonHouseholdFlag = household.IsTwoPersonHousehold.ToFlag();
       int noCarsInHouseholdFlag = household.GetFlagForNoCarsInHousehold(household.VehiclesAvailable);
-      int carsLessThanDriversFlag = household.GetFlagForCarsLessThanDrivers(household.VehiclesAvailable);
+      //int carsLessThanDriversFlag = household.GetFlagForCarsLessThanDrivers(household.VehiclesAvailable);
+      int carsLessThanDriversFlag = household.VehiclesAvailable >= 1 && household.VehiclesAvailable < household.Size - household.KidsBetween0And4 - household.Persons6to17? 1:0;
 
       // person inputs
       //var drivingAgeStudentFlag = person.IsDrivingAgeStudent.ToFlag();
@@ -301,8 +309,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int departureTime = trip.IsHalfTourFromOrigin ? trip.LatestDepartureTime : trip.EarliestDepartureTime;
 
       double originMixedDensity = originParcel.MixedUse4Index1();
-      double originIntersectionDensity = originParcel.NetIntersectionDensity1();
-      double destinationParkingCost = destinationParcel.ParkingCostBuffer1(2);
+      //double originIntersectionDensity = originParcel.NetIntersectionDensity1();
+      //double destinationParkingCost = destinationParcel.ParkingCostBuffer1(2);
+      double destinationParkingCost = destinationParcel.ParkingDataAvailable == 1 ? destinationParcel.PublicParkingHourlyPriceBuffer2:0; 
       int amPeriodFlag = departureTime.IsLeftExclusiveBetween(Global.Settings.Times.SixAM, Global.Settings.Times.NineAM).ToFlag();
       //GV changed to 6-9 am
       int middayPeriodFlag = departureTime.IsLeftExclusiveBetween(Global.Settings.Times.NineAM, Global.Settings.Times.ThreePM).ToFlag();
@@ -423,9 +432,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         } else if (mode == Global.Settings.Modes.HovPassenger) {
           alternative.AddUtilityTerm(30, 1);
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT3));
-          alternative.AddUtilityTerm(32, childrenAge5Through15);
+          alternative.AddUtilityTerm(32, childrenAge6Through17);
           alternative.AddUtilityTerm(33, femaleFlag);
-          alternative.AddUtilityTerm(34, (nonworkingAdults + retiredAdults));
+          //alternative.AddUtilityTerm(34, (nonworkingAdults + retiredAdults));
           alternative.AddUtilityTerm(36, onePersonHouseholdFlag);
           alternative.AddUtilityTerm(37, twoPersonHouseholdFlag);
           alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
@@ -460,9 +469,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         } else if (mode == Global.Settings.Modes.HovDriver) {
           alternative.AddUtilityTerm(40, 1);
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT2));
-          alternative.AddUtilityTerm(42, (childrenAge5Through15 * (1 - homeBasedEscortTourFlag)));
+          alternative.AddUtilityTerm(42, (childrenAge6Through17 * (1 - homeBasedEscortTourFlag)));
           alternative.AddUtilityTerm(43, (femaleFlag * (1 - homeBasedEscortTourFlag)));
-          alternative.AddUtilityTerm(44, ((nonworkingAdults + retiredAdults) * (1 - homeBasedEscortTourFlag)));
+          //alternative.AddUtilityTerm(44, ((nonworkingAdults + retiredAdults) * (1 - homeBasedEscortTourFlag)));
           alternative.AddUtilityTerm(38, onePersonHouseholdFlag);
           alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
           alternative.AddUtilityTerm(100, CarDrivNotAloneFlag);
