@@ -83,8 +83,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int universityStudentFlag = person.IsUniversityStudent.ToFlag();
       int retiredAdultFlag = person.IsRetiredAdult.ToFlag();
       //var drivingAgeStudentFlag = person.IsDrivingAgeStudent.ToFlag(); // excluded by GV
-      int childAge5Through15Flag = person.IsChildAge5Through15.ToFlag();
-      int childUnder5Flag = person.IsChildUnder5.ToFlag();
+      int primarySchoolChildFlag = person.IsChildAge5Through15.ToFlag();
+      int preschoolChildFlag = person.IsChildUnder5.ToFlag();
       int femaleFlag = person.IsFemale.ToFlag();
       int fullTimeWorkerFlag = person.IsFulltimeWorker.ToFlag();
       int primaryFamilyTimeFlag = householdDay.PrimaryPriorityTimeFlag;
@@ -253,8 +253,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(45, universityStudentFlag * departureShiftHours);
         alternative.AddUtilityTerm(47, retiredAdultFlag * departureShiftHours);
         alternative.AddUtilityTerm(49, femaleFlag * departureShiftHours);
-        alternative.AddUtilityTerm(51, childAge5Through15Flag * departureShiftHours);
-        alternative.AddUtilityTerm(53, childUnder5Flag * departureShiftHours);
+        alternative.AddUtilityTerm(51, primarySchoolChildFlag * departureShiftHours);
+        alternative.AddUtilityTerm(53, preschoolChildFlag * departureShiftHours);
         alternative.AddUtilityTerm(61, jointTourFlag * departureShiftHours);
         //alternative.AddUtilityTerm(63, partialHalfTourFlag * departureShiftHours);
         //alternative.AddUtilityTerm(65, fullHalfTourFlag * departureShiftHours);
@@ -276,8 +276,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(46, universityStudentFlag * durationShiftHours);
         alternative.AddUtilityTerm(48, retiredAdultFlag * durationShiftHours);
         alternative.AddUtilityTerm(50, femaleFlag * durationShiftHours);
-        alternative.AddUtilityTerm(52, childAge5Through15Flag * durationShiftHours);
-        alternative.AddUtilityTerm(54, childUnder5Flag * durationShiftHours);
+        alternative.AddUtilityTerm(52, primarySchoolChildFlag * durationShiftHours);
+        alternative.AddUtilityTerm(54, preschoolChildFlag * durationShiftHours);
         //alternative.AddUtilityTerm(62, jointTourFlag * durationShiftHours);
         //alternative.AddUtilityTerm(64, partialHalfTourFlag * durationShiftHours);
         //alternative.AddUtilityTerm(66, fullHalfTourFlag * durationShiftHours);
