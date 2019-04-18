@@ -223,7 +223,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
         int schoolStopForPreschoolOrPrimarySchoolChild = (_trip.IsSchoolDestinationPurpose() && (person.IsChildAge5Through15 || person.IsChildUnder5)).ToFlag();
         int schoolStopForGymnasiumStudent = (_trip.IsSchoolDestinationPurpose() && person.IsDrivingAgeStudent).ToFlag();
         int schoolStopForAdult = (_trip.IsSchoolDestinationPurpose() && (!person.IsChildAge5Through15 && !person.IsChildUnder5) && !person.IsDrivingAgeStudent).ToFlag();
-        //var workOrSchoolDestinationPurposeFlag = _trip.IsWorkOrSchoolDestinationPurpose.ToFlag();
+        // BP 17042019
+        int schoolstopPurposeFlag = _trip.IsSchoolDestinationPurpose().ToFlag();
+        int workstopPurposeFlag = _trip.IsWorkDestinationPurpose().ToFlag();
+        int workorschooldestinationpurposeFlag = (schoolstopPurposeFlag > 0 || workstopPurposeFlag > 0).ToFlag();
+
+
         //int escortStop_HouseholdHasChildren = (_trip.IsEscortDestinationPurpose() && (household.HouseholdTotals.DrivingAgeStudents + household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 > 0)).ToFlag();
         int escortStop_HouseholdHasChildren = (_trip.IsEscortDestinationPurpose() && (household.KidsBetween0And4 > 0 || household.Persons6to17 > 0)).ToFlag();
         //int escortStop_HouseholdHasNoChildren = (_trip.IsEscortDestinationPurpose() && (household.HouseholdTotals.DrivingAgeStudents + household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 == 0)).ToFlag();
@@ -263,7 +268,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double logOfOnePlusStudentsUniversityBuffer1 = Math.Log(destinationParcel.StudentsUniversityBuffer1 + 1);
        // double logOfOnePlusParkingOffStreetPaidHourlySpacesBuffer1 = Math.Log(destinationParcel.ParkingOffStreetPaidHourlySpacesBuffer1 + 1);
        // int openSpaceType2IsPresentInBuffer1 = (destinationParcel.OpenSpaceType2Buffer1 > 0).ToFlag();
-       // double numberOfNetworkNodesInBuffer1 = destinationParcel.NodesSingleLinkBuffer1 + destinationParcel.NodesThreeLinksBuffer1 + destinationParcel.NodesFourLinksBuffer1;
+        double numberOfNetworkNodesInBuffer1 = destinationParcel.NodesSingleLinkBuffer1 + destinationParcel.NodesThreeLinksBuffer1 + destinationParcel.NodesFourLinksBuffer1;
+
+        // BP 17042019
+        int parkdatanotavailflag = (destinationParcel.ParkingDataAvailable == 0).ToFlag();
 
         int stopOnJointTour = (tour.JointTourSequence > 0).ToFlag();
         int stopOnFullJointHalfTour = ((_trip.Direction == Global.Settings.TourDirections.OriginToDestination && tour.FullHalfTour1Sequence > 0)
@@ -566,14 +574,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
        // int adultFemaleWithChildren = (person.Gender == Global.Settings.PersonGenders.Female && person.PersonType < Global.Settings.PersonTypes.DrivingAgeStudent && (household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 + household.HouseholdTotals.DrivingAgeStudents > 0)).ToFlag();
         int adultFemaleWithChildren = (person.Gender == Global.Settings.PersonGenders.Female && person.PersonType < Global.Settings.PersonTypes.DrivingAgeStudent && (household.Persons6to17 > 0 || household.KidsBetween0And4 > 0)).ToFlag();
         //#if TRACE
-        //				var wrkt = tour.IsWorkPurpose.ToFlag();
+        				var wrkt = tour.IsWorkPurpose().ToFlag();
         //				var n34Qln = Math.Log(1 + destinationParcel.NodesThreeLinksBuffer1 / 2.0 + destinationParcel.NodesFourLinksBuffer1);
         //				var n1Sq = destinationParcel.NodesSingleLinkBuffer1 / (Math.Max(1, destinationParcel.NodesSingleLinkBuffer1 + destinationParcel.NodesThreeLinksBuffer1 + destinationParcel.NodesFourLinksBuffer1));
         //				var n34H = destinationParcel.NodesThreeLinksBuffer2 / 2.0 + destinationParcel.NodesFourLinksBuffer2;
         //				var n34Hln = Math.Log(1 + destinationParcel.NodesThreeLinksBuffer2 / 2.0 + destinationParcel.NodesFourLinksBuffer2);
         //				var wbas = (!tour.IsHomeBasedTour).ToFlag();
         //				var bwork = wrkt == 1 && _trip.Direction == 1 ? 1 : 0;
-        //				var nwrkt = 1 - wrkt;
+        				var nwrkt = 1 - wrkt;
         //				var nwst = wrkt != 1 && tour.IsSchoolPurpose.ToFlag() != 1 ? 1 : 0; // not _t.WorkDestinationPurposeFlag or school tour
         //				var essc = _trip.DestinationPurpose == Global.Settings.Purposes.Escort && _trip.Tour.DestinationPurpose == Global.Settings.Purposes.School ? 1 : 0;
         //				var shsh = shoppingDestinationPurposeFlag == 1 && _trip.Tour.DestinationPurpose == Global.Settings.Purposes.Shopping ? 1 : 0; // shoppingDestinationPurposeFlag trip on shoppingDestinationPurposeFlag tour
@@ -699,9 +707,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         alternative.AddUtilityTerm(2, logOfOneMinusRatioOfTravelTimeToAvailableTimeWindow);
 
-        //alternative.AddUtilityTerm(3, gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes); //GV commented out July 8th
-        //alternative.AddUtilityTerm(4, gtimeSquared); //GV commented out July 8th
-        //alternative.AddUtilityTerm(5, gtimeCubed); //GV commented out July 8th
+        alternative.AddUtilityTerm(3, gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes); //GV commented out July 8th
+        alternative.AddUtilityTerm(4, gtimeSquared); //GV commented out July 8th
+        alternative.AddUtilityTerm(5, gtimeCubed); //GV commented out July 8th
         alternative.AddUtilityTerm(6, detourDistanceCubedInHundredsOfDistanceUnitsCubed);
         alternative.AddUtilityTerm(7, proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
         alternative.AddUtilityTerm(8, proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
@@ -710,20 +718,20 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //				alternative.AddUtility(, parkqdivEmp);
 
         //Attributes specific to Household and Person Characteristics
-        //alternative.AddUtilityTerm(9, (household.Income >= 300000 && household.Income < 600000).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-        //alternative.AddUtilityTerm(10, (household.Income >= 600000 && household.Income < 900000).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-        //alternative.AddUtilityTerm(11, (household.Income >= 900000).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-        //alternative.AddUtilityTerm(12, adultFemaleWithChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+        alternative.AddUtilityTerm(9, (household.Income >= 300000 && household.Income < 600000).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+        alternative.AddUtilityTerm(10, (household.Income >= 600000 && household.Income < 900000).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+        alternative.AddUtilityTerm(11, (household.Income >= 900000).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+        alternative.AddUtilityTerm(12, adultFemaleWithChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
         //				alternative.AddUtility(, person.TransitPassOwnership * wtu1);
         //				alternative.AddUtility(, person.TransitPassOwnership * wtu2);
 
         //Attributes specific to Tour Characteristics
         //				alternative.AddUtility(, wbas * gtim);
-        //alternative.AddUtilityTerm(13, (!tour.IsWorkPurpose).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+        alternative.AddUtilityTerm(13, nwrkt * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
         alternative.AddUtilityTerm(14, notFirstStopOnHalfTourFlag * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
         //				alternative.AddUtility(, wbas * prxs);
         //				alternative.AddUtility(, tour.IsSchoolPurpose.ToFlag() * prxs);
-        //alternative.AddUtilityTerm(15, (!tour.IsHomeBasedTour).ToFlag() * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);//GV commented out July 8th
+        alternative.AddUtilityTerm(15, (!tour.IsHomeBasedTour).ToFlag() * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);//GV commented out July 8th
         alternative.AddUtilityTerm(16, tour.IsSchoolPurpose().ToFlag() * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
         alternative.AddUtilityTerm(17, stopIsBeforeMandatoryTourDestination * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
         //alternative.AddUtilityTerm(78, stopOnJointTour * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);//GV commented out July 8th
@@ -736,18 +744,23 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //alternative.AddUtilityTerm(20, tour.IsAnAutoMode().ToFlag() * numberOfNetworkNodesInBuffer1);
         //				alternative.AddUtility(, tour.IsAnAutoMode.ToFlag() * destinationParcel.ParkingHourlyEmploymentCommercialMixBuffer1());
         //JB 20190409 following two lines need to be redefined using one of the new COMPASS parking spaces attributes
-        //alternative.AddUtilityTerm(21, tour.IsSovMode().ToFlag() * destinationParcel.ParkingHourlyEmploymentCommercialMixBuffer1());
+        alternative.AddUtilityTerm(20, tour.IsSovMode().ToFlag() * destinationParcel.PublicParkingHourlyPrice);
+        alternative.AddUtilityTerm(21, tour.IsSovMode().ToFlag() * destinationParcel.PublicParkingHourlyPriceBuffer1);
+        alternative.AddUtilityTerm(22, tour.IsSovMode().ToFlag() * parkdatanotavailflag);
+        alternative.AddUtilityTerm(60, tour.IsAnAutoMode().ToFlag() * destinationParcel.PublicParkingHourlyPrice);
+        alternative.AddUtilityTerm(61, tour.IsAnAutoMode().ToFlag() * destinationParcel.PublicParkingHourlyPriceBuffer1);
+        alternative.AddUtilityTerm(62, tour.IsAnAutoMode().ToFlag() * parkdatanotavailflag);
         //alternative.AddUtilityTerm(22, tour.IsAnAutoMode().ToFlag() * destinationParcel.ParkingHourlyEmploymentCommercialMixInParcel());
-        
+
         //alternative.AddUtilityTerm(70, tour.IsAnAutoMode.ToFlag() * logOfOnePlusParkingOffStreetPaidHourlySpacesBuffer1);
         //				alternative.AddUtility(, tour.CarModeFlag * penpq);
 
         // Attributes specific to other modes
-        //alternative.AddUtilityTerm(23, (!tour.IsAnAutoMode).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes); //GV commented out July 8th
+        alternative.AddUtilityTerm(23, (!tour.IsAnAutoMode()).ToFlag() * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes); //GV commented out July 8th
         //				alternative.AddUtility(, tour.IsBikeMode.ToFlag() * gtim);
         //				alternative.AddUtility(, tour.IsWalkMode.ToFlag() * gtim);
-        //alternative.AddUtilityTerm(24, (!tour.IsAnAutoMode).ToFlag() * gtimeSquared); //GV commented out July 8th
-        //alternative.AddUtilityTerm(25, (!tour.IsAnAutoMode).ToFlag() * gtimeCubed);//GV commented out July 8th
+        alternative.AddUtilityTerm(24, (!tour.IsAnAutoMode()).ToFlag() * gtimeSquared); //GV commented out July 8th
+        alternative.AddUtilityTerm(25, (!tour.IsAnAutoMode()).ToFlag() * gtimeCubed);//GV commented out July 8th
         //				alternative.AddUtility(, (!tour.IsAnAutoMode).ToFlag() * prxs);
         alternative.AddUtilityTerm(26, tour.IsWalkMode().ToFlag() * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
         alternative.AddUtilityTerm(27, (!tour.IsAnAutoMode()).ToFlag() * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
@@ -758,14 +771,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //				alternative.AddUtility(, tour.IsBikeMode.ToFlag() * deadEndRatio);
 
         // Attributes specific to Trip Characteristics
-        //alternative.AddUtilityTerm(32, workOrSchoolDestinationPurposeFlag * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-        //alternative.AddUtilityTerm(33, personalBusiness_Meal_Shop_SocialStopPurposeFlag * person.IsYouth.ToFlag() * logOfOnePlusStudentsK12Buffer1);
+        alternative.AddUtilityTerm(32, workorschooldestinationpurposeFlag * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+        alternative.AddUtilityTerm(33, personalBusiness_Meal_Shop_SocialStopPurposeFlag * person.IsYouth.ToFlag() * logOfOnePlusStudentsK12Buffer1);
         //alternative.AddUtilityTerm(77, personalBusiness_Meal_Shop_SocialStopPurposeFlag * person.IsUniversityStudent.ToFlag() * logOfOnePlusStudentsUniversityBuffer1);
 
         if (_trip.DestinationPurpose == Global.Settings.Purposes.Business) {
           // Neighborhood
           alternative.AddUtilityTerm(34, businessDestinationPurposeFlag * logOfOnePlusEmploymentTotalBuffer1);
-          //alternative.AddUtilityTerm(35, businessDestinationPurposeFlag * logOfOnePlusStudentsK12Buffer1);
+          alternative.AddUtilityTerm(35, businessDestinationPurposeFlag * logOfOnePlusStudentsK12Buffer1);
 
           // Size terms
           alternative.AddUtilityTerm(101, businessDestinationPurposeFlag * employmentGovernment_Office_Education);
@@ -785,16 +798,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(108, schoolStopForAdult * destinationParcel.StudentsUniversity);
         } else if (_trip.DestinationPurpose == Global.Settings.Purposes.Escort) {
           //alternative.AddUtilityTerm(67, escortStop_HouseholdHasNoChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-          //alternative.AddUtilityTerm(36, escortStop_HouseholdHasChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-          //alternative.AddUtilityTerm(68, escortStop_HouseholdHasNoChildren * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
-          //alternative.AddUtilityTerm(37, escortStop_HouseholdHasChildren * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
-          //alternative.AddUtilityTerm(38, escortStop_HouseholdHasNoChildren * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
-          //alternative.AddUtilityTerm(39, escortStop_HouseholdHasChildren * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
+         alternative.AddUtilityTerm(36, escortStop_HouseholdHasChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+         alternative.AddUtilityTerm(68, escortStop_HouseholdHasNoChildren * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
+         alternative.AddUtilityTerm(37, escortStop_HouseholdHasChildren * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
+         alternative.AddUtilityTerm(38, escortStop_HouseholdHasNoChildren * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
+         alternative.AddUtilityTerm(39, escortStop_HouseholdHasChildren * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
           //alternative.AddUtilityTerm(69, escortStopOnSchoolTour * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
 
           // Neighborhood
-          alternative.AddUtilityTerm(042, escortStop_HouseholdHasNoChildren * logOfOnePlusEmploymentTotalBuffer1);
-          //alternative.AddUtilityTerm(043, escortStop_HouseholdHasNoChildren * logOfOnePlusStudentsK12Buffer1);
+          alternative.AddUtilityTerm(42, escortStop_HouseholdHasNoChildren * logOfOnePlusEmploymentTotalBuffer1);
+          //BP 18042019 (correct this to household has children)
+          alternative.AddUtilityTerm(43, escortStop_HouseholdHasChildren * logOfOnePlusStudentsK12Buffer1);
 
           // Size terms
           alternative.AddUtilityTerm(110, escortStop_HouseholdHasChildren * destinationParcel.EmploymentTotal);
@@ -808,12 +822,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           // Size terms
           alternative.AddUtilityTerm(118, personalBusinessStopPurposeFlag * employmentGovernment_Office_Education);
-          //alternative.AddUtilityTerm(119, personalBusinessStopPurposeFlag * destinationParcel.EmploymentRetail);
+          alternative.AddUtilityTerm(119, personalBusinessStopPurposeFlag * destinationParcel.EmploymentRetail);
           //GV: 120 is fixed to zero
           alternative.AddUtilityTerm(120, personalBusinessStopPurposeFlag * destinationParcel.EmploymentService);
           //alternative.AddUtilityTerm(121, personalBusinessStopPurposeFlag * destinationParcel.Households);
         } else if (_trip.DestinationPurpose == Global.Settings.Purposes.Shopping) {
-          //alternative.AddUtilityTerm(47, shoppingStopPurposeFlag * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+          alternative.AddUtilityTerm(47, shoppingStopPurposeFlag * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
           //						alternative.AddUtility(, shshFlag * gtim);
           alternative.AddUtilityTerm(48, shoppingStopOnShoppingTour * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
           //						alternative.AddUtility(, shshFlag * prxo);
