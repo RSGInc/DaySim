@@ -336,9 +336,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
       alternative.Choice = 1;
 
-      alternative.AddUtilityTerm(11, 1); //calibration constant.  
-
-      //GV: 17.4.2019 - coeff. 12, 13 and 14 are constrained to zero while coeff.11 is re-introduced 
+      alternative.AddUtilityTerm(11, 1); //calibration constant, contrained to 0 in aestimaions due to coeff.12-14 
       alternative.AddUtilityTerm(12, (numberAdults <= 1).ToFlag());
       alternative.AddUtilityTerm(13, (numberAdults == 2).ToFlag());
       alternative.AddUtilityTerm(14, (numberAdults >= 3).ToFlag());
@@ -413,9 +411,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative = choiceProbabilityCalculator.GetAlternative(2, true, choice == 2);
       alternative.Choice = 2;
 
-      alternative.AddUtilityTerm(51, 1); //Calibration constant 
-
-      //GV: 17.4.2019 - coeff. 52, 53 and 54 are constrained to zero while coeff.51 is re-introduced 
+      alternative.AddUtilityTerm(51, 1); //Calibration constant, contrained to 0 in aestimaions due to coeff.52-54  
       alternative.AddUtilityTerm(52, (numberAdults <= 1).ToFlag());
       alternative.AddUtilityTerm(53, (numberAdults == 2).ToFlag());
       alternative.AddUtilityTerm(54, (numberAdults >= 3).ToFlag());
