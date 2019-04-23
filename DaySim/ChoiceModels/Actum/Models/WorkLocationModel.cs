@@ -489,7 +489,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       homeAlternative.AddUtilityTerm(340, 1); //Size variable dummy 
 
-      //make oddball alt unavailable and remove nesting for estimation of conditional MNL 
+      //make oddball alt unavailable and remove nesting for estimation of conditional MNL  
       //			alternative.Available = false;
       homeAlternative.AddNestedAlternative(sampleSize + 3, 1, 350);
     }
