@@ -175,6 +175,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       // JLB 20140319 patched WTHRESH and DLIMPARM to use distance units instead of miles
       private readonly float WTHRESH = 0.25F * (float)Global.Settings.DistanceUnitsPerMile; //if trip is less than this distance, then walk LOS is assumed  (distance units)
+      private readonly float WTHRESH2 = 0.5F * (float)Global.Settings.DistanceUnitsPerMile; //if trip is less than this distance, then walk is considered available for wta calculations   (distance units)
       private readonly double DLIMPARM = 30.0 * Global.Settings.DistanceUnitsPerMile; // soto distance limit (distance units) at which gtim sensivity stops changing
       private const double DFACPARM = 0.7; // gtim senstivity at soto distance limit (relative to senstivity at distance of 0)
 
@@ -520,13 +521,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
         int walkAndTransitAreInaccessibleForBothLegsOfDetour = 0;
         int wta = 0;
 
-        if (wdis1 < WTHRESH && wdis1 > Constants.EPSILON) {
+        if (wdis1 < WTHRESH2 && wdis1 > Constants.EPSILON) {
           wta = wta + 1;
         } else if (tour.Mode == Global.Settings.Modes.Transit && wttime1 > Constants.EPSILON) {
           wta = wta + 1;
         }
 
-        if (wdis2 < WTHRESH && wdis2 > Constants.EPSILON) {
+        if (wdis2 < WTHRESH2 && wdis2 > Constants.EPSILON) {
           wta = wta + 1;
         } else if (tour.Mode == Global.Settings.Modes.Transit && wttime2 > Constants.EPSILON) {
           wta = wta + 1;
