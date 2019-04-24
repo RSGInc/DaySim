@@ -154,7 +154,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
 
         //int votSegment = household.GetVotALSegment();
-        //GV: 12.3.2019 - getting values from MB's memo
+        //GV: 12.3.2019 - getting values from MB's memo 
         int votSegment =
           (household.Income <= 450000)
                     ? Global.Settings.VotALSegments.Low
@@ -342,7 +342,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(47, person.IsFemale.ToFlag() * distanceLog);
         alternative.AddUtilityTerm(48, person.IsPartTimeWorker.ToFlag() * distanceLog);
         alternative.AddUtilityTerm(49, person.IsNotFullOrPartTimeWorker.ToFlag() * distanceLog);
-        alternative.AddUtilityTerm(50, (person.OccupationCode == 8).ToFlag() * distanceLog); // self-employed
+        alternative.AddUtilityTerm(50, (person.OccupationCode == 8).ToFlag() * distanceLog); // self-employed 
         alternative.AddUtilityTerm(51, person.Age * distanceLog);
 
         //Distance from school for student worker
@@ -370,10 +370,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(152, (!incomeMissing).ToFlag() * person.IsPartTimeWorker.ToFlag() * industrialAgricultureConstructionBuffer);
         alternative.AddUtilityTerm(153, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * foodBuffer);
         alternative.AddUtilityTerm(154, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * medicalBuffer);
-
+        
+        //GV: 22.4.2019 - changes made relative to coeff.101-108, i.e. coeff.101 and 107 are kept in the model
+        //accordongly, coeff. 161 and 162 are changed in definition
         alternative.AddUtilityTerm(160, incomeMissing.ToFlag() * employmentTotalBuffer);
-        alternative.AddUtilityTerm(161, incomeMissing.ToFlag() * studentsUniversityBuffer);
-        alternative.AddUtilityTerm(162, incomeMissing.ToFlag() * employmentCommercialBuffer);
+        //alternative.AddUtilityTerm(161, incomeMissing.ToFlag() * studentsUniversityBuffer);
+        alternative.AddUtilityTerm(161, incomeMissing.ToFlag() * serviceBuffer);
+
+        //alternative.AddUtilityTerm(162, incomeMissing.ToFlag() * employmentCommercialBuffer);
+        alternative.AddUtilityTerm(162, incomeMissing.ToFlag() * householdsBuffer);
 
 
         //Size
@@ -472,9 +477,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
       homeAlternative.Choice = residenceParcel;
 
       homeAlternative.AddUtilityTerm(180, 1);  //ASC
+
+      //GV: 22.4.2019 - adding few more coeff. for those that might work at home (comment from JB on 21.4)
+      homeAlternative.AddUtilityTerm(181, (person.OccupationCode == 8).ToFlag()); // self-employed
+      homeAlternative.AddUtilityTerm(182, (person.IsAdultFemale).ToFlag());
+      homeAlternative.AddUtilityTerm(183, (person.IsNonworkingAdult).ToFlag());
+      homeAlternative.AddUtilityTerm(184, (person.IsNotFullOrPartTimeWorker).ToFlag());
+      homeAlternative.AddUtilityTerm(185, (person.IsPartTimeWorker).ToFlag());
+      homeAlternative.AddUtilityTerm(186, (person.IsRetiredAdult).ToFlag());
+      
+
       homeAlternative.AddUtilityTerm(340, 1); //Size variable dummy 
 
-      //make oddball alt unavailable and remove nesting for estimation of conditional MNL 
+      //make oddball alt unavailable and remove nesting for estimation of conditional MNL  
       //			alternative.Available = false;
       homeAlternative.AddNestedAlternative(sampleSize + 3, 1, 350);
     }
