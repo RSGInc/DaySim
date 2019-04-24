@@ -105,17 +105,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int individualHalfTour = (isIndividualTour == 1 || individualHalfOfFullJointHalfTour == 1) ? 1 : 0;
       int jointHalfTour = 1 - individualHalfTour;
 
-      //destination parcel variables
-      double foodBuffer2 = 0.0;
-      double totEmpBuffer2 = 0.0;
-      double retailBuffer2 = 0.0;
-
-      if (destinationParcel != null) {
-        foodBuffer2 = Math.Log(1 + destinationParcel.EmploymentFoodBuffer2);
-        totEmpBuffer2 = Math.Log(1 + destinationParcel.EmploymentTotalBuffer2);
-        retailBuffer2 = Math.Log(1 + destinationParcel.EmploymentRetailBuffer2);
-      }
-
       //int carOwnership = person.GetCarOwnershipSegment();
 
         int carOwnership = person.Age < 18
@@ -130,11 +119,23 @@ namespace DaySim.ChoiceModels.Actum.Models {
                     : (household.Income <= 900000)
                         ? Global.Settings.VotALSegments.Medium
                         : Global.Settings.VotALSegments.High;
-        int transitAccessSegment = destinationParcel.GetDistanceToTransit() >= 0 && destinationParcel.GetDistanceToTransit() <= 0.4
+
+      //destination parcel variables
+      double foodBuffer2 = 0.0;
+      double totEmpBuffer2 = 0.0;
+      double retailBuffer2 = 0.0;
+      int transitAccessSegment = 2;
+      if (destinationParcel != null) {
+        foodBuffer2 = Math.Log(1 + destinationParcel.EmploymentFoodBuffer2);
+        totEmpBuffer2 = Math.Log(1 + destinationParcel.EmploymentTotalBuffer2);
+        retailBuffer2 = Math.Log(1 + destinationParcel.EmploymentRetailBuffer2);
+        transitAccessSegment = destinationParcel.GetDistanceToTransit() >= 0 && destinationParcel.GetDistanceToTransit() <= 0.4
               ? 0
               : destinationParcel.GetDistanceToTransit() > 0.4 && destinationParcel.GetDistanceToTransit() <= 1.6
                   ? 1
                   : 2;
+      }
+
       // household inputs
       int onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
       //var householdInc75KP = household.Has75KPlusIncome;
