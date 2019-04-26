@@ -588,6 +588,35 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //				var essc = _trip.DestinationPurpose == Global.Settings.Purposes.Escort && _trip.Tour.DestinationPurpose == Global.Settings.Purposes.School ? 1 : 0;
         //				var shsh = shoppingDestinationPurposeFlag == 1 && _trip.Tour.DestinationPurpose == Global.Settings.Purposes.Shopping ? 1 : 0; // shoppingDestinationPurposeFlag trip on shoppingDestinationPurposeFlag tour
         //				var bman = _trip.Direction == 1 && (_trip.Tour.DestinationPurpose == Global.Settings.Purposes.Work || _trip.Tour.DestinationPurpose == Global.Settings.Purposes.School) ? 1 : 0;
+
+        if (Global.Configuration.IsInEstimationMode && _trip.DestinationParcel.Id == destinationParcel.Id && alternative.Available
+&& (ttim1 > 60 || ttim2 > 60 || (ttim1 > 35 && ttim2 > 35))) {
+          Global.PrintFile.WriteLine(string.Format("Household Id: {0}", household.Id));
+          Global.PrintFile.WriteLine(string.Format("Day: {0}", _trip.Day));
+          Global.PrintFile.WriteLine(string.Format("Person: {0}", person.Sequence));
+          Global.PrintFile.WriteLine(string.Format("Tour: {0}", tour.Sequence));
+          Global.PrintFile.WriteLine(string.Format("Half: {0}", _trip.Direction));
+          Global.PrintFile.WriteLine(string.Format("Trip: {0}", _trip.Sequence));
+          Global.PrintFile.WriteLine(string.Format("Tour mode: {0}", tour.Mode));
+          Global.PrintFile.WriteLine(string.Format("Tour purpose: {0}", tour.DestinationPurpose));
+          Global.PrintFile.WriteLine(string.Format("trip mode: {0}", _trip.Mode));
+          Global.PrintFile.WriteLine(string.Format("trip dpurp: {0}", _trip.DestinationPurpose));
+          Global.PrintFile.WriteLine(string.Format("trip opurp: {0}", _trip.OriginPurpose));
+          Global.PrintFile.WriteLine(string.Format("adis0: {0,12:0.0000000000}", adis0));
+          Global.PrintFile.WriteLine(string.Format("adis1: {0,12:0.0000000000}", adis1));
+          Global.PrintFile.WriteLine(string.Format("adis2: {0,12:0.0000000000}", adis2));
+          Global.PrintFile.WriteLine(string.Format("wdis0: {0,12:0.0000000000}", wdis0));
+          Global.PrintFile.WriteLine(string.Format("wdis1: {0,12:0.0000000000}", wdis1));
+          Global.PrintFile.WriteLine(string.Format("wdis2: {0,12:0.0000000000}", wdis2));
+          Global.PrintFile.WriteLine(string.Format("ttim1: {0,12:0.0000000000}", ttim1));
+          Global.PrintFile.WriteLine(string.Format("ttim2: {0,12:0.0000000000}", ttim2));
+          Global.PrintFile.WriteLine(string.Format("ttim: {0,12:0.0000000000}", ttim));
+          Global.PrintFile.WriteLine(string.Format("time window: {0,12:0.0000000000}", logOfOneMinusRatioOfTravelTimeToAvailableTimeWindow));
+          Global.PrintFile.WriteLine(string.Format("prox stop o: {0,12:0.0000000000}", proximityToStopOrigin_10Is1min_1Is10min_point1Is100min));
+          Global.PrintFile.WriteLine(string.Format("prox tour o: {0,12:0.0000000000}", proximityToTourOrigin_10Is1min_1Is10min_point1Is100min));
+          Global.PrintFile.WriteLine(string.Format("               "));
+        }
+
         //
         //				//              The following output was used for comparing Delphi and CS results at the alternative level (or for the chosen alternative)
         //				if (Global.Configuration.IsInEstimationMode && _choice.Id == destinationParcel.Id && alternative.Available) {
@@ -891,9 +920,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         } else if (_trip.DestinationPurpose == Global.Settings.Purposes.Shopping) {
           alternative.AddUtilityTerm(47, shoppingStopPurposeFlag * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
           //						alternative.AddUtility(, shshFlag * gtim);
-          alternative.AddUtilityTerm(48, shoppingStopOnShoppingTour * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
+          alternative.AddUtilityTerm(48, shoppingStopPurposeFlag * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
           //						alternative.AddUtility(, shshFlag * prxo);
-          alternative.AddUtilityTerm(220, shoppingStopOnShoppingTour * maxproximity);
+          alternative.AddUtilityTerm(220, shoppingStopPurposeFlag * maxproximity);
 
           // Neighborhood
           alternative.AddUtilityTerm(49, shoppingStopPurposeFlag * logOfOnePlusEmploymentRetailBuffer1);
