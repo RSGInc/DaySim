@@ -267,9 +267,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double logOfOnePlusHouseholdsBuffer1 = Math.Log(destinationParcel.HouseholdsBuffer1 + 1);
         double logOfOnePlusStudentsK12Buffer1 = Math.Log(destinationParcel.StudentsK8Buffer1 + destinationParcel.StudentsHighSchoolBuffer1 + 1);
         double logOfOnePlusStudentsUniversityBuffer1 = Math.Log(destinationParcel.StudentsUniversityBuffer1 + 1);
-        double logOfOnePlusEmploymentEducationBuffer1 = Math.Log(destinationParcel.EmploymentGovernmentBuffer1 +1);
-       // double logOfOnePlusParkingOffStreetPaidHourlySpacesBuffer1 = Math.Log(destinationParcel.ParkingOffStreetPaidHourlySpacesBuffer1 + 1);
-       // int openSpaceType2IsPresentInBuffer1 = (destinationParcel.OpenSpaceType2Buffer1 > 0).ToFlag();
+        double logOfOnePlusEmploymentEducationBuffer1 = Math.Log(destinationParcel.EmploymentGovernmentBuffer1 + 1);
+        // double logOfOnePlusParkingOffStreetPaidHourlySpacesBuffer1 = Math.Log(destinationParcel.ParkingOffStreetPaidHourlySpacesBuffer1 + 1);
+        // int openSpaceType2IsPresentInBuffer1 = (destinationParcel.OpenSpaceType2Buffer1 > 0).ToFlag();
         double numberOfNetworkNodesInBuffer1 = destinationParcel.NodesSingleLinkBuffer1 + destinationParcel.NodesThreeLinksBuffer1 + destinationParcel.NodesFourLinksBuffer1;
 
         // BP 17042019
@@ -297,6 +297,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
         int minute = DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Start;
         int purpose = tour.DestinationPurpose;
 
+        if (household.Id == 338794
+          && person.Sequence == 1
+          && tour.Sequence == 1
+          && _trip.Direction == 2
+          && _trip.Sequence == 1){
+        bool testTime = true;
+        }
+
         if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, tripOriginParcel, tripOriginParcel, out wdis0, out wtime0, out gwtime0);
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, destinationParcel, tripOriginParcel, out wdis1, out wtime1, out gwtime1);
@@ -312,6 +320,35 @@ namespace DaySim.ChoiceModels.Actum.Models {
           adis1 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, destinationParcel).Variable;
           adis2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tourOriginParcel).Variable;
         }
+
+        //test section JB 20190428
+        double wwtime0;
+        double wwtime1;
+        double wwtime2;
+        double bbtime0;
+        double bbtime1;
+        double bbtime2;
+
+        if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
+          wwtime0 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tourOriginParcel, tripOriginParcel).Variable;
+          wwtime1 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tourOriginParcel, destinationParcel).Variable;
+          wwtime2 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tripOriginParcel).Variable;
+        } else {
+          wwtime0 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, tourOriginParcel).Variable;
+          wwtime1 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, destinationParcel).Variable;
+          wwtime2 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tourOriginParcel).Variable;
+        }
+        if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
+          bbtime0 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Bike, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tourOriginParcel, tripOriginParcel).Variable;
+          bbtime1 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Bike, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tourOriginParcel, destinationParcel).Variable;
+          bbtime2 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Bike, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tripOriginParcel).Variable;
+        } else {
+          bbtime0 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Bike, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, tourOriginParcel).Variable;
+          bbtime1 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Bike, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, destinationParcel).Variable;
+          bbtime2 = ImpedanceRoster.GetValue("time", Global.Settings.Modes.Bike, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tourOriginParcel).Variable;
+        }
+        // end test section
+
 
         double ttim1 = 0;
         double ttim2 = 0;
@@ -351,26 +388,26 @@ namespace DaySim.ChoiceModels.Actum.Models {
           ttim2 = btime2;
           gtim1 = gbtime1;
           gtim2 = gbtime2;
-      //  } else if (tour.Mode == Global.Settings.Modes.SchoolBus) {
-      //    if (wdis1 < WTHRESH && wdis2 < WTHRESH && wdis1 > Constants.EPSILON && wdis2 > Constants.EPSILON) {
-      //      ttim1 = wtime1;
-      //      ttim2 = wtime2;
-      //      gtim1 = gwtime1;
-      //      gtim2 = gwtime2;
-      //    } else {
-      //      if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
-      //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, destinationParcel, tripOriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
-      //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tourOriginParcel, destinationParcel, tripOriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
-      //      } else {
-      //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tripOriginParcel, destinationParcel, tourOriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
-      //       GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tripOriginParcel, destinationParcel, tourOriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
-      //      }
+          //  } else if (tour.Mode == Global.Settings.Modes.SchoolBus) {
+          //    if (wdis1 < WTHRESH && wdis2 < WTHRESH && wdis1 > Constants.EPSILON && wdis2 > Constants.EPSILON) {
+          //      ttim1 = wtime1;
+          //      ttim2 = wtime2;
+          //      gtim1 = gwtime1;
+          //      gtim2 = gwtime2;
+          //    } else {
+          //      if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
+          //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, destinationParcel, tripOriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
+          //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tourOriginParcel, destinationParcel, tripOriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
+          //      } else {
+          //        GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tripOriginParcel, destinationParcel, tourOriginParcel, out d1Dis1, out d1Time1, out gd1Time1);
+          //       GetGenTime(household.RandomUtility, Global.Settings.Modes.Sov, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tripOriginParcel, destinationParcel, tourOriginParcel, out d1Dis2, out d1Time2, out gd1Time2);
+          //      }
 
-      //      ttim1 = d1Time1;
-      //      ttim2 = d1Time2;
-      ///      gtim1 = gd1Time1;
-      //      gtim2 = gd1Time2;
-      //    }
+          //      ttim1 = d1Time1;
+          //      ttim2 = d1Time2;
+          ///      gtim1 = gd1Time1;
+          //      gtim2 = gd1Time2;
+          //    }
         } else if (tour.Mode == Global.Settings.Modes.Sov || tour.Mode == Global.Settings.Modes.ParkAndRide || tour.Mode == Global.Settings.Modes.PaidRideShare) {
           if (wdis1 < WTHRESH && wdis2 < WTHRESH && wdis1 > Constants.EPSILON && wdis2 > Constants.EPSILON) {
             ttim1 = wtime1;
@@ -573,21 +610,22 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //				check1 = 0;
         //				}
 
-       // int adultFemaleWithChildren = (person.Gender == Global.Settings.PersonGenders.Female && person.PersonType < Global.Settings.PersonTypes.DrivingAgeStudent && (household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 + household.HouseholdTotals.DrivingAgeStudents > 0)).ToFlag();
+        // int adultFemaleWithChildren = (person.Gender == Global.Settings.PersonGenders.Female && person.PersonType < Global.Settings.PersonTypes.DrivingAgeStudent && (household.HouseholdTotals.ChildrenAge5Through15 + household.HouseholdTotals.ChildrenUnder5 + household.HouseholdTotals.DrivingAgeStudents > 0)).ToFlag();
         int adultFemaleWithChildren = (person.Gender == Global.Settings.PersonGenders.Female && person.PersonType < Global.Settings.PersonTypes.DrivingAgeStudent && (household.Persons6to17 > 0 || household.KidsBetween0And4 > 0)).ToFlag();
         //#if TRACE
-        				var wrkt = tour.IsWorkPurpose().ToFlag();
+        var wrkt = tour.IsWorkPurpose().ToFlag();
         //				var n34Qln = Math.Log(1 + destinationParcel.NodesThreeLinksBuffer1 / 2.0 + destinationParcel.NodesFourLinksBuffer1);
         //				var n1Sq = destinationParcel.NodesSingleLinkBuffer1 / (Math.Max(1, destinationParcel.NodesSingleLinkBuffer1 + destinationParcel.NodesThreeLinksBuffer1 + destinationParcel.NodesFourLinksBuffer1));
         //				var n34H = destinationParcel.NodesThreeLinksBuffer2 / 2.0 + destinationParcel.NodesFourLinksBuffer2;
         //				var n34Hln = Math.Log(1 + destinationParcel.NodesThreeLinksBuffer2 / 2.0 + destinationParcel.NodesFourLinksBuffer2);
         //				var wbas = (!tour.IsHomeBasedTour).ToFlag();
         //				var bwork = wrkt == 1 && _trip.Direction == 1 ? 1 : 0;
-        				var nwrkt = 1 - wrkt;
+        var nwrkt = 1 - wrkt;
         //				var nwst = wrkt != 1 && tour.IsSchoolPurpose.ToFlag() != 1 ? 1 : 0; // not _t.WorkDestinationPurposeFlag or school tour
         //				var essc = _trip.DestinationPurpose == Global.Settings.Purposes.Escort && _trip.Tour.DestinationPurpose == Global.Settings.Purposes.School ? 1 : 0;
         //				var shsh = shoppingDestinationPurposeFlag == 1 && _trip.Tour.DestinationPurpose == Global.Settings.Purposes.Shopping ? 1 : 0; // shoppingDestinationPurposeFlag trip on shoppingDestinationPurposeFlag tour
         //				var bman = _trip.Direction == 1 && (_trip.Tour.DestinationPurpose == Global.Settings.Purposes.Work || _trip.Tour.DestinationPurpose == Global.Settings.Purposes.School) ? 1 : 0;
+
 
         if (Global.Configuration.IsInEstimationMode && _trip.DestinationParcel.Id == destinationParcel.Id && alternative.Available
 && (ttim1 > 60 || ttim2 > 60 || (ttim1 > 35 && ttim2 > 35))) {
@@ -614,6 +652,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
           Global.PrintFile.WriteLine(string.Format("time window: {0,12:0.0000000000}", logOfOneMinusRatioOfTravelTimeToAvailableTimeWindow));
           Global.PrintFile.WriteLine(string.Format("prox stop o: {0,12:0.0000000000}", proximityToStopOrigin_10Is1min_1Is10min_point1Is100min));
           Global.PrintFile.WriteLine(string.Format("prox tour o: {0,12:0.0000000000}", proximityToTourOrigin_10Is1min_1Is10min_point1Is100min));
+          Global.PrintFile.WriteLine(string.Format("wwtime0: {0,12:0.0000000000}", wwtime0));
+          Global.PrintFile.WriteLine(string.Format("wwtime1: {0,12:0.0000000000}", wwtime1));
+          Global.PrintFile.WriteLine(string.Format("wwtime2: {0,12:0.0000000000}", wwtime2));
+          Global.PrintFile.WriteLine(string.Format("bbtime0: {0,12:0.0000000000}", bbtime0));
+          Global.PrintFile.WriteLine(string.Format("bbtime1: {0,12:0.0000000000}", bbtime1));
+          Global.PrintFile.WriteLine(string.Format("bbtime2: {0,12:0.0000000000}", bbtime2));
+
           Global.PrintFile.WriteLine(string.Format("               "));
         }
 
@@ -746,8 +791,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(6, detourDistanceCubedInHundredsOfDistanceUnitsCubed);
         alternative.AddUtilityTerm(7, proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
         alternative.AddUtilityTerm(8, proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
-       alternative.AddUtilityTerm(171, maxproximity);
-        
+        alternative.AddUtilityTerm(171, maxproximity);
+
         //				alternative.AddUtility(, parkq);
         //				alternative.AddUtility(, parkqln);
         //				alternative.AddUtility(, parkqdivEmp);
@@ -824,7 +869,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //alternative.AddUtilityTerm(34, businessDestinationPurposeFlag * logOfOnePlusEmploymentTotalBuffer1);
           //alternative.AddUtilityTerm(35, businessDestinationPurposeFlag * logOfOnePlusStudentsK12Buffer1);
           alternative.AddUtilityTerm(191, businessDestinationPurposeFlag * logOfOnePlusEmploymentServiceBuffer1);
-          alternative.AddUtilityTerm(192, businessDestinationPurposeFlag * logOfOnePlusEmploymentRetailBuffer1);    
+          alternative.AddUtilityTerm(192, businessDestinationPurposeFlag * logOfOnePlusEmploymentRetailBuffer1);
           alternative.AddUtilityTerm(193, businessDestinationPurposeFlag * logOfOnePlusEmploymentGovernment_Office_EducationBuffer1);
           alternative.AddUtilityTerm(194, businessDestinationPurposeFlag * logOfOnePlusEmploymentFoodBuffer1);
           alternative.AddUtilityTerm(195, businessDestinationPurposeFlag * logOfOnePlusEmploymentMedicalBuffer1);
@@ -862,11 +907,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(170, schoolStopForAdult * destinationParcel.EmploymentEducation);
         } else if (_trip.DestinationPurpose == Global.Settings.Purposes.Escort) {
           alternative.AddUtilityTerm(67, escortStop_HouseholdHasNoChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-         alternative.AddUtilityTerm(36, escortStop_HouseholdHasChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-         alternative.AddUtilityTerm(68, escortStop_HouseholdHasNoChildren * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
-         alternative.AddUtilityTerm(37, escortStop_HouseholdHasChildren * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
-         alternative.AddUtilityTerm(38, escortStop_HouseholdHasNoChildren * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
-         alternative.AddUtilityTerm(39, escortStop_HouseholdHasChildren * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
+          alternative.AddUtilityTerm(36, escortStop_HouseholdHasChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+          alternative.AddUtilityTerm(68, escortStop_HouseholdHasNoChildren * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
+          alternative.AddUtilityTerm(37, escortStop_HouseholdHasChildren * proximityToStopOrigin_10Is1min_1Is10min_point1Is100min);
+          alternative.AddUtilityTerm(38, escortStop_HouseholdHasNoChildren * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
+          alternative.AddUtilityTerm(39, escortStop_HouseholdHasChildren * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
           //alternative.AddUtilityTerm(69, escortStopOnSchoolTour * proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
           alternative.AddUtilityTerm(199, escortStop_HouseholdHasChildren * maxproximity);
           alternative.AddUtilityTerm(200, escortStop_HouseholdHasNoChildren * maxproximity);
@@ -905,7 +950,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(212, personalBusinessStopPurposeFlag * logOfOnePlusEmploymentMedicalBuffer1);
 
           // Size terms
-          alternative.AddUtilityTerm(118, personalBusinessStopPurposeFlag * destinationParcel.EmploymentOffice);        
+          alternative.AddUtilityTerm(118, personalBusinessStopPurposeFlag * destinationParcel.EmploymentOffice);
           alternative.AddUtilityTerm(120, personalBusinessStopPurposeFlag * destinationParcel.EmploymentService);
           alternative.AddUtilityTerm(213, personalBusinessStopPurposeFlag * destinationParcel.EmploymentRetail);
           alternative.AddUtilityTerm(214, personalBusinessStopPurposeFlag * destinationParcel.EmploymentMedical);
@@ -1035,7 +1080,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             excludeReason = 1;
             // JB 20190409 revised mode exclusions
             //} else if (tourMode >= Global.Settings.Modes.Other) {
-          } else if (tourMode > Global.Settings.Modes.WalkRideWalk && tourMode <= Global.Settings.Modes.CarKissRideShare){
+          } else if (tourMode > Global.Settings.Modes.WalkRideWalk && tourMode <= Global.Settings.Modes.CarKissRideShare) {
             excludeReason = 2;
           } else if (tour.OriginParcelId > _maxParcel) {
             excludeReason = 3;
