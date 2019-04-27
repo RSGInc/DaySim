@@ -278,7 +278,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double pinc_linear = person.PersonalIncome;
       double hhsize = household.Size;
 
-
       //age inputs (from apply)
 
       int age3050flag = (person.Age >= 30 && person.Age < 50).ToFlag();
@@ -316,6 +315,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       }
 
       // tour inputs
+      int tourCategory = tour.GetTourCategory();
+      int notPrimaryTour = (tourCategory != Global.Settings.TourCategories.Primary).ToFlag();
+
       int escortTourFlag = tour.IsEscortPurpose().ToFlag();
       int shoppingTourFlag = tour.IsShoppingPurpose().ToFlag();
       int socialTourFlag = tour.IsSocialPurpose().ToFlag();
@@ -957,28 +959,32 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(211, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(211, HHwithHighIncomeFlag * gentime);
             alternative.AddUtilityTerm(211, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(214, Math.Log(Math.Max(gentime,1)));
           }
 
           else if (gtVariable == 2) {
             alternative.AddUtilityTerm(200, 1.0);
             alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(202, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(202, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(203, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(201, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(201, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(201, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(204, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 4) {
             alternative.AddUtilityTerm(231, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(232, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(232, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(233, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(231, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(231, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(231, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 5) {
             alternative.AddUtilityTerm(241, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(242, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(242, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(243, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(241, HHwithMidleIncomeFlag * gentime);
+            alternative.AddUtilityTerm(241, HHwithHighIncomeFlag * gentime);
+            alternative.AddUtilityTerm(241, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(244, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 6) {
@@ -986,6 +992,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(251, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(251, HHwithHighIncomeFlag * gentime);
             alternative.AddUtilityTerm(251, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(254, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 7) {
@@ -993,6 +1000,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(261, HHwithMidleIncomeFlag * gentime);
             alternative.AddUtilityTerm(261, HHwithHighIncomeFlag * gentime);
             alternative.AddUtilityTerm(261, HHwithMissingIncomeFlag * gentime);
+            alternative.AddUtilityTerm(264, Math.Log(Math.Max(gentime, 1)));
           }
 
           if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare) {
@@ -1037,9 +1045,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
                   Math.Pow(minimumTimeNeeded / (Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)), 0.8)
                  )));
 
+          alternative.AddUtilityTerm(803,
+                  notPrimaryTour * Math.Log(Math.Max(Constants.EPSILON, 1 -
+                  Math.Pow(minimumTimeNeeded / (Math.Min(840, modeTimes.LongestFeasibleWindow.End - modeTimes.LongestFeasibleWindow.Start)), 0.8)
+                 )));
 
 
           alternative.AddUtilityTerm(802, Math.Log((totalMinutesAvailableInDay + 1.0) / (minimumTimeNeeded + 1.0)));
+          alternative.AddUtilityTerm(804, notPrimaryTour*Math.Log((totalMinutesAvailableInDay + 1.0) / (minimumTimeNeeded + 1.0)));
+
 
           //alternative.AddUtilityTerm(5,
           //                                    (maleFlag == 0 && mode == Global.Settings.Modes.Walk &&

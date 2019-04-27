@@ -259,7 +259,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double distanceFromOrigin = tour.OriginParcel.DistanceFromOrigin(destinationParcel, tour.DestinationArrivalTime);
 
 
-        // 1. new from GV: Cph KM-distances
+        // 1. new from GV: Cph KM-distance
         double piecewiseDistanceFrom0To1Km = Math.Min(distanceFromOrigin, .10);
 
         double piecewiseDistanceFrom0To2Km = Math.Min(distanceFromOrigin, .20); //GV: added July 7th
@@ -305,10 +305,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
         int noCarCompetitionFlag = FlagUtility.GetNoCarCompetitionFlag(carOwnership);
         int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
 
-        alternative.AddUtilityTerm(2, household.Id);
-        alternative.AddUtilityTerm(3, tour.DestinationPurpose);
-        alternative.AddUtilityTerm(4, person.PersonType);
-        alternative.AddUtilityTerm(5, distanceFromOrigin);
+       // alternative.AddUtilityTerm(2, household.Id);
+       // alternative.AddUtilityTerm(3, tour.DestinationPurpose);
+       // alternative.AddUtilityTerm(4, person.PersonType);
+       // alternative.AddUtilityTerm(5, distanceFromOrigin);
 
         alternative.AddUtilityTerm(8, adjustmentFactor);
         alternative.AddUtilityTerm(9, tourLogsum);

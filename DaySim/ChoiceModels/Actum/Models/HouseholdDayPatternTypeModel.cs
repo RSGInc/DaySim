@@ -46,7 +46,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       component3 = new int[4, 6, 6, 6, 6, 6, nThreads];
     }
 
-    // array associating alternative with the purposes of each of the five possible positions in the alternative
+    // array associating alternative with the purposes of each of the five possible positions in the alternative     
     //  altPTypes[a,p] is the purpose of position p in alternative a  
     private readonly int[,] altPTypes = new int[,] {
 				//{0,0,0,0,0,0},

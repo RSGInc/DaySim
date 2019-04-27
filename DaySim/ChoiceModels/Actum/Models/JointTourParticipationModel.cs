@@ -135,11 +135,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int hhsize = household.Size;
 
-      int hhinc1 = household.Income <= 300000 ? 1 : 0;
-      int hhinc2 = (household.Income > 300000 && household.Income <= 600000) ? 1 : 0;
-      int hhinc3 = (household.Income > 600000 && household.Income <= 900000) ? 1 : 0;
-      //int hhinc4 = (household.Income > 900000 && household.Income <= 1200000) ? 1 : 0;
+      //GV: 4.4.2019 - new income classes
+      //int hhinc1 = household.Income <= 300000 ? 1 : 0;
+      //int hhinc2 = (household.Income > 300000 && household.Income <= 600000) ? 1 : 0;
+      //int hhinc3 = (household.Income > 600000 && household.Income <= 900000) ? 1 : 0;
+      //int hhinc4 = (household.Income > 900000) ? 1 : 0;
+      int hhinc1 = household.Income <= 450000 ? 1 : 0;
+      int hhinc2 = (household.Income > 450000 && household.Income <= 650000) ? 1 : 0;
+      int hhinc3 = (household.Income > 650000 && household.Income <= 900000) ? 1 : 0;
       int hhinc4 = (household.Income > 900000) ? 1 : 0;
+
 
       bool[] pLessThan3NonMandatoryTours = new bool[6];
       bool[] pLessThan3TourPurposes = new bool[6];
@@ -184,7 +189,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         count++;
         if (count <= 5) {
 
-          // set characteristics here that depend on person characteristics
+          // set characteristics here that depend on person characteristics 
           if (person.IsFullOrPartTimeWorker) {
             pUsualLocation[count] = person.UsualWorkParcelId;
           } else if (person.IsStudent) {
@@ -452,7 +457,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         //Add utility terms that are not in components
         //alternative.AddUtilityTerm(399, 0);
-        // OBS!!! This is new - 21nd January 2013 - it sais that these trips are less expected to be done with 3 or 4+ persons (compared to two people)
+        // OBS!!! This is new - 21nd January 2013 - it sais that these trips are less expected to be done with 3 or 4+ persons (compared to two people) 
         alternative.AddUtilityTerm(59, altParticipants[alt][7] == 3 ? 1 : 0);
         alternative.AddUtilityTerm(60, altParticipants[alt][7] >= 4 ? 1 : 0);
 

@@ -195,8 +195,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(26, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
       //alternative.AddUtilityTerm(26, (household.HasChildren).ToFlag());
 
-      alternative.AddUtilityTerm(27, workTourLogsum);
-
+      //GV: 8.4.2019 - rest og GVA
+      //alternative.AddUtilityTerm(27, workTourLogsum);
+      alternative.AddUtilityTerm(27, workTourLogsum * (!hhLivesInCPHCity).ToFlag());
       //GV: 21, feb 2019 - CPHcity included in the logsum
       alternative.AddUtilityTerm(28, workTourLogsum * (hhLivesInCPHCity).ToFlag());
 
@@ -213,7 +214,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(31, 1);
 
       //alternative.AddUtilityTerm(32, person.IsChildUnder5.ToFlag());
-      alternative.AddUtilityTerm(32, person.WorksAtHome.ToFlag());
+
+      //GV: 8.4.2019 - JBs comment on "WorksAtHome"
+      //alternative.AddUtilityTerm(32, person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(32, personDay.WorksAtHomeFlag);
 
       alternative.AddUtilityTerm(33, person.IsFulltimeWorker.ToFlag());
 
@@ -230,15 +234,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 13. june 2016, not sign.
       //alternative.AddUtilityTerm(37, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
 
-      alternative.AddUtilityTerm(37, workTourLogsum);
-
-      //GV: 21, feb 2019 - CPHcity included in the logsum
-      alternative.AddUtilityTerm(38, workTourLogsum * (hhLivesInCPHCity).ToFlag());
+      //GV: 8.4.2019 - commented out
+      //GV: 8.4.2019 - rest og GVA
+      //alternative.AddUtilityTerm(37, workTourLogsum * (!hhLivesInCPHCity).ToFlag());
+      //alternative.AddUtilityTerm(38, workTourLogsum * (hhLivesInCPHCity).ToFlag());
 
       //alternative.AddUtilityTerm(38, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
       alternative.AddUtilityTerm(39, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
 
-      alternative.AddUtilityTerm(40, householdDay.PrimaryPriorityTimeFlag);
+      //GV: 8.4.2019 - commented out
+      //alternative.AddUtilityTerm(40, householdDay.PrimaryPriorityTimeFlag);
 
       //alternative.AddNestedAlternative(12, 1, 60);
 
@@ -251,14 +256,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(42, person.IsNonworkingAdult.ToFlag()); 
 
       //alternative.AddUtilityTerm(43, person.IsPartTimeWorker.ToFlag());
-      alternative.AddUtilityTerm(43, person.IsYouth.ToFlag());
+      //GV: 8.4.2019 - commented out
+      //alternative.AddUtilityTerm(43, person.IsYouth.ToFlag());
 
       //alternative.AddUtilityTerm(46, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
       //alternative.AddUtilityTerm(14, (householdDay.AdultsInSharedHomeStay == 2).ToFlag());
       //alternative.AddUtilityTerm(15, (household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
       //alternative.AddUtilityTerm(47, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
 
-      alternative.AddUtilityTerm(47, workTourLogsum);
+      //GV: 8.4.2019 - commented out
+      //alternative.AddUtilityTerm(47, schoolTourLogsum);
 
       //GV: 21, feb 2019 - CPHcity included in the logsum
       //alternative.AddUtilityTerm(48, workTourLogsum * (hhLivesInCPHCity).ToFlag());
@@ -267,7 +274,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(49, schoolTourLogsum);
 
       //alternative.AddUtilityTerm(48, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
-      //alternative.AddUtilityTerm(49, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
+      //alternative.AddUtilityTerm(49, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());  
 
       alternative.AddUtilityTerm(50, householdDay.PrimaryPriorityTimeFlag);
 

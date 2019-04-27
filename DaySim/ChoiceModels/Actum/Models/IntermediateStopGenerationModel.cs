@@ -105,25 +105,43 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int individualHalfTour = (isIndividualTour == 1 || individualHalfOfFullJointHalfTour == 1) ? 1 : 0;
       int jointHalfTour = 1 - individualHalfTour;
 
+      //int carOwnership = person.GetCarOwnershipSegment();
+
+        int carOwnership = person.Age < 18
+            ? Global.Settings.CarOwnerships.Child
+             : person.Age >=18 && household.VehiclesAvailable == 0
+             ? Global.Settings.CarOwnerships.NoCars
+             : person.Age >= 18 && household.VehiclesAvailable < household.HouseholdTotals.DrivingAgeMembers
+             ? Global.Settings.CarOwnerships.LtOneCarPerAdult
+             : Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult;
+        int votALSegment = (household.Income <= 450000)
+                    ? Global.Settings.VotALSegments.Low
+                    : (household.Income <= 900000)
+                        ? Global.Settings.VotALSegments.Medium
+                        : Global.Settings.VotALSegments.High;
+
       //destination parcel variables
       double foodBuffer2 = 0.0;
       double totEmpBuffer2 = 0.0;
       double retailBuffer2 = 0.0;
-
+      int transitAccessSegment = 2;
       if (destinationParcel != null) {
         foodBuffer2 = Math.Log(1 + destinationParcel.EmploymentFoodBuffer2);
         totEmpBuffer2 = Math.Log(1 + destinationParcel.EmploymentTotalBuffer2);
         retailBuffer2 = Math.Log(1 + destinationParcel.EmploymentRetailBuffer2);
+        transitAccessSegment = destinationParcel.GetDistanceToTransit() >= 0 && destinationParcel.GetDistanceToTransit() <= 0.4
+              ? 0
+              : destinationParcel.GetDistanceToTransit() > 0.4 && destinationParcel.GetDistanceToTransit() <= 1.6
+                  ? 1
+                  : 2;
       }
-
-      int carOwnership = person.GetCarOwnershipSegment();
 
       // household inputs
       int onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
       //var householdInc75KP = household.Has75KPlusIncome;
 
-      int votALSegment = tour.GetVotALSegment();
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //int votALSegment = tour.GetVotALSegment();
+      //int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
 
       double totalAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
                 [Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
@@ -150,10 +168,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       // tour inputs
       int hovDriverTourFlag = tour.IsHovDriverMode().ToFlag();
       int hovPassengerTourFlag = tour.IsHovPassengerMode().ToFlag();
-      int transitTourFlag = tour.IsTransitMode().ToFlag();
+      //int transitTourFlag = tour.IsTransitMode().ToFlag();
       int walkTourFlag = tour.IsWalkMode().ToFlag();
       int bikeTourFlag = tour.IsBikeMode().ToFlag();
-      int autoTourFlag = tour.IsAnAutoMode().ToFlag();
+      //int autoTourFlag = tour.IsAnAutoMode().ToFlag();
       int notHomeBasedTourFlag = (!tour.IsHomeBasedTour).ToFlag();
       int workTourFlag = tour.IsWorkPurpose().ToFlag();
       int businessTourFlag = tour.IsBusinessPurpose().ToFlag();

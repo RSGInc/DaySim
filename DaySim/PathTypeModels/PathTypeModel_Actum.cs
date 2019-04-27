@@ -993,8 +993,12 @@ namespace DaySim.PathTypeModels {
       };
 
       if (!useZones) {
+
         originZoneId = originParcel.ZoneId;
         destinationZoneId = destinationParcel.ZoneId;
+        //JB 20190428 add the following to initialize the values when !useZones; needed on line 1007
+        _originZoneId = originParcel.ZoneId;
+        _destinationZoneId = destinationParcel.ZoneId;
       }
 
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (returnTime > 0 ? 2 : 1);
