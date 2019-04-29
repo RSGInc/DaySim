@@ -127,7 +127,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                         ? Global.Settings.VotALSegments.Medium
                         : Global.Settings.VotALSegments.High;
 
-        //int taSegment = destinationParcel.TransitAccessSegment();
+        //int taSegment = destinationParcel.TransitAccessSegment(); 
         //GV: 12.3.2019 - getting values from MB's memo
         //OBS - it has to be in km
         int taSegment =
