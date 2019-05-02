@@ -157,7 +157,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       // 0 No paid parking at work
 
-      ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
+      ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0); 
 
       alternative.Choice = 0;
 
@@ -213,10 +213,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(19, Bf1ParkingPrice);
       alternative.AddUtilityTerm(20, Bf1LogParkingPrice);
       
-      //JB 20190427 test separately and use one or the other of the three free parking spaces terms. beta should be negative
+      //JB 20190427 test separately and use one or the other of the three free parking spaces terms. beta should be negative  
       alternative.AddUtilityTerm(21, Bf1FreeEmpParkingSpaces);
       alternative.AddUtilityTerm(22, Bf1FreeEmpParkingRatio);
-      alternative.AddUtilityTerm(23, Bf1LogFreeEmpParkingRatio);
+      alternative.AddUtilityTerm(23, Bf1LogFreeEmpParkingRatio); 
 
 
       //GV: 18.3.2019 - 
@@ -236,7 +236,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       // Name: 1EmploymentOffice                     Explanation: Private office
       // Name: 1EmploymentRetail                     Explanation: Retail
       // Name: 1EmploymentService                    Explanation: Supermarket, grocery, etc
-      // Name: EmploymentAgricultureConstruction    Explanation: Agriculture, resources, construction  
+      // Name: EmploymentAgricultureConstruction    Explanation: Agriculture, resources, construction    
       // Name: EmploymentTotal
 
       //GV: OBS! CPHcity ONLY
@@ -247,7 +247,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(33, (workerUsualParcel.EmploymentIndustrialBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(34, (workerUsualParcel.EmploymentMedicalBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(35, (workerUsualParcel.EmploymentServiceBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
-      //GV: 18.3.2019 - EmploymentFood and -AgricultureConstruction added
+      //GV: 18.3.2019 - EmploymentFood and -AgricultureConstruction added 
       alternative.AddUtilityTerm(36, (workerUsualParcel.EmploymentFoodBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(37, (workerUsualParcel.EmploymentAgricultureConstructionBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
 
