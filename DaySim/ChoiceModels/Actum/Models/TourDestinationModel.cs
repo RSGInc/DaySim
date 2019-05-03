@@ -24,7 +24,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     public const string CHOICE_MODEL_NAME = "ActumTourDestinationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
-    private const int MAX_PARAMETER = 300;
+    private const int MAX_PARAMETER = 400;
 
     private static int timesStartedRunModel;
 
@@ -422,6 +422,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(36, destinationParcel.EmploymentAgricultureConstruction);
           alternative.AddUtilityTerm(37, destinationParcel.EmploymentTotal);
           alternative.AddUtilityTerm(38, destinationParcel.Households);
+          alternative.AddUtilityTerm(299, destinationParcel.EmploymentFood);
+          alternative.AddUtilityTerm(300, destinationParcel.EmploymentMedical);
         } else if (tour.DestinationPurpose == Global.Settings.Purposes.Escort) {
           //alternative.AddUtilityTerm(50, piecewiseDistanceFrom0To1Km);
           alternative.AddUtilityTerm(51, piecewiseDistanceFrom0To2Km);
@@ -450,7 +452,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(66, householdHasNoChildren.ToFlag() * logOfOnePlusEmploymentEducationBuffer2);
           alternative.AddUtilityTerm(67, householdHasNoChildren.ToFlag() * logOfOnePlusEmploymentServiceBuffer2);
           alternative.AddUtilityTerm(68, householdHasNoChildren.ToFlag() * logOfOnePlusEmploymentJobsBuffer2);
-
+          
+        
 
 
       
@@ -462,6 +465,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(72, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentIndustrial);
           alternative.AddUtilityTerm(73, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentOffice);
           alternative.AddUtilityTerm(74, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentRetail);
+          alternative.AddUtilityTerm(301, (!householdHasChildren).ToFlag() * destinationParcel.StudentsUniversity);
           // GV: 75 is fixed to zero
           alternative.AddUtilityTerm(75, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentService);
           alternative.AddUtilityTerm(76, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentAgricultureConstruction);
@@ -479,6 +483,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(87, (householdHasChildren).ToFlag() * destinationParcel.EmploymentTotal);
           alternative.AddUtilityTerm(88, (householdHasChildren).ToFlag() * destinationParcel.Households);
           alternative.AddUtilityTerm(89, (householdHasChildren).ToFlag() * destinationParcel.StudentsK8);
+          alternative.AddUtilityTerm(302, (householdHasChildren).ToFlag() * destinationParcel.StudentsUniversity);
         } else if (tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
           alternative.AddUtilityTerm(90, piecewiseDistanceFrom0To2Km);
           //alternative.AddUtilityTerm(91, piecewiseDistanceFrom1To2Km);
@@ -511,6 +516,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(116, destinationParcel.EmploymentAgricultureConstruction);
           alternative.AddUtilityTerm(117, destinationParcel.EmploymentTotal);
           alternative.AddUtilityTerm(118, destinationParcel.Households);
+          alternative.AddUtilityTerm(303, destinationParcel.EmploymentFood);
+          alternative.AddUtilityTerm(304, destinationParcel.EmploymentMedical);
         } else if (tour.DestinationPurpose == Global.Settings.Purposes.Shopping) {
           //alternative.AddUtilityTerm(120, piecewiseDistanceFrom0To1Km);
           alternative.AddUtilityTerm(121, piecewiseDistanceFrom0To2Km);
@@ -534,6 +541,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           // GV 142 is fixed to zero
           alternative.AddUtilityTerm(142, destinationParcel.EmploymentService);
           alternative.AddUtilityTerm(143, destinationParcel.EmploymentTotal);
+          alternative.AddUtilityTerm(305, destinationParcel.EmploymentFood);
         } else if (tour.DestinationPurpose == Global.Settings.Purposes.Social) {
           //alternative.AddUtilityTerm(170, piecewiseDistanceFrom0To1Km);
           //alternative.AddUtilityTerm(171, piecewiseDistanceFrom1To2Km);
@@ -569,7 +577,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(195, destinationParcel.EmploymentService);
           alternative.AddUtilityTerm(196, destinationParcel.EmploymentAgricultureConstruction);
           alternative.AddUtilityTerm(197, destinationParcel.EmploymentTotal);
-          alternative.AddUtilityTerm(198, destinationParcel.Households);        
+          alternative.AddUtilityTerm(198, destinationParcel.Households);
+          alternative.AddUtilityTerm(306, destinationParcel.EmploymentFood);
+          alternative.AddUtilityTerm(307, destinationParcel.EmploymentMedical);
         }
       }
 
