@@ -256,6 +256,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double employmentGovernment_Office_Education = destinationParcel.EmploymentGovernment + destinationParcel.EmploymentOffice + destinationParcel.EmploymentEducation;
         double employmentIndustrial_Ag_Construction = destinationParcel.EmploymentIndustrial + destinationParcel.EmploymentAgricultureConstruction;
         double studentsK12 = destinationParcel.StudentsK8 + destinationParcel.StudentsHighSchool;
+        double totstudents = destinationParcel.StudentsK8 + destinationParcel.StudentsHighSchool + destinationParcel.StudentsUniversity;
 
         double logOfOnePlusEmploymentServiceBuffer1 = Math.Log(destinationParcel.EmploymentServiceBuffer1 + 1);
         double logOfOnePlusEmploymentMedicalBuffer1 = Math.Log(destinationParcel.EmploymentMedicalBuffer1 + 1);
@@ -777,6 +778,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //					Global.Logger.WriteLine(string.Format("stime: {0}", _destinationDepartureTime));
         //				}
         //#endif
+        
         // Max Proximity term (BP, 23/04/19)
         double maxproximity = Math.Max(proximityToStopOrigin_10Is1min_1Is10min_point1Is100min, proximityToTourOrigin_10Is1min_1Is10min_point1Is100min);
 
@@ -896,15 +898,31 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(198, schoolStopForAdult * logOfOnePlusEmploymentEducationBuffer1);
           alternative.AddUtilityTerm(229, schoolStopForAdult * maxproximity);
           alternative.AddUtilityTerm(230, schoolStopForAdult * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
-          // Size terms
-          //alternative.AddUtilityTerm(103, schoolStopForChildUnderAge16 * employmentGovernment_Office_Education);
-          //alternative.AddUtilityTerm(105, schoolStopForDrivingAgeStudent * employmentGovernment_Office_Education);
-          //alternative.AddUtilityTerm(151, schoolStopForDrivingAgeStudent * destinationParcel.Households);
 
+          alternative.AddUtilityTerm(239, schoolStopForPreschoolOrPrimarySchoolChild * maxproximity);
+          alternative.AddUtilityTerm(240, schoolStopForPreschoolOrPrimarySchoolChild * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+          alternative.AddUtilityTerm(241, schoolStopForPreschoolOrPrimarySchoolChild * logOfOnePlusEmploymentEducationBuffer1);
+          alternative.AddUtilityTerm(242, schoolStopForPreschoolOrPrimarySchoolChild * logOfOnePlusStudentsK12Buffer1);
+          alternative.AddUtilityTerm(243, schoolStopForGymnasiumStudent * maxproximity);
+          alternative.AddUtilityTerm(244, schoolStopForGymnasiumStudent * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
+          alternative.AddUtilityTerm(245, schoolStopForGymnasiumStudent * logOfOnePlusEmploymentEducationBuffer1);
+          alternative.AddUtilityTerm(246, schoolStopForGymnasiumStudent * logOfOnePlusStudentsUniversityBuffer1);
+
+          // Size terms
+          alternative.AddUtilityTerm(103, schoolStopForPreschoolOrPrimarySchoolChild * destinationParcel.EmploymentEducation);
+          alternative.AddUtilityTerm(151, schoolStopForPreschoolOrPrimarySchoolChild * destinationParcel.Households);
+          alternative.AddUtilityTerm(247, schoolStopForPreschoolOrPrimarySchoolChild * destinationParcel.StudentsK8);
+          
           //GV: 107 is fixed to zero
           //alternative.AddUtilityTerm(107, schoolStopForAdult * employmentGovernment_Office_Education);
           alternative.AddUtilityTerm(169, schoolStopForAdult * destinationParcel.StudentsUniversity);
           alternative.AddUtilityTerm(170, schoolStopForAdult * destinationParcel.EmploymentEducation);
+
+          //Size terms
+          alternative.AddUtilityTerm(248, schoolStopForGymnasiumStudent * destinationParcel.EmploymentEducation);
+          alternative.AddUtilityTerm(249, schoolStopForGymnasiumStudent * destinationParcel.StudentsUniversity);
+          alternative.AddUtilityTerm(256, schoolStopForGymnasiumStudent * destinationParcel.StudentsHighSchool);
+
         } else if (_trip.DestinationPurpose == Global.Settings.Purposes.Escort) {
           alternative.AddUtilityTerm(67, escortStop_HouseholdHasNoChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
           alternative.AddUtilityTerm(36, escortStop_HouseholdHasChildren * gtime_DistanceSensitiveDetourGeneralizedTimeHundredsOfMinutes);
@@ -929,6 +947,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(111, escortStop_HouseholdHasChildren * destinationParcel.Households);
           alternative.AddUtilityTerm(204, escortStop_HouseholdHasChildren * destinationParcel.StudentsK8);
           alternative.AddUtilityTerm(205, escortStop_HouseholdHasChildren * destinationParcel.EmploymentEducation);
+          alternative.AddUtilityTerm(250, escortStop_HouseholdHasChildren * destinationParcel.StudentsHighSchool);
 
           alternative.AddUtilityTerm(112, escortStop_HouseholdHasNoChildren * destinationParcel.EmploymentTotal);
           alternative.AddUtilityTerm(114, escortStop_HouseholdHasNoChildren * destinationParcel.Households);
@@ -939,6 +958,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(209, escortStop_HouseholdHasNoChildren * destinationParcel.EmploymentOffice);
           alternative.AddUtilityTerm(210, escortStop_HouseholdHasNoChildren * destinationParcel.EmploymentGovernment);
           alternative.AddUtilityTerm(211, escortStop_HouseholdHasNoChildren * destinationParcel.EmploymentMedical);
+          alternative.AddUtilityTerm(251, escortStop_HouseholdHasNoChildren * employmentIndustrial_Ag_Construction);
+          alternative.AddUtilityTerm(252, escortStop_HouseholdHasNoChildren * destinationParcel.EmploymentFood);
 
         } else if (_trip.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
           // Generalised time and proximity
@@ -958,8 +979,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(216, personalBusinessStopPurposeFlag * destinationParcel.EmploymentIndustrial);
           alternative.AddUtilityTerm(217, personalBusinessStopPurposeFlag * destinationParcel.EmploymentFood);
           alternative.AddUtilityTerm(218, personalBusinessStopPurposeFlag * destinationParcel.EmploymentGovernment);
-          alternative.AddUtilityTerm(219, businessDestinationPurposeFlag * destinationParcel.EmploymentAgricultureConstruction);
-
+          alternative.AddUtilityTerm(219, personalBusinessStopPurposeFlag * destinationParcel.EmploymentAgricultureConstruction);
+          alternative.AddUtilityTerm(253, personalBusinessStopPurposeFlag * (destinationParcel.StudentsK8 + destinationParcel.StudentsHighSchool + destinationParcel.StudentsUniversity));
+          alternative.AddUtilityTerm(254, personalBusinessStopPurposeFlag * destinationParcel.Households);
 
           //alternative.AddUtilityTerm(121, personalBusinessStopPurposeFlag * destinationParcel.Households);
         } else if (_trip.DestinationPurpose == Global.Settings.Purposes.Shopping) {
@@ -1007,6 +1029,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //alternative.AddUtilityTerm(132, socialStopPurposeFlag * destinationParcel.EmploymentTotal);
           //alternative.AddUtilityTerm(133, socialStopPurposeFlag * openSpaceType2IsPresentInBuffer1);
           alternative.AddUtilityTerm(134, socialStopPurposeFlag * destinationParcel.Households);
+          alternative.AddUtilityTerm(255, socialStopPurposeFlag * (destinationParcel.StudentsK8 + destinationParcel.StudentsHighSchool + destinationParcel.StudentsUniversity));
           //alternative.AddUtilityTerm(154, socialStopPurposeFlag * destinationParcel.StudentsUniversity); 
         }
       }
