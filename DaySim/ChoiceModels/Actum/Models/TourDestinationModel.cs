@@ -294,6 +294,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double logOfOnePlusEmploymentAgrConstrBuffer2 = Math.Log(destinationParcel.EmploymentAgricultureConstructionBuffer2 + 1.0);
         double logOfOnePlusEmploymentJobsBuffer2 = Math.Log(destinationParcel.EmploymentTotalBuffer2 + 1.0);
         double logOfOnePlusHouseholdsBuffer2 = Math.Log(destinationParcel.HouseholdsBuffer2 + 1.0);
+
+       // BP 07/05/2018
+        double Totenrolment1 = destinationParcel.StudentsK8 + destinationParcel.StudentsHighSchool + destinationParcel.StudentsUniversity;
+        double Totenrolment2 = destinationParcel.StudentsK8 + destinationParcel.StudentsHighSchool;
+
         // 2. finished 
 
 
@@ -466,6 +471,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(73, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentOffice);
           alternative.AddUtilityTerm(74, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentRetail);
           alternative.AddUtilityTerm(301, (!householdHasChildren).ToFlag() * destinationParcel.StudentsUniversity);
+          alternative.AddUtilityTerm(309, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentFood);
+          alternative.AddUtilityTerm(310, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentMedical);
+          
           // GV: 75 is fixed to zero
           alternative.AddUtilityTerm(75, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentService);
           alternative.AddUtilityTerm(76, (!householdHasChildren).ToFlag() * destinationParcel.EmploymentAgricultureConstruction);
@@ -484,6 +492,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(88, (householdHasChildren).ToFlag() * destinationParcel.Households);
           alternative.AddUtilityTerm(89, (householdHasChildren).ToFlag() * destinationParcel.StudentsK8);
           alternative.AddUtilityTerm(302, (householdHasChildren).ToFlag() * destinationParcel.StudentsUniversity);
+          alternative.AddUtilityTerm(311, (householdHasChildren).ToFlag() * destinationParcel.EmploymentFood);
+          alternative.AddUtilityTerm(312, (householdHasChildren).ToFlag() * destinationParcel.EmploymentMedical);
+          alternative.AddUtilityTerm(313, (householdHasChildren).ToFlag() * destinationParcel.StudentsHighSchool);
         } else if (tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness) {
           alternative.AddUtilityTerm(90, piecewiseDistanceFrom0To2Km);
           //alternative.AddUtilityTerm(91, piecewiseDistanceFrom1To2Km);
@@ -580,6 +591,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(198, destinationParcel.Households);
           alternative.AddUtilityTerm(306, destinationParcel.EmploymentFood);
           alternative.AddUtilityTerm(307, destinationParcel.EmploymentMedical);
+          alternative.AddUtilityTerm(314, Totenrolment1);
+          alternative.AddUtilityTerm(315, Totenrolment2);
         }
       }
 
