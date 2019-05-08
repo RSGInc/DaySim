@@ -36,7 +36,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       person.ResetRandom(3);
 
-      // Determine passCategory, fareZones and passPrice
+      // Determine passCategory, fareZones and passPrice 
       int passCategory = -1;
       int fareZones = -1;
       double passPrice = -1.0;
@@ -411,10 +411,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 
       //Home accessibility
+      //GV: 6. may 2019 - JB wanted coeff.30 with homeTranDist variable
+      alternative.AddUtilityTerm(30, homeTranDist);
+
       //alternative.AddUtilityTerm(31, Math.Min(2.0, homeParcel.DistanceToLocalBus));   //Stefan  (This is low frequency bus)
       //GV: 25.3.2019 - distance to local bus == 1km
-      alternative.AddUtilityTerm(31, Math.Min(1.0, homeParcel.DistanceToLocalBus)); 
-      //alternative.AddUtilityTerm(31, homeParcel.DistanceToLocalBus);
+      //GV: 6. may 2019 - JB wanted to omit math.min in coeff.31
+      //alternative.AddUtilityTerm(31, Math.Min(1.0, homeParcel.DistanceToLocalBus)); 
+      alternative.AddUtilityTerm(31, homeParcel.DistanceToLocalBus);
 
       //alternative.AddUtilityTerm(32, Math.Min(5.0, homeParcel.DistanceToExpressBus));   //Stefan (This is high frequency bus)
       //GV: 25.3.2019 - distance to A, S bus == 1km
@@ -476,7 +480,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: OK
       //Price
       alternative.AddUtilityTerm(71, passPriceToFareRatio);
-
+                     
       //GV: 26. 3. 2019 - parking avail. in CPH
       alternative.AddUtilityTerm(81, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (isInCopenhagenMunicipality).ToFlag());
 
@@ -484,8 +488,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(82, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (isInFrederiksbergMunicipality).ToFlag());
 
       //GV: 26. 3. 2019 - parking avail. in the rest of GCA
-      alternative.AddUtilityTerm(83, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (!hhLivesInCPHCity).ToFlag());  
+      alternative.AddUtilityTerm(83, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (!hhLivesInCPHCity).ToFlag());
 
+      //JB: 8.5.2019 - Add beta 84 as a dummy variable: (1 - homeParcel.ParkingDataAvailable) to go along with betas 81 - 83.
+      //GV: 8.5.2019 - 
+      alternative.AddUtilityTerm(84, homeParcel.ParkingDataAvailable);
+               
       //GV: cannot be estimated with the correct sign
       //GV: 26. 3. 2019 - parking costs
       //alternative.AddUtilityTerm(84, homeParcel.ParkingDataAvailable * (homeParcel.ResidentialPermitDailyParkingPricesBuffer1) * (isInCopenhagenMunicipality).ToFlag());
