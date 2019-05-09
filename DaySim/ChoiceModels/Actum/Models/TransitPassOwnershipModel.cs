@@ -492,7 +492,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //JB: 8.5.2019 - Add beta 84 as a dummy variable: (1 - homeParcel.ParkingDataAvailable) to go along with betas 81 - 83.
       //GV: 8.5.2019 - 
-      alternative.AddUtilityTerm(84, homeParcel.ParkingDataAvailable);
+      alternative.AddUtilityTerm(84, (1 - homeParcel.ParkingDataAvailable));  
                
       //GV: cannot be estimated with the correct sign
       //GV: 26. 3. 2019 - parking costs
