@@ -459,11 +459,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(265, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * destinationParcel.EmploymentRetail);
 
         //GV: 8.5.2019 - JB's request on GoogleDrive on 7.5.2019
-        alternative.AddUtilityTerm(271, (lowIncome).ToFlag() * destinationParcel.Households);
-        alternative.AddUtilityTerm(272, (lowMediumIncome).ToFlag() * destinationParcel.Households);
-        alternative.AddUtilityTerm(273, (mediumHighIncome).ToFlag() * destinationParcel.Households);
-        alternative.AddUtilityTerm(274, (highIncome).ToFlag() * destinationParcel.Households);
-        alternative.AddUtilityTerm(275, (!incomeMissing).ToFlag() * destinationParcel.Households); 
+        //alternative.AddUtilityTerm(271, (lowIncome).ToFlag() * destinationParcel.Households);
+        //alternative.AddUtilityTerm(272, (lowMediumIncome).ToFlag() * destinationParcel.Households);
+        //alternative.AddUtilityTerm(273, (mediumHighIncome).ToFlag() * destinationParcel.Households);
+        //alternative.AddUtilityTerm(274, (highIncome).ToFlag() * destinationParcel.Households);
+        //alternative.AddUtilityTerm(275, (!incomeMissing).ToFlag() * destinationParcel.Households); 
 
 
         alternative.AddUtilityTerm(281, incomeMissing.ToFlag() * destinationParcel.EmploymentTotal);
