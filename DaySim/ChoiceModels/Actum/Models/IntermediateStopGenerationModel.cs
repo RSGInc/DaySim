@@ -166,9 +166,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int primaryFamilyTimeFlag = householdDay.PrimaryPriorityTimeFlag;
 
       // tour inputs
+      
       int hovDriverTourFlag = tour.IsHovDriverMode().ToFlag();
       int hovPassengerTourFlag = tour.IsHovPassengerMode().ToFlag();
-      //int transitTourFlag = tour.IsTransitMode().ToFlag();
+      int transitTourFlag = tour.IsTransitMode().ToFlag();
       int walkTourFlag = tour.IsWalkMode().ToFlag();
       int bikeTourFlag = tour.IsBikeMode().ToFlag();
       //int autoTourFlag = tour.IsAnAutoMode().ToFlag();
@@ -246,9 +247,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int from9PMto11PMFlag = (time >= Global.Settings.Times.NinePM && time < Global.Settings.Times.ElevenPM).ToFlag();
       int from11PMto7AMFlag = (time >= Global.Settings.Times.ElevenPM).ToFlag();
 
-
-
-
+      // Stops needed (BP 13/05/2019)
+      int Schoolstopneeded = (simulatedSchoolStops == 0 && personDay.SchoolStops > 0).ToFlag();
+      int Businessstopneeded = (simulatedBusinessStops == 0 && personDay.BusinessStops > 0).ToFlag();
+      int Escortstopneeded = (simulatedEscortStops == 0 && personDay.EscortStops > 0).ToFlag();
+      int PersonalBusinesstopneeded = (simulatedPersonalBusinessStops == 0 && personDay.PersonalBusinessStops > 0).ToFlag();
+      int Shoppingstopneeded = (simulatedShoppingStops == 0 && personDay.ShoppingStops > 0).ToFlag();
+      int Socialstopneeded = (simulatedSocialStops == 0 && personDay.SocialStops > 0).ToFlag();
 
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
       int numChildrenOnJointTour = 0;
@@ -360,13 +365,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(2, fourSimulatedTripsFlag);
       alternative.AddUtilityTerm(2, fivePlusSimulatedTripsFlag);
 
+
       //GV: 21. june 2016, not sign.
       //alternative.AddUtilityTerm(6, transitTourFlag);
-
       alternative.AddUtilityTerm(7, bikeTourFlag);
       alternative.AddUtilityTerm(8, walkTourFlag);
       alternative.AddUtilityTerm(9, jointHalfTour);
       alternative.AddUtilityTerm(10, halfTourFromOriginFlag);
+      alternative.AddUtilityTerm(193, hovDriverTourFlag);
+      alternative.AddUtilityTerm(194, hovPassengerTourFlag);
+      alternative.AddUtilityTerm(195, transitTourFlag);
 
       //GV: june 2016 - not sign
       //alternative.AddUtilityTerm(11, totalAggregateLogsum);
@@ -374,7 +382,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(12, businessTourFlag);
       alternative.AddUtilityTerm(13, personalBusinessTourFlag);
       alternative.AddUtilityTerm(14, socialTourFlag);
-      //alternative.AddUtilityTerm(15, schoolTourFlag);
+      alternative.AddUtilityTerm(15, schoolTourFlag);
       alternative.AddUtilityTerm(16, escortTourFlag);
       alternative.AddUtilityTerm(17, shoppingTourFlag);
       alternative.AddUtilityTerm(18, timePressure);
@@ -424,9 +432,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //alternative.AddUtilityTerm(32, isIndividualTour);
       alternative.AddUtilityTerm(32, 1.0);
+      alternative.AddUtilityTerm(196, Businessstopneeded);
+      alternative.AddUtilityTerm(197, halfTourFromDestinationFlag);
 
       //GV: june 2016 - not sign
-      //alternative.AddUtilityTerm(33, businessTourFlag);
+      alternative.AddUtilityTerm(33, businessTourFlag);
+      alternative.AddUtilityTerm(34, workTourFlag);
 
 
       //alternative.AddUtilityTerm(34, schoolTourFlag);
@@ -461,9 +472,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = Global.Settings.Purposes.School;
       //alternative.AddNestedAlternative(_nestedAlternativeIds[2], _nestedAlternativeIndexes[2], THETA_PARAMETER);
 
-      //alternative.AddUtilityTerm(51, workTourFlag);
+  
       alternative.AddUtilityTerm(51, 1.0);
-      //alternative.AddUtilityTerm(52, schoolTourFlag);
+      alternative.AddUtilityTerm(198, Schoolstopneeded);
+      alternative.AddUtilityTerm(199, halfTourFromDestinationFlag);
+      alternative.AddUtilityTerm(52, schoolTourFlag);
+      alternative.AddUtilityTerm(53, workTourFlag);
       //alternative.AddUtilityTerm(53, halfTourFromOriginFlag);
       //alternative.AddUtilityTerm(54, simulatedSchoolStops);
       //alternative.AddUtilityTerm(55, remainingToursCount);
@@ -495,10 +509,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddNestedAlternative(_nestedAlternativeIds[3], _nestedAlternativeIndexes[3], THETA_PARAMETER);
 
       alternative.AddUtilityTerm(71, 1.0);
-      //alternative.AddUtilityTerm(72, workTourFlag + schoolTourFlag);
+      alternative.AddUtilityTerm(200, Escortstopneeded);
+      alternative.AddUtilityTerm(201, halfTourFromDestinationFlag);
+
+      alternative.AddUtilityTerm(72, workTourFlag + businessTourFlag);
+      alternative.AddUtilityTerm(73, schoolTourFlag);
       //alternative.AddUtilityTerm(72, isJointTour);
-      //alternative.AddUtilityTerm(74, escortTourFlag);
-      //alternative.AddUtilityTerm(75, socialOrRecreationTourFlag);
+      alternative.AddUtilityTerm(74, escortTourFlag);
+      alternative.AddUtilityTerm(75, socialOrRecreationTourFlag);
+      alternative.AddUtilityTerm(76, personalBusinessTourFlag);
+      alternative.AddUtilityTerm(77, shoppingTourFlag);
       //alternative.AddUtilityTerm(76, remainingToursCount);
       //alternative.AddUtilityTerm(77, duration);
       alternative.AddUtilityTerm(78, from7AMto9AMFlag);
@@ -528,13 +548,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddNestedAlternative(_nestedAlternativeIds[4], _nestedAlternativeIndexes[4], THETA_PARAMETER);
 
       alternative.AddUtilityTerm(91, 1.0);
-      //alternative.AddUtilityTerm(92, (workTourFlag + schoolTourFlag + businessTourFlag));
+      alternative.AddUtilityTerm(202, PersonalBusinesstopneeded);
+      alternative.AddUtilityTerm(203, halfTourFromDestinationFlag);
+      alternative.AddUtilityTerm(92, (workTourFlag + schoolTourFlag + businessTourFlag));
       //alternative.AddUtilityTerm(92, isJointTour);
-      //alternative.AddUtilityTerm(93, escortTourFlag);
-      //alternative.AddUtilityTerm(94, personalBusinessOrMedicalTourFlag * isIndividualTour);
-      //alternative.AddUtilityTerm(95, shoppingTourFlag);
+      alternative.AddUtilityTerm(93, escortTourFlag);
+      alternative.AddUtilityTerm(94, personalBusinessTourFlag);
+      alternative.AddUtilityTerm(95, shoppingTourFlag);
       //alternative.AddUtilityTerm(96, mealTourFlag);
-      //alternative.AddUtilityTerm(97, socialOrRecreationTourFlag);
+      alternative.AddUtilityTerm(97, socialOrRecreationTourFlag);
       //alternative.AddUtilityTerm(98, halfTourFromOriginFlag);
       //alternative.AddUtilityTerm(99, simulatedPersonalBusinessStops * isIndividualTour);
       //alternative.AddUtilityTerm(100, simulatedPersonalBusinessStops * isJointTour);
@@ -565,14 +587,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddNestedAlternative(_nestedAlternativeIds[5], _nestedAlternativeIndexes[5], THETA_PARAMETER);
 
       alternative.AddUtilityTerm(121, 1.0);
-      //alternative.AddUtilityTerm(122, workTourFlag + schoolTourFlag + businessTourFlag);
+      alternative.AddUtilityTerm(204, Shoppingstopneeded);
+      alternative.AddUtilityTerm(205, halfTourFromDestinationFlag);
+      alternative.AddUtilityTerm(122, workTourFlag + schoolTourFlag + businessTourFlag);
       //alternative.AddUtilityTerm(122, isJointTour);
-      //alternative.AddUtilityTerm(123, escortTourFlag);
-      //alternative.AddUtilityTerm(124, personalBusinessOrMedicalTourFlag);
+      alternative.AddUtilityTerm(123, escortTourFlag);
+      alternative.AddUtilityTerm(124, personalBusinessTourFlag);
       //alternative.AddUtilityTerm(125, shoppingTourFlag * isIndividualTour);
-      //alternative.AddUtilityTerm(125, shoppingTourFlag);
+      alternative.AddUtilityTerm(125, shoppingTourFlag);
       //alternative.AddUtilityTerm(126, mealTourFlag);
-      //alternative.AddUtilityTerm(127, socialOrRecreationTourFlag);
+      alternative.AddUtilityTerm(127, socialOrRecreationTourFlag);
       //alternative.AddUtilityTerm(128, halfTourFromOriginFlag);
       //alternative.AddUtilityTerm(129, simulatedShoppingStops * isIndividualTour);
       //alternative.AddUtilityTerm(130, simulatedShoppingStops * isJointTour);
@@ -618,13 +642,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddNestedAlternative(_nestedAlternativeIds[6], _nestedAlternativeIndexes[6], THETA_PARAMETER);
 
       alternative.AddUtilityTerm(181, 1.0);
-      //alternative.AddUtilityTerm(182, workTourFlag + schoolTourFlag + businessTourFlag);
+      alternative.AddUtilityTerm(206, Socialstopneeded);
+      alternative.AddUtilityTerm(207, halfTourFromDestinationFlag);
+      alternative.AddUtilityTerm(182, workTourFlag + schoolTourFlag + businessTourFlag);
       //alternative.AddUtilityTerm(182, isJointTour);
-      //alternative.AddUtilityTerm(183, escortTourFlag);
-      //alternative.AddUtilityTerm(184, personalBusinessOrMedicalTourFlag);
-      //alternative.AddUtilityTerm(185, shoppingTourFlag);
+      alternative.AddUtilityTerm(183, escortTourFlag);
+      alternative.AddUtilityTerm(184, personalBusinessTourFlag);
+      alternative.AddUtilityTerm(185, shoppingTourFlag);
       //alternative.AddUtilityTerm(186, mealTourFlag);
-      //alternative.AddUtilityTerm(187, socialOrRecreationTourFlag);
+      alternative.AddUtilityTerm(187, socialOrRecreationTourFlag);
       //alternative.AddUtilityTerm(188, halfTourFromOriginFlag);
       //alternative.AddUtilityTerm(189, simulatedSocialStops * isIndividualTour);
       //alternative.AddUtilityTerm(197, simulatedSocialStops * isJointTour);
