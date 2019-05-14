@@ -203,7 +203,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 /* householdCars */ 1,
                 /* transitPassOwnership */ fareZones,
                 /* carsAreAVs */ false,
-                /* transitDiscountFraction */ freeFareType,
+                /* transitDiscountFraction */ //freeFareType,  JB 20190513
+                /* transitDiscountFraction */ fullFareType,
                 /* randomChoice */ false,
                 Global.Settings.Modes.Transit);
 
@@ -404,7 +405,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(21, (household.Size <= 2).ToFlag());
       alternative.AddUtilityTerm(22, (household.Size >= 3).ToFlag());
       alternative.AddUtilityTerm(23, household.HasChildrenUnder5.ToFlag());
-      alternative.AddUtilityTerm(24, household.HasChildrenAge5Through15.ToFlag());
+      //alternative.AddUtilityTerm(24, household.HasChildrenAge5Through15.ToFlag());
+      alternative.AddUtilityTerm(24, (household.Persons6to17 > 0).ToFlag());
 
       alternative.AddUtilityTerm(25, (!(household.HasMissingIncome)).ToFlag() * Math.Log(Math.Max(1, household.Income))); //From default version
       alternative.AddUtilityTerm(26, household.HasMissingIncome.ToFlag());  // nuisance parameter accounts for estimation cases with missing income
@@ -469,8 +471,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: OK
       //Accessibility to commute location for workers and students
-      alternative.AddUtilityTerm(61, (!workParcelMissing && workGenTimeWithPass > -90) ? workGenTimeWithPass : 0); //From default version
-      alternative.AddUtilityTerm(62, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0); //From default version
+      //JB 20190513 replace next two lines
+      //alternative.AddUtilityTerm(61, (!workParcelMissing && workGenTimeWithPass > -90) ? workGenTimeWithPass : 0); //From default version
+      //alternative.AddUtilityTerm(62, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0); //From default version
+      alternative.AddUtilityTerm(61, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeWithPass : 0); //From default version
+      alternative.AddUtilityTerm(62, (!workParcelMissing && (workGenTimeWithPass <= -90 || workGenTimeNoPass <= -90)) ? 1 : 0); //From default version
       alternative.AddUtilityTerm(63, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0); //From default version
       alternative.AddUtilityTerm(64, (!schoolParcelMissing && schoolGenTimeWithPass > -90) ? schoolGenTimeWithPass : 0); //From default version
       alternative.AddUtilityTerm(65, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0); //From default version
