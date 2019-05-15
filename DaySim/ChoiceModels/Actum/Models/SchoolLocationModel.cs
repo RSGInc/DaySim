@@ -172,7 +172,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //                var govDensity = destinationZoneTotals.GetEmploymentGovernmentDensity(millionsSquareFeet);
         //                var offDensity = destinationZoneTotals.GetEmploymentOfficeDensity(millionsSquareFeet);
         //                var serDensity = destinationZoneTotals.GetEmploymentServiceDensity(millionsSquareFeet);
-        //                var houDensity = destinationZoneTotals.GetHouseholdsDensity(millionsSquareFeet);
+        //                var houDensity = destinationZoneTotals.GetHouseholdsDensity(millionsSquareFeet); 
 
         // parcel buffers
         double educationBuffer1 = Math.Log(destinationParcel.EmploymentEducationBuffer1 + 1);
@@ -217,17 +217,24 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(16, isUniversityStudent.ToFlag() * distanceUni_1);
         alternative.AddUtilityTerm(17, isUniversityStudent.ToFlag() * distanceUni_2);
         alternative.AddUtilityTerm(18, isUniversityStudent.ToFlag() * distanceUni_3);
-                       
+
         //alternative.AddUtilityTerm(13, isSecondaryStudent.ToFlag() * distanceLog);
         //alternative.AddUtilityTerm(14, isUniversityStudent.ToFlag() * distanceLog);
-        alternative.AddUtilityTerm(19, (!person.IsStudentAge).ToFlag() * distanceLog);
+        //GV: 13.5.2019 - change as JB wanted from LogDist to Dist
+        //alternative.AddUtilityTerm(19, (!person.IsStudentAge).ToFlag() * distanceLog);
+        alternative.AddUtilityTerm(19, (!person.IsStudentAge).ToFlag() * distanceFromOrigin);
         alternative.AddUtilityTerm(20, (!person.IsStudentAge).ToFlag() * distanceFromWork);
 
-        alternative.AddUtilityTerm(21, isAge0to5.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(22, isPrimaryStudent.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(23, isSecondaryStudent.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(24, isUniversityStudent.ToFlag() * aggregateLogsum);
-        alternative.AddUtilityTerm(25, (!person.IsStudentAge).ToFlag() * aggregateLogsum);
+        //GV: 13.5.2019 - piecewise linear specificaion, in km
+        alternative.AddUtilityTerm(21, (!person.IsStudentAge).ToFlag() * distanceUni_1);
+        alternative.AddUtilityTerm(22, (!person.IsStudentAge).ToFlag() * distanceUni_2);
+        alternative.AddUtilityTerm(23, (!person.IsStudentAge).ToFlag() * distanceUni_3);
+        
+        alternative.AddUtilityTerm(24, isAge0to5.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(25, isPrimaryStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(26, isSecondaryStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(27, isUniversityStudent.ToFlag() * aggregateLogsum);
+        alternative.AddUtilityTerm(28, (!person.IsStudentAge).ToFlag() * aggregateLogsum);
 
         //Neighborhood
         alternative.AddUtilityTerm(30, isAge0to5.ToFlag() * householdsBuffer2);
@@ -265,7 +272,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(82, person.IsAdult.ToFlag() * destinationParcel.EmploymentTotal);
         alternative.AddUtilityTerm(83, person.IsAdult.ToFlag() * destinationParcel.StudentsUniversity);
         alternative.AddUtilityTerm(84, person.IsAdult.ToFlag() * destinationParcel.StudentsHighSchool);
-
+        alternative.AddUtilityTerm(85, person.IsAdult.ToFlag() * destinationParcel.EmploymentGovernment);
+        alternative.AddUtilityTerm(86, isAge0to5.ToFlag() * destinationParcel.EmploymentGovernment); 
+         
         // set shadow price depending on persontype and add it to utility
         // we are using the sampling adjustment factor assuming that it is 1
 
