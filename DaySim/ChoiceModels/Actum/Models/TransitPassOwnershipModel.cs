@@ -36,7 +36,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       person.ResetRandom(3);
 
-      // Determine passCategory, fareZones and passPrice
+      // Determine passCategory, fareZones and passPrice 
       int passCategory = -1;
       int fareZones = -1;
       double passPrice = -1.0;
@@ -203,7 +203,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 /* householdCars */ 1,
                 /* transitPassOwnership */ fareZones,
                 /* carsAreAVs */ false,
-                /* transitDiscountFraction */ freeFareType,
+                /* transitDiscountFraction */ //freeFareType,  JB 20190513
+                /* transitDiscountFraction */ fullFareType,
                 /* randomChoice */ false,
                 Global.Settings.Modes.Transit);
 
@@ -404,17 +405,22 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(21, (household.Size <= 2).ToFlag());
       alternative.AddUtilityTerm(22, (household.Size >= 3).ToFlag());
       alternative.AddUtilityTerm(23, household.HasChildrenUnder5.ToFlag());
-      alternative.AddUtilityTerm(24, household.HasChildrenAge5Through15.ToFlag());
+      //alternative.AddUtilityTerm(24, household.HasChildrenAge5Through15.ToFlag());
+      alternative.AddUtilityTerm(24, (household.Persons6to17 > 0).ToFlag());
 
       alternative.AddUtilityTerm(25, (!(household.HasMissingIncome)).ToFlag() * Math.Log(Math.Max(1, household.Income))); //From default version
       alternative.AddUtilityTerm(26, household.HasMissingIncome.ToFlag());  // nuisance parameter accounts for estimation cases with missing income
 
 
       //Home accessibility
+      //GV: 6. may 2019 - JB wanted coeff.30 with homeTranDist variable
+      alternative.AddUtilityTerm(30, homeTranDist);
+
       //alternative.AddUtilityTerm(31, Math.Min(2.0, homeParcel.DistanceToLocalBus));   //Stefan  (This is low frequency bus)
       //GV: 25.3.2019 - distance to local bus == 1km
-      alternative.AddUtilityTerm(31, Math.Min(1.0, homeParcel.DistanceToLocalBus)); 
-      //alternative.AddUtilityTerm(31, homeParcel.DistanceToLocalBus);
+      //GV: 6. may 2019 - JB wanted to omit math.min in coeff.31
+      //alternative.AddUtilityTerm(31, Math.Min(1.0, homeParcel.DistanceToLocalBus)); 
+      alternative.AddUtilityTerm(31, homeParcel.DistanceToLocalBus);
 
       //alternative.AddUtilityTerm(32, Math.Min(5.0, homeParcel.DistanceToExpressBus));   //Stefan (This is high frequency bus)
       //GV: 25.3.2019 - distance to A, S bus == 1km
@@ -465,8 +471,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: OK
       //Accessibility to commute location for workers and students
-      alternative.AddUtilityTerm(61, (!workParcelMissing && workGenTimeWithPass > -90) ? workGenTimeWithPass : 0); //From default version
-      alternative.AddUtilityTerm(62, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0); //From default version
+      //JB 20190513 replace next two lines
+      //alternative.AddUtilityTerm(61, (!workParcelMissing && workGenTimeWithPass > -90) ? workGenTimeWithPass : 0); //From default version
+      //alternative.AddUtilityTerm(62, (!workParcelMissing && workGenTimeWithPass <= -90) ? 1 : 0); //From default version
+      alternative.AddUtilityTerm(61, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeWithPass : 0); //From default version
+      alternative.AddUtilityTerm(62, (!workParcelMissing && (workGenTimeWithPass <= -90 || workGenTimeNoPass <= -90)) ? 1 : 0); //From default version
       alternative.AddUtilityTerm(63, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0); //From default version
       alternative.AddUtilityTerm(64, (!schoolParcelMissing && schoolGenTimeWithPass > -90) ? schoolGenTimeWithPass : 0); //From default version
       alternative.AddUtilityTerm(65, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0); //From default version
@@ -476,7 +485,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: OK
       //Price
       alternative.AddUtilityTerm(71, passPriceToFareRatio);
-
+                     
       //GV: 26. 3. 2019 - parking avail. in CPH
       alternative.AddUtilityTerm(81, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (isInCopenhagenMunicipality).ToFlag());
 
@@ -484,8 +493,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(82, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (isInFrederiksbergMunicipality).ToFlag());
 
       //GV: 26. 3. 2019 - parking avail. in the rest of GCA
-      alternative.AddUtilityTerm(83, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (!hhLivesInCPHCity).ToFlag());  
+      alternative.AddUtilityTerm(83, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (!hhLivesInCPHCity).ToFlag());
 
+      //JB: 8.5.2019 - Add beta 84 as a dummy variable: (1 - homeParcel.ParkingDataAvailable) to go along with betas 81 - 83.
+      //GV: 8.5.2019 - 
+      alternative.AddUtilityTerm(84, (1 - homeParcel.ParkingDataAvailable));  
+               
       //GV: cannot be estimated with the correct sign
       //GV: 26. 3. 2019 - parking costs
       //alternative.AddUtilityTerm(84, homeParcel.ParkingDataAvailable * (homeParcel.ResidentialPermitDailyParkingPricesBuffer1) * (isInCopenhagenMunicipality).ToFlag());
