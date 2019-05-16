@@ -172,6 +172,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int transitTourFlag = tour.IsTransitMode().ToFlag();
       int walkTourFlag = tour.IsWalkMode().ToFlag();
       int bikeTourFlag = tour.IsBikeMode().ToFlag();
+      int sovTourFlag = tour.IsSovMode().ToFlag();
       //int autoTourFlag = tour.IsAnAutoMode().ToFlag();
       int notHomeBasedTourFlag = (!tour.IsHomeBasedTour).ToFlag();
       int workTourFlag = tour.IsWorkPurpose().ToFlag();
@@ -328,7 +329,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       // time window in minutes for yet unmodeled portion of halftour, only consider persons on this trip
       int availableWindow = timeWindow.AvailableWindow(destinationDepartureTime, Global.Settings.TimeDirections.Both);
-      double timePressure = 1000 * remainingToursCount / (Math.Max(1D, availableWindow));
+      // Change the scale of time pressure from 1000 to 10 (BP 15052019)
+      double timePressure = 10 * remainingToursCount / (Math.Max(1D, availableWindow));
       //alternative.AddUtilityTerm(98, 1000 * remainingToursCount / (Math.Max(1D, maxWindowRemaining))); 
 
 
@@ -375,6 +377,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(193, hovDriverTourFlag);
       alternative.AddUtilityTerm(194, hovPassengerTourFlag);
       alternative.AddUtilityTerm(195, transitTourFlag);
+      alternative.AddUtilityTerm(238, sovTourFlag);
 
       //GV: june 2016 - not sign
       //alternative.AddUtilityTerm(11, totalAggregateLogsum);
@@ -449,9 +452,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(40, from9AMto11AMFlag + from11AMto1PMFlag + from1PMto3PMFlag + from3PMto5PMFlag);
       alternative.AddUtilityTerm(40, from9AMto3PMFlag + from3PMto6PMFlag);
 
+      // Tour mode as explanatory variable (BP 15052019)
+      //alternative.AddUtilityTerm(43, transitTourFlag);
+      alternative.AddUtilityTerm(208, hovDriverTourFlag);
+      alternative.AddUtilityTerm(209, hovPassengerTourFlag);
+      alternative.AddUtilityTerm(210, transitTourFlag);
+      alternative.AddUtilityTerm(211, walkTourFlag);
+      alternative.AddUtilityTerm(212, bikeTourFlag);
+      alternative.AddUtilityTerm(239, sovTourFlag);
 
       //alternative.AddUtilityTerm(42, logDist);
-      //alternative.AddUtilityTerm(43, transitTourFlag);
+
       //alternative.AddUtilityTerm(44, (person.IsPartTimeWorker).ToFlag());
 
       //GV: 21. aug - I commented out as it is the only logsum in the model
@@ -492,6 +503,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(65, (person.Age < 12).ToFlag());
       //alternative.AddUtilityTerm(66,  (person.IsUniversityStudent).ToFlag());
 
+      // Tour mode as explanatory variable (BP 15052019)    
+      alternative.AddUtilityTerm(213, hovDriverTourFlag);
+      alternative.AddUtilityTerm(214, hovPassengerTourFlag);
+      alternative.AddUtilityTerm(215, transitTourFlag);
+      alternative.AddUtilityTerm(216, walkTourFlag);
+      alternative.AddUtilityTerm(217, bikeTourFlag);
+      alternative.AddUtilityTerm(240, sovTourFlag);
+
 
 
 
@@ -516,9 +535,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(73, schoolTourFlag);
       //alternative.AddUtilityTerm(72, isJointTour);
       alternative.AddUtilityTerm(74, escortTourFlag);
-      alternative.AddUtilityTerm(75, socialOrRecreationTourFlag);
-      alternative.AddUtilityTerm(76, personalBusinessTourFlag);
-      alternative.AddUtilityTerm(77, shoppingTourFlag);
+      //alternative.AddUtilityTerm(75, socialOrRecreationTourFlag);
+      //alternative.AddUtilityTerm(76, personalBusinessTourFlag);
+      //alternative.AddUtilityTerm(77, shoppingTourFlag);
       //alternative.AddUtilityTerm(76, remainingToursCount);
       //alternative.AddUtilityTerm(77, duration);
       alternative.AddUtilityTerm(78, from7AMto9AMFlag);
@@ -532,6 +551,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(88, enrollmentK8Buffer2);
       //alternative.AddUtilityTerm(89, numChildrenOnJointTour);
       //alternative.AddUtilityTerm(90, halfTourFromOriginFlag);
+
+      // Tour mode as explanatory variable (BP 15052019)    
+      alternative.AddUtilityTerm(218, hovDriverTourFlag);
+      alternative.AddUtilityTerm(219, hovPassengerTourFlag);
+      alternative.AddUtilityTerm(220, transitTourFlag);
+      alternative.AddUtilityTerm(221, walkTourFlag);
+      alternative.AddUtilityTerm(222, bikeTourFlag);
+      alternative.AddUtilityTerm(241, sovTourFlag);
+
 
 
 
@@ -572,6 +600,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(110, totEmpBuffer2);
       //alternative.AddUtilityTerm(111, totalAggregateLogsum);
       //alternative.AddUtilityTerm(112, personalBusinessOrMedicalTourFlag * isJointTour);
+
+      // Tour mode as explanatory variable (BP 15052019)
+      alternative.AddUtilityTerm(223, hovDriverTourFlag);
+      alternative.AddUtilityTerm(224, hovPassengerTourFlag);
+      alternative.AddUtilityTerm(225, transitTourFlag);
+      alternative.AddUtilityTerm(226, walkTourFlag);
+      alternative.AddUtilityTerm(227, bikeTourFlag);
+      alternative.AddUtilityTerm(242, sovTourFlag);
 
 
 
@@ -621,6 +657,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 21. june 2016, not sign.
       //alternative.AddUtilityTerm(134, primaryFamilyTimeFlag);
 
+      // Tour mode as explanatory variable (BP 15052019)
+      alternative.AddUtilityTerm(228, hovDriverTourFlag);
+      alternative.AddUtilityTerm(229, hovPassengerTourFlag);
+      alternative.AddUtilityTerm(230, transitTourFlag);
+      alternative.AddUtilityTerm(231, walkTourFlag);
+      alternative.AddUtilityTerm(232, bikeTourFlag);
+      alternative.AddUtilityTerm(243, sovTourFlag);
+
 
 
       // 6 - MEAL STOP
@@ -665,6 +709,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(195, hovPassengerTourFlag);
       //alternative.AddUtilityTerm(196, logDist);
       //alternative.AddUtilityTerm(200, numAdultsOnJointTour);
+
+      // Tour mode as explanatory variables (BP 15052019)
+      alternative.AddUtilityTerm(233, hovDriverTourFlag);
+      alternative.AddUtilityTerm(234, hovPassengerTourFlag);
+      alternative.AddUtilityTerm(235, transitTourFlag);
+      alternative.AddUtilityTerm(236, walkTourFlag);
+      alternative.AddUtilityTerm(237, bikeTourFlag);
+      alternative.AddUtilityTerm(244, sovTourFlag);
 
 
       // 8 - RECREATION STOP
