@@ -172,9 +172,14 @@ namespace DaySim.PathTypeModels {
       //	modes.Add(mode);
       //}
 
-      for (int mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.PaidRideShare; mode++) {
-        if (mode <= Global.Settings.Modes.Transit
-        || (mode == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideShareModeIsAvailable)) {
+      //JB 20190516 replaced the following lines because it stopped before adding Transit mode (==7) since PaidRideShare mode == 6
+      //for (int mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.PaidRideShare; mode++) {
+      //if (mode <= Global.Settings.Modes.Transit
+      //|| (mode == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideShareModeIsAvailable)) {
+      for (int mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.Transit; mode++) {
+        if ((mode < Global.Settings.Modes.PaidRideShare)
+        || (mode == Global.Settings.Modes.PaidRideShare && Global.Configuration.PaidRideShareModeIsAvailable)
+        || (mode == Global.Settings.Modes.Transit)) {
           modes.Add(mode);
         }
       }

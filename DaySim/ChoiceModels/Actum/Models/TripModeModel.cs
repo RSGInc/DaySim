@@ -117,7 +117,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
         if (destinationParcel == null || originParcel == null || trip.Mode <= Global.Settings.Modes.None ||
-             trip.Mode > Global.Settings.Modes.Transit) {
+          //JB 20190516 return also on Share mode
+          trip.Mode == Global.Settings.Modes.PaidRideShare ||
+          trip.Mode > Global.Settings.Modes.Transit) {
           return;
         }
 
@@ -338,13 +340,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       // GV commented out park and ride for COMPAS1; JOHN restored it for COMPAS2
       //// if a park and ride tour, only car is available
-      if (tour.Mode == Global.Settings.Modes.ParkAndRide) {
+      if (tour.Mode == Global.Settings.Modes.CarParkRideWalk || tour.Mode == Global.Settings.Modes.CarParkRideBike || tour.Mode == Global.Settings.Modes.CarParkRideShare) {
         tripModeAvailable[Global.Settings.Modes.Sov] = household.VehiclesAvailable > 0 && person.Age >= 18;
         tripModeAvailable[Global.Settings.Modes.HovDriver] = household.VehiclesAvailable > 0 && person.Age >= 18;
         tripModeAvailable[Global.Settings.Modes.HovPassenger] = !tripModeAvailable[Global.Settings.Modes.Sov];
       }
+      else if (tour.Mode == Global.Settings.Modes.CarKissRideWalk || tour.Mode == Global.Settings.Modes.CarKissRideBike || tour.Mode == Global.Settings.Modes.CarKissRideShare) {
+        tripModeAvailable[Global.Settings.Modes.HovDriver] = household.VehiclesAvailable > 0 && person.Age >= 18;
+        tripModeAvailable[Global.Settings.Modes.HovPassenger] = true;
+      }
       //// if the last trip of the tour and tour mode not yet used, only the tour mode is available
-      else if (isLastTripInTour && frequencyPreviousTripModeIsTourMode == 0) {
+      else if (isLastTripInTour && frequencyPreviousTripModeIsTourMode == 0 && tour.Mode <= Global.Settings.Modes.Transit) {
         tripModeAvailable[tour.Mode] = true;
       } else {
         // set availability based on tour mode
