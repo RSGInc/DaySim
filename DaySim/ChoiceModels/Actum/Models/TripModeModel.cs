@@ -362,6 +362,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         for (int mode = Global.Settings.Modes.Walk; mode <= tour.Mode; mode++) {
           tripModeAvailable[mode] = true;
         }
+        if (tour.Mode == Global.Settings.Modes.PaidRideShare) {
+          tripModeAvailable[Global.Settings.Modes.Transit] = true;
+        }
       }
       if (person.Age < 18) {
         tripModeAvailable[Global.Settings.Modes.Sov] = false;
@@ -406,6 +409,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
                              && (trip.IsHalfTourFromOrigin
                                       ? trip.LatestDepartureTime - pathTypeModel.PathTime >= trip.ArrivalTimeLimit
                                       : trip.EarliestDepartureTime + pathTypeModel.PathTime <= trip.ArrivalTimeLimit);
+
+        if (Global.Configuration.IsInEstimationMode && mode == Global.Settings.Modes.PaidRideShare) {
+          available = false;
+        }
+
         double generalizedTimeLogsum = pathTypeModel.GeneralizedTimeLogsum;
 
         alternative = choiceProbabilityCalculator.GetAlternative(mode - 1, available, choice == mode);
