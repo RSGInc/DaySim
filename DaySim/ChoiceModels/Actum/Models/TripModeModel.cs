@@ -19,7 +19,7 @@ using DaySim.PathTypeModels;
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TripModeModel : ChoiceModel {
     public const string CHOICE_MODEL_NAME = "ActumTripModeModel";
-    private const int MAX_PARAMETER = 199;
+    private const int MAX_PARAMETER = 299;
 
     // this is Mark B (leave it out)
     //private const int TOTAL_NESTED_ALTERNATIVES = 5;
@@ -261,6 +261,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int homeBasedEscortTourFlag = (tour.IsHomeBasedTour && tour.IsEscortPurpose()).ToFlag();
       int homeBasedShoppingTourFlag = (tour.IsHomeBasedTour && tour.IsShoppingPurpose()).ToFlag();
       int homeBasedSocialTourFlag = (tour.IsHomeBasedTour && tour.IsSocialPurpose()).ToFlag();
+      int homeBasedPersonalBusinessTourFlag = (tour.IsHomeBasedTour && tour.IsPersonalBusinessPurpose()).ToFlag();
+      int homeBasedBusinessTourFlag = (tour.IsHomeBasedTour && tour.IsBusinessPurpose()).ToFlag();
       int notHomeBasedTourFlag = (!tour.IsHomeBasedTour).ToFlag();
       int homeBasedNotWorkSchoolEscortTourFlag =
                 (tour.IsHomeBasedTour && tour.DestinationPurpose > Global.Settings.Purposes.Escort).ToFlag();
@@ -282,6 +284,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int destinationHomeEscortFlag = (trip.IsNoneOrHomePurposeByDestination() && trip.IsEscortPurposeByOrigin()).ToFlag();
       int destinationWorkEscortFlag = (trip.IsWorkPurposeByDestination() && trip.IsEscortPurposeByOrigin()).ToFlag();
+      // trip origin purpose (BP 170519)
+      int triporiginpurpose = trip.OriginPurpose;
+      int tripdestinationpurpose  = trip.DestinationPurpose;
 
       // only trip on first half-tour
       int onlyTripOnFirstHalfFlag =
@@ -413,6 +418,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           continue;
         }
 
+        alternative.AddUtilityTerm(200, triporiginpurpose);
+        alternative.AddUtilityTerm(201, tripdestinationpurpose);
+
         alternative.AddUtilityTerm(2, generalizedTimeLogsum * tour.TimeCoefficient);
 
         if (mode == Global.Settings.Modes.Transit) {
@@ -435,6 +443,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(107, (transitTourFlag * lastTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(181, jointTourFlag);
           alternative.AddUtilityTerm(182, fullHalfTourFlag + partialHalfTourFlag);
+          alternative.AddUtilityTerm(202, homeBasedWorkTourFlag);
+          alternative.AddUtilityTerm(203, homeBasedSchoolTourFlag);
+          alternative.AddUtilityTerm(204, homeBasedEscortTourFlag);
+          alternative.AddUtilityTerm(205, homeBasedShoppingTourFlag);
+          alternative.AddUtilityTerm(206, homeBasedSocialTourFlag);
+          alternative.AddUtilityTerm(222, homeBasedPersonalBusinessTourFlag);
+          alternative.AddUtilityTerm(223, homeBasedBusinessTourFlag);
         } else if (mode == Global.Settings.Modes.HovPassenger) {
           alternative.AddUtilityTerm(30, 1);
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT3));
@@ -459,6 +474,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(152, homeBasedEscortTourFlag);
           alternative.AddUtilityTerm(153, homeBasedShoppingTourFlag);
           alternative.AddUtilityTerm(155, homeBasedSocialTourFlag);
+          alternative.AddUtilityTerm(224, homeBasedPersonalBusinessTourFlag);
+          alternative.AddUtilityTerm(225, homeBasedBusinessTourFlag);
 
           alternative.AddUtilityTerm(161, (destinationWorkEscortFlag * amPeriodFlag));
           alternative.AddUtilityTerm(162, (originWorkEscortFlag * pmPeriodFlag));
@@ -496,6 +513,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(152, homeBasedEscortTourFlag);
           alternative.AddUtilityTerm(153, homeBasedShoppingTourFlag);
           alternative.AddUtilityTerm(155, homeBasedSocialTourFlag);
+          alternative.AddUtilityTerm(224, homeBasedPersonalBusinessTourFlag);
+          alternative.AddUtilityTerm(225, homeBasedBusinessTourFlag);
+
 
           alternative.AddUtilityTerm(161, (destinationWorkEscortFlag * amPeriodFlag));
           alternative.AddUtilityTerm(162, (originWorkEscortFlag * pmPeriodFlag));
@@ -528,6 +548,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           alternative.AddUtilityTerm(185, jointTourFlag);
           alternative.AddUtilityTerm(186, fullHalfTourFlag + partialHalfTourFlag);
+          alternative.AddUtilityTerm(207, homeBasedWorkTourFlag);
+          alternative.AddUtilityTerm(208, homeBasedSchoolTourFlag);
+          alternative.AddUtilityTerm(209, homeBasedEscortTourFlag);
+          alternative.AddUtilityTerm(210, homeBasedShoppingTourFlag);
+          alternative.AddUtilityTerm(211, homeBasedSocialTourFlag);
+          alternative.AddUtilityTerm(226, homeBasedPersonalBusinessTourFlag);
+          alternative.AddUtilityTerm(227, homeBasedBusinessTourFlag);
+
         } else if (mode == Global.Settings.Modes.Bike) {
           alternative.AddUtilityTerm(60, 1);
           //alternative.AddUtilityTerm(65, originIntersectionDensity);
@@ -549,6 +577,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(147, notHomeBasedTourFlag);
           alternative.AddUtilityTerm(187, jointTourFlag);
           alternative.AddUtilityTerm(188, fullHalfTourFlag + partialHalfTourFlag);
+          alternative.AddUtilityTerm(212, homeBasedWorkTourFlag);
+          alternative.AddUtilityTerm(213, homeBasedSchoolTourFlag);
+          alternative.AddUtilityTerm(214, homeBasedEscortTourFlag);
+          alternative.AddUtilityTerm(215, homeBasedShoppingTourFlag);
+          alternative.AddUtilityTerm(216, homeBasedSocialTourFlag);
+          alternative.AddUtilityTerm(228, homeBasedPersonalBusinessTourFlag);
+          alternative.AddUtilityTerm(229, homeBasedBusinessTourFlag);
+
         } else if (mode == Global.Settings.Modes.Walk) {
           alternative.AddUtilityTerm(70, 1);
 
@@ -569,6 +605,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           alternative.AddUtilityTerm(187, jointTourFlag);
           alternative.AddUtilityTerm(188, fullHalfTourFlag + partialHalfTourFlag);
+          //alternative.AddUtilityTerm(217, homeBasedWorkTourFlag);
+          //alternative.AddUtilityTerm(218, homeBasedSchoolTourFlag);
+          alternative.AddUtilityTerm(219, homeBasedEscortTourFlag);
+          alternative.AddUtilityTerm(220, homeBasedShoppingTourFlag);
+          alternative.AddUtilityTerm(221, homeBasedSocialTourFlag);
+          alternative.AddUtilityTerm(230, homeBasedPersonalBusinessTourFlag);
+          alternative.AddUtilityTerm(231, homeBasedBusinessTourFlag);
+
         } else if (mode == Global.Settings.Modes.PaidRideShare) {
 
           double modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
