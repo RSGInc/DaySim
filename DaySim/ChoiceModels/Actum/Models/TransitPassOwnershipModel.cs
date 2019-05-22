@@ -164,6 +164,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
       int freeFareType = Global.Settings.PersonTypes.ChildUnder5;
 
+      if (person.HouseholdId == 1080050 && person.Sequence == 2) {
+        bool testbool2 = true;
+      }
+
       if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
         IEnumerable<IPathTypeModel> pathTypeModels =
@@ -174,8 +178,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Times.EightAM,
                 Global.Settings.Times.FivePM,
                 Global.Settings.Purposes.Work,
-                Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
-                Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
+                Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Work,
+                Global. Configuration.COMPASS_BaseTimeCoefficientPerMinute,
                 drivingAge,
                 1,
                 0,
@@ -197,8 +201,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Times.EightAM,
                 Global.Settings.Times.FivePM,
                 Global.Settings.Purposes.Work,
-                Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
-                Global.Configuration.Coefficients_MeanTimeCoefficient_Work,
+                Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Work,
+                Global. Configuration.COMPASS_BaseTimeCoefficientPerMinute,
                 /* isDrivingAge */ drivingAge,
                 /* householdCars */ 1,
                 /* transitPassOwnership */ fareZones,
@@ -211,7 +215,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
         path = pathTypeModels.First();
 
         workGenTimeWithPass = path.GeneralizedTimeLogsum;
+
       }
+
+      if (workGenTimeWithPass > -90 && workGenTimeWithPass == workGenTimeNoPass) {
+          bool testbool = true;
+          testbool = false;
+        }
 
       //			double schoolGenTimeNoPass = -99.0;
       double schoolGenTimeWithPass = -99.0;
@@ -227,8 +237,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Times.EightAM,
                 Global.Settings.Times.ThreePM,
                 Global.Settings.Purposes.School,
-                Global.Coefficients_BaseCostCoefficientPerMonetaryUnit,
-                Global.Configuration.Coefficients_MeanTimeCoefficient_Other,
+                Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Education,
+                Global. Configuration.COMPASS_BaseTimeCoefficientPerMinute,
                 drivingAge,
                 1,
                 fareZones,
@@ -342,8 +352,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int numberChildren = household.Persons6to17 + household.KidsBetween0And4;
       int numberAdults = household.Size - numberChildren;
 
-      Framework.DomainModels.Wrappers.IParcelWrapper usualParcel = person.IsFullOrPartTimeWorker ? person.UsualWorkParcel : null;
-      usualParcel = (usualParcel == null && person.UsualSchoolParcel != null) ? person.UsualSchoolParcel : null;
+      Framework.DomainModels.Wrappers.IParcelWrapper usualParcel = null;
+      if (person.IsFullOrPartTimeWorker) {
+        usualParcel = person.UsualWorkParcel;
+      }
+      if (usualParcel == null && person.UsualSchoolParcel != null){
+        usualParcel = person.UsualSchoolParcel;
+      }
+      //Framework.DomainModels.Wrappers.IParcelWrapper usualParcel = person.IsFullOrPartTimeWorker ? person.UsualWorkParcel : null;
+      //usualParcel = (usualParcel == null && person.UsualSchoolParcel != null) ? person.UsualSchoolParcel : null;
       double commuteDistance = 0.0;
       if (usualParcel != null) {
         commuteDistance = ImpedanceRoster.GetValue("distance-co", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, 1.0, Global.Settings.Times.EightAM, homeParcel, usualParcel).Variable;
@@ -481,10 +498,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(65, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0); //From default version
       alternative.AddUtilityTerm(66, (person.WorkerType > 0 && workParcelMissing) ? 1:0);  //Nuisance parameter for missing location data
       alternative.AddUtilityTerm(67, (person.StudentType > 0 && schoolParcelMissing) ? 1:0); //Nuisance parameter for missing location data 
+      alternative.AddUtilityTerm(68, (person.WorkerType == 0 && person.StudentType == 0) ? 1:0); 
+      alternative.AddUtilityTerm(69, commuteDistance); 
       
+
       //GV: OK
       //Price
       alternative.AddUtilityTerm(71, passPriceToFareRatio);
+      alternative.AddUtilityTerm(72, fare);
+      alternative.AddUtilityTerm(73, passPrice);
+
+
                      
       //GV: 26. 3. 2019 - parking avail. in CPH
       alternative.AddUtilityTerm(81, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (isInCopenhagenMunicipality).ToFlag());
