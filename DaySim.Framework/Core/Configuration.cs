@@ -1900,6 +1900,10 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool SkipActumExtraTransitModes { get; set; } = false;
 
+    [XmlAttribute]
+    public double WalkModeMaximumOneWayDistance { get; set; } 
+
+
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
 
     [XmlAttribute]

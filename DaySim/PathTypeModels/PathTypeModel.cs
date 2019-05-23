@@ -417,6 +417,10 @@ namespace DaySim.PathTypeModels {
       _pathCost[pathType] = 0;
       _pathParkAndRideNodeId[pathType] = 0;
 
+      if (skimMode == Global.Settings.Modes.Walk && Global.Configuration.WalkModeMaximumOneWayDistance > Constants.EPSILON && skimDistance > Global.Configuration.WalkModeMaximumOneWayDistance) {
+        return;
+      }
+
       if (_returnTime > 0) {
 
         skimValue =
@@ -431,6 +435,11 @@ namespace DaySim.PathTypeModels {
                      : skimValue.BlendVariable;
         _pathTime[pathType] += skimTime;
         _pathDistance[pathType] += skimDistance;
+
+        if (skimMode == Global.Settings.Modes.Walk && Global.Configuration.WalkModeMaximumOneWayDistance > Constants.EPSILON && skimDistance > Global.Configuration.WalkModeMaximumOneWayDistance) {
+          return;
+        }
+
       }
 
 
@@ -559,7 +568,9 @@ namespace DaySim.PathTypeModels {
         useZones
           ? ImpedanceRoster.GetValue("toll", skimMode, pathType, votValue, _outboundTime, _originZoneId, _destinationZoneId).Variable
           : ImpedanceRoster.GetValue("toll", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel).Variable;
-
+      //if (!useZones && _pathCost[pathType] > 0) {
+      //  Global.PrintFile.WriteLine("toll between zone {0} and zone {1} at time {2} is {3}", _originParcel.ZoneKey, _destinationParcel.ZoneKey, _outboundTime, _pathCost[pathType]);
+      //}
       if (_returnTime > 0) {
         _pathCost[pathType] +=
           useZones
