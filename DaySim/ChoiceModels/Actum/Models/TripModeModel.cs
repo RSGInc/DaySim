@@ -284,9 +284,47 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int destinationHomeEscortFlag = (trip.IsNoneOrHomePurposeByDestination() && trip.IsEscortPurposeByOrigin()).ToFlag();
       int destinationWorkEscortFlag = (trip.IsWorkPurposeByDestination() && trip.IsEscortPurposeByOrigin()).ToFlag();
-      // trip origin purpose (BP 170519)
-      int triporiginpurpose = trip.OriginPurpose;
-      int tripdestinationpurpose  = trip.DestinationPurpose;
+   
+
+      // origin purpose.
+      int WorkOriginPurposeflag = (trip.IsWorkOriginPurpose()).ToFlag();
+      int SchoolOriginPurposeflag = (trip.IsSchoolOriginPurpose()).ToFlag();
+      int EscortOriginPurposeflag = (trip.IsEscortOriginPurpose()).ToFlag();
+      int BusinessOriginPurposeflag = (trip.IsBusinessOriginPurpose()).ToFlag();
+      int PersonalBusinessOriginPurposeflag = (trip.IsPersonalBusinessOriginPurpose()).ToFlag();
+      int ShoppingOriginPurposeflag = (trip.IsShoppingOriginPurpose()).ToFlag();
+      int SocialOriginPurposeflag = (trip.IsSocialOriginPurpose()).ToFlag();
+      
+      // destination purpose
+      int WorkDestinationPurposeflag = (trip.IsWorkDestinationPurpose()).ToFlag();
+      int SchoolDestinationPurposeflag = (trip.IsSchoolDestinationPurpose()).ToFlag();
+      int EscortDestinationPurposeflag = (trip.IsEscortDestinationPurpose()).ToFlag();
+      int BusinessDestinationPurposeflag = (trip.IsBusinessDestinationPurpose()).ToFlag();
+      int PersonalBusinessDestinationPurposeflag = (trip.IsPersonalBusinessDestinationPurpose()).ToFlag();
+      int ShoppingDestinationPurposeflag = (trip.IsShoppingDestinationPurpose()).ToFlag();
+      int SocialDestinationPurposeflag = (trip.IsSocialDestinationPurpose()).ToFlag();
+
+      // trip origin purpose (account for directionality)
+      int triporiginWorkflag = trip.IsHalfTourFromOrigin ? WorkDestinationPurposeflag : WorkOriginPurposeflag;
+      int triporiginSchoolflag = trip.IsHalfTourFromOrigin ? SchoolDestinationPurposeflag : SchoolOriginPurposeflag;
+      int triporiginEscortflag = trip.IsHalfTourFromOrigin ? EscortDestinationPurposeflag : EscortOriginPurposeflag;
+      int triporiginBusinessflag = trip.IsHalfTourFromOrigin ? BusinessDestinationPurposeflag : BusinessOriginPurposeflag;
+      int triporiginPersonalBusinessflag = trip.IsHalfTourFromOrigin ? PersonalBusinessDestinationPurposeflag : PersonalBusinessOriginPurposeflag;
+      int triporiginShoppingflag  = trip.IsHalfTourFromOrigin ? ShoppingDestinationPurposeflag : ShoppingOriginPurposeflag;
+      int triporiginSocialflag = trip.IsHalfTourFromOrigin ? SocialDestinationPurposeflag : SocialOriginPurposeflag;
+      int triporiginHomeflag = (trip.IsNoneOrHomePurposeByOrigin()).ToFlag();
+
+      // trip destination purpose (account for directionality)
+      int tripdestinationWorkflag = trip.IsHalfTourFromOrigin ? WorkOriginPurposeflag : WorkDestinationPurposeflag;
+      int tripdestinationSchoolflag = trip.IsHalfTourFromOrigin ? SchoolOriginPurposeflag : SchoolDestinationPurposeflag;
+      int tripdestinationEscortflag = trip.IsHalfTourFromOrigin ? EscortOriginPurposeflag : EscortDestinationPurposeflag;
+      int tripdestinationBusinessflag = trip.IsHalfTourFromOrigin ? BusinessOriginPurposeflag : BusinessDestinationPurposeflag;
+      int tripdestinationPersonalBusinessflag = trip.IsHalfTourFromOrigin ? PersonalBusinessOriginPurposeflag : PersonalBusinessDestinationPurposeflag;
+      int tripdestinationShoppingflag = trip.IsHalfTourFromOrigin ? ShoppingOriginPurposeflag : ShoppingDestinationPurposeflag;
+      int tripdestinationSocialflag = trip.IsHalfTourFromOrigin ? SocialOriginPurposeflag : SocialDestinationPurposeflag;
+      int tripdestinationHomeflag = (trip.IsNoneOrHomePurposeByDestination()).ToFlag();
+
+
 
       // only trip on first half-tour
       int onlyTripOnFirstHalfFlag =
@@ -426,9 +464,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
           continue;
         }
 
-        alternative.AddUtilityTerm(200, triporiginpurpose);
-        alternative.AddUtilityTerm(201, tripdestinationpurpose);
-
         alternative.AddUtilityTerm(2, generalizedTimeLogsum * tour.TimeCoefficient);
 
         if (mode == Global.Settings.Modes.Transit) {
@@ -458,6 +493,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(206, homeBasedSocialTourFlag);
           alternative.AddUtilityTerm(222, homeBasedPersonalBusinessTourFlag);
           alternative.AddUtilityTerm(223, homeBasedBusinessTourFlag);
+          alternative.AddUtilityTerm(232, tripdestinationHomeflag);
+          alternative.AddUtilityTerm(233, tripdestinationWorkflag);
+          alternative.AddUtilityTerm(234, tripdestinationSchoolflag);
+          alternative.AddUtilityTerm(235, tripdestinationEscortflag);
+          alternative.AddUtilityTerm(236, tripdestinationBusinessflag);
+          alternative.AddUtilityTerm(237, tripdestinationPersonalBusinessflag);
+          alternative.AddUtilityTerm(238, tripdestinationShoppingflag);
+          alternative.AddUtilityTerm(239, tripdestinationSocialflag);
+      
         } else if (mode == Global.Settings.Modes.HovPassenger) {
           alternative.AddUtilityTerm(30, 1);
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT3));
@@ -497,6 +541,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(170, (destinationHomeEscortFlag * eveningPeriodFlag));
           alternative.AddUtilityTerm(183, jointTourFlag);
           alternative.AddUtilityTerm(184, fullHalfTourFlag + partialHalfTourFlag);
+          alternative.AddUtilityTerm(240, tripdestinationHomeflag);
+          alternative.AddUtilityTerm(241, tripdestinationWorkflag);
+          alternative.AddUtilityTerm(242, tripdestinationSchoolflag);
+          alternative.AddUtilityTerm(243, tripdestinationEscortflag);
+          alternative.AddUtilityTerm(244, tripdestinationBusinessflag);
+          alternative.AddUtilityTerm(245, tripdestinationPersonalBusinessflag);
+          alternative.AddUtilityTerm(246, tripdestinationShoppingflag);
+          alternative.AddUtilityTerm(247, tripdestinationSocialflag);
+
         } else if (mode == Global.Settings.Modes.HovDriver) {
           alternative.AddUtilityTerm(40, 1);
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT2));
@@ -535,6 +588,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(168, (destinationHomeEscortFlag * middayPeriodFlag));
           alternative.AddUtilityTerm(169, (destinationHomeEscortFlag * pmPeriodFlag));
           alternative.AddUtilityTerm(170, (destinationHomeEscortFlag * eveningPeriodFlag));
+
+          alternative.AddUtilityTerm(248, tripdestinationHomeflag);
+          alternative.AddUtilityTerm(249, tripdestinationWorkflag);
+          alternative.AddUtilityTerm(250, tripdestinationSchoolflag);
+          alternative.AddUtilityTerm(251, tripdestinationEscortflag);
+          alternative.AddUtilityTerm(252, tripdestinationBusinessflag);
+          alternative.AddUtilityTerm(253, tripdestinationPersonalBusinessflag);
+          alternative.AddUtilityTerm(254, tripdestinationShoppingflag);
+          alternative.AddUtilityTerm(255, tripdestinationSocialflag);
+
+
         } else if (mode == Global.Settings.Modes.Sov) {
           alternative.AddUtilityTerm(50, 1);
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient));
@@ -563,6 +627,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(211, homeBasedSocialTourFlag);
           alternative.AddUtilityTerm(226, homeBasedPersonalBusinessTourFlag);
           alternative.AddUtilityTerm(227, homeBasedBusinessTourFlag);
+
+          alternative.AddUtilityTerm(256, tripdestinationHomeflag);
+          alternative.AddUtilityTerm(257, tripdestinationWorkflag);
+          alternative.AddUtilityTerm(258, tripdestinationSchoolflag);
+          alternative.AddUtilityTerm(259, tripdestinationEscortflag);
+          alternative.AddUtilityTerm(260, tripdestinationBusinessflag);
+          alternative.AddUtilityTerm(261, tripdestinationPersonalBusinessflag);
+          alternative.AddUtilityTerm(262, tripdestinationShoppingflag);
+          alternative.AddUtilityTerm(263, tripdestinationSocialflag);
 
         } else if (mode == Global.Settings.Modes.Bike) {
           alternative.AddUtilityTerm(60, 1);
@@ -593,6 +666,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(228, homeBasedPersonalBusinessTourFlag);
           alternative.AddUtilityTerm(229, homeBasedBusinessTourFlag);
 
+          alternative.AddUtilityTerm(264, tripdestinationHomeflag);
+          alternative.AddUtilityTerm(265, tripdestinationWorkflag);
+          alternative.AddUtilityTerm(266, tripdestinationSchoolflag);
+          alternative.AddUtilityTerm(267, tripdestinationEscortflag);
+          alternative.AddUtilityTerm(268, tripdestinationBusinessflag);
+          alternative.AddUtilityTerm(269, tripdestinationPersonalBusinessflag);
+          alternative.AddUtilityTerm(270, tripdestinationShoppingflag);
+          alternative.AddUtilityTerm(271, tripdestinationSocialflag);
+
         } else if (mode == Global.Settings.Modes.Walk) {
           alternative.AddUtilityTerm(70, 1);
 
@@ -620,6 +702,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(221, homeBasedSocialTourFlag);
           alternative.AddUtilityTerm(230, homeBasedPersonalBusinessTourFlag);
           alternative.AddUtilityTerm(231, homeBasedBusinessTourFlag);
+
+          alternative.AddUtilityTerm(272, tripdestinationHomeflag);
+          alternative.AddUtilityTerm(273, tripdestinationWorkflag);
+          alternative.AddUtilityTerm(274, tripdestinationSchoolflag);
+          alternative.AddUtilityTerm(275, tripdestinationEscortflag);
+          alternative.AddUtilityTerm(276, tripdestinationBusinessflag);
+          alternative.AddUtilityTerm(277, tripdestinationPersonalBusinessflag);
+          alternative.AddUtilityTerm(278, tripdestinationShoppingflag);
+          alternative.AddUtilityTerm(279, tripdestinationSocialflag);
 
         } else if (mode == Global.Settings.Modes.PaidRideShare) {
 
