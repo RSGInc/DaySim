@@ -268,7 +268,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                   : (household.Income <= 900000)
                       ? Global.Settings.VotALSegments.Medium
                       : Global.Settings.VotALSegments.High;
-           
+
       //int homeTaSegment = homeParcel.TransitAccessSegment();
       //GV: 20.3.2019 - getting values from MB's memo
       //OBS - it has to be in km
@@ -280,7 +280,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 : 2;
 
       double homeAggregateLogsumNoCar = Math.Max(minimumAggLogsum, Global.AggregateLogsums[homeParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][homeTaSegment]);
-
+      
       //int workTaSegment = workParcelMissing ? 0 : workParcel.TransitAccessSegment();
       //GV: 20.3.2019 - getting values from MB's memo
       //OBS! - DaySim goes down with my commnad
@@ -501,15 +501,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(68, (person.WorkerType == 0 && person.StudentType == 0) ? 1:0); 
       alternative.AddUtilityTerm(69, commuteDistance); 
       
-
       //GV: OK
       //Price
       alternative.AddUtilityTerm(71, passPriceToFareRatio);
       alternative.AddUtilityTerm(72, fare);
       alternative.AddUtilityTerm(73, passPrice);
-
-
-                     
+                                
       //GV: 26. 3. 2019 - parking avail. in CPH
       alternative.AddUtilityTerm(81, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (isInCopenhagenMunicipality).ToFlag());
 
