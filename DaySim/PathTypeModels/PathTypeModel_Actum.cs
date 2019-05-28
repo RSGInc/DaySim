@@ -1139,6 +1139,14 @@ namespace DaySim.PathTypeModels {
         Available = false
       };
 
+     //JB 20190528 add the following to initialize the values when !useZones; needed on subsequent lines
+      if (!useZones) {
+        originZoneId = originParcel.ZoneId;
+        destinationZoneId = destinationParcel.ZoneId;
+        _originZoneId = originParcel.ZoneId;
+        _destinationZoneId = destinationParcel.ZoneId;
+      }
+
       double pathTimeLimit = Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit * (returnTime > 0 ? 2 : 1);
 
       bool commuter = (_purpose == Global.Settings.Purposes.Work || _purpose == Global.Settings.Purposes.School);

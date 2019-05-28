@@ -117,7 +117,8 @@ namespace DaySim.ChoiceModels.H {
       if (period.End < trip.EarliestDepartureTime || period.Start > trip.LatestDepartureTime) {
         time.Available = false;
       } else {
-        int pathMode = (trip.Mode >= Global.Settings.Modes.SchoolBus - 1) ? Global.Settings.Modes.Hov3 : trip.Mode;
+        //int pathMode = (trip.Mode >= Global.Settings.Modes.SchoolBus - 1) ? Global.Settings.Modes.Hov3 : trip.Mode;
+        int pathMode = (trip.Mode > Global.Settings.Modes.WalkRideWalk) ? Global.Settings.Modes.Hov3 : trip.Mode;  //JB 201905 proposed patch
 
         IEnumerable<IPathTypeModel> pathTypeModels =
                             PathTypeModelFactory.Singleton.Run(
