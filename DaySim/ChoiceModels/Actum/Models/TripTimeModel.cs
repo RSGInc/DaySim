@@ -331,7 +331,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(86, sovOrHovTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
         alternative.AddUtilityTerm(87, sovOrHovTripFlag * notWorkSchoolTourFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
         alternative.AddUtilityTerm(88, transitTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
-        alternative.AddUtilityTerm(89, sovOrHovTripFlag * notWorkSchoolTourFlag * (trip.Sequence==1).ToFlag() * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+        alternative.AddUtilityTerm(89, sovOrHovTripFlag * notWorkSchoolTourFlag * (trip.Sequence == 1).ToFlag() * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+        alternative.AddUtilityTerm(90, bikeTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+        alternative.AddUtilityTerm(91, walkTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+        alternative.AddUtilityTerm(187, time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+
 
         alternative.AddUtilityTerm(92, Math.Log(departurePeriodFraction));
         //alternative.AddUtilityTerm(92, halfTourFromDestinationFlag * Math.Log(departurePeriodFraction));
