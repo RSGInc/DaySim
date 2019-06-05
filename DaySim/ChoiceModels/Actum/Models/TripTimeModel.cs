@@ -18,7 +18,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     public const string CHOICE_MODEL_NAME = "ActumTripTimeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
-    private const int MAX_PARAMETER = 299;
+    private const int MAX_PARAMETER = 499;
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.TripTimeModelCoefficients, HTripTime.TOTAL_TRIP_TIMES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -82,7 +82,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int nonworkingAdultFlag = person.IsNonworkingAdult.ToFlag();
       int universityStudentFlag = person.IsUniversityStudent.ToFlag();
       int retiredAdultFlag = person.IsRetiredAdult.ToFlag();
-      //var drivingAgeStudentFlag = person.IsDrivingAgeStudent.ToFlag(); // excluded by GV
+      int gymnasiumStudentFlag = person.IsDrivingAgeStudent.ToFlag();
       int primarySchoolChildFlag = person.IsChildAge5Through15.ToFlag();
       int preschoolChildFlag = person.IsChildUnder5.ToFlag();
       int femaleFlag = person.IsFemale.ToFlag();
@@ -97,6 +97,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int personalBusinessTourFlag = tour.IsPersonalBusinessPurpose().ToFlag();
       int shoppingTourFlag = tour.IsShoppingPurpose().ToFlag();
       int socialTourFlag = tour.IsSocialPurpose().ToFlag();
+      int workSchoolTourFlag = workTourFlag + schoolTourFlag;
       int notWorkSchoolTourFlag = 1 - workTourFlag - schoolTourFlag;
       int notWorkTourFlag = (!tour.IsWorkPurpose()).ToFlag();
       int notHomeBasedTourFlag = (!tour.IsHomeBasedTour).ToFlag();
@@ -343,6 +344,159 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //alternative.AddUtilityTerm(97, remainingToursCount / (Math.Max(1D, totalWindowRemaining)));
         alternative.AddUtilityTerm(98, 1000 * remainingToursCount / (Math.Max(1D, maxWindowRemaining)));
 
+        if (trip.Sequence == 1 && trip.IsHalfTourFromOrigin) {
+          // 1st simulated trip on 1st half-tour.
+          // betas 200-299
+          // Modeling ‘departure’ period (arrival time at tour destination), given large time period of tour destination arrival.  
+          // This is simply refining the tour destination arrival time.
+          // Specify generalized time, departure period fraction, and trips/tours remaining
+          // so there is a tendency to choose the time period with the best gen time of the trip ‘to’ known stop location by known mode.  
+          // Constants for subintervals of the tour destination arrival big period
+          // And departure shift (ie tour destination arrival shift) terms for market segments
+          if (tour.DestinationArrivalBigPeriod.Index == 0) {  //early am  3-6am
+            alternative.AddUtilityTerm(201, (period.Middle > 0 && period.Middle <=60).ToFlag());
+            alternative.AddUtilityTerm(202, (period.Middle > 60 && period.Middle <=120).ToFlag());
+            alternative.AddUtilityTerm(203, (period.Middle > 120 && period.Middle <=180).ToFlag());
+          }
+          else if(tour.DestinationArrivalBigPeriod.Index == 1) {  //am peak  6-9am
+            alternative.AddUtilityTerm(221, (period.Middle > 180 && period.Middle <=210).ToFlag());
+            alternative.AddUtilityTerm(222, (period.Middle > 210 && period.Middle <=240).ToFlag());
+            alternative.AddUtilityTerm(223, (period.Middle > 240 && period.Middle <=270).ToFlag());
+            alternative.AddUtilityTerm(224, (period.Middle > 270 && period.Middle <=300).ToFlag());
+            alternative.AddUtilityTerm(225, (period.Middle > 300 && period.Middle <=330).ToFlag());
+            alternative.AddUtilityTerm(226, (period.Middle > 330 && period.Middle <=360).ToFlag());
+
+            alternative.AddUtilityTerm(231, departureShiftHours * workTourFlag * partTimeWorkerFlag);
+            alternative.AddUtilityTerm(232, departureShiftHours * schoolTourFlag);
+            alternative.AddUtilityTerm(233, departureShiftHours * schoolTourFlag * universityStudentFlag);
+            alternative.AddUtilityTerm(234, departureShiftHours * schoolTourFlag * gymnasiumStudentFlag);
+
+          }
+          else if (tour.DestinationArrivalBigPeriod.Index == 2) { // midday  9am - 3:30pm
+            alternative.AddUtilityTerm(241, (period.Middle > 360 && period.Middle <=390).ToFlag());
+            alternative.AddUtilityTerm(242, (period.Middle > 390 && period.Middle <=450).ToFlag());
+            alternative.AddUtilityTerm(243, (period.Middle > 450 && period.Middle <=510).ToFlag());
+            alternative.AddUtilityTerm(244, (period.Middle > 510 && period.Middle <=570).ToFlag());
+            alternative.AddUtilityTerm(245, (period.Middle > 570 && period.Middle <=630).ToFlag());
+            alternative.AddUtilityTerm(246, (period.Middle > 630 && period.Middle <=690).ToFlag());
+            alternative.AddUtilityTerm(247, (period.Middle > 690 && period.Middle <=750).ToFlag());
+          }
+          else if (tour.DestinationArrivalBigPeriod.Index == 3) { // pm peak  3:30 - 6:30pm
+            alternative.AddUtilityTerm(261, (period.Middle > 750 && period.Middle <=810).ToFlag());
+            alternative.AddUtilityTerm(262, (period.Middle > 810 && period.Middle <=870).ToFlag());
+            alternative.AddUtilityTerm(263, (period.Middle > 870 && period.Middle <=930).ToFlag());
+          }
+          else if (tour.DestinationArrivalBigPeriod.Index == 4) { // evening  6:30-11pm
+            alternative.AddUtilityTerm(281, (period.Middle > 930 && period.Middle <=960).ToFlag());
+            alternative.AddUtilityTerm(282, (period.Middle > 960 && period.Middle <=1020).ToFlag());
+            alternative.AddUtilityTerm(283, (period.Middle > 1020 && period.Middle <=1080).ToFlag());
+            alternative.AddUtilityTerm(284, (period.Middle > 1080 && period.Middle <=1140).ToFlag());
+            alternative.AddUtilityTerm(285, (period.Middle > 1140 && period.Middle <=1200).ToFlag());
+          }
+          else { // overnight  11pm-3am
+            alternative.AddUtilityTerm(291, (period.Middle > 1200 && period.Middle <=1320).ToFlag());
+            alternative.AddUtilityTerm(292, (period.Middle > 1320 && period.Middle <=1440).ToFlag());
+
+          }
+        } else if (trip.Sequence == 1) {
+          // 1st simulated trip on 2nd half tour.
+          // betas 300-399
+          // Modeling departure period (departure time from tour destination), given small time period of tour destination arrival and large time period of tour destination departure.
+          // Specify generalized time, so there is a tendency to  choose the time period with the best gen time of the trip ‘to’ known stop location by known mode.
+
+          // workSchool tour duration constants for the duration of stay at tour destination
+          if (workSchoolTourFlag == 1) {
+            alternative.AddUtilityTerm(301, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.ZeroHours, Global.Settings.Times.OneHour).ToFlag()); // 0 - 1  
+            alternative.AddUtilityTerm(302, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.OneHour, Global.Settings.Times.TwoHours).ToFlag()); // 1 - 2  
+            alternative.AddUtilityTerm(303, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.TwoHours, Global.Settings.Times.ThreeHours).ToFlag()); // 2 - 3  
+            alternative.AddUtilityTerm(304, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.ThreeHours, Global.Settings.Times.FiveHours).ToFlag()); // 3 - 5  
+            alternative.AddUtilityTerm(305, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.FiveHours, Global.Settings.Times.SevenHours).ToFlag()); // 5 - 7  
+            alternative.AddUtilityTerm(306, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.SevenHours, Global.Settings.Times.NineHours).ToFlag()); // 7 - 9  
+            alternative.AddUtilityTerm(307, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.NineHours, Global.Settings.Times.TwelveHours).ToFlag()); // 9 - 12 
+            alternative.AddUtilityTerm(308, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.TwelveHours, Global.Settings.Times.FourteenHours).ToFlag()); // 12 - 14  
+            alternative.AddUtilityTerm(309, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.FourteenHours, Global.Settings.Times.EighteenHours).ToFlag()); // 14 - 18  
+            alternative.AddUtilityTerm(310, (durationShiftMinutes >= Global.Settings.Times.EighteenHours).ToFlag());
+            // durationShiftHour variables, with work tour as the base case, to capture differences in average duration.
+            alternative.AddUtilityTerm(311, durationShiftHours * workTourFlag * partTimeWorkerFlag);
+            alternative.AddUtilityTerm(312, durationShiftHours * schoolTourFlag);
+            alternative.AddUtilityTerm(313, durationShiftHours * schoolTourFlag * universityStudentFlag);
+            alternative.AddUtilityTerm(314, durationShiftHours * schoolTourFlag * gymnasiumStudentFlag);
+
+            // escort and non-home-based tour duration constants for the duration of stay at tour destination
+          } else if (escortTourFlag == 1 || notHomeBasedTourFlag == 1) {
+            alternative.AddUtilityTerm(321, durationShiftMinutes.IsRightExclusiveBetween(0, 30).ToFlag()); // 0 - 30 minutes  
+            alternative.AddUtilityTerm(322, durationShiftMinutes.IsRightExclusiveBetween(30, 60).ToFlag()); // 30 -60 minutes  
+            alternative.AddUtilityTerm(323, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.OneHour, Global.Settings.Times.TwoHours).ToFlag()); // 1 - 2  
+            alternative.AddUtilityTerm(324, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.TwoHours, Global.Settings.Times.FourHours).ToFlag()); // 2 - 4  
+            alternative.AddUtilityTerm(326, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.FourHours, Global.Settings.Times.EightHours).ToFlag()); // 4 - 8  
+            alternative.AddUtilityTerm(326, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.EightHours, Global.Settings.Times.TwelveHours).ToFlag()); // 8 - 12  
+            alternative.AddUtilityTerm(326, (durationShiftMinutes >= Global.Settings.Times.TwelveHours).ToFlag());
+            // durationShiftHour variables, with escort tour as the base case, to capture differences in average duration.
+            alternative.AddUtilityTerm(331, durationShiftHours * notHomeBasedTourFlag);
+
+          } else {
+            // duration constants for the duration of stay at tour destination, tour purposes other than work, school, escort
+            alternative.AddUtilityTerm(341, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.ZeroHours, Global.Settings.Times.OneHour).ToFlag()); // 0 - 1  
+            alternative.AddUtilityTerm(342, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.OneHour, Global.Settings.Times.TwoHours).ToFlag()); // 1 - 2  
+            alternative.AddUtilityTerm(343, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.TwoHours, Global.Settings.Times.ThreeHours).ToFlag()); // 2 - 3  
+            alternative.AddUtilityTerm(344, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.ThreeHours, Global.Settings.Times.FiveHours).ToFlag()); // 3 - 5  
+            alternative.AddUtilityTerm(345, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.FiveHours, Global.Settings.Times.EightHours).ToFlag()); // 5 - 8  
+            alternative.AddUtilityTerm(346, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.EightHours, Global.Settings.Times.TwelveHours).ToFlag()); // 8 - 12 
+            alternative.AddUtilityTerm(347, durationShiftMinutes.IsRightExclusiveBetween(Global.Settings.Times.TwelveHours, Global.Settings.Times.EighteenHours).ToFlag()); // 14 - 18  
+            alternative.AddUtilityTerm(348, (durationShiftMinutes >= Global.Settings.Times.EighteenHours).ToFlag());
+            // durationShiftHour variables, with personal business tour as the base case, to capture differences in average duration.
+            alternative.AddUtilityTerm(351, durationShiftHours * businessTourFlag);
+            alternative.AddUtilityTerm(352, durationShiftHours * shoppingTourFlag);
+            alternative.AddUtilityTerm(353, durationShiftHours * socialTourFlag);
+            alternative.AddUtilityTerm(354, durationShiftHours * retiredAdultFlag);
+            alternative.AddUtilityTerm(355, durationShiftHours * nonworkingAdultFlag);
+
+          }
+
+
+        } else {
+          // trips other than 1st trip on half tour (for both half tours)
+          // betas 400-499
+          // Modeling, for trip ‘n’, the ‘departure’ period from intermediate stop location ‘n-1’, given ‘departure’ period and mode of trip ‘n-1’ and the purpose at intermediate stop ‘n-1’. Thus, this determines the duration of stay at intermediate stop ‘n-1’.  Stop location ‘n’ and mode of trip ‘n’ are also known.
+          // Specify generalized time so there is a tendency to choose the time period with the best gen time of the trip to known stop location ‘n’ by known mode for trip ‘n’.
+
+          if (originEscortFlag == 1) {
+            // Escort stop duration constants for the duration of stay at stop ‘n-1’, which is abs(arrival time at stop ‘n-1’ minus ‘departure time for trip ‘n’).  Note that the purpose being considered is stop ‘n-1’ purpose.
+            alternative.AddUtilityTerm(401, durationShiftMinutes.IsRightExclusiveBetween(0, 20).ToFlag());
+            alternative.AddUtilityTerm(402, durationShiftMinutes.IsRightExclusiveBetween(20, 40).ToFlag());
+            alternative.AddUtilityTerm(403, durationShiftMinutes.IsRightExclusiveBetween(40, 60).ToFlag());
+            alternative.AddUtilityTerm(404, durationShiftMinutes.IsRightExclusiveBetween(60, 90).ToFlag());
+            alternative.AddUtilityTerm(404, durationShiftMinutes.IsRightExclusiveBetween(90, 120).ToFlag());
+            alternative.AddUtilityTerm(406, durationShiftMinutes.IsRightExclusiveBetween(120, 240).ToFlag());
+            alternative.AddUtilityTerm(406, durationShiftMinutes.IsRightExclusiveBetween(240, 480).ToFlag());
+            alternative.AddUtilityTerm(406, (durationShiftMinutes >= 480).ToFlag());
+            // durationShiftHours variables, such as for 2nd half tour
+            alternative.AddUtilityTerm(411, durationShiftHours * halfTourFromDestinationFlag);
+
+          } else {
+            // non-Escort stop duration constants for the duration of stay at stop ‘n-1’, which is abs(arrival time at stop ‘n-1’ minus ‘departure time for trip ‘n’).  Note that the purpose being considered is stop ‘n-1’ purpose.
+            alternative.AddUtilityTerm(421, durationShiftMinutes.IsRightExclusiveBetween(0, 20).ToFlag());
+            alternative.AddUtilityTerm(422, durationShiftMinutes.IsRightExclusiveBetween(20, 40).ToFlag());
+            alternative.AddUtilityTerm(423, durationShiftMinutes.IsRightExclusiveBetween(40, 60).ToFlag());
+            alternative.AddUtilityTerm(424, durationShiftMinutes.IsRightExclusiveBetween(60, 90).ToFlag());
+            alternative.AddUtilityTerm(425, durationShiftMinutes.IsRightExclusiveBetween(90, 120).ToFlag());
+            alternative.AddUtilityTerm(426, durationShiftMinutes.IsRightExclusiveBetween(120, 240).ToFlag());
+            alternative.AddUtilityTerm(427, durationShiftMinutes.IsRightExclusiveBetween(240, 480).ToFlag());
+            alternative.AddUtilityTerm(428, (durationShiftMinutes >= 480).ToFlag());
+            // durationShiftHours variables, with personal business as base case, to capture differences in average duration.
+            alternative.AddUtilityTerm(431, durationShiftHours * originSchoolFlag);
+            alternative.AddUtilityTerm(432, durationShiftHours * originBusinessFlag);
+            alternative.AddUtilityTerm(433, durationShiftHours * originShoppingFlag);
+            alternative.AddUtilityTerm(434, durationShiftHours * originSocialFlag);
+            alternative.AddUtilityTerm(435, durationShiftHours * halfTourFromDestinationFlag);
+            alternative.AddUtilityTerm(436, durationShiftHours * (personDay.PatternType == 2).ToFlag());
+            alternative.AddUtilityTerm(437, durationShiftHours * retiredAdultFlag);
+            alternative.AddUtilityTerm(438, durationShiftHours * nonworkingAdultFlag);
+
+
+
+          }
+        }
       }
     }
   }
