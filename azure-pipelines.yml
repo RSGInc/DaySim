@@ -1,0 +1,130 @@
+# azure-pipelines.yml
+# Configuration file for building, running, and testing the RSGInc/DaySim model on RSG's
+# local test server, operated by Azure Pipelines. DaySim is a .NET application that must be
+# run on Windows x64 architecture and built with Visual Studio 2017 or above.
+#
+# Code for DaySim is hosted at https://github.com/RSGInc/DaySim
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+# Azure will build/run tests if on develop branch, or if branch includes 'azure' keyword
+trigger:
+  branches:
+    include:
+    - develop
+    - '*azure*'
+
+# System requirements:
+# git, git-lfs, python, and Rscript must all be installed and available on the system PATH
+pool: WRJSOFPPW01
+
+# Test data to run:
+#   testDir   - the directory to store the test data. this should be a persistent location
+#     on the server to avoid pulling lots of test data for every run. Agent.HomeDirectory is not
+#     wiped after every build, but Agent.BuildDirectory is, for example.
+#   gitRepo   - the test data repository on GitHub.
+#   config    - absolute path to the config file expected by DaySim.exe.
+#   targets   - folder containing target output data.
+strategy:
+  maxParallel: 4
+  matrix:
+    sacog:
+      testDir: $(Agent.HomeDirectory)\sacog_daysim_test
+      gitRepo: RSGInc/sacog_daysim_test.git
+      config: $(testDir)\daysim\sacog_regress.properties
+      targets: $(testDir)\daysim\azure_target_output
+    fresno:
+      testDir: $(Agent.HomeDirectory)\fresno_daysim_test
+      gitRepo: RSGInc/FresnoABM.git
+      config: $(testDir)\Scenarios\FC14_BASE\11_DaySim\Configuration_regress.properties
+      targets: $(testDir)\Scenarios\FC14_BASE\11_DaySim\azure_target_output
+    psrc:
+      testDir: $(Agent.HomeDirectory)\psrc_daysim_test
+      gitRepo: RSGInc/psrc_daysim_test.git
+      config: $(testDir)\configuration_sp_regress.properties
+      targets: $(testDir)\azure_target_output
+    # chattanooga fails because roster uses the transcad file-type
+    # which requires licensed software that is not installed for this machine
+    # chattanooga:
+    #   testDir: $(Agent.HomeDirectory)\chattanooga_daysim_test
+    #   gitRepo: RSGInc/chattanooga_daysim_test.git
+    #   config: $(testDir)\Config_regress.properties
+    #   targets: $(testDir)\regress_outputs
+    # dvrpc:
+    #   testDir: $(Agent.HomeDirectory)\dvrpc_daysim_test
+    #   gitRepo: RSGInc/dvrpc_daysim_test.git
+    #   config: $(testDir)\dvrpc_regress.properties
+    #   targets: $(testDir)\dvrpc_regress_output
+    # sfcta:
+    #   testDir: $(Agent.HomeDirectory)\sfcta_daysim_test
+    #   gitRepo: RSGInc/sfcta_daysim_test.git
+    #   config: $(testDir)\sfcta_apply_default_regress.properties
+    #   targets: $(testDir)\sfcta_apply_default_regress_output
+    # bkrcast:
+    #   testDir: $(Agent.HomeDirectory)\bkrcast_daysim
+    #   gitRepo: RSGInc/bkrcast_daysim.git
+    #   config: $(testDir)\configuration_regress.properties
+    #   targets: $(testDir)\outputs
+    # jax:
+    #   testDir: $(Agent.HomeDirectory)\jax_daysim_test
+    #   gitRepo: RSGInc/jax_daysim_test.git
+    #   config: $(testDir)\Configuration_regress.properties
+    #   targets: $(testDir)\outputs
+
+variables:
+  solution: DaySim.sln
+  buildPlatform: x64
+  buildConfiguration: Release
+
+  ### DaySim configuration runtime overrides ###
+  householdSamplingRate: 10000
+  nProcessors: 24
+  outputDir: $(testDir)\azure_output
+  overrides: HouseholdSamplingRateOneInX=$(householdSamplingRate),NProcessors=$(nProcessors),OutputSubpath=$(outputDir)
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: $(solution)
+
+- task: VSBuild@1
+  displayName: Build DaySim
+  inputs:
+    solution: $(solution)
+    platform: $(buildPlatform)
+    configuration: $(buildConfiguration)
+
+- script: $(System.DefaultWorkingDirectory)\DaySim_dist\DaySim.exe --version
+  displayName: Print DaySim version
+
+- script: $(System.DefaultWorkingDirectory)\DaySim_dist\DaySim.exe --help
+  displayName: Print help text
+
+# Use git lfs to pull entire data files, not just pointers
+- script: |
+    if not exist $(testDir) git clone https://$(GH_TOKEN)@github.com/$(gitRepo) $(testDir)
+    cd $(testDir)
+    git checkout .
+    git clean -fd
+    git lfs pull
+  displayName: Get latest test data
+
+- script: |
+    cd $(testDir)
+    mkdir $(outputDir)
+    $(System.DefaultWorkingDirectory)\DaySim_dist\DaySim.exe -c $(config) -o $(overrides)
+  displayName: Run model
+
+- task: PythonScript@0
+  displayName: Compare output to target data
+  continueOnError: true
+  inputs:
+    scriptSource: filePath
+    scriptPath: $(System.DefaultWorkingDirectory)\DaySim.Tests\DaySim.Tests.external\compare_output_directories\compare_output_directories.py
+    arguments: --outputs_reference $(targets) --outputs_new $(outputDir) --verbose
+
+- script: |
+    cd $(System.DefaultWorkingDirectory)\DaySim.Tests\DaySim.Tests.external\DaysimSummaries_regress
+    Rscript main.R --reference_dir=$(targets) --outputs_dir=$(outputDir) --reports_dir=$(testDir)\excel_report_files
+  displayName: Generate Excel reports

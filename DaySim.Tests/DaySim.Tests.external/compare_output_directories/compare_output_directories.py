@@ -16,7 +16,8 @@ from utilities import *
 def remove_irrelevant_files(listOfFiles):
     return [file for file in listOfFiles if not (   file.endswith('.log')
                                                  or file.endswith('.RData')
-                                                 or file.endswith('.Rdata'))]
+                                                 or file.endswith('.Rdata')
+                                                 or file.startswith('.git'))]
 
 #modifies the passed in dcmp object recursively to remove all files we don't care about
 def remove_irrelevant_files_from_dcmp(dcmp, filter_function=remove_irrelevant_files):
@@ -27,19 +28,19 @@ def remove_irrelevant_files_from_dcmp(dcmp, filter_function=remove_irrelevant_fi
     dcmp.right_only = filter_function(dcmp.right_only)
     dcmp.diff_files = filter_function(dcmp.diff_files)
     dcmp.funny_files = filter_function(dcmp.funny_files)
-    dcmp.common_files = filter_function(dcmp.common_files) 
+    dcmp.common_files = filter_function(dcmp.common_files)
     dcmp.common_funny = filter_function(dcmp.common_funny)
 
     for sub_dcmp in dcmp.subdirs.values():
         remove_irrelevant_files_from_dcmp(sub_dcmp)
-    
+
 def are_all_files_common_func(dcmp):
     """This will return true if the dcmp object passed in shows
     that both directories had the same files and subfolders (recursively)"""
     if len(dcmp.left_only) > 0:
-        return False 
+        return False
     if len(dcmp.right_only) > 0:
-        return False 
+        return False
 
     for sub_dcmp in dcmp.subdirs.values():
         return are_all_files_common_func(sub_dcmp)
@@ -97,8 +98,8 @@ def are_outputs_equal(parameters):
     elif not os.path.isdir(args.outputs_new):
         raise Exception('outputs_reference "' + args.outputs_reference + '" exists but not outputs_new "' + args.outputs_new + '"')
 
-    print('python ' + os.path.realpath(__file__) + ' --outputs_reference "' + os.path.realpath(args.outputs_reference) +  '" --outputs_new "' + os.path.realpath(args.outputs_new) + '"') 
-    dcmp = filecmp.dircmp(args.outputs_reference, args.outputs_new) 
+    print('python ' + os.path.realpath(__file__) + ' --outputs_reference "' + os.path.realpath(args.outputs_reference) +  '" --outputs_new "' + os.path.realpath(args.outputs_new) + '"')
+    dcmp = filecmp.dircmp(args.outputs_reference, args.outputs_new)
     remove_irrelevant_files_from_dcmp(dcmp)
 
     are_all_files_common = are_all_files_common_func(dcmp)
@@ -129,7 +130,7 @@ def are_outputs_equal(parameters):
                 #quickest and least memory method is to sum the hash of each line and then compare
                 hash_sum_reference = get_hash_sum_of_lines(reference_file)
                 hash_sum_new_file = get_hash_sum_of_lines(new_file)
-                    
+
                 filesAreDifferent = hash_sum_reference != hash_sum_new_file
                 if not filesAreDifferent:
                     logging.debug('File "' + different_file + '" has identical content just in different order.')
@@ -172,7 +173,7 @@ def are_outputs_equal(parameters):
 
                         missing_from_new.sort(key=lambda line_count_tuple :  line_count_tuple[0])
                         missing_from_new = missing_from_new[:args.max_different_lines_to_show]
-                    
+
                         print('hdr: ' + reference_header.strip('\n'))
                         for missing_line_index in range(0, min(len(missing_from_reference), len(missing_from_new))):
                             print('ref: ' + missing_from_reference[missing_line_index][0].strip('\n') + '\tmissing count: ' +  str(abs(missing_from_reference[missing_line_index][1])))
@@ -182,14 +183,14 @@ def are_outputs_equal(parameters):
                 actuallyDifferentFiles.append(different_file)
             result = result and not filesAreDifferent
             #print('Is "' + different_file + '" actually different?: ' + str(filesAreDifferent) + '. Is regression still passing?: ' + str(result))
-        
+
         print('There were ' + str(len(all_common_different_files)) + ' that were binary different. Of those, ' + str(len(actuallyDifferentFiles)) + ' files differed in ways that mattered: ' + str(actuallyDifferentFiles))
     if result:
         print('PASSED! :-)')
     else:
         print('FAILED! :-(')
     return result
-    
+
 if __name__ == "__main__":
     try:
         outputs_are_equal = are_outputs_equal(sys.argv[1:])
