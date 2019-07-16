@@ -10,11 +10,14 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
+  solution: 'DaySim.sln'
+  buildPlatform: 'x64'
   buildConfiguration: 'Release'
 
 steps:
+- script: echo $(System.DefaultWorkingDirectory)
+  displayName: 'Print working directory'
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
