@@ -1325,12 +1325,13 @@ namespace DaySim.PathTypeModels {
           double nodePathTime = transitPath.Time + driveTime + destinationWalkTime;
           double nodePathDistance = driveDistance + transitDistance;
           double nodePathCost = transitPath.Cost + parkAndRideCost;
+          double nodeCapacityBenefit = knrPathType ? 0 : node.Capacity * Global.Configuration.PathImpedance_ParkAndRideLotCapacityWeight;     
 
           if (nodePathTime > pathTimeLimit) {
             continue;
           }
 
-          double nodeUtility = transitPath.Utility + knrAdditiveConstant + tncAdditiveConstant +
+          double nodeUtility = transitPath.Utility + knrAdditiveConstant + tncAdditiveConstant + nodeCapacityBenefit +
                       Global.Configuration.PathImpedance_PathChoiceScaleFactor *
                       (_tourCostCoefficient * parkAndRideCost +
                       _tourTimeCoefficient *
