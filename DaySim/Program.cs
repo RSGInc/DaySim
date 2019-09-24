@@ -146,7 +146,7 @@ namespace DaySim {
     public static void PrintVersion() {
       System.Reflection.Assembly assembly = typeof(Program).Assembly;
       string assemblyName = assembly.GetName().Name;
-      Type gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
+      Type gitVersionInformationType = assembly.GetType("GitVersionInformation");
 
       Console.WriteLine(string.Format("Version: {0}", gitVersionInformationType.GetField("FullSemVer").GetValue(null)));
       Console.WriteLine(string.Format("Branch: {0}", gitVersionInformationType.GetField("BranchName").GetValue(null)));
