@@ -103,7 +103,7 @@ namespace DaySim {
         }
       }
 
-      Engine.InitializeDaySim();
+     Engine.InitializeDaySim();
 
       Engine.BeginProgram(_start, _end, _index);
       //Engine.BeginTestMode();
