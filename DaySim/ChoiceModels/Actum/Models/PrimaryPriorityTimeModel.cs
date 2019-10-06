@@ -34,7 +34,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       householdDay.ResetRandom(901);
 
-      // IEnumerable<PersonWrapper> personTypeOrderedPersons = householdDay.Household.Persons.OrderBy(p=> p.PersonType).ToList();
+      // IEnumerable<PersonWrapper> personTypeOrderedPersons = householdDay.Household.Persons.OrderBy(p=> p.PersonType).ToList(); 
 
 
 
@@ -135,9 +135,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int numberParent = 0;
       int numberAdult = 0;
 
-      //bool hhLivesInCPHCity = false;
-      //if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
-      //  hhLivesInCPHCity = true;
+      
 
       bool hhLivesInCPHCity = false;
       if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
@@ -195,7 +193,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         //GV: Number of Adults in the HH - 14. feb. 2019
         if (person.Age > 18) {
-          numberAdult++;
+          numberAdults++;
         }
                           
         if (person.Age >= 18) {
@@ -252,8 +250,26 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
 
-      int votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //int votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
+      //GV: 28.3.2019 - getting values from MB's memo
+      int votALSegment =
+        (household.Income <= 450000)
+                  ? Global.Settings.VotALSegments.Low
+                  : (household.Income <= 900000)
+                      ? Global.Settings.VotALSegments.Medium
+                      : Global.Settings.VotALSegments.High;
+                           
+      //int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //GV: 28.3.2019 - getting values from MB's memo
+      //OBS - it has to be in km
+      int transitAccessSegment =
+         household.ResidenceParcel.GetDistanceToTransit() >= 0 && household.ResidenceParcel.GetDistanceToTransit() <= 0.4
+            ? 0
+            : household.ResidenceParcel.GetDistanceToTransit() > 0.4 && household.ResidenceParcel.GetDistanceToTransit() <= 1.6
+                ? 1
+                : 2;
+                   
+
       double personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
       double shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
@@ -280,7 +296,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //GV: 14. feb. 2019 - HH==2, one parent and 1 child
           pfptComponent.AddUtilityTerm(5, (household.Size >=2 && numberParent == 1 && household.HasChildren).ToFlag());
           //GV: 14. feb. 2019 - HH==2, both adults
-          pfptComponent.AddUtilityTerm(6, (household.Size == 2 && numberAdult == 2).ToFlag()); //GV: HH==2 plus both are adults
+          pfptComponent.AddUtilityTerm(6, (household.Size == 2 && numberAdults == 2).ToFlag()); //GV: HH==2 plus both are adults
           
           //GV: JBsmail fromfeb. 6. 2019 explains that "AdultsInSharedHomeStay" is endogenous and cannot be used for estimaions
           //pfptComponent.AddUtilityTerm(5, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildrenUnder16).ToFlag());
@@ -301,10 +317,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //GV; 4. feb. 2019, CPHcity constant
           pfptComponent.AddUtilityTerm(13, (hhLivesInCPHCity).ToFlag());
 
-          //pfptComponent.AddUtilityTerm(15, (household.Income >= 300000 && household.Income < 600000).ToFlag());
-          //pfptComponent.AddUtilityTerm(16, (household.Income >= 600000 && household.Income < 900000).ToFlag());
-          //pfptComponent.AddUtilityTerm(17, (household.Income >= 900000).ToFlag());
-          //pfptComponent.AddUtilityTerm(16, (household.Income >= 600000).ToFlag());
+          //pfptComponent.AddUtilityTerm(15, (household.Income >= 450000 && household.Income < 900000).ToFlag());
+          //pfptComponent.AddUtilityTerm(16, (household.Income >= 900000).ToFlag());
 
           pfptComponent.AddUtilityTerm(17, (firstWorkLogsum + secondWorkLogsum) *
                                            (workingCoupleNoChildren || workingCoupleAllChildrenUnder5).ToFlag());
@@ -315,11 +329,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //(workingCoupleNoChildren || workingCoupleAllChildrenUnder5).ToFlag());
           //pfptComponent.AddUtilityTerm(18, (firstWorkLogsum + secondWorkLogsum) * otherHouseholdWithPTFTWorkers.ToFlag());
 
-          //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+          //GV: 18. feb. 2019 - CPHcity composite logsum (see JB mail from 16. feb)
           pfptComponent.AddUtilityTerm(19, compositeLogsum * (hhLivesInCPHCity).ToFlag());
 
-          // at-home logsum works
-          pfptComponent.AddUtilityTerm(20, compositeLogsum);
+          // at-home logsum works fro rest of GCA 
+          pfptComponent.AddUtilityTerm(20, compositeLogsum * (!hhLivesInCPHCity).ToFlag());
                         
         }
       }
@@ -372,20 +386,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //jointComponent.AddUtilityTerm(28, (household.PartTimeWorkers >= 1).ToFlag());
 
           //GV; 4. feb. 2019, CPHcity constant
-          //jointComponent.AddUtilityTerm(29, (hhLivesInCPHCity).ToFlag());
+          //jointComponent.AddUtilityTerm(29, (hhLivesInCPHCity).ToFlag()); 
 
-          jointComponent.AddUtilityTerm(31, (household.Income >= 300000 && household.Income < 600000).ToFlag());
-          //jointComponent.AddUtilityTerm(32, (household.Income >= 600000 && household.Income < 900000).ToFlag());
-          //jointComponent.AddUtilityTerm(33, (household.Income >= 900000).ToFlag());
-          jointComponent.AddUtilityTerm(32, (household.Income >= 600000).ToFlag());
+          jointComponent.AddUtilityTerm(31, (household.Income >= 450000 && household.Income < 900000).ToFlag());
+          jointComponent.AddUtilityTerm(32, (household.Income >= 900000).ToFlag());
 
-          //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+          //GV: 18. feb. 2019 - CPHcity composite logsum (see JB mail from 16. feb)
           jointComponent.AddUtilityTerm(41, compositeLogsum * (hhLivesInCPHCity).ToFlag());
 
-          jointComponent.AddUtilityTerm(42, compositeLogsum);
+          //GV: 28. mar. 2019 - GCA (minus CPHcity) composite logsum 
+          jointComponent.AddUtilityTerm(42, compositeLogsum * (!hhLivesInCPHCity).ToFlag());
 
           // joint non-mandatory tour constant
-          jointComponent.AddUtilityTerm(61, 1);
+          //jointComponent.AddUtilityTerm(61, 1);
 
         }
       }
@@ -411,12 +424,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           if (pfpt == 1) {
             alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(1));
-            //alternative.AddUtilityTerm(20, 1);
+            alternative.AddUtilityTerm(51, 1);
 
           }
           if (jointTourFlag == 1) {
             alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(2));
-            //alternative.AddUtilityTerm(40, 1);
+            alternative.AddUtilityTerm(61, 1);
           }
 
           if (pfpt == 1 && jointTourFlag == 1) {

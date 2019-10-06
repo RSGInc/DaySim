@@ -21,7 +21,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private const int TOTAL_ALTERNATIVES = 3;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
-    private const int MAX_PARAMETER = 60;
+    private const int MAX_PARAMETER = 60; 
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.PersonDayPatternTypeModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -129,8 +129,26 @@ namespace DaySim.ChoiceModels.Actum.Models {
         hhLivesInCPHCity = true;
       }
 
-      int votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //int votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
+      //GV: 29.3.2019 - getting values from MB's memo
+      int votALSegment =
+        (household.Income <= 450000)
+                  ? Global.Settings.VotALSegments.Low
+                  : (household.Income <= 900000)
+                      ? Global.Settings.VotALSegments.Medium
+                      : Global.Settings.VotALSegments.High;
+           
+      //int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //GV: 29.3.2019 - getting values from MB's memo
+      //OBS - it has to be in km
+      int transitAccessSegment =
+         household.ResidenceParcel.GetDistanceToTransit() >= 0 && household.ResidenceParcel.GetDistanceToTransit() <= 0.4
+            ? 0
+            : household.ResidenceParcel.GetDistanceToTransit() > 0.4 && household.ResidenceParcel.GetDistanceToTransit() <= 1.6
+                ? 1
+                : 2;
+
+
       double personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
       double shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
@@ -191,10 +209,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: logsum for mandatory - wrong sign
       //alternative.AddUtilityTerm(17, compositeLogsum);  
 
-      //GV; 13. feb. 2019, income
-      alternative.AddUtilityTerm(18, (household.Income >= 300000 && household.Income < 600000).ToFlag());
-      //alternative.AddUtilityTerm(18, (household.Income >= 600000 && household.Income < 900000).ToFlag()); //GV; 16. april 2013, not significant
-      alternative.AddUtilityTerm(19, (household.Income >= 600000).ToFlag()); //GV; 16. april 2013, not significant
+      //GV: 29. mar. 2019, income
+      alternative.AddUtilityTerm(18, (household.Income >= 450000 && household.Income < 900000).ToFlag());
+      alternative.AddUtilityTerm(19, (household.Income >= 900000).ToFlag()); 
 
       alternative.AddUtilityTerm(20, householdDay.PrimaryPriorityTimeFlag);
 
@@ -245,15 +262,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //alternative.AddUtilityTerm(33, compositeLogsum); //GV: logsum for non-mandatory 
 
-      //GV: 13. feb. 2019 - income
-      alternative.AddUtilityTerm(35, (household.Income >= 300000 && household.Income < 600000).ToFlag()); //GV; 16. april 2013, not significant
-      //alternative.AddUtilityTerm(34, (household.Income >= 600000 && household.Income < 900000).ToFlag()); //GV; 16. april 2013, not significant
-      alternative.AddUtilityTerm(36, (household.Income >= 600000).ToFlag()); //GV; 16. april 2013, not significant
+      //GV: 29. mar. 2019 - income
+      alternative.AddUtilityTerm(35, (household.Income >= 450000 && household.Income < 900000).ToFlag()); //GV; 16. april 2013, not significant
+      alternative.AddUtilityTerm(36, (household.Income >= 900000).ToFlag()); //GV; 16. april 2013, not significant
 
       alternative.AddUtilityTerm(37, householdDay.PrimaryPriorityTimeFlag);
 
       //alternative.AddUtilityTerm(24, person.IsChildUnder5.ToFlag());
-      //alternative.AddUtilityTerm(25, person.IsNonworkingAdult.ToFlag());
+      //alternative.AddUtilityTerm(25, person.IsNonworkingAdult.ToFlag()); 
 
       // PatternType Home (all day)
       alternative = choiceProbabilityCalculator.GetAlternative(2, true, choice == 3);

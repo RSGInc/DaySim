@@ -1227,7 +1227,6 @@ namespace DaySim {
       }
 
       Global.ParcelToAutoParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
-      Global.ParcelToAutoParkAndRideTerminalIds = nodeSequentialIds.ToArray();
       Global.ParcelToAutoParkAndRideNodeLength = lengths.ToArray();
       Global.ParcelToAutoParkAndRideNodeDistance = distances.ToArray();
 
@@ -1300,7 +1299,6 @@ namespace DaySim {
       }
 
       Global.ParcelToBikeParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
-      Global.ParcelToBikeParkAndRideTerminalIds = nodeSequentialIds.ToArray();
       Global.ParcelToBikeParkAndRideNodeLength = lengths.ToArray();
       Global.ParcelToBikeParkAndRideNodeDistance = distances.ToArray();
 
@@ -1331,6 +1329,7 @@ namespace DaySim {
 
       //var parcelIds = new List<int>();  
       List<int> nodeSequentialIds = new List<int>();
+      List<int> nodeIndices = new List<int>();
       List<int> nodeMicrozoneIds = new List<int>();
       List<float> lengths = new List<float>(); /* raw values */
       List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
@@ -1345,6 +1344,7 @@ namespace DaySim {
       //start arrays at index 0 with dummy values, since valid indices start with 1
       //parcelIds.Add(0);
       nodeSequentialIds.Add(0);
+      nodeIndices.Add(0);
       nodeMicrozoneIds.Add(0);
       distances.Add(0F);
       lengths.Add(0F);
@@ -1364,8 +1364,10 @@ namespace DaySim {
         parcel.LastPositionInAutoKissAndRideTerminalDistanceArray = arrayIndex;
 
         //parcelIds.Add(int.Parse(tokens[0]));
-        int nodeSequentialIndex = int.Parse(tokens[1]);
-        nodeSequentialIds.Add(nodeSequentialIndex);
+        int terminalId = int.Parse(tokens[1]);
+        nodeSequentialIds.Add(terminalId);
+        int terminalIndex = Global.TransitStopAreaMapping[terminalId];
+        nodeIndices.Add(terminalIndex);
         int nodeMicrozoneIndex = int.Parse(tokens[3]);
         nodeMicrozoneIds.Add(nodeMicrozoneIndex);
         //parkAndRideNodeIds.Add(parkAndRideNodeId);
@@ -1377,7 +1379,8 @@ namespace DaySim {
       }
 
       Global.ParcelToAutoKissAndRideMicrozoneIds = nodeMicrozoneIds.ToArray();
-      Global.ParcelToAutoKissAndRideTerminalIds = nodeSequentialIds.ToArray();
+      Global.ParcelToAutoKissAndRideTerminalKeys = nodeSequentialIds.ToArray();
+      Global.ParcelToAutoKissAndRideTerminalIndices = nodeIndices.ToArray();
       Global.ParcelToAutoKissAndRideTerminalLength = lengths.ToArray();
       Global.ParcelToAutoKissAndRideTerminalDistance = distances.ToArray();
 
@@ -1408,6 +1411,7 @@ namespace DaySim {
 
       //var parcelIds = new List<int>();  
       List<int> nodeSequentialIds = new List<int>();
+      List<int> nodeIndices = new List<int>();
       List<int> nodeMicrozoneIds = new List<int>();
       List<float> lengths = new List<float>(); /* raw values */
       List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
@@ -1422,6 +1426,7 @@ namespace DaySim {
       //start arrays at index 0 with dummy values, since valid indices start with 1
       //parcelIds.Add(0);
       nodeSequentialIds.Add(0);
+      nodeIndices.Add(0);
       nodeMicrozoneIds.Add(0);
       distances.Add(0F);
       lengths.Add(0F);
@@ -1441,8 +1446,10 @@ namespace DaySim {
         parcel.LastPositionInBikeOnBoardTerminalDistanceArray = arrayIndex;
 
         //parcelIds.Add(int.Parse(tokens[0]));
-        int nodeSequentialIndex = int.Parse(tokens[1]);
-        nodeSequentialIds.Add(nodeSequentialIndex);
+        int terminalId = int.Parse(tokens[1]);
+        nodeSequentialIds.Add(terminalId);
+        int terminalIndex = Global.TransitStopAreaMapping[terminalId];
+        nodeIndices.Add(terminalIndex);
         int nodeMicrozoneIndex = int.Parse(tokens[3]);
         nodeMicrozoneIds.Add(nodeMicrozoneIndex);
         //parkAndRideNodeIds.Add(parkAndRideNodeId);
@@ -1454,7 +1461,8 @@ namespace DaySim {
       }
 
       Global.ParcelToBikeOnBoardMicrozoneIds = nodeMicrozoneIds.ToArray();
-      Global.ParcelToBikeOnBoardTerminalIds = nodeSequentialIds.ToArray();
+      Global.ParcelToBikeOnBoardTerminalKeys = nodeSequentialIds.ToArray();
+      Global.ParcelToBikeOnBoardTerminalIndices = nodeIndices.ToArray();
       Global.ParcelToBikeOnBoardTerminalLength = lengths.ToArray();
       Global.ParcelToBikeOnBoardTerminalDistance = distances.ToArray();
 
@@ -1794,7 +1802,7 @@ namespace DaySim {
       //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
       ParallelUtility.AssignThreadIndex(numberOfChoiceModelThreads);
       List<Thread> threads = new List<Thread>();
-      int displayInterval = Math.Min(1000, Math.Max(1, addedHousehouldCounter / 100));
+      int displayInterval = Global.Configuration.IsInEstimationMode ? 1 : Math.Min(1000, Math.Max(1, addedHousehouldCounter / 100));
       for (int threadIndex = 0; threadIndex < numberOfChoiceModelThreads; ++threadIndex) {
         Thread myThread = new Thread(new ThreadStart(delegate {
           //retrieve threadAssignedIndexIndex so can see logging output

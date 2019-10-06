@@ -31,7 +31,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private int[,,] component1;
     private int[,,,,,,] component2;
-    private int[,,,,,,] component3;
+    private int[,,,,,,] component3; 
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.HouseholdDayPatternTypeModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -46,7 +46,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       component3 = new int[4, 6, 6, 6, 6, 6, nThreads];
     }
 
-    // array associating alternative with the purposes of each of the five possible positions in the alternative
+    // array associating alternative with the purposes of each of the five possible positions in the alternative     
     //  altPTypes[a,p] is the purpose of position p in alternative a  
     private readonly int[,] altPTypes = new int[,] {
 				//{0,0,0,0,0,0},
@@ -549,8 +549,26 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
 
-      int votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //int votALSegment = Global.Settings.VotALSegments.Medium;  // TODO:  calculate a VOT segment that depends on household income
+      //GV: 28.3.2019 - getting values from MB's memo
+      int votALSegment =
+        (household.Income <= 450000)
+                  ? Global.Settings.VotALSegments.Low
+                  : (household.Income <= 900000)
+                      ? Global.Settings.VotALSegments.Medium
+                      : Global.Settings.VotALSegments.High;
+                          
+      //int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //GV: 28.3.2019 - getting values from MB's memo
+      //OBS - it has to be in km
+      int transitAccessSegment =
+         household.ResidenceParcel.GetDistanceToTransit() >= 0 && household.ResidenceParcel.GetDistanceToTransit() <= 0.4
+            ? 0
+            : household.ResidenceParcel.GetDistanceToTransit() > 0.4 && household.ResidenceParcel.GetDistanceToTransit() <= 1.6
+                ? 1
+                : 2;
+      
+
       //var personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
       //	[Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
       double shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
@@ -562,11 +580,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
       double compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
 
-      //GV: 8. feb. 2019
-      //bool hhLivesInCPHCity = false;
-      //if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
-      //  hhLivesInCPHCity = true;
-
+      
       bool hhLivesInCPHCity = false;
       if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
         hhLivesInCPHCity = true;
@@ -646,8 +660,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           pt[ct, person.CollapseActumPersonTypes()] = 1;
 
           // HH income
-          li[ct] = (householdDay.Household.Income > 300000 && householdDay.Household.Income <= 600000) ? 1 : 0; // GV changed income; all is relative now to income below 300.000 DKK
-          ui[ct] = (householdDay.Household.Income > 600000 && householdDay.Household.Income <= 900000) ? 1 : 0;
+          li[ct] = (householdDay.Household.Income > 450000 && householdDay.Household.Income <= 650000) ? 1 : 0; // GV changed income; all is relative now to income below 300.000 DKK
+          ui[ct] = (householdDay.Household.Income > 650000 && householdDay.Household.Income <= 900000) ? 1 : 0;
           //hi[ct] = (householdDay.Household.Income > 900000 && householdDay.Household.Income <= 1200000) ? 1 : 0;
           hi[ct] = (householdDay.Household.Income > 900000) ? 1 : 0;
 
@@ -909,7 +923,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 34, pt[p1, 6] * lc[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 35, pt[p1, 7] * lc[p1]);
 
-          //Income, 300-600.000
+          //Income, 450-650.000
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 36, pt[p1, 1] * li[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 37, pt[p1, 2] * li[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 38, pt[p1, 3] * li[p1]);
@@ -918,7 +932,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 41, pt[p1, 6] * li[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 42, pt[p1, 7] * li[p1]);
 
-          //Income, 600-900.000
+          //Income, 650-900.000
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 43, pt[p1, 1] * ui[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 44, pt[p1, 2] * ui[p1]);
           choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 45, pt[p1, 3] * ui[p1]);
@@ -1129,7 +1143,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                         choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 333, i2[5, 8, p1, p2, p3, p4, 0, currentBatch]);
                         choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 334, i2[6, 8, p1, p2, p3, p4, 0, currentBatch]);
                         choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 335, i2[7, 8, p1, p2, p3, p4, 0, currentBatch]);
-                        choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, p3, p4, 0, currentBatch]);
+                        choiceProbabilityCalculator.GetUtilityComponent(compNum).AddUtilityTerm(100 * purp + 336, i2[8, 8, p1, p2, p3, p4, 0, currentBatch]);   
                       }
 
                       //create the 3-way component with utility terms for cases where four people share a purpose

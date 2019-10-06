@@ -87,9 +87,28 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
+      
+      
+      //int votALSegment = household.GetVotALSegment();
+      //GV: 28.3.2019 - getting values from MB's memo
+      int votALSegment =
+        (household.Income <= 450000)
+                  ? Global.Settings.VotALSegments.Low
+                  : (household.Income <= 900000)
+                      ? Global.Settings.VotALSegments.Medium
+                      : Global.Settings.VotALSegments.High;
 
-      int votALSegment = household.GetVotALSegment();
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
+      //GV: 28.3.2019 - getting values from MB's memo
+      //OBS - it has to be in km
+      int transitAccessSegment =
+         residenceParcel.GetDistanceToTransit() >= 0 && residenceParcel.GetDistanceToTransit() <= 0.4
+            ? 0
+            : residenceParcel.GetDistanceToTransit() > 0.4 && residenceParcel.GetDistanceToTransit() <= 1.6
+                ? 1
+                : 2;
+                    
+
       double personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
                  [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
       double shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
@@ -109,14 +128,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 
       //GV: 25.feb. 2019 - self employed person
-      int SelfEmpFlag = (person.OccupationCode == 8).ToFlag();
-
+      int selfEmpFlag = (person.OccupationCode == 8).ToFlag();
+            
       //GV: 25.feb. 2019 - CPHcity
       bool hhLivesInCPHCity = false;
-      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+      //if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+      if (residenceParcel.LandUseCode == 101 || residenceParcel.LandUseCode == 147) {
         hhLivesInCPHCity = true;
       }
-
+                  
       int countNonMandatory = 0;
       int countMandatory = 0;
       int countWorkingAtHome = 0;
@@ -183,15 +203,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = Global.Settings.Purposes.NoneOrHome;
 
       //alternative.AddUtilityTerm(1, (personDay.TotalCreatedTours == 1).ToFlag());
-      alternative.AddUtilityTerm(2, (personDay.GetTotalCreatedTours() == 2).ToFlag());
-      alternative.AddUtilityTerm(3, (personDay.GetTotalCreatedTours() >= 3).ToFlag());
+      //alternative.AddUtilityTerm(2, (personDay.GetTotalCreatedTours() == 2).ToFlag());
+      alternative.AddUtilityTerm(2, (personDay.GetTotalCreatedTours() >= 2).ToFlag());
+
+      //alternative.AddUtilityTerm(3, (personDay.GetTotalCreatedTours() >= 3).ToFlag());
       //alternative.AddUtilityTerm(4, (personDay.TotalCreatedTours >= 4).ToFlag());
 
       //alternative.AddUtilityTerm(5, householdDay.PrimaryPriorityTimeFlag);
 
       //alternative.AddUtilityTerm(6, household.HasChildren.ToFlag());
 
-      alternative.AddUtilityTerm(4, household.HasChildren.ToFlag());
+      //alternative.AddUtilityTerm(4, household.HasChildren.ToFlag());
       //alternative.AddUtilityTerm(4, household.HasChildrenUnder5.ToFlag());
       //alternative.AddUtilityTerm(5, household.HasChildrenAge5Through15.ToFlag());
 
@@ -202,18 +224,28 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(8, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
 
       //alternative.AddUtilityTerm(10, (household.Income >= 300000 && household.Income < 600000).ToFlag());
-      //alternative.AddUtilityTerm(11, (household.Income >= 600000 && household.Income < 900000).ToFlag());
+      //alternative.AddUtilityTerm(11, (household.Income >= 600000 && household.Income < 900000).ToFlag()); 
       //alternative.AddUtilityTerm(12, (household.Income >= 900000).ToFlag());
 
       //GV: 27. feb. 2019 - not sign.
       //alternative.AddUtilityTerm(13, householdDay.PrimaryPriorityTimeFlag);
 
-      alternative.AddUtilityTerm(14, person.IsPartTimeWorker.ToFlag()); 
+      alternative.AddUtilityTerm(13, person.IsPartTimeWorker.ToFlag());
+      alternative.AddUtilityTerm(14, person.IsFulltimeWorker.ToFlag());
+      //JB: "Try personDay.WorksAtHomeFlag for the none_or_home alternative.Expect positive since they use up a chunk of their day working at home."
+      //GV: 11.4.2019 - "person.WorksAtHome.ToFlag()" works better
       alternative.AddUtilityTerm(15, person.WorksAtHome.ToFlag());
-
+      //alternative.AddUtilityTerm(15, personDay.WorksAtHomeFlag);
       //GV: 26. feb. 2019 
-      alternative.AddUtilityTerm(16, SelfEmpFlag);
+      alternative.AddUtilityTerm(16, selfEmpFlag);
 
+      //JB: "Consider testing Person Type dummies for the none_or_home altermative, especially for university students and for secondary students.  
+      //I would expect negative sign, expecting them to take more tours than others." 
+      alternative.AddUtilityTerm(17, person.IsUniversityStudent.ToFlag());
+      alternative.AddUtilityTerm(18, person.IsChildAge5Through15.ToFlag());
+      alternative.AddUtilityTerm(19, person.IsChildUnder5.ToFlag());
+      alternative.AddUtilityTerm(20, person.IsMale.ToFlag());
+                              
       //alternative.AddUtilityTerm(16, person.IsFulltimeWorker.ToFlag());
 
       //alternative.AddUtilityTerm(15, (person.Gender == 1).ToFlag());
@@ -242,6 +274,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = Global.Settings.Purposes.Escort;
 
       alternative.AddUtilityTerm(141, 1);
+      //GV: 11.4.2019 - it has to be negative
       alternative.AddUtilityTerm(142, (personDay.CreatedEscortTours > 1).ToFlag());
 
       //GV: 27. feb. 2019 - not sign.
@@ -270,7 +303,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = Global.Settings.Purposes.PersonalBusiness;
 
       alternative.AddUtilityTerm(21, 1);
-      //alternative.AddUtilityTerm(22, (personDay.CreatedPersonalBusinessTours > 1).ToFlag()); //GV: 30. april 2013 - goes to infinity
+      //GV: 11.4.2019 - wrong sign (it has to be negative)
+      //alternative.AddUtilityTerm(22, (personDay.CreatedPersonalBusinessTours > 1).ToFlag()); 
 
       alternative.AddUtilityTerm(156, compositeLogsum);
 
@@ -285,13 +319,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       alternative.AddUtilityTerm(41, 1);
 
-      //GV: 27. feb. 2019 - cannot be estimated 42 and 43
-      //alternative.AddUtilityTerm(42, household.HasChildrenUnder5.ToFlag());
-      //alternative.AddUtilityTerm(43, household.HasChildrenAge5Through15.ToFlag());
-
-      //alternative.AddUtilityTerm(42, (personDay.CreatedShoppingTours > 1).ToFlag()); //GV: cannot be estimated
-
-      //alternative.AddUtilityTerm(42, householdDay.PrimaryPriorityTimeFlag);
+      //GV: 11.4.2019 - wrong sign (it has to be negative)
+      //alternative.AddUtilityTerm(42, (personDay.CreatedShoppingTours > 1).ToFlag()); 
 
       //alternative.AddUtilityTerm(43, (household.Size == 3).ToFlag());
       //alternative.AddUtilityTerm(44, (household.Size == 4).ToFlag());
@@ -299,7 +328,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //alternative.AddUtilityTerm(46, (household.VehiclesAvailable == 0).ToFlag());
 
-      alternative.AddUtilityTerm(157, compositeLogsum); //GV wrong sign
+      //GV: 11.4.2019 - wrong sign
+      //alternative.AddUtilityTerm(157, compositeLogsum); //GV wrong sign
       //alternative.AddUtilityTerm(157, shoppingAggregateLogsum); //GV wrong sign
 
       //alternative.AddNestedAlternative(12, 1, 200);
@@ -321,10 +351,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = Global.Settings.Purposes.Social;
 
       alternative.AddUtilityTerm(81, 1);
-      alternative.AddUtilityTerm(82, (personDay.CreatedSocialTours > 1).ToFlag());
+      
+      //GV: 11.4.2019 - wring sign (it has to be negative)
+      //alternative.AddUtilityTerm(82, (personDay.CreatedSocialTours > 1).ToFlag()); 
 
       alternative.AddUtilityTerm(83, household.HasChildrenUnder5.ToFlag());
       alternative.AddUtilityTerm(84, household.HasChildrenAge5Through15.ToFlag());
+
+      //GV: 11.4.2019 - based on JBscomment
+      alternative.AddUtilityTerm(85, person.IsUniversityStudent.ToFlag());
+      alternative.AddUtilityTerm(86, person.IsChildAge5Through15.ToFlag()); 
 
       //alternative.AddUtilityTerm(82, householdDay.PrimaryPriorityTimeFlag);
 
