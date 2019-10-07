@@ -53,7 +53,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       }
 
       // to Belleuve Square from outside of Bel CBD
-      if (destinationParcel.ZoneId == 11 && origdist != 62)
+      if (destinationParcel.ZoneId == 10 && origdist != 62)
         alternative.AddUtilityTerm(125, 1);
     }
   }
