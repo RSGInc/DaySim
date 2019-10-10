@@ -53,6 +53,8 @@ namespace DaySim.ChoiceModels.Default.Models {
       }
 
       // to Belleuve Square from outside of Bel CBD
+      // even thoug the zoneid is clearly labeled, it is zero-based. that means if you want to reference a TAZ nunber, you need to use TAZ number - 1 in ZoneId.
+      // in this case, Bellevue Square is in TAZ 11. its ZoneId in destinationParcel is 10. 
       if (destinationParcel.ZoneId == 10 && origdist != 62)
         alternative.AddUtilityTerm(125, 1);
     }
