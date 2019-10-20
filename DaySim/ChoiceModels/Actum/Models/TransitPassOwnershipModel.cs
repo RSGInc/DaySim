@@ -57,7 +57,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //child commuter card
       } else if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel && person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount
         && !(person.UsualSchoolParcel == null)) {
-        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, homeParcel.NearestTerminalID, schoolParcel.NearestTerminalID);
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, Global.TransitStopAreaMapping[homeParcel.NearestTerminalID], Global.TransitStopAreaMapping[schoolParcel.NearestTerminalID]);
         passCategory = 5;
         fareZones = (int)Math.Round(skimValue.Variable);
         passPrice = Global.TransitMonthlyPrice_ChildCommuteCard[fareZones];
@@ -82,10 +82,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
        
       //adult commuter card
       } else if (!(person.UsualWorkParcel == null)) {
-          if (homeParcel.Id == 25908205) {
-          bool testbreak = true;
-        }
-        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, homeParcel.NearestTerminalID, workParcel.NearestTerminalID - 1);
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, Global.TransitStopAreaMapping[homeParcel.NearestTerminalID], Global.TransitStopAreaMapping[workParcel.NearestTerminalID]);
         passCategory = 6;
         fareZones = (int)Math.Round(skimValue.Variable);
         passPrice = Global.TransitMonthlyPrice_AdultCommuteCard[fareZones];
