@@ -36,6 +36,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       person.ResetRandom(3);
 
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
+      IActumParcelWrapper homeParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      IActumParcelWrapper schoolParcel = (IActumParcelWrapper)person.UsualSchoolParcel;
+      IActumParcelWrapper workParcel = (IActumParcelWrapper)person.UsualWorkParcel;
+
+
+
       // Determine passCategory, fareZones and passPrice 
       int passCategory = -1;
       int fareZones = -1;
@@ -50,7 +57,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //child commuter card
       } else if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel && person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount
         && !(person.UsualSchoolParcel == null)) {
-        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualSchoolParcel.ZoneId);
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, Global.TransitStopAreaMapping[homeParcel.NearestTerminalID], Global.TransitStopAreaMapping[schoolParcel.NearestTerminalID]);
         passCategory = 5;
         fareZones = (int)Math.Round(skimValue.Variable);
         passPrice = Global.TransitMonthlyPrice_ChildCommuteCard[fareZones];
@@ -75,7 +82,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
        
       //adult commuter card
       } else if (!(person.UsualWorkParcel == null)) {
-        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualWorkParcel.ZoneId);
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, Global.TransitStopAreaMapping[homeParcel.NearestTerminalID], Global.TransitStopAreaMapping[workParcel.NearestTerminalID]);
         passCategory = 6;
         fareZones = (int)Math.Round(skimValue.Variable);
         passPrice = Global.TransitMonthlyPrice_AdultCommuteCard[fareZones];

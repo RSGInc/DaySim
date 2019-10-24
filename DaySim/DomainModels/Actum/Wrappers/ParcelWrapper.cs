@@ -140,7 +140,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _parcel.CircuityRatio_SE2 = value;
     }
 
-    public int DistrictID2 {
+    public int NearestTerminalID {
       get => (int)_parcel.CircuityRatio_SE3;
       set => _parcel.CircuityRatio_SE3 = value;
     }
