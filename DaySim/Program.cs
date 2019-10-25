@@ -121,7 +121,7 @@ namespace DaySim {
                 Console.WriteLine();
                 Console.Error.WriteLine(message);
 
-                if (Environment.UserInteractive && !Console.IsInputRedirected) {
+                if (Environment.UserInteractive && !(Console.IsInputRedirected || Console.IsOutputRedirected)) {
                     Console.WriteLine();
                     Console.WriteLine("Please press any key to exit");
                     Console.ReadKey();
