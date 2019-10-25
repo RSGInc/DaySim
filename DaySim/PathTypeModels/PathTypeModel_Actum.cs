@@ -1065,7 +1065,8 @@ namespace DaySim.PathTypeModels {
           path.Time += skimValue.Variable;
         }
 
-        if (path.Time > pathTimeLimit) {
+        if (path.Time > pathTimeLimit || path.Time < Constants.EPSILON) {
+        //  if (path.Time > pathTimeLimit) {    //Replaced above line on 20191024 per MAB
           return path;
         }
 
