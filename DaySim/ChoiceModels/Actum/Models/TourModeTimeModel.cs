@@ -964,8 +964,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           if (gtVariable == 1) {
             alternative.AddUtilityTerm(201, workTourFlag * gentime);
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
-            alternative.AddUtilityTerm(201, educationTourFlag * gentime);
-            alternative.AddUtilityTerm(201, otherTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
            // alternative.AddUtilityTerm(214, Math.Log(Math.Max(gentime,1)));
           }
 
@@ -973,40 +973,40 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(200, 1.0);
             alternative.AddUtilityTerm(201, workTourFlag * gentime);
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
-            alternative.AddUtilityTerm(201, educationTourFlag * gentime);
-            alternative.AddUtilityTerm(201, otherTourFlag* gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag* gentime);
            // alternative.AddUtilityTerm(204, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 4) {
             alternative.AddUtilityTerm(201, workTourFlag * gentime);
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
-            alternative.AddUtilityTerm(201, educationTourFlag * gentime);
-            alternative.AddUtilityTerm(201, otherTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
            // alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 5) {
             alternative.AddUtilityTerm(201, workTourFlag * gentime);
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
-            alternative.AddUtilityTerm(201, educationTourFlag * gentime);
-            alternative.AddUtilityTerm(201, otherTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
            // alternative.AddUtilityTerm(244, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 6) {
-            alternative.AddUtilityTerm(202, weightfac * workTourFlag * gentime);
-            alternative.AddUtilityTerm(202, weightfac * businessTourFlag * gentime);
-            alternative.AddUtilityTerm(202, weightfac * educationTourFlag * gentime);
-            alternative.AddUtilityTerm(202, weightfac * otherTourFlag * gentime);
+            alternative.AddUtilityTerm(205, weightfac * workTourFlag * gentime);
+            alternative.AddUtilityTerm(206, weightfac * businessTourFlag * gentime);
+            alternative.AddUtilityTerm(207, weightfac * educationTourFlag * gentime);
+            alternative.AddUtilityTerm(208, weightfac * otherTourFlag * gentime);
            // alternative.AddUtilityTerm(254, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 7) {
-            alternative.AddUtilityTerm(203, weightfac * workTourFlag * gentime);
-            alternative.AddUtilityTerm(203, weightfac * businessTourFlag * gentime);
-            alternative.AddUtilityTerm(203, weightfac * educationTourFlag * gentime);
-            alternative.AddUtilityTerm(203, weightfac * otherTourFlag * gentime);
+            alternative.AddUtilityTerm(209, weightfac * workTourFlag * gentime);
+            alternative.AddUtilityTerm(210, weightfac * businessTourFlag * gentime);
+            alternative.AddUtilityTerm(211, weightfac * educationTourFlag * gentime);
+            alternative.AddUtilityTerm(212, weightfac * otherTourFlag * gentime);
            // alternative.AddUtilityTerm(264, Math.Log(Math.Max(gentime, 1)));
           }
 
