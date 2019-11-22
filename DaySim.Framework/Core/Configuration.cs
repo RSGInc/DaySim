@@ -415,6 +415,7 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double PathImpedance_PathChoiceScaleFactor { get; set; }
 
+    /*
     //new since 203
     [XmlAttribute]
     public int PathImpedance_UtilityForm_Auto { get; set; }
@@ -530,6 +531,8 @@ namespace DaySim.Framework.Core {
     //new since 203
     [XmlAttribute]
     public double Coefficients_Distance_HOVPassenger { get; set; }
+
+      */
 
     [XmlAttribute]
     public double PathImpedance_TransitInVehicleTimeWeight { get; set; }
@@ -855,6 +858,14 @@ namespace DaySim.Framework.Core {
     public double PathImpedance_TNCtoTransitAdditiveConstant_OtherTour_2pVehicleHH { get; set; }
 
 
+    [XmlAttribute]
+    public bool ShouldRunDestinationParkingLocationModel { get; set; }
+
+    [XmlAttribute]
+    public bool ShouldReadBaseScenarioDestinationParkingShadowPriceFile { get; set; }
+
+    [XmlAttribute]
+    public string BaseScenarioDestinationParkingShadowPriceFilePath { get; set; }
 
 
     [XmlAttribute]
@@ -911,7 +922,7 @@ namespace DaySim.Framework.Core {
 
 
     [XmlAttribute]
-    public bool HOVPassengersIncurCosts { get; set; }
+    public bool HOVPassengersIncurCosts { get; set; } = true;
 
 
 
@@ -1661,6 +1672,12 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public char MicrozoneToBikeOnBoardTerminalDelimiter { get; set; }
 
+    [XmlAttribute]
+    public string MicrozoneToDestinationParkingLocationsPath { get; set; }
+
+    [XmlAttribute]
+    public char MicrozoneToDestinationParingLocationsDelimiter { get; set; }
+
 
     [XmlAttribute]
     public char NodeStopAreaIndexDelimiter { get; set; }
@@ -1974,212 +1991,215 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool HDF5SkimScaledAndCondensed { get; set; } = false;
 
+    [XmlAttribute]
+    public bool LowerPrioritySetting { get; set; } = false;
 
     [XmlAttribute]
     public double COMPASS_BaseTimeCoefficientPerMinute { get; set; }
 
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Work { get; set; }
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Work { get; set; } = -0.0087;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Education { get; set; }
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Education { get; set; } = -0.0088;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Business { get; set; }
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Business { get; set; } = -0.0034;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Shop { get; set; }
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_Shop { get; set; } = -0.0116;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_HBOther { get; set; }
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_HBOther { get; set; } = -0.0102;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_NonHB { get; set; }
+    public double COMPASS_BaseCostCoefficientPerMonetaryUnit_NonHB { get; set; } = -0.0100;
 
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientIncomeLevel_Work { get; set; }
+    public double COMPASS_BaseCostCoefficientIncomeLevel_Work { get; set; } = 503110;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientIncomeLevel_Education { get; set; }
+    public double COMPASS_BaseCostCoefficientIncomeLevel_Education { get; set; } = 491240;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientIncomeLevel_Business { get; set; }
+    public double COMPASS_BaseCostCoefficientIncomeLevel_Business { get; set; } = 583900; 
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientIncomeLevel_Shop { get; set; }
+    public double COMPASS_BaseCostCoefficientIncomeLevel_Shop { get; set; } = 712950;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientIncomeLevel_HBOther { get; set; }
+    public double COMPASS_BaseCostCoefficientIncomeLevel_HBOther { get; set; } = 765900;
     [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientIncomeLevel_NonHB { get; set; }
+    public double COMPASS_BaseCostCoefficientIncomeLevel_NonHB { get; set; } = 805160;
 
     [XmlAttribute]
-    public double COMPASS_CostCoefficientIncomeMultipleMinimum { get; set; }
+    public double COMPASS_CostCoefficientIncomeMultipleMinimum { get; set; } = 0.10;
     [XmlAttribute]
-    public double COMPASS_CostCoefficientIncomeMultipleMaximum { get; set; }
+    public double COMPASS_CostCoefficientIncomeMultipleMaximum { get; set; } = 10.0;
 
     [XmlAttribute]
-    public double COMPASS_CostCoefficientIncomeElasticity_Commute { get; set; }
+    public double COMPASS_CostCoefficientIncomeElasticity_Commute { get; set; } = -0.116;
     [XmlAttribute]
-    public double COMPASS_CostCoefficientIncomeElasticity_Business { get; set; }
+    public double COMPASS_CostCoefficientIncomeElasticity_Business { get; set; } = -0.088;
     [XmlAttribute]
-    public double COMPASS_CostCoefficientIncomeElasticity_Leisure { get; set; }
-
-
-    [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientDistanceLevel_Work { get; set; }
-    [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientDistanceLevel_Education { get; set; }
-    [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientDistanceLevel_Business { get; set; }
-    [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientDistanceLevel_Shop { get; set; }
-    [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientDistanceLevel_HBOther { get; set; }
-    [XmlAttribute]
-    public double COMPASS_BaseCostCoefficientDistanceLevel_NonHB { get; set; }
-
-    [XmlAttribute]
-    public double COMPASS_CostCoefficientDistanceMultipleMinimum { get; set; }
-    [XmlAttribute]
-    public double COMPASS_CostCoefficientDistanceMultipleMaximum { get; set; }
-
-    [XmlAttribute]
-    public double COMPASS_CostCoefficientDistanceElasticity_Commute { get; set; }
-    [XmlAttribute]
-    public double COMPASS_CostCoefficientDistanceElasticity_Business { get; set; }
-    [XmlAttribute]
-    public double COMPASS_CostCoefficientDistanceElasticity_Leisure { get; set; }
-
-    [XmlAttribute]
-    public double COMPASS_HOVFraction2Occupants_Commute { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVFraction3Occupants_Commute { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVFraction4Occupants_Commute { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVFraction2Occupants_Business { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVFraction3Occupants_Business { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVFraction4Occupants_Business { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVFraction2Occupants_Leisure { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVFraction3Occupants_Leisure { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVFraction4Occupants_Leisure { get; set; }
+    public double COMPASS_CostCoefficientIncomeElasticity_Leisure { get; set; } = -0.205;
 
 
     [XmlAttribute]
-    public double COMPASS_HOVCostShare2Occupants_Commute { get; set; }
+    public double COMPASS_BaseCostCoefficientDistanceLevel_Work { get; set; } = 19.47; 
     [XmlAttribute]
-    public double COMPASS_HOVCostShare3Occupants_Commute { get; set; }
+    public double COMPASS_BaseCostCoefficientDistanceLevel_Education { get; set; } = 19.31;
     [XmlAttribute]
-    public double COMPASS_HOVCostShare4Occupants_Commute { get; set; }
+    public double COMPASS_BaseCostCoefficientDistanceLevel_Business { get; set; } = 27.48; 
     [XmlAttribute]
-    public double COMPASS_HOVCostShare5PlusOccupants_Commute { get; set; }
+    public double COMPASS_BaseCostCoefficientDistanceLevel_Shop { get; set; } = 5.52; 
     [XmlAttribute]
-    public double COMPASS_HOVCostShare2Occupants_Business { get; set; }
+    public double COMPASS_BaseCostCoefficientDistanceLevel_HBOther { get; set; } = 12.59;
     [XmlAttribute]
-    public double COMPASS_HOVCostShare3Occupants_Business { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVCostShare4Occupants_Business { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVCostShare5PlusOccupants_Business { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVCostShare2Occupants_Leisure { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVCostShare3Occupants_Leisure { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVCostShare4Occupants_Leisure { get; set; }
-    [XmlAttribute]
-    public double COMPASS_HOVCostShare5PlusOccupants_Leisure { get; set; }
+    public double COMPASS_BaseCostCoefficientDistanceLevel_NonHB { get; set; } = 11.43;
 
     [XmlAttribute]
-    public double COMPASS_IntrazonalStraightLineDistanceFactor { get; set; }
+    public double COMPASS_CostCoefficientDistanceMultipleMinimum { get; set; } = 0.10;
     [XmlAttribute]
-    public double COMPASS_IntrazonalMinutesPerKM_Walk { get; set; }
+    public double COMPASS_CostCoefficientDistanceMultipleMaximum { get; set; } = 10.0;
+
     [XmlAttribute]
-    public double COMPASS_IntrazonalMinutesExtra_Walk { get; set; }
+    public double COMPASS_CostCoefficientDistanceElasticity_Commute { get; set; } = -0.157;
     [XmlAttribute]
-    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_Walk { get; set; }
+    public double COMPASS_CostCoefficientDistanceElasticity_Business { get; set; } = -0.305;
     [XmlAttribute]
-    public double COMPASS_IntrazonalGeneralizedMinutesExtra_Walk { get; set; }
+    public double COMPASS_CostCoefficientDistanceElasticity_Leisure { get; set; } = -0.133;
+
     [XmlAttribute]
-    public double COMPASS_IntrazonalMinutesPerKM_Bike { get; set; }
+    public double COMPASS_HOVFraction2Occupants_Commute { get; set; } = 0.74;
     [XmlAttribute]
-    public double COMPASS_IntrazonalMinutesExtra_Bike { get; set; }
+    public double COMPASS_HOVFraction3Occupants_Commute { get; set; } = 0.21;
     [XmlAttribute]
-    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_Bike { get; set; }
+    public double COMPASS_HOVFraction4Occupants_Commute { get; set; } = 0.04; 
     [XmlAttribute]
-    public double COMPASS_IntrazonalGeneralizedMinutesExtra_Bike { get; set; }
+    public double COMPASS_HOVFraction2Occupants_Business { get; set; } = 0.44;
     [XmlAttribute]
-    public double COMPASS_IntrazonalMinutesPerKM_SOV { get; set; }
+    public double COMPASS_HOVFraction3Occupants_Business { get; set; } = 0.53;
     [XmlAttribute]
-    public double COMPASS_IntrazonalMinutesExtra_SOV { get; set; }
+    public double COMPASS_HOVFraction4Occupants_Business { get; set; } = 0.02;
     [XmlAttribute]
-    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV { get; set; }
+    public double COMPASS_HOVFraction2Occupants_Leisure { get; set; } = 0.69;
     [XmlAttribute]
-    public double COMPASS_IntrazonalGeneralizedMinutesExtra_SOV { get; set; }
+    public double COMPASS_HOVFraction3Occupants_Leisure { get; set; } = 0.17;
     [XmlAttribute]
-    public double COMPASS_IntrazonalMinutesPerKM_HOV { get; set; }
-    [XmlAttribute]
-    public double COMPASS_IntrazonalMinutesExtra_HOV { get; set; }
-    [XmlAttribute]
-    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV { get; set; }
-    [XmlAttribute]
-    public double COMPASS_IntrazonalGeneralizedMinutesExtra_HOV { get; set; }
+    public double COMPASS_HOVFraction4Occupants_Leisure { get; set; } = 0.11;
 
 
     [XmlAttribute]
-    public int COMPASS_MaximumTransitPathFareZones { get; set; }
+    public double COMPASS_HOVCostShare2Occupants_Commute { get; set; } = 0.616;
     [XmlAttribute]
-    public int COMPASS_TransitFareAMPeakPeriodStartMinute { get; set; }
+    public double COMPASS_HOVCostShare3Occupants_Commute { get; set; } = 0.463;
     [XmlAttribute]
-    public int COMPASS_TransitFareAMPeakPeriodEndMinute { get; set; }
+    public double COMPASS_HOVCostShare4Occupants_Commute { get; set; } = 0.379;
     [XmlAttribute]
-    public int COMPASS_TransitFarePMPeakPeriodStartMinute { get; set; }
+    public double COMPASS_HOVCostShare5PlusOccupants_Commute { get; set; } = 0.320;
     [XmlAttribute]
-    public int COMPASS_TransitFarePMPeakPeriodEndMinute { get; set; }
+    public double COMPASS_HOVCostShare2Occupants_Business { get; set; } = 0.616;
     [XmlAttribute]
-    public int COMPASS_TransitFareMaximumAgeForChildDiscount { get; set; }
+    public double COMPASS_HOVCostShare3Occupants_Business { get; set; } = 0.463;
     [XmlAttribute]
-    public int COMPASS_TransitFareMaximumAgeForFreeTravel { get; set; }
+    public double COMPASS_HOVCostShare4Occupants_Business { get; set; } = 0.379;
     [XmlAttribute]
-    public int COMPASS_TransitFareMaximumAgeForYouthNonStudentCard { get; set; }
+    public double COMPASS_HOVCostShare5PlusOccupants_Business { get; set; } = 0.320;
     [XmlAttribute]
-    public int COMPASS_TransitFareMinimumAgeForSeniorCard { get; set; }
+    public double COMPASS_HOVCostShare2Occupants_Leisure { get; set; } = 0.707;
     [XmlAttribute]
-    public int COMPASS_TransitFareDefaultNumberOfZonesForCommuterCard { get; set; }
+    public double COMPASS_HOVCostShare3Occupants_Leisure { get; set; } = 0.577;
     [XmlAttribute]
-    public int COMPASS_TransitFareDefaultNumberOfZonesForSeniorCard { get; set; }
+    public double COMPASS_HOVCostShare4Occupants_Leisure { get; set; } = 0.500;
     [XmlAttribute]
-    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardUniversity { get; set; }
-    [XmlAttribute]
-    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardGymnasium { get; set; }
-    [XmlAttribute]
-    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardNonStudent { get; set; }
+    public double COMPASS_HOVCostShare5PlusOccupants_Leisure { get; set; } = 0.434;
 
     [XmlAttribute]
-    public int COMPASS_MinimumAutoDrivingAge { get; set; }
+    public double COMPASS_IntrazonalStraightLineDistanceFactor { get; set; } = 1.25;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesPerKM_Walk { get; set; } = 12.0;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesExtra_Walk { get; set; } = 1.0;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_Walk { get; set; } = 1.297;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesExtra_Walk { get; set; } = 44.5;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesPerKM_Bike { get; set; } = 3.73;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesExtra_Bike { get; set; } = 1.72;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_Bike { get; set; } = 2.143; 
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesExtra_Bike { get; set; } = 31.1;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesPerKM_SOV { get; set; } = 1.545;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesExtra_SOV { get; set; } = 0.90;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV { get; set; } = 3.371;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesExtra_SOV { get; set; } = 29.3;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesPerKM_HOV { get; set; } = 1.530;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalMinutesExtra_HOV { get; set; } = 0.94;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV { get; set; } = 3.131;
+    [XmlAttribute]
+    public double COMPASS_IntrazonalGeneralizedMinutesExtra_HOV { get; set; } = 28.8;
 
 
     [XmlAttribute]
-    public int COMPASS_MaximumTerminalsToSearchWalk { get; set; }
+    public int COMPASS_MaximumTransitPathFareZones { get; set; } = 16;
     [XmlAttribute]
-    public int COMPASS_MaximumTerminalsToSearchBikeOnTransit { get; set; }
+    public int COMPASS_TransitFareAMPeakPeriodStartMinute { get; set; } = 420;
     [XmlAttribute]
-    public int COMPASS_MaximumTerminalsToSearchAutoKissAndRide { get; set; }
+    public int COMPASS_TransitFareAMPeakPeriodEndMinute { get; set; } = 660; 
     [XmlAttribute]
-    public int COMPASS_MaximumParkingNodesToSearchBikeParkAndRide { get; set; }
+    public int COMPASS_TransitFarePMPeakPeriodStartMinute { get; set; } = 780;
     [XmlAttribute]
-    public int COMPASS_MaximumParkingNodesToSearchAutoParkAndRide { get; set; }
+    public int COMPASS_TransitFarePMPeakPeriodEndMinute { get; set; } = 1080;
     [XmlAttribute]
-    public double COMPASS_MaximumParcelToTerminalDistanceWalk { get; set; }
+    public int COMPASS_TransitFareMaximumAgeForChildDiscount { get; set; } = 15;
+
     [XmlAttribute]
-    public double COMPASS_MaximumParcelToParkingNodeDistanceBike { get; set; }
+    public int COMPASS_TransitFareMaximumAgeForFreeTravel { get; set; } = 11; 
     [XmlAttribute]
-    public double COMPASS_MaximumParcelToParkingNodeDistanceParkAndRide { get; set; }
+    public int COMPASS_TransitFareMaximumAgeForYouthNonStudentCard { get; set; } = 16;
     [XmlAttribute]
-    public double COMPASS_MaximumParcelToTerminalDistanceKissAndRide { get; set; }
+    public int COMPASS_TransitFareMinimumAgeForSeniorCard { get; set; } = 65;
     [XmlAttribute]
-    public double COMPASS_MaximumRatioDriveToParkAndRideVersusDriveToDestination { get; set; }
+    public int COMPASS_TransitFareDefaultNumberOfZonesForCommuterCard { get; set; } = 3;
     [XmlAttribute]
-    public double COMPASS_MaximumRatioDriveToKissAndRideVersusDriveToDestination { get; set; }
+    public int COMPASS_TransitFareDefaultNumberOfZonesForSeniorCard { get; set; } = 3;
     [XmlAttribute]
-    public double COMPASS_MaximumRatioBikeToParkAndRideVersusDriveToDestination { get; set; }
+    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardUniversity { get; set; } = 16;
+    [XmlAttribute]
+    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardGymnasium { get; set; } = 16;
+    [XmlAttribute]
+    public int COMPASS_TransitFareDefaultNumberOfZonesForYouthCardNonStudent { get; set; } = 14;
+
+    [XmlAttribute]
+    public int COMPASS_MinimumAutoDrivingAge { get; set; } = 18;
+
+
+    [XmlAttribute]
+    public int COMPASS_MaximumTerminalsToSearchWalk { get; set; } = 10;
+    [XmlAttribute]
+    public int COMPASS_MaximumTerminalsToSearchBikeOnTransit { get; set; } = 10;
+    [XmlAttribute]
+    public int COMPASS_MaximumTerminalsToSearchAutoKissAndRide { get; set; } = 10;
+    [XmlAttribute]
+    public int COMPASS_MaximumParkingNodesToSearchBikeParkAndRide { get; set; } = 10;
+    [XmlAttribute]
+    public int COMPASS_MaximumParkingNodesToSearchAutoParkAndRide { get; set; } = 20;
+    [XmlAttribute]
+    public double COMPASS_MaximumParcelToTerminalDistanceWalk { get; set; } = 2;
+    [XmlAttribute]
+    public double COMPASS_MaximumParcelToParkingNodeDistanceBike { get; set; } = 15;
+    [XmlAttribute]
+    public double COMPASS_MaximumParcelToParkingNodeDistanceParkAndRide { get; set; } = 25;
+    [XmlAttribute]
+    public double COMPASS_MaximumParcelToTerminalDistanceKissAndRide { get; set; } = 15;
+    [XmlAttribute]
+    public double COMPASS_MaximumRatioDriveToParkAndRideVersusDriveToDestination { get; set; } = 1.0;
+    [XmlAttribute]
+    public double COMPASS_MaximumRatioDriveToKissAndRideVersusDriveToDestination { get; set; } = 1.0;
+    [XmlAttribute]
+    public double COMPASS_MaximumRatioBikeToParkAndRideVersusDriveToDestination { get; set; } = 1.0;
 
     [XmlAttribute]
     public double COMPASS_IncomeToNetIncomeMultiplier { get; set; } = 0.5;
@@ -2192,8 +2212,26 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double COMPASS_AnnualCostToUseCoefficient { get; set; } = -0.001;
 
+    [XmlAttribute]
+    public double COMPASS_DestinationParkingLogCapacityCoefficient { get; set; }
+    [XmlAttribute]
+    public double COMPASS_DestinationParkingDriveAccessTimeCoefficient { get; set; }
+    [XmlAttribute]
+    public double COMPASS_DestinationParkingWalkEgressTimeCoefficient { get; set; }
+    [XmlAttribute]
+    public double COMPASS_DestinationParkingRandomTermCoefficient { get; set; }
+    [XmlAttribute]
+    public double COMPASS_DestinationParkingOffStreetGarageTypeConstant { get; set; }
+    [XmlAttribute]
+    public double COMPASS_DestinationParkingOffStreetLotTypeConstant { get; set; }
+    [XmlAttribute]
+    public double COMPASS_DestinationParkingOffStreetPrivateTypeConstant { get; set; }
 
-
+    [XmlAttribute]
+    public double COMPASS_FractionOfBikeTripsUsingEBikes { get; set; } = 0.01;
+    [XmlAttribute]
+    public double COMPASS_BikeAverageTravelTimeReductionFactorForEBikes { get; set; } = 0.15;
+    
 
 
 
