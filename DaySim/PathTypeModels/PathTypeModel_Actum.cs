@@ -1109,14 +1109,24 @@ namespace DaySim.PathTypeModels {
           path.GenTime = zoneFactor * path.GenTime + (1.0 - zoneFactor) * mzGenTime;
         }
 
-        /* a fix for intra-parcels, which happen once in a great while for school
-        if (!useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
-          //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
-          && Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone) {
-          path.Time = 1.0;
-          path.Distance = 0.01 * Global.Settings.DistanceUnitsPerMile;  // JLBscale.  multiplied by distance units per mile
-        }*/
+
+  /* a fix for intra-parcels, which happen once in a great while for school
+  if (!useZones && _originParcel.Id == _destinationParcel.Id && skimMode == Global.Settings.Modes.Walk
+    //JLB 20130628 added destination scale condition because ImpedanceRoster assigns time and cost values for intrazonals 
+    && Global.Configuration.DestinationScale != Global.Settings.DestinationScales.Zone) {
+    path.Time = 1.0;
+    path.Distance = 0.01 * Global.Settings.DistanceUnitsPerMile;  // JLBscale.  multiplied by distance units per mile
+  }*/
       }
+
+      // new code for e-bikes
+      if (skimMode == Global.Settings.Modes.Bike) {
+        double eBikeFactor = 1.0 - (Global.Configuration.COMPASS_FractionOfBikeTripsUsingEBikes - 0.01)
+           * Global.Configuration.COMPASS_BikeAverageTravelTimeReductionFactorForEBikes;
+        path.Time = path.Time * eBikeFactor;
+        path.GenTime = path.GenTime * eBikeFactor;
+      }
+
       path.Utility = path.GenTime * _tourTimeCoefficient;
 
       path.Available = true;
