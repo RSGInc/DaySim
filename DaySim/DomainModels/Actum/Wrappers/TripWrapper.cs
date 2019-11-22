@@ -61,6 +61,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _trip.AutoOccupancy = value;
     }
 
+    public int CompositeMode {
+      get => _trip.CompositeMode;
+      set => _trip.CompositeMode = value;
+    }
+
     public int AccessMode {
       get => _trip.AccessMode;
       set => _trip.AccessMode = value;
@@ -86,9 +91,19 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _trip.AccessDistance = value;
     }
 
-    public int AccessStopArea {
-      get => _trip.AccessStopArea;
-      set => _trip.AccessStopArea = value;
+    public int AccessTerminalID {
+      get => _trip.AccessTerminalID;
+      set => _trip.AccessTerminalID = value;
+    }
+
+    public int AccessTerminalParcelID {
+      get => _trip.AccessTerminalParcelID;
+      set => _trip.AccessTerminalParcelID = value;
+    }
+
+    public int AccessTerminalZoneID {
+      get => _trip.AccessTerminalZoneID;
+      set => _trip.AccessTerminalZoneID = value;
     }
 
     public int EgressMode {
@@ -116,9 +131,19 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _trip.EgressDistance = value;
     }
 
-    public int EgressStopArea {
-      get => _trip.EgressStopArea;
-      set => _trip.EgressStopArea = value;
+    public int EgressTerminalID {
+      get => _trip.EgressTerminalID;
+      set => _trip.EgressTerminalID = value;
+    }
+
+    public int EgressTerminalParcelID {
+      get => _trip.EgressTerminalParcelID;
+      set => _trip.EgressTerminalParcelID = value;
+    }
+
+    public int EgressTerminalZoneID {
+      get => _trip.EgressTerminalZoneID;
+      set => _trip.EgressTerminalZoneID = value;
     }
 
 
@@ -211,24 +236,24 @@ namespace DaySim.DomainModels.Actum.Wrappers {
             AccessCost = time.DestinationAccessCost;
             AccessDistance = time.DestinationAccessDistance;
             AccessMode = time.DestinationAccessMode;
-            AccessStopArea = time.ParkAndRideDestinationStopAreaKey;
+            AccessTerminalID = time.ParkAndRideDestinationStopAreaKey;
             AccessTime = time.DestinationAccessTime;
             EgressCost = time.OriginAccessCost;
             EgressDistance = time.OriginAccessDistance;
             EgressMode = time.OriginAccessMode;
-            EgressStopArea = time.ParkAndRideOriginStopAreaKey;
+            EgressTerminalID = time.ParkAndRideOriginStopAreaKey;
             EgressTime = time.OriginAccessTime;
 
           } else {
             AccessCost = time.OriginAccessCost;
             AccessDistance = time.OriginAccessDistance;
             AccessMode = time.OriginAccessMode;
-            AccessStopArea = time.ParkAndRideOriginStopAreaKey;
+            AccessTerminalID = time.ParkAndRideOriginStopAreaKey;
             AccessTime = time.OriginAccessTime;
             EgressCost = time.DestinationAccessCost;
             EgressDistance = time.DestinationAccessDistance;
             EgressMode = time.DestinationAccessMode;
-            EgressStopArea = time.ParkAndRideDestinationStopAreaKey;
+            EgressTerminalID = time.ParkAndRideDestinationStopAreaKey;
             EgressTime = time.DestinationAccessTime;
           }
         }
@@ -426,13 +451,13 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           AccessDistance = Tour.HalfTour1AccessDistance;
           AccessMode = Tour.HalfTour1AccessMode;
           AccessPathType = Tour.HalfTour1AccessPathType;
-          AccessStopArea = Tour.HalfTour1AccessStopAreaKey;
+          AccessTerminalID = Tour.HalfTour1AccessStopAreaKey;
           AccessTime = Tour.HalfTour1AccessTime;
           EgressCost = Tour.HalfTour1EgressCost;
           EgressDistance = Tour.HalfTour1EgressDistance;
           EgressMode = Tour.HalfTour1EgressMode;
           EgressPathType = Tour.HalfTour1EgressPathType;
-          EgressStopArea = Tour.HalfTour1EgressStopAreaKey;
+          EgressTerminalID = Tour.HalfTour1EgressStopAreaKey;
           EgressTime = Tour.HalfTour1EgressTime;
 
         } else {
@@ -440,13 +465,13 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           AccessDistance = Tour.HalfTour2AccessDistance;
           AccessMode = Tour.HalfTour2AccessMode;
           AccessPathType = Tour.HalfTour2AccessPathType;
-          AccessStopArea = Tour.HalfTour2AccessStopAreaKey;
+          AccessTerminalID = Tour.HalfTour2AccessStopAreaKey;
           AccessTime = Tour.HalfTour2AccessTime;
           EgressCost = Tour.HalfTour2EgressCost;
           EgressDistance = Tour.HalfTour2EgressDistance;
           EgressMode = Tour.HalfTour2EgressMode;
           EgressPathType = Tour.HalfTour2EgressPathType;
-          EgressStopArea = Tour.HalfTour2EgressStopAreaKey;
+          EgressTerminalID = Tour.HalfTour2EgressStopAreaKey;
           EgressTime = Tour.HalfTour2EgressTime;
         }
 

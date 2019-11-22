@@ -15,7 +15,10 @@ namespace DaySim.DomainModels.Actum.Models {
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
   public sealed class Trip : DomainModels.Default.Models.Trip, IActumTrip {
 
-    [ColumnName("acmode")]
+    [ColumnName("compmode")]
+    public int CompositeMode { get; set; }
+
+    [ColumnName("accmode")]
     public int AccessMode { get; set; }
 
     [ColumnName("acpathtp")]
@@ -30,8 +33,14 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("acdist")]
     public double AccessDistance { get; set; }
 
-    [ColumnName("acstopar")]
-    public int AccessStopArea { get; set; }
+    [ColumnName("actermid")]
+    public int AccessTerminalID { get; set; }
+
+    [ColumnName("actermpcl")]
+    public int AccessTerminalParcelID { get; set; }
+
+    [ColumnName("actermtaz")]
+    public int AccessTerminalZoneID { get; set; }
 
     [ColumnName("egmode")]
     public int EgressMode { get; set; }
@@ -48,8 +57,14 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("egdist")]
     public double EgressDistance { get; set; }
 
-    [ColumnName("egstopar")]
-    public int EgressStopArea { get; set; }
+    [ColumnName("egtermid")]
+    public int EgressTerminalID { get; set; }
+
+    [ColumnName("egctermpcl")]
+    public int EgressTerminalParcelID { get; set; }
+
+    [ColumnName("egtermtaz")]
+    public int EgressTerminalZoneID { get; set; }
 
     [ColumnName("autotype")]
     public int AutoType { get; set; }

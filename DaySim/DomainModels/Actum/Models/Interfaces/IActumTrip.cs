@@ -11,6 +11,8 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumTrip : ITrip {
     //JLB20160323
 
+    int CompositeMode { get; set; }
+
     int AccessMode { get; set; }
 
     int AccessPathType { get; set; }
@@ -21,7 +23,11 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
 
     double AccessDistance { get; set; }
 
-    int AccessStopArea { get; set; }
+    int AccessTerminalID { get; set; }
+
+    int AccessTerminalParcelID { get; set; }
+
+    int AccessTerminalZoneID { get; set; }
 
     int EgressMode { get; set; }
 
@@ -33,7 +39,11 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
 
     double EgressDistance { get; set; }
 
-    int EgressStopArea { get; set; }
+    int EgressTerminalID { get; set; }
+
+    int EgressTerminalParcelID { get; set; }
+
+    int EgressTerminalZoneID { get; set; }
 
     int AutoType { get; set; }
 
