@@ -129,9 +129,13 @@ namespace DaySim.PathTypeModels {
     public virtual double PathDestinationParkingCost { get; protected set; }
     public virtual double PathDestinationParkingWalkTime { get; protected set; }
 
+    public virtual int PathParkAndRideEgressNodeId { get; protected set; }
     public virtual int PathOriginStopAreaKey { get; protected set; }
-
+    public virtual int PathOriginStopAreaParcelID { get; protected set; }
+    public virtual int PathOriginStopAreaZoneID { get; protected set; }
     public virtual int PathDestinationStopAreaKey { get; protected set; }
+    public virtual int PathDestinationStopAreaParcelID { get; protected set; }
+    public virtual int PathDestinationStopAreaZoneID { get; protected set; }
 
     public virtual double PathParkAndRideTransitTime { get; protected set; }
     public virtual double PathParkAndRideTransitDistance { get; protected set; }

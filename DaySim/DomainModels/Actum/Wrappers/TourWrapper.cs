@@ -77,6 +77,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     public int HalfTour1AccessStopAreaKey { get; set; }
 
+    public int HalfTour1AccessStopAreaParcelID { get; set; }
+
+    public int HalfTour1AccessStopAreaZoneID { get; set; }
+
+    public int HalfTour1AccessParkingNodeID { get; set; }
+    
     public int HalfTour1EgressMode { get; set; }
 
     public int HalfTour1EgressPathType { get; set; }
@@ -88,6 +94,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     public double HalfTour1EgressDistance { get; set; }
 
     public int HalfTour1EgressStopAreaKey { get; set; }
+
+    public int HalfTour1EgressStopAreaParcelID { get; set; }
+
+    public int HalfTour1EgressStopAreaZoneID { get; set; }
+
+    public int HalfTour1EgressParkingNodeID { get; set; }
 
     public int HalfTour2AccessMode { get; set; }
 
@@ -101,6 +113,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     public int HalfTour2AccessStopAreaKey { get; set; }
 
+    public int HalfTour2AccessStopAreaParcelID { get; set; }
+
+    public int HalfTour2AccessStopAreaZoneID { get; set; }
+
+    public int HalfTour2AccessParkingNodeID { get; set; }
+
     public int HalfTour2EgressMode { get; set; }
 
     public int HalfTour2EgressPathType { get; set; }
@@ -112,6 +130,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     public double HalfTour2EgressDistance { get; set; }
 
     public int HalfTour2EgressStopAreaKey { get; set; }
+
+    public int HalfTour2EgressStopAreaParcelID { get; set; }
+
+    public int HalfTour2EgressStopAreaZoneID { get; set; }
+
+    public int HalfTour2EgressParkingNodeID { get; set; }
 
     public double HalfTour1TravelTime { get; set; }
 

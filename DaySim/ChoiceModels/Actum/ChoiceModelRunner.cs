@@ -3604,6 +3604,8 @@ namespace DaySim.ChoiceModels.Actum {
 
       if (Global.Configuration.ShouldRunTripModeModel) {
         // sets the trip's mode of travel to the destination
+        trip.CompositeMode = tour.Mode;
+
         if (trip.DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
           // trips to change mode destination are always by transit
 
@@ -3670,12 +3672,11 @@ namespace DaySim.ChoiceModels.Actum {
           }
           if (trip.PersonDay.IsValid) {
             if (!forTourTimesOnly) {
-              if (trip.Mode == Global.Settings.Modes.Walk || trip.Mode == Global.Settings.Modes.Bike) {
-              }
+              //if (trip.Mode == Global.Settings.Modes.Walk || trip.Mode == Global.Settings.Modes.Bike) {
+              //}
               // 201603 JLB
-              if (tour.Mode == Global.Settings.Modes.BikeOnTransit || tour.Mode == Global.Settings.Modes.BikeParkRideBike
-                                || tour.Mode == Global.Settings.Modes.BikeParkRideWalk || tour.Mode == Global.Settings.Modes.WalkRideBike) {
-                trip.HPTBikeTourUpdateTripValues();
+              if (trip.CompositeMode > Global.Settings.Modes.WalkRideWalk) {
+                trip.HPTBikeDriveTransitTourUpdateTripValues();
               } else {
                 trip.HUpdateTripValues();
               }

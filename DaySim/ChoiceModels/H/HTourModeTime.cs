@@ -54,7 +54,19 @@ namespace DaySim.ChoiceModels.H {
 
     public int ParkAndRideOriginStopAreaKey { get; private set; }
 
+    public int ParkAndRideOriginStopAreaParcelID { get; private set; }
+
+    public int ParkAndRideOriginStopAreaZoneID { get; private set; }
+
+    public int ParkAndRideOriginParkingNodeID { get; private set; }
+    
     public int ParkAndRideDestinationStopAreaKey { get; private set; }
+
+    public int ParkAndRideDestinationStopAreaParcelID { get; private set; }
+
+    public int ParkAndRideDestinationStopAreaZoneID { get; private set; }
+
+    public int ParkAndRideDestinationParkingNodeID { get; private set; }
 
     public IMinuteSpan LongestFeasibleWindow { get; private set; }
 
@@ -271,7 +283,13 @@ namespace DaySim.ChoiceModels.H {
             modeTimes.TravelTimeFromDestination = pathTypeModel.PathTime / 2.0;
             modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
             modeTimes.ParkAndRideOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
+            modeTimes.ParkAndRideOriginStopAreaParcelID = pathTypeModel.PathOriginStopAreaParcelID;
+            modeTimes.ParkAndRideOriginStopAreaZoneID = pathTypeModel.PathOriginStopAreaZoneID;
+            modeTimes.ParkAndRideOriginParkingNodeID = pathTypeModel.PathParkAndRideNodeId;
             modeTimes.ParkAndRideDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
+            modeTimes.ParkAndRideDestinationStopAreaParcelID = pathTypeModel.PathDestinationStopAreaParcelID;
+            modeTimes.ParkAndRideDestinationStopAreaZoneID = pathTypeModel.PathDestinationStopAreaZoneID;
+            modeTimes.ParkAndRideDestinationParkingNodeID = pathTypeModel.PathParkAndRideEgressNodeId;
             modeTimes.TransitTime = pathTypeModel.PathTransitTime / 2.0;
             modeTimes.TransitDistance = pathTypeModel.PathTransitDistance / 2.0;
             modeTimes.TransitCost = pathTypeModel.PathTransitCost / 2.0;

@@ -25,6 +25,7 @@ namespace DaySim.PathTypeModels {
 
 
     int PathParkAndRideNodeId { get; }
+    int PathParkAndRideEgressNodeId { get; }
 
     double PathParkAndRideTransitTime { get; }
     double PathParkAndRideTransitDistance { get; }
@@ -38,7 +39,11 @@ namespace DaySim.PathTypeModels {
     double PathTransitGeneralizedTime { get; }
 
     int PathOriginStopAreaKey { get; }
+    int PathOriginStopAreaParcelID { get; }
+    int PathOriginStopAreaZoneID { get; }
     int PathDestinationStopAreaKey { get; }
+    int PathDestinationStopAreaParcelID { get; }
+    int PathDestinationStopAreaZoneID { get; }
     double PathWalkTime { get; }
     double PathWalkDistance { get; }
     double PathBikeTime { get; }

@@ -29,6 +29,8 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
 
     int AccessTerminalZoneID { get; set; }
 
+    int AccessParkingNodeID { get; set; }
+
     int EgressMode { get; set; }
 
     int EgressPathType { get; set; }
@@ -44,6 +46,8 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
     int EgressTerminalParcelID { get; set; }
 
     int EgressTerminalZoneID { get; set; }
+
+    int EgressParkingNodeID { get; set; }
 
     int AutoType { get; set; }
 

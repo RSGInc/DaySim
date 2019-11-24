@@ -42,6 +42,9 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("actermtaz")]
     public int AccessTerminalZoneID { get; set; }
 
+    [ColumnName("acparknode")]
+    public int AccessParkingNodeID { get; set; }
+
     [ColumnName("egmode")]
     public int EgressMode { get; set; }
 
@@ -65,6 +68,9 @@ namespace DaySim.DomainModels.Actum.Models {
 
     [ColumnName("egtermtaz")]
     public int EgressTerminalZoneID { get; set; }
+
+    [ColumnName("egparknode")]
+    public int EgressParkingNodeID { get; set; }
 
     [ColumnName("autotype")]
     public int AutoType { get; set; }
