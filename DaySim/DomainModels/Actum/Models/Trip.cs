@@ -15,10 +15,10 @@ namespace DaySim.DomainModels.Actum.Models {
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
   public sealed class Trip : DomainModels.Default.Models.Trip, IActumTrip {
 
-    [ColumnName("compmode")]
-    public int CompositeMode { get; set; }
+    [ColumnName("tourmode")]
+    public int TourMode { get; set; }
 
-    [ColumnName("accmode")]
+    [ColumnName("acmode")]
     public int AccessMode { get; set; }
 
     [ColumnName("acpathtp")]

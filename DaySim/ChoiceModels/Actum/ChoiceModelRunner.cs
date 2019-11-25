@@ -251,6 +251,9 @@ namespace DaySim.ChoiceModels.Actum {
 
     private static void RunHouseholdModelSuite(HouseholdWrapper household) {
 
+      //use different children age categories
+      household.SetActumHouseholdTotals();
+
       //begin work location person loop
       foreach (PersonWrapper person in household.Persons) {
 
@@ -3604,7 +3607,6 @@ namespace DaySim.ChoiceModels.Actum {
 
       if (Global.Configuration.ShouldRunTripModeModel) {
         // sets the trip's mode of travel to the destination
-        trip.CompositeMode = tour.Mode;
 
         if (trip.DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
           // trips to change mode destination are always by transit
@@ -3675,7 +3677,7 @@ namespace DaySim.ChoiceModels.Actum {
               //if (trip.Mode == Global.Settings.Modes.Walk || trip.Mode == Global.Settings.Modes.Bike) {
               //}
               // 201603 JLB
-              if (trip.CompositeMode > Global.Settings.Modes.WalkRideWalk) {
+              if (trip.Tour.Mode > Global.Settings.Modes.WalkRideWalk) {
                 trip.HPTBikeDriveTransitTourUpdateTripValues();
               } else {
                 trip.HUpdateTripValues();

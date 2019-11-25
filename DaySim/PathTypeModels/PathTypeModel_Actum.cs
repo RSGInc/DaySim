@@ -498,7 +498,7 @@ namespace DaySim.PathTypeModels {
       if ((skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) || skimModeIn == Global.Settings.Modes.PaidRideShare) {
       } else {
         if (!useZones) {
-          parkingCost = _destinationParcel.PublicParkingHourlyPriceBuffer1;
+          parkingCost =  _destinationParcel.PublicParkingHourlyPriceBuffer1;
           int parkingDuration = 1; // assume 1 hour if return time isn't known
           if (_returnTime > 0) {
             parkingDuration = (_returnTime - _outboundTime) / 60;
@@ -978,6 +978,9 @@ namespace DaySim.PathTypeModels {
             egressUtility = egressPath.Utility * roundTripFactor;
           }
 
+          if (accessTerminalIndex == egressTerminalIndex) { 
+            continue;
+          }
 
           TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, accessTerminalIndex, egressTerminalIndex, _transitPassOwnership);
 
@@ -1011,8 +1014,8 @@ namespace DaySim.PathTypeModels {
           _pathOriginStopAreaParcelID[pathType] = accessTerminalParcelID;
           _pathOriginStopAreaZoneID[pathType] = accessTerminalZoneID;
           _pathDestinationStopAreaKey[pathType] = egressTerminalKey;
-          _pathDestinationStopAreaParcelID[pathType] = accessTerminalParcelID;
-          _pathDestinationStopAreaZoneID[pathType] = accessTerminalZoneID;
+          _pathDestinationStopAreaParcelID[pathType] = egressTerminalParcelID;
+          _pathDestinationStopAreaZoneID[pathType] = egressTerminalZoneID;
           _pathParkAndRideNodeId[pathType] = accessParkAndRideNodeID;
           _pathParkAndRideEgressNodeId[pathType] = egressParkAndRideNodeID;
 

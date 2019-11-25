@@ -21,6 +21,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       _household = (IActumHousehold)household;
     }
 
+        
+ 
     #region domain model properies
 
     public int MunicipalCode {
@@ -43,7 +45,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region flags/choice model/etc. properties
 
-
+    public void SetActumHouseholdTotals() {
+      Workers = HouseholdTotals.FullAndPartTimeWorkers;
+      Persons6to17 = HouseholdTotals.ChildrenAge6To17;
+      KidsBetween0And4 = HouseholdTotals.ChildrenAge0To5;
+    }
+  
     #endregion
   }
 

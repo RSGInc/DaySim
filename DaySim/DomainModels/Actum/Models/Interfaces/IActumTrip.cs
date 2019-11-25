@@ -11,7 +11,7 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumTrip : ITrip {
     //JLB20160323
 
-    int CompositeMode { get; set; }
+    int TourMode { get; set; }
 
     int AccessMode { get; set; }
 

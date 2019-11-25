@@ -52,21 +52,21 @@ namespace DaySim.ChoiceModels.H {
 
     public bool ModeAvailableFromDestination { get; private set; }
 
-    public int ParkAndRideOriginStopAreaKey { get; private set; }
+    public int OriginStopAreaKey { get; private set; }
 
-    public int ParkAndRideOriginStopAreaParcelID { get; private set; }
+    public int OriginStopAreaParcelID { get; private set; }
 
-    public int ParkAndRideOriginStopAreaZoneID { get; private set; }
+    public int OriginStopAreaZoneID { get; private set; }
 
-    public int ParkAndRideOriginParkingNodeID { get; private set; }
+    public int OriginParkingNodeID { get; private set; }
     
-    public int ParkAndRideDestinationStopAreaKey { get; private set; }
+    public int DestinationStopAreaKey { get; private set; }
 
-    public int ParkAndRideDestinationStopAreaParcelID { get; private set; }
+    public int DestinationStopAreaParcelID { get; private set; }
 
-    public int ParkAndRideDestinationStopAreaZoneID { get; private set; }
+    public int DestinationStopAreaZoneID { get; private set; }
 
-    public int ParkAndRideDestinationParkingNodeID { get; private set; }
+    public int DestinationParkingNodeID { get; private set; }
 
     public IMinuteSpan LongestFeasibleWindow { get; private set; }
 
@@ -148,7 +148,7 @@ namespace DaySim.ChoiceModels.H {
       return departureTime;
     }
 
-    public IMinuteSpan GetRandomDestinationTimes(TimeWindow timeWindow, TourWrapper tour) {
+    public IMinuteSpan GetRandomDestinationTimes(TimeWindow timeWindow, ITourWrapper tour) {
       if (tour == null) {
         throw new ArgumentNullException("tour");
       }
@@ -156,7 +156,7 @@ namespace DaySim.ChoiceModels.H {
       return timeWindow.GetMinuteSpan(tour.Household.RandomUtility, ArrivalPeriod.Start, ArrivalPeriod.End, DeparturePeriod.Start, DeparturePeriod.End);
     }
 
-    public bool SubtourIsWithinTour(TourWrapper subtour) {
+    public bool SubtourIsWithinTour(ITourWrapper subtour) {
       if (subtour == null) {
         throw new ArgumentNullException("subtour");
       }
@@ -267,7 +267,7 @@ namespace DaySim.ChoiceModels.H {
                   tour.Person.Age,
                   householdCars,
                   tour.Person.TransitPassOwnership,
-                  tour.Household.OwnsAutomatedVehicles > 0,
+                  tour.Household.OwnsAutomatedVehicles>0,
                   tour.Person.PersonType,
                   false,
                   mode);
@@ -282,34 +282,34 @@ namespace DaySim.ChoiceModels.H {
             modeTimes.GeneralizedTimeToDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
             modeTimes.TravelTimeFromDestination = pathTypeModel.PathTime / 2.0;
             modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
-            modeTimes.ParkAndRideOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
-            modeTimes.ParkAndRideOriginStopAreaParcelID = pathTypeModel.PathOriginStopAreaParcelID;
-            modeTimes.ParkAndRideOriginStopAreaZoneID = pathTypeModel.PathOriginStopAreaZoneID;
-            modeTimes.ParkAndRideOriginParkingNodeID = pathTypeModel.PathParkAndRideNodeId;
-            modeTimes.ParkAndRideDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
-            modeTimes.ParkAndRideDestinationStopAreaParcelID = pathTypeModel.PathDestinationStopAreaParcelID;
-            modeTimes.ParkAndRideDestinationStopAreaZoneID = pathTypeModel.PathDestinationStopAreaZoneID;
-            modeTimes.ParkAndRideDestinationParkingNodeID = pathTypeModel.PathParkAndRideEgressNodeId;
+            modeTimes.OriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
+            modeTimes.OriginStopAreaParcelID = pathTypeModel.PathOriginStopAreaParcelID;
+            modeTimes.OriginStopAreaZoneID = pathTypeModel.PathOriginStopAreaZoneID;
+            modeTimes.OriginParkingNodeID = pathTypeModel.PathParkAndRideNodeId;
+            modeTimes.DestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
+            modeTimes.DestinationStopAreaParcelID = pathTypeModel.PathDestinationStopAreaParcelID;
+            modeTimes.DestinationStopAreaZoneID = pathTypeModel.PathDestinationStopAreaZoneID;
+            modeTimes.DestinationParkingNodeID = pathTypeModel.PathParkAndRideEgressNodeId;
             modeTimes.TransitTime = pathTypeModel.PathTransitTime / 2.0;
-            modeTimes.TransitDistance = pathTypeModel.PathTransitDistance / 2.0;
+            modeTimes.TransitDistance = pathTypeModel.PathTransitDistance;
             modeTimes.TransitCost = pathTypeModel.PathTransitCost / 2.0;
             modeTimes.TransitGeneralizedTime = pathTypeModel.PathTransitGeneralizedTime / 2.0;
             modeTimes.WalkTime = pathTypeModel.PathWalkTime / 2.0;
-            modeTimes.WalkDistance = pathTypeModel.PathWalkDistance / 2.0;
+            modeTimes.WalkDistance = pathTypeModel.PathWalkDistance;
             modeTimes.BikeTime = pathTypeModel.PathBikeTime / 2.0;
-            modeTimes.BikeDistance = pathTypeModel.PathBikeDistance / 2.0;
+            modeTimes.BikeDistance = pathTypeModel.PathBikeDistance;
             modeTimes.BikeCost = pathTypeModel.PathBikeCost / 2.0;
             modeTimes.OriginAccessMode = pathTypeModel.PathOriginAccessMode;
             modeTimes.OriginAccessTime = pathTypeModel.PathOriginAccessTime / 2.0;
-            modeTimes.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance / 2.0;
+            modeTimes.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance;
             modeTimes.OriginAccessCost = pathTypeModel.PathOriginAccessCost / 2.0;
             modeTimes.OriginAccessUtility = pathTypeModel.PathOriginAccessUtility / 2.0;
             modeTimes.DestinationAccessMode = pathTypeModel.PathDestinationAccessMode;
             modeTimes.DestinationAccessTime = pathTypeModel.PathDestinationAccessTime / 2.0;
-            modeTimes.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance / 2.0;
+            modeTimes.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance;
             modeTimes.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost / 2.0;
             modeTimes.DestinationAccessUtility = pathTypeModel.PathDestinationAccessUtility / 2.0;
-            modeTimes.PathDistance = pathTypeModel.PathDistance / 2.0;
+            modeTimes.PathDistance = pathTypeModel.PathDistance;
             modeTimes.PathCost = pathTypeModel.PathCost / 2.0;
           }
         } else {
