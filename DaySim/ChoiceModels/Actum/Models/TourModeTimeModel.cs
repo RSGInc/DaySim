@@ -267,6 +267,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int HHwithHighIncomeFlag = (household.Income >= 800000).ToFlag();
       int HHwithMissingIncomeFlag = (household.Income < 0).ToFlag();
 
+      // Declare gentime weight factor for walk and cycle
+      double weightfac = 1.0;
+      
       int primaryFamilyTimeFlag = (householdDay == null) ? 0 : householdDay.PrimaryPriorityTimeFlag;
 
       // person inputs
@@ -315,6 +318,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int homeBasedTours = 1;
       int simulatedHomeBasedTours = 0;
 
+
       if (!(personDay == null)) {
         homeBasedToursOnlyFlag = personDay.OnlyHomeBasedToursExist().ToFlag();
         firstSimulatedHomeBasedTourFlag = personDay.IsFirstSimulatedHomeBasedTour().ToFlag();
@@ -340,6 +344,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int workBasedTourFlag = (tour.ParentTour != null).ToFlag();
       int homeBasedTourFlag = (tour.ParentTour == null).ToFlag();
 
+      int otherTourFlag = (escortTourFlag > 0 || shoppingTourFlag > 0 || socialTourFlag > 0 || personalBusinessTourFlag > 0) ? 1 : 0;
+
+      
       IParcelWrapper originParcel = tour.OriginParcel;
       //var destinationParcel = tour.DestinationParcel;
       int jointTourFlag = (tour.JointTourSequence > 0) ? 1 : 0;
@@ -967,52 +974,52 @@ namespace DaySim.ChoiceModels.Actum.Models {
           // Expand generalised time by purpose
 
           if (gtVariable == 1) {
-            alternative.AddUtilityTerm(211, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(211, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(211, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(211, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(214, Math.Log(Math.Max(gentime,1)));
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(214, Math.Log(Math.Max(gentime,1)));
           }
 
           else if (gtVariable == 2) {
             alternative.AddUtilityTerm(200, 1.0);
-            alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(204, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag* gentime);
+           // alternative.AddUtilityTerm(204, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 4) {
-            alternative.AddUtilityTerm(231, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(231, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(231, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(231, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 5) {
-            alternative.AddUtilityTerm(241, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(241, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(241, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(241, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(244, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(244, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 6) {
-            alternative.AddUtilityTerm(251, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(251, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(251, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(251, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(254, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(205, weightfac * workTourFlag * gentime);
+            alternative.AddUtilityTerm(206, weightfac * businessTourFlag * gentime);
+            alternative.AddUtilityTerm(207, weightfac * educationTourFlag * gentime);
+            alternative.AddUtilityTerm(208, weightfac * otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(254, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 7) {
-            alternative.AddUtilityTerm(261, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(261, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(261, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(261, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(264, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(209, weightfac * workTourFlag * gentime);
+            alternative.AddUtilityTerm(210, weightfac * businessTourFlag * gentime);
+            alternative.AddUtilityTerm(211, weightfac * educationTourFlag * gentime);
+            alternative.AddUtilityTerm(212, weightfac * otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(264, Math.Log(Math.Max(gentime, 1)));
           }
 
           if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare) {
