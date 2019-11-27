@@ -987,7 +987,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(203, educationTourFlag * gentime);
             alternative.AddUtilityTerm(203, otherTourFlag * gentime);
             // alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
-            alternative.AddUtilityTerm(220, distance);
+            //alternative.AddUtilityTerm(220, distance);
           }
 
           else if (gtVariable == 5) {
