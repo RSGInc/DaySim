@@ -214,7 +214,7 @@ namespace DaySim.ChoiceModels.H {
       {
         foreach (HTourModeTime modeTimes in ModeTimes[ParallelUtility.threadLocalAssignedIndex.Value]) {
           modeTimes.LongestFeasibleWindow = null;
-          if ((constrainedMode <= 0 || constrainedMode == modeTimes.Mode)
+          if ((constrainedMode == 0 || (constrainedMode < 0 && modeTimes.Mode <= Global.Settings.Modes.WalkRideWalk) || constrainedMode == modeTimes.Mode)
               &&
               (constrainedArrivalTime <= 0 ||
                constrainedArrivalTime.IsBetween(modeTimes.ArrivalPeriod.Start, modeTimes.ArrivalPeriod.End))

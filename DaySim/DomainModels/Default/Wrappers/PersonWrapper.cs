@@ -362,9 +362,11 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public void UpdatePersonValues() {
       if ((!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) && Household.ResidenceParcel != null && UsualWorkParcel != null) {
+        double costCoefficient = (Global.Configuration.DataType == "Actum") ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Work : Global.Coefficients_BaseCostCoefficientPerMonetaryUnit;
+        double timeCoefficient = (Global.Configuration.DataType == "Actum") ? Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute : Global.Configuration.Coefficients_MeanTimeCoefficient_Work;
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton
-                .Run(Household.RandomUtility, Household.ResidenceParcel, UsualWorkParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.FivePM, Global.Settings.Purposes.Work, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Work, /* isDrivingAge */ 22, /*householdCars */ 1, /* transitPassOwnership */ 0, /* carsAreAvs */false, Global.Settings.PersonTypes.FullTimeWorker, false, Global.Settings.Modes.Sov);
+                .Run(Household.RandomUtility, Household.ResidenceParcel, UsualWorkParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.FivePM, Global.Settings.Purposes.Work, costCoefficient , timeCoefficient , /* isDrivingAge */ 22, /*householdCars */ 1, /* transitPassOwnership */ 0, /* carsAreAvs */false, Global.Settings.PersonTypes.FullTimeWorker, false, Global.Settings.Modes.Sov);
 
         IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 
@@ -376,9 +378,11 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
 
       if ((!Global.Configuration.IsInEstimationMode || Global.Configuration.ShouldOutputStandardFilesInEstimationMode) && Household.ResidenceParcel != null && UsualSchoolParcel != null) {
+        double costCoefficient = (Global.Configuration.DataType == "Actum") ? Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Education : Global.Coefficients_BaseCostCoefficientPerMonetaryUnit;
+        double timeCoefficient = (Global.Configuration.DataType == "Actum") ? Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute : Global.Configuration.Coefficients_MeanTimeCoefficient_Other;
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton
-                .Run(Household.RandomUtility, Household.ResidenceParcel, UsualSchoolParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.ThreePM, Global.Settings.Purposes.School, Global.Coefficients_BaseCostCoefficientPerMonetaryUnit, Global.Configuration.Coefficients_MeanTimeCoefficient_Other, /* isDrivingAge */ 22, /* householdCars */ 1, /* transitPassOwnership */ 0, /* carsAreAvs */false, Global.Settings.PersonTypes.FullTimeWorker, false, Global.Settings.Modes.Sov);
+                .Run(Household.RandomUtility, Household.ResidenceParcel, UsualSchoolParcel, Global.Settings.Times.SevenAM, Global.Settings.Times.ThreePM, Global.Settings.Purposes.School, costCoefficient, timeCoefficient, /* isDrivingAge */ 22, /* householdCars */ 1, /* transitPassOwnership */ 0, /* carsAreAvs */false, Global.Settings.PersonTypes.FullTimeWorker, false, Global.Settings.Modes.Sov);
 
         IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 

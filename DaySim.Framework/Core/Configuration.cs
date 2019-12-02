@@ -1583,6 +1583,9 @@ namespace DaySim.Framework.Core {
     public bool AvoidDisaggregateModeChoiceLogsums { get; set; }
 
     [XmlAttribute]
+    public bool IncludeMixedModesInModeChoiceLogsums { get; set; }
+
+    [XmlAttribute]
     public string AggregateTourModeDestinationModelCoefficients { get; set; }
 
     [XmlAttribute]
