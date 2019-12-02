@@ -1133,7 +1133,7 @@ namespace DaySim.PathTypeModels {
         }
 
         if (path.Time > pathTimeLimit || path.Time < Constants.EPSILON) {
-        //  if (path.Time > pathTimeLimit) {    //Replaced above line on 20191024 per MAB
+        //  if (path.Time > pathTimeLimit) {    //Replaced above line on 20191024 per MAB checked in
           return path;
         }
 
