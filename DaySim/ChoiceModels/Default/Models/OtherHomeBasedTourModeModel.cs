@@ -73,6 +73,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
         } else {
@@ -90,6 +91,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
 
@@ -123,6 +125,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
         } else {
@@ -140,6 +143,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
         }
@@ -188,6 +192,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
 

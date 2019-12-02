@@ -2234,7 +2234,13 @@ namespace DaySim.Framework.Core {
     public double COMPASS_FractionOfBikeTripsUsingEBikes { get; set; } = 0.01;
     [XmlAttribute]
     public double COMPASS_BikeAverageTravelTimeReductionFactorForEBikes { get; set; } = 0.15;
-    
+
+    [XmlAttribute]
+    public double COMPASS_ElectricVehicleParkingPriceDiscount { get; set; } = 0.00;
+    [XmlAttribute]
+    public double COMPASS_AutomatedVehicleParkingPriceDiscount { get; set; } = 0.00;
+
+
 
 
 

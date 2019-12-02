@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Default.Wrappers;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
@@ -231,6 +232,8 @@ namespace DaySim.ChoiceModels.H {
     public static void SetImpedanceAndWindow(ITimeWindow timeWindow, ITourWrapper tour, HTourModeTime modeTimes, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, IParcelWrapper alternativeDestination = null) {
       {
 
+        IActumHouseholdWrapper household = (IActumHouseholdWrapper)tour.Household;
+
         int alternativeIndex = modeTimes.Index;
         MinuteSpan arrivalPeriod = modeTimes.ArrivalPeriod;
         MinuteSpan departurePeriod = modeTimes.DeparturePeriod;
@@ -254,6 +257,8 @@ namespace DaySim.ChoiceModels.H {
         }
         //ACTUM must use round trip path path type, approximate each half 
         if (mode > Global.Settings.Modes.WalkRideWalk) {
+
+
           IEnumerable<IPathTypeModel> pathTypeModels =
               PathTypeModelFactory.Singleton.Run(
                   tour.Household.RandomUtility,
@@ -268,6 +273,8 @@ namespace DaySim.ChoiceModels.H {
                   householdCars,
                   tour.Person.TransitPassOwnership,
                   tour.Household.OwnsAutomatedVehicles>0,
+                  tour.HovOccupancy,
+                  household.AutoType,
                   tour.Person.PersonType,
                   false,
                   mode);
@@ -333,6 +340,8 @@ namespace DaySim.ChoiceModels.H {
                             householdCars,
                             tour.Person.TransitPassOwnership,
                             tour.Household.OwnsAutomatedVehicles > 0,
+                            tour.HovOccupancy,
+                            household.AutoType,
                             tour.Person.PersonType,
                             false,
                             pathMode);
@@ -360,6 +369,8 @@ namespace DaySim.ChoiceModels.H {
                   householdCars,
                   tour.Person.TransitPassOwnership,
                   tour.Household.OwnsAutomatedVehicles > 0,
+                  tour.HovOccupancy,
+                  household.AutoType,
                   tour.Person.PersonType,
                   false,
                   pathMode);

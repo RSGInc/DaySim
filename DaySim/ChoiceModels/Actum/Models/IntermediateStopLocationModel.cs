@@ -1057,6 +1057,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                1 /* householdCars */,
                transitPassOwnership,
                false /*carsAreAVs */,
+               /* hov occ */ 2, /* auto type */ 1,
                personType,
                false /* randomChoice */,
                mode);

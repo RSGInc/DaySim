@@ -112,6 +112,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 /* householdVehicles */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAVs */ false,
+                /* hov occ */ 2, /* auto type */ 1,
                 fullFareType,
                 false,
                 Global.Settings.Modes.Transit);
@@ -133,7 +134,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                 /* householdVehicles */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAVs */ false,
-                freeFareType,
+                /* hov occ */ 2, /* auto type */ 1,
+                 freeFareType,
                 false,
                 Global.Settings.Modes.Transit);
 
@@ -161,7 +163,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                 /* householdVehicles */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAVs */ false,
-              freeFareType,
+                /* hov occ */ 2, /* auto type */ 1,
+               freeFareType,
               false,
               Global.Settings.Modes.Transit);
 

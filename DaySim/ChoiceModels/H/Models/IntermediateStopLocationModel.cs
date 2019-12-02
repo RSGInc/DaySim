@@ -947,7 +947,8 @@ namespace DaySim.ChoiceModels.H.Models {
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
-                personType,
+                /* hov occ */ 2, /* auto type */ 1,
+               personType,
                 false,
                 mode);
 

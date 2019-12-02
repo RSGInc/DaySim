@@ -191,6 +191,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 1,
                 0,
                 false,
+                /* hov occ */ 2, /* auto type */ 1,
                 fullFareType,
                 false,
                 Global.Settings.Modes.Transit);
@@ -215,6 +216,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 /* transitPassOwnership */ fareZones,
                 /* carsAreAVs */ false,
                 /* transitDiscountFraction */ //freeFareType,  JB 20190513
+                /* hov occ */ 2, /* auto type */ 1,
                 /* transitDiscountFraction */ fullFareType,
                 /* randomChoice */ false,
                 Global.Settings.Modes.Transit);
@@ -250,6 +252,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 1,
                 fareZones,
                 false,
+                /* hov occ */ 2, /* auto type */ 1,
                 freeFareType,
                 false,
                 Global.Settings.Modes.Transit);

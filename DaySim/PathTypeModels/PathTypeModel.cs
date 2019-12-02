@@ -34,6 +34,8 @@ namespace DaySim.PathTypeModels {
     protected int _householdCars;
     protected int _transitPassOwnership;
     protected bool _carsAreAVs;
+    private int _hovOccupancy;
+    private int _autoType;
     protected int _personType;
     protected double _transitDiscountFraction;
     protected bool _randomChoice;
@@ -59,7 +61,7 @@ namespace DaySim.PathTypeModels {
     protected readonly double[] _pathParkAndRideWalkAccessEgressTime = new double[Global.Settings.PathTypes.TotalPathTypes];
     protected readonly double[] _pathTransitWalkAccessEgressTime = new double[Global.Settings.PathTypes.TotalPathTypes];
 
-    private void initialize(int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, int mode) {
+    private void initialize(int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, int mode) {
       _outboundTime = outboundTime;
       _returnTime = returnTime;
       _purpose = purpose;
@@ -71,6 +73,8 @@ namespace DaySim.PathTypeModels {
       _householdCars = householdCars;
       _transitPassOwnership = transitPassOwnership;
       _carsAreAVs = carsAreAVs;
+      _hovOccupancy = hovOccupancy;
+      _autoType = autoType;
       _personType = personType;
 
       _randomChoice = randomChoice;
@@ -98,13 +102,13 @@ namespace DaySim.PathTypeModels {
 
     }
 
-    private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, int mode) {
-      initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, mode);
+    private void initialize(IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, int mode) {
+      initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, mode);
       _originParcel = originParcel;
       _destinationParcel = destinationParcel;
     }
-    private void initialize(int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, int mode) {
-      initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, mode);
+    private void initialize(int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, int mode) {
+      initialize(outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, mode);
       _originZoneId = originZoneId;
       _destinationZoneId = destinationZoneId;
     }
@@ -185,7 +189,7 @@ namespace DaySim.PathTypeModels {
 
     public double PathDestinationAccessUtility => throw new NotImplementedException();
 
-    public virtual List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice) {
+    public virtual List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice) {
       List<int> modes = new List<int>();
 
       for (int mode = Global.Settings.Modes.Walk; mode <= Global.Settings.Modes.PaidRideShare; mode++) {
@@ -195,10 +199,10 @@ namespace DaySim.PathTypeModels {
         }
       }
 
-      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, modes.ToArray());
+      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, modes.ToArray());
     }
 
-    public virtual List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice) {
+    public virtual List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice) {
       //if (transitPassOwnership != 0) {
       //  throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
       //}
@@ -211,10 +215,10 @@ namespace DaySim.PathTypeModels {
         }
       }
 
-      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, modes.ToArray());
+      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, modes.ToArray());
     }
 
-    public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, params int[] modes) {
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, params int[] modes) {
       //if (transitPassOwnership != 0) {
       //  throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
       //}
@@ -224,7 +228,7 @@ namespace DaySim.PathTypeModels {
         object[] args = new object[] { originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, personType, randomChoice, mode };
         //IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
         IPathTypeModel pathTypeModel = PathTypeModelFactory.New(new object[] { });
-        ((PathTypeModel)pathTypeModel).initialize(originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, mode);
+        ((PathTypeModel)pathTypeModel).initialize(originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, mode);
         pathTypeModel.RunModel(randomUtility, /* useZones */ false);
 
         list.Add(pathTypeModel);
@@ -234,17 +238,17 @@ namespace DaySim.PathTypeModels {
     }
 
 
-    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, params int[] modes) {
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, params int[] modes) {
       //if (transitPassOwnership != 0) {
       //  throw new NotImplementedException("Non-Actum code does not support a non-zero value for transitPassOwnership");
       //}
       List<IPathTypeModel> list = new List<IPathTypeModel>();
 
       foreach (int mode in modes) {
-        object[] args = new object[] { originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, mode };
+        object[] args = new object[] { originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, mode };
         //IPathTypeModel pathTypeModel = PathTypeModelFactory.New(args);
         IPathTypeModel pathTypeModel = PathTypeModelFactory.New(new object[] { });
-        ((PathTypeModel)pathTypeModel).initialize(originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, mode);
+        ((PathTypeModel)pathTypeModel).initialize(originZoneId, destinationZoneId, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, mode);
         pathTypeModel.RunModel(randomUtility, /* useZones */ true);
 
         list.Add(pathTypeModel);

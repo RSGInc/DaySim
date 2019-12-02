@@ -229,7 +229,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
       } else
       { // set randomly
-        double randomNumber = 0.5; // Household.RandomUtility.Uniform01();
+        double randomNumber = Household.RandomUtility.Uniform01();
 
         double fraction2Occ = DestinationPurpose == Global.Settings.Purposes.Work ? Global.Configuration.COMPASS_HOVFraction2Occupants_Commute
                             : DestinationPurpose == Global.Settings.Purposes.Business ? Global.Configuration.COMPASS_HOVFraction2Occupants_Business
@@ -246,7 +246,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
       }
 
-      // still need to adjust the cost coefficient for distance and occupancy in PathTypeModel
+      // still need to adjust the cost coefficient for distance and occupancy in PathTypeModel - and also in Trip Wrapper set value of time
 
     }
 
@@ -255,10 +255,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       if (Global.Configuration.IsInEstimationMode || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) {
         return;
       }
-
       IEnumerable<PathTypeModels.IPathTypeModel> pathTypeModels =
       PathTypeModels.PathTypeModelFactory.Singleton
-          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, 22, 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.PersonType, false, Global.Settings.Modes.Sov);
+          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, 22, 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, HovOccupancy, 1, Person.PersonType, false, Global.Settings.Modes.Sov);
 
       PathTypeModels.IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 

@@ -73,7 +73,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                 subtour.Household.VehiclesAvailable,
                  subtour.Person.TransitPassOwnership,
                 subtour.Household.OwnsAutomatedVehicles > 0,
-                subtour.Person.PersonType,
+                /* hov occ */ 2, /* auto type */ 1,
+                 subtour.Person.PersonType,
                 false);
 
         IPathTypeModel pathTypeModel = pathTypeModels.First(x => x.Mode == subtour.Mode);
@@ -100,6 +101,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 subtour.Household.VehiclesAvailable,
                 subtour.Person.TransitPassOwnership,
                 subtour.Household.OwnsAutomatedVehicles > 0,
+                 /* hov occ */ 2, /* auto type */ 1,
                 subtour.Person.PersonType,
                 false);
 
@@ -149,6 +151,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               subtour.Household.VehiclesAvailable,
                subtour.Person.TransitPassOwnership,
               subtour.Household.OwnsAutomatedVehicles > 0,
+                 /* hov occ */ 2, /* auto type */ 1,
               subtour.Person.PersonType,
               false);
 

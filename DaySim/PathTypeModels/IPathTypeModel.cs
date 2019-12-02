@@ -64,13 +64,13 @@ namespace DaySim.PathTypeModels {
 
     bool Available { get; }
 
-    List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice);
+    List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice);
 
-    List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice);
+    List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice);
 
-    List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, params int[] modes);
+    List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, params int[] modes);
 
-    List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, params int[] modes);
+    List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, params int[] modes);
 
     void RunModel(IRandomUtility randomUtility, bool useZones);
 

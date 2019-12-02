@@ -35,6 +35,8 @@ namespace DaySim.PathTypeModels {
     private int _householdCars;
     private bool _carsAreAVs;
     private int _transitPassOwnership;
+    private int _hovOccupancy;
+    private int _autoType;
     private int _personType;
     private bool _randomChoice;
     private int _choice;
@@ -154,12 +156,12 @@ namespace DaySim.PathTypeModels {
 
     public double PathTransitWalkAccessEgressTime => throw new NotImplementedException("Not Implemented in Actum");
 
-    public List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, bool carsAreAVs, int personType, bool randomChoice) {
+    public List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice) {
       //return (RunAllPlusParkAndRide(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, /*transitPassOwnership*/ 0, carsAreAVs, personType, randomChoice));
       throw new NotImplementedException("This needs to pass in TransitPassOwnership");
     }
 
-    public List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice) {
+    public List<IPathTypeModel> RunAllPlusParkAndRide(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice) {
       //		public List<PathTypeModel_Actum> RunAllPlusParkAndRide(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int personType, bool randomChoice) {
       List<int> modes = new List<int>();
 
@@ -167,15 +169,15 @@ namespace DaySim.PathTypeModels {
         modes.Add(mode);
       }
 
-      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, modes.ToArray());
+      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, modes.ToArray());
     }
 
-    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, bool carsAreAVs, int personType, bool randomChoice) {
+    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice) {
       //return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars,  /*transitPassOwnership*/ 0, carsAreAVs, personType, randomChoice);
       throw new NotImplementedException("This needs to pass in TransitPassOwnership");
     }
 
-    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice) {
+    public List<IPathTypeModel> RunAll(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice) {
       //		public List<PathTypeModel_Actum> RunAll(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int personType, bool randomChoice) {
       List<int> modes = new List<int>();
 
@@ -196,16 +198,16 @@ namespace DaySim.PathTypeModels {
       }
 
 
-      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, personType, randomChoice, modes.ToArray());
+      return Run(randomUtility, originParcel, destinationParcel, outboundTime, returnTime, purpose, tourCostCoefficient, tourTimeCoefficient, personAge, householdCars, transitPassOwnership, carsAreAVs, hovOccupancy, autoType, personType, randomChoice, modes.ToArray());
     }
 
-    public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, params int[] modes) {
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, IParcelWrapper originParcel, IParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, params int[] modes) {
       //		public List<PathTypeModel_Actum> Run(IRandomUtility randomUtility, ParcelWrapper originParcel, ParcelWrapper destinationParcel, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int personType, bool randomChoice, params int[] modes) {
       List<IPathTypeModel> list = new List<IPathTypeModel>();
       //			var list = new List<PathTypeModel_Actum>();
 
       foreach (int mode in modes) {
-        PathTypeModel_Actum pathTypeModel = new PathTypeModel_Actum { _originParcel = (ParcelWrapper)originParcel, _destinationParcel = (ParcelWrapper)destinationParcel, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _personAge = personAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _personType = personType, _randomChoice = randomChoice, Mode = mode };
+        PathTypeModel_Actum pathTypeModel = new PathTypeModel_Actum { _originParcel = (ParcelWrapper)originParcel, _destinationParcel = (ParcelWrapper)destinationParcel, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _personAge = personAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _hovOccupancy = hovOccupancy, _autoType = autoType, _personType = personType, _randomChoice = randomChoice, Mode = mode };
         pathTypeModel.RunModel(randomUtility);
 
         list.Add(pathTypeModel);
@@ -214,10 +216,10 @@ namespace DaySim.PathTypeModels {
       return list;
     }
 
-    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int personType, bool randomChoice, params int[] modes) {
+    public List<IPathTypeModel> Run(IRandomUtility randomUtility, int originZoneId, int destinationZoneId, int outboundTime, int returnTime, int purpose, double tourCostCoefficient, double tourTimeCoefficient, int personAge, int householdCars, int transitPassOwnership, bool carsAreAVs, int hovOccupancy, int autoType, int personType, bool randomChoice, params int[] modes) {
       List<IPathTypeModel> list = new List<IPathTypeModel>();
 
-      foreach (PathTypeModel_Actum pathTypeModel in modes.Select(mode => new PathTypeModel_Actum { _originZoneId = originZoneId, _destinationZoneId = destinationZoneId, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _personAge = personAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _personType = personType, _randomChoice = randomChoice, Mode = mode })) {
+      foreach (PathTypeModel_Actum pathTypeModel in modes.Select(mode => new PathTypeModel_Actum { _originZoneId = originZoneId, _destinationZoneId = destinationZoneId, _outboundTime = outboundTime, _returnTime = returnTime, _purpose = purpose, _tourCostCoefficient = tourCostCoefficient, _tourTimeCoefficient = tourTimeCoefficient, _personAge = personAge, _householdCars = householdCars, _transitPassOwnership = transitPassOwnership, _carsAreAVs = carsAreAVs, _hovOccupancy = hovOccupancy, _autoType = autoType, _personType = personType, _randomChoice = randomChoice, Mode = mode })) {
         pathTypeModel.RunModel(randomUtility, true);
 
         list.Add(pathTypeModel);
@@ -498,7 +500,9 @@ namespace DaySim.PathTypeModels {
       if ((skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) || skimModeIn == Global.Settings.Modes.PaidRideShare) {
       } else {
         if (!useZones) {
-          parkingCost =  _destinationParcel.PublicParkingHourlyPriceBuffer1;
+          double priceDiscountFactor = _autoType == 3 ? Global.Configuration.COMPASS_AutomatedVehicleParkingPriceDiscount :
+                                  _autoType == 2 ? Global.Configuration.COMPASS_ElectricVehicleParkingPriceDiscount : 0.0;
+          parkingCost =  _destinationParcel.PublicParkingHourlyPriceBuffer1 * (1.0 - priceDiscountFactor);
           int parkingDuration = 1; // assume 1 hour if return time isn't known
           if (_returnTime > 0) {
             parkingDuration = (_returnTime - _outboundTime) / 60;
@@ -509,21 +513,21 @@ namespace DaySim.PathTypeModels {
 
       double costFraction = 1.0;
       if (skimModeIn == Global.Settings.Modes.HovDriver || skimModeIn == Global.Settings.Modes.HovPassenger) {
-        int hovOccupancy = 2; // will pass in later
+        // int hovOccupancy = 2; now passed in
         costFraction = _purpose == Global.Settings.Purposes.Work ?
-          (hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Commute
-          : hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Commute
-         : hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Commute
+          (_hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Commute
+          : _hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Commute
+         : _hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Commute
          : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Commute)
         : _purpose == Global.Settings.Purposes.Business ?
-          (hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Business
-          : hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Business
-         : hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Business
+          (_hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Business
+          : _hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Business
+         : _hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Business
          : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Business)
         :
-          (hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Leisure
-          : hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Leisure
-         : hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Leisure
+          (_hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Leisure
+          : _hovOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Leisure
+         : _hovOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Leisure
          : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Leisure);
       }
 

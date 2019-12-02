@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
@@ -115,6 +116,7 @@ namespace DaySim.ChoiceModels.H {
 
     public static void SetTimeImpedanceAndWindow(ITripWrapper trip, HTripTime time) {
 
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)trip.Household;
       ITourWrapper tour = trip.Tour;
       int alternativeIndex = time.Index;
       MinuteSpan period = time.DeparturePeriod;
@@ -140,6 +142,8 @@ namespace DaySim.ChoiceModels.H {
                             tour.Household.VehiclesAvailable,
                             tour.Person.TransitPassOwnership,
                             tour.Household.OwnsAutomatedVehicles > 0,
+                            tour.HovOccupancy,
+                            household.AutoType,
                             tour.Person.PersonType,
                             true,
                             pathMode);
