@@ -3,7 +3,7 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
 
 
 using System;
@@ -188,6 +188,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double studentsK8Buffer2 = Math.Log(destinationParcel.StudentsK8Buffer2 + 1);
         double studentsHighSchoolBuffer2 = Math.Log(destinationParcel.StudentsHighSchoolBuffer2 + 1);
 
+        //GV: 03. december 2019, trying to introduce a dummy for Primary School children whre Origin and Destination are in different municipalities
+        int PS_dummy1 = (residenceParcel.LandUseCode == destinationParcel.LandUseCode) ? 0 : 1;
+        
         alternative.AddUtilityTerm(1, sampleItem.Key.AdjustmentFactor);  
 
         //GV: 7. mar. 2019 - estimate coeff. 2-5
@@ -236,6 +239,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(27, isUniversityStudent.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(28, (!person.IsStudentAge).ToFlag() * aggregateLogsum);
 
+        //GV: 01. dec. 2019 - new dummy for Primary Students, O and D are in different municipalities
+        alternative.AddUtilityTerm(29, isPrimaryStudent.ToFlag() * PS_dummy1);
+
         //Neighborhood
         alternative.AddUtilityTerm(30, isAge0to5.ToFlag() * householdsBuffer2);
         alternative.AddUtilityTerm(31, isAge0to5.ToFlag() * studentsHighSchoolBuffer1);
@@ -260,12 +266,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(70, isPrimaryStudent.ToFlag() * destinationParcel.EmploymentTotal);
         alternative.AddUtilityTerm(71, isPrimaryStudent.ToFlag() * 10.0 * destinationParcel.Households);
         alternative.AddUtilityTerm(72, isPrimaryStudent.ToFlag() * destinationParcel.StudentsK8);
+
         alternative.AddUtilityTerm(73, isSecondaryStudent.ToFlag() * destinationParcel.EmploymentEducation);
         alternative.AddUtilityTerm(74, isSecondaryStudent.ToFlag() * destinationParcel.EmploymentService);
         alternative.AddUtilityTerm(75, isSecondaryStudent.ToFlag() * destinationParcel.EmploymentOffice);
         alternative.AddUtilityTerm(76, isSecondaryStudent.ToFlag() * destinationParcel.EmploymentTotal);
         alternative.AddUtilityTerm(77, isSecondaryStudent.ToFlag() * 10.0 * destinationParcel.Households);
         alternative.AddUtilityTerm(78, isSecondaryStudent.ToFlag() * destinationParcel.StudentsHighSchool);
+
         alternative.AddUtilityTerm(79, person.IsAdult.ToFlag() * destinationParcel.EmploymentEducation);
         alternative.AddUtilityTerm(80, person.IsAdult.ToFlag() * destinationParcel.EmploymentService);
         alternative.AddUtilityTerm(81, person.IsAdult.ToFlag() * destinationParcel.EmploymentOffice);
@@ -273,8 +281,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(83, person.IsAdult.ToFlag() * destinationParcel.StudentsUniversity);
         alternative.AddUtilityTerm(84, person.IsAdult.ToFlag() * destinationParcel.StudentsHighSchool);
         alternative.AddUtilityTerm(85, person.IsAdult.ToFlag() * destinationParcel.EmploymentGovernment);
-        alternative.AddUtilityTerm(86, isAge0to5.ToFlag() * destinationParcel.EmploymentGovernment); 
-         
+        alternative.AddUtilityTerm(86, isAge0to5.ToFlag() * destinationParcel.EmploymentGovernment);
+
         // set shadow price depending on persontype and add it to utility
         // we are using the sampling adjustment factor assuming that it is 1
 

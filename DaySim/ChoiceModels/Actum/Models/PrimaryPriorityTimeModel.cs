@@ -3,7 +3,7 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.          
 
 
 using System;
@@ -43,7 +43,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         if (householdDay.SharedActivityHomeStays >= 1
              //&& householdDay.DurationMinutesSharedHomeStay >=60 
              && householdDay.AdultsInSharedHomeStay >= 1
-             && householdDay.NumberInLargestSharedHomeStay >= (householdDay.Household.Size)
+             && householdDay.NumberInLargestSharedHomeStay >= (householdDay.Household.Size) 
              ) {
           householdDay.PrimaryPriorityTimeFlag = 1;
         } else {
