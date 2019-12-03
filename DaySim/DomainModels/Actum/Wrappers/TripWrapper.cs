@@ -270,11 +270,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
         IActumHouseholdWrapper household = (IActumHouseholdWrapper) Household;
 
-        AutoType = household.AutoType;
+        AutoType = (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.HovPassenger) ? household.AutoType : 0;
 
         AutoOccupancy =
           Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger ? Tour.HovOccupancy :
-          Mode == Global.Settings.Modes.PaidRideShare ? 2 : 1;
+          Mode == Global.Settings.Modes.PaidRideShare ? 2 :
+          Mode == Global.Settings.Modes.Sov ? 1 : 0;
 
         if (Mode == Global.Settings.Modes.Transit) {
           if (Direction == 0) { //MB changed to use same for first half tour, to get the output correct
@@ -505,8 +506,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
         IActumHouseholdWrapper household = (IActumHouseholdWrapper)Household;
 
-        AutoType = household.AutoType;
+        AutoType = (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.HovPassenger) ? household.AutoType : 0;
 
+        AutoOccupancy =
+          Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger ? Tour.HovOccupancy :
+          Mode == Global.Settings.Modes.PaidRideShare ? 2 :
+          Mode == Global.Settings.Modes.Sov ? 1 : 0;
 
         Mode = Global.Settings.Modes.Transit;
 

@@ -171,10 +171,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
       int freeFareType = Global.Settings.PersonTypes.ChildUnder5;
 
-      if (person.HouseholdId == 1080050 && person.Sequence == 2) {
-        bool testbool2 = true;
-      }
-
+ 
       if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
         IEnumerable<IPathTypeModel> pathTypeModels =
@@ -227,11 +224,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       }
 
-      if (workGenTimeWithPass > -90 && workGenTimeWithPass == workGenTimeNoPass) {
-          bool testbool = true;
-          testbool = false;
-        }
-
+ 
       //			double schoolGenTimeNoPass = -99.0;
       double schoolGenTimeWithPass = -99.0;
 

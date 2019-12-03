@@ -298,13 +298,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
         int minute = DayPeriod.BigDayPeriods[DayPeriod.MIDDAY].Start;
         int purpose = tour.DestinationPurpose;
 
-        if (household.Id == 338794
-          && person.Sequence == 1
-          && tour.Sequence == 1
-          && _trip.Direction == 2
-          && _trip.Sequence == 1){
-        bool testTime = true;
-        }
 
         if (_trip.Direction == Global.Settings.TourDirections.OriginToDestination) {
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, tripOriginParcel, tripOriginParcel, out wdis0, out wtime0, out gwtime0);

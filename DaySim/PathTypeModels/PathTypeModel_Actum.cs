@@ -500,8 +500,9 @@ namespace DaySim.PathTypeModels {
       if ((skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) || skimModeIn == Global.Settings.Modes.PaidRideShare) {
       } else {
         if (!useZones) {
-          double priceDiscountFactor = _autoType == 3 ? Global.Configuration.COMPASS_AutomatedVehicleParkingPriceDiscount :
-                                  _autoType == 2 ? Global.Configuration.COMPASS_ElectricVehicleParkingPriceDiscount : 0.0;
+          double priceDiscountFactor = _destinationParcel.ElectricVehicleOnlyParkingSpacesBuffer1 == 0 ? 0.0 :
+            _autoType == 3 ? Global.Configuration.COMPASS_AutomatedVehicleParkingPriceDiscount :
+            _autoType == 2 ? Global.Configuration.COMPASS_ElectricVehicleParkingPriceDiscount : 0.0;
           parkingCost =  _destinationParcel.PublicParkingHourlyPriceBuffer1 * (1.0 - priceDiscountFactor);
           int parkingDuration = 1; // assume 1 hour if return time isn't known
           if (_returnTime > 0) {
