@@ -140,7 +140,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
         
         double aggregateLogsum = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment];
 
-        double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
+        //JLB 20191204 begin patch
+        //double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
+        double distanceFromOrigin = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, residenceParcel, destinationParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0)/10.0; //in km*10 
+        //JLB 20191204 end patch
 
         //GV: 8. 3. 2019 - Distance differt. per Age
         //Kintergarder; 0.2 and 0.5 km
@@ -164,8 +167,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double distanceUni_3 = Math.Max(0, distanceFromOrigin - 5);
 
         double distanceLog = Math.Log(1 + distanceFromOrigin);
-        double distanceFromWork = person.IsFullOrPartTimeWorker ? person.UsualWorkParcel.DistanceFromWorkLog(destinationParcel, 1) : 0;
         //                var millionsSquareFeet = destinationZoneTotals.MillionsSquareFeet();
+        //JLB 20191204 begin patch
+        //double distanceFromWork = person.IsFullOrPartTimeWorker ? person.UsualWorkParcel.DistanceFromWorkLog(destinationParcel, 1) : 0;
+        double distanceFromWork = person.IsFullOrPartTimeWorker ? Math.Log(1 + (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, person.UsualWorkParcel, destinationParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0)/10.0): 0; //in km*10 
+        //JLB 20191204 end patch
 
         // zone densities
         //                var eduDensity = destinationZoneTotals.GetEmploymentEducationDensity(millionsSquareFeet);

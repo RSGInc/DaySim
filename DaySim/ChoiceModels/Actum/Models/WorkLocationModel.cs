@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Extensions;
@@ -17,6 +18,7 @@ using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
 using DaySim.Framework.Sampling;
+using DaySim.PathTypeModels;
 using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Actum.Models {
@@ -174,7 +176,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         double aggregateLogsum = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment];
 
-        double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
+        //JLB 20191204 begin patch
+        // double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
+        double distanceFromOrigin = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, residenceParcel, destinationParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0)/10.0; //in km*10 
+        //JLB 20191204 end patch
+
 
         //GV: 14.3.2019 - piecewise distance
         // JB: I checked residenceParcel.DistanceFromOrigin, and I see that it looks up SOV distance in the LOS skims and then divides it by 10.  
@@ -188,7 +194,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double distance3 = Math.Max(0, distanceFromOrigin - 2.0);
 
         double distanceLog = Math.Log(1 + distanceFromOrigin);
-        double distanceFromSchool = person.IsFullOrPartTimeWorker ? 0 : person.UsualSchoolParcel.DistanceFromSchoolLog(destinationParcel, 1);
+        //JLB 20191204 begin patch
+        //double distanceFromSchool = person.IsFullOrPartTimeWorker ? 0 : person.UsualSchoolParcel.DistanceFromSchoolLog(destinationParcel, 1);
+        double distanceFromSchool = person.IsFullOrPartTimeWorker ? 0 : Math.Log(1 + (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, person.UsualSchoolParcel, destinationParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0)/10.0); //in km*10 
+        //JLB 20191204 end patch
 
 
         // parcel buffers

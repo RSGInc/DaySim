@@ -310,16 +310,24 @@ namespace DaySim.ChoiceModels.Actum.Models {
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, tripOriginParcel, tripOriginParcel, out wdis0, out wtime0, out gwtime0);
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tourOriginParcel, destinationParcel, tripOriginParcel, out wdis1, out wtime1, out gwtime1);
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tourOriginParcel, destinationParcel, tripOriginParcel, out wdis2, out wtime2, out gwtime2);
-          adis0 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tourOriginParcel, tripOriginParcel).Variable;
-          adis1 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tourOriginParcel, destinationParcel).Variable;
-          adis2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tripOriginParcel).Variable;
+          adis0 = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, tourOriginParcel, tripOriginParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0);
+          adis1 = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, tourOriginParcel, destinationParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0);
+          adis2 = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, destinationParcel, tripOriginParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0);
+          //JLB 20191204 The above three lines replace the following three lines
+          //adis0 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tourOriginParcel, tripOriginParcel).Variable;
+          //adis1 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tourOriginParcel, destinationParcel).Variable;
+          //adis2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tripOriginParcel).Variable;
         } else {
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tripOriginParcel, tourOriginParcel, tourOriginParcel, out wdis0, out wtime0, out gwtime0);
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 1, tripOriginParcel, destinationParcel, tourOriginParcel, out wdis1, out wtime1, out gwtime1);
           GetGenTime(household.RandomUtility, Global.Settings.Modes.Walk, purpose, costCoef, timeCoef, person.PersonType, person.TransitPassOwnership, 2, tripOriginParcel, destinationParcel, tourOriginParcel, out wdis2, out wtime2, out gwtime2);
-          adis0 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, tourOriginParcel).Variable;
-          adis1 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, destinationParcel).Variable;
-          adis2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tourOriginParcel).Variable;
+          adis0 = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, tripOriginParcel, tourOriginParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0);
+          adis1 = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, tripOriginParcel, destinationParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0);
+          adis2 = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, destinationParcel, tourOriginParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0);
+          //JLB 20191204 The above three lines replace the following three lines
+          //adis0 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, tourOriginParcel).Variable;
+          //adis1 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, tripOriginParcel, destinationParcel).Variable;
+          //adis2 = ImpedanceRoster.GetValue("distance", Global.Settings.Modes.Sov, Global.Settings.PathTypes.FullNetwork, Global.Settings.ValueOfTimes.DefaultVot, minute, destinationParcel, tourOriginParcel).Variable;
         }
 
         //test section JB 20190428

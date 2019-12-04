@@ -256,7 +256,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double aggregateLogsumHomeBased = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votSegment][transitAccess];
         double aggregateLogsumWorkBased = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.WorkBased][carOwnership][votSegment][transitAccess];
 
-        double distanceFromOrigin = tour.OriginParcel.DistanceFromOrigin(destinationParcel, tour.DestinationArrivalTime);
+        //JLB 20191204 begin patch
+        //double distanceFromOrigin = tour.OriginParcel.DistanceFromOrigin(destinationParcel, tour.DestinationArrivalTime);
+        double distanceFromOrigin = (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, tour.OriginParcel, destinationParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0)/10.0; //in km*10 
+        //JLB 20191204 end patch
 
 
         // 1. new from GV: Cph KM-distance
@@ -275,8 +278,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
         // 1. finished
 
         double distanceFromOriginLog = Math.Log(1 + distanceFromOrigin);
-        double distanceFromWorkLog = person.UsualWorkParcel.DistanceFromWorkLog(destinationParcel, 1);
-        double distanceFromSchoolLog = person.UsualSchoolParcel.DistanceFromSchoolLog(destinationParcel, 1);
+        //double distanceFromWorkLog = person.UsualWorkParcel.DistanceFromWorkLog(destinationParcel, 1);
+
+        //JLB 20191204 begin patch
+        //double distanceFromSchoolLog = person.UsualSchoolParcel.DistanceFromSchoolLog(destinationParcel, 1);
+        double distanceFromSchoolLog = person.UsualSchoolParcel == null? 0: Math.Log(1 + (ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk,Global.Settings.PathTypes.FullNetwork, 60, 1, person.UsualSchoolParcel, destinationParcel).Variable * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor / 1000.0)/10.0); //in km*10 
+        //JLB 20191204 end patch
 
         double timePressure = Math.Log(1 - fastestTravelTime / maxAvailableMinutes);
 
