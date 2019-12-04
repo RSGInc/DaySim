@@ -920,7 +920,10 @@ namespace DaySim.PathTypeModels {
             egressUtility = egressPath.Utility * roundTripFactor;
           }
 
-
+          if (accessTerminalIndex == egressTerminalIndex) { 
+            continue;
+          }
+ 
           TransitPath transitPath = GetTransitPath(skimMode, pathType, votValue, _outboundTime, _returnTime, accessTerminalIndex, egressTerminalIndex, _transitPassOwnership);
 
           if (!transitPath.Available) {
