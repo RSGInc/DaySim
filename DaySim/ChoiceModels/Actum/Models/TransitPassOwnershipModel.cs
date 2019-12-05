@@ -288,6 +288,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       double homeAggregateLogsumNoCar = Math.Max(minimumAggLogsum, Global.AggregateLogsums[homeParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][homeTaSegment]);
 
+      // 20191205 JLB add new variable
+      double homeAggregateLogsumWaBi = Math.Max(minimumAggLogsum, Global.AggregateLogsums[homeParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][2]);
+
+
       //int workTaSegment = workParcelMissing ? 0 : workParcel.TransitAccessSegment();
       //GV: 20.3.2019 - getting values from MB's memo
       //OBS! - DaySim goes down with my commnad
@@ -508,6 +512,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(43, homeAggregateLogsumNoCar * (person.IsChildUnder16).ToFlag());
       alternative.AddUtilityTerm(44, homeAggregateLogsumNoCar * (person.IsNonworkingAdult).ToFlag());
 
+      //20191205 JLB added betas 45-48
+      alternative.AddUtilityTerm(45, homeAggregateLogsumWaBi * (person.IsFullOrPartTimeWorker).ToFlag());
+      alternative.AddUtilityTerm(46, homeAggregateLogsumWaBi * (person.IsGymnasiumOrUniversityStudent()).ToFlag());
+      alternative.AddUtilityTerm(47, homeAggregateLogsumWaBi * (person.IsChildUnder16).ToFlag());
+      alternative.AddUtilityTerm(48, homeAggregateLogsumWaBi * (person.IsNonworkingAdult ||person.IsRetiredAdult).ToFlag());
+      
       //GV: OK
       //Accessibility at commute location
       alternative.AddUtilityTerm(51, workParcelMissing ? 0 : workAggregateLogsumNoCar); //From default version
