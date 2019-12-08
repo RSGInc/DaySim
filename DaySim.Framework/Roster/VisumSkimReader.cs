@@ -72,8 +72,8 @@ namespace DaySim.Framework.Roster {
         int[] zonenumscol;
 
         if (idv == "$BI") {   //Matrix type - BI 
-          zonenums = new int[rows * 2];
-          for (int z = 0; z < rows * 2; z++) {
+          zonenums = new int[rows];
+          for (int z = 0; z < rows; z++) {
             zonenums[z] = b.ReadInt32();
           }
         } else {   // Matrix type not BI.. 
@@ -168,33 +168,6 @@ namespace DaySim.Framework.Roster {
           }
         }
       }
-
-
-
-
-      /*
-
-
-              for (var origin = 0; origin < count; origin++)
-              {
-                  for (var destination = 0; destination < count; destination++)
-                  {
-                      if (position >= length)
-                      {
-                          goto end;
-                      }
-
-                      var value = reader.ReadUInt16();
-
-                      // binary matrices are already mapped to consecutive zone indices, matching the zone index file
-                      matrix[origin][destination] = value;
-
-                      position += sizeof(ushort);
-                  }
-              }
-          }
-
-      end:*/
 
       SkimMatrix skimMatrix = new SkimMatrix(matrix);
 
