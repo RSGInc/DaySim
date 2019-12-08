@@ -110,7 +110,7 @@ namespace DaySim.Framework.Roster {
         d = b.ReadByte();
 
         if (d == '\x01') {
-          //Console.WriteLine("This is a zero matrix!");
+          Console.WriteLine("All values are zero (null matrix)");
         } else if (d == '\x00') {
           double diagsum = b.ReadDouble();
           Console.WriteLine("Diagonal sum: " + diagsum.ToString());
@@ -166,6 +166,8 @@ namespace DaySim.Framework.Roster {
             double rowSum = b.ReadDouble();
             double columnSum = b.ReadDouble();
           }
+        } else {
+          Console.WriteLine("No matrix data read!");
         }
       }
 
