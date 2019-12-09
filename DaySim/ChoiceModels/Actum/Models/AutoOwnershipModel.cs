@@ -344,8 +344,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(14, (numberAdults >= 3).ToFlag());
 
       alternative.AddUtilityTerm(15, (numberChildren == 1).ToFlag());
-      alternative.AddUtilityTerm(16, (numberChildren == 2).ToFlag());
-      alternative.AddUtilityTerm(17, (numberChildren > 2).ToFlag());
+
+      //GV: 9.12.2019 - combine coeff. 16 and 17 into one, i.e. HH kids 2+
+      //alternative.AddUtilityTerm(16, (numberChildren == 2).ToFlag());
+      //alternative.AddUtilityTerm(17, (numberChildren > 2).ToFlag());
+      alternative.AddUtilityTerm(16, (numberChildren >= 2).ToFlag());
+
+
       alternative.AddUtilityTerm(18, (!hhPersonDataComplete).ToFlag()); //nuisance parameter for missing person records in TU data
       alternative.AddUtilityTerm(19, (hhPersonDataComplete && numberAdults == 1 && !isMale).ToFlag());  // requires complete HH data
       alternative.AddUtilityTerm(20, hhPersonDataComplete.ToFlag() * averageAdultAge / 10.0);  //JB--I don't like this variable.  //requires complete HH data  
@@ -433,8 +438,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(54, (numberAdults >= 3).ToFlag());
 
       alternative.AddUtilityTerm(55, (numberChildren == 1).ToFlag());
-      alternative.AddUtilityTerm(56, (numberChildren == 2).ToFlag());
-      alternative.AddUtilityTerm(57, (numberChildren > 2).ToFlag());
+
+
+      //GV: 9.12.2019 - combine coeff. 56 and 57 into one, i.e. HH kids 2+
+      //alternative.AddUtilityTerm(56, (numberChildren == 2).ToFlag());
+      //alternative.AddUtilityTerm(57, (numberChildren > 2).ToFlag());
+      alternative.AddUtilityTerm(56, (numberChildren >= 2).ToFlag());
+      
       alternative.AddUtilityTerm(58, (!hhPersonDataComplete).ToFlag()); //nuisance parameter for missing person records in TU data
       alternative.AddUtilityTerm(59, (hhPersonDataComplete && numberAdults == 1 && !isMale).ToFlag());  // requires complete HH data
       alternative.AddUtilityTerm(60, hhPersonDataComplete.ToFlag() * averageAdultAge / 10.0);  //JB--I don't like this variable.  //requires complete HH data  
