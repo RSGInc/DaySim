@@ -102,7 +102,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //JB: Employee parking places should not be used
       double resNoParking = (residenceParcel.ResidentialPermitOnlyParkingSpaces + 
         residenceParcel.PublicWithResidentialPermitAllowedParkingSpaces +
-        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpaces +   //20191205 remove per QA point 7
+        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpaces +   //20191205 remove per QA point 7.2
         //residenceParcel.EmployeeOnlyParkingSpaces +
         residenceParcel.ElectricVehicleOnlyParkingSpaces);
 
@@ -110,7 +110,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //JB: Employee parking places should not be used
       double Bf1NoParking = (residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer1 +
         residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1 +
-        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1 +   //20191205 remove per QA point 7
+        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1 +   //20191205 remove per QA point 7.2
         //residenceParcel.EmployeeOnlyParkingSpacesBuffer1 +
         residenceParcel.ElectricVehicleOnlyParkingSpacesBuffer1);
 
@@ -118,7 +118,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //JB: Employee parking places should not be used
       double Bf2NoParking = (residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer2 +
         residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer2 +
-        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer2 +    //20191205 remove per QA point 7
+        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer2 +    //20191205 remove per QA point 7.2
         //residenceParcel.EmployeeOnlyParkingSpacesBuffer2 +
         residenceParcel.ElectricVehicleOnlyParkingSpacesBuffer2);
 
@@ -367,16 +367,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 4. 3. 2019 - parking avail. in CPH
       //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
       //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
-      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(Bf1ParkingSpacesPerHH)) * (isInCopenhagenMunicipality).ToFlag());  // 20191205 JLB capped at zero per QA point 7
+      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());  // 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(Bf1ParkingSpacesPerHH)) * (isInCopenhagenMunicipality).ToFlag());  // 20191205 JLB capped at zero per QA point 7.1
 
       //GV: 4. 3. 2019 - parking avail. in Frederiksberg
       //alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
       //alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
-      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(Bf1ParkingSpacesPerHH)) * (isInFrederiksbergMunicipality).ToFlag());// 20191205 JLB capped at zero per QA point 7
+      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());// 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(Bf1ParkingSpacesPerHH)) * (isInFrederiksbergMunicipality).ToFlag());// 20191205 JLB capped at zero per QA point 7.1
 
       //GV: 4. 3. 2019 - parking avail. in the rest of GCA
       //alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (!hhLivesInCPHCity).ToFlag());
-      alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(resParkingSpacesPerHH)) * (!hhLivesInCPHCity).ToFlag());// 20191205 JLB capped at zero per QA point 7
+      alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (!hhLivesInCPHCity).ToFlag());// 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(resParkingSpacesPerHH)) * (!hhLivesInCPHCity).ToFlag());// 20191205 JLB capped at zero per QA point 7.1
 
       alternative.AddUtilityTerm(29, (residenceParcel.ParkingDataAvailable == 0).ToFlag());
       alternative.AddUtilityTerm(30, Math.Log(Math.Max(incomeRemainder1Car, 1)));  //should be positive coefficient
@@ -458,16 +461,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 4. 3. 2019 - parking avail. in CPH
       //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
       //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
-      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(Bf1ParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag()); // 20191205 JLB capped at zero per QA point 7
+      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag()); // 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(Bf1ParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag()); // 20191205 JLB capped at zero per QA point 7.1
 
       //GV: 4. 3. 2019 - parking avail. in Frederiksberg
       //alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
       //alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
-      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(Bf1ParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag()); // 20191205 JLB capped at zero per QA point 7
+      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag()); // 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(Bf1ParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag()); // 20191205 JLB capped at zero per QA point 7.1
 
       //GV: 4. 3. 2019 - parking avail. in the rest of GCA
       //alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag());
-      alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(resParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag()); // 20191205 JLB capped at zero per QA point 7
+      alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag()); // 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(resParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag()); // 20191205 JLB capped at zero per QA point 7.1
 
       alternative.AddUtilityTerm(69, (residenceParcel.ParkingDataAvailable == 0 ).ToFlag() * (numberAdults > 1).ToFlag());
       alternative.AddUtilityTerm(70, Math.Log(Math.Max(incomeRemainder2Cars, 1)) * (numberAdults > 1).ToFlag()); //should be positive coeficient
