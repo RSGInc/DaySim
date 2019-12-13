@@ -459,10 +459,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(313, durationShiftHours * schoolTourFlag * universityStudentFlag);
             alternative.AddUtilityTerm(314, durationShiftHours * schoolTourFlag * gymnasiumStudentFlag);
 
-            alternative.AddUtilityTerm(462, durationShiftMinutes.IsRightExclusiveBetween(420, 450).ToFlag()); // 7 - 7:30
-            alternative.AddUtilityTerm(463, durationShiftMinutes.IsRightExclusiveBetween(450,480).ToFlag()); // 7:30 - 8:00
-            alternative.AddUtilityTerm(464, durationShiftMinutes.IsRightExclusiveBetween(480,510).ToFlag()); // 8 - 8:30
-            alternative.AddUtilityTerm(465, durationShiftMinutes.IsRightExclusiveBetween(510,540).ToFlag()); // 8:30 - 9:00
+            alternative.AddUtilityTerm(462, durationShiftMinutes.IsRightExclusiveBetween(420, 450).ToFlag()); // 7 - 7.5
+            alternative.AddUtilityTerm(463, durationShiftMinutes.IsRightExclusiveBetween(450,480).ToFlag()); // 7.5 - 8
+            alternative.AddUtilityTerm(464, durationShiftMinutes.IsRightExclusiveBetween(480,510).ToFlag()); // 8 - 8.5
+            alternative.AddUtilityTerm(465, durationShiftMinutes.IsRightExclusiveBetween(510,540).ToFlag()); // 8.5 - 9
 
             // escort and non-home-based tour duration constants for the duration of stay at tour destination
           } else if (escortTourFlag == 1 || notHomeBasedTourFlag == 1) {

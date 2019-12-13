@@ -232,7 +232,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(21, (!person.IsStudentAge).ToFlag() * distanceUni_1);
         alternative.AddUtilityTerm(22, (!person.IsStudentAge).ToFlag() * distanceUni_2);
         alternative.AddUtilityTerm(23, (!person.IsStudentAge).ToFlag() * distanceUni_3);
-        
+
+        //20191212 JLB  add calibration coefficient for distance
+        alternative.AddUtilityTerm(96, distanceLog);
+
         alternative.AddUtilityTerm(24, isAge0to5.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(25, isPrimaryStudent.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(26, isSecondaryStudent.ToFlag() * aggregateLogsum);
