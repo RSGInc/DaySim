@@ -409,6 +409,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
         tripModeAvailable[Global.Settings.Modes.HovDriver] = false;
       }
 
+      //JLB 20191211  make PaidRideShare unavailable if it is set unavailable by user in properties file
+      if (!Global.Configuration.PaidRideShareModeIsAvailable) {
+        tripModeAvailable[Global.Settings.Modes.PaidRideShare] = false;
+      }
+
       // GV commented out School Bus
       // school bus is a special case - use HOV3 impedance and only available for school bus tours
       //var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov3);
