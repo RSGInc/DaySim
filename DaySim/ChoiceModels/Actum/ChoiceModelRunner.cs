@@ -251,6 +251,9 @@ namespace DaySim.ChoiceModels.Actum {
 
     private static void RunHouseholdModelSuite(HouseholdWrapper household) {
 
+      //use different children age categories
+      household.SetActumHouseholdTotals();
+
       //begin work location person loop
       foreach (PersonWrapper person in household.Persons) {
 
@@ -3266,6 +3269,7 @@ namespace DaySim.ChoiceModels.Actum {
           trip.LatestDepartureTime = Global.Settings.Times.MinutesInADay;
           if (departureTime >= 1 && departureTime <= Global.Settings.Times.MinutesInADay) {
             trip.HUpdateTripValues();
+            trip.SetTripValueOfTime();
           } else {
             trip.PersonDay.IsValid = false;
           }
@@ -3604,6 +3608,7 @@ namespace DaySim.ChoiceModels.Actum {
 
       if (Global.Configuration.ShouldRunTripModeModel) {
         // sets the trip's mode of travel to the destination
+
         if (trip.DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
           // trips to change mode destination are always by transit
 
@@ -3651,6 +3656,7 @@ namespace DaySim.ChoiceModels.Actum {
           if (trip.DepartureTime >= 1 && trip.DepartureTime <= Global.Settings.Times.MinutesInADay && trip.PersonDay.TimeWindow.EntireSpanIsAvailable(endpoint, trip.DepartureTime)) {
             if (!forTourTimesOnly) {
               trip.HUpdateTripValues();
+              trip.SetTripValueOfTime();
             }
           } else {
             trip.PersonDay.IsValid = false;
@@ -3670,14 +3676,15 @@ namespace DaySim.ChoiceModels.Actum {
           }
           if (trip.PersonDay.IsValid) {
             if (!forTourTimesOnly) {
-              if (trip.Mode == Global.Settings.Modes.Walk || trip.Mode == Global.Settings.Modes.Bike) {
-              }
+              //if (trip.Mode == Global.Settings.Modes.Walk || trip.Mode == Global.Settings.Modes.Bike) {
+              //}
               // 201603 JLB
-              if (tour.Mode == Global.Settings.Modes.BikeOnTransit || tour.Mode == Global.Settings.Modes.BikeParkRideBike
-                                || tour.Mode == Global.Settings.Modes.BikeParkRideWalk || tour.Mode == Global.Settings.Modes.WalkRideBike) {
-                trip.HPTBikeTourUpdateTripValues();
+              if (trip.Tour.Mode > Global.Settings.Modes.WalkRideWalk) {
+                trip.HPTBikeDriveTransitTourUpdateTripValues();
+                trip.SetTripValueOfTime();
               } else {
                 trip.HUpdateTripValues();
+                trip.SetTripValueOfTime();
               }
             }
           }
@@ -3855,6 +3862,7 @@ namespace DaySim.ChoiceModels.Actum {
       trip.EarliestDepartureTime = sourceTrip.EarliestDepartureTime;
       trip.LatestDepartureTime = sourceTrip.LatestDepartureTime;
       trip.HUpdateTripValues();
+      trip.SetTripValueOfTime();
     }
 
     private void UpdateHousehold() {
@@ -3977,7 +3985,6 @@ namespace DaySim.ChoiceModels.Actum {
             if (tour.HalfTourFromOrigin != null && tour.HalfTourFromDestination != null) {
               foreach (TripWrapper trip in tour.HalfTourFromOrigin.Trips.Invert()) {
                 trip.SetTourSequence(tour.Sequence);
-                trip.SetTripValueOfTime();
                 trip.Export();
 
                 ChoiceModelUtility.WriteTripForTDM(trip, ChoiceModelFactory.TDMTripListExporter);
@@ -3985,7 +3992,6 @@ namespace DaySim.ChoiceModels.Actum {
 
               foreach (TripWrapper trip in tour.HalfTourFromDestination.Trips) {
                 trip.SetTourSequence(tour.Sequence);
-                trip.SetTripValueOfTime();
                 trip.Export();
 
                 ChoiceModelUtility.WriteTripForTDM(trip, ChoiceModelFactory.TDMTripListExporter);

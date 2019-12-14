@@ -118,22 +118,34 @@ namespace DaySim.ChoiceModels.Actum.Models {
         tour.HalfTour1AccessCost = choice.OriginAccessCost / 2.0;
         tour.HalfTour1AccessDistance = choice.OriginAccessDistance / 2.0;
         tour.HalfTour1AccessMode = choice.OriginAccessMode;
-        tour.HalfTour1AccessStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
+        tour.HalfTour1AccessStopAreaKey = choice.OriginStopAreaKey;
+        tour.HalfTour1AccessStopAreaParcelID = choice.OriginStopAreaParcelID;
+        tour.HalfTour1AccessStopAreaZoneID = choice.OriginStopAreaZoneID;
+        tour.HalfTour1AccessParkingNodeID = choice.OriginParkingNodeID;
         tour.HalfTour1AccessTime = choice.OriginAccessTime / 2.0;
         tour.HalfTour1EgressCost = choice.DestinationAccessCost / 2.0;
         tour.HalfTour1EgressDistance = choice.DestinationAccessDistance / 2.0;
         tour.HalfTour1EgressMode = choice.DestinationAccessMode;
-        tour.HalfTour1EgressStopAreaKey = choice.ParkAndRideDestinationStopAreaKey;
+        tour.HalfTour1EgressStopAreaKey = choice.DestinationStopAreaKey;
+        tour.HalfTour1EgressStopAreaParcelID = choice.DestinationStopAreaParcelID;
+        tour.HalfTour1EgressStopAreaZoneID = choice.DestinationStopAreaZoneID;
+        tour.HalfTour1EgressParkingNodeID = choice.DestinationParkingNodeID;
         tour.HalfTour1EgressTime = choice.DestinationAccessTime / 2.0;
         tour.HalfTour2AccessCost = choice.DestinationAccessCost / 2.0;
         tour.HalfTour2AccessDistance = choice.DestinationAccessDistance / 2.0;
         tour.HalfTour2AccessMode = choice.DestinationAccessMode;
-        tour.HalfTour2AccessStopAreaKey = choice.ParkAndRideDestinationStopAreaKey;
+        tour.HalfTour2AccessStopAreaKey = choice.DestinationStopAreaKey;
+        tour.HalfTour2AccessStopAreaParcelID = choice.DestinationStopAreaParcelID;
+        tour.HalfTour2AccessStopAreaZoneID = choice.DestinationStopAreaZoneID;
+        tour.HalfTour2AccessParkingNodeID = choice.DestinationParkingNodeID;
         tour.HalfTour2AccessTime = choice.DestinationAccessTime / 2.0;
         tour.HalfTour2EgressCost = choice.OriginAccessCost / 2.0;
         tour.HalfTour2EgressDistance = choice.OriginAccessDistance / 2.0;
         tour.HalfTour2EgressMode = choice.OriginAccessMode;
-        tour.HalfTour2EgressStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
+        tour.HalfTour2EgressStopAreaKey = choice.OriginStopAreaKey;
+        tour.HalfTour2EgressStopAreaParcelID = choice.OriginStopAreaParcelID;
+        tour.HalfTour2EgressStopAreaZoneID = choice.OriginStopAreaZoneID;
+        tour.HalfTour2EgressParkingNodeID = choice.OriginParkingNodeID;
         tour.HalfTour2EgressTime = choice.OriginAccessTime / 2.0;
         tour.HalfTour1TravelTime = choice.TravelTimeToDestination;
         tour.HalfTour2TravelTime = choice.TravelTimeFromDestination;
@@ -203,7 +215,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       HouseholdDayWrapper householdDay = (tour.PersonDay == null) ? null : (HouseholdDayWrapper)tour.PersonDay.HouseholdDay;
 
-      int constrainedMode = 0;
+      int constrainedMode = Global.Configuration.IncludeMixedModesInModeChoiceLogsums ? 0 : -1;
       int constrainedArrivalTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationArrivalTime : 0;
       int constrainedDepartureTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationDepartureTime : 0;
 
@@ -872,7 +884,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
               && (mode > 0)
               && (person.Age >= Global.Configuration.COMPASS_MinimumAutoDrivingAge || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
               && (constrainedMode > 0 || mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.HovDriver || mode == Global.Settings.Modes.Transit || !partialHalfTour)
-              && (constrainedMode <= 0 || constrainedMode == mode)
+              && (constrainedMode == 0 || (constrainedMode < 0 && mode <= Global.Settings.Modes.WalkRideWalk) || constrainedMode == mode)
               && (constrainedArrivalTime <= 0 || (constrainedArrivalTime >= arrivalPeriod.Start && constrainedArrivalTime <= arrivalPeriod.End))
               && (constrainedDepartureTime <= 0 || (constrainedDepartureTime >= departurePeriod.Start && constrainedDepartureTime <= departurePeriod.End));
 

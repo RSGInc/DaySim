@@ -123,6 +123,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           return;
         }
 
+        IActumHouseholdWrapper household = (IActumHouseholdWrapper)trip.Household;
+
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton.RunAll(
                 trip.Household.RandomUtility,
@@ -137,6 +139,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 trip.Household.VehiclesAvailable,
                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
+                trip.Tour.HovOccupancy,
+                household.AutoType,
                 trip.Person.PersonType,
                 false);
 
@@ -155,6 +159,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         choiceProbabilityCalculator.WriteObservation();
       } else {
+
+        IActumHouseholdWrapper household = (IActumHouseholdWrapper)trip.Household;
+
         IEnumerable<IPathTypeModel> pathTypeModels =
             PathTypeModelFactory.Singleton.RunAll(
                 trip.Household.RandomUtility,
@@ -169,6 +176,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 trip.Household.VehiclesAvailable,
                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
+                trip.Tour.HovOccupancy,
+                household.AutoType, 
                 trip.Person.PersonType,
                 false);
 

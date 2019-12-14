@@ -171,10 +171,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
       int freeFareType = Global.Settings.PersonTypes.ChildUnder5;
 
-      if (person.HouseholdId == 1080050 && person.Sequence == 2) {
-        bool testbool2 = true;
-      }
-
+ 
       if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
         IEnumerable<IPathTypeModel> pathTypeModels =
@@ -191,6 +188,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 1,
                 0,
                 false,
+                /* hov occ */ 2, /* auto type */ 1,
                 fullFareType,
                 false,
                 Global.Settings.Modes.Transit);
@@ -215,7 +213,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 /* transitPassOwnership */ fareZones,
                 /* carsAreAVs */ false,
                 /* transitDiscountFraction */ //freeFareType,  JB 20190513
-                                              /* transitDiscountFraction */ fullFareType,
+                /* transitDiscountFraction */ fullFareType,
+                /* hov occ */ 2, /* auto type */ 1,
+                /* transitDiscountFraction */ fullFareType,
                 /* randomChoice */ false,
                 Global.Settings.Modes.Transit);
 
@@ -223,11 +223,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         workGenTimeWithPass = path.GeneralizedTimeLogsum;
 
-      }
-
-      if (workGenTimeWithPass > -90 && workGenTimeWithPass == workGenTimeNoPass) {
-        bool testbool = true;
-        testbool = false;
       }
 
       //			double schoolGenTimeNoPass = -99.0;
@@ -250,6 +245,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 1,
                 fareZones,
                 false,
+                /* hov occ */ 2, /* auto type */ 1,
                 freeFareType,
                 false,
                 Global.Settings.Modes.Transit);

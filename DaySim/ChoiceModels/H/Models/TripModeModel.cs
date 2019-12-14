@@ -82,6 +82,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 trip.Household.VehiclesAvailable,
                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
+                 /* hov occ */ 2, /* auto type */ 1,
                 trip.Person.PersonType,
                 false);
 
@@ -111,6 +112,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 trip.Household.VehiclesAvailable,
                  trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
+                 /* hov occ */ 2, /* auto type */ 1,
                 trip.Person.PersonType,
                 false);
 

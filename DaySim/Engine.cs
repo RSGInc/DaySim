@@ -1111,6 +1111,7 @@ namespace DaySim {
       List<int> stopAreaIds = new List<int>();
       List<float> lengths = new List<float>(); /* raw values */
       List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
+      List<int> stopAreaParcelIds = new List<int>();
 
       // read header
       reader.ReadLine();
@@ -1125,6 +1126,7 @@ namespace DaySim {
       stopAreaKeys.Add(0);
       distances.Add(0F);
       lengths.Add(0F);
+      stopAreaParcelIds.Add(0);
 
       while ((line = reader.ReadLine()) != null) {
         string[] tokens = line.Split(new[] { Global.Configuration.NodeStopAreaIndexDelimiter });
@@ -1146,18 +1148,24 @@ namespace DaySim {
         //mb changed this array to use mapping of stop area ids 
         int stopAreaIndex = Global.TransitStopAreaMapping[stopAreaId];
         stopAreaIds.Add(stopAreaIndex);
-
+       if (Global.Configuration.DataType == "Actum") {
+           int stopAreaParcelId = int.Parse(tokens[3]);
+           stopAreaParcelIds.Add(stopAreaParcelId);
+        }
         float length = float.Parse(tokens[2]);
         lengths.Add(length);
         float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
         distances.Add(distance);
       }
 
-      //Global.ParcelStopAreaParcelIds = parcelIds.ToArray();
+      Global.ParcelStopAreaParcelIds = stopAreaParcelIds.ToArray();
       Global.ParcelStopAreaStopAreaKeys = stopAreaKeys.ToArray();
       Global.ParcelStopAreaStopAreaIds = stopAreaIds.ToArray();
       Global.ParcelStopAreaLengths = lengths.ToArray();
       Global.ParcelStopAreaDistances = distances.ToArray();
+      if (Global.Configuration.DataType == "Actum") {
+        Global.ParcelStopAreaParcelIds = stopAreaParcelIds.ToArray();
+      }
     }
 
     private static void BeginLoadMicrozoneToAutoParkAndRideNodeDistances() {
