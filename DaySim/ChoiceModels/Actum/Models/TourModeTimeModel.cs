@@ -658,6 +658,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(603, parkwrkflag * workTourFlag);
           modeComponent.AddUtilityTerm(604, parkwrkmissflag * workTourFlag);
           modeComponent.AddUtilityTerm(607, hhsizeone);
+          
 
 
 
@@ -970,6 +971,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 //          alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
 
           double gentime = modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination;
+          
+          double distance = modeTimes.PathDistanceToDestination + modeTimes.PathDistanceFromDestination;
 
           // Expand generalised time by purpose
 
@@ -995,7 +998,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
             alternative.AddUtilityTerm(203, educationTourFlag * gentime);
             alternative.AddUtilityTerm(203, otherTourFlag * gentime);
-           // alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
+            // alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
+            //alternative.AddUtilityTerm(220, distance);
           }
 
           else if (gtVariable == 5) {

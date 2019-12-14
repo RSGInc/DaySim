@@ -19,7 +19,7 @@ using DaySim.PathTypeModels;
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TripModeModel : ChoiceModel {
     public const string CHOICE_MODEL_NAME = "ActumTripModeModel";
-    private const int MAX_PARAMETER = 299;
+    private const int MAX_PARAMETER = 310;
 
     // this is Mark B (leave it out)
     //private const int TOTAL_NESTED_ALTERNATIVES = 5;
@@ -418,6 +418,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
         tripModeAvailable[Global.Settings.Modes.HovDriver] = false;
       }
 
+      //JLB 20191211  make PaidRideShare unavailable if it is set unavailable by user in properties file
+      if (!Global.Configuration.PaidRideShareModeIsAvailable) {
+        tripModeAvailable[Global.Settings.Modes.PaidRideShare] = false;
+      }
+
       // GV commented out School Bus
       // school bus is a special case - use HOV3 impedance and only available for school bus tours
       //var pathTypeExtra = pathTypeModels.First(x => x.Mode == Global.Settings.Modes.Hov3);
@@ -487,6 +492,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(57, PTpass);
 
           alternative.AddUtilityTerm(100, transitTourFlag);
+          // Not transit tour.
+          alternative.AddUtilityTerm(300, 1-transitTourFlag);
           alternative.AddUtilityTerm(102, (transitTourFlag * onlyTripOnFirstHalfFlag));
           alternative.AddUtilityTerm(103, (transitTourFlag * onlyTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(104, (transitTourFlag * firstTripOnFirstHalfFlag));
@@ -510,7 +517,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(237, tripdestinationPersonalBusinessflag);
           alternative.AddUtilityTerm(238, tripdestinationShoppingflag);
           alternative.AddUtilityTerm(239, tripdestinationSocialflag);
-      
+          alternative.AddUtilityTerm(302, (transitTourFlag * onlyTripOnFirstHalfFlag));
+          alternative.AddUtilityTerm(303, (transitTourFlag * onlyTripOnSecondHalfFlag));
+          alternative.AddUtilityTerm(304, (transitTourFlag * firstTripOnFirstHalfFlag));
+          alternative.AddUtilityTerm(305, (transitTourFlag * firstTripOnSecondHalfFlag));
+          alternative.AddUtilityTerm(306, (transitTourFlag * lastTripOnFirstHalfFlag));
+          alternative.AddUtilityTerm(307, (transitTourFlag * lastTripOnSecondHalfFlag));
+
         } else if (mode == Global.Settings.Modes.HovPassenger) {
           alternative.AddUtilityTerm(30, 1);
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT3));
@@ -521,6 +534,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(37, twoPersonHouseholdFlag);
           alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
           alternative.AddUtilityTerm(100, CarPassengerFlag);
+          alternative.AddUtilityTerm(301, CarPassengerFlag);
           alternative.AddUtilityTerm(102, (CarPassengerFlag * onlyTripOnFirstHalfFlag));
           alternative.AddUtilityTerm(103, (CarPassengerFlag * onlyTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(104, (CarPassengerFlag * firstTripOnFirstHalfFlag));
@@ -559,6 +573,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(246, tripdestinationShoppingflag);
           alternative.AddUtilityTerm(247, tripdestinationSocialflag);
 
+
+
         } else if (mode == Global.Settings.Modes.HovDriver) {
           alternative.AddUtilityTerm(40, 1);
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / ChoiceModelUtility.CPFACT2));
@@ -568,6 +584,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(38, onePersonHouseholdFlag);
           alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
           alternative.AddUtilityTerm(100, CarDrivNotAloneFlag);
+          alternative.AddUtilityTerm(302, CarDrivNotAloneFlag);
           alternative.AddUtilityTerm(102, (CarDrivNotAloneFlag * onlyTripOnFirstHalfFlag));
           alternative.AddUtilityTerm(103, (CarDrivNotAloneFlag * onlyTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(104, (CarDrivNotAloneFlag * firstTripOnFirstHalfFlag));
@@ -607,6 +624,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(254, tripdestinationShoppingflag);
           alternative.AddUtilityTerm(255, tripdestinationSocialflag);
 
+          alternative.AddUtilityTerm(314, (CarDrivNotAloneFlag * onlyTripOnFirstHalfFlag));
+          alternative.AddUtilityTerm(315, (CarDrivNotAloneFlag * onlyTripOnSecondHalfFlag));
+          alternative.AddUtilityTerm(316, (CarDrivNotAloneFlag * firstTripOnFirstHalfFlag));
+          alternative.AddUtilityTerm(317, (CarDrivNotAloneFlag * firstTripOnSecondHalfFlag));
+          alternative.AddUtilityTerm(318, (CarDrivNotAloneFlag * lastTripOnFirstHalfFlag));
+          alternative.AddUtilityTerm(319, (CarDrivNotAloneFlag * lastTripOnSecondHalfFlag));
+
+
 
         } else if (mode == Global.Settings.Modes.Sov) {
           alternative.AddUtilityTerm(50, 1);
@@ -614,6 +639,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(52, carsLessThanDriversFlag);
 
           alternative.AddUtilityTerm(100, CarDrivAloneFlag);
+          alternative.AddUtilityTerm(303, CarDrivAloneFlag);
           alternative.AddUtilityTerm(102, (CarDrivAloneFlag * onlyTripOnFirstHalfFlag));
           alternative.AddUtilityTerm(103, (CarDrivAloneFlag * onlyTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(104, (CarDrivAloneFlag * firstTripOnFirstHalfFlag));
@@ -651,6 +677,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //alternative.AddUtilityTerm(65, originIntersectionDensity);
 
           alternative.AddUtilityTerm(100, bikeTourFlag);
+          alternative.AddUtilityTerm(304, bikeTourFlag);
           alternative.AddUtilityTerm(102, (bikeTourFlag * onlyTripOnFirstHalfFlag));
           alternative.AddUtilityTerm(103, (bikeTourFlag * onlyTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(104, (bikeTourFlag * firstTripOnFirstHalfFlag));
@@ -692,6 +719,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           // origin and destination mixed use measures - geometric avg. - half mile from cell, in 1000s
 
           alternative.AddUtilityTerm(100, walkTourFlag);
+          alternative.AddUtilityTerm(305, walkTourFlag);
           alternative.AddUtilityTerm(102, (walkTourFlag * onlyTripOnFirstHalfFlag));
           alternative.AddUtilityTerm(103, (walkTourFlag * onlyTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(104, (walkTourFlag * firstTripOnFirstHalfFlag));
@@ -736,6 +764,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(80, Global.Configuration.PaidRideShare_AgeOver65Coefficient * (person.Age >= 65).ToFlag());
 
           alternative.AddUtilityTerm(100, paidRideShareTourFlag);
+          alternative.AddUtilityTerm(306, paidRideShareTourFlag);
           alternative.AddUtilityTerm(102, (paidRideShareTourFlag * onlyTripOnFirstHalfFlag));
           alternative.AddUtilityTerm(103, (paidRideShareTourFlag * onlyTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(104, (paidRideShareTourFlag * firstTripOnFirstHalfFlag));
