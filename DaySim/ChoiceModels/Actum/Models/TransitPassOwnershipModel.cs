@@ -212,8 +212,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 /* householdCars */ 1,
                 /* transitPassOwnership */ fareZones,
                 /* carsAreAVs */ false,
-                /* transitDiscountFraction */ //freeFareType,  JB 20190513
-                /* transitDiscountFraction */ fullFareType,
                 /* hov occ */ 2, /* auto type */ 1,
                 /* transitDiscountFraction */ fullFareType,
                 /* randomChoice */ false,

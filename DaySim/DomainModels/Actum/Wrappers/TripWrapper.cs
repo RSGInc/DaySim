@@ -165,15 +165,16 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     public override void SetDriverOrPassenger(List<Framework.DomainModels.Wrappers.ITripWrapper> trips) {
       if (Mode == Global.Settings.Modes.PaidRideShare) {
         //set main and other passenger randomly by tour purpose to get right percentage of trips to assign to network
+        //may want to change these to 
         double randomNumber = Household.RandomUtility.Uniform01();
         DriverType =
-             (Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < 0.98
-             || Tour.DestinationPurpose == Global.Settings.Purposes.Business && randomNumber < 0.8
-             || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < 0.32
-             || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < 0.4
-             || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < 0.70
-             || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < 0.73
-             || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < 0.62) ?
+             (Tour.DestinationPurpose == Global.Settings.Purposes.Work && randomNumber < Global.Configuration.COMPASS_PercentSharedCarTripsByMainPassenger_Work
+             || Tour.DestinationPurpose == Global.Settings.Purposes.Business && randomNumber < Global.Configuration.COMPASS_PercentSharedCarTripsByMainPassenger_Business
+             || Tour.DestinationPurpose == Global.Settings.Purposes.School && randomNumber < Global.Configuration.COMPASS_PercentSharedCarTripsByMainPassenger_School
+             || Tour.DestinationPurpose == Global.Settings.Purposes.Escort && randomNumber < Global.Configuration.COMPASS_PercentSharedCarTripsByMainPassenger_Escort
+             || Tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness && randomNumber < Global.Configuration.COMPASS_PercentSharedCarTripsByMainPassenger_PersonalBusiness
+             || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < Global.Configuration.COMPASS_PercentSharedCarTripsByMainPassenger_Shopping
+             || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < Global.Configuration.COMPASS_PercentSharedCarTripsByMainPassenger_Social) ?
              Global.Settings.DriverTypes.Driver : Global.Settings.DriverTypes.Passenger;
         //if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
         //  DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network

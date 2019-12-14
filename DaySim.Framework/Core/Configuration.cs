@@ -2242,8 +2242,20 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double COMPASS_AutomatedVehicleParkingPriceDiscount { get; set; } = 0.00;
 
-
-
+    [XmlAttribute]
+    public double COMPASS_PercentSharedCarTripsByMainPassenger_Work { get; set; } = 0.98;
+    [XmlAttribute]
+    public double COMPASS_PercentSharedCarTripsByMainPassenger_Business { get; set; } = 0.80;
+    [XmlAttribute]
+    public double COMPASS_PercentSharedCarTripsByMainPassenger_School { get; set; } = 0.32;
+    [XmlAttribute]
+    public double COMPASS_PercentSharedCarTripsByMainPassenger_Escort { get; set; } = 0.40;
+    [XmlAttribute]
+    public double COMPASS_PercentSharedCarTripsByMainPassenger_PersonalBusiness { get; set; } = 0.70;
+    [XmlAttribute]
+    public double COMPASS_PercentSharedCarTripsByMainPassenger_Shopping { get; set; } = 0.73;
+    [XmlAttribute]
+    public double COMPASS_PercentSharedCarTripsByMainPassenger_Social { get; set; } = 0.62;
 
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
