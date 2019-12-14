@@ -3,7 +3,7 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
 
 
 using System;
@@ -144,6 +144,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 19. mar. 2019 - parkig costs in Buffer1 area
       double Bf1LogParkingPrice = Math.Log(workerUsualParcel.PublicParkingHourlyPriceBuffer1 + 1);
       double Bf1ParkingPrice = workerUsualParcel.PublicParkingHourlyPriceBuffer1;
+
+      //GV: 03. dec. 2019 - new from JB
+      //JB 20191202
+      double Bf1PubNoResSpaces = workerUsualParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1;
+      double Bf1PubWithResSpaces = workerUsualParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1;
+
+
       //double Bf1ParkingCost = (Math.Max(1.0, workerUsualParcel.ParkingOffStreetPaidDailyPriceBuffer1));
       //double Bf1ParkingCost = (Math.Max(1.0, workerUsualParcel.PublicParkingHourlyPriceBuffer1));
       //double Bf1ParkingCost = (Math.Max(1.0, workerUsualParcel.ParkingOffStreetPaidDailyPriceBuffer1));
@@ -157,7 +164,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       // 0 No paid parking at work
 
-      ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0); 
+    ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0); 
 
       alternative.Choice = 0;
 
@@ -208,9 +215,28 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(14, Bf1NoParking * workLocationIsInFDBMuni.ToFlag());
       //alternative.AddUtilityTerm(15, destNoParking * (!workLocationIsInCPHcity).ToFlag()); //GV: if this included model fails due to 100% correlation wih ParkingCosts  
 
+
+      //GV: 02.12.2019 
+      //Response: Only two price variables are available in the microzone data, and one of them is the daily residential permit price, which is irrelevant.
+      //We used the other one, the ‘public’ price variable, which is the weighted average hourly price that includes two categories of parking:
+      //Category 2—public with residential permit allowed
+      //Category 3—public no residential permit allowed
+      //Category 3 includes the high-priced parking that I believe is what you refer to as private.  Category 2 does not.  
+      //(We us the term ‘public’ to refer to parking that is available to the public.  
+      //I believe you use the term ‘private’ to refer to parking provided by a private company, but which is also available to the public. )  
+      //So, the existing price variable captures the effect of very high prices in areas like Ørestad.
+      //It may be the case that the price variable fails to completely capture the difference in employer-provided parking between areas that have low-priced parking and those that don’t.
+      //Given the available data, one way to try to capture the effect would be to specify the following ‘type of available parking’ variable:
+      //(Buffer 1 Category 3 parking spaces available)/(Buffer 1 Categories 2 + 3 parking spaces available)
+
+      //JB 20191202
+      //This is the share of publicly available spaces that are in high-priced lots/garages.
+      alternative.AddUtilityTerm(18, Bf1PubNoResSpaces / Math.Max(1, (Bf1PubNoResSpaces + Bf1PubWithResSpaces)));
+
+
       //GV: 15.3.2019 - parking costs
       //JB 20190427 test separately and use one or the other of the two price terms. beta should be positive
-      alternative.AddUtilityTerm(19, Bf1ParkingPrice);
+      alternative.AddUtilityTerm(19, Bf1ParkingPrice);  
       alternative.AddUtilityTerm(20, Bf1LogParkingPrice);
       
       //JB 20190427 test separately and use one or the other of the three free parking spaces terms. beta should be negative  
@@ -262,7 +288,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 18.3.2019 - EmploymentFood and -AgricultureConstruction added
       alternative.AddUtilityTerm(46, (workerUsualParcel.EmploymentFoodBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(47, (workerUsualParcel.EmploymentAgricultureConstructionBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));
-
 
     }
   }

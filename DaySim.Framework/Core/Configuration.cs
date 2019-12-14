@@ -2214,6 +2214,8 @@ namespace DaySim.Framework.Core {
     public double COMPASS_AnnualCostToUseOneAVInMonetaryUnits { get; set; } = 36615.0;
     [XmlAttribute]
     public double COMPASS_AnnualCostToUseCoefficient { get; set; } = -0.001;
+    [XmlAttribute]
+    public double COMPASS_Own0VehiclesCoefficient { get; set; }
 
     [XmlAttribute]
     public double COMPASS_DestinationParkingLogCapacityCoefficient { get; set; }

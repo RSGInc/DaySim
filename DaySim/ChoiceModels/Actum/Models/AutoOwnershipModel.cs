@@ -3,7 +3,7 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
 
 
 using System;
@@ -102,7 +102,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //JB: Employee parking places should not be used
       double resNoParking = (residenceParcel.ResidentialPermitOnlyParkingSpaces + 
         residenceParcel.PublicWithResidentialPermitAllowedParkingSpaces +
-        residenceParcel.PublicNoResidentialPermitAllowedParkingSpaces +
+        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpaces +   //20191205 remove per QA point 7.2
         //residenceParcel.EmployeeOnlyParkingSpaces +
         residenceParcel.ElectricVehicleOnlyParkingSpaces);
 
@@ -110,7 +110,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //JB: Employee parking places should not be used
       double Bf1NoParking = (residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer1 +
         residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1 +
-        residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1 +
+        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1 +   //20191205 remove per QA point 7.2
         //residenceParcel.EmployeeOnlyParkingSpacesBuffer1 +
         residenceParcel.ElectricVehicleOnlyParkingSpacesBuffer1);
 
@@ -118,7 +118,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //JB: Employee parking places should not be used
       double Bf2NoParking = (residenceParcel.ResidentialPermitOnlyParkingSpacesBuffer2 +
         residenceParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer2 +
-        residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer2 +
+        //residenceParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer2 +    //20191205 remove per QA point 7.2
         //residenceParcel.EmployeeOnlyParkingSpacesBuffer2 +
         residenceParcel.ElectricVehicleOnlyParkingSpacesBuffer2);
 
@@ -292,6 +292,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(1, 1); //calibration constant. Constrain to zero for estimation
       //GV: 28. feb. 2019 - HH==2, an adult and a child 
       //alternative.AddUtilityTerm(3, (household.Size == 2 && numberAdults == 1 && numberChildren == 1).ToFlag()); //not significant 
+
+      alternative.AddUtilityTerm(100, Global.Configuration.COMPASS_Own0VehiclesCoefficient);  //20191205 JLB Add configuration parameter to allow user to adjust zero-car constant
       alternative.AddUtilityTerm(100, zeroVehEVEffect);
       alternative.AddUtilityTerm(100, zeroVehAVEffect);
       alternative.AddUtilityTerm(100, zeroVehSEEffect);
@@ -342,8 +344,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(14, (numberAdults >= 3).ToFlag());
 
       alternative.AddUtilityTerm(15, (numberChildren == 1).ToFlag());
-      alternative.AddUtilityTerm(16, (numberChildren == 2).ToFlag());
-      alternative.AddUtilityTerm(17, (numberChildren > 2).ToFlag());
+
+      //GV: 9.12.2019 - combine coeff. 16 and 17 into one, i.e. HH kids 2+
+      //alternative.AddUtilityTerm(16, (numberChildren == 2).ToFlag());
+      //alternative.AddUtilityTerm(17, (numberChildren > 2).ToFlag());
+      alternative.AddUtilityTerm(16, (numberChildren >= 2).ToFlag());
+
+
       alternative.AddUtilityTerm(18, (!hhPersonDataComplete).ToFlag()); //nuisance parameter for missing person records in TU data
       alternative.AddUtilityTerm(19, (hhPersonDataComplete && numberAdults == 1 && !isMale).ToFlag());  // requires complete HH data
       alternative.AddUtilityTerm(20, hhPersonDataComplete.ToFlag() * averageAdultAge / 10.0);  //JB--I don't like this variable.  //requires complete HH data  
@@ -360,16 +367,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 4. 3. 2019 - parking avail. in CPH
       //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
       //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
-      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());
+      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (isInCopenhagenMunicipality).ToFlag());  // 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(Bf1ParkingSpacesPerHH)) * (isInCopenhagenMunicipality).ToFlag());  // 20191205 JLB capped at zero per QA point 7.1
 
       //GV: 4. 3. 2019 - parking avail. in Frederiksberg
       //alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
       //alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
-      alternative.AddUtilityTerm(27, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());
+      alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (isInFrederiksbergMunicipality).ToFlag());// 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(26, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(Bf1ParkingSpacesPerHH)) * (isInFrederiksbergMunicipality).ToFlag());// 20191205 JLB capped at zero per QA point 7.1
 
       //GV: 4. 3. 2019 - parking avail. in the rest of GCA
       //alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (!hhLivesInCPHCity).ToFlag());
-      alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (!hhLivesInCPHCity).ToFlag());
+      alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (!hhLivesInCPHCity).ToFlag());// 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(28, residenceParcel.ParkingDataAvailable * Math.Min(0,Math.Log(resParkingSpacesPerHH)) * (!hhLivesInCPHCity).ToFlag());// 20191205 JLB capped at zero per QA point 7.1
 
       alternative.AddUtilityTerm(29, (residenceParcel.ParkingDataAvailable == 0).ToFlag());
       alternative.AddUtilityTerm(30, Math.Log(Math.Max(incomeRemainder1Car, 1)));  //should be positive coefficient
@@ -390,8 +400,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(34, residenceParcel.ParkingDataAvailable * (residenceParcel.PublicParkingHourlyPrice));
 
       //GV: 20. feb. 2019 - income; MBs values are applied
-      alternative.AddUtilityTerm(35, (household.Income >= 450000 && household.Income < 900000).ToFlag());  
-      alternative.AddUtilityTerm(36, (household.Income >= 900000).ToFlag());
+      //JLB 20191205 comment out these two terms
+      //alternative.AddUtilityTerm(35, (household.Income >= 450000 && household.Income < 900000).ToFlag());  
+      //alternative.AddUtilityTerm(36, (household.Income >= 900000).ToFlag());
 
       //GV: 20. feb. 2019 - HHsize 3+
       //JB:  20190224 Stefan's spec already has household size-related variables that confound with this variable  
@@ -400,6 +411,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 20. feb. 2019 - HH has child/children
       //JB:  20190224 Stefan's spec already has number of children variables that confound with this variable
       //alternative.AddUtilityTerm(32, (numberChildren >= 1).ToFlag());
+      
+      //20191205 JLB added for QA point 2
+      //test 36 instead of 24 and 35
+      alternative.AddUtilityTerm(35, residenceParcel.DistanceToCommuterRail);     // distance to low frequency rail (eg S tog)
+      alternative.AddUtilityTerm(36, Math.Min(residenceParcel.DistanceToCommuterRail, residenceParcel.DistanceToLightRail));     // distance to nearer of metro and s-tog
+
+      //20191205 JLB added for QA point 4
+      // use at most one of betas 20, 37, 38, 39
+      alternative.AddUtilityTerm(37, hhPersonDataComplete.ToFlag() * Math.Min(averageAdultAge,25) / 10.0);    
+      alternative.AddUtilityTerm(38, hhPersonDataComplete.ToFlag() * Math.Min(averageAdultAge,45) / 10.0);    
+      alternative.AddUtilityTerm(39, hhPersonDataComplete.ToFlag() * Math.Min(averageAdultAge,65) / 10.0);    
+
+
 
       alternative.AddUtilityTerm(100, oneVehEVEffect);
       alternative.AddUtilityTerm(100, oneVehAVEffect);
@@ -417,8 +441,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(54, (numberAdults >= 3).ToFlag());
 
       alternative.AddUtilityTerm(55, (numberChildren == 1).ToFlag());
-      alternative.AddUtilityTerm(56, (numberChildren == 2).ToFlag());
-      alternative.AddUtilityTerm(57, (numberChildren > 2).ToFlag());
+
+
+      //GV: 9.12.2019 - combine coeff. 56 and 57 into one, i.e. HH kids 2+
+      //alternative.AddUtilityTerm(56, (numberChildren == 2).ToFlag());
+      //alternative.AddUtilityTerm(57, (numberChildren > 2).ToFlag());
+      alternative.AddUtilityTerm(56, (numberChildren >= 2).ToFlag());
+      
       alternative.AddUtilityTerm(58, (!hhPersonDataComplete).ToFlag()); //nuisance parameter for missing person records in TU data
       alternative.AddUtilityTerm(59, (hhPersonDataComplete && numberAdults == 1 && !isMale).ToFlag());  // requires complete HH data
       alternative.AddUtilityTerm(60, hhPersonDataComplete.ToFlag() * averageAdultAge / 10.0);  //JB--I don't like this variable.  //requires complete HH data  
@@ -432,16 +461,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 4. 3. 2019 - parking avail. in CPH
       //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
       //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
-      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag());
+      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag()); // 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(Bf1ParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (isInCopenhagenMunicipality).ToFlag()); // 20191205 JLB capped at zero per QA point 7.1
 
       //GV: 4. 3. 2019 - parking avail. in Frederiksberg
       //alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
       //alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
-      alternative.AddUtilityTerm(67, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag());
+      alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Log(Bf1ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag()); // 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(66, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(Bf1ParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (isInFrederiksbergMunicipality).ToFlag()); // 20191205 JLB capped at zero per QA point 7.1
 
       //GV: 4. 3. 2019 - parking avail. in the rest of GCA
       //alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH + Bf1ParkingSpacesPerHH + Bf2ParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag());
-      alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag());
+      alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Log(resParkingSpacesPerHH) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag()); // 20191205 JLB NOT capped at zero, prior to QA point 7.1
+      //alternative.AddUtilityTerm(68, residenceParcel.ParkingDataAvailable * Math.Min(0, Math.Log(resParkingSpacesPerHH)) * (numberAdults > 1).ToFlag() * (!hhLivesInCPHCity).ToFlag()); // 20191205 JLB capped at zero per QA point 7.1
 
       alternative.AddUtilityTerm(69, (residenceParcel.ParkingDataAvailable == 0 ).ToFlag() * (numberAdults > 1).ToFlag());
       alternative.AddUtilityTerm(70, Math.Log(Math.Max(incomeRemainder2Cars, 1)) * (numberAdults > 1).ToFlag()); //should be positive coeficient
@@ -466,8 +498,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: 20. feb. 2019 - income
       //JB: 20190224 Goran, Stefan's spec already has income effects that confound with these variables.  
-      alternative.AddUtilityTerm(35, ((household.Income >= 450000 && household.Income < 900000).ToFlag()) * (numberAdults > 1).ToFlag());
-      alternative.AddUtilityTerm(36, ((household.Income >= 900000).ToFlag()) * (numberAdults > 1).ToFlag());
+      //JLB 20191205 comment out these two terms
+      //alternative.AddUtilityTerm(35, ((household.Income >= 450000 && household.Income < 900000).ToFlag()) * (numberAdults > 1).ToFlag());
+      //alternative.AddUtilityTerm(36, ((household.Income >= 900000).ToFlag()) * (numberAdults > 1).ToFlag());
 
       //GV: 20. feb. 2019 - HHsize 4+
       //JB: see above comments in 1-car utility
@@ -476,6 +509,18 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 20. feb. 2019 - HH has children
       //JB: see above comments in 1-car utility
       //alternative.AddUtilityTerm(58, (numberChildren >= 2).ToFlag());
+
+      //20191205 JLB added for QA point 2
+      // test 77 instead of 64 and 76
+      alternative.AddUtilityTerm(76, residenceParcel.DistanceToCommuterRail* (numberAdults > 1).ToFlag());  // distance to STog
+      alternative.AddUtilityTerm(77, Math.Min(residenceParcel.DistanceToCommuterRail, residenceParcel.DistanceToLightRail) * (numberAdults > 1).ToFlag());     // distance to nearer of STog and Metro
+
+      //20191205 JLB added for QA point 4
+      // use at most one of betas 60, 78, 79, 80
+      alternative.AddUtilityTerm(78, hhPersonDataComplete.ToFlag() * Math.Min(averageAdultAge,25) / 10.0);    
+      alternative.AddUtilityTerm(79, hhPersonDataComplete.ToFlag() * Math.Min(averageAdultAge,45) / 10.0);    
+      alternative.AddUtilityTerm(80, hhPersonDataComplete.ToFlag() * Math.Min(averageAdultAge,65) / 10.0);    
+
 
       alternative.AddUtilityTerm(100, twoVehSEEffect);
       alternative.AddUtilityTerm(201, municipality101.ToFlag());

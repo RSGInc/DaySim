@@ -71,6 +71,10 @@ namespace DaySim.ChoiceModels.H {
 
     public IMinuteSpan LongestFeasibleWindow { get; private set; }
 
+    public double PathDistanceToDestination { get; private set; }
+
+    public double PathDistanceFromDestination { get; private set; }
+
 
     //JLB
     public double TransitTime { get; private set; }
@@ -316,8 +320,11 @@ namespace DaySim.ChoiceModels.H {
             modeTimes.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance;
             modeTimes.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost / 2.0;
             modeTimes.DestinationAccessUtility = pathTypeModel.PathDestinationAccessUtility / 2.0;
+            modeTimes.PathDistanceToDestination = pathTypeModel.PathDistance / 2.0;
+            modeTimes.PathDistanceFromDestination = pathTypeModel.PathDistance / 2.0;
             modeTimes.PathDistance = pathTypeModel.PathDistance;
             modeTimes.PathCost = pathTypeModel.PathCost / 2.0;
+
           }
         } else {
           // get times for each half tour separately, using HOV passenger for school bus and shared ride
@@ -353,6 +360,7 @@ namespace DaySim.ChoiceModels.H {
           if (pathTypeModel.Available) {
             modeTimes.TravelTimeToDestination = pathTypeModel.PathTime;
             modeTimes.GeneralizedTimeToDestination = pathTypeModel.GeneralizedTimeLogsum;
+            modeTimes.PathDistanceToDestination = pathTypeModel.PathDistance;
           }
 
           pathTypeModels =
@@ -382,6 +390,7 @@ namespace DaySim.ChoiceModels.H {
           if (pathTypeModel.Available) {
             modeTimes.TravelTimeFromDestination = pathTypeModel.PathTime;
             modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum;
+            modeTimes.PathDistanceFromDestination = pathTypeModel.PathDistance;
           }
         }
         if (tour.Household.Id == 2138 && tour.Person.Sequence == 1 && tour.Sequence == 1) {
