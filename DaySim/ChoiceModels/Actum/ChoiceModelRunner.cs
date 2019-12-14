@@ -3431,7 +3431,7 @@ namespace DaySim.ChoiceModels.Actum {
           (trip.Tour.Mode == Global.Settings.Modes.CarParkRideWalk ||
            trip.Tour.Mode == Global.Settings.Modes.CarParkRideBike ||
            trip.Tour.Mode == Global.Settings.Modes.CarParkRideShare)) {
-          intermediateStopPurpose = Global.Settings.Purposes.ChangeMode;
+          intermediateStopPurpose = Global.Settings.Purposes.NoneOrHome; //MB: get rid of change mode purpose ChangeMode;
 
           ChoiceModelFactory.TotalTimesChangeModeStopGenerated[ParallelUtility.threadLocalAssignedIndex.Value]++;
 

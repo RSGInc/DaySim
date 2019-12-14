@@ -175,9 +175,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
              || Tour.DestinationPurpose == Global.Settings.Purposes.Shopping && randomNumber < 0.73
              || Tour.DestinationPurpose == Global.Settings.Purposes.Social && randomNumber < 0.62) ?
              Global.Settings.DriverTypes.Driver : Global.Settings.DriverTypes.Passenger;
-        if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
-          DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
-        }
+        //if (Global.Configuration.AV_PaidRideShareModeUsesAVs) {
+        //  DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
+       // } MB: no longer needed because autotype is on the trip file.
       } else if (Mode == Global.Settings.Modes.Walk || Mode == Global.Settings.Modes.Bike || Mode == Global.Settings.Modes.Transit || Mode == Global.Settings.Modes.SchoolBus || Mode == Global.Settings.Modes.Other) {
         DriverType = Global.Settings.DriverTypes.NotApplicable;
       } else if (Mode == Global.Settings.Modes.Sov || Mode == Global.Settings.Modes.HovDriver) {
@@ -185,9 +185,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       } else if (Mode == Global.Settings.Modes.HovPassenger) {
         DriverType = Global.Settings.DriverTypes.Passenger;
       }
-      if (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.HovPassenger && Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
-        DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
-      }
+      //if (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.HovPassenger && Global.Configuration.AV_IncludeAutoTypeChoice && Tour.Household.OwnsAutomatedVehicles > 0) {
+      //  DriverType = DriverType + 2; //two types of AV passengers so we know which trips to assign to network
+      //} MB: no longer needed because autotype is on the trip file.
     }
 
     public override void SetTripValueOfTime() {

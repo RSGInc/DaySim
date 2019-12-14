@@ -105,13 +105,14 @@ namespace DaySim {
 
         Engine.InitializeDaySim();
 
-        Engine.BeginProgram(_start, _end, _index);
-        //Engine.BeginTestMode();
-
         if (Global.Configuration.LowerPrioritySetting) {
           var process = Process.GetCurrentProcess();
           process.PriorityClass = ProcessPriorityClass.BelowNormal;
         }
+
+        Engine.BeginProgram(_start, _end, _index);
+        //Engine.BeginTestMode();
+
 
 #if RELEASE //don't use try catch in release mode since wish to have Visual Studio debugger stop on unhandled exceptions
       } catch (Exception e) {
