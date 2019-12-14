@@ -270,7 +270,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
         IActumHouseholdWrapper household = (IActumHouseholdWrapper) Household;
 
-        AutoType = (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.HovPassenger) ? household.AutoType : 0;
+        AutoType = household.AutoType;
 
         AutoOccupancy =
           Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger ? Tour.HovOccupancy :
@@ -506,12 +506,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
         IActumHouseholdWrapper household = (IActumHouseholdWrapper)Household;
 
-        AutoType = (Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.HovPassenger) ? household.AutoType : 0;
+        AutoType = household.AutoType;
 
-        AutoOccupancy =
-          Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger ? Tour.HovOccupancy :
-          Mode == Global.Settings.Modes.PaidRideShare ? 2 :
-          Mode == Global.Settings.Modes.Sov ? 1 : 0;
 
         Mode = Global.Settings.Modes.Transit;
 
@@ -555,6 +551,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           EgressParkingNodeID = Tour.HalfTour2EgressParkingNodeID;
           EgressTime = Tour.HalfTour2EgressTime;
         }
+
+        AutoOccupancy =
+        Mode == Global.Settings.Modes.HovDriver     || AccessMode == Global.Settings.Modes.HovDriver     || EgressMode == Global.Settings.Modes.HovDriver ||
+        Mode == Global.Settings.Modes.HovPassenger  || AccessMode == Global.Settings.Modes.HovPassenger  || EgressMode == Global.Settings.Modes.HovPassenger ? Math.Max(Tour.HovOccupancy, 2) :
+        Mode == Global.Settings.Modes.PaidRideShare || AccessMode == Global.Settings.Modes.PaidRideShare || EgressMode == Global.Settings.Modes.PaidRideShare ? 2 :
+        Mode == Global.Settings.Modes.Sov           || AccessMode == Global.Settings.Modes.Sov           || EgressMode == Global.Settings.Modes.Sov ? 1 : 0;
 
         int duration = (int)(TravelTime + 0.5);
 
