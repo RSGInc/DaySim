@@ -77,6 +77,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     public int HalfTour1AccessStopAreaKey { get; set; }
 
+    public int HalfTour1AccessStopAreaParcelID { get; set; }
+
+    public int HalfTour1AccessStopAreaZoneID { get; set; }
+
+    public int HalfTour1AccessParkingNodeID { get; set; }
+    
     public int HalfTour1EgressMode { get; set; }
 
     public int HalfTour1EgressPathType { get; set; }
@@ -88,6 +94,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     public double HalfTour1EgressDistance { get; set; }
 
     public int HalfTour1EgressStopAreaKey { get; set; }
+
+    public int HalfTour1EgressStopAreaParcelID { get; set; }
+
+    public int HalfTour1EgressStopAreaZoneID { get; set; }
+
+    public int HalfTour1EgressParkingNodeID { get; set; }
 
     public int HalfTour2AccessMode { get; set; }
 
@@ -101,6 +113,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     public int HalfTour2AccessStopAreaKey { get; set; }
 
+    public int HalfTour2AccessStopAreaParcelID { get; set; }
+
+    public int HalfTour2AccessStopAreaZoneID { get; set; }
+
+    public int HalfTour2AccessParkingNodeID { get; set; }
+
     public int HalfTour2EgressMode { get; set; }
 
     public int HalfTour2EgressPathType { get; set; }
@@ -112,6 +130,12 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     public double HalfTour2EgressDistance { get; set; }
 
     public int HalfTour2EgressStopAreaKey { get; set; }
+
+    public int HalfTour2EgressStopAreaParcelID { get; set; }
+
+    public int HalfTour2EgressStopAreaZoneID { get; set; }
+
+    public int HalfTour2EgressParkingNodeID { get; set; }
 
     public double HalfTour1TravelTime { get; set; }
 
@@ -155,7 +179,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
                              : (purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Education
                              : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Business
                              : (purpose == Global.Settings.Purposes.Shopping) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_Shop
-                             : (ParentTour != null) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_NonHB  
+                             : (ParentTour != null) ? Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_NonHB
                              : Global.Configuration.COMPASS_BaseCostCoefficientIncomeLevel_HBOther;
 
       double baseIncomeCoefficient = (purpose == Global.Settings.Purposes.Work) ? Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Work
@@ -180,7 +204,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       if (Global.Configuration.ShouldSynchronizeRandomSeed && PersonDay != null) {
         PersonDay.ResetRandom(10 + Sequence - 1);
       }
-
+      
       if (JointTourSequence > 0 ){
         HovOccupancy = 0;
         foreach (IPersonDayWrapper pDay in PersonDay.HouseholdDay.PersonDays) {
@@ -203,8 +227,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           }
         }
 
-      } else  { // set randomly
-        double randomNumber = 0.5; // Household.RandomUtility.Uniform01();
+      } else
+      { // set randomly
+        double randomNumber = Household.RandomUtility.Uniform01();
 
         double fraction2Occ = DestinationPurpose == Global.Settings.Purposes.Work ? Global.Configuration.COMPASS_HOVFraction2Occupants_Commute
                             : DestinationPurpose == Global.Settings.Purposes.Business ? Global.Configuration.COMPASS_HOVFraction2Occupants_Business
@@ -221,7 +246,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
       }
 
-      // still need to adjust the cost coefficient for distance and occupancy in PathTypeModel
+      // still need to adjust the cost coefficient for distance and occupancy in PathTypeModel - and also in Trip Wrapper set value of time
 
     }
 
@@ -230,10 +255,9 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       if (Global.Configuration.IsInEstimationMode || (Global.Configuration.ShouldRunTourModels && !Global.Configuration.ShouldRunTourTripModels) || (Global.Configuration.ShouldRunSubtourModels && !Global.Configuration.ShouldRunSubtourTripModels)) {
         return;
       }
-
       IEnumerable<PathTypeModels.IPathTypeModel> pathTypeModels =
       PathTypeModels.PathTypeModelFactory.Singleton
-          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, 22, 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.PersonType, false, Global.Settings.Modes.Sov);
+          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, 22, 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, HovOccupancy, 1, Person.PersonType, false, Global.Settings.Modes.Sov);
 
       PathTypeModels.IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 

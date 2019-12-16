@@ -16,7 +16,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PartialJointHalfTourChauffeurModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumPartialJointHalfTourChauffeurModel";
+    public const string CHOICE_MODEL_NAME = "ActumPartialJointHalfTourChauffeurModel";
     private const int TOTAL_ALTERNATIVES = 5;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -79,7 +79,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int jHTSimulated, int genChoice, int[] participants, int choice = Constants.DEFAULT_VALUE) {
 
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointHalfTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
-
+      HouseholdWrapper household = (HouseholdWrapper)householdDay.Household;
       int paired = genChoice == 1 ? 1 : 0;
       int halfTour1 = genChoice == 2 ? 1 : 0;
       int halfTour2 = genChoice == 3 ? 1 : 0;
@@ -87,12 +87,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       // set household characteristics here that don't depend on person characteristics
 
-      int hhsize = householdDay.Household.Size;
+      int hhsize = household.Size;
 
-      int hhinc1 = householdDay.Household.Income <= 300000 ? 1 : 0;
-      int hhinc2 = (householdDay.Household.Income > 300000 && householdDay.Household.Income <= 600000) ? 1 : 0;
-      int hhinc3 = (householdDay.Household.Income > 600000 && householdDay.Household.Income <= 900000) ? 1 : 0;
-      int hhinc4 = (householdDay.Household.Income > 900000 && householdDay.Household.Income <= 1200000) ? 1 : 0;
+      int hhinc1 = household.Income <= 300000 ? 1 : 0;
+      int hhinc2 = (household.Income > 300000 && household.Income <= 600000) ? 1 : 0;
+      int hhinc3 = (household.Income > 600000 && household.Income <= 900000) ? 1 : 0;
+      int hhinc4 = (household.Income > 900000 && household.Income <= 1200000) ? 1 : 0;
 
       int[] pUsualLocation = new int[6];
       int[] pPatternType = new int[6];
@@ -114,35 +114,36 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int count = 0;
       foreach (PersonDayWrapper personDay in orderedPersonDays) {
+        PersonWrapper person = (PersonWrapper)personDay.Person;
         count++;
         if (count <= 5) {
           // set characteristics here that depend on person characteristics
-          if (personDay.Person.IsFullOrPartTimeWorker) {
-            pUsualLocation[count] = personDay.Person.UsualWorkParcelId;
-          } else if (personDay.Person.IsStudent) {
-            pUsualLocation[count] = personDay.Person.UsualSchoolParcelId;
-          } else if (personDay.Person.IsWorker && personDay.Person.IsNotFullOrPartTimeWorker) {
-            pUsualLocation[count] = personDay.Person.UsualWorkParcelId;
+          if (person.IsFullOrPartTimeWorker) {
+            pUsualLocation[count] = person.UsualWorkParcelId;
+          } else if (person.IsStudent) {
+            pUsualLocation[count] = person.UsualSchoolParcelId;
+          } else if (person.IsWorker && person.IsNotFullOrPartTimeWorker) {
+            pUsualLocation[count] = person.UsualWorkParcelId;
           } else {
             pUsualLocation[count] = Constants.DEFAULT_VALUE;
           }
 
           pPatternType[count] = personDay.PatternType;
           pConstant[count] = 1;
-          pType8[count] = personDay.Person.IsChildUnder5.ToFlag();
-          pType7[count] = personDay.Person.IsChildAge5Through15.ToFlag();
-          pType6[count] = personDay.Person.IsDrivingAgeStudent.ToFlag();
-          pType5[count] = personDay.Person.IsUniversityStudent.ToFlag();
-          pType4[count] = personDay.Person.IsNonworkingAdult.ToFlag();
-          pType3[count] = personDay.Person.IsRetiredAdult.ToFlag();
-          pType2[count] = personDay.Person.IsPartTimeWorker.ToFlag();
-          pType1[count] = personDay.Person.IsFulltimeWorker.ToFlag();
-          pAdult[count] = personDay.Person.IsAdult.ToFlag();
-          pAdultWithChildrenUnder16[count] = (personDay.Person.IsAdult && personDay.Household.HasChildrenUnder16).ToFlag();
-          pAdultFemale[count] = personDay.Person.IsAdultFemale.ToFlag();
-          pType7AgeUnder12[count] = (personDay.Person.IsChildAge5Through15 && personDay.Person.Age < 12).ToFlag();
-          pType7Age12Plus[count] = (personDay.Person.IsChildAge5Through15 && personDay.Person.Age >= 12).ToFlag();
-          pAgeUnder12[count] = (personDay.Person.Age < 12).ToFlag();
+          pType8[count] = person.IsChildUnder5.ToFlag();
+          pType7[count] = person.IsChildAge5Through15.ToFlag();
+          pType6[count] = person.IsDrivingAgeStudent.ToFlag();
+          pType5[count] = person.IsUniversityStudent.ToFlag();
+          pType4[count] = person.IsNonworkingAdult.ToFlag();
+          pType3[count] = person.IsRetiredAdult.ToFlag();
+          pType2[count] = person.IsPartTimeWorker.ToFlag();
+          pType1[count] = person.IsFulltimeWorker.ToFlag();
+          pAdult[count] = person.IsAdult.ToFlag();
+          pAdultWithChildrenUnder16[count] = (person.IsAdult && personDay.Household.HasChildrenUnder16).ToFlag();
+          pAdultFemale[count] = person.IsAdultFemale.ToFlag();
+          pType7AgeUnder12[count] = (person.IsChildAge5Through15 && person.Age < 12).ToFlag();
+          pType7Age12Plus[count] = (person.IsChildAge5Through15 && person.Age >= 12).ToFlag();
+          pAgeUnder12[count] = (person.Age < 12).ToFlag();
         }
       }
 

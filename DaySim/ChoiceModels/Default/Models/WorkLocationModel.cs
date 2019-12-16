@@ -22,7 +22,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class WorkLocationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "WorkLocationModel";
+    public const string CHOICE_MODEL_NAME = "WorkLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
     // regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients

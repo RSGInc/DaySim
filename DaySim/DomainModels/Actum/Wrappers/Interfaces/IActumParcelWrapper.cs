@@ -58,7 +58,7 @@ namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
 
     double PublicParkingHourlyPriceBuffer2 { get; set; }
 
-    int DistrictID2 { get; set; }
+    int NearestTerminalID { get; set; }
 
     //int FirstPositionInStopAreaDistanceArray { get; set; } 
 

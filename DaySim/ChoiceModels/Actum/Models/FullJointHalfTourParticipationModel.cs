@@ -3,13 +3,14 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
 
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -17,7 +18,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class FullJointHalfTourParticipationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumFullJointHalfTourParticipationModel";
+    public const string CHOICE_MODEL_NAME = "ActumFullJointHalfTourParticipationModel";
     private const int TOTAL_ALTERNATIVES = 32;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -127,19 +128,25 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay, int jHTSimulated, int genChoice, bool[,] jHTAvailable, bool[] fHTAvailable, int[][] altParticipants, int choice = Constants.DEFAULT_VALUE) {
 
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
       IEnumerable<PersonDayWrapper> orderedPersonDays = householdDay.PersonDays.OrderBy(p => p.GetJointHalfTourParticipationPriority()).ToList().Cast<PersonDayWrapper>();
 
       PersonDayWrapper pPersonDay = null;
 
       // set household characteristics here that don't depend on person characteristics
 
-      int hhsize = householdDay.Household.Size;
+      int hhsize = household.Size;
 
-      int hhinc1 = householdDay.Household.Income <= 300000 ? 1 : 0;
-      int hhinc2 = (householdDay.Household.Income > 300000 && householdDay.Household.Income <= 600000) ? 1 : 0;
-      int hhinc3 = (householdDay.Household.Income > 600000 && householdDay.Household.Income <= 900000) ? 1 : 0;
-      //int hhinc4 = (householdDay.Household.Income > 900000 && householdDay.Household.Income <= 1200000) ? 1 : 0;
-      int hhinc4 = (householdDay.Household.Income > 900000) ? 1 : 0;
+      //GV: 2.4.2019
+      //int hhinc1 = household.Income <= 300000 ? 1 : 0;
+      //int hhinc2 = (household.Income > 300000 && household.Income <= 600000) ? 1 : 0;
+      //int hhinc3 = (household.Income > 600000 && household.Income <= 900000) ? 1 : 0;
+      //int hhinc4 = (household.Income > 900000) ? 1 : 0;
+      int hhinc1 = household.Income <= 450000 ? 1 : 0;
+      int hhinc2 = (household.Income > 450000 && household.Income <= 650000) ? 1 : 0;
+      int hhinc3 = (household.Income > 650000 && household.Income <= 900000) ? 1 : 0;
+      int hhinc4 = (household.Income > 900000) ? 1 : 0;
+
 
       IParcelWrapper[] pUsualLocation = new IParcelWrapper[6];
       int[] pPatternType = new int[6];
@@ -179,8 +186,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       bool[] pHasMandatoryTourToUsualLocation = new bool[6];
       bool[] pIsDrivingAge = new bool[6];
 
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
+
       int count = 0;
       foreach (PersonDayWrapper personDay in orderedPersonDays) {
+        IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
         count++;
         if (count <= 5) {
           if (count == 1) {
@@ -188,12 +201,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
           }
 
           // set characteristics here that depend on person characteristics
-          if (personDay.Person.IsFullOrPartTimeWorker) {
-            pUsualLocation[count] = personDay.Person.UsualWorkParcel;
-          } else if (personDay.Person.IsStudent) {
-            pUsualLocation[count] = personDay.Person.UsualSchoolParcel;
-          } else if (personDay.Person.IsWorker && personDay.Person.IsNotFullOrPartTimeWorker) {
-            pUsualLocation[count] = personDay.Person.UsualWorkParcel;
+          if (person.IsFullOrPartTimeWorker) {
+            pUsualLocation[count] = person.UsualWorkParcel;
+          } else if (person.IsStudent) {
+            pUsualLocation[count] = person.UsualSchoolParcel;
+          } else if (person.IsWorker && person.IsNotFullOrPartTimeWorker) {
+            pUsualLocation[count] = person.UsualWorkParcel;
           } else {
             pUsualLocation[count] = personDay.Household.ResidenceParcel;
           }
@@ -201,42 +214,42 @@ namespace DaySim.ChoiceModels.Actum.Models {
           pPatternType[count] = personDay.PatternType;
           pConstant[count] = 1;
 
-          pType9[count] = personDay.Person.IsChildUnder16.ToFlag(); // not one og Type 1 to 8
+          pType9[count] = person.IsChildUnder16.ToFlag(); // not one og Type 1 to 8
 
-          pType8[count] = personDay.Person.IsChildUnder5.ToFlag(); // All ACTUM TU persons are one of Type 1 to 8 
-          pType7[count] = personDay.Person.IsChildAge5Through15.ToFlag();
-          pType6[count] = personDay.Person.IsDrivingAgeStudent.ToFlag();
-          pType5[count] = personDay.Person.IsUniversityStudent.ToFlag();
-          pType4[count] = personDay.Person.IsNonworkingAdult.ToFlag();
-          pType3[count] = personDay.Person.IsRetiredAdult.ToFlag();
-          pType2[count] = personDay.Person.IsPartTimeWorker.ToFlag();
-          pType1[count] = personDay.Person.IsFulltimeWorker.ToFlag();
-          pAdult[count] = personDay.Person.IsAdult.ToFlag();
-          pAdultWithChildrenUnder16[count] = (personDay.Person.IsAdult && personDay.Household.HasChildrenUnder16).ToFlag(); // THIS person is adult and HH has child. under 16
-          pAdultFemale[count] = personDay.Person.IsAdultFemale.ToFlag();
-          pAdultNonMandatory[count] = (personDay.Person.IsAdult && personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
-          pType7AgeUnder12[count] = (personDay.Person.IsChildAge5Through15 && personDay.Person.Age < 12).ToFlag(); // THIS person is both 5-15 AND below 12
-          pType7Age12Plus[count] = (personDay.Person.IsChildAge5Through15 && personDay.Person.Age >= 12).ToFlag();
-          pAgeUnder12[count] = (personDay.Person.Age < 12).ToFlag();
-          pAgeUnder16[count] = (personDay.Person.Age < 16).ToFlag();
+          pType8[count] = person.IsChildUnder5.ToFlag(); // All ACTUM TU persons are one of Type 1 to 8 
+          pType7[count] = person.IsChildAge5Through15.ToFlag();
+          pType6[count] = person.IsDrivingAgeStudent.ToFlag();
+          pType5[count] = person.IsUniversityStudent.ToFlag();
+          pType4[count] = person.IsNonworkingAdult.ToFlag();
+          pType3[count] = person.IsRetiredAdult.ToFlag();
+          pType2[count] = person.IsPartTimeWorker.ToFlag();
+          pType1[count] = person.IsFulltimeWorker.ToFlag();
+          pAdult[count] = person.IsAdult.ToFlag();
+          pAdultWithChildrenUnder16[count] = (person.IsAdult && personDay.Household.HasChildrenUnder16).ToFlag(); // THIS person is adult and HH has child. under 16
+          pAdultFemale[count] = person.IsAdultFemale.ToFlag();
+          pAdultNonMandatory[count] = (person.IsAdult && personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
+          pType7AgeUnder12[count] = (person.IsChildAge5Through15 && person.Age < 12).ToFlag(); // THIS person is both 5-15 AND below 12
+          pType7Age12Plus[count] = (person.IsChildAge5Through15 && person.Age >= 12).ToFlag();
+          pAgeUnder12[count] = (person.Age < 12).ToFlag();
+          pAgeUnder16[count] = (person.Age < 16).ToFlag();
 
-          pType8Mandatory[count] = (personDay.Person.IsChildUnder5 && personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
-          pType8NonMandatory[count] = (personDay.Person.IsChildUnder5 && personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
+          pType8Mandatory[count] = (person.IsChildUnder5 && personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
+          pType8NonMandatory[count] = (person.IsChildUnder5 && personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
 
-          pType7Mandatory[count] = (personDay.Person.IsChildAge5Through15 && personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
-          pType7NonMandatory[count] = (personDay.Person.IsChildAge5Through15 && personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
+          pType7Mandatory[count] = (person.IsChildAge5Through15 && personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
+          pType7NonMandatory[count] = (person.IsChildAge5Through15 && personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
 
-          pYouthMandatory[count] = (!personDay.Person.IsChildUnder5 && !personDay.Person.IsAdult && personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
-          pYouthNonMandatory[count] = (!personDay.Person.IsChildUnder5 && !personDay.Person.IsAdult && personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
-          pYouth[count] = (!personDay.Person.IsChildUnder5 && !personDay.Person.IsAdult).ToFlag();
+          pYouthMandatory[count] = (!person.IsChildUnder5 && !person.IsAdult && personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
+          pYouthNonMandatory[count] = (!person.IsChildUnder5 && !person.IsAdult && personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
+          pYouth[count] = (!person.IsChildUnder5 && !person.IsAdult).ToFlag();
 
-          pAdultMandatory[count] = (personDay.Person.IsAdult && personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
+          pAdultMandatory[count] = (person.IsAdult && personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
 
           pMandatory[count] = (personDay.PatternType == Global.Settings.PatternTypes.Mandatory).ToFlag();
           pNonMandatory[count] = (personDay.PatternType == Global.Settings.PatternTypes.Optional).ToFlag();
 
           pHasMandatoryTourToUsualLocation[count] = personDay.HasMandatoryTourToUsualLocation;
-          pIsDrivingAge[count] = personDay.Person.IsDrivingAge;
+          pIsDrivingAge[count] = person.IsDrivingAge;
 
         }
       }
@@ -262,8 +275,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(05, pYouthNonMandatory[p]); // impact of youth with non-mandatory travel
         choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(5, pType7Mandatory[p]); // impact of Child5-16 with mandatory travel
 
-        //GV: not significant, 14. june 2016
-        //choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(6, pType7NonMandatory[p]); // impact of Child5-16 with non-mandatory travel
+        //GV: 19. feb. 2019 
+        choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(6, pType7NonMandatory[p]); // impact of Child5-16 with non-mandatory travel
 
         choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]).AddUtilityTerm(7, pAdultFemale[p]); //female
 
@@ -334,10 +347,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(24, iMatchAdultMandatory[t1, t2]);
           //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(25, iMatchAdultNonMandatory[t1, t2]);
 
-          // commented out 22nd, but they work well
-          //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(26, iMatchMandatory[t1, t2]);
-          //choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(27, iMatchNonMandatory[t1, t2]);
-
+          // GV: 19. feb. 2019 - commented out 22nd, but they work well
+          choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(26, iMatchMandatory[t1, t2]);
+          choiceProbabilityCalculator.GetUtilityComponent(componentMatch[t1, t2]).AddUtilityTerm(27, iMatchNonMandatory[t1, t2]);
 
         }
       }
@@ -390,7 +402,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
             choiceProbabilityCalculator.CreateUtilityComponent(componentCross[t1, t2]);
 
             choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(41, iCrossAdultWithChildUnder5[t1, t2]);
-            choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(42, iCrossAdultWithChild5to16[t1, t2]);
+            choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(42, iCrossAdultWithChild5to16[t1, t2]); 
 
             //choiceProbabilityCalculator.GetUtilityComponent(componentCross[t1, t2]).AddUtilityTerm(43, iCrossAdultMandatoryAndAdultNonMandatory[t1, t2]);
 
@@ -432,7 +444,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
         // restrict availability to cases where all non-adult participants have same usual location
         // first determine first non-adult's usual location
-        IParcelWrapper sameUsualLocation = householdDay.Household.ResidenceParcel;
+        IParcelWrapper sameUsualLocation = household.ResidenceParcel;
         for (int i = 1; i <= 5; i++) {
           if (altParticipants[alt][i] == 1 && pPatternType[i] == 1 && pUsualLocation[i] != null && pUsualLocation[i].Id > 0 && !(pAdult[i] == 1)) {
             sameUsualLocation = pUsualLocation[i];
@@ -493,22 +505,29 @@ namespace DaySim.ChoiceModels.Actum.Models {
         if (choice == alt) { chosen[alt] = true; }
 
         //Get the alternative
-        ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(alt, available[alt], chosen[alt]);
+        ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(alt, available[alt], chosen[alt]); 
 
         alternative.Choice = alt;
 
         //Add utility terms that are not in components
         //alternative.AddUtilityTerm(399, 0);
 
-        // OBS!!! This is new - 21nd January 2013 - it sais that these tris are less expected to be done with 3 or 4+ persons (compared to to people)
+        // OBS!!! This is new - 21nd January 2013 - it sais that these trips are less expected to be done with 3 or 4+ persons (compared to two people)
         alternative.AddUtilityTerm(59, altParticipants[alt][7] >= 3 ? 1 : 0);
         //alternative.AddUtilityTerm(60, altParticipants[alt][7] >= 4 ? 1 : 0); // OBS! no observations with 4+ HHsize
-        alternative.AddUtilityTerm(58, tourLogsum);
+
+        //GV: 1.4.2019 - logsum for the rest of GCA
+        //alternative.AddUtilityTerm(58, tourLogsum);
+        alternative.AddUtilityTerm(58, tourLogsum * (!hhLivesInCPHCity).ToFlag());
         //Add utility components
+
+        //GV: CPH logsum - 19. feb 2019 
+        //alternative.AddUtilityTerm(60, tourLogsum * (hhLivesInCPHCity).ToFlag()); 
+        alternative.AddUtilityTerm(58, tourLogsum * (hhLivesInCPHCity).ToFlag()); 
 
         for (int p = 1; p <= 5; p++) {
           if (altParticipants[alt][p] == 1) {
-            alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p]));
+            alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(componentPerson[p])); 
           }
         }
         for (int t2 = 1; t2 <= 5; t2++) {

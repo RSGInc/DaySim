@@ -3,18 +3,19 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
 
 
 using System;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class JointTourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumJointTourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumJointTourGenerationModel";
     private readonly int _totalAlternatives = Global.Settings.Purposes.Medical;
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
@@ -72,8 +73,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, HouseholdDayWrapper householdDay,
                                  int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
       //var householdDay = (ActumHouseholdDayWrapper)tour.HouseholdDay;
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = householdDay.Household;
-
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)householdDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
       int carOwnership =
                 household.VehiclesAvailable == 0
                     ? Global.Settings.CarOwnerships.NoCars
@@ -84,16 +85,33 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
 
-      int votALSegment = Global.Settings.VotALSegments.Medium; // TODO:  calculate a VOT segment that depends on household income
-      int transitAccessSegment = household.ResidenceParcel.TransitAccessSegment();
-      double personalBusinessAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      //int votALSegment = Global.Settings.VotALSegments.Medium; // TODO:  calculate a VOT segment that depends on household income
+      //GV: 3.4.2019 - getting values from MB's memo
+      int votALSegment =
+        (household.Income <= 450000)
+                  ? Global.Settings.VotALSegments.Low
+                  : (household.Income <= 900000)
+                      ? Global.Settings.VotALSegments.Medium
+                      : Global.Settings.VotALSegments.High;
+      
+      //int transitAccessSegment = residenceParcel.TransitAccessSegment();
+      //GV: 3.4.2019 - getting values from MB's memo
+      //OBS - it has to be in km
+      int transitAccessSegment =
+         household.ResidenceParcel.GetDistanceToTransit() >= 0 && household.ResidenceParcel.GetDistanceToTransit() <= 0.4
+            ? 0
+            : household.ResidenceParcel.GetDistanceToTransit() > 0.4 && household.ResidenceParcel.GetDistanceToTransit() <= 1.6
+                ? 1
+                : 2;
+           
+      double personalBusinessAggregateLogsum = Global.AggregateLogsums[residenceParcel.ZoneId]
                 [Global.Settings.Purposes.PersonalBusiness][carOwnership][votALSegment][transitAccessSegment];
-      double shoppingAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double shoppingAggregateLogsum = Global.AggregateLogsums[residenceParcel.ZoneId]
                 //[Global.Settings.Purposes.Shopping][carOwnership][votALSegment][transitAccessSegment];
                 [Global.Settings.Purposes.Shopping][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
-      double mealAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double mealAggregateLogsum = Global.AggregateLogsums[residenceParcel.ZoneId]
                 [Global.Settings.Purposes.Meal][carOwnership][votALSegment][transitAccessSegment];
-      double socialAggregateLogsum = Global.AggregateLogsums[household.ResidenceParcel.ZoneId]
+      double socialAggregateLogsum = Global.AggregateLogsums[residenceParcel.ZoneId]
                 [Global.Settings.Purposes.Social][carOwnership][votALSegment][transitAccessSegment];
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
       double compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
@@ -109,6 +127,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
           youngestAge = person.Age;
         }
       }
+
+      //GV: CPH definition - 19. feb. 2019
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
+
 
       // NONE_OR_HOME
 
@@ -128,9 +153,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(2, noCarsFlag);
       //alternative.AddUtilityTerm(3, carCompetitionFlag);
       //alternative.AddUtilityTerm(4, householdDay.PrimaryPriorityTimeFlag);
-
-
-      //alternative.AddUtilityTerm(2, householdDay.Household.HasChildren.ToFlag());
+      
+      //GV: 20. feb. 2019
+      alternative.AddUtilityTerm(2, householdDay.Household.HasChildren.ToFlag());
+      //alternative.AddUtilityTerm(3, noCarsFlag); //GV: 20. feb 2019, bot signif.  
 
       //GV Sep 2014 - commented out
       //alternative.AddUtilityTerm(2, householdDay.Household.HasChildrenUnder5.ToFlag());
@@ -184,9 +210,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(23, (householdDay.Household.Size == 3).ToFlag());
       alternative.AddUtilityTerm(24, (householdDay.Household.Size >= 4).ToFlag());
       alternative.AddUtilityTerm(28, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
-      alternative.AddUtilityTerm(56, compositeLogsum);
 
+      //GV: 3.4.2019 - changed to the Rest of GCA
+      //alternative.AddUtilityTerm(56, compositeLogsum);
+      alternative.AddUtilityTerm(57, compositeLogsum * (!hhLivesInCPHCity).ToFlag());
 
+      //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+      alternative.AddUtilityTerm(57, compositeLogsum * (hhLivesInCPHCity).ToFlag());
 
       //alternative.AddUtilityTerm(25, (householdDay.Household.Size >= 5).ToFlag());
 
@@ -212,13 +242,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: NEW
       alternative.AddUtilityTerm(32, householdDay.PrimaryPriorityTimeFlag);
-      alternative.AddUtilityTerm(33, (householdDay.Household.Size == 3).ToFlag());
+      //alternative.AddUtilityTerm(33, (householdDay.Household.Size == 3).ToFlag()); //GV: 20. feb 2019, bot signif.
       alternative.AddUtilityTerm(34, (householdDay.Household.Size >= 4).ToFlag());
       alternative.AddUtilityTerm(37, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
-      alternative.AddUtilityTerm(59, compositeLogsum);
 
+      //GV: 3.4.2019 - changed o rest of GCA
+      //alternative.AddUtilityTerm(58, compositeLogsum);
+      alternative.AddUtilityTerm(58, compositeLogsum * (!hhLivesInCPHCity).ToFlag());
 
-
+      //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+      alternative.AddUtilityTerm(58, compositeLogsum * (hhLivesInCPHCity).ToFlag());
 
       //alternative.AddUtilityTerm(35, (householdDay.Household.Size >= 5).ToFlag());
 
@@ -234,8 +267,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(37, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
       //alternative.AddUtilityTerm(38, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenUnder16).ToFlag());
 
-
-      //alternative.AddUtilityTerm(57, shoppingAggregateLogsum);
+      //alternative.AddUtilityTerm(57, shoppingAggregateLogsum);  
 
       //alternative.AddUtilityTerm(59, compositeLogsum);
 
@@ -258,10 +290,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: NEW
       //alternative.AddUtilityTerm(42, householdDay.PrimaryPriorityTimeFlag);
-      alternative.AddUtilityTerm(43, (householdDay.Household.Size == 3).ToFlag());
+      //alternative.AddUtilityTerm(43, (householdDay.Household.Size == 3).ToFlag()); //GV: 20. feb 2019, bot signif.
       alternative.AddUtilityTerm(44, (householdDay.Household.Size >= 4).ToFlag());
-
-
 
       //alternative.AddUtilityTerm(45, (householdDay.Household.Size >= 5).ToFlag());
 
@@ -273,16 +303,22 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(48, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
 
       //alternative.AddUtilityTerm(46, (householdDay.Household.VehiclesAvailable > 0 && householdDay.Household.HasChildren).ToFlag());
-      //alternative.AddUtilityTerm(46, (householdDay.Household.VehiclesAvailable == 0).ToFlag()); cars have no impact on fully joint social tour
+      //alternative.AddUtilityTerm(46, (householdDay.Household.VehiclesAvailable == 0).ToFlag()); cars have no impact on fully joint social tour 
 
       //alternative.AddUtilityTerm(47, householdDay.Household.HasChildrenUnder5.ToFlag());
       //alternative.AddUtilityTerm(48, householdDay.Household.HasChildrenAge5Through15.ToFlag());
 
       //alternative.AddUtilityTerm(47, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
-      //alternative.AddUtilityTerm(48, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenUnder16).ToFlag());
+      //alternative.AddUtilityTerm(48, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildrenUnder16).ToFlag()); 
 
-      //alternative.AddUtilityTerm(58, socialAggregateLogsum);
+      //GV: 3.4.2019 - changed o rest of GCA
       //alternative.AddUtilityTerm(58, compositeLogsum);
+      alternative.AddUtilityTerm(59, compositeLogsum * (!hhLivesInCPHCity).ToFlag());
+      //alternative.AddUtilityTerm(58, socialAggregateLogsum);
+      
+      //GV: 18. feb. 2019 - CPH composite logsum (see JB mail from 16. feb)
+      alternative.AddUtilityTerm(59, compositeLogsum * (hhLivesInCPHCity).ToFlag());
+
 
       //alternative.AddNestedAlternative(12, 1, 60); 
 

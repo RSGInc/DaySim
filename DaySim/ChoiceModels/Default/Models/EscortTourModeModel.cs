@@ -17,7 +17,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class EscortTourModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "EscortTourModeModel";
+    public const string CHOICE_MODEL_NAME = "EscortTourModeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     private const int MAX_PARAMETER = 199;
@@ -60,6 +60,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 tour.Household.VehiclesAvailable,
                 tour.Person.TransitPassOwnership,
                 (tour.Household.OwnsAutomatedVehicles > 0),
+                2, 1,
                 tour.Person.PersonType,
                 false,
                 Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);
@@ -88,7 +89,8 @@ namespace DaySim.ChoiceModels.Default.Models {
                 tour.Household.VehiclesAvailable,
                 tour.Person.TransitPassOwnership,
                (tour.Household.OwnsAutomatedVehicles > 0),
-                 tour.Person.PersonType,
+               /* hov occ */ 2, /* auto type */ 1,
+                tour.Person.PersonType,
                 false,
                 Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);
 
@@ -133,6 +135,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
                tour.Person.TransitPassOwnership,
              (tour.Household.OwnsAutomatedVehicles > 0),
+             /* hov occ */ 2, /* auto type */ 1,
                tour.Person.PersonType,
               false,
               Global.Settings.Modes.Walk, Global.Settings.Modes.Bike, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Hov3);

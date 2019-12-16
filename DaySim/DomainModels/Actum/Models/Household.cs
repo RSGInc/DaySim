@@ -18,8 +18,8 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("hmuncode")]
     public int MunicipalCode { get; set; }
 
-    [ColumnName("hh1617")]
-    public int Persons16to17 { get; set; }
+    [ColumnName("hh617")]
+    public int Persons6to17 { get; set; }
 
     [ColumnName("autotyp")]
     public int AutoType { get; set; }

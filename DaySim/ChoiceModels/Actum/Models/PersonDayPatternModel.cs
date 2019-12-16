@@ -3,22 +3,23 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      
 
 
 using System;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class PersonDayPatternModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumPersonDayPatternModel";
+    public const string CHOICE_MODEL_NAME = "ActumPersonDayPatternModel";
     private const int TOTAL_ALTERNATIVES = 214;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
-    private const int MAX_PARAMETER = 1716;
+    private const int MAX_PARAMETER = 1716;   
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.HouseholdPersonDayPatternModelCoefficients, TOTAL_ALTERNATIVES, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
@@ -199,9 +200,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, DayPattern[] dayPatterns, DayPattern choice = null) {
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = personDay.Household;
-      Framework.DomainModels.Wrappers.IParcelWrapper residenceParcel = household.ResidenceParcel;
-      Framework.DomainModels.Wrappers.IPersonWrapper person = personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)personDay.Household;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
 
       int carsPerDriver = household.GetCarsPerDriver();
       double mixedDensity = residenceParcel.MixedUse3Index2();
@@ -211,8 +212,25 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double[] atUsualLogsums = new double[3];
       //var carOwnership = person.CarOwnershipSegment; //GV: sat car ownership not to impact logsums
       int carOwnership = 0;
-      int votSegment = person.Household.GetVotALSegment();
-      int transitAccess = residenceParcel.TransitAccessSegment();
+
+      //int votSegment = household.GetVotALSegment();
+      //GV: 28.3.2019 - getting values from MB's memo
+      int votSegment =
+        (household.Income <= 450000)
+                  ? Global.Settings.VotALSegments.Low
+                  : (household.Income <= 900000)
+                      ? Global.Settings.VotALSegments.Medium
+                      : Global.Settings.VotALSegments.High;
+
+      //int transitAccess = residenceParcel.TransitAccessSegment();
+      //GV: 28.3.2019 - getting values from MB's memo
+      //OBS - it has to be in km
+      int transitAccess =
+         residenceParcel.GetDistanceToTransit() >= 0 && residenceParcel.GetDistanceToTransit() <= 0.4
+            ? 0
+            : residenceParcel.GetDistanceToTransit() > 0.4 && residenceParcel.GetDistanceToTransit() <= 1.6
+                ? 1
+                : 2;
 
       //GV: input 26. july 2013
       // household inputs
@@ -231,8 +249,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int HHwithChildrenFlag = household.HasChildren.ToFlag();
       int HHwithSmallChildrenFlag = household.HasChildrenUnder5.ToFlag();
-      int HHwithLowIncomeFlag = (household.Income >= 300000 && household.Income < 600000).ToFlag();
-      int HHwithMidleIncomeFlag = (household.Income >= 600000 && household.Income < 900000).ToFlag();
+      //GV: 9.4.2019 - new income classes
+      int HHwithLowIncomeFlag = (household.Income >= 450000 && household.Income < 650000).ToFlag();
+      int HHwithMidleIncomeFlag = (household.Income >= 650000 && household.Income < 900000).ToFlag();
+      //GV: 25 feb. 2019 - split income by 2 groups only
+      //int HHwithHighIncomeFlag = (household.Income >= 900000).ToFlag();
       int HHwithHighIncomeFlag = (household.Income >= 900000).ToFlag();
 
       int primaryFamilyTimeFlag = householdDay.PrimaryPriorityTimeFlag;
@@ -251,6 +272,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int maleFlag = person.IsMale.ToFlag();
       int femaleFlag = person.IsFemale.ToFlag();
 
+      //GV: 25.feb. 2019 - self employed person
+      int SelfEmpFlag = (person.OccupationCode == 8).ToFlag();
+
+      //GV: 25.feb. 2019 - CPHcity
+      bool hhLivesInCPHCity = false;
+      //if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+      if (residenceParcel.LandUseCode == 101 || residenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
 
 
       if (person.UsualWorkParcel == null || person.UsualWorkParcelId == household.ResidenceParcelId) {
@@ -317,7 +347,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         component.AddUtilityTerm(100 * purpose + 8, xMultiplier * person.IsChildUnder5.ToFlag());
 
         component.AddUtilityTerm(100 * purpose + 9, xMultiplier * HHwithLowIncomeFlag);
-        component.AddUtilityTerm(100 * purpose + 10, xMultiplier * HHwithMidleIncomeFlag);
+        //GV: 25. feb. 2019 - income split in 2 groups only (a. 3-600.000 and b. over 600.000 kr)
+        //component.AddUtilityTerm(100 * purpose + 10, xMultiplier * HHwithMidleIncomeFlag);
         component.AddUtilityTerm(100 * purpose + 11, xMultiplier * HHwithHighIncomeFlag);
 
         //component.AddUtilityTerm(100 * purpose + 12, xMultiplier * carsPerDriver);
@@ -332,6 +363,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
         component.AddUtilityTerm(100 * purpose + 19, xMultiplier * person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenUnder5.ToFlag());
         component.AddUtilityTerm(100 * purpose + 20, xMultiplier * person.IsMale.ToFlag() * person.IsAdult.ToFlag() * household.HasChildrenAge5Through15.ToFlag());
 
+        component.AddUtilityTerm(100 * purpose + 21, xMultiplier * SelfEmpFlag);
+
         //component.AddUtilityTerm(100 * purpose + 21, xMultiplier * primaryFamilyTimeFlag); //GV: wrong sign
 
         //component.AddUtilityTerm(100 * purpose + 21, xMultiplier * person.AgeIsBetween18And25.ToFlag());
@@ -341,14 +374,19 @@ namespace DaySim.ChoiceModels.Actum.Models {
         component.AddUtilityTerm(100 * purpose + 24, xMultiplier * person.WorksAtHome.ToFlag());
         component.AddUtilityTerm(100 * purpose + 25, xMultiplier * mixedDensity);
         component.AddUtilityTerm(100 * purpose + 26, xMultiplier * intersectionDensity);
-        //component.AddUtilityTerm(100 * purpose + 27, xMultiplier * purposeLogsums[purpose]); //GV: 17.08.2013, the logsums are wrong
+        // GV: 25 feb 2019 - re-estimate 27 
+        //component.AddUtilityTerm(100 * purpose + 27, xMultiplier * purposeLogsums[purpose]); //GV: 26.03.2019, not significvant 
         //component.AddUtilityTerm(100 * purpose + 28, xMultiplier * person.TransitPassOwnershipFlag);
+
+        // GV: 25 feb 2019 - CPHcity  
+        //component.AddUtilityTerm(100 * purpose + 28, xMultiplier * purposeLogsums[purpose] * (hhLivesInCPHCity).ToFlag()); //GV: 26.03.2019, not significvant     
+
       }
 
       // tour utility
       const int tourComponentIndex = 18;
       choiceProbabilityCalculator.CreateUtilityComponent(tourComponentIndex);
-      ChoiceProbabilityCalculator.Component tourComponent = choiceProbabilityCalculator.GetUtilityComponent(tourComponentIndex);
+      ChoiceProbabilityCalculator.Component tourComponent = choiceProbabilityCalculator.GetUtilityComponent(tourComponentIndex); 
       //tourComponent.AddUtilityTerm(1701, carsPerDriver);
       tourComponent.AddUtilityTerm(1701, householdCars);
 
@@ -357,8 +395,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
       tourComponent.AddUtilityTerm(1704, mixedDensity * person.IsChildAge5Through15.ToFlag());
       tourComponent.AddUtilityTerm(1705, compositeLogsum);
 
-      //tourComponent.AddUtilityTerm(1706, person.TransitPassOwnershipFlag);
+      //tourComponent.AddUtilityTerm(1706, person.TransitPassOwnershipFlag); 
       tourComponent.AddUtilityTerm(1706, primaryFamilyTimeFlag);
+
+      // GV: 26 feb 2019 - CPHcity  
+      //tourComponent.AddUtilityTerm(1707, compositeLogsum * (hhLivesInCPHCity).ToFlag()); //GV: 26.03.2019, not significvant  
 
       // stop utility
       const int stopComponentIndex = 19;
@@ -371,6 +412,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       stopComponent.AddUtilityTerm(1713, mixedDensity);
       stopComponent.AddUtilityTerm(1714, mixedDensity * person.IsChildAge5Through15.ToFlag());
       stopComponent.AddUtilityTerm(1715, compositeLogsum);
+
+      // GV: 26 feb 2019 - CPHcity  
+      //stopComponent.AddUtilityTerm(1716, compositeLogsum * (hhLivesInCPHCity).ToFlag()); //GV: 26.03.2019, not significvant  
 
       //stopComponent.AddUtilityTerm(1716, person.TransitPassOwnershipFlag);
       //stopComponent.AddUtilityTerm(1716, primaryFamilyTimeFlag); //GV: 17.08.2013, the logsums are wrong
@@ -385,7 +429,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           continue;
         }
 
-        alternative.Choice = dayPattern;
+        alternative.Choice = dayPattern; 
 
         // components for the purposes
         for (int purpose = Global.Settings.Purposes.Escort; purpose <= Global.Settings.Purposes.Social; purpose++) {
@@ -421,13 +465,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
         }
 
         for (int tourPurpose = Global.Settings.Purposes.Work; tourPurpose <= Global.Settings.Purposes.Social; tourPurpose++) {
-          for (int stopPurpose = Global.Settings.Purposes.Work; stopPurpose <= Global.Settings.Purposes.Social - 1; stopPurpose++) {
+          //JB: 9.4.2019 - comment from JB
+          //for (int stopPurpose = Global.Settings.Purposes.Work; stopPurpose <= Global.Settings.Purposes.Social - 1; stopPurpose++) {
+          for (int stopPurpose = Global.Settings.Purposes.Work; stopPurpose <= Global.Settings.Purposes.Social; stopPurpose++) {
             if (tourPurpose > Global.Settings.Purposes.School && stopPurpose <= Global.Settings.Purposes.School) {
               continue;
             }
 
             if (dayPattern.Tours[tourPurpose] > 0 && dayPattern.Stops[stopPurpose] > 0) {
-              alternative.AddUtilityTerm(1200 + 10 * tourPurpose + stopPurpose, 1); // tour-stop comb. utility
+              alternative.AddUtilityTerm(1200 + 10 * tourPurpose + stopPurpose, 1); // tour-stop comb. utility 
             }
           }
         }
@@ -436,7 +482,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
           if (dayPattern.Tours[tourPurpose] == 1 && dayPattern.TotalStopPurposes >= 1) {
             alternative.AddUtilityTerm(1300 + 10 * tourPurpose, purposeLogsums[tourPurpose]); // usual location logsum x presence of stops in work or school pattern
             alternative.AddUtilityTerm(1300 + 10 * tourPurpose + 1, compositeLogsum); // home aggregate logsum x  presence of stops in work or school pattern
-                                                                                      //alternative.AddUtilityTerm(1300 + 10 * tourPurpose + 2, atUsualLogsums[tourPurpose]); // at usual location aggregate logsum x  presence of stops in work or school pattern GV: commented out as the sign is wrong
+            //GV: 26. feb 2019 - open for 1312 coeff.
+            alternative.AddUtilityTerm(1300 + 10 * tourPurpose + 2, atUsualLogsums[tourPurpose]); // at usual location aggregate logsum x  presence of stops in work or school pattern GV: commented out as the sign is wrong
           }
         }
 

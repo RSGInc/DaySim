@@ -21,7 +21,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class TourDestinationModeTimeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumTourDestinationModeTimeModel";
+    public const string CHOICE_MODEL_NAME = "ActumTourDestinationModeTimeModel";
     private const int MODES_USED = 6;
     private const int TOTAL_LEVELS = 3;
     private const int MAX_PARAMETER = 999;
@@ -205,7 +205,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int maleFlag = person.IsMale.ToFlag();
       int femaleFlag = person.IsFemale.ToFlag();
 
-      int PTpass = person.TransitPassOwnership;
+      int PTpass = person.TransitPassOwnership >=1? 1 : 0;
 
       // person-day inputs
       int homeBasedToursOnlyFlag = personDay.OnlyHomeBasedToursExist().ToFlag();

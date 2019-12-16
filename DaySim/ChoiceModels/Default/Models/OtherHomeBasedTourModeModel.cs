@@ -18,7 +18,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class OtherHomeBasedTourModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "OtherHomeBasedTourModeModel";
+    public const string CHOICE_MODEL_NAME = "OtherHomeBasedTourModeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 5;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 299;
@@ -73,6 +73,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
         } else {
@@ -90,6 +91,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
 
@@ -123,6 +125,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
         } else {
@@ -140,6 +143,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
         }
@@ -188,6 +192,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               tour.Household.VehiclesAvailable,
               tour.Person.TransitPassOwnership,
               tour.Household.OwnsAutomatedVehicles > 0,
+              /* hov occ */ 2, /* auto type */ 1,
               tour.Person.PersonType,
               false);
 
@@ -355,8 +360,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                                                     + 0.001 * originParcel.NetIntersectionDensity1()
                                                     + 0.0002 * originParcel.HouseholdDensity1()
                                                     + 1.0 * originParcel.MixedUse4Index1());
-                }
-                else if (mode == Global.Settings.Modes.Walk) {
+        } else if (mode == Global.Settings.Modes.Walk) {
           alternative.AddUtilityTerm(70, 1);
           alternative.AddUtilityTerm(73, ageBetween51And98Flag);
           alternative.AddUtilityTerm(77, noCarsInHouseholdFlag); //for calibration
@@ -375,8 +379,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                                                    + 0.001 * originParcel.NetIntersectionDensity1()
                                                    + 0.0001 * originParcel.HouseholdDensity1()
                                                    + 1.0 * originParcel.MixedUse4Index1());
-                }
-                else if (mode == Global.Settings.Modes.PaidRideShare) {
+        } else if (mode == Global.Settings.Modes.PaidRideShare) {
           if (Global.Configuration.PaidRideshare_UseEstimatedInsteadOfAssertedCoefficients) {
             alternative.AddUtilityTerm(80, 1.0);
             //alternative.AddUtilityTerm(81, tour.Person.AgeIsBetween26And35.ToFlag());

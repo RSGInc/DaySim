@@ -18,7 +18,7 @@ using DaySim.Framework.Factories;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkTourModeTimeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkTourModeTimeModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkTourModeTimeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 21;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 999;
@@ -107,8 +107,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         tour.Mode = choice.Mode;
         if (Global.StopAreaIsEnabled && tour.Mode == Global.Settings.Modes.ParkAndRide) {
-          tour.ParkAndRideOriginStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
-          tour.ParkAndRideDestinationStopAreaKey = choice.ParkAndRideDestinationStopAreaKey;
+          tour.ParkAndRideOriginStopAreaKey = choice.OriginStopAreaKey;
+          tour.ParkAndRideDestinationStopAreaKey = choice.DestinationStopAreaKey;
         }
         MinuteSpan arrivalPeriod = choice.ArrivalPeriod;
         MinuteSpan departurePeriod = choice.DeparturePeriod;

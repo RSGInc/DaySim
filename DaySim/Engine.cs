@@ -121,8 +121,49 @@ namespace DaySim {
         Global.PrintFile.WriteLine("Application mode: {0}", Global.Configuration.IsInEstimationMode ? "Estimation" : "Simulation");
 
         if (Global.Configuration.IsInEstimationMode) {
-          Global.PrintFile.WriteLine("Estimation model: {0}", Global.Configuration.EstimationModel);
+          if (string.IsNullOrEmpty(Global.Configuration.EstimationModel)) {
+            throw new Exception("IsInEstimationMode is true but EstimationModel is not set.");
+          } else {
+            /*
+            wish to check that the passed in EstimationModel exists.
+            The problem is that this may not be a full classname but a hybrid such as
+            'ActumTourModeTimeModel' or 'HTourModeTimeModel' or 'TourModeTimeModel'
+            */
+            string middlePartOfNameSpace = Global.Configuration.EstimationModel.StartsWith("Actum") ? "Actum" : Global.Configuration.EstimationModel.StartsWith("H") ? "H" : "Default";
+            string estimationModelClassName = string.Format("DaySim.ChoiceModels.{0}.Models.{1}", middlePartOfNameSpace, Global.Configuration.EstimationModel.Replace(middlePartOfNameSpace, ""));
+
+            if (middlePartOfNameSpace != Global.Configuration.ChoiceModelRunner) {
+              throw new Exception(string.Format("ChoiceModelRunner '{0}' does not match the middle part of the namespace of the EstimationModel '{1}' which was calculated to be '{2}.",
+                Global.Configuration.ChoiceModelRunner, Global.Configuration.EstimationModel, middlePartOfNameSpace));
+            }
+            Type estimationModelType = Type.GetType(estimationModelClassName);
+            if (estimationModelType == null) {
+              throw new Exception(string.Format("EstimationModel '{0}' was expected to represent class '{1}' but that does not exist.", Global.Configuration.EstimationModel, estimationModelClassName));
+            } else {
+              Global.PrintFile.WriteLine(string.Format("EstimationModel '{0}' resolved to be Class {1}", Global.Configuration.EstimationModel, estimationModelType), true);
+
+              FieldInfo choiceModelNameFieldInfo = estimationModelType.GetField("CHOICE_MODEL_NAME", BindingFlags.Public | BindingFlags.Static);
+              if (choiceModelNameFieldInfo == null) {
+                throw new Exception(string.Format("EstimationModel '{0}' class '{1}' does not have expected constant field 'CHOICE_MODEL_NAME'.", Global.Configuration.EstimationModel, estimationModelClassName));
+              } else {
+                object choiceModelNameValue = choiceModelNameFieldInfo.GetValue(null);
+                if (choiceModelNameValue == null) {
+                  throw new Exception(string.Format("EstimationModel '{0}' class '{1}' constant field 'CHOICE_MODEL_NAME' value could not be found.", Global.Configuration.EstimationModel, estimationModelClassName));
+                } else if (choiceModelNameValue.ToString() != Global.Configuration.EstimationModel) {
+                  throw new Exception(string.Format("EstimationModel '{0}' class '{1}' constant field CHOICE_MODEL_NAME's value is not identical to EstimationModel but is {2} instead.", Global.Configuration.EstimationModel, estimationModelClassName, choiceModelNameValue.ToString()));
+                }
+              }
+            }
+          }
+        } //end EstimationModel checks
+
+        bool usingASetRandomSeed = Global.Configuration.RandomSeed != Configuration.DefaultRandomSeedIfNotSet;
+        if (usingASetRandomSeed) {
+          Global.PrintFile.WriteLine(string.Format("randomSeed value of {0} WAS SET IN configuration file so runs will be repeatable.", Global.Configuration.RandomSeed), true);
+        } else {
+          Global.PrintFile.WriteLine(string.Format("randomSeed value WAS NOT SET in configuration file and has been dynamically set to {0}. Runs will not be repeatable unless the same seed is set.", Global.Configuration.RandomSeed), true);
         }
+
       }
 
       InitializePersistenceFactories();
@@ -1070,6 +1111,7 @@ namespace DaySim {
       List<int> stopAreaIds = new List<int>();
       List<float> lengths = new List<float>(); /* raw values */
       List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
+      List<int> stopAreaParcelIds = new List<int>();
 
       // read header
       reader.ReadLine();
@@ -1084,6 +1126,7 @@ namespace DaySim {
       stopAreaKeys.Add(0);
       distances.Add(0F);
       lengths.Add(0F);
+      stopAreaParcelIds.Add(0);
 
       while ((line = reader.ReadLine()) != null) {
         string[] tokens = line.Split(new[] { Global.Configuration.NodeStopAreaIndexDelimiter });
@@ -1105,22 +1148,28 @@ namespace DaySim {
         //mb changed this array to use mapping of stop area ids 
         int stopAreaIndex = Global.TransitStopAreaMapping[stopAreaId];
         stopAreaIds.Add(stopAreaIndex);
-
+       if (Global.Configuration.DataType == "Actum") {
+           int stopAreaParcelId = int.Parse(tokens[3]);
+           stopAreaParcelIds.Add(stopAreaParcelId);
+        }
         float length = float.Parse(tokens[2]);
         lengths.Add(length);
         float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
         distances.Add(distance);
       }
 
-      //Global.ParcelStopAreaParcelIds = parcelIds.ToArray();
+      Global.ParcelStopAreaParcelIds = stopAreaParcelIds.ToArray();
       Global.ParcelStopAreaStopAreaKeys = stopAreaKeys.ToArray();
       Global.ParcelStopAreaStopAreaIds = stopAreaIds.ToArray();
       Global.ParcelStopAreaLengths = lengths.ToArray();
       Global.ParcelStopAreaDistances = distances.ToArray();
+      if (Global.Configuration.DataType == "Actum") {
+        Global.ParcelStopAreaParcelIds = stopAreaParcelIds.ToArray();
+      }
     }
 
     private static void BeginLoadMicrozoneToAutoParkAndRideNodeDistances() {
-      if (!Global.StopAreaIsEnabled|| Global.Configuration.DataType != "Actum") {
+      if (!Global.StopAreaIsEnabled || Global.Configuration.DataType != "Actum") {
         return;
       }
       if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToAutoParkAndRideNodePath)) {
@@ -1186,7 +1235,6 @@ namespace DaySim {
       }
 
       Global.ParcelToAutoParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
-      Global.ParcelToAutoParkAndRideTerminalIds = nodeSequentialIds.ToArray();
       Global.ParcelToAutoParkAndRideNodeLength = lengths.ToArray();
       Global.ParcelToAutoParkAndRideNodeDistance = distances.ToArray();
 
@@ -1259,7 +1307,6 @@ namespace DaySim {
       }
 
       Global.ParcelToBikeParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
-      Global.ParcelToBikeParkAndRideTerminalIds = nodeSequentialIds.ToArray();
       Global.ParcelToBikeParkAndRideNodeLength = lengths.ToArray();
       Global.ParcelToBikeParkAndRideNodeDistance = distances.ToArray();
 
@@ -1290,6 +1337,7 @@ namespace DaySim {
 
       //var parcelIds = new List<int>();  
       List<int> nodeSequentialIds = new List<int>();
+      List<int> nodeIndices = new List<int>();
       List<int> nodeMicrozoneIds = new List<int>();
       List<float> lengths = new List<float>(); /* raw values */
       List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
@@ -1304,6 +1352,7 @@ namespace DaySim {
       //start arrays at index 0 with dummy values, since valid indices start with 1
       //parcelIds.Add(0);
       nodeSequentialIds.Add(0);
+      nodeIndices.Add(0);
       nodeMicrozoneIds.Add(0);
       distances.Add(0F);
       lengths.Add(0F);
@@ -1323,8 +1372,10 @@ namespace DaySim {
         parcel.LastPositionInAutoKissAndRideTerminalDistanceArray = arrayIndex;
 
         //parcelIds.Add(int.Parse(tokens[0]));
-        int nodeSequentialIndex = int.Parse(tokens[1]);
-        nodeSequentialIds.Add(nodeSequentialIndex);
+        int terminalId = int.Parse(tokens[1]);
+        nodeSequentialIds.Add(terminalId);
+        int terminalIndex = Global.TransitStopAreaMapping[terminalId];
+        nodeIndices.Add(terminalIndex);
         int nodeMicrozoneIndex = int.Parse(tokens[3]);
         nodeMicrozoneIds.Add(nodeMicrozoneIndex);
         //parkAndRideNodeIds.Add(parkAndRideNodeId);
@@ -1336,7 +1387,8 @@ namespace DaySim {
       }
 
       Global.ParcelToAutoKissAndRideMicrozoneIds = nodeMicrozoneIds.ToArray();
-      Global.ParcelToAutoKissAndRideTerminalIds = nodeSequentialIds.ToArray();
+      Global.ParcelToAutoKissAndRideTerminalKeys = nodeSequentialIds.ToArray();
+      Global.ParcelToAutoKissAndRideTerminalIndices = nodeIndices.ToArray();
       Global.ParcelToAutoKissAndRideTerminalLength = lengths.ToArray();
       Global.ParcelToAutoKissAndRideTerminalDistance = distances.ToArray();
 
@@ -1367,6 +1419,7 @@ namespace DaySim {
 
       //var parcelIds = new List<int>();  
       List<int> nodeSequentialIds = new List<int>();
+      List<int> nodeIndices = new List<int>();
       List<int> nodeMicrozoneIds = new List<int>();
       List<float> lengths = new List<float>(); /* raw values */
       List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
@@ -1381,6 +1434,7 @@ namespace DaySim {
       //start arrays at index 0 with dummy values, since valid indices start with 1
       //parcelIds.Add(0);
       nodeSequentialIds.Add(0);
+      nodeIndices.Add(0);
       nodeMicrozoneIds.Add(0);
       distances.Add(0F);
       lengths.Add(0F);
@@ -1400,8 +1454,10 @@ namespace DaySim {
         parcel.LastPositionInBikeOnBoardTerminalDistanceArray = arrayIndex;
 
         //parcelIds.Add(int.Parse(tokens[0]));
-        int nodeSequentialIndex = int.Parse(tokens[1]);
-        nodeSequentialIds.Add(nodeSequentialIndex);
+        int terminalId = int.Parse(tokens[1]);
+        nodeSequentialIds.Add(terminalId);
+        int terminalIndex = Global.TransitStopAreaMapping[terminalId];
+        nodeIndices.Add(terminalIndex);
         int nodeMicrozoneIndex = int.Parse(tokens[3]);
         nodeMicrozoneIds.Add(nodeMicrozoneIndex);
         //parkAndRideNodeIds.Add(parkAndRideNodeId);
@@ -1413,7 +1469,8 @@ namespace DaySim {
       }
 
       Global.ParcelToBikeOnBoardMicrozoneIds = nodeMicrozoneIds.ToArray();
-      Global.ParcelToBikeOnBoardTerminalIds = nodeSequentialIds.ToArray();
+      Global.ParcelToBikeOnBoardTerminalKeys = nodeSequentialIds.ToArray();
+      Global.ParcelToBikeOnBoardTerminalIndices = nodeIndices.ToArray();
       Global.ParcelToBikeOnBoardTerminalLength = lengths.ToArray();
       Global.ParcelToBikeOnBoardTerminalDistance = distances.ToArray();
 
@@ -1455,7 +1512,7 @@ namespace DaySim {
       reader.ReadLine();
 
       string line;
- 
+
       while ((line = reader.ReadLine()) != null) {
         string[] tokens = line.Split(new[] { Global.Configuration.TransitPricesByFareZonesDelimiter });
 
@@ -1753,7 +1810,7 @@ namespace DaySim {
       //do not use Parallel.For because it may close and open new threads. Want steady threads since I am using thread local storage in Parallel.Utility
       ParallelUtility.AssignThreadIndex(numberOfChoiceModelThreads);
       List<Thread> threads = new List<Thread>();
-      int displayInterval = Math.Min(1000, Math.Max(1, addedHousehouldCounter / 100));
+      int displayInterval = Global.Configuration.IsInEstimationMode ? 1 : Math.Min(1000, Math.Max(1, addedHousehouldCounter / 100));
       for (int threadIndex = 0; threadIndex < numberOfChoiceModelThreads; ++threadIndex) {
         Thread myThread = new Thread(new ThreadStart(delegate {
           //retrieve threadAssignedIndexIndex so can see logging output

@@ -3,18 +3,19 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   
 
 
 using System;
 using DaySim.DomainModels.Actum.Wrappers;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class MandatoryStopPresenceModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumMandatoryStopPresenceModel";
+    public const string CHOICE_MODEL_NAME = "ActumMandatoryStopPresenceModel";
     private const int TOTAL_ALTERNATIVES = 4;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -75,16 +76,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
     }
 
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, PersonDayWrapper personDay, HouseholdDayWrapper householdDay, int choice = Constants.DEFAULT_VALUE) {
-      Framework.DomainModels.Wrappers.IHouseholdWrapper household = personDay.Household;
-      Framework.DomainModels.Wrappers.IPersonWrapper person = personDay.Person;
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)personDay.Household;
+      IActumPersonWrapper person = (IActumPersonWrapper)personDay.Person;
 
       double workTourLogsum;
-      if (personDay.Person.UsualWorkParcelId != Constants.DEFAULT_VALUE && personDay.Person.UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
+      if (person.UsualWorkParcelId != Constants.DEFAULT_VALUE && person.UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
         //JLB 201406
-        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(personDay.Person, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
+        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeModel>().RunNested(person, household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, household.HouseholdTotals.DrivingAgeMembers);
         //JLB 201602
-        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
+        //var nestedAlternative = Global.ChoiceModelSession.Get<WorkTourModeTimeModel>().RunNested(personDay, household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, household.HouseholdTotals.DrivingAgeMembers);
+        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, household.ResidenceParcel, person.UsualWorkParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.Work);
         workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
         workTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
       } else {
@@ -92,78 +93,126 @@ namespace DaySim.ChoiceModels.Actum.Models {
       }
 
       double schoolTourLogsum;
-      if (personDay.Person.UsualSchoolParcelId != Constants.DEFAULT_VALUE && personDay.Person.UsualSchoolParcelId != Global.Settings.OutOfRegionParcelId) {
+      if (person.UsualSchoolParcelId != Constants.DEFAULT_VALUE && person.UsualSchoolParcelId != Global.Settings.OutOfRegionParcelId) {
         //JLB 201406
-        //var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeModel>().RunNested(personDay.Person, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
+        //var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, household.HouseholdTotals.DrivingAgeMembers);
         //JLB 201602
-        //var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeTimeModel>().RunNested(personDay, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers);
-        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, personDay.Person.Household.ResidenceParcel, personDay.Person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, personDay.Person.Household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.School);
+        //var nestedAlternative = Global.ChoiceModelSession.Get<SchoolTourModeTimeModel>().RunNested(personDay, household.ResidenceParcel, person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, household.HouseholdTotals.DrivingAgeMembers);
+        ChoiceProbabilityCalculator.Alternative nestedAlternative = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(personDay, household.ResidenceParcel, person.UsualSchoolParcel, Global.Settings.Times.EightAM, Global.Settings.Times.FivePM, household.HouseholdTotals.DrivingAgeMembers, Global.Settings.Purposes.School);
         schoolTourLogsum = nestedAlternative == null ? 0 : nestedAlternative.ComputeLogsum();
       } else {
         schoolTourLogsum = 0;
       }
 
+      //GV: CPH city definiion
+      bool hhLivesInCPHCity = false;
+      if (household.ResidenceParcel.LandUseCode == 101 || household.ResidenceParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
+
+
+      //JB: 9.4.2019
+      //Consider using (personDay.BusinessTours > 0).ToFlag() as a term in the Business and Business+School alternatives.
+      //And consider using (personDay.SchoolTours > 0).ToFlag() as a term in the School and Business+School alternatives.
+      //I would expect the signs to be positive.
 
       // No mandatory stops
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
       alternative.Choice = 0;
 
-      //alternative.AddUtilityTerm(2, householdDay.Household.HasChildren.ToFlag());
-      alternative.AddUtilityTerm(3, householdDay.Household.HasChildrenUnder5.ToFlag());
-      //alternative.AddUtilityTerm(4, householdDay.Household.HasChildrenAge5Through15.ToFlag());
-      //alternative.AddUtilityTerm(6, householdDay.Household.HasChildrenUnder16.ToFlag());
+      //alternative.AddUtilityTerm(2, household.HasChildren.ToFlag());
+      alternative.AddUtilityTerm(3, household.HasChildrenUnder5.ToFlag());
+
+      //GV: 8.4.2019 - JBs comment on "WorksAtHome"
+      //GV: the model is better with "person.WorksAtHome.ToFlag()"
+      alternative.AddUtilityTerm(4, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(4, personDay.WorksAtHomeFlag);
+
+      alternative.AddUtilityTerm(5, person.IsFemale.ToFlag());
+      //alternative.AddUtilityTerm(4, household.HasChildrenAge5Through15.ToFlag());
+      //alternative.AddUtilityTerm(6, household.HasChildrenUnder16.ToFlag());
 
       //alternative.AddNestedAlternative(11, 0, 60); 
 
       //GV: added 14. june 2016
-      alternative.AddUtilityTerm(4, householdDay.PrimaryPriorityTimeFlag);
-      //alternative.AddUtilityTerm(5, (householdDay.Household.VehiclesAvailable >= 1).ToFlag());
+      alternative.AddUtilityTerm(6, householdDay.PrimaryPriorityTimeFlag);
+      //alternative.AddUtilityTerm(5, (household.VehiclesAvailable >= 1).ToFlag());
 
       // Business stop(s)
-      alternative = choiceProbabilityCalculator.GetAlternative(1, personDay.Person.IsWorker, choice == 1);
+      alternative = choiceProbabilityCalculator.GetAlternative(1, person.IsWorker, choice == 1);
       alternative.Choice = 1;
       alternative.AddUtilityTerm(21, 1);
 
-      //alternative.AddUtilityTerm(22, personDay.Person.IsChildUnder5.ToFlag());
-      alternative.AddUtilityTerm(23, personDay.Person.WorksAtHome.ToFlag());
-      alternative.AddUtilityTerm(24, personDay.Person.IsFulltimeWorker.ToFlag());
-      //alternative.AddUtilityTerm(25, personDay.Person.IsPartTimeWorker.ToFlag());
-      alternative.AddUtilityTerm(25, personDay.Person.IsMale.ToFlag());
+      //alternative.AddUtilityTerm(22, person.IsChildUnder5.ToFlag());
+      //alternative.AddUtilityTerm(23, person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(23, person.IsFulltimeWorker.ToFlag());
+      alternative.AddUtilityTerm(24, person.IsPartTimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(25, person.IsPartTimeWorker.ToFlag());
+      alternative.AddUtilityTerm(25, person.IsMale.ToFlag());  
       //alternative.AddUtilityTerm(4, person.IsPartTimeWorker.ToFlag());
 
       //GV: 15. june 2016, not sign.
-      //alternative.AddUtilityTerm(26, (householdDay.AdultsInSharedHomeStay == 2 && householdDay.Household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      //alternative.AddUtilityTerm(26, (householdDay.AdultsInSharedHomeStay == 2 && household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
 
       //alternative.AddUtilityTerm(14, (householdDay.AdultsInSharedHomeStay == 2).ToFlag());
-      //alternative.AddUtilityTerm(15, (householdDay.Household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
-      alternative.AddUtilityTerm(27, (householdDay.AdultsInSharedHomeStay == 1 && householdDay.Household.HasChildren).ToFlag());
+      //alternative.AddUtilityTerm(15, (household.HouseholdTotals.FullAndPartTimeWorkers >= 2).ToFlag());
+      //GV: 22. feb. 2019 - "householdDay.AdultsInSharedHomeStay" cannot be used
+      //alternative.AddUtilityTerm(27, (householdDay.AdultsInSharedHomeStay == 1 && household.HasChildren).ToFlag());
+      alternative.AddUtilityTerm(26, (household.HasChildren).ToFlag());
 
-      alternative.AddUtilityTerm(28, workTourLogsum);
+      //GV: 9.4.2019 - impact of Man. Tour Generation
+      alternative.AddUtilityTerm(27, (personDay.BusinessTours > 0).ToFlag()); 
 
-      //alternative.AddUtilityTerm(28, (householdDay.Household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
-      alternative.AddUtilityTerm(29, (householdDay.Household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
+      //GV: 9.4.201 - logsums non-significant in any form
+      //GV: 9.4.2019 - logsum for the rest of GCA
+      //alternative.AddUtilityTerm(27, workTourLogsum);
+      //alternative.AddUtilityTerm(27, workTourLogsum * (!hhLivesInCPHCity).ToFlag());
+      //GV: 21, feb 2019 - CPHcity included in the logsum
+      //alternative.AddUtilityTerm(27, workTourLogsum * (hhLivesInCPHCity).ToFlag());
+
+      //alternative.AddUtilityTerm(28, (household.VehiclesAvailable == 1 && household.Has2Drivers).ToFlag());
+
+      //GV: 9.4.2019 - try with car >=1 - the model is much betetr with >=2
+      alternative.AddUtilityTerm(29, (household.VehiclesAvailable >= 2 && household.Has2Drivers).ToFlag());
+      //alternative.AddUtilityTerm(29, (household.VehiclesAvailable >= 2 && household.HasMoreDriversThan1).ToFlag());
+      //alternative.AddUtilityTerm(29, (household.VehiclesAvailable >= 1 && household.Has2Drivers).ToFlag());
 
 
       // School stop(s)
-      alternative = choiceProbabilityCalculator.GetAlternative(2, personDay.Person.IsStudent, choice == 2);
+      alternative = choiceProbabilityCalculator.GetAlternative(2, person.IsStudent, choice == 2);  
       alternative.Choice = 2;
       alternative.AddUtilityTerm(41, 1);
 
-      //alternative.AddUtilityTerm(43, personDay.Person.WorksAtHome.ToFlag());
-      //alternative.AddUtilityTerm(44, personDay.Person.IsFulltimeWorker.ToFlag());
-      //alternative.AddUtilityTerm(45, personDay.Person.IsPartTimeWorker.ToFlag());
-      //alternative.AddUtilityTerm(46, personDay.Person.IsMale.ToFlag());
-      alternative.AddUtilityTerm(47, personDay.Person.IsYouth.ToFlag());
+      //GV: 9.4.2019 - impact of Man. Tour Generation
+      alternative.AddUtilityTerm(42, (personDay.SchoolTours > 0).ToFlag());
+
+      //alternative.AddUtilityTerm(43, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(44, person.IsFulltimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(45, person.IsPartTimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(46, person.IsMale.ToFlag());
+      alternative.AddUtilityTerm(47, person.IsYouth.ToFlag());
 
       //GV: 15. june 2016, not sign.
       //alternative.AddUtilityTerm(48, schoolTourLogsum); 
 
 
       // Business and school stops
-      alternative = choiceProbabilityCalculator.GetAlternative(3, (personDay.Person.IsWorker && personDay.Person.IsStudent), choice == 3);
+      alternative = choiceProbabilityCalculator.GetAlternative(3, (person.IsWorker && person.IsStudent), choice == 3); 
       alternative.Choice = 3;
       alternative.AddUtilityTerm(61, 1);
-      alternative.AddUtilityTerm(28, workTourLogsum);
+
+      //GV: 9.4.2019 - impact of Man. Tour Generation
+      alternative.AddUtilityTerm(27, (personDay.BusinessTours > 0).ToFlag());
+
+      //GV: 9.4.2019 - impact of Man. Tour Generation
+      alternative.AddUtilityTerm(42, (personDay.SchoolTours > 0).ToFlag());
+
+      //GV: 9.4.201 - logsums non-significant in any form
+      //GV: 9.4.2019 - logsum for the rest of GCA
+      //alternative.AddUtilityTerm(27, workTourLogsum);
+      //alternative.AddUtilityTerm(27, workTourLogsum * (!hhLivesInCPHCity).ToFlag());
+      //GV: 21, feb 2019 - CPHcity included in the logsum
+      //alternative.AddUtilityTerm(27, workTourLogsum * (hhLivesInCPHCity).ToFlag());
 
       //GV: 15. june 2016, not sign.
       //alternative.AddUtilityTerm(48, schoolTourLogsum);

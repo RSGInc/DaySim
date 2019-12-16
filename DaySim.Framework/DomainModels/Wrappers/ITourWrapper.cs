@@ -35,7 +35,7 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     #region flags/choice model/etc. properties
 
-    int hovOccupancy { get; set; }
+    int HovOccupancy { get; set; }
 
     bool IsHomeBasedTour { get; set; }
 

@@ -17,7 +17,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class TripModeModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "TripModeModel";
+    public const string CHOICE_MODEL_NAME = "TripModeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 6;
     private const int TOTAL_LEVELS = 2;
     private const int MAX_PARAMETER = 199;
@@ -91,6 +91,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 trip.Household.VehiclesAvailable,
                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
+                 /* hov occ */ 2, /* auto type */ 1,
                 trip.Person.PersonType,
                 false);
 
@@ -120,6 +121,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               trip.Household.VehiclesAvailable,
                trip.Person.TransitPassOwnership,
               trip.Household.OwnsAutomatedVehicles > 0,
+                 /* hov occ */ 2, /* auto type */ 1,
               trip.Person.PersonType,
               false);
 

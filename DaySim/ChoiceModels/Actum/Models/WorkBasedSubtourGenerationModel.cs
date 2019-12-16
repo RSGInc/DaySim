@@ -3,7 +3,7 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
 
 
 using System;
@@ -14,7 +14,7 @@ using DaySim.Framework.Core;
 
 namespace DaySim.ChoiceModels.Actum.Models {
   public class WorkBasedSubtourGenerationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "ActumWorkBasedSubtourGenerationModel";
+    public const string CHOICE_MODEL_NAME = "ActumWorkBasedSubtourGenerationModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -66,27 +66,56 @@ namespace DaySim.ChoiceModels.Actum.Models {
       return choice;
     }
 
-    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TourWrapper tour, HouseholdDayWrapper householdDay, int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
+  private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, TourWrapper tour, HouseholdDayWrapper householdDay, int nCallsForTour, int choice = Constants.DEFAULT_VALUE) {
       PersonWrapper person = (PersonWrapper)tour.Person;
       PersonDayWrapper personDay = (PersonDayWrapper)tour.PersonDay;
+      ParcelWrapper tourDestinationParcel = (ParcelWrapper)tour.DestinationParcel;
 
-      //			var foodRetailServiceMedicalQtrMileLog = tour.DestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
-      //			var mixedUseIndex = tour.DestinationParcel.MixedUse4Index1();
-      double k8HighSchoolQtrMileLog = tour.DestinationParcel.K8HighSchoolQtrMileLogBuffer1();
+      //			var foodRetailServiceMedicalQtrMileLog = tourDestinationParcel.FoodRetailServiceMedicalQtrMileLogBuffer1();
+      //			var mixedUseIndex = tourDestinationParcel.MixedUse4Index1();
+      double k8HighSchoolQtrMileLog = tourDestinationParcel.K8HighSchoolQtrMileLogBuffer1();
       //var carOwnership = person.CarOwnershipSegment;
       int carOwnership = 0;
 
       int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
       int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership);
-      //			var notUsualWorkParcelFlag = tour.DestinationParcel.NotUsualWorkParcelFlag(person.UsualWorkParcelId);
+      //			var notUsualWorkParcelFlag = tourDestinationParcel.NotUsualWorkParcelFlag(person.UsualWorkParcelId);  
 
-      int votALSegment = tour.GetVotALSegment();
-
-      int workTaSegment = tour.DestinationParcel.TransitAccessSegment();
-      double workAggregateLogsum = Global.AggregateLogsums[tour.DestinationParcel.ZoneId][Global.Settings.Purposes.WorkBased][carOwnership][votALSegment][workTaSegment];
+               
+      //GV: 12.4.2019 - getting values from MB's memo
+      //int votALSegment = tour.GetVotALSegment();
+      int votALSegment =
+        (tour.Household.Income <= 450000)
+                  ? Global.Settings.VotALSegments.Low
+                  : (tour.Household.Income <= 900000)
+                      ? Global.Settings.VotALSegments.Medium
+                      : Global.Settings.VotALSegments.High;
+               
+      //GV: 12.4.2019 - getting values from MB's memo
+      //OBS - it has to be in km
+      //int workTaSegment = tourDestinationParcel.TransitAccessSegment();
+      int workTaSegment =
+         tourDestinationParcel.GetDistanceToTransit() >= 0 && tourDestinationParcel.GetDistanceToTransit() <= 0.4
+            ? 0
+            : tourDestinationParcel.GetDistanceToTransit() > 0.4 && tourDestinationParcel.GetDistanceToTransit() <= 1.6
+                ? 1
+                : 2;
+                     
+      double workAggregateLogsum = Global.AggregateLogsums[tourDestinationParcel.ZoneId][Global.Settings.Purposes.WorkBased][carOwnership][votALSegment][workTaSegment];
 
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][carOwnership][votALSegment][transitAccessSegment];
       //var compositeLogsum = Global.AggregateLogsums[household.ResidenceZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votALSegment][transitAccessSegment];
+
+
+      //GV: 25.feb. 2019 - self employed person
+      int SelfEmpFlag = (person.OccupationCode == 8).ToFlag();
+
+      //GV: 12.april.2019 - CPHcity
+      bool hhLivesInCPHCity = false;
+      //if (householdDay.Household.ResidenceParcel.LandUseCode == 101 || householdDay.Household.ResidenceParcel.LandUseCode == 147) {
+        if (tourDestinationParcel.LandUseCode == 101 || tourDestinationParcel.LandUseCode == 147) {
+        hhLivesInCPHCity = true;
+      }
 
 
       // NONE_OR_HOME
@@ -97,7 +126,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       alternative.AddUtilityTerm(1, (nCallsForTour > 1).ToFlag());
 
-      //alternative.AddUtilityTerm(2, Math.Log(personDay.HomeBasedTours));
+      alternative.AddUtilityTerm(2, Math.Log(personDay.HomeBasedTours));  
 
       //alternative.AddUtilityTerm(3, personDay.HasTwoOrMoreWorkTours.ToFlag());
       //alternative.AddUtility(4, notUsualWorkParcelFlag);
@@ -113,12 +142,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(11, (householdDay.Household.Size == 2).ToFlag());
       //alternative.AddUtilityTerm(12, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
 
-      //alternative.AddUtilityTerm(14, personDay.Person.WorksAtHome.ToFlag());
-      //alternative.AddUtilityTerm(15, personDay.Person.IsNonworkingAdult.ToFlag());
+      //alternative.AddUtilityTerm(14, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(15, person.IsNonworkingAdult.ToFlag());
 
+      //GV: 26. feb. 2019 
+      //alternative.AddUtilityTerm(16, SelfEmpFlag);
+      
       //alternative.AddUtilityTerm(15, (person.IsNonworkingAdult).ToFlag()); //out of scope, non available
 
-      //alternative.AddUtilityTerm(32, workAggregateLogsum); 
+      //alternative.AddUtilityTerm(41, workAggregateLogsum); 
       //alternative.AddUtility(32, mixedUseIndex); 
 
       // WORK-BASED
@@ -129,19 +161,23 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       alternative.AddUtilityTerm(21, 1);
 
-      //alternative.AddUtilityTerm(30, (person.IsWorker).ToFlag());
+      //alternative.AddUtilityTerm(22, (person.IsWorker).ToFlag());
+
+      //GV: 27. feb 2019 - OBS Wrong sign
+      alternative.AddUtilityTerm(22, (householdDay.Household.VehiclesAvailable >= 1).ToFlag());
 
       //alternative.AddUtilityTerm(22, (person.FlexibleWorkHours == 1).ToFlag());
       //alternative.AddUtilityTerm(23, (person.EducationLevel >= 12).ToFlag());
 
-      //alternative.AddUtilityTerm(24, personDay.Person.IsPartTimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(22, person.IsFulltimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(23, person.IsPartTimeWorker.ToFlag());
 
       //GV, 16. june 2016 - cannot be estimated
       //alternative.AddUtilityTerm(24, (person.WorksAtHome).ToFlag());
-      ////alternative.AddUtilityTerm(25, personDay.Person.IsFulltimeWorker.ToFlag());
-      //alternative.AddUtilityTerm(26, (person.MainOccupation == 50).ToFlag()); // self employed
+      ////alternative.AddUtilityTerm(25, person.IsFulltimeWorker.ToFlag());
+      //alternative.AddUtilityTerm(26, (person.MainOccupation == 50).ToFlag()); // self employed 
 
-      alternative.AddUtilityTerm(27, (personDay.Person.Gender == 1).ToFlag());
+      alternative.AddUtilityTerm(27, (person.Gender == 1).ToFlag());
       //alternative.AddUtilityTerm(44, (hasAdultEducLevel12 == 1).ToFlag());
 
       //GV. 16. june 2016 - not signif.
@@ -150,13 +186,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       alternative.AddUtilityTerm(30, householdDay.PrimaryPriorityTimeFlag);
 
-      //GV. 16. june 2016 - not signif.
-      //alternative.AddUtilityTerm(31, (householdDay.Household.Income >= 300000 && householdDay.Household.Income < 600000).ToFlag());
-      //alternative.AddUtilityTerm(32, (householdDay.Household.Income >= 600000 && householdDay.Household.Income < 900000).ToFlag());
+      //GV. 12. april 2019 - not signif.
+      //alternative.AddUtilityTerm(31, (householdDay.Household.Income >= 450000 && householdDay.Household.Income < 650000).ToFlag());
+      //alternative.AddUtilityTerm(32, (householdDay.Household.Income >= 650000 && householdDay.Household.Income < 900000).ToFlag());
       //alternative.AddUtilityTerm(33, (householdDay.Household.Income >= 900000).ToFlag());
 
-      alternative.AddUtilityTerm(41, workAggregateLogsum);
-
+      //GV: 12.4.2019 - they are both negative and significant. They are constrained to zero in the .f12 file. 
+      alternative.AddUtilityTerm(42, workAggregateLogsum * (hhLivesInCPHCity).ToFlag()); 
+      alternative.AddUtilityTerm(43, workAggregateLogsum * (!hhLivesInCPHCity).ToFlag());
+      
       //alternative.AddUtilityTerm(36, (householdDay.Household.Size == 2).ToFlag()); 
       //alternative.AddUtilityTerm(37, (householdDay.Household.Size == 3).ToFlag());
       //alternative.AddUtilityTerm(38, (householdDay.Household.Size >= 4).ToFlag());

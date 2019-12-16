@@ -86,7 +86,7 @@ namespace DaySim.Settings {
     public override int CarKissRideShare => 19;
 
     public override int CarParkRideWalk => 20;
-       
+
     public override int CarParkRideBike => 21;
 
     public override int CarParkRideShare => 22;

@@ -21,7 +21,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.Default.Models {
   public class IntermediateStopLocationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "IntermediateStopLocationModel";
+    public const string CHOICE_MODEL_NAME = "IntermediateStopLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     // regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
@@ -880,6 +880,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                  /* householdCars */ 1,
                   /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
+                /* hov occ */ 2, /* auto type */ 1,
                 personType,
                 false,
                 mode);

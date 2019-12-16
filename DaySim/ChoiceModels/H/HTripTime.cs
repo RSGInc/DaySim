@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.PathTypeModels;
@@ -40,8 +41,14 @@ namespace DaySim.ChoiceModels.H {
 
     public int LatestFeasibleDepartureTime;
 
-    public int ParkAndRideOriginStopAreaKey { get; private set; }
-    public int ParkAndRideDestinationStopAreaKey { get; private set; }
+    public int PathOriginStopAreaKey { get; private set; }
+    public int PathOriginStopAreaParcelID { get; private set; }
+    public int PathOriginStopAreaZoneID { get; private set; }
+    public int PathDestinationStopAreaKey { get; private set; }
+    public int PathOriginParkingNodeKey { get; private set; }
+    public int PathDestinationParkingNodeKey { get; private set; }
+    public int PathDestinationStopAreaParcelID { get; private set; }
+    public int PathDestinationStopAreaZoneID { get; private set; }
     public int OriginAccessMode { get; private set; }
     public double OriginAccessTime { get; private set; }
     public double OriginAccessDistance { get; private set; }
@@ -109,6 +116,7 @@ namespace DaySim.ChoiceModels.H {
 
     public static void SetTimeImpedanceAndWindow(ITripWrapper trip, HTripTime time) {
 
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)trip.Household;
       ITourWrapper tour = trip.Tour;
       int alternativeIndex = time.Index;
       MinuteSpan period = time.DeparturePeriod;
@@ -117,7 +125,8 @@ namespace DaySim.ChoiceModels.H {
       if (period.End < trip.EarliestDepartureTime || period.Start > trip.LatestDepartureTime) {
         time.Available = false;
       } else {
-        int pathMode = (trip.Mode >= Global.Settings.Modes.SchoolBus - 1) ? Global.Settings.Modes.Hov3 : trip.Mode;
+        //int pathMode = (trip.Mode >= Global.Settings.Modes.SchoolBus - 1) ? Global.Settings.Modes.Hov3 : trip.Mode;
+        int pathMode = (trip.Mode > Global.Settings.Modes.WalkRideWalk) ? Global.Settings.Modes.Hov3 : trip.Mode;  //JB 201905 proposed patch
 
         IEnumerable<IPathTypeModel> pathTypeModels =
                             PathTypeModelFactory.Singleton.Run(
@@ -133,6 +142,8 @@ namespace DaySim.ChoiceModels.H {
                             tour.Household.VehiclesAvailable,
                             tour.Person.TransitPassOwnership,
                             tour.Household.OwnsAutomatedVehicles > 0,
+                            tour.HovOccupancy,
+                            household.AutoType,
                             tour.Person.PersonType,
                             true,
                             pathMode);
@@ -143,8 +154,14 @@ namespace DaySim.ChoiceModels.H {
         time.ModeLOS = pathTypeModel;
 
         if (time.Available) {
-          time.ParkAndRideOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
-          time.ParkAndRideDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
+          time.PathOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
+          time.PathOriginStopAreaParcelID = pathTypeModel.PathOriginStopAreaParcelID;
+          time.PathOriginStopAreaZoneID = pathTypeModel.PathOriginStopAreaZoneID;
+          time.PathDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
+          time.PathDestinationStopAreaParcelID = pathTypeModel.PathDestinationStopAreaParcelID;
+          time.PathDestinationStopAreaZoneID = pathTypeModel.PathDestinationStopAreaZoneID;
+          time.PathOriginParkingNodeKey = pathTypeModel.PathParkAndRideNodeId;
+          time.PathDestinationParkingNodeKey = pathTypeModel.PathParkAndRideEgressNodeId;
           time.OriginAccessMode = pathTypeModel.PathOriginAccessMode;
           time.OriginAccessTime = pathTypeModel.PathOriginAccessTime;
           time.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance;

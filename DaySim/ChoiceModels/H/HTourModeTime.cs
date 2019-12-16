@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Default.Wrappers;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
@@ -52,11 +53,27 @@ namespace DaySim.ChoiceModels.H {
 
     public bool ModeAvailableFromDestination { get; private set; }
 
-    public int ParkAndRideOriginStopAreaKey { get; private set; }
+    public int OriginStopAreaKey { get; private set; }
 
-    public int ParkAndRideDestinationStopAreaKey { get; private set; }
+    public int OriginStopAreaParcelID { get; private set; }
+
+    public int OriginStopAreaZoneID { get; private set; }
+
+    public int OriginParkingNodeID { get; private set; }
+    
+    public int DestinationStopAreaKey { get; private set; }
+
+    public int DestinationStopAreaParcelID { get; private set; }
+
+    public int DestinationStopAreaZoneID { get; private set; }
+
+    public int DestinationParkingNodeID { get; private set; }
 
     public IMinuteSpan LongestFeasibleWindow { get; private set; }
+
+    public double PathDistanceToDestination { get; private set; }
+
+    public double PathDistanceFromDestination { get; private set; }
 
 
     //JLB
@@ -73,10 +90,12 @@ namespace DaySim.ChoiceModels.H {
     public double OriginAccessTime { get; private set; }
     public double OriginAccessDistance { get; private set; }
     public double OriginAccessCost { get; private set; }
+    public double OriginAccessUtility { get; private set; }
     public int DestinationAccessMode { get; private set; }
     public double DestinationAccessTime { get; private set; }
     public double DestinationAccessDistance { get; private set; }
     public double DestinationAccessCost { get; private set; }
+    public double DestinationAccessUtility { get; private set; }
     public double PathDistance { get; private set; }
     public double PathCost { get; private set; }
 
@@ -134,7 +153,7 @@ namespace DaySim.ChoiceModels.H {
       return departureTime;
     }
 
-    public IMinuteSpan GetRandomDestinationTimes(TimeWindow timeWindow, TourWrapper tour) {
+    public IMinuteSpan GetRandomDestinationTimes(TimeWindow timeWindow, ITourWrapper tour) {
       if (tour == null) {
         throw new ArgumentNullException("tour");
       }
@@ -142,7 +161,7 @@ namespace DaySim.ChoiceModels.H {
       return timeWindow.GetMinuteSpan(tour.Household.RandomUtility, ArrivalPeriod.Start, ArrivalPeriod.End, DeparturePeriod.Start, DeparturePeriod.End);
     }
 
-    public bool SubtourIsWithinTour(TourWrapper subtour) {
+    public bool SubtourIsWithinTour(ITourWrapper subtour) {
       if (subtour == null) {
         throw new ArgumentNullException("subtour");
       }
@@ -200,7 +219,7 @@ namespace DaySim.ChoiceModels.H {
       {
         foreach (HTourModeTime modeTimes in ModeTimes[ParallelUtility.threadLocalAssignedIndex.Value]) {
           modeTimes.LongestFeasibleWindow = null;
-          if ((constrainedMode <= 0 || constrainedMode == modeTimes.Mode)
+          if ((constrainedMode == 0 || (constrainedMode < 0 && modeTimes.Mode <= Global.Settings.Modes.WalkRideWalk) || constrainedMode == modeTimes.Mode)
               &&
               (constrainedArrivalTime <= 0 ||
                constrainedArrivalTime.IsBetween(modeTimes.ArrivalPeriod.Start, modeTimes.ArrivalPeriod.End))
@@ -217,6 +236,8 @@ namespace DaySim.ChoiceModels.H {
     public static void SetImpedanceAndWindow(ITimeWindow timeWindow, ITourWrapper tour, HTourModeTime modeTimes, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, IParcelWrapper alternativeDestination = null) {
       {
 
+        IActumHouseholdWrapper household = (IActumHouseholdWrapper)tour.Household;
+
         int alternativeIndex = modeTimes.Index;
         MinuteSpan arrivalPeriod = modeTimes.ArrivalPeriod;
         MinuteSpan departurePeriod = modeTimes.DeparturePeriod;
@@ -230,18 +251,18 @@ namespace DaySim.ChoiceModels.H {
 
 
         // set round trip mode LOS and mode availability
-        if (arrivalPeriodAvailableMinutes <= 0 || departurePeriodAvailableMinutes <= 0
-            || (mode == Global.Settings.Modes.ParkAndRide && tour.DestinationPurpose != Global.Settings.Purposes.Work)
-            || (mode == Global.Settings.Modes.SchoolBus && tour.DestinationPurpose != Global.Settings.Purposes.School)
-                || (Global.Configuration.IsInEstimationMode && destinationParcel == null)) {
+        if (((arrivalPeriodAvailableMinutes <= 0 || departurePeriodAvailableMinutes <= 0)
+           && (mode > Global.Settings.Modes.WalkRideWalk ))
+          //  || (mode == Global.Settings.Modes.ParkAndRide && tour.DestinationPurpose != Global.Settings.Purposes.Work)
+          //  || (mode == Global.Settings.Modes.SchoolBus && tour.DestinationPurpose != Global.Settings.Purposes.School)
+          || (Global.Configuration.IsInEstimationMode && destinationParcel == null)) {
           modeTimes.ModeAvailableToDestination = false;
           modeTimes.ModeAvailableFromDestination = false;
         }
-        //ACTUM must also use round trip path type to preserve the tour-based nonlinear gamma utility functions
-        //else if (mode == Global.Settings.Modes.ParkAndRide) {
-        else if (false) /* (mode == Global.Settings.Modes.ParkAndRide || Global.Configuration.PathImpedance_UtilityForm_Auto == 1 ||
-                 Global.Configuration.PathImpedance_UtilityForm_Transit == 1)*/ {
-          // park and ride has to use round-trip path type, approximate each half 
+        //ACTUM must use round trip path path type, approximate each half 
+        if (mode > Global.Settings.Modes.WalkRideWalk) {
+
+
           IEnumerable<IPathTypeModel> pathTypeModels =
               PathTypeModelFactory.Singleton.Run(
                   tour.Household.RandomUtility,
@@ -255,7 +276,9 @@ namespace DaySim.ChoiceModels.H {
                   tour.Person.Age,
                   householdCars,
                   tour.Person.TransitPassOwnership,
-                  tour.Household.OwnsAutomatedVehicles > 0,
+                  tour.Household.OwnsAutomatedVehicles>0,
+                  tour.HovOccupancy,
+                  household.AutoType,
                   tour.Person.PersonType,
                   false,
                   mode);
@@ -270,31 +293,42 @@ namespace DaySim.ChoiceModels.H {
             modeTimes.GeneralizedTimeToDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
             modeTimes.TravelTimeFromDestination = pathTypeModel.PathTime / 2.0;
             modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum / 2.0;
-            modeTimes.ParkAndRideOriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
-            modeTimes.ParkAndRideDestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
-            modeTimes.TransitTime = pathTypeModel.PathTransitTime;
+            modeTimes.OriginStopAreaKey = pathTypeModel.PathOriginStopAreaKey;
+            modeTimes.OriginStopAreaParcelID = pathTypeModel.PathOriginStopAreaParcelID;
+            modeTimes.OriginStopAreaZoneID = pathTypeModel.PathOriginStopAreaZoneID;
+            modeTimes.OriginParkingNodeID = pathTypeModel.PathParkAndRideNodeId;
+            modeTimes.DestinationStopAreaKey = pathTypeModel.PathDestinationStopAreaKey;
+            modeTimes.DestinationStopAreaParcelID = pathTypeModel.PathDestinationStopAreaParcelID;
+            modeTimes.DestinationStopAreaZoneID = pathTypeModel.PathDestinationStopAreaZoneID;
+            modeTimes.DestinationParkingNodeID = pathTypeModel.PathParkAndRideEgressNodeId;
+            modeTimes.TransitTime = pathTypeModel.PathTransitTime / 2.0;
             modeTimes.TransitDistance = pathTypeModel.PathTransitDistance;
-            modeTimes.TransitCost = pathTypeModel.PathTransitCost;
-            modeTimes.TransitGeneralizedTime = pathTypeModel.PathTransitGeneralizedTime;
-            modeTimes.WalkTime = pathTypeModel.PathWalkTime;
+            modeTimes.TransitCost = pathTypeModel.PathTransitCost / 2.0;
+            modeTimes.TransitGeneralizedTime = pathTypeModel.PathTransitGeneralizedTime / 2.0;
+            modeTimes.WalkTime = pathTypeModel.PathWalkTime / 2.0;
             modeTimes.WalkDistance = pathTypeModel.PathWalkDistance;
-            modeTimes.BikeTime = pathTypeModel.PathBikeTime;
+            modeTimes.BikeTime = pathTypeModel.PathBikeTime / 2.0;
             modeTimes.BikeDistance = pathTypeModel.PathBikeDistance;
-            modeTimes.BikeCost = pathTypeModel.PathBikeCost;
+            modeTimes.BikeCost = pathTypeModel.PathBikeCost / 2.0;
             modeTimes.OriginAccessMode = pathTypeModel.PathOriginAccessMode;
-            modeTimes.OriginAccessTime = pathTypeModel.PathOriginAccessTime;
+            modeTimes.OriginAccessTime = pathTypeModel.PathOriginAccessTime / 2.0;
             modeTimes.OriginAccessDistance = pathTypeModel.PathOriginAccessDistance;
-            modeTimes.OriginAccessCost = pathTypeModel.PathOriginAccessCost;
+            modeTimes.OriginAccessCost = pathTypeModel.PathOriginAccessCost / 2.0;
+            modeTimes.OriginAccessUtility = pathTypeModel.PathOriginAccessUtility / 2.0;
             modeTimes.DestinationAccessMode = pathTypeModel.PathDestinationAccessMode;
-            modeTimes.DestinationAccessTime = pathTypeModel.PathDestinationAccessTime;
+            modeTimes.DestinationAccessTime = pathTypeModel.PathDestinationAccessTime / 2.0;
             modeTimes.DestinationAccessDistance = pathTypeModel.PathDestinationAccessDistance;
-            modeTimes.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost;
+            modeTimes.DestinationAccessCost = pathTypeModel.PathDestinationAccessCost / 2.0;
+            modeTimes.DestinationAccessUtility = pathTypeModel.PathDestinationAccessUtility / 2.0;
+            modeTimes.PathDistanceToDestination = pathTypeModel.PathDistance / 2.0;
+            modeTimes.PathDistanceFromDestination = pathTypeModel.PathDistance / 2.0;
             modeTimes.PathDistance = pathTypeModel.PathDistance;
-            modeTimes.PathCost = pathTypeModel.PathCost;
+            modeTimes.PathCost = pathTypeModel.PathCost / 2.0;
+
           }
         } else {
-          // get times for each half tour separately, using HOV3 for school bus
-          int pathMode = (mode == Global.Settings.Modes.SchoolBus) ? Global.Settings.Modes.Hov3 : mode;
+          // get times for each half tour separately, using HOV passenger for school bus and shared ride
+          int pathMode = (mode == Global.Settings.Modes.SchoolBus || mode == Global.Settings.Modes.PaidRideShare) ? Global.Settings.Modes.HovPassenger : mode;
 
           //if (tour.Household.Id == 80205 && tour.PersonDay.HouseholdDay.AttemptedSimulations == 9 && (pathMode == 1 || pathMode == 5)) {
           if (tour.Person.IsDrivingAge == true && tour.Household.VehiclesAvailable > 0 && pathMode == 3) {
@@ -313,6 +347,8 @@ namespace DaySim.ChoiceModels.H {
                             householdCars,
                             tour.Person.TransitPassOwnership,
                             tour.Household.OwnsAutomatedVehicles > 0,
+                            tour.HovOccupancy,
+                            household.AutoType,
                             tour.Person.PersonType,
                             false,
                             pathMode);
@@ -324,6 +360,7 @@ namespace DaySim.ChoiceModels.H {
           if (pathTypeModel.Available) {
             modeTimes.TravelTimeToDestination = pathTypeModel.PathTime;
             modeTimes.GeneralizedTimeToDestination = pathTypeModel.GeneralizedTimeLogsum;
+            modeTimes.PathDistanceToDestination = pathTypeModel.PathDistance;
           }
 
           pathTypeModels =
@@ -340,6 +377,8 @@ namespace DaySim.ChoiceModels.H {
                   householdCars,
                   tour.Person.TransitPassOwnership,
                   tour.Household.OwnsAutomatedVehicles > 0,
+                  tour.HovOccupancy,
+                  household.AutoType,
                   tour.Person.PersonType,
                   false,
                   pathMode);
@@ -351,6 +390,7 @@ namespace DaySim.ChoiceModels.H {
           if (pathTypeModel.Available) {
             modeTimes.TravelTimeFromDestination = pathTypeModel.PathTime;
             modeTimes.GeneralizedTimeFromDestination = pathTypeModel.GeneralizedTimeLogsum;
+            modeTimes.PathDistanceFromDestination = pathTypeModel.PathDistance;
           }
         }
         if (tour.Household.Id == 2138 && tour.Person.Sequence == 1 && tour.Sequence == 1) {

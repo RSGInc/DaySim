@@ -17,7 +17,7 @@ using DaySim.PathTypeModels;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class TransitPassOwnershipModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HTransitPassOwnershipModel";
+    public const string CHOICE_MODEL_NAME = "HTransitPassOwnershipModel";
     private const int TOTAL_ALTERNATIVES = 2;
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
@@ -110,6 +110,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
+                /* hov occ */ 2, /* auto type */ 1,
                 fullFareType,
                 false,
                 Global.Settings.Modes.Transit);
@@ -131,6 +132,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
+                /* hov occ */ 2, /* auto type */ 1,
                 freeFareType,
                 false,
                 Global.Settings.Modes.Transit);
@@ -159,7 +161,8 @@ namespace DaySim.ChoiceModels.H.Models {
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
-              freeFareType,
+               /* hov occ */ 2, /* auto type */ 1,
+               freeFareType,
               false,
               Global.Settings.Modes.Transit);
 

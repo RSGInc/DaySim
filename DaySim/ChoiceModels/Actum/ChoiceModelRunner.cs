@@ -63,9 +63,9 @@ namespace DaySim.ChoiceModels.Actum {
       try {
 #endif
 
-      ChoiceModelFactory.TotalTimesHouseholdModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+        ChoiceModelFactory.TotalTimesHouseholdModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-      RunHouseholdModelSuite(_household);
+        RunHouseholdModelSuite(_household);
 #if RELEASE
       } catch (Exception e) {
         throw new Framework.Exceptions.HouseholdModelException(string.Format("Error running household models for {0}.", _household), e);
@@ -84,74 +84,77 @@ namespace DaySim.ChoiceModels.Actum {
         try {
 #endif
 
-        ChoiceModelFactory.TotalHouseholdDays[ParallelUtility.threadLocalAssignedIndex.Value]++;  //TODO:  John M.  This replaces TotalPersonDays, but TotalPersonDays is used in Engine, so that code probably needs to be patched
+          ChoiceModelFactory.TotalHouseholdDays[ParallelUtility.threadLocalAssignedIndex.Value]++;  //TODO:  John M.  This replaces TotalPersonDays, but TotalPersonDays is used in Engine, so that code probably needs to be patched
 
-        bool simulatedAnInvalidHouseholdDay = false;
+          bool simulatedAnInvalidHouseholdDay = false;
 
-        while (!householdDay.IsValid && (!Global.Configuration.IsInEstimationMode || !simulatedAnInvalidHouseholdDay)) { //don't retry household in estimation mode
+          while (!householdDay.IsValid && (!Global.Configuration.IsInEstimationMode || !simulatedAnInvalidHouseholdDay)) { //don't retry household in estimation mode
 
-          if (Global.Configuration.InvalidAttemptsBeforeContinue > 0 && householdDay.AttemptedSimulations > Global.Configuration.InvalidAttemptsBeforeContinue) {
-            Global.PrintFile.WriteLine("***** Household day for household {0} invalid after {1} attempts", householdDay.Household.Id, householdDay.AttemptedSimulations);
-            break;
-          } else {
-            householdDay.IsValid = true;
-          }
-          foreach (PersonDayWrapper personDay in householdDay.PersonDays) {
-            personDay.IsValid = true;
-          }
-
-          //mbtrace
-          Global.TraceResults = (Global.Configuration.TraceModelResultValidity && householdDay.AttemptedSimulations >= Global.Configuration.InvalidAttemptsBeforeTrace);
-          //mbtrace
-          if (Global.TraceResults) {
-            Global.PrintFile.WriteLine("> RunHouseholdDayModels for household {0}, attempt {1}", householdDay.Household.Id, householdDay.AttemptedSimulations);
-          }
-
-          ChoiceModelFactory.TotalTimesHouseholdDayModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-
-          /*if (householdDay.ToString().Contains("80205"))
-          {
-
-          }*/
-          RunHouseholdDayModelSuite(householdDay);
-
-          // householdDay is invalid if any person day is invalid
-          foreach (IPersonDayWrapper personDay in householdDay.PersonDays) {
-            if (personDay.IsValid == false) {
-              householdDay.IsValid = false;
+            if (Global.Configuration.InvalidAttemptsBeforeContinue > 0 && householdDay.AttemptedSimulations > Global.Configuration.InvalidAttemptsBeforeContinue) {
+              Global.PrintFile.WriteLine("***** Household day for household {0} invalid after {1} attempts", householdDay.Household.Id, householdDay.AttemptedSimulations);
+              break;
+            } else {
+              householdDay.IsValid = true;
             }
-          }
-
-          // exits the loop if the household's day is valid
-          if (householdDay.IsValid) {
-            // after updating park and ride lot loads
             foreach (PersonDayWrapper personDay in householdDay.PersonDays) {
-              if (!Global.Configuration.IsInEstimationMode && personDay.Tours != null) {
-                foreach (ITourWrapper tour in personDay.Tours.Where(tour => tour.Mode == Global.Settings.Modes.ParkAndRide)) {
-                  tour.SetParkAndRideStay();
-                }
+              personDay.IsValid = true;
+            }
+
+            //mbtrace
+            Global.TraceResults = (Global.Configuration.TraceModelResultValidity && householdDay.AttemptedSimulations >= Global.Configuration.InvalidAttemptsBeforeTrace);
+            //mbtrace
+            if (Global.TraceResults) {
+              Global.PrintFile.WriteLine("> RunHouseholdDayModels for household {0}, attempt {1}", householdDay.Household.Id, householdDay.AttemptedSimulations);
+            }
+
+            ChoiceModelFactory.TotalTimesHouseholdDayModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+
+            /*if (householdDay.ToString().Contains("80205"))
+            {
+
+            }*/
+            RunHouseholdDayModelSuite(householdDay);
+
+            // householdDay is invalid if any person day is invalid
+            foreach (IPersonDayWrapper personDay in householdDay.PersonDays) {
+              if (personDay.IsValid == false) {
+                householdDay.IsValid = false;
               }
             }
 
-            break;
+            // exits the loop if the household's day is valid
+            if (householdDay.IsValid) {
+              // after updating park and ride lot loads
+              foreach (PersonDayWrapper personDay in householdDay.PersonDays) {
+                if (!Global.Configuration.IsInEstimationMode && personDay.Tours != null) {
+                  foreach (ITourWrapper tour in personDay.Tours.Where(tour =>
+                  (tour.Mode == Global.Settings.Modes.CarParkRideWalk ||
+                   tour.Mode == Global.Settings.Modes.CarParkRideBike ||
+                   tour.Mode == Global.Settings.Modes.CarParkRideShare))) {
+                    tour.SetParkAndRideStay();
+                  }
+                }
+              }
+
+              break;
+            }
+
+            householdDay.AttemptedSimulations++;
+            foreach (IPersonDayWrapper personDay in householdDay.PersonDays) {
+              personDay.AttemptedSimulations++;
+            }
+
+            if (!simulatedAnInvalidHouseholdDay) {
+              simulatedAnInvalidHouseholdDay = true;
+
+              // counts unique instances where a household's day is invalid
+
+              ChoiceModelFactory.TotalInvalidAttempts[ParallelUtility.threadLocalAssignedIndex.Value]++;
+
+            }
+
+            householdDay.Reset();
           }
-
-          householdDay.AttemptedSimulations++;
-          foreach (IPersonDayWrapper personDay in householdDay.PersonDays) {
-            personDay.AttemptedSimulations++;
-          }
-
-          if (!simulatedAnInvalidHouseholdDay) {
-            simulatedAnInvalidHouseholdDay = true;
-
-            // counts unique instances where a household's day is invalid
-
-            ChoiceModelFactory.TotalInvalidAttempts[ParallelUtility.threadLocalAssignedIndex.Value]++;
-
-          }
-
-          householdDay.Reset();
-        }
 #if RELEASE
         } catch (Exception e) {
           throw new Framework.Exceptions.HouseholdDayModelException(string.Format("Error running household day models for {0}.", _household), e);
@@ -200,22 +203,22 @@ namespace DaySim.ChoiceModels.Actum {
         try {
 #endif
 
-        ChoiceModelFactory.TotalTimesTourSubtourModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+          ChoiceModelFactory.TotalTimesTourSubtourModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-        RunSubtourModelSuite(subtour, householdDay);
+          RunSubtourModelSuite(subtour, householdDay);
 
-        if (!tour.PersonDay.IsValid) {
-          return;
-        }
+          if (!tour.PersonDay.IsValid) {
+            return;
+          }
 
 
-        ChoiceModelFactory.TotalTimesSubtourTripModelsRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+          ChoiceModelFactory.TotalTimesSubtourTripModelsRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-        RunSubtourTripModels(subtour, personDay, householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin);
+          RunSubtourTripModels(subtour, personDay, householdDay, Global.Settings.TourDirections.OriginToDestination, Global.Settings.TourDirections.DestinationToOrigin);
 
-        if (!tour.PersonDay.IsValid) {
-          return;
-        }
+          if (!tour.PersonDay.IsValid) {
+            return;
+          }
 
 #if RELEASE
         } catch (Exception e) {
@@ -248,6 +251,9 @@ namespace DaySim.ChoiceModels.Actum {
 
     private static void RunHouseholdModelSuite(HouseholdWrapper household) {
 
+      //use different children age categories
+      household.SetActumHouseholdTotals();
+
       //begin work location person loop
       foreach (PersonWrapper person in household.Persons) {
 
@@ -264,13 +270,13 @@ namespace DaySim.ChoiceModels.Actum {
           }
         }
 
-        //if (Global.Configuration.ShouldRunSchoolLocationModel && person.IsStudent) {
-        // sets a person's school location
+        if (Global.Configuration.ShouldRunSchoolLocationModel && person.IsStudent) {
+          // sets a person's school location
 
-        //	ChoiceModelFactory.TotalTimesSchoolLocationModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+          ChoiceModelFactory.TotalTimesSchoolLocationModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-        //	Global.ChoiceModelSession.Get<SchoolLocationModel>().Run(person, Global.Configuration.SchoolLocationModelSampleSize);
-        //}
+          Global.ChoiceModelSession.Get<SchoolLocationModel>().Run(person, Global.Configuration.SchoolLocationModelSampleSize);
+        }
 
         if (Global.Configuration.ShouldRunWorkLocationModel && person.IsWorker && person.IsNotFullOrPartTimeWorker) {
           if (Global.Configuration.IsInEstimationMode || person.Household.RandomUtility.Uniform01() > household.FractionWorkersWithJobsOutsideRegion) {
@@ -284,16 +290,15 @@ namespace DaySim.ChoiceModels.Actum {
             }
           }
         }
-        //if (person.IsWorker && person.UsualWorkParcel != null // && person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer2 > 0 
-        //	 && Global.Configuration.IncludePayToParkAtWorkplaceModel) {
-        //	if (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel) {
-        //		ChoiceModelFactory.TotalTimesPaidParkingAtWorkplaceModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
-        //		Global.ChoiceModelSession.Get<PayToParkAtWorkplaceModel>().Run(person);
-        //	}
-        //}
-        //else {
-        person.PaidParkingAtWorkplace = 1; // by default, people pay the parcel parking price
-                                           //}
+        if (person.IsWorker && person.UsualWorkParcel != null // && person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer2 > 0 
+             && Global.Configuration.IncludePayToParkAtWorkplaceModel) {
+          if (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel) {
+            ChoiceModelFactory.TotalTimesPaidParkingAtWorkplaceModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+            Global.ChoiceModelSession.Get<PayToParkAtWorkplaceModel>().Run(person);
+          }
+        } else {
+          person.PaidParkingAtWorkplace = 1; // by default, people pay the parcel parking price
+        }
       }
       // end work location person loop
 
@@ -309,7 +314,7 @@ namespace DaySim.ChoiceModels.Actum {
       // begin transit pass ownership person loop
       foreach (PersonWrapper person in household.Persons) {
 
-        if (!person.IsChildUnder5 && Global.Configuration.IncludeTransitPassOwnershipModel) {
+        if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel && Global.Configuration.IncludeTransitPassOwnershipModel) {
           if (Global.Configuration.ShouldRunTransitPassOwnershipModel) {
 
             ChoiceModelFactory.TotalTimesTransitPassOwnershipModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
@@ -363,7 +368,7 @@ namespace DaySim.ChoiceModels.Actum {
         int i = 0;
         foreach (PersonDayWrapper personDay in orderedPersonDays) {
           i++;
-          if (i > 4 || (Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "ActumPersonDayPatternTypeModel")) {
+          if (i > 4 || (Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == DaySim.ChoiceModels.Actum.Models.PersonDayPatternTypeModel.CHOICE_MODEL_NAME)) {
 
             ChoiceModelFactory.TotalTimesPersonDayPatternTypeModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
@@ -408,15 +413,15 @@ namespace DaySim.ChoiceModels.Actum {
         try {
 #endif
 
-        ChoiceModelFactory.TotalTimesPersonDayModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+          ChoiceModelFactory.TotalTimesPersonDayModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-        RunPersonDayModelSuite(personDay, householdDay);
-        if (personDay.IsValid == false) {
-          return;
-        }
-        if (!Global.Configuration.IsInEstimationMode) {
-          personDay.SetHomeBasedNonMandatoryTours();
-        }
+          RunPersonDayModelSuite(personDay, householdDay);
+          if (personDay.IsValid == false) {
+            return;
+          }
+          if (!Global.Configuration.IsInEstimationMode) {
+            personDay.SetHomeBasedNonMandatoryTours();
+          }
 
 
 #if RELEASE
@@ -1551,7 +1556,7 @@ namespace DaySim.ChoiceModels.Actum {
         return;
       }
 
-      int[] tourPurpose = new int[11];
+      int[] tourPurpose = new int[99];
 
       //set choice array tourPurpose for estimation
       if (Global.Configuration.IsInEstimationMode) {
@@ -1843,9 +1848,9 @@ namespace DaySim.ChoiceModels.Actum {
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else if (tour[i - 1].Mode == Global.Settings.Modes.Transit || tour[i - 1].Mode == Global.Settings.Modes.ParkAndRide) {
           impedanceVariable = "time"; // TODO:  logic that uses this SHOULD also include initial wait time and transfer time
-                                        //JLB 20160323 substitute HOV Passenger for Transit for now.  Logic that uses this should use transit total ivtime plus wait and transfer times 
-                                        //mode = Global.Settings.Modes.Transit;
-                                        //pathType = Global.Settings.PathTypes.LocalBus;
+                                      //JLB 20160323 substitute HOV Passenger for Transit for now.  Logic that uses this should use transit total ivtime plus wait and transfer times 
+                                      //mode = Global.Settings.Modes.Transit;
+                                      //pathType = Global.Settings.PathTypes.LocalBus;
           mode = Global.Settings.Modes.HovPassenger;
           pathType = Global.Settings.PathTypes.FullNetwork;
         } else {
@@ -1859,7 +1864,9 @@ namespace DaySim.ChoiceModels.Actum {
         //                                        : (Global.Configuration.UseShortDistanceCircuityMeasures)
         //                                        ? tour[i - 1].DestinationParcel.CircuityDistance(tour[i].DestinationParcel)
         //                                        : Constants.DEFAULT_VALUE;
-        double circuityDistance = tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
+
+        // changed to deal with missing parcels in estimation model
+        double circuityDistance = (Global.Configuration.IsInEstimationMode) ? Constants.DEFAULT_VALUE : tour[i - 1].DestinationParcel.CalculateShortDistance(tour[i].DestinationParcel);
 
         //if (!tour[i].DestinationModeAndTimeHaveBeenSimulated) {
         if (i == 2) {
@@ -2122,6 +2129,7 @@ namespace DaySim.ChoiceModels.Actum {
       //}
 
       // simulate halftour
+
       IParcelWrapper stopLocation = null;
       int stopPurpose = Global.Settings.Purposes.NoneOrHome;
       int tripMode = Global.Settings.Modes.None;
@@ -2173,7 +2181,6 @@ namespace DaySim.ChoiceModels.Actum {
         if (tour[i].HalfTour1HasBeenSimulated && tour[i].HalfTour2HasBeenSimulated) {
           UpdateTimeWindowForTourDestinationTimes(tour[i]);
         }
-
       }
     }
 
@@ -2564,65 +2571,65 @@ namespace DaySim.ChoiceModels.Actum {
 #if RELEASE
       try {
 #endif
-      //mbtrace
-      if (Global.TraceResults) {
-        Global.PrintFile.WriteLine("> > > > RunNonMandatoryTourModelSuite for Household {0} Person {1} Tour {2}", householdDay.Household.Id, personDay.Person.Sequence, tour.Sequence);
-      }
+        //mbtrace
+        if (Global.TraceResults) {
+          Global.PrintFile.WriteLine("> > > > RunNonMandatoryTourModelSuite for Household {0} Person {1} Tour {2}", householdDay.Household.Id, personDay.Person.Sequence, tour.Sequence);
+        }
 
-      tour.SetHomeBasedIsSimulated();
+        tour.SetHomeBasedIsSimulated();
 
-      IParcelWrapper destinationParcel = null;
-      int mode = 0;
-      int destinationArrivalTime = 0;
-      int destinationDepartureTime = 0;
+        IParcelWrapper destinationParcel = null;
+        int mode = 0;
+        int destinationArrivalTime = 0;
+        int destinationDepartureTime = 0;
 
-      if (tour.FullHalfTour1Sequence > 0 || tour.FullHalfTour2Sequence > 0 || tour.JointTourSequence > 0 || tour.PartialHalfTour1Sequence > 0 || tour.PartialHalfTour2Sequence > 0) {
-        destinationParcel = tour.DestinationParcel;
-        mode = tour.Mode;
-        destinationArrivalTime = tour.DestinationArrivalTime;
-        destinationDepartureTime = tour.DestinationDepartureTime;
-      }
+        if (tour.FullHalfTour1Sequence > 0 || tour.FullHalfTour2Sequence > 0 || tour.JointTourSequence > 0 || tour.PartialHalfTour1Sequence > 0 || tour.PartialHalfTour2Sequence > 0) {
+          destinationParcel = tour.DestinationParcel;
+          mode = tour.Mode;
+          destinationArrivalTime = tour.DestinationArrivalTime;
+          destinationDepartureTime = tour.DestinationDepartureTime;
+        }
 
-      // JLB 201406 added the conditional call to SetTourDestinationModeAndTime
-      if (Global.Configuration.ShouldRunTourDestinationModeTimeModel) {
-        SetTourDestinationModeAndTime(householdDay, tour, destinationParcel, mode, destinationArrivalTime, destinationDepartureTime);
-      } else {
-        SetTourDestination(householdDay, tour, destinationParcel);
+        // JLB 201406 added the conditional call to SetTourDestinationModeAndTime
+        if (Global.Configuration.ShouldRunTourDestinationModeTimeModel) {
+          SetTourDestinationModeAndTime(householdDay, tour, destinationParcel, mode, destinationArrivalTime, destinationDepartureTime);
+        } else {
+          SetTourDestination(householdDay, tour, destinationParcel);
+          if (!tour.PersonDay.IsValid) {
+            return;
+          }
+          SetTourModeAndTime(householdDay, tour, mode, destinationArrivalTime, destinationDepartureTime);
+        }
         if (!tour.PersonDay.IsValid) {
           return;
         }
-        SetTourModeAndTime(householdDay, tour, mode, destinationArrivalTime, destinationDepartureTime);
-      }
-      if (!tour.PersonDay.IsValid) {
-        return;
-      }
 
-      tour.DestinationModeAndTimeHaveBeenSimulated = true;  // JLB 20140421 added this line
+        tour.DestinationModeAndTimeHaveBeenSimulated = true;  // JLB 20140421 added this line
 
-      //JLB 20130716 comment out the temporary updating of time window
-      //UpdateTimeWindowForTourDestinationTimes(tour);
+        //JLB 20130716 comment out the temporary updating of time window
+        //UpdateTimeWindowForTourDestinationTimes(tour);
 
-      int firstDirection = Global.Settings.TourDirections.OriginToDestination;
-      int lastDirection = Global.Settings.TourDirections.DestinationToOrigin;
+        int firstDirection = Global.Settings.TourDirections.OriginToDestination;
+        int lastDirection = Global.Settings.TourDirections.DestinationToOrigin;
 
-      //return if both half tours have already been simulated;
-      if (tour.JointTourSequence > 0 || (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour1Sequence > 0 && tour.FullHalfTour2Sequence > 0)) {
-        return;
-      }
-      // only simulate escort half tours that have not already been simulated as part of fully joint half tours
-      if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour1Sequence > 0) {
-        firstDirection = Global.Settings.TourDirections.DestinationToOrigin;
-      } else if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour2Sequence > 0) {
-        lastDirection = Global.Settings.TourDirections.OriginToDestination;
-      }
+        //return if both half tours have already been simulated;
+        if (tour.JointTourSequence > 0 || (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour1Sequence > 0 && tour.FullHalfTour2Sequence > 0)) {
+          return;
+        }
+        // only simulate escort half tours that have not already been simulated as part of fully joint half tours
+        if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour1Sequence > 0) {
+          firstDirection = Global.Settings.TourDirections.DestinationToOrigin;
+        } else if (tour.DestinationPurpose == Global.Settings.Purposes.Escort && tour.FullHalfTour2Sequence > 0) {
+          lastDirection = Global.Settings.TourDirections.OriginToDestination;
+        }
 
-      ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+        ChoiceModelFactory.TotalTimesTourTripModelsRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-      RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection);
-      if (!personDay.IsValid) {
-        return;
-      }
-      UpdateTimeWindowForTourDestinationTimes(tour);
+        RunTourTripModels(tour, personDay, householdDay, firstDirection, lastDirection);
+        if (!personDay.IsValid) {
+          return;
+        }
+        UpdateTimeWindowForTourDestinationTimes(tour);
 
 
 #if RELEASE
@@ -2815,7 +2822,7 @@ namespace DaySim.ChoiceModels.Actum {
         HTourModeTime choice = new HTourModeTime(tour.Mode, tour.DestinationArrivalTime, tour.DestinationDepartureTime);
         ITimeWindow timeWindow = (constrainedArrivalTime <= 0 && constrainedDepartureTime <= 0 && constrainedMode <= 0) ?
                     tour.GetRelevantTimeWindow(householdDay) : new TimeWindow();
-        if (tour.Mode > 0) {   // JLB 20150828 prevents exception caused by mode == 0 in estimation data set
+        if (tour.Mode > 0 && tour.DestinationParcelId > 0 && tour.OriginParcelId > 0) {   // JLB 20150828 prevents exception caused by mode == 0 in estimation data set  //MB also changed to handle missing destinations
           HTourModeTime.SetImpedanceAndWindow(timeWindow, tour, choice, -1, -1.0);
         }
         if (choice != null && choice.LongestFeasibleWindow != null) {
@@ -2997,7 +3004,7 @@ namespace DaySim.ChoiceModels.Actum {
         }
         //set additional tour variables based on HTourModeTime object for chosen alternative
         HTourModeTime choice = new HTourModeTime(subtour.Mode, subtour.DestinationArrivalTime, subtour.DestinationDepartureTime);
-        if (choice != null && subtour.DestinationParcel != null && subtour.OriginParcel != null) {
+        if (choice != null && subtour.DestinationParcel != null && subtour.OriginParcel != null && subtour.Mode > 0) {
           HTourModeTime.SetImpedanceAndWindow(timeWindow, subtour, choice, -1, -1.0);
         }
         if (choice != null && choice.LongestFeasibleWindow != null) {
@@ -3153,7 +3160,7 @@ namespace DaySim.ChoiceModels.Actum {
 
         }
 
-        if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "IntermediateStopLocationModel") {
+        if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == DaySim.ChoiceModels.Default.Models.IntermediateStopLocationModel.CHOICE_MODEL_NAME) {
           Global.PrintFile.WriteEstimationRecordExclusionMessage("ChoiceModelRunner", "SetIntermediateStopDestination", trip.Household.Id, trip.Person.Sequence, trip.Day, trip.Tour.Sequence, trip.Direction, trip.Sequence, 1);
         }
 
@@ -3262,6 +3269,7 @@ namespace DaySim.ChoiceModels.Actum {
           trip.LatestDepartureTime = Global.Settings.Times.MinutesInADay;
           if (departureTime >= 1 && departureTime <= Global.Settings.Times.MinutesInADay) {
             trip.HUpdateTripValues();
+            trip.SetTripValueOfTime();
           } else {
             trip.PersonDay.IsValid = false;
           }
@@ -3297,22 +3305,22 @@ namespace DaySim.ChoiceModels.Actum {
 #if RELEASE
           try {
 #endif
-          halfTour.SimulatedTrips++;
+            halfTour.SimulatedTrips++;
 
-          if (trip.IsHalfTourFromOrigin) {
-            tour.HalfTour1Trips++;
-          } else {
-            tour.HalfTour2Trips++;
-          }
+            if (trip.IsHalfTourFromOrigin) {
+              tour.HalfTour1Trips++;
+            } else {
+              tour.HalfTour2Trips++;
+            }
 
 
-          ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+            ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-          RunTripModelSuite(householdDay, personDay, tour, halfTour, trip);
+            RunTripModelSuite(householdDay, personDay, tour, halfTour, trip);
 
-          if (!trip.PersonDay.IsValid) {
-            return;
-          }
+            if (!trip.PersonDay.IsValid) {
+              return;
+            }
 #if RELEASE
           } catch (Exception e) {
             throw new Framework.Exceptions.TripModelException(string.Format("Error running trip models for {0}.", trip), e);
@@ -3399,17 +3407,18 @@ namespace DaySim.ChoiceModels.Actum {
         int intermediateStopPurpose = trip.IsToTourOrigin ? Global.Settings.Purposes.NoneOrHome : trip.DestinationPurpose;
         nextTrip = (TripWrapper)trip.GetNextTrip();
 
-        if (intermediateStopPurpose != Global.Settings.Purposes.NoneOrHome) {
-
-          ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.threadLocalAssignedIndex.Value]++;
-
-          trip.PersonDay.IncrementSimulatedStops(intermediateStopPurpose);
-        }
         if (trip.PersonDay.GetTotalStops() > 0 && halfTour.SimulatedTrips < 10) {
 
           ChoiceModelFactory.TotalTimesIntermediateStopGenerationModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
           Global.ChoiceModelSession.Get<IntermediateStopGenerationModel>().Run(trip, householdDay, intermediateStopPurpose);
+
+          if (intermediateStopPurpose != Global.Settings.Purposes.NoneOrHome) {
+
+            ChoiceModelFactory.TotalTimesIntermediateStopGenerated[ParallelUtility.threadLocalAssignedIndex.Value]++;
+
+            trip.PersonDay.IncrementSimulatedStops(intermediateStopPurpose);
+          }
         }
       } else {
         // -- in application mode --
@@ -3418,17 +3427,31 @@ namespace DaySim.ChoiceModels.Actum {
         // first, if it is the first trip on a park and ride half tour, then make it a change mode stop
         // TODO: this doesn't allow stops between the destination and the transit stop - can improve later
         int intermediateStopPurpose;
-        if (trip.Sequence == 1 && trip.Tour.Mode == Global.Settings.Modes.ParkAndRide) {
-          intermediateStopPurpose = Global.Settings.Purposes.ChangeMode;
+        if (trip.Sequence == 1 &&
+          (trip.Tour.Mode == Global.Settings.Modes.CarParkRideWalk ||
+           trip.Tour.Mode == Global.Settings.Modes.CarParkRideBike ||
+           trip.Tour.Mode == Global.Settings.Modes.CarParkRideShare)) {
+          intermediateStopPurpose = Global.Settings.Purposes.NoneOrHome; //MB: get rid of change mode purpose ChangeMode;
 
           ChoiceModelFactory.TotalTimesChangeModeStopGenerated[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
         } else if (trip.PersonDay.GetTotalStops() == 0) {
           intermediateStopPurpose = Global.Settings.Purposes.NoneOrHome;
         }
-          // 201603 JLB
-          else if (trip.Tour.Mode == Global.Settings.Modes.BikeOnTransit || trip.Tour.Mode == Global.Settings.Modes.BikeParkRideBike
-              || trip.Tour.Mode == Global.Settings.Modes.BikeParkRideWalk || trip.Tour.Mode == Global.Settings.Modes.WalkRideBike) {
+          // 201603 JLB  
+          // 201903 MB For now, extended to all transit modes except walk-transit-walk and park and ride (handled above)
+          else if (trip.Tour.Mode == Global.Settings.Modes.BikeOnTransit ||
+                   trip.Tour.Mode == Global.Settings.Modes.BikeParkRideBike ||
+                   trip.Tour.Mode == Global.Settings.Modes.BikeParkRideWalk ||
+                   trip.Tour.Mode == Global.Settings.Modes.BikeParkRideShare ||
+                   trip.Tour.Mode == Global.Settings.Modes.CarKissRideBike ||
+                   trip.Tour.Mode == Global.Settings.Modes.CarKissRideWalk ||
+                   trip.Tour.Mode == Global.Settings.Modes.CarKissRideShare ||
+                   trip.Tour.Mode == Global.Settings.Modes.ShareRideBike ||
+                   trip.Tour.Mode == Global.Settings.Modes.ShareRideWalk ||
+                   trip.Tour.Mode == Global.Settings.Modes.ShareRideShare ||
+                   trip.Tour.Mode == Global.Settings.Modes.WalkRideShare ||
+                   trip.Tour.Mode == Global.Settings.Modes.WalkRideBike) {
           intermediateStopPurpose = Global.Settings.Purposes.NoneOrHome;
         } else {
 
@@ -3481,7 +3504,7 @@ namespace DaySim.ChoiceModels.Actum {
 
         }
 
-        if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "IntermediateStopLocationModel") {
+        if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == DaySim.ChoiceModels.Default.Models.IntermediateStopLocationModel.CHOICE_MODEL_NAME) {
           Global.PrintFile.WriteEstimationRecordExclusionMessage("ChoiceModelRunner", "SetIntermediateStopDestination", trip.Household.Id, trip.Person.Sequence, trip.Day, trip.Tour.Sequence, trip.Direction, trip.Sequence, 1);
         }
 
@@ -3585,6 +3608,7 @@ namespace DaySim.ChoiceModels.Actum {
 
       if (Global.Configuration.ShouldRunTripModeModel) {
         // sets the trip's mode of travel to the destination
+
         if (trip.DestinationPurpose == Global.Settings.Purposes.ChangeMode) {
           // trips to change mode destination are always by transit
 
@@ -3592,14 +3616,13 @@ namespace DaySim.ChoiceModels.Actum {
 
           trip.Mode = Global.Settings.Modes.Transit;
         }
-          // 201603 JLB
-          //				else if (trip.Tour.Mode == Global.Settings.Modes.BikeOnTransit || trip.Tour.Mode == Global.Settings.Modes.BikeParkRideBike
-          //					|| trip.Tour.Mode == Global.Settings.Modes.BikeParkRideWalk || trip.Tour.Mode == Global.Settings.Modes.WalkRideBike) {
-        else if (tour.Mode == Global.Settings.Modes.BikeOnTransit || tour.Mode == Global.Settings.Modes.BikeParkRideBike
-              || tour.Mode == Global.Settings.Modes.BikeParkRideWalk || tour.Mode == Global.Settings.Modes.WalkRideBike) {
+        // 201603 JLB
+        //				else if (trip.Tour.Mode == Global.Settings.Modes.BikeOnTransit || trip.Tour.Mode == Global.Settings.Modes.BikeParkRideBike
+        //					|| trip.Tour.Mode == Global.Settings.Modes.BikeParkRideWalk || trip.Tour.Mode == Global.Settings.Modes.WalkRideBike) {
+        else if (tour.Mode >= Global.Settings.Modes.WalkRideBike && tour.Mode <= Global.Settings.Modes.MaxMode) {
           trip.Mode = Global.Settings.Modes.Transit;
         } else if (tour.JointTourSequence > 0) {
-            trip.Mode = tour.Mode;
+          trip.Mode = tour.Mode;
         } else {
 
           ChoiceModelFactory.TotalTimesTripModeModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
@@ -3633,6 +3656,7 @@ namespace DaySim.ChoiceModels.Actum {
           if (trip.DepartureTime >= 1 && trip.DepartureTime <= Global.Settings.Times.MinutesInADay && trip.PersonDay.TimeWindow.EntireSpanIsAvailable(endpoint, trip.DepartureTime)) {
             if (!forTourTimesOnly) {
               trip.HUpdateTripValues();
+              trip.SetTripValueOfTime();
             }
           } else {
             trip.PersonDay.IsValid = false;
@@ -3652,14 +3676,15 @@ namespace DaySim.ChoiceModels.Actum {
           }
           if (trip.PersonDay.IsValid) {
             if (!forTourTimesOnly) {
-              if (trip.Mode == Global.Settings.Modes.Walk || trip.Mode == Global.Settings.Modes.Bike) {
-              }
+              //if (trip.Mode == Global.Settings.Modes.Walk || trip.Mode == Global.Settings.Modes.Bike) {
+              //}
               // 201603 JLB
-              if (tour.Mode == Global.Settings.Modes.BikeOnTransit || tour.Mode == Global.Settings.Modes.BikeParkRideBike
-                                || tour.Mode == Global.Settings.Modes.BikeParkRideWalk || tour.Mode == Global.Settings.Modes.WalkRideBike) {
-                trip.HPTBikeTourUpdateTripValues();
+              if (trip.Tour.Mode > Global.Settings.Modes.WalkRideWalk) {
+                trip.HPTBikeDriveTransitTourUpdateTripValues();
+                trip.SetTripValueOfTime();
               } else {
                 trip.HUpdateTripValues();
+                trip.SetTripValueOfTime();
               }
             }
           }
@@ -3692,22 +3717,22 @@ namespace DaySim.ChoiceModels.Actum {
 #if RELEASE
           try {
 #endif
-          halfTour.SimulatedTrips++;
+            halfTour.SimulatedTrips++;
 
-          if (trip.IsHalfTourFromOrigin) {
-            tour.HalfTour1Trips++;
-          } else {
-            tour.HalfTour2Trips++;
-          }
+            if (trip.IsHalfTourFromOrigin) {
+              tour.HalfTour1Trips++;
+            } else {
+              tour.HalfTour2Trips++;
+            }
 
 
-          ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
+            ChoiceModelFactory.TotalTimesTripModelSuiteRun[ParallelUtility.threadLocalAssignedIndex.Value]++;
 
-          RunTripCloneSuite(sourceTour, sourceHalfTour, sourceTrip, tour, halfTour, trip);
+            RunTripCloneSuite(sourceTour, sourceHalfTour, sourceTrip, tour, halfTour, trip);
 
-          if (!trip.PersonDay.IsValid) {
-            return;
-          }
+            if (!trip.PersonDay.IsValid) {
+              return;
+            }
 #if RELEASE
           } catch (Exception e) {
             throw new Framework.Exceptions.TripModelException(string.Format("Error running trip models for {0}.", trip), e);
@@ -3805,7 +3830,7 @@ namespace DaySim.ChoiceModels.Actum {
 
         }
 
-        if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == "IntermediateStopLocationModel") {
+        if (trip.DestinationPurpose == Global.Settings.Purposes.NoneOrHome && Global.Configuration.IsInEstimationMode && Global.Configuration.EstimationModel == DaySim.ChoiceModels.Default.Models.IntermediateStopLocationModel.CHOICE_MODEL_NAME) {
           Global.PrintFile.WriteEstimationRecordExclusionMessage("ChoiceModelRunner", "SetIntermediateStopDestination", trip.Household.Id, trip.Person.Sequence, trip.Day, trip.Tour.Sequence, trip.Direction, trip.Sequence, 1);
         }
 
@@ -3837,6 +3862,7 @@ namespace DaySim.ChoiceModels.Actum {
       trip.EarliestDepartureTime = sourceTrip.EarliestDepartureTime;
       trip.LatestDepartureTime = sourceTrip.LatestDepartureTime;
       trip.HUpdateTripValues();
+      trip.SetTripValueOfTime();
     }
 
     private void UpdateHousehold() {
@@ -3959,7 +3985,6 @@ namespace DaySim.ChoiceModels.Actum {
             if (tour.HalfTourFromOrigin != null && tour.HalfTourFromDestination != null) {
               foreach (TripWrapper trip in tour.HalfTourFromOrigin.Trips.Invert()) {
                 trip.SetTourSequence(tour.Sequence);
-                trip.SetTripValueOfTime();
                 trip.Export();
 
                 ChoiceModelUtility.WriteTripForTDM(trip, ChoiceModelFactory.TDMTripListExporter);
@@ -3967,7 +3992,6 @@ namespace DaySim.ChoiceModels.Actum {
 
               foreach (TripWrapper trip in tour.HalfTourFromDestination.Trips) {
                 trip.SetTourSequence(tour.Sequence);
-                trip.SetTripValueOfTime();
                 trip.Export();
 
                 ChoiceModelUtility.WriteTripForTDM(trip, ChoiceModelFactory.TDMTripListExporter);

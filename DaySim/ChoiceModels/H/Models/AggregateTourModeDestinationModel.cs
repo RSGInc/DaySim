@@ -23,7 +23,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class AggregateTourModeDestinationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "AggregateTourModeDestinationModel";
+    public const string CHOICE_MODEL_NAME = "HAggregateTourModeDestinationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     private const int MAX_PARAMETER = 99;
@@ -196,6 +196,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 tour.Household.VehiclesAvailable,
                 tour.Person.TransitPassOwnership,
                (tour.Household.OwnsAutomatedVehicles > 0),
+                 /* hov occ */ 2, /* auto type */ 1,
                 tour.Person.PersonType,
                 false,
                 Global.Settings.Modes.Walk, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Transit);

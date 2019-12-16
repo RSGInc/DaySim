@@ -21,7 +21,7 @@ using DaySim.Sampling;
 
 namespace DaySim.ChoiceModels.H.Models {
   public class IntermediateStopLocationModel : ChoiceModel {
-    private const string CHOICE_MODEL_NAME = "HIntermediateStopLocationModel";
+    public const string CHOICE_MODEL_NAME = "HIntermediateStopLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     private const int MAX_PARAMETER = 160;
@@ -947,7 +947,8 @@ namespace DaySim.ChoiceModels.H.Models {
                 /* householdCars */ 1,
                 /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
-                personType,
+                /* hov occ */ 2, /* auto type */ 1,
+               personType,
                 false,
                 mode);
 
