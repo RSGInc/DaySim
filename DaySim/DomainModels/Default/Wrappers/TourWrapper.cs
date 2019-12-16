@@ -366,7 +366,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public bool IsMissingData { get; set; }
 
-    public int hovOccupancy { get; set; }
+    public int HovOccupancy { get; set; }
 
 
     #endregion
@@ -666,7 +666,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
       IEnumerable<IPathTypeModel> pathTypeModels =
       PathTypeModelFactory.Singleton
-          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, /* isDrivingAge */ 22, /* householdVehicles */ 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.PersonType, false, Global.Settings.Modes.Sov);
+          .Run(Household.RandomUtility, OriginParcel, DestinationParcel, DestinationArrivalTime, DestinationDepartureTime, DestinationPurpose, CostCoefficient, TimeCoefficient, /* isDrivingAge */ 22, /* householdVehicles */ 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0,  
+             /* hov occ */ 2, /* auto type */ 1, Person.PersonType, false, Global.Settings.Modes.Sov);
 
       IPathTypeModel autoPathRoundTrip = pathTypeModels.First();
 
@@ -977,12 +978,12 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
       IEnumerable<IPathTypeModel> pathTypeModels =
           PathTypeModelFactory.Singleton
-              .Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, /* isDrivingAge */ 22, /* householdVehicles */ 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.PersonType, false, useMode);
+              .Run(Household.RandomUtility, OriginParcel, DestinationParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, /* isDrivingAge */ 22, /* householdVehicles */ 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, /*hov occupancy*/ 2, /*auto type*/ 1, Person.PersonType, false, useMode);
       IPathTypeModel pathTypeFromOrigin = pathTypeModels.First();
 
       pathTypeModels =
           PathTypeModelFactory.Singleton
-              .Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, /* isDrivingAge */ 22, /* householdVehicles */ 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, Person.PersonType, false, useMode);
+              .Run(Household.RandomUtility, DestinationParcel, OriginParcel, minute, 0, DestinationPurpose, CostCoefficient, TimeCoefficient, /* isDrivingAge */ 22, /* householdVehicles */ 1, Person.TransitPassOwnership, Household.OwnsAutomatedVehicles > 0, /*hov occupancy*/ 2, /*auto type*/ 1, Person.PersonType, false, useMode);
       IPathTypeModel pathTypeFromDestination = pathTypeModels.First();
 
       modeImpedance.GeneralizedTimeFromOrigin = pathTypeFromOrigin.GeneralizedTimeLogsum;

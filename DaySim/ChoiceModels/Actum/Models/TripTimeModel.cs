@@ -337,8 +337,27 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(91, walkTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
         alternative.AddUtilityTerm(187, time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
 
+        // Split time terms by trip type.
+        if (trip.Sequence == 1 && trip.IsHalfTourFromOrigin)
+        {         
+          alternative.AddUtilityTerm(466, sovOrHovTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(467, transitTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(468, bikeTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(469, walkTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);         
+        } else if (trip.Sequence == 1) {
+          alternative.AddUtilityTerm(439, sovOrHovTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(440, transitTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(441, bikeTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(442, walkTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+        }  else {
+          alternative.AddUtilityTerm(443, sovOrHovTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(444, transitTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(445, bikeTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+          alternative.AddUtilityTerm(446, walkTripFlag * time.ModeLOS.GeneralizedTimeLogsum * tour.TimeCoefficient);
+        }
 
-        alternative.AddUtilityTerm(92, Math.Log(departurePeriodFraction));
+
+          alternative.AddUtilityTerm(92, Math.Log(departurePeriodFraction));
         //alternative.AddUtilityTerm(92, halfTourFromDestinationFlag * Math.Log(departurePeriodFraction));
         alternative.AddUtilityTerm(99, tripRemainingInHalfTour / (Math.Max(1D, Math.Abs(trip.ArrivalTimeLimit - period.Middle))));
         //alternative.AddUtilityTerm(97, remainingToursCount / (Math.Max(1D, totalWindowRemaining)));
@@ -380,11 +399,23 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(245, (period.Middle > 570 && period.Middle <=630).ToFlag());
             alternative.AddUtilityTerm(246, (period.Middle > 630 && period.Middle <=690).ToFlag());
             alternative.AddUtilityTerm(247, (period.Middle > 690 && period.Middle <=750).ToFlag());
+
+            alternative.AddUtilityTerm(447, departureShiftHours * shoppingTourFlag);
+            alternative.AddUtilityTerm(448, departureShiftHours * personalBusinessTourFlag);
+            alternative.AddUtilityTerm(449, departureShiftHours * socialTourFlag);
+            alternative.AddUtilityTerm(450, departureShiftHours * escortTourFlag);
+            alternative.AddUtilityTerm(451, departureShiftHours * businessTourFlag);
           }
           else if (tour.DestinationArrivalBigPeriod.Index == 3) { // pm peak  3:30 - 6:30pm
             alternative.AddUtilityTerm(261, (period.Middle > 750 && period.Middle <=810).ToFlag());
             alternative.AddUtilityTerm(262, (period.Middle > 810 && period.Middle <=870).ToFlag());
             alternative.AddUtilityTerm(263, (period.Middle > 870 && period.Middle <=930).ToFlag());
+
+            alternative.AddUtilityTerm(452, departureShiftHours * shoppingTourFlag);
+            alternative.AddUtilityTerm(453, departureShiftHours * personalBusinessTourFlag);
+            alternative.AddUtilityTerm(454, departureShiftHours * socialTourFlag);
+            alternative.AddUtilityTerm(455, departureShiftHours * escortTourFlag);
+            alternative.AddUtilityTerm(456, departureShiftHours * businessTourFlag);
           }
           else if (tour.DestinationArrivalBigPeriod.Index == 4) { // evening  6:30-11pm
             alternative.AddUtilityTerm(281, (period.Middle > 930 && period.Middle <=960).ToFlag());
@@ -392,6 +423,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(283, (period.Middle > 1020 && period.Middle <=1080).ToFlag());
             alternative.AddUtilityTerm(284, (period.Middle > 1080 && period.Middle <=1140).ToFlag());
             alternative.AddUtilityTerm(285, (period.Middle > 1140 && period.Middle <=1200).ToFlag());
+
+            alternative.AddUtilityTerm(457, departureShiftHours * shoppingTourFlag);
+            alternative.AddUtilityTerm(458, departureShiftHours * personalBusinessTourFlag);
+            alternative.AddUtilityTerm(459, departureShiftHours * socialTourFlag);
+            alternative.AddUtilityTerm(460, departureShiftHours * escortTourFlag);
+            alternative.AddUtilityTerm(461, departureShiftHours * businessTourFlag);
           }
           else { // overnight  11pm-3am
             alternative.AddUtilityTerm(291, (period.Middle > 1200 && period.Middle <=1320).ToFlag());
@@ -421,6 +458,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(312, durationShiftHours * schoolTourFlag);
             alternative.AddUtilityTerm(313, durationShiftHours * schoolTourFlag * universityStudentFlag);
             alternative.AddUtilityTerm(314, durationShiftHours * schoolTourFlag * gymnasiumStudentFlag);
+
+            alternative.AddUtilityTerm(462, durationShiftMinutes.IsRightExclusiveBetween(420, 450).ToFlag()); // 7 - 7.5
+            alternative.AddUtilityTerm(463, durationShiftMinutes.IsRightExclusiveBetween(450,480).ToFlag()); // 7.5 - 8
+            alternative.AddUtilityTerm(464, durationShiftMinutes.IsRightExclusiveBetween(480,510).ToFlag()); // 8 - 8.5
+            alternative.AddUtilityTerm(465, durationShiftMinutes.IsRightExclusiveBetween(510,540).ToFlag()); // 8.5 - 9
 
             // escort and non-home-based tour duration constants for the duration of stay at tour destination
           } else if (escortTourFlag == 1 || notHomeBasedTourFlag == 1) {

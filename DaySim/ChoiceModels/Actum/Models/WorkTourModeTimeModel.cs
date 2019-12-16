@@ -107,8 +107,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         tour.Mode = choice.Mode;
         if (Global.StopAreaIsEnabled && tour.Mode == Global.Settings.Modes.ParkAndRide) {
-          tour.ParkAndRideOriginStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
-          tour.ParkAndRideDestinationStopAreaKey = choice.ParkAndRideDestinationStopAreaKey;
+          tour.ParkAndRideOriginStopAreaKey = choice.OriginStopAreaKey;
+          tour.ParkAndRideDestinationStopAreaKey = choice.DestinationStopAreaKey;
         }
         MinuteSpan arrivalPeriod = choice.ArrivalPeriod;
         MinuteSpan departurePeriod = choice.DeparturePeriod;

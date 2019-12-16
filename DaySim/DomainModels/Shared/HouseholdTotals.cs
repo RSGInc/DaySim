@@ -27,6 +27,10 @@ namespace DaySim.DomainModels.Shared {
 
     public int ChildrenUnder16 { get; set; }
 
+    public int ChildrenAge6To17 { get; set; }
+
+    public int ChildrenAge0To5 { get; set; }
+    
     public int Adults { get; set; }
 
     public int DrivingAgeMembers { get; set; }

@@ -196,6 +196,7 @@ namespace DaySim.ChoiceModels.H.Models {
                 tour.Household.VehiclesAvailable,
                 tour.Person.TransitPassOwnership,
                (tour.Household.OwnsAutomatedVehicles > 0),
+                 /* hov occ */ 2, /* auto type */ 1,
                 tour.Person.PersonType,
                 false,
                 Global.Settings.Modes.Walk, Global.Settings.Modes.Sov, Global.Settings.Modes.Hov2, Global.Settings.Modes.Transit);

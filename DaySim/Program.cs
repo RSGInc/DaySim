@@ -6,6 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -26,10 +27,9 @@ namespace DaySim {
     private static void Main(string[] args) {
       int exitCode = 0;
 #if RELEASE //don't use try catch in release mode since wish to have Visual Studio debugger stop on unhandled exceptions
-            try
-            {
+      try {
 #endif
-      OptionSet options = new OptionSet {
+        OptionSet options = new OptionSet {
                     {"c|configuration=", "Path to configuration file", v => _configurationPath = v},
                     {"o|overrides=", "comma delimited name=value pairs to override configuration file values", v => _overrides = v},
                     {"p|printfile=", "Path to print file", v => _printFilePath = v},
@@ -40,95 +40,100 @@ namespace DaySim {
                     {"h|?|help", "Show help and syntax summary", v => _showHelp = v != null}
                 };
 
-      options.Parse(args);
+        options.Parse(args);
 
-      if (_showHelp) {
-        options.WriteOptionDescriptions(Console.Out);
+        if (_showHelp) {
+          options.WriteOptionDescriptions(Console.Out);
 
-        Console.WriteLine();
-        Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME);
+          Console.WriteLine();
+          Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME);
 
-        Console.WriteLine();
-        Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the output directory.", PrintFile.DEFAULT_PRINT_FILENAME);
+          Console.WriteLine();
+          Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the output directory.", PrintFile.DEFAULT_PRINT_FILENAME);
 
-        if (Environment.UserInteractive && !Console.IsInputRedirected) {
-          Console.WriteLine("Please press any key to exit");
-          Console.ReadKey();
+          if (Environment.UserInteractive && !Console.IsInputRedirected) {
+            Console.WriteLine("Please press any key to exit");
+            Console.ReadKey();
+          }
+
+          Environment.Exit(exitCode);
+        } //end showHelp
+        else if (_showVersion) {
+          PrintVersion();
+
+          if (Environment.UserInteractive && !Console.IsInputRedirected) {
+            Console.WriteLine("Please press any key to exit");
+            Console.ReadKey();
+          }
+          Environment.Exit(exitCode);
+        } //end if _showVersion
+
+        // Issue #164 Force use of decimal separator for numerical values
+        bool needToChangeDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator != ".";
+        if (needToChangeDecimalSeparator) {
+          //needs to be done very early before configuration file read in
+          CultureInfo ci = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+          ci.NumberFormat.NumberDecimalSeparator = ".";
+          Thread.CurrentThread.CurrentCulture = ci;
         }
 
-        Environment.Exit(exitCode);
-      } //end showHelp
-      else if (_showVersion) {
-        PrintVersion();
-
-        if (Environment.UserInteractive && !Console.IsInputRedirected) {
-          Console.WriteLine("Please press any key to exit");
-          Console.ReadKey();
+        Console.WriteLine("Configuration file: " + _configurationPath);
+        if (!File.Exists(_configurationPath)) {
+          throw new Exception("Configuration file '" + _configurationPath + "' does not exist. You must pass in a DaySim configuration file with -c or --configuration");
         }
-        Environment.Exit(exitCode);
-      } //end if _showVersion
+        ConfigurationManagerRSG configurationManager = new ConfigurationManagerRSG(_configurationPath);
+        Global.Configuration = configurationManager.Open();
 
-      // Issue #164 Force use of decimal separator for numerical values
-      bool needToChangeDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator != ".";
-      if (needToChangeDecimalSeparator) {
-        //needs to be done very early before configuration file read in
-        CultureInfo ci = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
-        ci.NumberFormat.NumberDecimalSeparator = ".";
-        Thread.CurrentThread.CurrentCulture = ci;
-      }
+        Global.Configuration = configurationManager.OverrideConfiguration(Global.Configuration, _overrides);
+        Global.Configuration = configurationManager.ProcessPath(Global.Configuration, _configurationPath);
+        Global.PrintFile = configurationManager.ProcessPrintPath(Global.PrintFile, _printFilePath);
 
-      Console.WriteLine("Configuration file: " + _configurationPath);
-      if (!File.Exists(_configurationPath)) {
-        throw new Exception("Configuration file '" + _configurationPath + "' does not exist. You must pass in a DaySim configuration file with -c or --configuration");
-      }
-      ConfigurationManagerRSG configurationManager = new ConfigurationManagerRSG(_configurationPath);
-      Global.Configuration = configurationManager.Open();
-
-      Global.Configuration = configurationManager.OverrideConfiguration(Global.Configuration, _overrides);
-      Global.Configuration = configurationManager.ProcessPath(Global.Configuration, _configurationPath);
-      Global.PrintFile = configurationManager.ProcessPrintPath(Global.PrintFile, _printFilePath);
-
-      string message = string.Format("--overrides = {0}", _overrides);
-      Console.WriteLine(message);
-      if (Global.PrintFile != null) {
-        Global.PrintFile.WriteLine(message);
-      }
-
-      if (needToChangeDecimalSeparator) {
-        //separator was already changed above but printfile was not ready so outputting warning message here.
-        string decimalSeparatorMessage = string.Format("WARNING: default NumberDecimalSeparator is being overriden to use a period for the decimal point since DaySim requires this.");
-        Console.WriteLine(decimalSeparatorMessage);
+        string message = string.Format("--overrides = {0}", _overrides);
+        Console.WriteLine(message);
         if (Global.PrintFile != null) {
-          Global.PrintFile.WriteLine(decimalSeparatorMessage);
+          Global.PrintFile.WriteLine(message);
         }
-      }
 
-      Engine.InitializeDaySim();
+        if (needToChangeDecimalSeparator) {
+          //separator was already changed above but printfile was not ready so outputting warning message here.
+          string decimalSeparatorMessage = string.Format("WARNING: default NumberDecimalSeparator is being overriden to use a period for the decimal point since DaySim requires this.");
+          Console.WriteLine(decimalSeparatorMessage);
+          if (Global.PrintFile != null) {
+            Global.PrintFile.WriteLine(decimalSeparatorMessage);
+          }
+        }
 
-      Engine.BeginProgram(_start, _end, _index);
-      //Engine.BeginTestMode();
+        Engine.InitializeDaySim();
+
+        Engine.BeginProgram(_start, _end, _index);
+        //Engine.BeginTestMode();
+
+        if (Global.Configuration.LowerPrioritySetting) {
+          var process = Process.GetCurrentProcess();
+          process.PriorityClass = ProcessPriorityClass.BelowNormal;
+        }
+
 #if RELEASE //don't use try catch in release mode since wish to have Visual Studio debugger stop on unhandled exceptions
-            }
-            catch (Exception e) {
-                string message = e.ToString();
+      } catch (Exception e) {
+        string message = e.ToString();
 
-                //even though Global.PrintFile.Dispose(); is called in Finally, it is useful to also
-                //call it here because many times I would forget to close the output window and would be unable to delete outputs
-                //in this odd case I wish I could put the finally before the catch
-                if (Global.PrintFile != null) {
-                    Global.PrintFile.WriteLine(message);
-                }
-                Console.WriteLine();
-                Console.Error.WriteLine(message);
+        //even though Global.PrintFile.Dispose(); is called in Finally, it is useful to also
+        //call it here because many times I would forget to close the output window and would be unable to delete outputs
+        //in this odd case I wish I could put the finally before the catch
+        if (Global.PrintFile != null) {
+          Global.PrintFile.WriteLine(message);
+        }
+        Console.WriteLine();
+        Console.Error.WriteLine(message);
 
-                if (Environment.UserInteractive && !Console.IsInputRedirected) {
-                    Console.WriteLine();
-                    Console.WriteLine("Please press any key to exit");
-                    Console.ReadKey();
-                }
+        if (Environment.UserInteractive && !(Console.IsInputRedirected || Console.IsOutputRedirected)) {
+          Console.WriteLine();
+          Console.WriteLine("Please press any key to exit");
+          Console.ReadKey();
+        }
 
-                exitCode = 2;
-            }
+        exitCode = 2;
+      }
 #endif
 #if DEBUG
       string lockCounts = ParallelUtility.getLockCounts();

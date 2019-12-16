@@ -880,6 +880,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                  /* householdCars */ 1,
                   /* transitPassOwnership */ 0,
                 /* carsAreAvs */ false,
+                /* hov occ */ 2, /* auto type */ 1,
                 personType,
                 false,
                 mode);

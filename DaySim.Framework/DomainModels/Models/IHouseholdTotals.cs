@@ -25,6 +25,10 @@ namespace DaySim.Framework.DomainModels.Models {
 
     int ChildrenUnder16 { get; set; }
 
+    int ChildrenAge6To17 { get; set; }
+
+    int ChildrenAge0To5 { get; set; }
+
     int Adults { get; set; }
 
     int DrivingAgeMembers { get; set; }

@@ -496,6 +496,8 @@ namespace DaySim.DomainModels.Default.Wrappers {
         HouseholdTotals.ChildrenAge5Through15 += person.IsChildAge5Through15.ToFlag();
         HouseholdTotals.ChildrenUnder5 += person.IsChildUnder5.ToFlag();
         HouseholdTotals.ChildrenUnder16 += person.IsChildUnder16.ToFlag();
+        HouseholdTotals.ChildrenAge6To17 += (person.Age>=6 && person.Age<=17).ToFlag();
+        HouseholdTotals.ChildrenAge0To5 += (person.Age >= 0 && person.Age <= 5).ToFlag();
         HouseholdTotals.Adults += person.IsAdult.ToFlag();
         HouseholdTotals.AllWorkers += person.IsWorker.ToFlag();
         HouseholdTotals.AllStudents += person.IsStudent.ToFlag();

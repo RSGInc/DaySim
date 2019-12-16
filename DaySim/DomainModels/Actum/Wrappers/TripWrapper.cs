@@ -13,6 +13,7 @@ using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 using DaySim.PathTypeModels;
+using DaySim.Framework.Roster;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
@@ -61,6 +62,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _trip.AutoOccupancy = value;
     }
 
+    public int TourMode {
+      get => _trip.TourMode;
+      set => _trip.TourMode = value;
+    }
+
     public int AccessMode {
       get => _trip.AccessMode;
       set => _trip.AccessMode = value;
@@ -86,9 +92,24 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _trip.AccessDistance = value;
     }
 
-    public int AccessStopArea {
-      get => _trip.AccessStopArea;
-      set => _trip.AccessStopArea = value;
+    public int AccessTerminalID {
+      get => _trip.AccessTerminalID;
+      set => _trip.AccessTerminalID = value;
+    }
+
+    public int AccessTerminalParcelID {
+      get => _trip.AccessTerminalParcelID;
+      set => _trip.AccessTerminalParcelID = value;
+    }
+
+    public int AccessTerminalZoneID {
+      get => _trip.AccessTerminalZoneID;
+      set => _trip.AccessTerminalZoneID = value;
+    }
+
+    public int AccessParkingNodeID {
+      get => _trip.AccessParkingNodeID;
+      set => _trip.AccessParkingNodeID = value;
     }
 
     public int EgressMode {
@@ -116,9 +137,24 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       set => _trip.EgressDistance = value;
     }
 
-    public int EgressStopArea {
-      get => _trip.EgressStopArea;
-      set => _trip.EgressStopArea = value;
+    public int EgressTerminalID {
+      get => _trip.EgressTerminalID;
+      set => _trip.EgressTerminalID = value;
+    }
+
+    public int EgressTerminalParcelID {
+      get => _trip.EgressTerminalParcelID;
+      set => _trip.EgressTerminalParcelID = value;
+    }
+
+    public int EgressTerminalZoneID {
+      get => _trip.EgressTerminalZoneID;
+      set => _trip.EgressTerminalZoneID = value;
+    }
+
+    public int EgressParkingNodeID {
+      get => _trip.EgressParkingNodeID;
+      set => _trip.EgressParkingNodeID = value;
     }
 
 
@@ -155,24 +191,52 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     }
 
     public override void SetTripValueOfTime() {
-      double costDivisor =
-                 Mode == Global.Settings.Modes.HovDriver && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
-                      ? Global.Configuration.Coefficients_HOV2CostDivisor_Work
-                      : Mode == Global.Settings.Modes.HovDriver && Tour.DestinationPurpose != Global.Settings.Purposes.Work && Tour.DestinationPurpose != Global.Settings.Purposes.Business
-                            ? Global.Configuration.Coefficients_HOV2CostDivisor_Other
-                            : Mode == Global.Settings.Modes.HovPassenger && (Tour.DestinationPurpose == Global.Settings.Purposes.Work || Tour.DestinationPurpose == Global.Settings.Purposes.Business)
-                                 ? Global.Configuration.Coefficients_HOV3CostDivisor_Work
-                                 : Mode == Global.Settings.Modes.HovPassenger && Tour.DestinationPurpose != Global.Settings.Purposes.Work && Tour.DestinationPurpose != Global.Settings.Purposes.Business
-                                      ? Global.Configuration.Coefficients_HOV3CostDivisor_Other
-                                      : 1.0;
+      int purpose = Tour.DestinationPurpose;
+      double timeCoefficient = Tour.TimeCoefficient;
+      double costCoefficient = Tour.CostCoefficient;
 
-      //			ValueOfTime = (Tour.TimeCoefficient * 60) / (Tour.CostCoefficient / costDivisor);
+      double costFraction = 1.0;
+      if (Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger) {
+        costFraction = purpose == Global.Settings.Purposes.Work ?
+          (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Commute
+         : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Commute
+         : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Commute
+         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Commute)
+       : purpose == Global.Settings.Purposes.Business ?
+          (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Business
+         : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Business
+         : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Business
+         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Business)
+       :
+          (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Leisure
+         : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Leisure
+         : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Leisure
+         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Leisure);
+      }
+
+      double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, DepartureTime, OriginParcel, DestinationParcel).Variable;
+
+      double baseDistance = ( purpose == Global.Settings.Purposes.Work) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Work
+                           : (purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Education
+                           : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Business
+                           : (purpose == Global.Settings.Purposes.Shopping) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Shop
+                           : Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_HBOther;
+
+      double distanceMultiple =
+             Math.Min(Math.Max(mzDistance / baseDistance, Global.Configuration.COMPASS_CostCoefficientDistanceMultipleMinimum), Global.Configuration.COMPASS_CostCoefficientDistanceMultipleMaximum); // ranges for extreme values
+
+      double distanceElasticity = (purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Commute
+                              : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Business
+                              : Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Leisure;
+
+      double distanceFactor = Math.Pow(distanceMultiple, distanceElasticity);
+    
 
       double AVFactor = ((Global.Configuration.AV_IncludeAutoTypeChoice && Household.OwnsAutomatedVehicles > 0 && Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3)
                              || (Global.Configuration.AV_PaidRideShareModeUsesAVs && Mode == Global.Settings.Modes.PaidRideShare))
                              ? (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : 1.0;
 
-      ValueOfTime = (Tour.TimeCoefficient * 60) * AVFactor / (Tour.CostCoefficient / costDivisor);
+      ValueOfTime = (timeCoefficient * 60 * AVFactor) / (costCoefficient * costFraction * distanceFactor);
     }
 
     public override void HUpdateTripValues() {
@@ -202,33 +266,52 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         TravelDistance = modeImpedance.PathDistance;
         PathType = modeImpedance.PathType;
 
+        TourMode = Tour.Mode;
+
+        IActumHouseholdWrapper household = (IActumHouseholdWrapper) Household;
+
+        AutoType = household.AutoType;
+
         AutoOccupancy =
           Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger ? Tour.HovOccupancy :
-          Mode == Global.Settings.Modes.PaidRideShare ? 2 : 1;
+          Mode == Global.Settings.Modes.PaidRideShare ? 2 :
+          Mode == Global.Settings.Modes.Sov ? 1 : 0;
 
         if (Mode == Global.Settings.Modes.Transit) {
-          if (Direction == 1) {
+          if (Direction == 0) { //MB changed to use same for first half tour, to get the output correct
             AccessCost = time.DestinationAccessCost;
             AccessDistance = time.DestinationAccessDistance;
             AccessMode = time.DestinationAccessMode;
-            AccessStopArea = time.ParkAndRideDestinationStopAreaKey;
+            AccessTerminalID = time.PathDestinationStopAreaKey;
+            AccessTerminalParcelID = time.PathDestinationStopAreaParcelID;
+            AccessTerminalZoneID = time.PathDestinationStopAreaZoneID;
+            AccessParkingNodeID = time.PathDestinationParkingNodeKey;
             AccessTime = time.DestinationAccessTime;
             EgressCost = time.OriginAccessCost;
             EgressDistance = time.OriginAccessDistance;
             EgressMode = time.OriginAccessMode;
-            EgressStopArea = time.ParkAndRideOriginStopAreaKey;
+            EgressTerminalID = time.PathOriginStopAreaKey;
+            EgressTerminalParcelID = time.PathOriginStopAreaParcelID;
+            EgressTerminalZoneID = time.PathOriginStopAreaZoneID;
+            EgressParkingNodeID = time.PathOriginParkingNodeKey;
             EgressTime = time.OriginAccessTime;
 
           } else {
             AccessCost = time.OriginAccessCost;
             AccessDistance = time.OriginAccessDistance;
             AccessMode = time.OriginAccessMode;
-            AccessStopArea = time.ParkAndRideOriginStopAreaKey;
+            AccessTerminalID = time.PathOriginStopAreaKey;
+            AccessTerminalParcelID = time.PathOriginStopAreaParcelID;
+            AccessTerminalZoneID = time.PathOriginStopAreaZoneID;
+            AccessParkingNodeID = time.PathOriginParkingNodeKey;
             AccessTime = time.OriginAccessTime;
             EgressCost = time.DestinationAccessCost;
             EgressDistance = time.DestinationAccessDistance;
             EgressMode = time.DestinationAccessMode;
-            EgressStopArea = time.ParkAndRideDestinationStopAreaKey;
+            EgressTerminalID = time.PathDestinationStopAreaKey;
+            EgressTerminalParcelID = time.PathDestinationStopAreaParcelID;
+            EgressTerminalZoneID = time.PathDestinationStopAreaZoneID;
+            EgressParkingNodeID = time.PathDestinationParkingNodeKey;
             EgressTime = time.DestinationAccessTime;
           }
         }
@@ -364,7 +447,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     }
 
 
-    public void HPTBikeTourUpdateTripValues() {
+    public void HPTBikeDriveTransitTourUpdateTripValues() {
       //new version for trips on tours with mode 9, 10, 11, 13
       // for Actum 
       // assumes that mode and departure time have been set
@@ -419,20 +502,33 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         TravelDistance = Tour.TravelDistanceForPTBikeTour / 2.0;
         PathType = Tour.PathType;
 
-        Mode = Tour.Mode;
+        TourMode = Tour.Mode;
+
+        IActumHouseholdWrapper household = (IActumHouseholdWrapper)Household;
+
+        AutoType = household.AutoType;
+
+
+        Mode = Global.Settings.Modes.Transit;
 
         if (Direction == 1) {
           AccessCost = Tour.HalfTour1AccessCost;
           AccessDistance = Tour.HalfTour1AccessDistance;
           AccessMode = Tour.HalfTour1AccessMode;
           AccessPathType = Tour.HalfTour1AccessPathType;
-          AccessStopArea = Tour.HalfTour1AccessStopAreaKey;
+          AccessTerminalID = Tour.HalfTour1AccessStopAreaKey;
+          AccessTerminalParcelID = Tour.HalfTour1AccessStopAreaParcelID;
+          AccessTerminalZoneID = Tour.HalfTour1AccessStopAreaZoneID;
+          AccessParkingNodeID = Tour.HalfTour1AccessParkingNodeID;
           AccessTime = Tour.HalfTour1AccessTime;
           EgressCost = Tour.HalfTour1EgressCost;
           EgressDistance = Tour.HalfTour1EgressDistance;
           EgressMode = Tour.HalfTour1EgressMode;
           EgressPathType = Tour.HalfTour1EgressPathType;
-          EgressStopArea = Tour.HalfTour1EgressStopAreaKey;
+          EgressTerminalID = Tour.HalfTour1EgressStopAreaKey;
+          EgressTerminalParcelID = Tour.HalfTour1EgressStopAreaParcelID;
+          EgressTerminalZoneID = Tour.HalfTour1EgressStopAreaZoneID;
+          EgressParkingNodeID = Tour.HalfTour1EgressParkingNodeID;
           EgressTime = Tour.HalfTour1EgressTime;
 
         } else {
@@ -440,15 +536,27 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           AccessDistance = Tour.HalfTour2AccessDistance;
           AccessMode = Tour.HalfTour2AccessMode;
           AccessPathType = Tour.HalfTour2AccessPathType;
-          AccessStopArea = Tour.HalfTour2AccessStopAreaKey;
+          AccessTerminalID = Tour.HalfTour2AccessStopAreaKey;
+          AccessTerminalParcelID = Tour.HalfTour2AccessStopAreaParcelID;
+          AccessTerminalZoneID = Tour.HalfTour2AccessStopAreaZoneID;
+          AccessParkingNodeID = Tour.HalfTour2AccessParkingNodeID;
           AccessTime = Tour.HalfTour2AccessTime;
           EgressCost = Tour.HalfTour2EgressCost;
           EgressDistance = Tour.HalfTour2EgressDistance;
           EgressMode = Tour.HalfTour2EgressMode;
           EgressPathType = Tour.HalfTour2EgressPathType;
-          EgressStopArea = Tour.HalfTour2EgressStopAreaKey;
+          EgressTerminalID = Tour.HalfTour2EgressStopAreaKey;
+          EgressTerminalParcelID = Tour.HalfTour2EgressStopAreaParcelID;
+          EgressTerminalZoneID = Tour.HalfTour2EgressStopAreaZoneID;
+          EgressParkingNodeID = Tour.HalfTour2EgressParkingNodeID;
           EgressTime = Tour.HalfTour2EgressTime;
         }
+
+        AutoOccupancy =
+        Mode == Global.Settings.Modes.HovDriver     || AccessMode == Global.Settings.Modes.HovDriver     || EgressMode == Global.Settings.Modes.HovDriver ||
+        Mode == Global.Settings.Modes.HovPassenger  || AccessMode == Global.Settings.Modes.HovPassenger  || EgressMode == Global.Settings.Modes.HovPassenger ? Math.Max(Tour.HovOccupancy, 2) :
+        Mode == Global.Settings.Modes.PaidRideShare || AccessMode == Global.Settings.Modes.PaidRideShare || EgressMode == Global.Settings.Modes.PaidRideShare ? 2 :
+        Mode == Global.Settings.Modes.Sov           || AccessMode == Global.Settings.Modes.Sov           || EgressMode == Global.Settings.Modes.Sov ? 1 : 0;
 
         int duration = (int)(TravelTime + 0.5);
 

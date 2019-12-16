@@ -3,7 +3,7 @@
 // You may not possess or use this file without a License for its use.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under a License for its use is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
 
 
 using System;
@@ -36,46 +36,53 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       person.ResetRandom(3);
 
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
+      IActumParcelWrapper homeParcel = (IActumParcelWrapper)household.ResidenceParcel;
+      IActumParcelWrapper schoolParcel = (IActumParcelWrapper)person.UsualSchoolParcel;
+      IActumParcelWrapper workParcel = (IActumParcelWrapper)person.UsualWorkParcel;
+
+
+
       // Determine passCategory, fareZones and passPrice 
       int passCategory = -1;
       int fareZones = -1;
       double passPrice = -1.0;
-      
+
       //senior card
       if (person.Age >= Global.Configuration.COMPASS_TransitFareMinimumAgeForSeniorCard) {
         passCategory = 1;
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForSeniorCard;
         passPrice = Global.TransitMonthlyPrice_SeniorCard[fareZones];
-       
-      //child commuter card
+
+        //child commuter card
       } else if (person.Age > Global.Configuration.COMPASS_TransitFareMaximumAgeForFreeTravel && person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForChildDiscount
         && !(person.UsualSchoolParcel == null)) {
-        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualSchoolParcel.ZoneId);
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, Global.TransitStopAreaMapping[homeParcel.NearestTerminalID], Global.TransitStopAreaMapping[schoolParcel.NearestTerminalID]);
         passCategory = 5;
         fareZones = (int)Math.Round(skimValue.Variable);
         passPrice = Global.TransitMonthlyPrice_ChildCommuteCard[fareZones];
-      
-      //youth high school card
+
+        //youth high school card
       } else if (person.StudentType > 0 && person.StudentType <= 3) {
         passCategory = 2;
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardGymnasium;
         passPrice = Global.TransitMonthlyPrice_YouthCardGymnasium[fareZones];
-       
-      //university card
+
+        //university card
       } else if (person.StudentType == 4) {
         passCategory = 3;
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardUniversity;
         passPrice = Global.TransitMonthlyPrice_YouthCardUniversity[fareZones];
-       
-      //youth non-student card
+
+        //youth non-student card
       } else if (person.Age <= Global.Configuration.COMPASS_TransitFareMaximumAgeForYouthNonStudentCard) {
         passCategory = 4;
         fareZones = Global.Configuration.COMPASS_TransitFareDefaultNumberOfZonesForYouthCardNonStudent;
         passPrice = Global.TransitMonthlyPrice_YouthCardNonStudent[fareZones];
-       
-      //adult commuter card
+
+        //adult commuter card
       } else if (!(person.UsualWorkParcel == null)) {
-        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, person.Household.ResidenceZoneId, person.UsualWorkParcel.ZoneId);
+        SkimValue skimValue = ImpedanceRoster.GetValue("farezones", Global.Settings.Modes.Transit, Global.Settings.PathTypes.TransitType1, 10, 10, Global.TransitStopAreaMapping[homeParcel.NearestTerminalID], Global.TransitStopAreaMapping[workParcel.NearestTerminalID]);
         passCategory = 6;
         fareZones = (int)Math.Round(skimValue.Variable);
         passPrice = Global.TransitMonthlyPrice_AdultCommuteCard[fareZones];
@@ -87,8 +94,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
 
       if (Global.Configuration.IsInEstimationMode) {
-        
-        if(passCategory < 0) { //passCategory couldn't be determined because of missing usual location information
+
+        if (passCategory < 0) { //passCategory couldn't be determined because of missing usual location information
           person.TransitPassOwnership = passCategory;
         } else if (person.TransitPassOwnership > 0) {  //reset pass ownership of passholder to number of fare zones  
           person.TransitPassOwnership = fareZones;
@@ -105,7 +112,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           return;
         }
 
-        int transitPassIndicator = person.TransitPassOwnership > 0 ? 1:0; 
+        int transitPassIndicator = person.TransitPassOwnership > 0 ? 1 : 0;
         RunModel(choiceProbabilityCalculator, person, passCategory, fareZones, passPrice, transitPassIndicator);
 
         choiceProbabilityCalculator.WriteObservation();
@@ -126,8 +133,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       IActumParcelWrapper homeParcel = (IActumParcelWrapper)household.ResidenceParcel;
       //IActumParcelWrapper workParcel = (IActumParcelWrapper)(person.IsUniversityStudent ? person.UsualSchoolParcel : person.UsualWorkParcel);
       //IActumParcelWrapper schoolParcel = (IActumParcelWrapper)(person.IsUniversityStudent ? null : person.UsualSchoolParcel);
-      IActumParcelWrapper workParcel = (IActumParcelWrapper) person.UsualWorkParcel;
-      IActumParcelWrapper schoolParcel = (IActumParcelWrapper) person.UsualSchoolParcel;
+      IActumParcelWrapper workParcel = (IActumParcelWrapper)person.UsualWorkParcel;
+      IActumParcelWrapper schoolParcel = (IActumParcelWrapper)person.UsualSchoolParcel;
 
       double workMZParkPrice = workParcel != null ? workParcel.PublicParkingHourlyPriceBuffer1 : 0;
 
@@ -164,10 +171,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
       int freeFareType = Global.Settings.PersonTypes.ChildUnder5;
 
-      if (person.HouseholdId == 1080050 && person.Sequence == 2) {
-        bool testbool2 = true;
-      }
-
+ 
       if (!workParcelMissing && workTranDist < maxTranDist && homeTranDist < maxTranDist) {
 
         IEnumerable<IPathTypeModel> pathTypeModels =
@@ -179,11 +183,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Times.FivePM,
                 Global.Settings.Purposes.Work,
                 Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Work,
-                Global. Configuration.COMPASS_BaseTimeCoefficientPerMinute,
+                Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute,
                 drivingAge,
                 1,
                 0,
                 false,
+                /* hov occ */ 2, /* auto type */ 1,
                 fullFareType,
                 false,
                 Global.Settings.Modes.Transit);
@@ -202,12 +207,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Times.FivePM,
                 Global.Settings.Purposes.Work,
                 Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Work,
-                Global. Configuration.COMPASS_BaseTimeCoefficientPerMinute,
+                Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute,
                 /* isDrivingAge */ drivingAge,
                 /* householdCars */ 1,
                 /* transitPassOwnership */ fareZones,
                 /* carsAreAVs */ false,
                 /* transitDiscountFraction */ //freeFareType,  JB 20190513
+                /* transitDiscountFraction */ fullFareType,
+                /* hov occ */ 2, /* auto type */ 1,
                 /* transitDiscountFraction */ fullFareType,
                 /* randomChoice */ false,
                 Global.Settings.Modes.Transit);
@@ -217,11 +224,6 @@ namespace DaySim.ChoiceModels.Actum.Models {
         workGenTimeWithPass = path.GeneralizedTimeLogsum;
 
       }
-
-      if (workGenTimeWithPass > -90 && workGenTimeWithPass == workGenTimeNoPass) {
-          bool testbool = true;
-          testbool = false;
-        }
 
       //			double schoolGenTimeNoPass = -99.0;
       double schoolGenTimeWithPass = -99.0;
@@ -238,11 +240,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 Global.Settings.Times.ThreePM,
                 Global.Settings.Purposes.School,
                 Global.Configuration.COMPASS_BaseCostCoefficientPerMonetaryUnit_Education,
-                Global. Configuration.COMPASS_BaseTimeCoefficientPerMinute,
+                Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute,
                 drivingAge,
                 1,
                 fareZones,
                 false,
+                /* hov occ */ 2, /* auto type */ 1,
                 freeFareType,
                 false,
                 Global.Settings.Modes.Transit);
@@ -280,7 +283,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 : 2;
 
       double homeAggregateLogsumNoCar = Math.Max(minimumAggLogsum, Global.AggregateLogsums[homeParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][homeTaSegment]);
-      
+
+      // 20191205 JLB add new variable
+      double homeAggregateLogsumWaBi = Math.Max(minimumAggLogsum, Global.AggregateLogsums[homeParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.NoCars][votSegment][2]);
+
+
       //int workTaSegment = workParcelMissing ? 0 : workParcel.TransitAccessSegment();
       //GV: 20.3.2019 - getting values from MB's memo
       //OBS! - DaySim goes down with my commnad
@@ -328,15 +335,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: 26. mar. 2019 - no. of parkig places in the residental area
       //JB: Employee parking places should not be used
-      double resNoParking = (homeParcel.ResidentialPermitOnlyParkingSpaces + 
+      double resNoParking = (homeParcel.ResidentialPermitOnlyParkingSpaces +
       homeParcel.PublicWithResidentialPermitAllowedParkingSpaces +
       //homeParcel.PublicNoResidentialPermitAllowedParkingSpaces +
       homeParcel.ElectricVehicleOnlyParkingSpaces);
 
       //GV: 26. mar. 2019 - no. of parkig places in Buffer1 area
       //JB: Employee parking places should not be used
-      double Bf1NoParking = (homeParcel.ResidentialPermitOnlyParkingSpacesBuffer1 + 
-      homeParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1 + 
+      double Bf1NoParking = (homeParcel.ResidentialPermitOnlyParkingSpacesBuffer1 +
+      homeParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1 +
       //homeParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1 +
       homeParcel.ElectricVehicleOnlyParkingSpacesBuffer1);
 
@@ -356,7 +363,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       if (person.IsFullOrPartTimeWorker) {
         usualParcel = person.UsualWorkParcel;
       }
-      if (usualParcel == null && person.UsualSchoolParcel != null){
+      if (usualParcel == null && person.UsualSchoolParcel != null) {
         usualParcel = person.UsualSchoolParcel;
       }
       //Framework.DomainModels.Wrappers.IParcelWrapper usualParcel = person.IsFullOrPartTimeWorker ? person.UsualWorkParcel : null;
@@ -385,6 +392,27 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       double passPriceToFareRatio = 0;
       if (fare > 0) { passPriceToFareRatio = passPrice / fare; }
+
+
+
+      //20191204 JLB new logsum difference variables for worksers and adult students
+      double workTourLogsumDifference = 0D; // (full or part-time workers) full car ownership vs. no car ownership
+      double schoolTourLogsumDifference = 0D; // (adult student) full car ownership vs. no car ownership
+
+      if (person.IsWorker && person.UsualWorkParcel != null && person.UsualWorkParcelId != household.ResidenceParcelId) {
+        ChoiceProbabilityCalculator.Alternative nestedAlternative1 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualWorkParcel, DayPeriod.BigDayPeriods[DayPeriod.AM_PEAK].Middle, DayPeriod.BigDayPeriods[DayPeriod.PM_PEAK].Middle, Math.Max(household.VehiclesAvailable, 1), 0.0, Global.Settings.Purposes.Work);
+        ChoiceProbabilityCalculator.Alternative nestedAlternative2 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualWorkParcel, DayPeriod.BigDayPeriods[DayPeriod.AM_PEAK].Middle, DayPeriod.BigDayPeriods[DayPeriod.PM_PEAK].Middle, 0, 0.0, Global.Settings.Purposes.Work);
+        workTourLogsumDifference += nestedAlternative1 == null ? 0 : nestedAlternative1.ComputeLogsum();
+        workTourLogsumDifference -= nestedAlternative2 == null ? 0 : nestedAlternative2.ComputeLogsum();
+      }
+
+      if (person.IsAdult && person.UsualSchoolParcel != null && person.UsualSchoolParcelId != household.ResidenceParcelId) {
+        ChoiceProbabilityCalculator.Alternative nestedAlternative1 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, DayPeriod.BigDayPeriods[DayPeriod.AM_PEAK].Middle, DayPeriod.BigDayPeriods[DayPeriod.PM_PEAK].Middle, Math.Max(household.VehiclesAvailable, 1), 0.0, Global.Settings.Purposes.School);
+        ChoiceProbabilityCalculator.Alternative nestedAlternative2 = Global.ChoiceModelSession.Get<TourModeTimeModel>().RunNested(person, household.ResidenceParcel, person.UsualSchoolParcel, DayPeriod.BigDayPeriods[DayPeriod.AM_PEAK].Middle, DayPeriod.BigDayPeriods[DayPeriod.PM_PEAK].Middle, 0, 0.0, Global.Settings.Purposes.School);
+        schoolTourLogsumDifference += nestedAlternative1 == null ? 0 : nestedAlternative1.ComputeLogsum();
+        schoolTourLogsumDifference -= nestedAlternative2 == null ? 0 : nestedAlternative2.ComputeLogsum();
+      }
+
 
       // 0 No transit pass
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
@@ -475,10 +503,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(43, homeAggregateLogsumNoCar * commuterChild * (person.IsChildUnder16).ToFlag());
       //alternative.AddUtilityTerm(43, homeAggregateLogsumNoCar * youthGymnasium * (person.IsChildUnder16).ToFlag());
       //alternative.AddUtilityTerm(44, homeAggregateLogsumNoCar * (person.IsNonworkingAdult).ToFlag()); 
-      alternative.AddUtilityTerm(41, homeAggregateLogsumNoCar * (person.IsFullOrPartTimeWorker).ToFlag()); 
+      alternative.AddUtilityTerm(41, homeAggregateLogsumNoCar * (person.IsFullOrPartTimeWorker).ToFlag());
       alternative.AddUtilityTerm(42, homeAggregateLogsumNoCar * (person.IsDrivingAgeStudent).ToFlag());
       alternative.AddUtilityTerm(43, homeAggregateLogsumNoCar * (person.IsChildUnder16).ToFlag());
-      alternative.AddUtilityTerm(44, homeAggregateLogsumNoCar * (person.IsNonworkingAdult).ToFlag()); 
+      alternative.AddUtilityTerm(44, homeAggregateLogsumNoCar * (person.IsNonworkingAdult).ToFlag());
+
+      //20191205 JLB added betas 45-48
+      alternative.AddUtilityTerm(45, homeAggregateLogsumWaBi * (person.IsFullOrPartTimeWorker).ToFlag());
+      alternative.AddUtilityTerm(46, homeAggregateLogsumWaBi * (person.IsGymnasiumOrUniversityStudent()).ToFlag());
+      alternative.AddUtilityTerm(47, homeAggregateLogsumWaBi * (person.IsChildUnder16).ToFlag());
+      alternative.AddUtilityTerm(48, homeAggregateLogsumWaBi * (person.IsNonworkingAdult ||person.IsRetiredAdult).ToFlag());
       
       //GV: OK
       //Accessibility at commute location
@@ -496,17 +530,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(63, (!workParcelMissing && workGenTimeWithPass > -90 && workGenTimeNoPass > -90) ? workGenTimeNoPass - workGenTimeWithPass : 0); //From default version
       alternative.AddUtilityTerm(64, (!schoolParcelMissing && schoolGenTimeWithPass > -90) ? schoolGenTimeWithPass : 0); //From default version
       alternative.AddUtilityTerm(65, (!schoolParcelMissing && schoolGenTimeWithPass <= -90) ? 1 : 0); //From default version
-      alternative.AddUtilityTerm(66, (person.WorkerType > 0 && workParcelMissing) ? 1:0);  //Nuisance parameter for missing location data
-      alternative.AddUtilityTerm(67, (person.StudentType > 0 && schoolParcelMissing) ? 1:0); //Nuisance parameter for missing location data 
-      alternative.AddUtilityTerm(68, (person.WorkerType == 0 && person.StudentType == 0) ? 1:0); 
-      alternative.AddUtilityTerm(69, commuteDistance); 
-      
+      alternative.AddUtilityTerm(66, (person.WorkerType > 0 && workParcelMissing) ? 1 : 0);  //Nuisance parameter for missing location data
+      alternative.AddUtilityTerm(67, (person.StudentType > 0 && schoolParcelMissing) ? 1 : 0); //Nuisance parameter for missing location data 
+      alternative.AddUtilityTerm(68, (person.WorkerType == 0 && person.StudentType == 0) ? 1 : 0);
+      alternative.AddUtilityTerm(69, commuteDistance);
+
       //GV: OK
       //Price
       alternative.AddUtilityTerm(71, passPriceToFareRatio);
       alternative.AddUtilityTerm(72, fare);
       alternative.AddUtilityTerm(73, passPrice);
-                                
+
       //GV: 26. 3. 2019 - parking avail. in CPH
       alternative.AddUtilityTerm(81, homeParcel.ParkingDataAvailable * Math.Log(Math.Max(1, Bf1NoParking)) * (isInCopenhagenMunicipality).ToFlag());
 
@@ -518,8 +552,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //JB: 8.5.2019 - Add beta 84 as a dummy variable: (1 - homeParcel.ParkingDataAvailable) to go along with betas 81 - 83.
       //GV: 8.5.2019 - 
-      alternative.AddUtilityTerm(84, (1 - homeParcel.ParkingDataAvailable));  
-               
+      alternative.AddUtilityTerm(84, (1 - homeParcel.ParkingDataAvailable));
+
       //GV: cannot be estimated with the correct sign
       //GV: 26. 3. 2019 - parking costs
       //alternative.AddUtilityTerm(84, homeParcel.ParkingDataAvailable * (homeParcel.ResidentialPermitDailyParkingPricesBuffer1) * (isInCopenhagenMunicipality).ToFlag());
@@ -527,6 +561,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(85, homeParcel.ParkingDataAvailable * (homeParcel.ResidentialPermitDailyParkingPricesBuffer1) * (isInFrederiksbergMunicipality).ToFlag());
       //GV: 26. 3. 2019 - parking costs
       //alternative.AddUtilityTerm(86, homeParcel.ParkingDataAvailable * (homeParcel.ResidentialPermitDailyParkingPricesBuffer1) * (!hhLivesInCPHCity).ToFlag());
+
+      alternative.AddUtilityTerm(85, workTourLogsumDifference);
+      alternative.AddUtilityTerm(86, schoolTourLogsumDifference);
+
 
     }
   }

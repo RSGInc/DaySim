@@ -118,22 +118,34 @@ namespace DaySim.ChoiceModels.Actum.Models {
         tour.HalfTour1AccessCost = choice.OriginAccessCost / 2.0;
         tour.HalfTour1AccessDistance = choice.OriginAccessDistance / 2.0;
         tour.HalfTour1AccessMode = choice.OriginAccessMode;
-        tour.HalfTour1AccessStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
+        tour.HalfTour1AccessStopAreaKey = choice.OriginStopAreaKey;
+        tour.HalfTour1AccessStopAreaParcelID = choice.OriginStopAreaParcelID;
+        tour.HalfTour1AccessStopAreaZoneID = choice.OriginStopAreaZoneID;
+        tour.HalfTour1AccessParkingNodeID = choice.OriginParkingNodeID;
         tour.HalfTour1AccessTime = choice.OriginAccessTime / 2.0;
         tour.HalfTour1EgressCost = choice.DestinationAccessCost / 2.0;
         tour.HalfTour1EgressDistance = choice.DestinationAccessDistance / 2.0;
         tour.HalfTour1EgressMode = choice.DestinationAccessMode;
-        tour.HalfTour1EgressStopAreaKey = choice.ParkAndRideDestinationStopAreaKey;
+        tour.HalfTour1EgressStopAreaKey = choice.DestinationStopAreaKey;
+        tour.HalfTour1EgressStopAreaParcelID = choice.DestinationStopAreaParcelID;
+        tour.HalfTour1EgressStopAreaZoneID = choice.DestinationStopAreaZoneID;
+        tour.HalfTour1EgressParkingNodeID = choice.DestinationParkingNodeID;
         tour.HalfTour1EgressTime = choice.DestinationAccessTime / 2.0;
         tour.HalfTour2AccessCost = choice.DestinationAccessCost / 2.0;
         tour.HalfTour2AccessDistance = choice.DestinationAccessDistance / 2.0;
         tour.HalfTour2AccessMode = choice.DestinationAccessMode;
-        tour.HalfTour2AccessStopAreaKey = choice.ParkAndRideDestinationStopAreaKey;
+        tour.HalfTour2AccessStopAreaKey = choice.DestinationStopAreaKey;
+        tour.HalfTour2AccessStopAreaParcelID = choice.DestinationStopAreaParcelID;
+        tour.HalfTour2AccessStopAreaZoneID = choice.DestinationStopAreaZoneID;
+        tour.HalfTour2AccessParkingNodeID = choice.DestinationParkingNodeID;
         tour.HalfTour2AccessTime = choice.DestinationAccessTime / 2.0;
         tour.HalfTour2EgressCost = choice.OriginAccessCost / 2.0;
         tour.HalfTour2EgressDistance = choice.OriginAccessDistance / 2.0;
         tour.HalfTour2EgressMode = choice.OriginAccessMode;
-        tour.HalfTour2EgressStopAreaKey = choice.ParkAndRideOriginStopAreaKey;
+        tour.HalfTour2EgressStopAreaKey = choice.OriginStopAreaKey;
+        tour.HalfTour2EgressStopAreaParcelID = choice.OriginStopAreaParcelID;
+        tour.HalfTour2EgressStopAreaZoneID = choice.OriginStopAreaZoneID;
+        tour.HalfTour2EgressParkingNodeID = choice.OriginParkingNodeID;
         tour.HalfTour2EgressTime = choice.OriginAccessTime / 2.0;
         tour.HalfTour1TravelTime = choice.TravelTimeToDestination;
         tour.HalfTour2TravelTime = choice.TravelTimeFromDestination;
@@ -203,7 +215,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       HouseholdDayWrapper householdDay = (tour.PersonDay == null) ? null : (HouseholdDayWrapper)tour.PersonDay.HouseholdDay;
 
-      int constrainedMode = 0;
+      int constrainedMode = Global.Configuration.IncludeMixedModesInModeChoiceLogsums ? 0 : -1;
       int constrainedArrivalTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationArrivalTime : 0;
       int constrainedDepartureTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationDepartureTime : 0;
 
@@ -255,6 +267,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int HHwithHighIncomeFlag = (household.Income >= 800000).ToFlag();
       int HHwithMissingIncomeFlag = (household.Income < 0).ToFlag();
 
+      // Declare gentime weight factor for walk and cycle
+      double weightfac = 1.0;
+      
       int primaryFamilyTimeFlag = (householdDay == null) ? 0 : householdDay.PrimaryPriorityTimeFlag;
 
       // person inputs
@@ -303,6 +318,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int homeBasedTours = 1;
       int simulatedHomeBasedTours = 0;
 
+
       if (!(personDay == null)) {
         homeBasedToursOnlyFlag = personDay.OnlyHomeBasedToursExist().ToFlag();
         firstSimulatedHomeBasedTourFlag = personDay.IsFirstSimulatedHomeBasedTour().ToFlag();
@@ -328,6 +344,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int workBasedTourFlag = (tour.ParentTour != null).ToFlag();
       int homeBasedTourFlag = (tour.ParentTour == null).ToFlag();
 
+      int otherTourFlag = (escortTourFlag > 0 || shoppingTourFlag > 0 || socialTourFlag > 0 || personalBusinessTourFlag > 0) ? 1 : 0;
+
+      
       IParcelWrapper originParcel = tour.OriginParcel;
       //var destinationParcel = tour.DestinationParcel;
       int jointTourFlag = (tour.JointTourSequence > 0) ? 1 : 0;
@@ -639,6 +658,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(603, parkwrkflag * workTourFlag);
           modeComponent.AddUtilityTerm(604, parkwrkmissflag * workTourFlag);
           modeComponent.AddUtilityTerm(607, hhsizeone);
+          
 
 
 
@@ -864,7 +884,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
               && (mode > 0)
               && (person.Age >= Global.Configuration.COMPASS_MinimumAutoDrivingAge || (modeTimes.Mode != Global.Settings.Modes.Sov && modeTimes.Mode != Global.Settings.Modes.HovDriver))
               && (constrainedMode > 0 || mode == Global.Settings.Modes.Walk || mode == Global.Settings.Modes.Bike || mode == Global.Settings.Modes.HovDriver || mode == Global.Settings.Modes.Transit || !partialHalfTour)
-              && (constrainedMode <= 0 || constrainedMode == mode)
+              && (constrainedMode == 0 || (constrainedMode < 0 && mode <= Global.Settings.Modes.WalkRideWalk) || constrainedMode == mode)
               && (constrainedArrivalTime <= 0 || (constrainedArrivalTime >= arrivalPeriod.Start && constrainedArrivalTime <= arrivalPeriod.End))
               && (constrainedDepartureTime <= 0 || (constrainedDepartureTime >= departurePeriod.Start && constrainedDepartureTime <= departurePeriod.End));
 
@@ -951,56 +971,59 @@ namespace DaySim.ChoiceModels.Actum.Models {
 //          alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
 
           double gentime = modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination;
+          
+          double distance = modeTimes.PathDistanceToDestination + modeTimes.PathDistanceFromDestination;
 
           // Expand generalised time by purpose
 
           if (gtVariable == 1) {
-            alternative.AddUtilityTerm(211, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(211, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(211, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(211, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(214, Math.Log(Math.Max(gentime,1)));
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(214, Math.Log(Math.Max(gentime,1)));
           }
 
           else if (gtVariable == 2) {
             alternative.AddUtilityTerm(200, 1.0);
-            alternative.AddUtilityTerm(201, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(201, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(204, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag* gentime);
+           // alternative.AddUtilityTerm(204, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 4) {
-            alternative.AddUtilityTerm(231, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(231, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(231, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(231, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
+            // alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
+            //alternative.AddUtilityTerm(220, distance);
           }
 
           else if (gtVariable == 5) {
-            alternative.AddUtilityTerm(241, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(241, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(241, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(241, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(244, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(244, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 6) {
-            alternative.AddUtilityTerm(251, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(251, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(251, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(251, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(254, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(205, weightfac * workTourFlag * gentime);
+            alternative.AddUtilityTerm(206, weightfac * businessTourFlag * gentime);
+            alternative.AddUtilityTerm(207, weightfac * educationTourFlag * gentime);
+            alternative.AddUtilityTerm(208, weightfac * otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(254, Math.Log(Math.Max(gentime, 1)));
           }
 
           else if (gtVariable == 7) {
-            alternative.AddUtilityTerm(261, HHwithLowIncomeFlag * gentime);
-            alternative.AddUtilityTerm(261, HHwithMidleIncomeFlag * gentime);
-            alternative.AddUtilityTerm(261, HHwithHighIncomeFlag * gentime);
-            alternative.AddUtilityTerm(261, HHwithMissingIncomeFlag * gentime);
-            alternative.AddUtilityTerm(264, Math.Log(Math.Max(gentime, 1)));
+            alternative.AddUtilityTerm(209, weightfac * workTourFlag * gentime);
+            alternative.AddUtilityTerm(210, weightfac * businessTourFlag * gentime);
+            alternative.AddUtilityTerm(211, weightfac * educationTourFlag * gentime);
+            alternative.AddUtilityTerm(212, weightfac * otherTourFlag * gentime);
+           // alternative.AddUtilityTerm(264, Math.Log(Math.Max(gentime, 1)));
           }
 
           if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare) {
