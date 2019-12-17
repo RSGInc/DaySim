@@ -1679,7 +1679,7 @@ namespace DaySim.Framework.Core {
     public string MicrozoneToDestinationParkingLocationsPath { get; set; }
 
     [XmlAttribute]
-    public char MicrozoneToDestinationParingLocationsDelimiter { get; set; }
+    public char MicrozoneToDestinationParkingLocationsDelimiter { get; set; }
 
 
     [XmlAttribute]

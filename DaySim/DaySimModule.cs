@@ -28,9 +28,9 @@ namespace DaySim {
 
       Global.ContainerDaySim.Register<IPersistenceFactory<IParcelNode>, PersistenceFactory<IParcelNode>>(Lifestyle.Singleton);
 
-      Global.ContainerDaySim.Register<IPersistenceFactory<IParkAndRideNode>, PersistenceFactory<IParkAndRideNode>>(Lifestyle.Singleton);
-
       Global.ContainerDaySim.Register<IPersistenceFactory<IDestinationParkingNode>, PersistenceFactory<IDestinationParkingNode>>(Lifestyle.Singleton);
+
+      Global.ContainerDaySim.Register<IPersistenceFactory<IParkAndRideNode>, PersistenceFactory<IParkAndRideNode>>(Lifestyle.Singleton);
 
       Global.ContainerDaySim.Register<IPersistenceFactory<ITransitStopArea>, PersistenceFactory<ITransitStopArea>>(Lifestyle.Singleton);
 

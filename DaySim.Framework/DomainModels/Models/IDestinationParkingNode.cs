@@ -9,17 +9,29 @@ namespace DaySim.Framework.DomainModels.Models {
   public interface IDestinationParkingNode : IModel, IPoint {
     int ParcelId { get; set; }
 
-    int NodeId { get; set; }
+    int LocationType { get; set; }
 
     int ParkingType { get; set; }
 
-    int MaxDuration { get; set; }
+    double MaxDuration { get; set; }
+
+    double FreeDuration { get; set; }
 
     int Capacity { get; set; }
 
-    double PreOccupiedDay { get; set; }
+    double Price12AM { get; set; }
 
-    double PreOccupiedOther { get; set; }
+    double Price1AM { get; set; }
+
+    double Price2AM { get; set; }
+
+    double Price3AM { get; set; }
+
+    double Price4AM { get; set; }
+
+    double Price5AM { get; set; }
+
+    double Price6AM { get; set; }
 
     double Price7AM { get; set; }
 
@@ -55,6 +67,27 @@ namespace DaySim.Framework.DomainModels.Models {
 
     double Price11PM { get; set; }
 
-    double Price12AM { get; set; }
+    double MinimumTime { get; set; }
+
+    double MinimumPrice { get; set; }
+
+    double FullDayPrice { get; set; }
+
+    double MonthlyPassDayPrice { get; set; }
+
+    int ResidentPermitPassAvailable { get; set; }
+
+    double ResidentPermitPassDayPrice { get; set; }
+
+    int OpeningTime { get; set; }
+
+    int ClosingTime { get; set; }
+
+    int OccupancyMorning { get; set; }
+
+    int OccupancyAfternoon { get; set; }
+
+    int OccupancyNight { get; set; }
+
   }
 }

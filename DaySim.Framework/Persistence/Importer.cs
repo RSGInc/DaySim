@@ -54,6 +54,7 @@ namespace DaySim.Framework.Persistence {
 
             while ((line = reader.ReadLine()) != null) {
               string[] row = line.Split(new[] { _delimiter });
+ 
               TModel model = new TModel();
 
               SetModel(model, row);

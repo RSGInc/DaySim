@@ -993,7 +993,7 @@ namespace DaySim {
 
     private static Dictionary<int, Tuple<int, int, int>> ConvertDestinationParkingNodeFile() {
 
-      if (string.IsNullOrEmpty(Global.Configuration.RawDestinationParkingNodePath)) {
+      if (!Global.DestinationParkingNodeIsEnabled) {
         return null;
       }
 
@@ -1015,8 +1015,11 @@ namespace DaySim {
             while ((line = reader.ReadLine()) != null) {
               string[] row = line.Split(new[] { Global.Configuration.RawDestinationParkingNodeDelimiter }, StringSplitOptions.RemoveEmptyEntries);
               int originalId = int.Parse(row[0]);
-              int xcoord = Convert.ToInt32(Math.Round(double.Parse(row[2])));
-              int ycoord = Convert.ToInt32(Math.Round(double.Parse(row[3])));
+              newId = 1;
+              int xcoord = 0;// Convert.ToInt32(Math.Round(double.Parse(row[2])));
+              int ycoord = 0;//Convert.ToInt32(Math.Round(double.Parse(row[3])));
+
+
 
               destinationParkingNodes.Add(originalId, new Tuple<int, int, int>(newId, xcoord, ycoord));
 
@@ -1024,13 +1027,11 @@ namespace DaySim {
                 switch (i) {
                   case 0:
                     writer.Write(originalId);
-
-                    break;
-                  case 2: // xcoord
+                    writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
+                    writer.Write(newId);
+                    writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
                     writer.Write(xcoord);
-
-                    break;
-                  case 3: // ycoord
+                    writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
                     writer.Write(ycoord);
 
                     break;
@@ -1069,6 +1070,12 @@ namespace DaySim {
         switch (i) {
           case 0:
             writer.Write("ID");
+            writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
+            writer.Write("zone_id");
+            writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
+            writer.Write("xcoord");
+            writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
+            writer.Write("ycoord");
             writer.Write(Global.Configuration.InputDestinationParkingNodeDelimiter);
 
             break;
