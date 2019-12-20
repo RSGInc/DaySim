@@ -204,8 +204,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       if (Global.Configuration.ShouldSynchronizeRandomSeed && PersonDay != null) {
         PersonDay.ResetRandom(10 + Sequence - 1);
       }
-      
-      if (JointTourSequence > 0 ){
+      if (Global.Configuration.IsInEstimationMode) {
+        HovOccupancy = 2;
+      }
+
+      else if (JointTourSequence > 0 ){
         HovOccupancy = 0;
         foreach (IPersonDayWrapper pDay in PersonDay.HouseholdDay.PersonDays) {
           ITourWrapper tInJoint =

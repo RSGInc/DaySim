@@ -192,52 +192,55 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     }
 
     public override void SetTripValueOfTime() {
-      int purpose = Tour.DestinationPurpose;
-      double timeCoefficient = Tour.TimeCoefficient;
-      double costCoefficient = Tour.CostCoefficient;
 
-      double costFraction = 1.0;
-      if (Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger) {
-        costFraction = purpose == Global.Settings.Purposes.Work ?
-          (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Commute
-         : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Commute
-         : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Commute
-         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Commute)
-       : purpose == Global.Settings.Purposes.Business ?
-          (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Business
-         : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Business
-         : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Business
-         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Business)
-       :
-          (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Leisure
-         : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Leisure
-         : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Leisure
-         : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Leisure);
+      if (!Global.Configuration.IsInEstimationMode) {
+        int purpose = Tour.DestinationPurpose;
+        double timeCoefficient = Tour.TimeCoefficient;
+        double costCoefficient = Tour.CostCoefficient;
+
+        double costFraction = 1.0;
+        if (Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger) {
+          costFraction = purpose == Global.Settings.Purposes.Work ?
+            (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Commute
+           : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Commute
+           : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Commute
+           : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Commute)
+         : purpose == Global.Settings.Purposes.Business ?
+            (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Business
+           : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Business
+           : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Business
+           : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Business)
+         :
+            (AutoOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Leisure
+           : AutoOccupancy == 3 ? Global.Configuration.COMPASS_HOVCostShare3Occupants_Leisure
+           : AutoOccupancy == 4 ? Global.Configuration.COMPASS_HOVCostShare4Occupants_Leisure
+           : Global.Configuration.COMPASS_HOVCostShare5PlusOccupants_Leisure);
+        }
+
+        double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, DepartureTime, OriginParcel, DestinationParcel).Variable;
+
+        double baseDistance = (purpose == Global.Settings.Purposes.Work) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Work
+                             : (purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Education
+                             : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Business
+                             : (purpose == Global.Settings.Purposes.Shopping) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Shop
+                             : Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_HBOther;
+
+        double distanceMultiple =
+               Math.Min(Math.Max(mzDistance / baseDistance, Global.Configuration.COMPASS_CostCoefficientDistanceMultipleMinimum), Global.Configuration.COMPASS_CostCoefficientDistanceMultipleMaximum); // ranges for extreme values
+
+        double distanceElasticity = (purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Commute
+                                : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Business
+                                : Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Leisure;
+
+        double distanceFactor = Math.Pow(distanceMultiple, distanceElasticity);
+
+
+        double AVFactor = ((Global.Configuration.AV_IncludeAutoTypeChoice && Household.OwnsAutomatedVehicles > 0 && Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3)
+                               || (Global.Configuration.AV_PaidRideShareModeUsesAVs && Mode == Global.Settings.Modes.PaidRideShare))
+                               ? (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : 1.0;
+
+        ValueOfTime = (timeCoefficient * 60 * AVFactor) / (costCoefficient * costFraction * distanceFactor);
       }
-
-      double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, DepartureTime, OriginParcel, DestinationParcel).Variable;
-
-      double baseDistance = ( purpose == Global.Settings.Purposes.Work) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Work
-                           : (purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Education
-                           : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Business
-                           : (purpose == Global.Settings.Purposes.Shopping) ? Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_Shop
-                           : Global.Configuration.COMPASS_BaseCostCoefficientDistanceLevel_HBOther;
-
-      double distanceMultiple =
-             Math.Min(Math.Max(mzDistance / baseDistance, Global.Configuration.COMPASS_CostCoefficientDistanceMultipleMinimum), Global.Configuration.COMPASS_CostCoefficientDistanceMultipleMaximum); // ranges for extreme values
-
-      double distanceElasticity = (purpose == Global.Settings.Purposes.Work || purpose == Global.Settings.Purposes.School) ? Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Commute
-                              : (purpose == Global.Settings.Purposes.Business) ? Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Business
-                              : Global.Configuration.COMPASS_CostCoefficientDistanceElasticity_Leisure;
-
-      double distanceFactor = Math.Pow(distanceMultiple, distanceElasticity);
-    
-
-      double AVFactor = ((Global.Configuration.AV_IncludeAutoTypeChoice && Household.OwnsAutomatedVehicles > 0 && Mode >= Global.Settings.Modes.Sov && Mode <= Global.Settings.Modes.Hov3)
-                             || (Global.Configuration.AV_PaidRideShareModeUsesAVs && Mode == Global.Settings.Modes.PaidRideShare))
-                             ? (1.0 - Global.Configuration.AV_InVehicleTimeCoefficientDiscountFactor) : 1.0;
-
-      ValueOfTime = (timeCoefficient * 60 * AVFactor) / (costCoefficient * costFraction * distanceFactor);
     }
 
     public override void HUpdateTripValues() {
