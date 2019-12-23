@@ -478,11 +478,11 @@ namespace DaySim.ChoiceModels {
         //                zoneTotals.SumTotals(parcel);
       }
 
+     if (Global.ParkAndRideNodeIsEnabled) {
+        ParkAndRideNodeDao = new ParkAndRideNodeDao();
+      }
       if (Global.DestinationParkingNodeIsEnabled) {
         DestinationParkingNodeDao = new DestinationParkingNodeDao();
-      }
-      if (Global.ParkAndRideNodeIsEnabled) {
-        ParkAndRideNodeDao = new ParkAndRideNodeDao();
       }
     }
 

@@ -183,5 +183,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     public bool BikeOnBoardTerminalDistanceArrayPositionsSet { get; set; }
 
+    public int FirstPositionInDestinationParkingLocationDistanceArray { get; set; }
+
+    public int LastPositionInDestinationParkingLocationDistanceArray { get; set; }
+
+    public bool DestinationParkingLocationDistanceArrayPositionsSet { get; set; }
+
   }
 }

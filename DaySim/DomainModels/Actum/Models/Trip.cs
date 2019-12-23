@@ -63,7 +63,7 @@ namespace DaySim.DomainModels.Actum.Models {
     [ColumnName("egtermid")]
     public int EgressTerminalID { get; set; }
 
-    [ColumnName("egctermpcl")]
+    [ColumnName("egtermpcl")]
     public int EgressTerminalParcelID { get; set; }
 
     [ColumnName("egtermtaz")]

@@ -153,6 +153,11 @@ namespace DaySim.Framework.Roster {
                     : GetEntry(entry.BlendVariable, entry.Mode, entry.BlendPathType, votGroup, minute);
       SkimValue blendSkimValue = GetValue(origin.ZoneId, destination.ZoneId, blendEntry, minute);
 
+      if (Global.Configuration.MaximumBlendingDistance < Constants.EPSILON) {
+        skimValue.BlendVariable = blendSkimValue.Variable;  //JLB replaced above line 20130628
+        return skimValue;
+      }
+
       if (Global.Configuration.DestinationScale == Global.Settings.DestinationScales.Zone) {
         //skimValue.BlendVariable = blendSkimValue.BlendVariable;
         skimValue.BlendVariable = blendSkimValue.Variable;  //JLB replaced above line 20130628
@@ -178,7 +183,7 @@ namespace DaySim.Framework.Roster {
 
       double xyDistance;
 
-      if (networkFraction >= 1) {
+      if (networkFraction >= 1 - Constants.EPSILON) {
         // no blending
         xyDistance = networkDistance;
       } else if (circuityDistance > Constants.DEFAULT_VALUE + Constants.EPSILON) {

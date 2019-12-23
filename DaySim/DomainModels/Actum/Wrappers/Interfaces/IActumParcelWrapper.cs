@@ -89,5 +89,12 @@ namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
     int LastPositionInBikeOnBoardTerminalDistanceArray { get; set; }
 
     bool BikeOnBoardTerminalDistanceArrayPositionsSet { get; set; }
+
+    int FirstPositionInDestinationParkingLocationDistanceArray { get; set; }
+
+    int LastPositionInDestinationParkingLocationDistanceArray { get; set; }
+
+    bool DestinationParkingLocationDistanceArrayPositionsSet { get; set; }
+
   }
 }

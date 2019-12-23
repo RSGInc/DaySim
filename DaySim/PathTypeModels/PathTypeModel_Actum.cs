@@ -1082,7 +1082,9 @@ namespace DaySim.PathTypeModels {
       bool commuter = (_purpose == Global.Settings.Purposes.Work || _purpose == Global.Settings.Purposes.School || _purpose == Global.Settings.Purposes.Business);
 
       double zzDist = ImpedanceRoster.GetValue("distance", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
-
+      if (!useZones && zzDist<Constants.EPSILON) {
+       bool debugcheck = true;
+      }
       bool blendMZ = (!useZones && zzDist > Constants.EPSILON && zzDist < Global.Configuration.MaximumBlendingDistance);
 
       bool intraZonal = (_originZoneId == _destinationZoneId);

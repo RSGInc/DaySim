@@ -69,11 +69,11 @@ namespace DaySim {
 
       BeginBuildIndexes();
 
-      BeginLoadRoster();
-
       //moved this up to load data dictionaries sooner
       ChoiceModelFactory.Initialize(Global.Configuration.ChoiceModelRunner);
       //ChoiceModelFactory.LoadData();
+
+      BeginLoadRoster();
 
       BeginLoadNodeIndex();
       BeginLoadNodeDistances();
@@ -82,7 +82,9 @@ namespace DaySim {
       BeginLoadMicrozoneToBikeParkAndRideNodeDistances();
       BeginLoadMicrozoneToAutoKissAndRideTerminalDistances();
       BeginLoadMicrozoneToBikeOnBoardTerminalDistances();
+      BeginLoadMicrozoneToDestinationParkingLocationDistances();
       BeginLoadTransitPricesByFareZones();
+
 
       BeginCalculateAggregateLogsums(randomUtility);
       BeginOutputAggregateLogsums();
@@ -1309,6 +1311,77 @@ namespace DaySim {
       Global.ParcelToBikeParkAndRideNodeIds = parkAndRideNodeIds.ToArray();
       Global.ParcelToBikeParkAndRideNodeLength = lengths.ToArray();
       Global.ParcelToBikeParkAndRideNodeDistance = distances.ToArray();
+
+    }
+
+    private static void BeginLoadMicrozoneToDestinationParkingLocationDistances() {
+      if (!Global.Configuration.ShouldRunDestinationParkingLocationModel || Global.Configuration.DataType != "Actum") {
+        return;
+      }
+      if (string.IsNullOrEmpty(Global.Configuration.MicrozoneToDestinationParkingLocationsPath)) {
+        throw new ArgumentNullException("MicrozoneToDestinationParkingLocationsPath");
+      }
+
+      Timer timer = new Timer("MicrozoneToDestinationParkingLocation distances...");
+      string filename = Global.GetInputPath(Global.Configuration.MicrozoneToDestinationParkingLocationsPath);
+      using (StreamReader reader = File.OpenText(filename)) {
+        InitializeMicrozoneToDestinationParkingLocationDistances(reader);
+      }
+
+      timer.Stop();
+      overallDaySimTimer.Print();
+    }
+
+    public static void InitializeMicrozoneToDestinationParkingLocationDistances(TextReader reader) {
+
+      //var parcelIds = new List<int>();  
+      List<int> parkingNodeIds = new List<int>();
+      List<int> nodeMicrozoneIds = new List<int>();
+      List<float> lengths = new List<float>(); /* raw values */
+      List<float> distances = new List<float>(); /* lengths after division by Global.Settings.LengthUnitsPerFoot */
+
+      // read header
+      reader.ReadLine();
+
+      string line;
+      int lastParcelId = -1;
+      IActumParcelWrapper parcel = null;
+      int arrayIndex = 0;
+      //start arrays at index 0 with dummy values, since valid indices start with 1
+      //parcelIds.Add(0);
+      parkingNodeIds.Add(0);
+      nodeMicrozoneIds.Add(0);
+      distances.Add(0F);
+      lengths.Add(0F);
+
+      while ((line = reader.ReadLine()) != null) {
+        string[] tokens = line.Split(new[] { Global.Configuration.MicrozoneToDestinationParkingLocationsDelimiter });
+
+        arrayIndex++;
+        int parcelId = int.Parse(tokens[0]);
+        if (parcelId != lastParcelId) {
+          //Console.WriteLine(parcelId);
+          parcel = (IActumParcelWrapper)ChoiceModelFactory.Parcels[parcelId];
+          parcel.FirstPositionInDestinationParkingLocationDistanceArray = arrayIndex;
+          parcel.BikeParkAndRideNodeDistanceArrayPositionsSet = true;
+          lastParcelId = parcelId;
+        }
+        parcel.LastPositionInDestinationParkingLocationDistanceArray = arrayIndex;
+
+        int parkingNodeId = int.Parse(tokens[2]);
+        parkingNodeIds.Add(parkingNodeId);
+        int nodeMicrozoneId = int.Parse(tokens[3]);
+        nodeMicrozoneIds.Add(nodeMicrozoneId);
+        float length = float.Parse(tokens[1]);
+        lengths.Add(length);
+        float distance = (float)(length / Global.Settings.LengthUnitsPerFoot);
+        distances.Add(distance);
+      }
+
+      Global.ParcelToDestinationParkingLocationIds = parkingNodeIds.ToArray();
+      Global.ParcelToDestinationParkingLocationMicrozoneIds = nodeMicrozoneIds.ToArray();
+      Global.ParcelToDestinationParkingLocationLength = lengths.ToArray();
+      Global.ParcelToDestinationParkingLocationDistance = distances.ToArray();
 
     }
 
