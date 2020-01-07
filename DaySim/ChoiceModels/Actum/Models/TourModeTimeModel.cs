@@ -658,7 +658,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           modeComponent.AddUtilityTerm(603, parkwrkflag * workTourFlag);
           modeComponent.AddUtilityTerm(604, parkwrkmissflag * workTourFlag);
           modeComponent.AddUtilityTerm(607, hhsizeone);
-          
+
 
 
 
@@ -678,6 +678,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //GV coeff. numbering changed; 8. june 2016 - not significant
           //modeComponent.AddUtilityTerm(48, noCarsInHouseholdFlag);
           //modeComponent.AddUtilityTerm(49, carsLessThanDriversFlag);
+
         } else if (mode == Global.Settings.Modes.HovPassenger) {
           modeComponent.AddUtilityTerm(30, 1);
           modeComponent.AddUtilityTerm(31, intraZonal);
@@ -710,6 +711,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
           //GV: commented out 7. june 2016
           //modeComponent.AddUtilityTerm(37, noCarsInHouseholdFlag);
           //modeComponent.AddUtilityTerm(38, carsLessThanDriversFlag);
+
         } else if (mode == Global.Settings.Modes.PaidRideShare) {
           //modeComponent.AddUtilityTerm(150, 1.0);
 
@@ -966,7 +968,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                          : (mode == Global.Settings.Modes.Bike) ? 6
                          : (mode == Global.Settings.Modes.Sov) ? 5
                          : (mode == Global.Settings.Modes.HovDriver) ? 4
-                         : (mode == Global.Settings.Modes.HovPassenger) ? 4
+                         : (mode == Global.Settings.Modes.HovPassenger) ? 3
                          : (mode == Global.Settings.Modes.PaidRideShare) ? 2 : 1;
 //          alternative.AddUtilityTerm(gtVariable, modeTimes.GeneralizedTimeToDestination + modeTimes.GeneralizedTimeFromDestination);
 
@@ -981,25 +983,50 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
             alternative.AddUtilityTerm(203, educationTourFlag * gentime);
             alternative.AddUtilityTerm(203, otherTourFlag * gentime);
-           // alternative.AddUtilityTerm(214, Math.Log(Math.Max(gentime,1)));
-          }
+            // alternative.AddUtilityTerm(214, Math.Log(Math.Max(gentime,1)));
+            
+            // BP calibration constants 31122019(pt)   
+            alternative.AddUtilityTerm(931, workTourFlag);
+            alternative.AddUtilityTerm(932, educationTourFlag);
+            alternative.AddUtilityTerm(933, otherTourFlag);
+            alternative.AddUtilityTerm(934, shoppingTourFlag);
+            alternative.AddUtilityTerm(935, businessTourFlag);
 
-          else if (gtVariable == 2) {
+          } else if (gtVariable == 2) {
             alternative.AddUtilityTerm(200, 1.0);
             alternative.AddUtilityTerm(201, workTourFlag * gentime);
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
             alternative.AddUtilityTerm(203, educationTourFlag * gentime);
             alternative.AddUtilityTerm(203, otherTourFlag* gentime);
            // alternative.AddUtilityTerm(204, Math.Log(Math.Max(gentime, 1)));
-          }
-
-          else if (gtVariable == 4) {
+          } else if (gtVariable == 3) {
             alternative.AddUtilityTerm(201, workTourFlag * gentime);
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
             alternative.AddUtilityTerm(203, educationTourFlag * gentime);
             alternative.AddUtilityTerm(203, otherTourFlag * gentime);
             // alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
             //alternative.AddUtilityTerm(220, distance);
+
+            // BP calibration constants 31122019(hovp)   
+            alternative.AddUtilityTerm(926, workTourFlag);
+            alternative.AddUtilityTerm(927, educationTourFlag);
+            alternative.AddUtilityTerm(928, otherTourFlag);
+            alternative.AddUtilityTerm(929, shoppingTourFlag);
+            alternative.AddUtilityTerm(930, businessTourFlag);
+          } else if (gtVariable == 4) {
+            alternative.AddUtilityTerm(201, workTourFlag * gentime);
+            alternative.AddUtilityTerm(201, businessTourFlag * gentime);
+            alternative.AddUtilityTerm(203, educationTourFlag * gentime);
+            alternative.AddUtilityTerm(203, otherTourFlag * gentime);
+            // alternative.AddUtilityTerm(234, Math.Log(Math.Max(gentime, 1)));
+            //alternative.AddUtilityTerm(220, distance);
+            
+            // BP calibration constants 31122019(hovd)   
+            alternative.AddUtilityTerm(921, workTourFlag);
+            alternative.AddUtilityTerm(922, educationTourFlag);
+            alternative.AddUtilityTerm(923, otherTourFlag);
+            alternative.AddUtilityTerm(924, shoppingTourFlag);
+            alternative.AddUtilityTerm(925, businessTourFlag);
           }
 
           else if (gtVariable == 5) {
@@ -1007,23 +1034,43 @@ namespace DaySim.ChoiceModels.Actum.Models {
             alternative.AddUtilityTerm(201, businessTourFlag * gentime);
             alternative.AddUtilityTerm(203, educationTourFlag * gentime);
             alternative.AddUtilityTerm(203, otherTourFlag * gentime);
-           // alternative.AddUtilityTerm(244, Math.Log(Math.Max(gentime, 1)));
-          }
+            // alternative.AddUtilityTerm(244, Math.Log(Math.Max(gentime, 1)));
+            
+            // BP calibration constants 31122019(sov)   
+            alternative.AddUtilityTerm(936, workTourFlag);
+            alternative.AddUtilityTerm(937, educationTourFlag);
+            alternative.AddUtilityTerm(938, otherTourFlag);
+            alternative.AddUtilityTerm(939, shoppingTourFlag);
+            alternative.AddUtilityTerm(940, businessTourFlag);
 
-          else if (gtVariable == 6) {
+          } else if (gtVariable == 6) {
             alternative.AddUtilityTerm(205, weightfac * workTourFlag * gentime);
             alternative.AddUtilityTerm(206, weightfac * businessTourFlag * gentime);
             alternative.AddUtilityTerm(207, weightfac * educationTourFlag * gentime);
             alternative.AddUtilityTerm(208, weightfac * otherTourFlag * gentime);
-           // alternative.AddUtilityTerm(254, Math.Log(Math.Max(gentime, 1)));
-          }
+            // alternative.AddUtilityTerm(254, Math.Log(Math.Max(gentime, 1)));
+            
+            // BP calibration constants 31122019(bike)   
+            alternative.AddUtilityTerm(916, workTourFlag);
+            alternative.AddUtilityTerm(917, educationTourFlag);
+            alternative.AddUtilityTerm(918, otherTourFlag);
+            alternative.AddUtilityTerm(919, shoppingTourFlag);
+            alternative.AddUtilityTerm(920, businessTourFlag);
 
-          else if (gtVariable == 7) {
+          } else if (gtVariable == 7) {
             alternative.AddUtilityTerm(209, weightfac * workTourFlag * gentime);
             alternative.AddUtilityTerm(210, weightfac * businessTourFlag * gentime);
             alternative.AddUtilityTerm(211, weightfac * educationTourFlag * gentime);
             alternative.AddUtilityTerm(212, weightfac * otherTourFlag * gentime);
-           // alternative.AddUtilityTerm(264, Math.Log(Math.Max(gentime, 1)));
+            // alternative.AddUtilityTerm(264, Math.Log(Math.Max(gentime, 1)));
+            
+            // BP calibration constants 31122019(walk)   
+            alternative.AddUtilityTerm(911, workTourFlag);
+            alternative.AddUtilityTerm(912, educationTourFlag);
+            alternative.AddUtilityTerm(913, otherTourFlag);
+            alternative.AddUtilityTerm(914, shoppingTourFlag);
+            alternative.AddUtilityTerm(915, businessTourFlag);
+
           }
 
           if (mode == Global.Settings.Modes.WalkRideWalk || mode == Global.Settings.Modes.WalkRideBike || mode == Global.Settings.Modes.WalkRideShare) {
