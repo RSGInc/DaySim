@@ -67,7 +67,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       } else if (constrainedParcel != null) {
         tour.DestinationParcel = constrainedParcel;
         tour.DestinationParcelId = constrainedParcel.Id;
-        tour.DestinationZoneKey = constrainedParcel.ZoneId;
+        tour.DestinationZoneKey = ChoiceModelFactory.ZoneKeys[constrainedParcel.ZoneId];
         return;
       }
 

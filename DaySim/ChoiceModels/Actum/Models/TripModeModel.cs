@@ -105,7 +105,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int departureTime = trip.IsHalfTourFromOrigin ? trip.LatestDepartureTime : trip.EarliestDepartureTime;
 
-      if (departureTime < 1) {
+      if (departureTime <1 || departureTime > Global.Settings.Times.MinutesInADay) {
         Global.PrintFile.WriteLine("From origin / latest / earliest  {0} {1} {2}", trip.IsHalfTourFromOrigin,
                                             trip.LatestDepartureTime, trip.EarliestDepartureTime);
         if (!Global.Configuration.IsInEstimationMode) {
