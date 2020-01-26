@@ -351,32 +351,32 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
         double parkPrice = 0.0;
         if (node.ParkingType != 2) {  //skip price for free parking
-          double paidArriveTime = parkArriveTime - 60.0 * node.FreeDuration;
+          double paidArriveTime = Math.Min(parkArriveTime + 60.0 * node.FreeDuration, Global.Settings.Times.MinutesInADay) ;
           double hourPrice = 0
-           + (!(paidArriveTime < Global.Settings.Times.ThreeAM && parkDepartTime >= Global.Settings.Times.FourAM)).ToFlag() * node.Price3AM
-           + (!(paidArriveTime < Global.Settings.Times.FourAM && parkDepartTime >= Global.Settings.Times.FiveAM)).ToFlag() * node.Price4AM
-           + (!(paidArriveTime < Global.Settings.Times.FiveAM && parkDepartTime >= Global.Settings.Times.SixAM)).ToFlag() * node.Price5AM
-           + (!(paidArriveTime < Global.Settings.Times.SixAM && parkDepartTime >= Global.Settings.Times.SevenAM)).ToFlag() * node.Price6AM
-           + (!(paidArriveTime < Global.Settings.Times.SevenAM && parkDepartTime >= Global.Settings.Times.EightAM)).ToFlag() * node.Price7AM
-           + (!(paidArriveTime < Global.Settings.Times.EightAM && parkDepartTime >= Global.Settings.Times.NineAM)).ToFlag() * node.Price8AM
-           + (!(paidArriveTime < Global.Settings.Times.NineAM && parkDepartTime >= Global.Settings.Times.TenAM)).ToFlag() * node.Price9AM
-           + (!(paidArriveTime < Global.Settings.Times.TenAM && parkDepartTime >= Global.Settings.Times.ElevenAM)).ToFlag() * node.Price10AM
-           + (!(paidArriveTime < Global.Settings.Times.ElevenAM && parkDepartTime >= Global.Settings.Times.Noon)).ToFlag() * node.Price11AM
-           + (!(paidArriveTime < Global.Settings.Times.Noon && parkDepartTime >= Global.Settings.Times.OnePM)).ToFlag() * node.Price12PM
-           + (!(paidArriveTime < Global.Settings.Times.OnePM && parkDepartTime >= Global.Settings.Times.TwoPM)).ToFlag() * node.Price1PM
-           + (!(paidArriveTime < Global.Settings.Times.TwoPM && parkDepartTime >= Global.Settings.Times.ThreePM)).ToFlag() * node.Price2PM
-           + (!(paidArriveTime < Global.Settings.Times.ThreePM && parkDepartTime >= Global.Settings.Times.FourPM)).ToFlag() * node.Price3PM
-           + (!(paidArriveTime < Global.Settings.Times.FourPM && parkDepartTime >= Global.Settings.Times.FivePM)).ToFlag() * node.Price4PM
-           + (!(paidArriveTime < Global.Settings.Times.FivePM && parkDepartTime >= Global.Settings.Times.SixPM)).ToFlag() * node.Price5PM
-           + (!(paidArriveTime < Global.Settings.Times.SixPM && parkDepartTime >= Global.Settings.Times.SevenPM)).ToFlag() * node.Price6PM
-           + (!(paidArriveTime < Global.Settings.Times.SevenPM && parkDepartTime >= Global.Settings.Times.EightPM)).ToFlag() * node.Price7PM
-           + (!(paidArriveTime < Global.Settings.Times.EightPM && parkDepartTime >= Global.Settings.Times.NinePM)).ToFlag() * node.Price8PM
-           + (!(paidArriveTime < Global.Settings.Times.NinePM && parkDepartTime >= Global.Settings.Times.TenPM)).ToFlag() * node.Price9PM
-           + (!(paidArriveTime < Global.Settings.Times.TenPM && parkDepartTime >= Global.Settings.Times.ElevenPM)).ToFlag() * node.Price10PM
-           + (!(paidArriveTime < Global.Settings.Times.ElevenPM && parkDepartTime >= Global.Settings.Times.Midnight)).ToFlag() * node.Price11PM
-           + (!(paidArriveTime < Global.Settings.Times.Midnight && parkDepartTime >= Global.Settings.Times.OneAM)).ToFlag() * node.Price12AM
-           + (!(paidArriveTime < Global.Settings.Times.OneAM && parkDepartTime >= Global.Settings.Times.TwoAM)).ToFlag() * node.Price1AM
-           + (!(paidArriveTime < Global.Settings.Times.TwoAM && parkDepartTime >= Global.Settings.Times.MinutesInADay)).ToFlag() * node.Price2AM;
+           + (!(parkDepartTime < Global.Settings.Times.ThreeAM || paidArriveTime >= Global.Settings.Times.FourAM)).ToFlag() * node.Price3AM
+           + (!(parkDepartTime < Global.Settings.Times.FourAM || paidArriveTime >= Global.Settings.Times.FiveAM)).ToFlag() * node.Price4AM
+           + (!(parkDepartTime < Global.Settings.Times.FiveAM || paidArriveTime >= Global.Settings.Times.SixAM)).ToFlag() * node.Price5AM
+           + (!(parkDepartTime < Global.Settings.Times.SixAM || paidArriveTime >= Global.Settings.Times.SevenAM)).ToFlag() * node.Price6AM
+           + (!(parkDepartTime < Global.Settings.Times.SevenAM || paidArriveTime >= Global.Settings.Times.EightAM)).ToFlag() * node.Price7AM
+           + (!(parkDepartTime < Global.Settings.Times.EightAM || paidArriveTime >= Global.Settings.Times.NineAM)).ToFlag() * node.Price8AM
+           + (!(parkDepartTime < Global.Settings.Times.NineAM || paidArriveTime >= Global.Settings.Times.TenAM)).ToFlag() * node.Price9AM
+           + (!(parkDepartTime < Global.Settings.Times.TenAM || paidArriveTime >= Global.Settings.Times.ElevenAM)).ToFlag() * node.Price10AM
+           + (!(parkDepartTime < Global.Settings.Times.ElevenAM || paidArriveTime >= Global.Settings.Times.Noon)).ToFlag() * node.Price11AM
+           + (!(parkDepartTime < Global.Settings.Times.Noon || paidArriveTime >= Global.Settings.Times.OnePM)).ToFlag() * node.Price12PM
+           + (!(parkDepartTime < Global.Settings.Times.OnePM || paidArriveTime >= Global.Settings.Times.TwoPM)).ToFlag() * node.Price1PM
+           + (!(parkDepartTime < Global.Settings.Times.TwoPM || paidArriveTime >= Global.Settings.Times.ThreePM)).ToFlag() * node.Price2PM
+           + (!(parkDepartTime < Global.Settings.Times.ThreePM || paidArriveTime >= Global.Settings.Times.FourPM)).ToFlag() * node.Price3PM
+           + (!(parkDepartTime < Global.Settings.Times.FourPM || paidArriveTime >= Global.Settings.Times.FivePM)).ToFlag() * node.Price4PM
+           + (!(parkDepartTime < Global.Settings.Times.FivePM || paidArriveTime >= Global.Settings.Times.SixPM)).ToFlag() * node.Price5PM
+           + (!(parkDepartTime < Global.Settings.Times.SixPM || paidArriveTime >= Global.Settings.Times.SevenPM)).ToFlag() * node.Price6PM
+           + (!(parkDepartTime < Global.Settings.Times.SevenPM || paidArriveTime >= Global.Settings.Times.EightPM)).ToFlag() * node.Price7PM
+           + (!(parkDepartTime < Global.Settings.Times.EightPM || paidArriveTime >= Global.Settings.Times.NinePM)).ToFlag() * node.Price8PM
+           + (!(parkDepartTime < Global.Settings.Times.NinePM || paidArriveTime >= Global.Settings.Times.TenPM)).ToFlag() * node.Price9PM
+           + (!(parkDepartTime < Global.Settings.Times.TenPM || paidArriveTime >= Global.Settings.Times.ElevenPM)).ToFlag() * node.Price10PM
+           + (!(parkDepartTime < Global.Settings.Times.ElevenPM || paidArriveTime >= Global.Settings.Times.Midnight)).ToFlag() * node.Price11PM
+           + (!(parkDepartTime < Global.Settings.Times.Midnight || paidArriveTime >= Global.Settings.Times.OneAM)).ToFlag() * node.Price12AM
+           + (!(parkDepartTime < Global.Settings.Times.OneAM || paidArriveTime >= Global.Settings.Times.TwoAM)).ToFlag() * node.Price1AM
+           + (!(parkDepartTime < Global.Settings.Times.TwoAM || paidArriveTime >= Global.Settings.Times.MinutesInADay)).ToFlag() * node.Price2AM;
 
           parkPrice = Math.Min(Math.Max(hourPrice, node.MinimumPrice), node.FullDayPrice);
 
@@ -395,7 +395,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         double searchTime = (Global.Configuration.ShouldUseDestinationParkingShadowPricing && !Global.Configuration.IsInEstimationMode) ? node.ShadowPrice[parkArriveTime] : 0.0;
 
         double timeCost = parkingTypeConstant + searchTime
-                       + (parkPrice / Math.Max(ValueOfTime,5)) * 60.0 
+                       + (parkPrice / Math.Min(Math.Max(ValueOfTime,5),500)) * 60.0 
                        + driveGenTime * Global.Configuration.COMPASS_DestinationParkingDriveAccessTimeCoefficient
                        + walkTime * Global.Configuration.COMPASS_DestinationParkingWalkEgressTimeCoefficient
                        + randomNormalTerm * Global.Configuration.COMPASS_DestinationParkingRandomTermCoefficient;
