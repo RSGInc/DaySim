@@ -23,7 +23,7 @@ namespace DaySim.Framework.Core {
     private const string ARCHIVE_SHADOW_PRICES_FILENAME = "archive_" + SHADOW_PRICES_FILENAME;
     private const string PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "park_and_ride_" + SHADOW_PRICES_FILENAME;
     private const string ARCHIVE_PARK_AND_RIDE_SHADOW_PRICES_FILENAME = "archive_" + PARK_AND_RIDE_SHADOW_PRICES_FILENAME;
-    private const string DESTINATION_PARKING_SHADOW_PRICES_FILENAME = "destinatiion_parking_" + SHADOW_PRICES_FILENAME;
+    private const string DESTINATION_PARKING_SHADOW_PRICES_FILENAME = "destination_parking_" + SHADOW_PRICES_FILENAME;
     private const string ARCHIVE_DESTINATION_PARKING_SHADOW_PRICES_FILENAME = "archive_" + DESTINATION_PARKING_SHADOW_PRICES_FILENAME;
 
     public static SimpleInjector.Container ContainerDaySim { get; } = new SimpleInjector.Container();

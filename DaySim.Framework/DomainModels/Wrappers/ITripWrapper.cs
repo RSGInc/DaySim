@@ -131,6 +131,8 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     void UpdateTripValues();
 
+    void RunDestinationParkingLocationModel();
+
     void HUpdateTripValues();
 
     void Invert(int sequence);
@@ -150,7 +152,7 @@ namespace DaySim.Framework.DomainModels.Wrappers {
     #region init/utility/export methods
 
     void Export();
-
+ 
     #endregion
   }
 }

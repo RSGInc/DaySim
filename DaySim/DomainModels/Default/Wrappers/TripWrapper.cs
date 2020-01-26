@@ -637,13 +637,13 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
     }
 
-    public void SetDestinationParkingStay(int min1, int min2) {
+    public virtual void SetDestinationParkingStay(int min1, int min2) {
       if (!Global.DestinationParkingNodeIsEnabled || !Global.Configuration.ShouldUseDestinationParkingShadowPricing || Global.Configuration.IsInEstimationMode) {
         return;
       }
 
-      int arrivalTime = Math.Min(min1, min2);
-      int departureTime = Math.Max(min1, min2);
+      int arrivalIndex = Math.Min(Math.Max(0,Math.Min(min1, min2)-1),Global.Settings.Times.MinutesInADay-1);
+      int departureIndex = Math.Min(Math.Max(0, Math.Max(min1, min2) - 1), Global.Settings.Times.MinutesInADay - 1);
       int mode = Mode;
 
       double[] parkingLoad =
@@ -652,9 +652,12 @@ namespace DaySim.DomainModels.Default.Wrappers {
                     .Get(DestinationParkingNodeId)
                     .ParkingLoad;
 
-      for (int minute = arrivalTime; minute < departureTime; minute++) {
+      for (int minute = arrivalIndex; minute < departureIndex; minute++) {
         parkingLoad[minute] += Household.ExpansionFactor / (mode == Global.Settings.Modes.Hov3 ? 3.3 : mode == Global.Settings.Modes.Hov2 ? 2 : 1);
       }
+    }
+
+    public virtual void RunDestinationParkingLocationModel() {
     }
 
     public virtual void HUpdateTripValues() {

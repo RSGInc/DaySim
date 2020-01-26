@@ -14,6 +14,8 @@ using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 using DaySim.PathTypeModels;
 using DaySim.Framework.Roster;
+using DaySim.ChoiceModels;
+using DaySim.Framework.DomainModels.Wrappers;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
@@ -241,6 +243,188 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
         ValueOfTime = (timeCoefficient * 60 * AVFactor) / (costCoefficient * costFraction * distanceFactor);
       }
+    }
+
+    public override void SetDestinationParkingStay(int min1, int min2) {
+      if (!Global.DestinationParkingNodeIsEnabled || !Global.Configuration.ShouldUseDestinationParkingShadowPricing || Global.Configuration.IsInEstimationMode) {
+        return;
+      }
+
+      int arrivalIndex = Math.Min(Math.Max(0, Math.Min(min1, min2) - 1), Global.Settings.Times.MinutesInADay - 1);
+      int departureIndex = Math.Min(Math.Max(0, Math.Max(min1, min2) - 1), Global.Settings.Times.MinutesInADay - 1);
+
+      double[] parkingLoad =
+                ChoiceModelFactory
+                    .DestinationParkingNodeDao
+                    .Get(EgressParkingNodeID)
+                    .ParkingLoad;
+
+      for (int minute = arrivalIndex; minute < departureIndex; minute++) {
+        parkingLoad[minute] += Household.ExpansionFactor;
+      }
+    }
+
+
+
+    public override void RunDestinationParkingLocationModel() {
+      PersonDay.ResetRandom(40 * (2 * Tour.Sequence - 1 + Direction - 1) + 60 + Sequence - 1);
+
+      int destPurpose = (IsHalfTourFromOrigin) ? OriginPurpose : DestinationPurpose;
+      IActumParcelWrapper destParcel = (IsHalfTourFromOrigin) ? (IActumParcelWrapper)OriginParcel : (IActumParcelWrapper)DestinationParcel;
+      bool destIsUsualWorkplace = ((destPurpose == Global.Settings.Purposes.Work || destPurpose == Global.Settings.Purposes.Business) && Tour.Person.UsualWorkParcel != null && destParcel == Tour.Person.UsualWorkParcel);
+
+      if ((Mode != Global.Settings.Modes.Sov && Mode != Global.Settings.Modes.HovDriver)
+        || destPurpose == Global.Settings.Purposes.NoneOrHome
+        || (destIsUsualWorkplace && Tour.Person.PaidParkingAtWorkplace == 0)
+        || destParcel.ParkingDataAvailable == 0) {
+        return;
+      }
+      IActumHouseholdWrapper household = (IActumHouseholdWrapper)Household;
+      IActumParcelWrapper origParcel = (IsHalfTourFromOrigin) ? (IActumParcelWrapper)DestinationParcel : (IActumParcelWrapper)OriginParcel;
+      int destArriveTime = (IsHalfTourFromOrigin) ? DepartureTime : ArrivalTime;
+      int destDepartTime = ActivityEndTime;
+      bool span3AM = (destDepartTime < destArriveTime);
+      int minParkDuration = Math.Max(10, destDepartTime - destArriveTime + span3AM.ToFlag() * Global.Settings.Times.MinutesInADay);
+
+      /*
+      List<DestinationParkingNodeWrapper> destinationParkingNodes = new List<DestinationParkingNodeWrapper>();
+      foreach (DestinationParkingNodeWrapper node in ChoiceModelFactory.DestinationParkingNodeDao.Nodes) {
+        if (node.Capacity > Constants.EPSILON   // has to have positive capacity
+             && node.ParkingType != 3 && node.ParkingType != 6  // resident-only and bike spaces not considered
+             && !(node.ParkingType == 4 && !destIsUsualWorkplace)  // employee-only spaces only if it is the usual workplace microzone
+             && !(node.ParkingType == 5 && !(household.AutoType > 1)) // eclectric veh-only spaces only if the HH has electric vehicles
+             && (node.MaxDuration == 24 || (node.MaxDuration * 60.0) >= minParkDuration)  // check minimum duration
+             && (node.OpeningTime ==  0 || (node.OpeningTime * 60.0) <= (destArriveTime + 180))   // check opening time
+             && (node.ClosingTime == 24 || (node.ClosingTime * 60.0) >= (destDepartTime + 180))   // check closing time
+          ) {
+          destinationParkingNodes.Add(node);
+        }
+      }
+      */
+
+      int firstIndex = destParcel.FirstPositionInDestinationParkingLocationDistanceArray;
+      int lastIndex = destParcel.LastPositionInDestinationParkingLocationDistanceArray;
+      if (firstIndex <= 0 || lastIndex <= 0) {
+        return;
+      }
+
+      double maxUtil = -9999999;
+      int bestLocationId = -1;
+      int bestLocationParcelId = -1;
+      int bestLocationZoneId = -1;
+      double bestLocationWalkDistance = -1;
+      double bestLocationWalkTime = -1;
+      double bestLocationParkPrice = -1;
+      int parkArriveTime = 0;
+      int parkDepartTime = 0;
+
+      for (int index = firstIndex; index <= lastIndex; index++) {
+
+        int parkLocationId = Global.ParcelToDestinationParkingLocationIds[index];
+        IDestinationParkingNodeWrapper node = ChoiceModelFactory.DestinationParkingNodeDao.Get(parkLocationId);
+
+        if (node == null) {
+          continue;
+        }
+        if (node.Capacity < Constants.EPSILON   // has to have positive capacity
+             || (node.ParkingType == 3 || node.ParkingType == 6)  // resident-only and bike spaces not considered
+             || (node.ParkingType == 4 && !destIsUsualWorkplace)  // employee-only spaces only if it is the usual workplace microzone
+             || (node.ParkingType == 5 && (household.AutoType < 2)) // eclectric veh-only spaces only if the HH has electric vehicles
+             || (node.MaxDuration != 24 && (node.MaxDuration * 60.0) < minParkDuration)  // check minimum duration
+             || (node.OpeningTime != 0 && (node.OpeningTime * 60.0) > (destArriveTime + 180))   // check opening time
+             || (node.ClosingTime != 24 && (node.ClosingTime * 60.0) < (destDepartTime + 180))) {  // check closing time 
+          continue;
+        }
+
+        int parkParcelId = Global.ParcelToDestinationParkingLocationMicrozoneIds[index];
+        ParcelWrapper parkParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[parkParcelId];
+
+        SkimValue autoSkim = ImpedanceRoster.GetValue("lstime", Mode, Global.Settings.PathTypes.FullNetwork, 60, ArrivalTime, origParcel, parkParcel, Constants.DEFAULT_VALUE);
+        double driveGenTime = autoSkim.Variable;
+
+        double walkDistance = Global.ParcelToDestinationParkingLocationLength[index] / 1000.0; //convert to km
+        double walkTime = walkDistance * Global.Configuration.PathImpedance_WalkMinutesPerDistanceUnit;
+        parkArriveTime = Math.Max(1, destArriveTime - (int)walkTime);
+        parkDepartTime = Math.Max(1, destDepartTime + (int)walkTime);
+
+        // set utility
+
+        double parkPrice = 0.0;
+        if (node.ParkingType != 2) {  //skip price for free parking
+          double paidArriveTime = parkArriveTime - 60.0 * node.FreeDuration;
+          double hourPrice = 0
+           + (!(paidArriveTime < Global.Settings.Times.ThreeAM && parkDepartTime >= Global.Settings.Times.FourAM)).ToFlag() * node.Price3AM
+           + (!(paidArriveTime < Global.Settings.Times.FourAM && parkDepartTime >= Global.Settings.Times.FiveAM)).ToFlag() * node.Price4AM
+           + (!(paidArriveTime < Global.Settings.Times.FiveAM && parkDepartTime >= Global.Settings.Times.SixAM)).ToFlag() * node.Price5AM
+           + (!(paidArriveTime < Global.Settings.Times.SixAM && parkDepartTime >= Global.Settings.Times.SevenAM)).ToFlag() * node.Price6AM
+           + (!(paidArriveTime < Global.Settings.Times.SevenAM && parkDepartTime >= Global.Settings.Times.EightAM)).ToFlag() * node.Price7AM
+           + (!(paidArriveTime < Global.Settings.Times.EightAM && parkDepartTime >= Global.Settings.Times.NineAM)).ToFlag() * node.Price8AM
+           + (!(paidArriveTime < Global.Settings.Times.NineAM && parkDepartTime >= Global.Settings.Times.TenAM)).ToFlag() * node.Price9AM
+           + (!(paidArriveTime < Global.Settings.Times.TenAM && parkDepartTime >= Global.Settings.Times.ElevenAM)).ToFlag() * node.Price10AM
+           + (!(paidArriveTime < Global.Settings.Times.ElevenAM && parkDepartTime >= Global.Settings.Times.Noon)).ToFlag() * node.Price11AM
+           + (!(paidArriveTime < Global.Settings.Times.Noon && parkDepartTime >= Global.Settings.Times.OnePM)).ToFlag() * node.Price12PM
+           + (!(paidArriveTime < Global.Settings.Times.OnePM && parkDepartTime >= Global.Settings.Times.TwoPM)).ToFlag() * node.Price1PM
+           + (!(paidArriveTime < Global.Settings.Times.TwoPM && parkDepartTime >= Global.Settings.Times.ThreePM)).ToFlag() * node.Price2PM
+           + (!(paidArriveTime < Global.Settings.Times.ThreePM && parkDepartTime >= Global.Settings.Times.FourPM)).ToFlag() * node.Price3PM
+           + (!(paidArriveTime < Global.Settings.Times.FourPM && parkDepartTime >= Global.Settings.Times.FivePM)).ToFlag() * node.Price4PM
+           + (!(paidArriveTime < Global.Settings.Times.FivePM && parkDepartTime >= Global.Settings.Times.SixPM)).ToFlag() * node.Price5PM
+           + (!(paidArriveTime < Global.Settings.Times.SixPM && parkDepartTime >= Global.Settings.Times.SevenPM)).ToFlag() * node.Price6PM
+           + (!(paidArriveTime < Global.Settings.Times.SevenPM && parkDepartTime >= Global.Settings.Times.EightPM)).ToFlag() * node.Price7PM
+           + (!(paidArriveTime < Global.Settings.Times.EightPM && parkDepartTime >= Global.Settings.Times.NinePM)).ToFlag() * node.Price8PM
+           + (!(paidArriveTime < Global.Settings.Times.NinePM && parkDepartTime >= Global.Settings.Times.TenPM)).ToFlag() * node.Price9PM
+           + (!(paidArriveTime < Global.Settings.Times.TenPM && parkDepartTime >= Global.Settings.Times.ElevenPM)).ToFlag() * node.Price10PM
+           + (!(paidArriveTime < Global.Settings.Times.ElevenPM && parkDepartTime >= Global.Settings.Times.Midnight)).ToFlag() * node.Price11PM
+           + (!(paidArriveTime < Global.Settings.Times.Midnight && parkDepartTime >= Global.Settings.Times.OneAM)).ToFlag() * node.Price12AM
+           + (!(paidArriveTime < Global.Settings.Times.OneAM && parkDepartTime >= Global.Settings.Times.TwoAM)).ToFlag() * node.Price1AM
+           + (!(paidArriveTime < Global.Settings.Times.TwoAM && parkDepartTime >= Global.Settings.Times.MinutesInADay)).ToFlag() * node.Price2AM;
+
+          parkPrice = Math.Min(Math.Max(hourPrice, node.MinimumPrice), node.FullDayPrice);
+
+          if (node.MonthlyPassDayPrice > 0 && (destPurpose == Global.Settings.Purposes.Work || destPurpose == Global.Settings.Purposes.School)
+             && node.MonthlyPassDayPrice < parkPrice) {
+            parkPrice = node.MonthlyPassDayPrice;
+          }
+        }
+        double randomNormalTerm = Household.RandomUtility.Normal(0, 1);
+
+        double parkingTypeConstant = (node.LocationType == 2) ? Global.Configuration.COMPASS_DestinationParkingOffStreetGarageTypeConstant
+                                   : (node.LocationType == 3) ? Global.Configuration.COMPASS_DestinationParkingOffStreetLotTypeConstant
+                                   : (node.LocationType == 4) ? Global.Configuration.COMPASS_DestinationParkingOffStreetPrivateTypeConstant
+                                   : 0.0;
+
+        double searchTime = (Global.Configuration.ShouldUseDestinationParkingShadowPricing && !Global.Configuration.IsInEstimationMode) ? node.ShadowPrice[parkArriveTime] : 0.0;
+
+        double timeCost = parkingTypeConstant + searchTime
+                       + (parkPrice / Math.Max(ValueOfTime,5)) * 60.0 
+                       + driveGenTime * Global.Configuration.COMPASS_DestinationParkingDriveAccessTimeCoefficient
+                       + walkTime * Global.Configuration.COMPASS_DestinationParkingWalkEgressTimeCoefficient
+                       + randomNormalTerm * Global.Configuration.COMPASS_DestinationParkingRandomTermCoefficient;
+
+
+
+        double utility = Math.Log(node.Capacity) * Global.Configuration.COMPASS_DestinationParkingLogCapacityCoefficient
+                      + timeCost * Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute;
+
+        if (utility > maxUtil) {
+          maxUtil = utility;
+          bestLocationId = node.Id;
+          bestLocationParcelId = parkParcelId;
+          bestLocationZoneId = (int) parkParcel.ZoneKey;
+          bestLocationWalkDistance = walkDistance;
+          bestLocationWalkTime = walkTime;
+          bestLocationParkPrice = parkPrice;
+        }
+      }
+      if (bestLocationId > 0) {
+        EgressParkingNodeID = bestLocationId;
+        EgressTerminalParcelID = bestLocationParcelId;
+        EgressTerminalZoneID = bestLocationZoneId;
+        EgressMode = Global.Settings.Modes.Walk;
+        EgressDistance = bestLocationWalkDistance;
+        EgressTime = bestLocationWalkTime;
+        EgressCost = bestLocationParkPrice;
+        SetDestinationParkingStay(parkArriveTime, parkDepartTime);
+      };
     }
 
     public override void HUpdateTripValues() {

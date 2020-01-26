@@ -1983,7 +1983,15 @@ namespace DaySim.Framework.Core {
     public double DestinationParkingShadowPriceMaximumPenalty { get; set; }
 
     [XmlAttribute]
+    public double DestinationParkingShadowPriceAlpha { get; set; }
+
+    [XmlAttribute]
+    public double DestinationParkingShadowPriceBeta { get; set; }
+    
+    [XmlAttribute]
     public int DestinationParkingShadowPriceTimeSpread { get; set; }
+
+
 
     [XmlAttribute]
     public bool BCA_WriteAggregateLogsumsToPersonRecords { get; set; }

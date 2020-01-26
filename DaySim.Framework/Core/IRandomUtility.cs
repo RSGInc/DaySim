@@ -6,5 +6,6 @@
     void ResetUniform01(int randomSeed = 1);
     void ResetHouseholdSynchronization(int randomSeed = 1);
     double LogNormal(double mean, double stdDev);
+    double Normal(double mean, double sdtDev);
   }
 }

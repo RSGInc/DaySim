@@ -64,7 +64,7 @@ namespace DaySim.Framework.Core {
       _random = new Random(randomSeed);
     }
 
-    private double Normal(double mean, double stdDev) {
+    public double Normal(double mean, double stdDev) {
       // Adapted from the following Fortran 77 code
       // ALGORITHM 712, COLLECTED ALGORITHMS FROM ACM.
       // THIS WORK PUBLISHED IN TRANSACTIONS ON MATHEMATICAL SOFTWARE,

@@ -46,11 +46,16 @@ namespace DaySim.DestinationParkingShadowPricing {
 
     private static void DetermineShadowPrice(double previousShadowPrice, double maxLoad, int capacity, out double shadowPrice) {
       //            shadowPrice = Math.Min(0, previousShadowPrice + Math.Log(Math.Max(capacity, .01) / Math.Max(prediction, .01)));
-      shadowPrice = (capacity > 0 && maxLoad > 0) ?
+      //shadowPrice = (capacity > 0 && maxLoad > 0) ?
+      //    (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice
+      //        + Global.Configuration.DestinationParkingShadowPriceStepSize * Global.Configuration.DestinationParkingShadowPriceMaximumPenalty * alglib.poissondistr.poissoncdistribution(capacity, maxLoad)
+      //        : (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice;
+      shadowPrice = (capacity > 0 ) ?
           (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice
-              + Global.Configuration.DestinationParkingShadowPriceStepSize * Global.Configuration.DestinationParkingShadowPriceMaximumPenalty * alglib.poissondistr.poissoncdistribution(capacity, maxLoad)
-              : (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice;
-
+             + Global.Configuration.DestinationParkingShadowPriceStepSize * 
+               (Global.Configuration.DestinationParkingShadowPriceAlpha * 
+               Math.Exp(Global.Configuration.DestinationParkingShadowPriceBeta * Math.Min(Global.Configuration.DestinationParkingShadowPriceMaximumPenalty,(maxLoad/(1.0*capacity)))))              
+               : (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice;
     }
   }
 }
