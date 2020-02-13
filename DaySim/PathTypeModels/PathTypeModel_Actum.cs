@@ -327,13 +327,13 @@ namespace DaySim.PathTypeModels {
         if (Mode == Global.Settings.Modes.CarKissRideShare) {
           RunStopAreaGeneralTransitModel(ridemode, hovmode, sharemode, pathType, votValue, useZones);
         } else
-        if (Mode == Global.Settings.Modes.CarParkRideWalk) {
+        if (Mode == Global.Settings.Modes.CarParkRideWalk && _personAge >= Global.Configuration.COMPASS_MinimumAutoDrivingAge && _householdCars > 0) {
           RunStopAreaGeneralTransitModel(ridemode, sovmode, walkmode, pathType, votValue, useZones);
         } else
-        if (Mode == Global.Settings.Modes.CarParkRideBike) {
+        if (Mode == Global.Settings.Modes.CarParkRideBike && _personAge >= Global.Configuration.COMPASS_MinimumAutoDrivingAge && _householdCars > 0) {
           RunStopAreaGeneralTransitModel(ridemode, sovmode, bikemode, pathType, votValue, useZones);
         } else
-        if (Mode == Global.Settings.Modes.CarParkRideShare) {
+        if (Mode == Global.Settings.Modes.CarParkRideShare && _personAge >= Global.Configuration.COMPASS_MinimumAutoDrivingAge && _householdCars > 0) {
           RunStopAreaGeneralTransitModel(ridemode, sovmode, sharemode, pathType, votValue, useZones);
         }
 
