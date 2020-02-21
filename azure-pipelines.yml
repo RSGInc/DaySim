@@ -59,11 +59,11 @@ strategy:
     #   gitRepo: RSGInc/sfcta_daysim_test.git
     #   config: $(testDir)\sfcta_apply_default_regress.properties
     #   targets: $(testDir)\sfcta_apply_default_regress_output
-    # bkrcast:
-    #   testDir: $(Agent.HomeDirectory)\bkrcast_daysim
-    #   gitRepo: RSGInc/bkrcast_daysim.git
-    #   config: $(testDir)\configuration_regress.properties
-    #   targets: $(testDir)\outputs
+    bkrcast:
+      testDir: $(Agent.HomeDirectory)\bkrcast_daysim
+      gitRepo: RSGInc/bkrcast_daysim.git
+      config: $(testDir)\configuration_regress.properties
+      targets: $(testDir)\azure_target_output
     # jax:
     #   testDir: $(Agent.HomeDirectory)\jax_daysim_test
     #   gitRepo: RSGInc/jax_daysim_test.git
@@ -105,9 +105,10 @@ steps:
 - script: |
     if not exist $(testDir) git clone https://$(GH_TOKEN)@github.com/$(gitRepo) $(testDir)
     cd $(testDir)
-    git checkout .
-    git clean -fd
+    git pull
+    git reset --hard origin/master
     git lfs pull
+    git clean -fd
   displayName: Get latest test data
 
 - script: |
