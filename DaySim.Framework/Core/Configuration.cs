@@ -817,6 +817,9 @@ namespace DaySim.Framework.Core {
     public double PathImpedance_ParkAndRideLotCapacityWeight { get; set; }
 
     [XmlAttribute]
+    public bool PathImpedance_ParkAndRideUseOriginLotChoice { get; set; }
+
+    [XmlAttribute]
     public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
 
     [XmlAttribute]
