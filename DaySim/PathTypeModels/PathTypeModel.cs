@@ -1274,27 +1274,43 @@ namespace DaySim.PathTypeModels {
           continue;
         }
 
-        IParcelWrapper parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];  //for drive access leg from origin zone to board parkAndRide node zone
-        //_originParcel. SetFirstAndLastStopAreaDistanceIndexes();
+        //for drive access leg from origin zone to board parkAndRide node zone
+        IParcelWrapper parkAndRideParcel = ChoiceModelFactory.Parcels[node.NearestParcelId];  
         int oFirst = parkAndRideParcel.FirstPositionInStopAreaDistanceArray;
         int oLast = Math.Min(parkAndRideParcel.LastPositionInStopAreaDistanceArray, oFirst + maxStopAreasToSearch - 1);
 
-        if (oFirst <= 0) {
-          return;
+        //use nearest stop area (which is the original approach) or loop on stop areas near origin PNR node parcel
+        if (Global.Configuration.PathImpedance_ParkAndRideUseOriginLotChoice) {
+          if (oFirst <= 0) {
+            return;
+          }
+        } else {
+          oLast = oFirst; //just loop once below for original approach
         }
 
         //loop on stop areas near origin
         for (int oIndex = oFirst; oIndex <= oLast; oIndex++) {
-          int oStopArea = Global.ParcelStopAreaStopAreaIds[oIndex];
-          int oStopAreaKey = Global.ParcelStopAreaStopAreaKeys[oIndex];
-          float oWalkDistance = Global.ParcelStopAreaDistances[oIndex];
-          if (oWalkDistance > maxStopAreaDistance) {
-            continue;
-          }
 
-          // use the stop area for transit LOS  
-          int parkAndRideStopAreaKey = oStopAreaKey;
-          int parkAndRideStopArea = oStopArea;
+          // use the nearest stop area for transit LOS by default
+          int parkAndRideStopAreaKey = node.NearestStopAreaId;
+          int parkAndRideStopArea = Global.TransitStopAreaMapping[node.NearestStopAreaId];
+
+          // instead use the current nearby stop area for transit LOS
+          if (Global.Configuration.PathImpedance_ParkAndRideUseOriginLotChoice) {
+
+            int oStopArea = Global.ParcelStopAreaStopAreaIds[oIndex];
+            int oStopAreaKey = Global.ParcelStopAreaStopAreaKeys[oIndex];
+            float oWalkDistance = Global.ParcelStopAreaDistances[oIndex];
+
+            if (oWalkDistance > maxStopAreaDistance) {
+              continue;
+            }
+
+            parkAndRideStopAreaKey = oStopAreaKey;
+            parkAndRideStopArea = oStopArea;
+
+          } 
+
           double parkAndRideCost = knrPathType ? 0.0
                                            : tncPathType ? (Global.Configuration.TNCtoTransit_FixedCostPerRide + zzDistPR * Global.Configuration.TNCtoTransit_ExtraCostPerDistanceUnit)
                                            : node.Cost / 100.0; // converts hundredths of Monetary Units to Monetary Units  // JLBscale: changed comment from cents and dollars
