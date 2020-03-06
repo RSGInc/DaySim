@@ -1,4 +1,4 @@
-##This is a temporary main control file with lots of TODOs to move 
+##This is a temporary main control file with lots of TODOs to move
 ##this whole effort to a package with project specific config and run files
 
 #Rprof()
@@ -9,16 +9,26 @@ options(error = function() traceback(2))
 options(warning = function() traceback(2))
 
 #-----------------------
-#Load packages
+# Load packages
 #-----------------------
-##TODO consider local R installation, with predownloaded packages in that library
-library(foreign)
-library(reshape)
-library(XLConnect)
-library(descr)
-library(Hmisc)
-library(data.table)
-library(plyr)
+
+safeLoadPackage <- function(package_name){
+  tryCatch({
+    library(package_name, character.only=TRUE)
+  }, error = function(err) {
+    print(paste("Installing", package_name))
+    install.packages(package_name, repos="https://ftp.osuosl.org/pub/cran")
+    library(package_name, character.only=TRUE)
+  })
+}
+
+safeLoadPackage("foreign")
+safeLoadPackage("reshape")
+safeLoadPackage("XLConnect")
+safeLoadPackage("descr")
+safeLoadPackage("Hmisc")
+safeLoadPackage("data.table")
+safeLoadPackage("plyr")
 
 getScriptDirectory <- function() {
   argv <- commandArgs(trailingOnly = FALSE)
@@ -42,29 +52,6 @@ setScriptDirectory <- function() {
   }
 }
 
-#this script uses relative paths for sourcing so requires that the current working directory be script directory
-setScriptDirectory()
-
-#Tried to use ArgParse but it screwed up the long filename of the config file
-args <- commandArgs(trailingOnly=TRUE)
-print(paste('# of args=',length(args), 'Args:'))
-print(args)
-      
-if (length(args) == 0) {
-  print(paste('no arguments passed so using default configuration file.'))
-  configuration_file = 'daysim_output_config.R'
-} else if (length(args) == 1) {
-  configuration_file = args[1]
-  print(paste("configuration_file:", configuration_file))
-  #remove quotes if needed
-  configuration_file <- gsub('[\'"]', '', configuration_file)
-  print(paste("configuration_file:", configuration_file))
-} else {
-  print(paste('Unexpected arguments. Expect only path to configuration file but found # of args=',length(args), 'Args:'))
-  print(args)
-  stop()
-}
-
 sourceAFileInTryCatch <- function(filename){
   if (!file.exists(filename)) {
     stop(paste('Expected source file does not exist:', filename))
@@ -80,24 +67,105 @@ sourceAFileInTryCatch <- function(filename){
   })
 }
 
+getNamedArg <- function(args, arg_name, default) {
+  named_arg = substring(args[grep(arg_name, args)], nchar(arg_name) + 1)
+  if ((!is.character(named_arg)) | (length(named_arg) == 0)) {
+    print(paste("No", arg_name, "specified. Using default value."))
+    return(default)
+  } else {
+    return(named_arg)
+  }
+}
+
 
 #------------------------------------
-#Source functions and config settings
+# Source functions and config settings
 #------------------------------------
-#TODO function in package to create template config file in a specified location
-sourceAFileInTryCatch(configuration_file)
+# this script uses relative paths for sourcing so requires that the current working directory be script directory
+setScriptDirectory()
 
-#stop("Finished test")
+args <- commandArgs(trailingOnly=TRUE)
+print(paste('# of args=',length(args), 'Args:'))
+print(args)
+
+# Override defaults if specified in commandArgs
+DAYSIM_REFERENCE_OUTPUTS          = getNamedArg(args, "--reference_dir=", "reference/regress_outputs")
+DAYSIM_NEW_OUTPUTS                = getNamedArg(args, "--outputs_dir=", "new/regress_outputs")
+DAYSIM_REPORT_DIRECTORY           = getNamedArg(args, "--reports_dir=", "excel_report_files")
+
+print(paste("DAYSIM_REFERENCE_OUTPUTS:", DAYSIM_REFERENCE_OUTPUTS))
+print(paste("DAYSIM_NEW_OUTPUTS:", DAYSIM_NEW_OUTPUTS))
+print(paste("DAYSIM_REPORT_DIRECTORY:", DAYSIM_REPORT_DIRECTORY))
+
+# DaySim Version - DelPhi or C#
+dsVersion                         = "C#"
+
+# daysim outputs
+dshhfile                          = paste(DAYSIM_NEW_OUTPUTS, "/_household.tsv", sep="")
+dsperfile                         = paste(DAYSIM_NEW_OUTPUTS, "/_person.tsv", sep="")
+dspdayfile                        = paste(DAYSIM_NEW_OUTPUTS, "/_person_day.tsv", sep="")
+dstourfile                        = paste(DAYSIM_NEW_OUTPUTS, "/_tour.tsv", sep="")
+dstripfile                        = paste(DAYSIM_NEW_OUTPUTS, "/_trip.tsv", sep="")
+
+# reference/survey
+surveyhhfile                      = paste(DAYSIM_REFERENCE_OUTPUTS, "/_household.tsv", sep="")
+surveyperfile                     = paste(DAYSIM_REFERENCE_OUTPUTS, "/_person.tsv", sep="")
+surveypdayfile                    = paste(DAYSIM_REFERENCE_OUTPUTS, "/_person_day.tsv", sep="")
+surveytourfile                    = paste(DAYSIM_REFERENCE_OUTPUTS, "/_tour.tsv", sep="")
+surveytripfile                    = paste(DAYSIM_REFERENCE_OUTPUTS, "/_trip.tsv", sep="")
+
+wrklocmodelfile                   = "./model_csv_files/WrkLocation.csv"
+schlocmodelfile                   = "./model_csv_files/SchLocation.csv"
+vehavmodelfile                    = "./model_csv_files/VehAvailability.csv"
+daypatmodelfile1                  = "./model_csv_files/DayPattern_pday.csv"
+daypatmodelfile2                  = "./model_csv_files/DayPattern_tour.csv"
+daypatmodelfile3                  = "./model_csv_files/DayPattern_trip.csv"
+tourdestmodelfile                 = "./model_csv_files/TourDestination.csv"
+tourdestwkbmodelfile              = "./model_csv_files/TourDestination_wkbased.csv"
+tripdestmodelfile                 = "./model_csv_files/TripDestination.csv"
+tourmodemodelfile                 = "./model_csv_files/TourMode.csv"
+tourtodmodelfile                  = "./model_csv_files/TourTOD.csv"
+tripmodemodelfile                 = "./model_csv_files/TripMode.csv"
+triptodmodelfile                  = "./model_csv_files/TripTOD.csv"
+
+wrklocmodelout                    = "WrkLocation.xlsm"
+schlocmodelout                    = "SchLocation.xlsm"
+vehavmodelout                     = "VehAvailability.xlsm"
+daypatmodelout                    = "DayPattern.xlsm"
+tourdestmodelout                  = c("TourDestination_Escort.xlsm","TourDestination_PerBus.xlsm","TourDestination_Shop.xlsm",
+                                      "TourDestination_Meal.xlsm","TourDestination_SocRec.xlsm")
+tourdestwkbmodelout               = "TourDestination_WrkBased.xlsm"
+tourmodemodelout                  = "TourMode.xlsm"
+tourtodmodelout                   = "TourTOD.xlsm"
+tripmodemodelout                  = "TripMode.xlsm"
+triptodmodelout                   = "TripTOD.xlsm"
+
+outputsDir                        = paste(DAYSIM_REPORT_DIRECTORY, "", sep="")
+validationDir                     = ""
+
+prepSurvey                        = TRUE
+prepDaySim                        = TRUE
+
+runWrkSchLocationChoice           = TRUE
+runVehAvailability                = TRUE
+runDayPattern                     = TRUE
+runTourDestination                = TRUE
+runTourMode                       = TRUE
+runTourTOD                        = TRUE
+runTripMode                       = TRUE
+runTripTOD                        = TRUE
+
+excludeChildren5                  = TRUE
 
 sourceAFileInTryCatch("utilfunc.R")
 
 progressStart("run DaySim summaries",14)
 
 #-----------------------
-#Load data
+# Load data
 #-----------------------
 
-#Load DaySim outputs into Rdata files
+# Load DaySim outputs into Rdata files
 if(runWrkSchLocationChoice | runVehAvailability | runDayPattern | runTourDestination | runTourMode)
 {
   progressNextStep("reading hh data")
@@ -147,7 +215,7 @@ if(runDayPattern | runTripMode | runTripTOD)
 gc()
 
 #-----------------------
-#Run tabulations
+# Run tabulations
 #-----------------------
 ##TODO split between preparing tables in an R object and then putting them somewhere
 ##TODO e.g. in a spreadsheet, in a pdf report, etc.
@@ -181,17 +249,17 @@ if(runTourDestination)
 }
 if(runTourMode)
 {
-  progressNextStep("summarizing Tour Mode Choice") 
+  progressNextStep("summarizing Tour Mode Choice")
   sourceAFileInTryCatch("tourmode.R")
 }
 if(runTourTOD)
 {
-  progressNextStep("summarizing Tour Time of Day Choice") 
+  progressNextStep("summarizing Tour Time of Day Choice")
   sourceAFileInTryCatch("tourtod.R")
 }
 if(runTripMode)
 {
-  progressNextStep("summarizing Trip Mode Choice") 
+  progressNextStep("summarizing Trip Mode Choice")
   sourceAFileInTryCatch("tripmode.R")
 }
 if(runTripTOD)

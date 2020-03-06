@@ -72,8 +72,8 @@ namespace DaySim.Framework.Roster {
         int[] zonenumscol;
 
         if (idv == "$BI") {   //Matrix type - BI 
-          zonenums = new int[rows * 2];
-          for (int z = 0; z < rows * 2; z++) {
+          zonenums = new int[rows];
+          for (int z = 0; z < rows; z++) {
             zonenums[z] = b.ReadInt32();
           }
         } else {   // Matrix type not BI.. 
@@ -110,7 +110,7 @@ namespace DaySim.Framework.Roster {
         d = b.ReadByte();
 
         if (d == '\x01') {
-          //Console.WriteLine("This is a zero matrix!");
+          Console.WriteLine("All values are zero (null matrix)");
         } else if (d == '\x00') {
           double diagsum = b.ReadDouble();
           Console.WriteLine("Diagonal sum: " + diagsum.ToString());
@@ -166,35 +166,10 @@ namespace DaySim.Framework.Roster {
             double rowSum = b.ReadDouble();
             double columnSum = b.ReadDouble();
           }
+        } else {
+          Console.WriteLine("No matrix data read!");
         }
       }
-
-
-
-
-      /*
-
-
-              for (var origin = 0; origin < count; origin++)
-              {
-                  for (var destination = 0; destination < count; destination++)
-                  {
-                      if (position >= length)
-                      {
-                          goto end;
-                      }
-
-                      var value = reader.ReadUInt16();
-
-                      // binary matrices are already mapped to consecutive zone indices, matching the zone index file
-                      matrix[origin][destination] = value;
-
-                      position += sizeof(ushort);
-                  }
-              }
-          }
-
-      end:*/
 
       SkimMatrix skimMatrix = new SkimMatrix(matrix);
 

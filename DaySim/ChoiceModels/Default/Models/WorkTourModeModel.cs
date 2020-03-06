@@ -256,7 +256,12 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(130, Math.Log(destinationParcel.TotalEmploymentDensity1() + 1) * 2553.0 / Math.Log(2553.0));
           alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
           alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
-          //                        alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
+          //alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
+          //alternative.AddUtilityTerm(120, Math.Log(destinationParcel.TotalEmploymentDensity1() + 1) * 2553.0 / Math.Log(2553.0));
+          alternative.AddUtilityTerm(118, destinationParcel.TotalEmploymentDensity1());
+          //alternative.AddUtilityTerm(117, destinationParcel.NetIntersectionDensity1());
+          //alternative.AddUtilityTerm(113, Math.Log(destinationParcel.StopsTransitBuffer1 + 1));
+          alternative.AddUtilityTerm(112, Math.Log(originParcel.StopsTransitBuffer1 + 1));
         } else if (mode == Global.Settings.Modes.Transit) {
           alternative.AddUtilityTerm(20, 1);
           alternative.AddUtilityTerm(21, noCarsInHouseholdFlag); //for calibration
@@ -265,11 +270,11 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(130, Math.Log(destinationParcel.TotalEmploymentDensity1() + 1) * 2553.0 / Math.Log(2553.0));
           alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
           alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
-          //                        alternative.AddUtility(126, originParcel.NetIntersectionDensity1());
-          //                        alternative.AddUtility(125, originParcel.HouseholdDensity1());
+          //alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
+          //alternative.AddUtilityTerm(125, originParcel.HouseholdDensity1());
           alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
-          //                        alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
-          //                        alternative.AddUtility(122, Math.Log(originParcel.StopsTransitBuffer1+1));
+          //alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
+          //alternative.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1+1));
           alternative.AddUtilityTerm(180, univStudentFlag);
           alternative.AddUtilityTerm(100, income75kPlusFlag);
         } else if (mode == Global.Settings.Modes.Hov3) {

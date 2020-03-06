@@ -814,6 +814,12 @@ namespace DaySim.Framework.Core {
 
 
     [XmlAttribute]
+    public double PathImpedance_ParkAndRideLotCapacityWeight { get; set; }
+
+    [XmlAttribute]
+    public bool PathImpedance_ParkAndRideUseOriginLotChoice { get; set; }
+
+    [XmlAttribute]
     public bool IncludeParkAndRideInOtherHomeBasedTourModeModel { get; set; }
 
     [XmlAttribute]
@@ -1904,7 +1910,10 @@ namespace DaySim.Framework.Core {
     public bool SkipActumExtraTransitModes { get; set; } = false;
 
     [XmlAttribute]
-    public double WalkModeMaximumOneWayDistance { get; set; } 
+    public double WalkModeMaximumOneWayDistance { get; set; }
+
+    [XmlAttribute]
+    public bool WriteTransitStopAreas { get; set; } = false;
 
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };

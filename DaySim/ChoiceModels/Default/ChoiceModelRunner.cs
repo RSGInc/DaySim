@@ -813,8 +813,8 @@ namespace DaySim.ChoiceModels.Default {
           ChoiceModelFactory.TotalTimesChangeModeTransitModeSet[ParallelUtility.threadLocalAssignedIndex.Value]++;
           trip.Mode = Global.Settings.Modes.Transit;
           if (Global.StopAreaIsEnabled && Global.Configuration.WriteStopAreaIDsInsteadOfZonesForTransitTrips) {
-            trip.OriginZoneKey = trip.Tour.ParkAndRideOriginStopAreaKey;
-            trip.DestinationZoneKey = trip.Tour.ParkAndRideDestinationStopAreaKey;
+                trip.OriginZoneKey = trip.Tour.ParkAndRideDestinationStopAreaKey;
+                trip.DestinationZoneKey = trip.Tour.ParkAndRideOriginStopAreaKey;
           }
         } else {
           ChoiceModelFactory.TotalTimesTripModeModelRun[ParallelUtility.threadLocalAssignedIndex.Value]++;

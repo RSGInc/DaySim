@@ -143,10 +143,14 @@ namespace DaySim.ChoiceModels.Default.Models {
           IPathTypeModel chosenPathType = pathTypeModels.First(x => x.Mode == choice);
           trip.PathType = chosenPathType.PathType;
           // for transit trips, overwrite origin and destination zones with stop area ids
-          if (Global.StopAreaIsEnabled && choice == Global.Settings.Modes.Transit
-              && Global.Configuration.WriteStopAreaIDsInsteadOfZonesForTransitTrips) {
-            trip.OriginZoneKey = chosenPathType.PathOriginStopAreaKey;
-            trip.DestinationZoneKey = chosenPathType.PathDestinationStopAreaKey;
+          if (Global.StopAreaIsEnabled && choice == Global.Settings.Modes.Transit && Global.Configuration.WriteStopAreaIDsInsteadOfZonesForTransitTrips) {
+            if(trip.IsHalfTourFromOrigin) {
+              trip.OriginZoneKey = chosenPathType.PathDestinationStopAreaKey;
+              trip.DestinationZoneKey = chosenPathType.PathOriginStopAreaKey;
+            } else {
+              trip.OriginZoneKey = chosenPathType.PathOriginStopAreaKey;
+              trip.DestinationZoneKey = chosenPathType.PathDestinationStopAreaKey;
+            }
           }
         }
       }
