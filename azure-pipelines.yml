@@ -105,8 +105,8 @@ steps:
 - script: |
     if not exist $(testDir) git clone https://$(GH_TOKEN)@github.com/$(gitRepo) $(testDir)
     cd $(testDir)
-    git pull
     git reset --hard origin/master
+    git pull
     git lfs pull
     git clean -fd
   displayName: Get latest test data
