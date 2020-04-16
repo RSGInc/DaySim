@@ -21,7 +21,7 @@ namespace DaySim.ChoiceModels.Default.Models {
     public const string CHOICE_MODEL_NAME = "OtherHomeBasedTourModeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 5;
     private const int TOTAL_LEVELS = 2;
-    private const int MAX_PARAMETER = 299;
+    private const int MAX_PARAMETER = 333;
     private const int THETA_PARAMETER = 99;
 
     private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 22, 0, 23 };
@@ -276,9 +276,9 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(121, mealTourFlag);
           //                        alternative.AddUtility(129, destinationParcel.MixedUse2Index1());
           alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
-          //                        alternative.AddUtility(127, destinationParcel.NetIntersectionDensity1());
-          //                        alternative.AddUtility(126, originParcel.NetIntersectionDensity1());
-          //                        alternative.AddUtility(125, originParcel.HouseholdDensity1());
+          alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
+          alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
+          //                        alternative.AddUtilityTerm(125, originParcel.HouseholdDensity1());
           alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
           //                        alternative.AddUtility(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
           //                        alternative.AddUtility(122, Math.Log(originParcel.StopsTransitBuffer1+1));

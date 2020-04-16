@@ -27,7 +27,7 @@ namespace DaySim.ChoiceModels.Default.Models {
     private const int TOTAL_LEVELS = 2;
     // regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
     private const int THETA_PARAMETER = 98;
-    private const int MAX_REGULAR_PARAMETER = 100;
+    private const int MAX_REGULAR_PARAMETER = 166;
     private const int MaxDistrictNumber = 100;
     private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
@@ -176,7 +176,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         if (!alternative.Available) {
           return;
         }
-
+        IParcelWrapper originParcel = _person.Household.ResidenceParcel;
         IParcelWrapper destinationParcel = ChoiceModelFactory.Parcels[sampleItem.ParcelId];
         //                var destinationZoneTotals = ChoiceModelRunner.ZoneTotals[destinationParcel.ZoneId];
 
@@ -307,6 +307,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
         alternative.AddUtilityTerm(79, _person.Household.HasMissingIncome.ToFlag() * destinationParcel.EmploymentTotal);
         alternative.AddUtilityTerm(80, _person.Household.HasMissingIncome.ToFlag() * destinationParcel.StudentsUniversity);
+
 
         //add any region-specific new terms in region-specific class, using coefficient numbers 91-100 or other unused variable #
         _parentClass.RegionSpecificCustomizations(alternative, _person, destinationParcel);

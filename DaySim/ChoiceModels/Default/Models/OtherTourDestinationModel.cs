@@ -23,7 +23,7 @@ namespace DaySim.ChoiceModels.Default.Models {
     private const int TOTAL_NESTED_ALTERNATIVES = 0;
     private const int TOTAL_LEVELS = 1;
     // regular and size parameters must be <= MAX_REGULAR_PARAMETER, balance is for OD shadow pricing coefficients
-    private const int MAX_REGULAR_PARAMETER = 120;
+    private const int MAX_REGULAR_PARAMETER = 190;
     private const int MaxDistrictNumber = 100;
     private const int MAX_PARAMETER = MAX_REGULAR_PARAMETER + MaxDistrictNumber * MaxDistrictNumber;
 
@@ -161,6 +161,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         //                var personDay = _tour.PersonDay;
         bool householdHasChildren = household.HasChildren;
 
+        IParcelWrapper originParcel = _tour.OriginParcel;
         IParcelWrapper destinationParcel = ChoiceModelFactory.Parcels[sampleItem.ParcelId];
 
         double fastestTravelTime =
@@ -233,7 +234,6 @@ namespace DaySim.ChoiceModels.Default.Models {
         int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership); // exludes no cars
         int noCarCompetitionFlag = FlagUtility.GetNoCarCompetitionFlag(carOwnership);
         int noCarsFlag = FlagUtility.GetNoCarsFlag(carOwnership);
-
         alternative.AddUtilityTerm(1, sampleItem.AdjustmentFactor);
         alternative.AddUtilityTerm(2, (_tour.IsHomeBasedTour).ToFlag() * timePressure);
 
@@ -377,6 +377,8 @@ namespace DaySim.ChoiceModels.Default.Models {
           if (destinationParcel.LandUseCode > 0) {
             alternative.AddUtilityTerm(120, (Global.Configuration.UseParcelLandUseCodeAsSquareFeetOpenSpace) ? Math.Log(destinationParcel.LandUseCode + 1.0) : 0.0);
           }
+
+           
         }
 
         //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #
@@ -430,7 +432,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           //                    else if (tour.OriginParcelId <= 0) {
           //                        excludeReason = 8;
           //                    }
-          else if (tour.OriginParcelId == tour.DestinationParcelId) {
+          else if (tour.OriginParcelId == tour.DestinationParcelId && Global.Configuration.DestinationScale == 0) {
             excludeReason = 9;
           } else if (tour.OriginParcel.ZoneId == -1) {
             // TODO: Verify this condition... it used to check that the zone was == null. 

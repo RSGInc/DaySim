@@ -814,7 +814,7 @@ namespace DaySim.Framework.Core {
 
 
     [XmlAttribute]
-    public double PathImpedance_ParkAndRideLotCapacityWeight { get; set; }
+    public double PathImpedance_ParkAndRideLotCapacitySizeWeight { get; set; }
 
     [XmlAttribute]
     public bool PathImpedance_ParkAndRideUseOriginLotChoice { get; set; }

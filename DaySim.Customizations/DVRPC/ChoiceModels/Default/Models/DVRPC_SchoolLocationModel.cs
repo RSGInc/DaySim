@@ -1,13 +1,17 @@
-﻿using DaySim.Framework.ChoiceModels;
+﻿using DaySim.ChoiceModels.Default.Models;
+using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
-using DaySim.Framework.Roster;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace DVRPC.ChoiceModels.Default.Models {
+  internal class DVRPC_SchoolLocationModel : SchoolLocationModel {
 
-namespace DaySim.ChoiceModels.Default.Models {
-  internal class DVRPC_WorkLocationModel : WorkLocationModel {
     protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) {
-
 
       //areas 
 
@@ -47,14 +51,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(155, o_int_nj * d_ext_nj);
       alternative.AddUtilityTerm(156, o_int_nj * d_ext_oth);
 
-      //int origState = _person.Household.ResidenceParcel.District;
-      //int destState = destinationParcel.District;
-
-      //int bridgeFromNJ = (origState == 34 && destState > 0 && destState != 34).ToFlag();
-      //int bridgeToNJ   = (destState == 34 && origState > 0 && origState != 34).ToFlag();
-
-      //alternative.AddUtilityTerm(91, bridgeFromNJ);
-      //alternative.AddUtilityTerm(92, bridgeToNJ);
     }
+
   }
 }
