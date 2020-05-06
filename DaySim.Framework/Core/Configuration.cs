@@ -1583,6 +1583,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool SFCTA { get; set; }
 
+    [XmlAttribute]
+    public bool BKR { get; set; }
+
     //new since 203
     [XmlAttribute]
     public bool AvoidDisaggregateModeChoiceLogsums { get; set; }
