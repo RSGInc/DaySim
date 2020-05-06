@@ -925,35 +925,35 @@ namespace DaySim.DomainModels.Default.Wrappers {
     }
 
     public virtual int CoreCBD_AreaType_Buffer1() {
-      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 25000).ToFlag();
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 9000).ToFlag();
     }
 
     public virtual int FringCBD_AreaType_Buffer1() {
-      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 10000
-           && HouseholdsBuffer1 + EmploymentTotalBuffer1 <  25000).ToFlag();
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 7800
+           && HouseholdsBuffer1 + EmploymentTotalBuffer1 <  9000).ToFlag();
     }
 
     public virtual int CBD_AreaType_Buffer1() {
-      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 10000).ToFlag();
+      return CoreCBD_AreaType_Buffer1() + FringCBD_AreaType_Buffer1();
     }
 
     public virtual int Urban_AreaType_Buffer1() {
-      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 2400
-           && HouseholdsBuffer1 + EmploymentTotalBuffer1 < 10000).ToFlag();
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 2750
+           && HouseholdsBuffer1 + EmploymentTotalBuffer1 <  7800).ToFlag();
     }
 
     public virtual int Suburban_AreaType_Buffer1() {
-      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 300
-           && HouseholdsBuffer1 + EmploymentTotalBuffer1 < 2400).ToFlag();
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 450
+           && HouseholdsBuffer1 + EmploymentTotalBuffer1 < 2750).ToFlag();
     }
 
     public virtual int Rural_AreaType_Buffer1() {
-      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 50
-           && HouseholdsBuffer1 + EmploymentTotalBuffer1 < 300).ToFlag();
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 40
+           && HouseholdsBuffer1 + EmploymentTotalBuffer1 < 450).ToFlag();
     }
 
     public virtual int OpenRural_AreaType_Buffer1() {
-      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 < 50).ToFlag();
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 < 40).ToFlag();
     }
 
 

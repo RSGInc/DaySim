@@ -47,6 +47,27 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(155, o_int_nj * d_ext_nj);
       alternative.AddUtilityTerm(156, o_int_nj * d_ext_oth);
 
+      alternative.AddUtilityTerm(161, o_ext_pa * d_int_paphi);
+      alternative.AddUtilityTerm(162, o_ext_pa * d_int_paoth);
+      alternative.AddUtilityTerm(163, o_ext_pa * d_int_nj);
+      alternative.AddUtilityTerm(164, o_ext_pa * d_ext_pa);
+      alternative.AddUtilityTerm(165, o_ext_pa * d_ext_nj);
+      alternative.AddUtilityTerm(166, o_ext_pa * d_ext_oth);
+
+      alternative.AddUtilityTerm(171, o_ext_nj * d_int_paphi);
+      alternative.AddUtilityTerm(172, o_ext_nj * d_int_paoth);
+      alternative.AddUtilityTerm(173, o_ext_nj * d_int_nj);
+      alternative.AddUtilityTerm(174, o_ext_nj * d_ext_pa);
+      alternative.AddUtilityTerm(175, o_ext_nj * d_ext_nj);
+      alternative.AddUtilityTerm(176, o_ext_nj * d_ext_oth);
+
+      alternative.AddUtilityTerm(181, o_ext_oth * d_int_paphi);
+      alternative.AddUtilityTerm(182, o_ext_oth * d_int_paoth);
+      alternative.AddUtilityTerm(183, o_ext_oth * d_int_nj);
+      alternative.AddUtilityTerm(184, o_ext_oth * d_ext_pa);
+      alternative.AddUtilityTerm(185, o_ext_oth * d_ext_nj);
+      alternative.AddUtilityTerm(186, o_ext_oth * d_ext_oth);
+
       //int origState = _person.Household.ResidenceParcel.District;
       //int destState = destinationParcel.District;
 
