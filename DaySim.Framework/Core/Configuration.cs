@@ -1915,6 +1915,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool WriteTransitStopAreas { get; set; } = false;
 
+    [XmlAttribute]
+    public bool AvoidUsingOpenSpaceInDestinationSampling { get; set; } = false;
+
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
 

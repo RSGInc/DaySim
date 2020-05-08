@@ -228,7 +228,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         double studUniBuffer = Math.Log(destinationParcel.StudentsUniversityBuffer1 + 1.0);
         //                var EMPHOU_B = Math.Log(destinationParcel.EmploymentTotalBuffer1 + destinationParcel.HouseholdsBuffer1 + 1.0);
 
-        // connectivity attributes
+         // connectivity attributes
         double c34Ratio = destinationParcel.C34RatioBuffer1();
 
         int carCompetitionFlag = FlagUtility.GetCarCompetitionFlag(carOwnership); // exludes no cars
