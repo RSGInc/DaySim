@@ -267,7 +267,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public bool AgeIsLessThan30 { get; set; }
 
-    public bool WorksAtHome { get; set; }
+    //public bool WorksAtHome { get; set; }
 
     public bool IsYouth { get; set; }
 
@@ -285,7 +285,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return (IsFulltimeWorker || IsPartTimeWorker) && Household.HouseholdTotals.FullAndPartTimeWorkers == 1;
     }
 
-    public virtual bool WorksFromHome() {
+    public virtual bool WorksAtHome() {
       return (UsualWorkParcelId == Household.ResidenceParcelId);
     }
 
