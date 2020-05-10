@@ -79,8 +79,6 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     bool AgeIsLessThan30 { get; set; }
 
-    bool WorksAtHome { get; set; }
-
     bool IsYouth { get; set; }
 
     #endregion
@@ -110,6 +108,8 @@ namespace DaySim.Framework.DomainModels.Wrappers {
     void SetSchoolParcelPredictions();
 
     int GetPersonalIncome();
+
+    bool WorksAtHome();
 
     #endregion
 

@@ -42,23 +42,23 @@ namespace DaySim {
 
         options.Parse(args);
 
-        if (_showHelp) {
-          options.WriteOptionDescriptions(Console.Out);
+      if (_showHelp) {
+        options.WriteOptionDescriptions(Console.Out);
 
-          Console.WriteLine();
-          Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME);
+        Console.WriteLine();
+        Console.WriteLine("If you do not provide a configuration then the default is to use {0}, in the same directory as the executable.", ConfigurationManagerRSG.DEFAULT_CONFIGURATION_NAME);
 
-          Console.WriteLine();
-          Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the output directory.", PrintFile.DEFAULT_PRINT_FILENAME);
+        Console.WriteLine();
+        Console.WriteLine("If you do not provide a printfile then the default is to create {0}, in the output directory.", PrintFile.DEFAULT_PRINT_FILENAME);
 
-          if (Environment.UserInteractive && !Console.IsInputRedirected) {
-            Console.WriteLine("Please press any key to exit");
-            Console.ReadKey();
-          }
+        if (Environment.UserInteractive && !Console.IsInputRedirected) {
+          Console.WriteLine("Please press any key to exit");
+          Console.ReadKey();
+        }
 
-          Environment.Exit(exitCode);
-        } //end showHelp
-        else if (_showVersion) {
+        Environment.Exit(exitCode);
+      } //end showHelp
+      else if (_showVersion) {
           PrintVersion();
 
           if (Environment.UserInteractive && !Console.IsInputRedirected) {
@@ -66,8 +66,7 @@ namespace DaySim {
             Console.ReadKey();
           }
           Environment.Exit(exitCode);
-        } //end if _showVersion
-
+       } //end if _showVersion
         // Issue #164 Force use of decimal separator for numerical values
         bool needToChangeDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator != ".";
         if (needToChangeDecimalSeparator) {

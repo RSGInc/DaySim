@@ -276,7 +276,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = 3;
 
       alternative.AddUtilityTerm(41, 1);
-      alternative.AddUtilityTerm(42, person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(42, person.WorksAtHome().ToFlag());
       //GV: Inroducing a HH with a sinle parent, female, with children
       alternative.AddUtilityTerm(43, (person.IsFemale && numberParent == 1 && household.HasChildren).ToFlag());
 

@@ -233,8 +233,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(13, person.IsPartTimeWorker.ToFlag());
       alternative.AddUtilityTerm(14, person.IsFulltimeWorker.ToFlag());
       //JB: "Try personDay.WorksAtHomeFlag for the none_or_home alternative.Expect positive since they use up a chunk of their day working at home."
-      //GV: 11.4.2019 - "person.WorksAtHome.ToFlag()" works better
-      alternative.AddUtilityTerm(15, person.WorksAtHome.ToFlag());
+      //GV: 11.4.2019 - "person.WorksAtHome().ToFlag()" works better
+      alternative.AddUtilityTerm(15, person.WorksAtHome().ToFlag());
       //alternative.AddUtilityTerm(15, personDay.WorksAtHomeFlag);
       //GV: 26. feb. 2019 
       alternative.AddUtilityTerm(16, selfEmpFlag);

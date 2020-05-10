@@ -124,8 +124,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(3, household.HasChildrenUnder5.ToFlag());
 
       //GV: 8.4.2019 - JBs comment on "WorksAtHome"
-      //GV: the model is better with "person.WorksAtHome.ToFlag()"
-      alternative.AddUtilityTerm(4, person.WorksAtHome.ToFlag());
+      //GV: the model is better with "person.WorksAtHome().ToFlag()"
+      alternative.AddUtilityTerm(4, person.WorksAtHome().ToFlag());
       //alternative.AddUtilityTerm(4, personDay.WorksAtHomeFlag);
 
       alternative.AddUtilityTerm(5, person.IsFemale.ToFlag());
@@ -144,7 +144,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(21, 1);
 
       //alternative.AddUtilityTerm(22, person.IsChildUnder5.ToFlag());
-      //alternative.AddUtilityTerm(23, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(23, person.WorksAtHome().ToFlag());
       alternative.AddUtilityTerm(23, person.IsFulltimeWorker.ToFlag());
       alternative.AddUtilityTerm(24, person.IsPartTimeWorker.ToFlag());
       //alternative.AddUtilityTerm(25, person.IsPartTimeWorker.ToFlag());
@@ -186,7 +186,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: 9.4.2019 - impact of Man. Tour Generation
       alternative.AddUtilityTerm(42, (personDay.SchoolTours > 0).ToFlag());
 
-      //alternative.AddUtilityTerm(43, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(43, person.WorksAtHome().ToFlag());
       //alternative.AddUtilityTerm(44, person.IsFulltimeWorker.ToFlag());
       //alternative.AddUtilityTerm(45, person.IsPartTimeWorker.ToFlag());
       //alternative.AddUtilityTerm(46, person.IsMale.ToFlag());

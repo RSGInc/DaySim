@@ -137,9 +137,16 @@ namespace DaySim.Framework.Core {
                 property.Name.PadLeft(maxKeyLength),
                 property.Value.PadRight(maxValueLength),
                 property.Description);
+
+        Console
+            .WriteLine("{0}> {1} // {2}.",
+                property.Name.PadLeft(maxKeyLength),
+                property.Value.PadRight(maxValueLength),
+                property.Description);
       }
 
       printFile.WriteLine();
+      Console.WriteLine();
     }
 
     private void WriteFromXml(PrintFile printFile, PropertyInfo[] properties) {
@@ -175,13 +182,16 @@ namespace DaySim.Framework.Core {
 
       printFile.WriteLine("The following properties in the configuration file were not set:");
       printFile.IncrementIndent();
+      Console.WriteLine("The following properties in the configuration file were not set:");
 
       foreach (string item in list) {
         printFile.WriteLine("* {0}", item);
+        Console.WriteLine("* {0}", item);
       }
 
       printFile.DecrementIndent();
       printFile.WriteLine();
+      Console.WriteLine();
     }
 
     private static void WriteInvalidAttributes(PrintFile printFile, IEnumerable<PropertyInfo> properties, IEnumerable<string> attributes) {
@@ -196,13 +206,16 @@ namespace DaySim.Framework.Core {
 
       printFile.WriteLine("The following attributes in the configuration file are invalid:");
       printFile.IncrementIndent();
+      Console.WriteLine("The following attributes in the configuration file are invalid:");
 
       foreach (string item in list) {
         printFile.WriteLine("* {0}", item);
+        Console.WriteLine("* {0}", item);
       }
 
       printFile.DecrementIndent();
       printFile.WriteLine();
+      Console.WriteLine();
     }
 
     private static Configuration Deserialize(Stream stream) {

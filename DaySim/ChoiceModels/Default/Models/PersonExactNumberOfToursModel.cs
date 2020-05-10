@@ -167,7 +167,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(100 * purpose + 21, person.AgeIsBetween18And25.ToFlag());
       alternative.AddUtilityTerm(100 * purpose + 22, person.AgeIsBetween26And35.ToFlag());
       alternative.AddUtilityTerm(100 * purpose + 23, person.AgeIsBetween51And65.ToFlag());
-      alternative.AddUtilityTerm(100 * purpose + 24, person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(100 * purpose + 24, person.WorksAtHome().ToFlag());
       alternative.AddUtilityTerm(100 * purpose + 25, mixedDensity);
       alternative.AddUtilityTerm(100 * purpose + 26, intersectionDensity);
       alternative.AddUtilityTerm(100 * purpose + 31, personDay.WorkTours);
@@ -221,7 +221,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(100 * purpose + 21, person.AgeIsBetween18And25.ToFlag());
       alternative.AddUtilityTerm(100 * purpose + 22, person.AgeIsBetween26And35.ToFlag());
       alternative.AddUtilityTerm(100 * purpose + 23, person.AgeIsBetween51And65.ToFlag());
-      alternative.AddUtilityTerm(100 * purpose + 24, person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(100 * purpose + 24, person.WorksAtHome().ToFlag());
       alternative.AddUtilityTerm(100 * purpose + 25, mixedDensity);
       alternative.AddUtilityTerm(100 * purpose + 26, intersectionDensity);
       alternative.AddUtilityTerm(100 * purpose + 31, personDay.WorkTours);

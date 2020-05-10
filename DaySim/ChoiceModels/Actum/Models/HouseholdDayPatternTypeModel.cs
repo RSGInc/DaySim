@@ -688,7 +688,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           // extra variables
           wknok[ct] = (person.IsFullOrPartTimeWorker && !householdDay.Household.HasChildren) ? 1 : 0;
-          wkhom[ct] = (person.IsFullOrPartTimeWorker && person.WorksAtHome) ? 1 : 0;
+          wkhom[ct] = (person.IsFullOrPartTimeWorker && person.WorksAtHome()) ? 1 : 0;
           wtmis[ct] = (person.IsFullOrPartTimeWorker && person.UsualWorkParcel == null) ? 1 : 0;
           stmis[ct] = (person.IsChildUnder16 && person.UsualSchoolParcel == null) ? 1 : 0;
           utmis[ct] = (person.IsGymnasiumOrUniversityStudent() && person.UsualSchoolParcel == null) ? 1 : 0;

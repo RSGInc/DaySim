@@ -179,7 +179,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: 21. feb. 2019 - coeff-. 23. 24 and 24 have no significance
       //alternative.AddUtilityTerm(22, person.IsChildUnder5.ToFlag());
-      //alternative.AddUtilityTerm(23, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(23, person.WorksAtHome().ToFlag());
       //alternative.AddUtilityTerm(24, person.IsFulltimeWorker.ToFlag());
       //alternative.AddUtilityTerm(25, person.IsMale.ToFlag());
       //alternative.AddUtilityTerm(4, person.IsPartTimeWorker.ToFlag());
@@ -216,7 +216,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(32, person.IsChildUnder5.ToFlag());
 
       //GV: 8.4.2019 - JBs comment on "WorksAtHome"
-      //alternative.AddUtilityTerm(32, person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(32, person.WorksAtHome().ToFlag());
       alternative.AddUtilityTerm(32, personDay.WorksAtHomeFlag);
 
       alternative.AddUtilityTerm(33, person.IsFulltimeWorker.ToFlag());

@@ -350,7 +350,7 @@ namespace DaySim.ChoiceModels.H.Models {
         component.AddUtilityTerm(100 * purpose + 21, xMultiplier * person.AgeIsBetween18And25.ToFlag());
         component.AddUtilityTerm(100 * purpose + 22, xMultiplier * person.AgeIsBetween26And35.ToFlag());
         component.AddUtilityTerm(100 * purpose + 23, xMultiplier * person.AgeIsBetween51And65.ToFlag());
-        component.AddUtilityTerm(100 * purpose + 24, xMultiplier * person.WorksAtHome.ToFlag());
+        component.AddUtilityTerm(100 * purpose + 24, xMultiplier * person.WorksAtHome().ToFlag());
         component.AddUtilityTerm(100 * purpose + 25, xMultiplier * mixedDensity);
         component.AddUtilityTerm(100 * purpose + 26, xMultiplier * intersectionDensity);
         component.AddUtilityTerm(100 * purpose + 27, xMultiplier * purposeLogsums[purpose]);
@@ -366,7 +366,7 @@ namespace DaySim.ChoiceModels.H.Models {
       choiceProbabilityCalculator.CreateUtilityComponent(tourComponentIndex);
       ChoiceProbabilityCalculator.Component tourComponent = choiceProbabilityCalculator.GetUtilityComponent(tourComponentIndex);
       tourComponent.AddUtilityTerm(1701, carsPerDriver);
-      tourComponent.AddUtilityTerm(1702, person.WorksAtHome.ToFlag());
+      tourComponent.AddUtilityTerm(1702, person.WorksAtHome().ToFlag());
       tourComponent.AddUtilityTerm(1703, mixedDensity);
       tourComponent.AddUtilityTerm(1704, mixedDensity * person.IsChildAge5Through15.ToFlag());
       tourComponent.AddUtilityTerm(1705, compositeLogsum);
@@ -377,7 +377,7 @@ namespace DaySim.ChoiceModels.H.Models {
       choiceProbabilityCalculator.CreateUtilityComponent(stopComponentIndex);
       ChoiceProbabilityCalculator.Component stopComponent = choiceProbabilityCalculator.GetUtilityComponent(stopComponentIndex);
       stopComponent.AddUtilityTerm(1711, carsPerDriver);
-      stopComponent.AddUtilityTerm(1712, person.WorksAtHome.ToFlag());
+      stopComponent.AddUtilityTerm(1712, person.WorksAtHome().ToFlag());
       stopComponent.AddUtilityTerm(1713, mixedDensity);
       stopComponent.AddUtilityTerm(1714, mixedDensity * person.IsChildAge5Through15.ToFlag());
       stopComponent.AddUtilityTerm(1715, compositeLogsum);
