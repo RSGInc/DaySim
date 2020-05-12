@@ -2186,6 +2186,8 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public int COMPASS_MinimumAutoDrivingAge { get; set; } = 18;
 
+    [XmlAttribute]
+    public double COMPASS_AutoParkAndRideLotCapacitySizeWeight { get; set; } = 1;
 
     [XmlAttribute]
     public int COMPASS_MaximumTerminalsToSearchWalk { get; set; } = 10;

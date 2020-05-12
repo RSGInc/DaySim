@@ -874,6 +874,7 @@ namespace DaySim.PathTypeModels {
           accessTerminalParcelID = parkAndRideParcel.Id;
           accessTerminalZoneID = (int)parkAndRideParcel.ZoneKey;
           AutoPath accessPath = GetAutoPath(accessMode, pathTypeAccEgr, votValue, useZones, false, _outboundTime, _returnTime, 0, 0, originParcelUsed, parkAndRideParcel);
+          double nodeCapacityBenefit = Math.Log(Math.Max(node.Capacity, 1.0E-30)) * Global.Configuration.COMPASS_AutoParkAndRideLotCapacitySizeWeight;
 
           double duration = 0.0;
           if (_returnTime > 0) {
@@ -903,7 +904,7 @@ namespace DaySim.PathTypeModels {
 
           accessTime = accessPath.Time * roundTripFactor;
           accessCost = accessPath.Cost + parkingCost;
-          accessUtility = accessPath.Utility * roundTripFactor;
+          accessUtility = accessPath.Utility * roundTripFactor + nodeCapacityBenefit;
         } else if (hovAccess || shareAccess) {
           accessTerminalKey = Global.ParcelToAutoKissAndRideTerminalKeys[indexAccess];
           accessTerminalIndex = Global.ParcelToAutoKissAndRideTerminalIndices[indexAccess];
