@@ -117,9 +117,9 @@ namespace DaySim.Framework.Roster {
  
                   _matrix[mappedRow][mappedCol] = (ushort)value; //bug #208 deferred but this will eventually changed be Convert.ToUInt16 to avoid 0.57*100=56 bug
               }
-              if (nRows==4059 && mappedRow >= Global.Configuration.OriginZoneToPrintFromOMXSkims && mappedCol >= Global.Configuration.OriginZoneToPrintFromOMXSkims) {
-                Global.PrintFile.WriteLine("O: {0} D: {1} Read: {2} Stored: {3}", mappedRow, mappedCol, dataArray[row, col], (ushort)value);
-              }
+              //if (nRows==4059 && mappedRow >= Global.Configuration.OriginZoneToPrintFromOMXSkims && mappedCol >= Global.Configuration.OriginZoneToPrintFromOMXSkims) {
+              //  Global.PrintFile.WriteLine("O: {0} D: {1} Read: {2} Stored: {3}", mappedRow, mappedCol, dataArray[row, col], (ushort)value);
+              //}
             }
           }
         }

@@ -2267,8 +2267,8 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double COMPASS_PercentSharedCarTripsByMainPassenger_Social { get; set; } = 0.62;
 
-    [XmlAttribute]
-    public int OriginZoneToPrintFromOMXSkims { get; set; }
+    //[XmlAttribute]
+    //public int OriginZoneToPrintFromOMXSkims { get; set; }
 
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
