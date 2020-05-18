@@ -1308,10 +1308,22 @@ namespace DaySim.Framework.Core {
     public bool ShouldUseShadowPricing { get; set; }
 
     [XmlAttribute]
+    public bool ShouldReadBaseScenarioShadowPriceFile { get; set; }
+
+    [XmlAttribute]
+    public string BaseScenarioShadowPriceFilePath { get; set; }
+
+    [XmlAttribute]
     public char ShadowPriceDelimiter { get; set; }
 
     [XmlAttribute]
     public bool ShouldUseParkAndRideShadowPricing { get; set; }
+
+    [XmlAttribute]
+    public bool ShouldReadBaseScenarioParkAndRideShadowPriceFile { get; set; }
+
+    [XmlAttribute]
+    public string BaseScenarioParkAndRideShadowPriceFilePath { get; set; }
 
     [XmlAttribute]
     public char ParkAndRideShadowPriceDelimiter { get; set; }

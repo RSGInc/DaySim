@@ -8,13 +8,14 @@
 using System;
 using System.Collections.Generic;
 using DaySim.DomainModels.Actum.Models.Interfaces;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 using DaySim.Framework.Factories;
 using DaySim.Framework.ShadowPricing;
 
 namespace DaySim.DomainModels.Actum.Wrappers {
   [Factory(Factory.WrapperFactory, Category = Category.Wrapper, DataType = DataType.Actum)]
-  public class DestinationParkingNodeWrapper : Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper {
+  public class DestinationParkingNodeWrapper : IActumDestinationParkingNodeWrapper {
     private readonly IActumDestinationParkingNode _destinationParkingNode;
     private const int RESIDENTIAL_ON_STREET = 1;
     private const int FREE_ON_STREET = 2;
@@ -24,7 +25,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
 
     [UsedImplicitly]
-    public DestinationParkingNodeWrapper(Framework.DomainModels.Models.IDestinationParkingNode destinationParkingNode) {
+    public DestinationParkingNodeWrapper(IActumDestinationParkingNode destinationParkingNode) {
       _destinationParkingNode = (IActumDestinationParkingNode)destinationParkingNode;
     }
 
@@ -262,68 +263,52 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
     #region wrapper methods
 
-    public virtual double SetDestinationParkingEffectivePrice(int minArrive, int minDepart, int destPurpose) {
-      double effectivePrice = UNAVAILABLE_PRICE_INDICATOR;
+    public virtual double CalculateParkingPrice(int parkArriveTime, int parkDepartTime, int destPurpose) {
+      double parkPrice = UNAVAILABLE_PRICE_INDICATOR;
 
-      if (ParkingType == PUBLIC_OFF_STREET && (minArrive < OpeningTime || minDepart > ClosingTime)) {
-        return effectivePrice;
+      if (ParkingType != 2) {  //skip price for free parking
+        double paidArriveTime = Math.Min(parkArriveTime + 60.0 * FreeDuration, Global.Settings.Times.MinutesInADay);
+        double hourPrice = 0
+         + (!(parkDepartTime < Global.Settings.Times.ThreeAM || paidArriveTime >= Global.Settings.Times.FourAM)).ToFlag() * Price3AM
+         + (!(parkDepartTime < Global.Settings.Times.FourAM || paidArriveTime >= Global.Settings.Times.FiveAM)).ToFlag() * Price4AM
+         + (!(parkDepartTime < Global.Settings.Times.FiveAM || paidArriveTime >= Global.Settings.Times.SixAM)).ToFlag() * Price5AM
+         + (!(parkDepartTime < Global.Settings.Times.SixAM || paidArriveTime >= Global.Settings.Times.SevenAM)).ToFlag() * Price6AM
+         + (!(parkDepartTime < Global.Settings.Times.SevenAM || paidArriveTime >= Global.Settings.Times.EightAM)).ToFlag() * Price7AM
+         + (!(parkDepartTime < Global.Settings.Times.EightAM || paidArriveTime >= Global.Settings.Times.NineAM)).ToFlag() * Price8AM
+         + (!(parkDepartTime < Global.Settings.Times.NineAM || paidArriveTime >= Global.Settings.Times.TenAM)).ToFlag() * Price9AM
+         + (!(parkDepartTime < Global.Settings.Times.TenAM || paidArriveTime >= Global.Settings.Times.ElevenAM)).ToFlag() * Price10AM
+         + (!(parkDepartTime < Global.Settings.Times.ElevenAM || paidArriveTime >= Global.Settings.Times.Noon)).ToFlag() * Price11AM
+         + (!(parkDepartTime < Global.Settings.Times.Noon || paidArriveTime >= Global.Settings.Times.OnePM)).ToFlag() * Price12PM
+         + (!(parkDepartTime < Global.Settings.Times.OnePM || paidArriveTime >= Global.Settings.Times.TwoPM)).ToFlag() * Price1PM
+         + (!(parkDepartTime < Global.Settings.Times.TwoPM || paidArriveTime >= Global.Settings.Times.ThreePM)).ToFlag() * Price2PM
+         + (!(parkDepartTime < Global.Settings.Times.ThreePM || paidArriveTime >= Global.Settings.Times.FourPM)).ToFlag() * Price3PM
+         + (!(parkDepartTime < Global.Settings.Times.FourPM || paidArriveTime >= Global.Settings.Times.FivePM)).ToFlag() * Price4PM
+         + (!(parkDepartTime < Global.Settings.Times.FivePM || paidArriveTime >= Global.Settings.Times.SixPM)).ToFlag() * Price5PM
+         + (!(parkDepartTime < Global.Settings.Times.SixPM || paidArriveTime >= Global.Settings.Times.SevenPM)).ToFlag() * Price6PM
+         + (!(parkDepartTime < Global.Settings.Times.SevenPM || paidArriveTime >= Global.Settings.Times.EightPM)).ToFlag() * Price7PM
+         + (!(parkDepartTime < Global.Settings.Times.EightPM || paidArriveTime >= Global.Settings.Times.NinePM)).ToFlag() * Price8PM
+         + (!(parkDepartTime < Global.Settings.Times.NinePM || paidArriveTime >= Global.Settings.Times.TenPM)).ToFlag() * Price9PM
+         + (!(parkDepartTime < Global.Settings.Times.TenPM || paidArriveTime >= Global.Settings.Times.ElevenPM)).ToFlag() * Price10PM
+         + (!(parkDepartTime < Global.Settings.Times.ElevenPM || paidArriveTime >= Global.Settings.Times.Midnight)).ToFlag() * Price11PM
+         + (!(parkDepartTime < Global.Settings.Times.Midnight || paidArriveTime >= Global.Settings.Times.OneAM)).ToFlag() * Price12AM
+         + (!(parkDepartTime < Global.Settings.Times.OneAM || paidArriveTime >= Global.Settings.Times.TwoAM)).ToFlag() * Price1AM
+         + (!(parkDepartTime < Global.Settings.Times.TwoAM || paidArriveTime >= Global.Settings.Times.MinutesInADay)).ToFlag() * Price2AM;
+
+        parkPrice = Math.Min(Math.Max(hourPrice, MinimumPrice), FullDayPrice);
+
+        if (MonthlyPassDayPrice > 0 && (destPurpose == Global.Settings.Purposes.Work || destPurpose == Global.Settings.Purposes.School)
+           && MonthlyPassDayPrice < parkPrice) {
+          parkPrice = MonthlyPassDayPrice;
+        }
       }
-      int minDuration = minDepart - minArrive;
-      if (minDuration < 0) { minDuration += Global.Settings.Times.MinutesInADay; }  // jf going past 3 am, add 1440
-      double hoursDuration = Math.Truncate((2.0 * minDuration + 59) / 60.0) / 2.0;  // round up to nearest half hour
-      if (minDuration > MaxDuration) {
-        return effectivePrice;
-      }
-      if (ParkingType == FREE_ON_STREET || ParkingType == RESIDENTIAL_ON_STREET) {
-        effectivePrice = 0;
-      } else if (ParkingType == METERED_ON_STREET) {
-        double hourlyPrice =
-                   minArrive < Global.Settings.Times.SevenAM ? 0 :
-                   minArrive < Global.Settings.Times.EightAM ? Price7AM :
-                   minArrive < Global.Settings.Times.NineAM ? Price8AM :
-                   minArrive < Global.Settings.Times.TenAM ? Price9AM :
-                   minArrive < Global.Settings.Times.ElevenAM ? Price10AM :
-                   minArrive < Global.Settings.Times.Noon ? Price11AM :
-                   minArrive < Global.Settings.Times.OnePM ? Price12PM :
-                   minArrive < Global.Settings.Times.TwoPM ? Price1PM :
-                   minArrive < Global.Settings.Times.ThreePM ? Price2PM :
-                   minArrive < Global.Settings.Times.FourPM ? Price3PM :
-                   minArrive < Global.Settings.Times.FivePM ? Price4PM :
-                   minArrive < Global.Settings.Times.SixPM ? Price5PM :
-                   minArrive < Global.Settings.Times.SevenPM ? Price6PM :
-                   minArrive < Global.Settings.Times.EightPM ? Price7PM :
-                   minArrive < Global.Settings.Times.NinePM ? Price8PM :
-                   minArrive < Global.Settings.Times.TenPM ? Price9PM :
-                   minArrive < Global.Settings.Times.ElevenPM ? Price10PM :
-                   minArrive < Global.Settings.Times.Midnight ? Price11PM :
-                   minArrive < Global.Settings.Times.OneAM ? Price12AM : 0;
-        effectivePrice = hourlyPrice * hoursDuration;
-      } else if (ParkingType == PUBLIC_OFF_STREET) {
-        //if (EaryBirdPriceStartTime > 0 && minArrive >= EaryBirdPriceStartTime && minArrive < EarlyBirdPriceEndTime) {
-        //  effectivePrice = Math.Min(EarlyBirdHourlyPrice * hoursDuration, EarlyBirdDailyPrice);
-        //} else if (EveningPriceStartTime > 0 && minArrive >= EveningPriceStartTime && minArrive < EveningPriceEndTime) {
-        //  effectivePrice = Math.Min(EveningHourlyPrice * hoursDuration, EveningDailyPrice);
-        //} else {
-        //  double dailyPrice =
-        //                (destPurpose == Global.Settings.Purposes.Work ||
-        //                 destPurpose == Global.Settings.Purposes.School
-        //                 ? PriceDayDiscount : PriceDay);
-        //  effectivePrice =
-        //      hoursDuration <= 1 ? Math.Min(Price1Hour, dailyPrice) :
-        //      hoursDuration <= 2 ? Math.Min(Price2Hour, dailyPrice) :
-        //      hoursDuration <= 3 ? Math.Min(Price3Hour, dailyPrice) :
-        //      hoursDuration <= 4 ? Math.Min(Price4Hour, dailyPrice) :
-        //      hoursDuration <= 12 ? Math.Min(Price12Hour, dailyPrice) : dailyPrice;
-        //}
-      }
-      effectivePrice = effectivePrice / 100.0;
-      // add shadow price for arrival time if turned on
-      if (Global.Configuration.ShouldUseDestinationParkingShadowPricing) {
-        effectivePrice += ShadowPrice[minArrive];
-      }
-      return effectivePrice;
+
+      return parkPrice;
     }
 
+    public virtual double SetDestinationParkingEffectivePrice(int parkArriveTime, int parkDepartTime, int destPurpose) {
+      double parkPrice = UNAVAILABLE_PRICE_INDICATOR;
+      return parkPrice;
+    }
 
 
     public virtual void SetDestinationParkingShadowPricing(Dictionary<int, IDestinationParkingShadowPriceNode> destinationParkingShadowPrices) {

@@ -17,12 +17,14 @@ namespace DaySim.ShadowPricing {
     public static Dictionary<int, IShadowPriceParcel> ReadShadowPrices() {
       Dictionary<int, IShadowPriceParcel> shadowPrices = new Dictionary<int, IShadowPriceParcel>();
       FileInfo shadowPriceFile = new FileInfo(Global.ShadowPricesPath);
+      string shadowPricesReadPath = Global.Configuration.ShouldReadBaseScenarioShadowPriceFile ? Global.Configuration.BaseScenarioShadowPriceFilePath : Global.ShadowPricesPath;
+      FileInfo shadowPriceReadFile = new FileInfo(shadowPricesReadPath);
 
-      if (!shadowPriceFile.Exists || !Global.Configuration.ShouldUseShadowPricing || (!Global.Configuration.ShouldRunWorkLocationModel && !Global.Configuration.ShouldRunSchoolLocationModel)) {
+      if (!shadowPriceReadFile.Exists || !Global.Configuration.ShouldUseShadowPricing || (!Global.Configuration.ShouldRunWorkLocationModel && !Global.Configuration.ShouldRunSchoolLocationModel)) {
         return shadowPrices;
       }
 
-      using (CountingReader reader = new CountingReader(shadowPriceFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+      using (CountingReader reader = new CountingReader(shadowPriceReadFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
         reader.ReadLine();
 
         string line;

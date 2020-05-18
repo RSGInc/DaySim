@@ -17,12 +17,14 @@ namespace DaySim.ParkAndRideShadowPricing {
     public static Dictionary<int, IParkAndRideShadowPriceNode> ReadParkAndRideShadowPrices() {
       Dictionary<int, IParkAndRideShadowPriceNode> shadowPrices = new Dictionary<int, IParkAndRideShadowPriceNode>();
       FileInfo shadowPriceFile = new FileInfo(Global.ParkAndRideShadowPricesPath);
+      string shadowPricesReadPath = Global.Configuration.ShouldReadBaseScenarioParkAndRideShadowPriceFile ? Global.Configuration.BaseScenarioParkAndRideShadowPriceFilePath : Global.ParkAndRideShadowPricesPath;
+      FileInfo shadowPriceReadFile = new FileInfo(shadowPricesReadPath);
 
-      if (!Global.ParkAndRideNodeIsEnabled || !shadowPriceFile.Exists || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode) {
+      if (!Global.ParkAndRideNodeIsEnabled || !shadowPriceReadFile.Exists || !Global.Configuration.ShouldUseParkAndRideShadowPricing || Global.Configuration.IsInEstimationMode) {
         return shadowPrices;
       }
 
-      using (CountingReader reader = new CountingReader(shadowPriceFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
+      using (CountingReader reader = new CountingReader(shadowPriceReadFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))) {
         reader.ReadLine();
 
         string line = null;
