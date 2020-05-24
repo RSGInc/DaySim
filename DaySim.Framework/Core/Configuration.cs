@@ -2279,6 +2279,16 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double COMPASS_PercentSharedCarTripsByMainPassenger_Social { get; set; } = 0.62;
 
+    [XmlAttribute]
+    public bool ShouldUseDestinatonParkingForModeChoiceLogsums { get; set; }
+
+    [XmlAttribute]
+    public bool ShouldUseDestinatonParkingInPathTypeModel { get; set; }
+
+    [XmlAttribute]
+    public int MaximumDestinationParkingLocationsToSearchInTourModeChoiceModel { get; set; }
+
+
     //[XmlAttribute]
     //public int OriginZoneToPrintFromOMXSkims { get; set; }
 

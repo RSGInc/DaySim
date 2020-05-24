@@ -822,7 +822,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //	continue;
         //}
         // set tour destination parcel for within this loop in order to set other variables
-        HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, constrainedHouseholdCars, constrainedTransitDiscountFraction, destinationParcel);
+        HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, constrainedHouseholdCars, constrainedTransitDiscountFraction, true, destinationParcel);
 
         //loop on all mode and time alternatives, using modeTimes objects
         foreach (HTourModeTime modeTimes in HTourModeTime.ModeTimes[ParallelUtility.threadLocalAssignedIndex.Value]) {

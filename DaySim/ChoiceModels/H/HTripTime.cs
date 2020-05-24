@@ -144,7 +144,7 @@ namespace DaySim.ChoiceModels.H {
                             tour.Household.OwnsAutomatedVehicles > 0,
                             tour.HovOccupancy,
                             household.AutoType,
-                            tour.Person.PersonType,
+                            /* tour.Person.PersonType >> parking not used for trip */ -1,
                             true,
                             pathMode);
 

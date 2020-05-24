@@ -141,7 +141,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 trip.Household.OwnsAutomatedVehicles > 0,
                 trip.Tour.HovOccupancy,
                 household.AutoType,
-                trip.Person.PersonType,
+                /* trip.Person.PersonType > parking depart time */ -1,
                 false);
 
         // GV, July 9th: COMPAS modes are: Bike, Walk, PT, SOV (car driver alone), HOV2 (car driver in a car with a passenger) and HOV3 (car passenger) 
@@ -177,8 +177,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
                 trip.Person.TransitPassOwnership,
                 trip.Household.OwnsAutomatedVehicles > 0,
                 trip.Tour.HovOccupancy,
-                household.AutoType, 
-                trip.Person.PersonType,
+                household.AutoType,
+                /* trip.Person.PersonType > parking depart time */ -1,
                 false);
 
         RunModel(choiceProbabilityCalculator, trip, pathTypeModels, originParcel, destinationParcel);

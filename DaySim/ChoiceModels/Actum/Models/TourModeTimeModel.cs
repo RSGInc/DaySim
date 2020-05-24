@@ -218,6 +218,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int constrainedMode = Global.Configuration.IncludeMixedModesInModeChoiceLogsums ? 0 : -1;
       int constrainedArrivalTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationArrivalTime : 0;
       int constrainedDepartureTime = (Global.Configuration.ConstrainTimesForModeChoiceLogsums) ? tour.DestinationDepartureTime : 0;
+      bool skipParkingChoice = !(Global.Configuration.ShouldUseDestinatonParkingForModeChoiceLogsums);
 
       tour.DestinationParcel = destinationParcel;
       HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, householdCars, transitDiscountFraction);

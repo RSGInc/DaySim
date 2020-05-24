@@ -206,7 +206,7 @@ namespace DaySim.ChoiceModels.H {
     }
 
     public static void SetModeTimeImpedances(IHouseholdDayWrapper householdDay, ITourWrapper tour,
-        int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, IParcelWrapper alternativeDestination = null) {
+        int constrainedMode, int constrainedArrivalTime, int constrainedDepartureTime, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, bool skipParkingChoice = false, IParcelWrapper alternativeDestination = null) {
 
       /*            if (householdDay.Household.Id == 80059 && tour.Person.Sequence == 2 && tour.Sequence == 2
                       && constrainedMode == 5 && constrainedArrivalTime == 354 && constrainedDepartureTime == 361) {
@@ -227,13 +227,13 @@ namespace DaySim.ChoiceModels.H {
               (constrainedDepartureTime <= 0 ||
                constrainedDepartureTime.IsBetween(modeTimes.DeparturePeriod.Start, modeTimes.DeparturePeriod.End))) {
 
-            SetImpedanceAndWindow(timeWindow, tour, modeTimes, constrainedHouseholdCars, constrainedTransitDiscountFraction, alternativeDestination);
+            SetImpedanceAndWindow(timeWindow, tour, modeTimes, constrainedHouseholdCars, constrainedTransitDiscountFraction, skipParkingChoice, alternativeDestination);
           }
         }
       }
     }
 
-    public static void SetImpedanceAndWindow(ITimeWindow timeWindow, ITourWrapper tour, HTourModeTime modeTimes, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, IParcelWrapper alternativeDestination = null) {
+    public static void SetImpedanceAndWindow(ITimeWindow timeWindow, ITourWrapper tour, HTourModeTime modeTimes, int constrainedHouseholdCars, double constrainedTransitDiscountFraction, bool skipParkingChoice = false, IParcelWrapper alternativeDestination = null) {
       {
 
         IActumHouseholdWrapper household = (IActumHouseholdWrapper)tour.Household;
@@ -247,6 +247,8 @@ namespace DaySim.ChoiceModels.H {
         int arrivalPeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(arrivalPeriod.Start, arrivalPeriod.End);
         int departurePeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(departurePeriod.Start, departurePeriod.End);
         int householdCars = constrainedHouseholdCars >= 0 ? constrainedHouseholdCars : tour.Household.VehiclesAvailable;
+        //intead of passing persontype for Actum, pass result of PayToParkAtWorplace model, or -1 if runNested 
+        int paidParkingDepartTime = (skipParkingChoice || tour.Person.PaidParkingAtWorkplace != 1) ? -1 : departurePeriod.Middle + 60; //1 hour duration if during same period
         double transitDiscountFraction = constrainedTransitDiscountFraction >= 0 ? constrainedTransitDiscountFraction : tour.Person.GetTransitFareDiscountFraction();
 
 
@@ -279,7 +281,7 @@ namespace DaySim.ChoiceModels.H {
                   tour.Household.OwnsAutomatedVehicles>0,
                   tour.HovOccupancy,
                   household.AutoType,
-                  tour.Person.PersonType,
+                  /* tour.Person.PersonType > no parking choice */ -1,
                   false,
                   mode);
 
@@ -349,7 +351,7 @@ namespace DaySim.ChoiceModels.H {
                             tour.Household.OwnsAutomatedVehicles > 0,
                             tour.HovOccupancy,
                             household.AutoType,
-                            tour.Person.PersonType,
+                            /* tour.Person.PersonType */ paidParkingDepartTime,
                             false,
                             pathMode);
 
@@ -379,7 +381,7 @@ namespace DaySim.ChoiceModels.H {
                   tour.Household.OwnsAutomatedVehicles > 0,
                   tour.HovOccupancy,
                   household.AutoType,
-                  tour.Person.PersonType,
+                  /* tour.Person.PersonType >> parking not used for second tour half */ -1,
                   false,
                   pathMode);
 
