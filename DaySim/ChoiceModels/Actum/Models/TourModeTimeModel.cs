@@ -221,7 +221,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       bool skipParkingChoice = !(Global.Configuration.ShouldUseDestinatonParkingForModeChoiceLogsums);
 
       tour.DestinationParcel = destinationParcel;
-      HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, householdCars, transitDiscountFraction);
+      HTourModeTime.SetModeTimeImpedances(householdDay, tour, constrainedMode, constrainedArrivalTime, constrainedDepartureTime, householdCars, transitDiscountFraction,skipParkingChoice);
 
       RunModel(choiceProbabilityCalculator, householdDay, tour, destinationParcel, householdCars, constrainedMode, constrainedArrivalTime, constrainedDepartureTime);
 

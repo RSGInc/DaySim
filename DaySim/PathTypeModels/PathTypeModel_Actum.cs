@@ -524,7 +524,7 @@ namespace DaySim.PathTypeModels {
         IActumParcelWrapper destParcel = _destinationParcel;
         bool destIsWorkplace = (destPurpose == Global.Settings.Purposes.Work || destPurpose == Global.Settings.Purposes.Business);
 
-        if ((Mode != Global.Settings.Modes.Sov && Mode != Global.Settings.Modes.HovDriver)
+        if ((Mode != Global.Settings.Modes.Sov && Mode != Global.Settings.Modes.HovDriver && Mode != Global.Settings.Modes.HovPassenger)
           || destPurpose == Global.Settings.Purposes.NoneOrHome
           || destParcel.ParkingDataAvailable == 0) {
           return;
@@ -587,8 +587,8 @@ namespace DaySim.PathTypeModels {
           parkDepartTime = Math.Min(1439, destDepartTime + (int)walkTime);
 
           // set utility
-          double parkPrice = node.CalculateParkingPrice(parkArriveTime, parkDepartTime, destPurpose)
-            * (1.0 - evParkPriceDiscount);
+          double parkPrice = (skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) ? 0.0 :
+          node.CalculateParkingPrice(parkArriveTime, parkDepartTime, destPurpose) * (1.0 - evParkPriceDiscount);
           double randomNormalTerm = 0;
 
           double parkingTypeConstant = (node.LocationType == 2) ? Global.Configuration.COMPASS_DestinationParkingOffStreetGarageTypeConstant
