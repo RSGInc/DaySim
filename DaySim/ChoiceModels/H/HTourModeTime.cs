@@ -363,6 +363,8 @@ namespace DaySim.ChoiceModels.H {
             modeTimes.TravelTimeToDestination = pathTypeModel.PathTime;
             modeTimes.GeneralizedTimeToDestination = pathTypeModel.GeneralizedTimeLogsum;
             modeTimes.PathDistanceToDestination = pathTypeModel.PathDistance;
+            modeTimes.DestinationAccessCost = (pathMode == Global.Settings.Modes.Sov || pathMode == Global.Settings.Modes.HovDriver || pathMode == Global.Settings.Modes.HovPassenger)
+              ? pathTypeModel.PathCost : 0;
           }
 
           pathTypeModels =
