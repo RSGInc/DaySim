@@ -260,25 +260,25 @@ namespace DaySim.AggregateLogsums {
                     int fullFareType = Global.Settings.PersonTypes.FullTimeWorker;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, fullFareType, false, Global.Settings.Modes.Walk);
+                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, -1, false, Global.Settings.Modes.Walk);
                     IPathTypeModel walkPath = pathTypeModels.First();
 
                     walkGenTime = walkPath.GeneralizedTimeLogsum;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, fullFareType, false, Global.Settings.Modes.Bike);
+                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, -1, false, Global.Settings.Modes.Bike);
                     IPathTypeModel bikePath = pathTypeModels.First();
 
                     bikeGenTime = bikePath.GeneralizedTimeLogsum;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, fullFareType, false, Global.Settings.Modes.Sov);
+                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, -1, false, Global.Settings.Modes.Sov);
                     IPathTypeModel sovPath = pathTypeModels.First();
 
                     sovGenTime = sovPath.GeneralizedTimeLogsum;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, id, destination.Id, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                                            costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, fullFareType, false, Global.Settings.Modes.HovPassenger);
+                                            costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, -1, false, Global.Settings.Modes.HovPassenger);
                     IPathTypeModel hovPath = pathTypeModels.First();
 
                     hovGenTime = hovPath.GeneralizedTimeLogsum;
@@ -292,7 +292,7 @@ namespace DaySim.AggregateLogsums {
                                             : id;
 
                     pathTypeModels = PathTypeModelFactory.Singleton.Run(randomUtility, transitOid, transitDid, _middayStartMinute, _middayStartMinute, Global.Settings.Purposes.PersonalBusiness,
-                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, fullFareType, false, Global.Settings.Modes.Transit);
+                        costCoefficient, timeCoefficient, /* isDrivingAge */ drivingAge, /* householdVehicles */ 1, /* transitPassOwnership */ 0, false, /* hov occ */ 2, /* auto type */ 1, -1, false, Global.Settings.Modes.Transit);
                     IPathTypeModel transitPath = pathTypeModels.First();
 
                     transitGenTime = transitPath.GeneralizedTimeLogsum;

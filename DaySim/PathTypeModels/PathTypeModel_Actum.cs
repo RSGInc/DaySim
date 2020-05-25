@@ -488,7 +488,10 @@ namespace DaySim.PathTypeModels {
     private void RunAutoModel(int skimModeIn, int pathType, double votValue, bool useZones) {
 
       double costFraction = 1.0;
-      if (skimModeIn == Global.Settings.Modes.HovDriver || skimModeIn == Global.Settings.Modes.HovPassenger) {
+      if (skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) {
+        costFraction = 0.0;
+      }
+      else if (skimModeIn == Global.Settings.Modes.HovDriver || skimModeIn == Global.Settings.Modes.HovPassenger) {
         // int hovOccupancy = 2; now passed in
         costFraction = _purpose == Global.Settings.Purposes.Work ?
           (_hovOccupancy == 2 ? Global.Configuration.COMPASS_HOVCostShare2Occupants_Commute
@@ -514,54 +517,52 @@ namespace DaySim.PathTypeModels {
       double parkingCost = 0;
       double parkingTime = 0;
       double parkingDistance = 0;
+      int destPurpose = _purpose;
+      IActumParcelWrapper destParcel = _destinationParcel;
       ParcelWrapper parkingParcel = _destinationParcel;
 
-      //run detailed parking location choice if tour level (round trip) and not turned off for logsum calculation
-      if (!useZones && Global.Configuration.ShouldRunDestinationParkingLocationModel
-        && Global.Configuration.ShouldUseDestinatonParkingInPathTypeModel && _parkingDepartTime > 0) {
+      //skip parking altogether if to home or not right mode or usezones
+      if (!useZones && _parkingDepartTime > 0 && destPurpose != Global.Settings.Purposes.NoneOrHome && 
+        (Mode == Global.Settings.Modes.Sov || Mode == Global.Settings.Modes.HovDriver || Mode == Global.Settings.Modes.HovPassenger)) { 
 
-        int destPurpose = _purpose;
-        IActumParcelWrapper destParcel = _destinationParcel;
-        bool destIsWorkplace = (destPurpose == Global.Settings.Purposes.Work || destPurpose == Global.Settings.Purposes.Business);
+        //use detailed parking model if turned on and detailed data available
+        if (Global.Configuration.ShouldRunDestinationParkingLocationModel && destParcel.ParkingDataAvailable > 0
+           && Global.Configuration.ShouldUseDestinatonParkingInPathTypeModel) {
 
-        if ((Mode != Global.Settings.Modes.Sov && Mode != Global.Settings.Modes.HovDriver && Mode != Global.Settings.Modes.HovPassenger)
-          || destPurpose == Global.Settings.Purposes.NoneOrHome
-          || destParcel.ParkingDataAvailable == 0) {
-          return;
-        }
-        IActumParcelWrapper origParcel = _originParcel;
-        int destArriveTime = _outboundTime;
-        int destDepartTime = _parkingDepartTime;
-        bool span3AM = (destDepartTime < destArriveTime);
-        int minParkDuration = Math.Max(10, destDepartTime - destArriveTime + span3AM.ToFlag() * Global.Settings.Times.MinutesInADay);
+          bool destIsWorkplace = (destPurpose == Global.Settings.Purposes.Work || destPurpose == Global.Settings.Purposes.Business);
 
-        int firstIndex = destParcel.FirstPositionInDestinationParkingLocationDistanceArray;
-        int lastIndex = destParcel.LastPositionInDestinationParkingLocationDistanceArray;
+          int destArriveTime = _outboundTime;
+          int destDepartTime = _parkingDepartTime;
+          bool span3AM = (destDepartTime < destArriveTime);
+          int minParkDuration = Math.Max(10, destDepartTime - destArriveTime + span3AM.ToFlag() * Global.Settings.Times.MinutesInADay);
 
-        if (firstIndex <= 0 || lastIndex <= 0) {
-          return;
-        }
+          int firstIndex = destParcel.FirstPositionInDestinationParkingLocationDistanceArray;
+          int lastIndex = destParcel.LastPositionInDestinationParkingLocationDistanceArray;
 
-        int nLocationsSearched = 0;
-        double bestLocationUtil = -99;
-        int bestLocationId = -1;
-        int bestLocationParcelId = -1;
-        int bestLocationZoneId = -1;
-        double bestLocationWalkDistance = -1;
-        double bestLocationWalkTime = -1;
-        double bestLocationParkPrice = -1;
-        int parkArriveTime = 0;
-        int parkDepartTime = 0;
-
-        for (int index = firstIndex; index <= lastIndex; index++) {
-
-          int parkLocationId = Global.ParcelToDestinationParkingLocationIds[index];
-          IActumDestinationParkingNodeWrapper node = (IActumDestinationParkingNodeWrapper)ChoiceModelFactory.DestinationParkingNodeDao.Get(parkLocationId);
-
-          if (node == null) {
-            continue;
+          if (firstIndex <= 0 || lastIndex <= 0) {
+            return;
           }
-          if ((node.Capacity < Constants.EPSILON)   // has to have positive capacity
+
+          int nLocationsSearched = 0;
+          double bestLocationUtil = -99;
+          int bestLocationId = -1;
+          int bestLocationParcelId = -1;
+          int bestLocationZoneId = -1;
+          double bestLocationWalkDistance = -1;
+          double bestLocationWalkTime = -1;
+          double bestLocationParkPrice = -1;
+          int parkArriveTime = 0;
+          int parkDepartTime = 0;
+
+          for (int index = firstIndex; index <= lastIndex; index++) {
+
+            int parkLocationId = Global.ParcelToDestinationParkingLocationIds[index];
+            IActumDestinationParkingNodeWrapper node = (IActumDestinationParkingNodeWrapper)ChoiceModelFactory.DestinationParkingNodeDao.Get(parkLocationId);
+
+            if (node == null) {
+              continue;
+            }
+            if ((node.Capacity < Constants.EPSILON)   // has to have positive capacity
                || (Global.Configuration.MaximumDestinationParkingLocationsToSearchInTourModeChoiceModel > 0 && nLocationsSearched >= Global.Configuration.MaximumDestinationParkingLocationsToSearchInTourModeChoiceModel)
                || (node.ParkingType == 3 || node.ParkingType == 6)  // resident-only and bike spaces not considered
                || (node.ParkingType == 4 && !destIsWorkplace)  // employee-only spaces only if it is the usual workplace microzone
@@ -569,92 +570,84 @@ namespace DaySim.PathTypeModels {
                || (node.MaxDuration != 24 && (node.MaxDuration * 60.0) < minParkDuration)  // check minimum duration
                || (node.OpeningTime != 0 && (node.OpeningTime * 60.0) > (destArriveTime + 180))   // check opening time
                || (node.ClosingTime != 24 && (node.ClosingTime * 60.0) < (destDepartTime + 180)))   // check closing time 
-          {
-            continue;
-          }
+            {
+              continue;
+            }
 
-          nLocationsSearched = nLocationsSearched + 1;
+            nLocationsSearched = nLocationsSearched + 1;
 
-          int parkParcelId = Global.ParcelToDestinationParkingLocationMicrozoneIds[index];
-          ParcelWrapper parkParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[parkParcelId];
+            int parkParcelId = Global.ParcelToDestinationParkingLocationMicrozoneIds[index];
+            ParcelWrapper parkParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[parkParcelId];
 
-          SkimValue autoSkim = ImpedanceRoster.GetValue("lstime", Mode, Global.Settings.PathTypes.FullNetwork, 60, destArriveTime, origParcel, parkParcel, Constants.DEFAULT_VALUE);
-          double driveGenTime = autoSkim.Variable;
+            SkimValue autoSkim = ImpedanceRoster.GetValue("lstime", Mode, Global.Settings.PathTypes.FullNetwork, 60, destArriveTime, _originParcel, parkParcel, Constants.DEFAULT_VALUE);
+            double driveGenTime = autoSkim.Variable;
 
-          double walkDistance = Global.ParcelToDestinationParkingLocationLength[index] / 1000.0; //convert to km
-          double walkTime = walkDistance * Global.Configuration.PathImpedance_WalkMinutesPerDistanceUnit;
-          parkArriveTime = Math.Max(1, destArriveTime - (int)walkTime);
-          parkDepartTime = Math.Min(1439, destDepartTime + (int)walkTime);
+            double walkDistance = Global.ParcelToDestinationParkingLocationLength[index] / 1000.0; //convert to km
+            double walkTime = walkDistance * Global.Configuration.PathImpedance_WalkMinutesPerDistanceUnit;
+            parkArriveTime = Math.Max(1, destArriveTime - (int)walkTime);
+            parkDepartTime = Math.Min(1439, destDepartTime + (int)walkTime);
 
-          // set utility
-          double parkPrice = (skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) ? 0.0 :
-          node.CalculateParkingPrice(parkArriveTime, parkDepartTime, destPurpose) * (1.0 - evParkPriceDiscount);
-          double randomNormalTerm = 0;
+            // set utility
+            double parkPrice = (skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) ? 0.0 :
+            node.CalculateParkingPrice(parkArriveTime, parkDepartTime, destPurpose) * (1.0 - evParkPriceDiscount);
+            double randomNormalTerm = 0;
 
-          double parkingTypeConstant = (node.LocationType == 2) ? Global.Configuration.COMPASS_DestinationParkingOffStreetGarageTypeConstant
-                                     : (node.LocationType == 3) ? Global.Configuration.COMPASS_DestinationParkingOffStreetLotTypeConstant
-                                     : (node.LocationType == 4) ? Global.Configuration.COMPASS_DestinationParkingOffStreetPrivateTypeConstant
+            double parkingTypeConstant = (node.LocationType == 2) ? Global.Configuration.COMPASS_DestinationParkingOffStreetGarageTypeConstant
+                                       : (node.LocationType == 3) ? Global.Configuration.COMPASS_DestinationParkingOffStreetLotTypeConstant
+                                       : (node.LocationType == 4) ? Global.Configuration.COMPASS_DestinationParkingOffStreetPrivateTypeConstant
                                      : 0.0;
 
-          double searchTime = (Global.Configuration.ShouldUseDestinationParkingShadowPricing && !Global.Configuration.IsInEstimationMode) ? node.ShadowPrice[parkArriveTime] : 0.0;
+            double searchTime = (Global.Configuration.ShouldUseDestinationParkingShadowPricing && !Global.Configuration.IsInEstimationMode) ? node.ShadowPrice[parkArriveTime] : 0.0;
 
-          double genTime = parkingTypeConstant
-                          + searchTime
-                          + driveGenTime * Global.Configuration.COMPASS_DestinationParkingDriveAccessTimeCoefficient
-                          + walkTime * Global.Configuration.COMPASS_DestinationParkingWalkEgressTimeCoefficient
-                          + randomNormalTerm * Global.Configuration.COMPASS_DestinationParkingRandomTermCoefficient;
+            double genTime = parkingTypeConstant
+                            + searchTime
+                            + driveGenTime * Global.Configuration.COMPASS_DestinationParkingDriveAccessTimeCoefficient
+                            + walkTime * Global.Configuration.COMPASS_DestinationParkingWalkEgressTimeCoefficient
+                            + randomNormalTerm * Global.Configuration.COMPASS_DestinationParkingRandomTermCoefficient;
 
-          double utility = Math.Log(node.Capacity) * Global.Configuration.COMPASS_DestinationParkingLogCapacityCoefficient
-                        + genTime * _tourTimeCoefficient
-                        + parkPrice * costFraction * _tourCostCoefficient;
+            double utility = Math.Log(node.Capacity) * Global.Configuration.COMPASS_DestinationParkingLogCapacityCoefficient
+                           + genTime * _tourTimeCoefficient
+                           + parkPrice * costFraction * _tourCostCoefficient;
 
-          if (utility > bestLocationUtil) {
-            bestLocationUtil = utility;
-            bestLocationId = node.Id;
-            bestLocationParcelId = parkParcelId;
-            bestLocationZoneId = (int)parkParcel.ZoneKey;
-            bestLocationWalkDistance = walkDistance;
-            bestLocationWalkTime = walkTime;
-            bestLocationParkPrice = parkPrice;
+            if (utility > bestLocationUtil) {
+              bestLocationUtil = utility;
+              bestLocationId = node.Id;
+              bestLocationParcelId = parkParcelId;
+              bestLocationZoneId = (int)parkParcel.ZoneKey;
+              bestLocationWalkDistance = walkDistance;
+              bestLocationWalkTime = walkTime;
+              bestLocationParkPrice = parkPrice;
 
-            parkingCost = parkPrice;
-            parkingTime = walkTime;
-            parkingDistance = walkDistance;
-            parkingUtility = genTime * _tourTimeCoefficient
-                           + parkingCost * costFraction * _tourCostCoefficient;
+              parkingCost = parkPrice;
+              parkingTime = walkTime;
+              parkingDistance = walkDistance;
+              parkingUtility = genTime * _tourTimeCoefficient
+                             + parkingCost * costFraction * _tourCostCoefficient;
 
-            parkingParcel = parkParcel;
-          }
-        }
-      } else {
-        //calculate parking cost utility   JLB 201508
-        if ((skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) || skimModeIn == Global.Settings.Modes.PaidRideShare) {
-        } else {
-          if (!useZones) {
-            double priceDiscountFactor = _destinationParcel.ElectricVehicleOnlyParkingSpacesBuffer1 == 0 ? 0.0 :
-            parkingCost = _destinationParcel.PublicParkingHourlyPriceBuffer1 * (1.0 - evParkPriceDiscount);
-            int parkingDuration = 1; // assume 1 hour if return time isn't known
-            if (_parkingDepartTime > _outboundTime) {
-              parkingDuration = (_parkingDepartTime - _outboundTime) / 60;
+              parkingParcel = parkParcel;
             }
-            parkingCost = parkingCost * parkingDuration;  //in monetary units
-            parkingUtility = parkingTime * _tourTimeCoefficient
-                           + parkingCost * costFraction * _tourCostCoefficient;
           }
+        } else {
+          //calculate parking cost utility  for other zones  JLB 201508
+          double priceDiscountFactor = _destinationParcel.ElectricVehicleOnlyParkingSpacesBuffer1 == 0 ? 0.0 : evParkPriceDiscount;
+          parkingCost = _destinationParcel.PublicParkingHourlyPriceBuffer1 * (1.0 - priceDiscountFactor);
+          int parkingDuration = 1; // assume 1 hour if return time isn't known
+          if (_parkingDepartTime > _outboundTime) {
+             parkingDuration = (_parkingDepartTime - _outboundTime) / 60;
+          }
+          parkingCost = parkingCost * parkingDuration;  //in monetary units
+          parkingUtility = parkingTime * _tourTimeCoefficient
+                         + parkingCost * costFraction * _tourCostCoefficient;
         }
-
-
       }
       bool useAVVOT = ((skimModeIn != Global.Settings.Modes.PaidRideShare && _carsAreAVs && Global.Configuration.AV_IncludeAutoTypeChoice)
-                          || (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.AV_PaidRideShareModeUsesAVs));
-
+                    || (skimModeIn == Global.Settings.Modes.PaidRideShare && Global.Configuration.AV_PaidRideShareModeUsesAVs));
 
       AutoPath path = GetAutoPath(skimModeIn, pathType, votValue, useZones, useAVVOT, _outboundTime, _returnTime, _originZoneId, _destinationZoneId, _originParcel, parkingParcel);
 
       if (!path.Available) {
         return;
       }
-
 
       //set pathType properties
       _pathTime[pathType] = path.Time + parkingTime;
