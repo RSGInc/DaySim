@@ -20,7 +20,7 @@ namespace DaySim.DestinationParkingShadowPricing {
       string shadowPricesReadPath = Global.Configuration.ShouldReadBaseScenarioDestinationParkingShadowPriceFile ? Global.Configuration.BaseScenarioDestinationParkingShadowPriceFilePath : Global.DestinationParkingShadowPricesPath;
       FileInfo shadowPriceReadFile = new FileInfo(shadowPricesReadPath);
 
-      if (!Global.DestinationParkingNodeIsEnabled || !shadowPriceReadFile.Exists || !Global.Configuration.ShouldUseDestinationParkingShadowPricing || Global.Configuration.IsInEstimationMode) {
+      if (!Global.DestinationParkingNodeIsEnabled || !shadowPriceReadFile.Exists || !Global.Configuration.ShouldUseDestinationParkingShadowPricing /*|| Global.Configuration.IsInEstimationMode */) {
         return shadowPrices;
       }
 
