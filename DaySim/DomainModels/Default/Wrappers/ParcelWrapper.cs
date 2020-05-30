@@ -970,13 +970,15 @@ namespace DaySim.DomainModels.Default.Wrappers {
       Global.NodeNodePreviousDistance[threadAssignedIndex] = Constants.DEFAULT_VALUE;
 
       bool foundOrigin = Global.NodeIndex.TryGetValue(Id, out int oNodeId);
-      bool foundDestination = Global.NodeIndex.TryGetValue(destination.Id, out int dNodeId);
+      foundOrigin = Global.ANodeId.TryGetValue(Id, out oNodeId);
+      bool foundDestination = Global.ANodeId.TryGetValue(destination.Id, out int dNodeId);
+      foundDestination = Global.ANodeId.TryGetValue(destination.Id, out dNodeId);
 
       if (!foundDestination || !foundOrigin) {
         return Constants.DEFAULT_VALUE;
       }
 
-      if (oNodeId == dNodeId || oNodeId < 1 || dNodeId < 1 || oNodeId > Global.ANodeId.Length || dNodeId > Global.ANodeId.Length) {
+      if (oNodeId == dNodeId || oNodeId < 1 || dNodeId < 1 || oNodeId > Global.ANodeId.Count || dNodeId > Global.ANodeId.Count) {
         return Constants.DEFAULT_VALUE;
       }
 

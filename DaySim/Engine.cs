@@ -1019,7 +1019,7 @@ namespace DaySim {
     private static void LoadNodeIndex() {
       FileInfo file = new FileInfo(Global.GetInputPath(Global.Configuration.NodeIndexPath));
 
-      List<int> aNodeId = new List<int>();
+      Global.ANodeId = new Dictionary<int, int>();
       List<int> aNodeFirstRecord = new List<int>();
       List<int> aNodeLastRecord = new List<int>();
 
@@ -1027,24 +1027,26 @@ namespace DaySim {
         reader.ReadLine();
 
         string line = null;
+        int i = 0;
         try {
           while ((line = reader.ReadLine()) != null) {
             string[] tokens = line.Split(Global.Configuration.NodeIndexDelimiter);
 
-            aNodeId.Add(int.Parse(tokens[0]));
+            Global.ANodeId.Add(int.Parse(tokens[0]), i+1); //consistent with code in NodeToNodeDistance in ParcelWrapper
             aNodeFirstRecord.Add(int.Parse(tokens[1]));
             int lastRecord = int.Parse(tokens[2]);
             aNodeLastRecord.Add(lastRecord);
             if (lastRecord > Global.LastNodeDistanceRecord) {
               Global.LastNodeDistanceRecord = lastRecord;
             }
+
+            i = i + 1;
           }
         } catch (FormatException e) {
           throw new Exception("Format problem in file '" + file.FullName + "' at line " + reader.LineNumber + " with content '" + line + "'.", e);
         }
       }
 
-      Global.ANodeId = aNodeId.ToArray();
       Global.ANodeFirstRecord = aNodeFirstRecord.ToArray();
       Global.ANodeLastRecord = aNodeLastRecord.ToArray();
     }
