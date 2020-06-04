@@ -1653,7 +1653,8 @@ namespace DaySim {
         + Convert.ToInt32(Global.Configuration.JAX)
         + Convert.ToInt32(Global.Configuration.Nashville)
         + Convert.ToInt32(Global.Configuration.PSRC)
-        + Convert.ToInt32(Global.Configuration.SFCTA);
+        + Convert.ToInt32(Global.Configuration.SFCTA)
+        + Convert.ToInt32(Global.Configuration.BKR);
 
       if (!string.IsNullOrEmpty(Global.Configuration.CustomizationDll) && (totalCustomizationFlagsSet != 0)) {
         throw new Exception("Region specific flag is set such as Copenhagen , DVRPC, Fresno, JAX, Nashville, PSRC or SFCTA but CustomizationDll is already set to: " + Global.Configuration.CustomizationDll);
@@ -1671,10 +1672,13 @@ namespace DaySim {
         Global.Configuration.CustomizationDll = "Nashville.dll";
       } else if (Global.Configuration.PSRC) {
         Global.Configuration.CustomizationDll = "PSRC.dll";
+        Console.WriteLine("PSRC.dll is loaded");
       } else if (Global.Configuration.SFCTA) {
         Global.Configuration.CustomizationDll = "SFCTA.dll";
+      } else if (Global.Configuration.BKR) {
+        Global.Configuration.CustomizationDll = "BKR.dll";
+        Console.WriteLine("BKR.dll is loaded");
       }
     }
-
   }
 }
