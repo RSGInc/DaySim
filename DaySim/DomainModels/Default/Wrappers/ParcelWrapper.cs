@@ -1059,29 +1059,38 @@ namespace DaySim.DomainModels.Default.Wrappers {
       Global.NodeNodePreviousDestinationParcelId[threadAssignedIndex] = destination.Id;
       Global.NodeNodePreviousDistance[threadAssignedIndex] = Constants.DEFAULT_VALUE;
 
+      // get the origin parcel node id and then the index of the node_id
       bool foundOrigin = Global.NodeIndex.TryGetValue(Id, out int oNodeId);
+      foundOrigin = Global.ANodeId.TryGetValue(oNodeId, out int oNodeIdIndex);
+
+      //same logic for destination
       bool foundDestination = Global.NodeIndex.TryGetValue(destination.Id, out int dNodeId);
+      foundDestination = Global.ANodeId.TryGetValue(dNodeId, out int dNodeIdIndex);
 
       if (!foundDestination || !foundOrigin) {
         return Constants.DEFAULT_VALUE;
       }
 
-      if (oNodeId == dNodeId || oNodeId < 1 || dNodeId < 1 || oNodeId > Global.ANodeId.Length || dNodeId > Global.ANodeId.Length) {
+      if (oNodeId == dNodeId || oNodeId < 1 || dNodeId < 1 || oNodeId > Global.ANodeId.Count || dNodeId > Global.ANodeId.Count) {
         return Constants.DEFAULT_VALUE;
       }
 
       int aNodeId = oNodeId;
+      int aNodeIdIndex = oNodeIdIndex;
       int bNodeId = dNodeId;
+      int bNodeIdIndex = dNodeIdIndex;
 
       // if symmetry assumed - use smaller node # as aNode
       if (!Global.Configuration.AllowNodeDistanceAsymmetry) {
-
-        aNodeId = Math.Min(oNodeId, dNodeId);
-        bNodeId = Math.Max(oNodeId, dNodeId);
+        if (oNodeId > dNodeId) {
+          aNodeId = dNodeId;
+          bNodeId = oNodeId;
+          aNodeIdIndex = dNodeIdIndex;
+        }
       }
 
-      int firstRecord = Global.ANodeFirstRecord[aNodeId - 1];
-      int lastRecord = Global.ANodeLastRecord[aNodeId - 1];
+      int firstRecord = Global.ANodeFirstRecord[aNodeIdIndex - 1];
+      int lastRecord = Global.ANodeLastRecord[aNodeIdIndex - 1];
 
       if (firstRecord <= 0 || lastRecord <= 0) {
         return Constants.DEFAULT_VALUE; //there are no b nodes for a node            

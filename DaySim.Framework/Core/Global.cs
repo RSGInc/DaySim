@@ -40,7 +40,7 @@ namespace DaySim.Framework.Core {
 
     public static int LastNodeDistanceRecord { get; set; }
 
-    public static int[] ANodeId { get; set; }
+    public static Dictionary<int, int> ANodeId { get; set; }
 
     public static int[] ANodeFirstRecord { get; set; }
 
@@ -61,6 +61,8 @@ namespace DaySim.Framework.Core {
     public static SegmentZone[][] SegmentZones { get; set; }
 
     public static Dictionary<int, int> NodeIndex { get; set; }
+
+    public static Dictionary<int, int> NodeIndexIndex { get; set; }
 
     public static Dictionary<int, int> TransitStopAreaMapping { get; set; }
 
