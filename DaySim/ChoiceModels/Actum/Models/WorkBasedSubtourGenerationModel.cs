@@ -113,7 +113,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //alternative.AddUtilityTerm(11, (householdDay.Household.Size == 2).ToFlag());
       //alternative.AddUtilityTerm(12, (householdDay.Household.Size == 2 && householdDay.AdultsInSharedHomeStay == 2).ToFlag());
 
-      //alternative.AddUtilityTerm(14, personDay.Person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(14, personDay.Person.WorksAtHome().ToFlag());
       //alternative.AddUtilityTerm(15, personDay.Person.IsNonworkingAdult.ToFlag());
 
       //alternative.AddUtilityTerm(15, (person.IsNonworkingAdult).ToFlag()); //out of scope, non available

@@ -147,8 +147,8 @@ namespace DaySim.Sampling {
                                  Math.Exp(sizeFactors[11]) * parcel.StudentsK8 +
                                  Math.Exp(sizeFactors[12]) * parcel.StudentsUniversity +
                                  Math.Exp(sizeFactors[13]) * parcel.GetLandUseCode19() +
-                                 Math.Exp(sizeFactors[14]) * parcel.OpenSpaceType1Buffer1 +
-                                 Math.Exp(sizeFactors[15]) * openSpaceSize +
+                                 Math.Exp(sizeFactors[14]) * (Global.Configuration.AvoidUsingOpenSpaceInDestinationSampling ? 0.0 : parcel.OpenSpaceType1Buffer1) +
+                                 Math.Exp(sizeFactors[15]) * (Global.Configuration.AvoidUsingOpenSpaceInDestinationSampling ? 0.0 : openSpaceSize) +
                                  Math.Exp(sizeFactors[16]) * parcel.StudentsHighSchool;
 
         double size = 100 * factor;

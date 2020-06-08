@@ -313,7 +313,16 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(28, adultFlag);
           alternative.AddUtilityTerm(29, drivingAgeStudentFlag);
           alternative.AddUtilityTerm(129, destinationParcel.MixedUse2Index1());
-          alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
+          alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1()); 
+          alternative.AddUtilityTerm(123, (tour.OriginParcel.DistanceToFerry > 0 && tour.OriginParcel.DistanceToFerry <= 0.5).ToFlag());
+          alternative.AddUtilityTerm(124, (destinationParcel.DistanceToFerry > 0 && destinationParcel.DistanceToFerry <= 0.5).ToFlag());
+          //alternative.AddUtilityTerm(125, 0.001 * originParcel.NetIntersectionDensity1()
+          //                                         + 0.0001 * originParcel.HouseholdDensity1()
+          //                                         + 1.0 * originParcel.MixedUse4Index1());
+          //alternative.AddUtilityTerm(126, 1.0 * destinationParcel.MixedUse4Index1()
+          //                                         + 0.00001 * destinationParcel.TotalEmploymentDensity1()
+          //                                         + 0.001 * destinationParcel.NetIntersectionDensity1());
+
           //                        alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
           //                        alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
           //                        alternative.AddUtilityTerm(125, originParcel.HouseholdDensity1());

@@ -563,7 +563,7 @@ namespace DaySim.ChoiceModels.H.Models {
           rto80[ct] = (person.Age >= 80 && person.Age <= 98 && person.PersonType == Global.Settings.PersonTypes.RetiredAdult) ? 1 : 0;
           wku40[ct] = (person.Age >= 16 && person.Age <= 39 && person.IsFullOrPartTimeWorker) ? 1 : 0;
           wknok[ct] = (person.IsFullOrPartTimeWorker && !householdDay.Household.HasChildren) ? 1 : 0;
-          wkhom[ct] = (person.IsFullOrPartTimeWorker && person.WorksAtHome) ? 1 : 0;
+          wkhom[ct] = (person.IsFullOrPartTimeWorker && person.WorksAtHome()) ? 1 : 0;
           wtmis[ct] = (person.IsFullOrPartTimeWorker && person.UsualWorkParcel == null) ? 1 : 0;
           stmis[ct] = (person.PersonType >= Global.Settings.PersonTypes.DrivingAgeStudent && person.UsualSchoolParcel == null) ? 1 : 0;
           utmis[ct] = (person.PersonType == Global.Settings.PersonTypes.UniversityStudent && person.UsualSchoolParcel == null) ? 1 : 0;

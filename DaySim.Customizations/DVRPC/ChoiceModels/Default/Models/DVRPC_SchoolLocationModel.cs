@@ -1,23 +1,27 @@
-﻿using DaySim.Framework.ChoiceModels;
+﻿using DaySim.ChoiceModels.Default.Models;
+using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
-using DaySim.Framework.Roster;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DaySim.ChoiceModels.Default.Models {
-  internal class DVRPC_OtherTourDestinationModel : OtherTourDestinationModel {
+namespace DVRPC.ChoiceModels.Default.Models {
+  internal class DVRPC_SchoolLocationModel : SchoolLocationModel {
 
-    protected override void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper _tour, IParcelWrapper destinationParcel) {
-
+    protected override void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) {
 
       //areas 
 
-      int o_int_paphi = (_tour.OriginParcel.ZoneKey <= 4000).ToFlag();
-      int o_int_paoth = (_tour.OriginParcel.ZoneKey <= 18000).ToFlag() * (1 - o_int_paphi);
-      int o_int_nj = (_tour.OriginParcel.ZoneKey > 18000 && _tour.OriginParcel.ZoneKey <= 30000).ToFlag();
-      int o_ext_pa = (_tour.OriginParcel.ZoneKey > 50000 && _tour.OriginParcel.ZoneKey <= 53000).ToFlag();
-      int o_ext_nnj = (_tour.OriginParcel.ZoneKey > 53000 && _tour.OriginParcel.ZoneKey <= 56000).ToFlag();
-      int o_ext_snj = (_tour.OriginParcel.ZoneKey > 56000 && _tour.OriginParcel.ZoneKey <= 58000).ToFlag();
-      int o_ext_oth = (_tour.OriginParcel.ZoneKey > 58000).ToFlag();
+      int o_int_paphi = (_person.Household.ResidenceParcel.ZoneKey <= 4000).ToFlag();
+      int o_int_paoth = (_person.Household.ResidenceParcel.ZoneKey <= 18000).ToFlag() * (1 - o_int_paphi);
+      int o_int_nj = (_person.Household.ResidenceParcel.ZoneKey > 18000 && _person.Household.ResidenceParcel.ZoneKey <= 30000).ToFlag();
+      int o_ext_pa = (_person.Household.ResidenceParcel.ZoneKey > 50000 && _person.Household.ResidenceParcel.ZoneKey <= 53000).ToFlag();
+      int o_ext_nnj = (_person.Household.ResidenceParcel.ZoneKey > 53000 && _person.Household.ResidenceParcel.ZoneKey <= 56000).ToFlag();
+      int o_ext_snj = (_person.Household.ResidenceParcel.ZoneKey > 56000 && _person.Household.ResidenceParcel.ZoneKey <= 58000).ToFlag();
+      int o_ext_oth = (_person.Household.ResidenceParcel.ZoneKey > 58000).ToFlag();
 
       int d_int_paphi = (destinationParcel.ZoneKey <= 4000).ToFlag();
       int d_int_paoth = (destinationParcel.ZoneKey <= 18000).ToFlag() * (1 - d_int_paphi);
@@ -26,9 +30,6 @@ namespace DaySim.ChoiceModels.Default.Models {
       int d_ext_nnj = (destinationParcel.ZoneKey > 53000 && destinationParcel.ZoneKey <= 56000).ToFlag();
       int d_ext_snj = (destinationParcel.ZoneKey > 56000 && destinationParcel.ZoneKey <= 58000).ToFlag();
       int d_ext_oth = (destinationParcel.ZoneKey > 58000).ToFlag();
-
-
-      alternative.AddUtilityTerm(130, (_tour.OriginParcel.Id == destinationParcel.Id).ToFlag());
 
       alternative.AddUtilityTerm(131, o_int_paphi * d_int_paphi);
       alternative.AddUtilityTerm(132, o_int_paphi * d_int_paoth);
@@ -85,19 +86,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(195, o_ext_snj * d_ext_nnj);
       alternative.AddUtilityTerm(196, o_ext_snj * d_ext_oth);
       alternative.AddUtilityTerm(197, o_ext_snj * d_ext_snj);
-
-      //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #
-
-      //int origState = _tour.OriginParcel.District;
-      //int destState = destinationParcel.District;
-
-      //int bridgeFromNJ = (origState == 34 && destState > 0 && destState != 34).ToFlag();
-      //int bridgeToNJ = (destState == 34 && origState > 0 && origState != 34).ToFlag();
-
-      //alternative.AddUtilityTerm(114, bridgeFromNJ);
-      //alternative.AddUtilityTerm(115, bridgeToNJ);
     }
-
 
   }
 }
