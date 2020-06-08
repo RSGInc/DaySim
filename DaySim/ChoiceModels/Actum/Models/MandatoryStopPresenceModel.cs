@@ -125,7 +125,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(21, 1);
 
       //alternative.AddUtilityTerm(22, personDay.Person.IsChildUnder5.ToFlag());
-      alternative.AddUtilityTerm(23, personDay.Person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(23, personDay.Person.WorksAtHome().ToFlag());
       alternative.AddUtilityTerm(24, personDay.Person.IsFulltimeWorker.ToFlag());
       //alternative.AddUtilityTerm(25, personDay.Person.IsPartTimeWorker.ToFlag());
       alternative.AddUtilityTerm(25, personDay.Person.IsMale.ToFlag());
@@ -149,7 +149,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = 2;
       alternative.AddUtilityTerm(41, 1);
 
-      //alternative.AddUtilityTerm(43, personDay.Person.WorksAtHome.ToFlag());
+      //alternative.AddUtilityTerm(43, personDay.Person.WorksAtHome().ToFlag());
       //alternative.AddUtilityTerm(44, personDay.Person.IsFulltimeWorker.ToFlag());
       //alternative.AddUtilityTerm(45, personDay.Person.IsPartTimeWorker.ToFlag());
       //alternative.AddUtilityTerm(46, personDay.Person.IsMale.ToFlag());

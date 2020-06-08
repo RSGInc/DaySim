@@ -212,7 +212,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.Choice = 3;
 
       alternative.AddUtilityTerm(41, 1);
-      alternative.AddUtilityTerm(42, person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(42, person.WorksAtHome().ToFlag());
 
       //GV: introduced again - 10. june 2016; not sign.
       //alternative.AddUtilityTerm(43, person.IsUniversityStudent.ToFlag());

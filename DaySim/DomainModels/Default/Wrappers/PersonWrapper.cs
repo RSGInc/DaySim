@@ -71,7 +71,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       AgeIsBetween51And98 = person.Age.IsBetween(51, 98);
       AgeIsLessThan35 = person.Age < 35;
       AgeIsLessThan30 = person.Age < 30;
-      WorksAtHome = UsualWorkParcelId == Household.ResidenceParcelId;
+      //WorksAtHome = UsualWorkParcelId == Household.ResidenceParcelId;
       IsYouth = IsChildAge5Through15 || IsDrivingAgeStudent;
     }
 
@@ -267,7 +267,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public bool AgeIsLessThan30 { get; set; }
 
-    public bool WorksAtHome { get; set; }
+    //public bool WorksAtHome { get; set; }
 
     public bool IsYouth { get; set; }
 
@@ -283,6 +283,10 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public bool IsOnlyFullOrPartTimeWorker() {
       return (IsFulltimeWorker || IsPartTimeWorker) && Household.HouseholdTotals.FullAndPartTimeWorkers == 1;
+    }
+
+    public virtual bool WorksAtHome() {
+      return (UsualWorkParcelId == Household.ResidenceParcelId);
     }
 
     public virtual bool IsOnlyAdult() {

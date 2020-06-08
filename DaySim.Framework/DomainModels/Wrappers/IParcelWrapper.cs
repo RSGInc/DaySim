@@ -160,6 +160,20 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     double CircuityDistance(IParcelWrapper destination);
 
+    double PCA_DensityTerm_Buffer1();
+    double PCA_WalkabilityTerm_Buffer1();
+    double PCA_MixedUseTerm_Buffer1();
+    double PCA_TransitAccessTerm_Buffer1();
+
+    int CoreCBD_AreaType_Buffer1();
+    int FringCBD_AreaType_Buffer1();
+    int CBD_AreaType_Buffer1();
+    int Urban_AreaType_Buffer1();
+    int Suburban_AreaType_Buffer1();
+    int Rural_AreaType_Buffer1();
+    int OpenRural_AreaType_Buffer1();
+    int AllRural_AreaType_Buffer1();
+
     //        void SetFirstAndLastStopAreaDistanceIndexes();
 
     #endregion
