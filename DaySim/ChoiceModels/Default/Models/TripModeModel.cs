@@ -412,6 +412,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(124, hov3TourFlag);
           alternative.AddUtilityTerm(125, hov2TourFlag);
           alternative.AddUtilityTerm(134, tncTourFlag);
+          alternative.AddUtilityTerm(139, (!trip.IsHalfTourFromOrigin).ToFlag());
         } else if (mode == Global.Settings.Modes.Bike) {
           alternative.AddUtilityTerm(60, 1);
           alternative.AddUtilityTerm(61, maleFlag);
