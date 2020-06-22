@@ -32,7 +32,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       double distanceFromOrigin = _person.Household.ResidenceParcel.DistanceFromOrigin(destinationParcel, Global.Settings.Times.EightAM);
 
       alternative.AddUtilityTerm(121, o_int_nj * distanceFromOrigin);
-      alternative.AddUtilityTerm(121, o_int_paoth * distanceFromOrigin);
+      alternative.AddUtilityTerm(122, o_int_paoth * distanceFromOrigin);
       alternative.AddUtilityTerm(123, cbdDest * distanceFromOrigin);
       alternative.AddUtilityTerm(124, cbdDest );
       alternative.AddUtilityTerm(125, cbdDest * (_person.Household.Income < 50000).ToFlag());

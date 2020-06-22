@@ -32,7 +32,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       double distanceFromOrigin = _tour.OriginParcel.DistanceFromOrigin(destinationParcel, _tour.DestinationArrivalTime);
 
       alternative.AddUtilityTerm(121, o_int_nj * distanceFromOrigin);
-      alternative.AddUtilityTerm(121, o_int_paoth * distanceFromOrigin);
+      alternative.AddUtilityTerm(122, o_int_paoth * distanceFromOrigin);
       alternative.AddUtilityTerm(123, cbdDest * distanceFromOrigin);
       alternative.AddUtilityTerm(124, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness).ToFlag());
       alternative.AddUtilityTerm(125, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.Shopping).ToFlag());
