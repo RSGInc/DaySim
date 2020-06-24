@@ -32,7 +32,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.OtherTourDestinationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
     }
 
-    protected virtual void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour, IParcelWrapper destinationParcel) {
+    protected virtual void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour, IParcelWrapper destinationParcel, IPersonWrapper person) {
       //see PSRC_OtherTourDestinationModel for example
       //Global.PrintFile.WriteLine("Generic OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients being called so must not be overridden by CustomizationDll");
     }
@@ -382,7 +382,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         }
 
         //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #
-        _parentClass.RegionSpecificOtherTourDistrictCoefficients(alternative, _tour, destinationParcel);
+        _parentClass.RegionSpecificOtherTourDistrictCoefficients(alternative, _tour, destinationParcel, person);
 
         // OD shadow pricing
         if (Global.Configuration.ShouldUseODShadowPricing) {
