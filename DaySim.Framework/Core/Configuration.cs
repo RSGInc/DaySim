@@ -2240,19 +2240,23 @@ namespace DaySim.Framework.Core {
     public double COMPASS_Own0VehiclesCoefficient { get; set; }
 
     [XmlAttribute]
-    public double COMPASS_DestinationParkingLogCapacityCoefficient { get; set; }
+    public double COMPASS_DestinationParkingLogCapacityCoefficient { get; set; } = 1.0;
     [XmlAttribute]
-    public double COMPASS_DestinationParkingDriveAccessTimeCoefficient { get; set; }
+    public double COMPASS_DestinationParkingDriveAccessTimeCoefficient { get; set; } = 1.0;
     [XmlAttribute]
-    public double COMPASS_DestinationParkingWalkEgressTimeCoefficient { get; set; }
+    public double COMPASS_DestinationParkingWalkEgressTimeCoefficient { get; set; } = 2.0;
     [XmlAttribute]
-    public double COMPASS_DestinationParkingRandomTermCoefficient { get; set; }
+    public double COMPASS_DestinationParkingRandomTermCoefficient { get; set; } = 5.0;
     [XmlAttribute]
-    public double COMPASS_DestinationParkingOffStreetGarageTypeConstant { get; set; }
+    public double COMPASS_DestinationParkingOffStreetGarageTypeConstant { get; set; } = -20.0;
     [XmlAttribute]
-    public double COMPASS_DestinationParkingOffStreetLotTypeConstant { get; set; }
+    public double COMPASS_DestinationParkingOffStreetLotTypeConstant { get; set; } = -10.0;
     [XmlAttribute]
-    public double COMPASS_DestinationParkingOffStreetPrivateTypeConstant { get; set; }
+    public double COMPASS_DestinationParkingOffStreetPrivateTypeConstant { get; set; } = -10.0;
+    [XmlAttribute]
+    public double COMPASS_DestinationParkingElectricVehicleChargingBonus { get; set; } = -15.0;
+
+
 
     [XmlAttribute]
     public double COMPASS_FractionOfBikeTripsUsingEBikes { get; set; } = 0.01;

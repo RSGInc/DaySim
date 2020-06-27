@@ -275,7 +275,6 @@ namespace DaySim.DomainModels.Actum.Wrappers {
 
       if ((Mode != Global.Settings.Modes.Sov && Mode != Global.Settings.Modes.HovDriver)
         || destPurpose == Global.Settings.Purposes.NoneOrHome
-        || (destIsUsualWorkplace && Tour.Person.PaidParkingAtWorkplace == 0)
         || destParcel.ParkingDataAvailable == 0) {
         return;
       }
@@ -348,22 +347,22 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         parkDepartTime = Math.Min(1439, destDepartTime + (int)walkTime);
 
         // set utility
-        double parkPrice = node.CalculateParkingPrice(parkArriveTime, parkDepartTime, destPurpose);
+        double parkPrice = (destIsUsualWorkplace && Tour.Person.PaidParkingAtWorkplace == 0) ? 0.0 : node.CalculateParkingPrice(parkArriveTime, parkDepartTime, destPurpose);
         double randomNormalTerm = Household.RandomUtility.Normal(0, 1);
 
         double parkingTypeConstant = (node.LocationType == 2) ? Global.Configuration.COMPASS_DestinationParkingOffStreetGarageTypeConstant
                                    : (node.LocationType == 3) ? Global.Configuration.COMPASS_DestinationParkingOffStreetLotTypeConstant
                                    : (node.LocationType == 4) ? Global.Configuration.COMPASS_DestinationParkingOffStreetPrivateTypeConstant
                                    : 0.0;
+        double electricChargingBonus = (node.ParkingType == 5) ? Global.Configuration.COMPASS_DestinationParkingElectricVehicleChargingBonus: 0.0;
 
         double searchTime = (Global.Configuration.ShouldUseDestinationParkingShadowPricing && !Global.Configuration.IsInEstimationMode) ? node.ShadowPrice[parkArriveTime] : 0.0;
 
-        double timeCost = parkingTypeConstant + searchTime
-                       + (parkPrice / Math.Min(Math.Max(ValueOfTime,5),500)) * 60.0 
+        double timeCost = parkingTypeConstant + electricChargingBonus + searchTime
+                       + ((parkPrice / Math.Min(Math.Max(ValueOfTime,5),500)) * 60.0)
                        + driveGenTime * Global.Configuration.COMPASS_DestinationParkingDriveAccessTimeCoefficient
                        + walkTime * Global.Configuration.COMPASS_DestinationParkingWalkEgressTimeCoefficient
                        + randomNormalTerm * Global.Configuration.COMPASS_DestinationParkingRandomTermCoefficient;
-
 
 
         double utility = Math.Log(node.Capacity) * Global.Configuration.COMPASS_DestinationParkingLogCapacityCoefficient

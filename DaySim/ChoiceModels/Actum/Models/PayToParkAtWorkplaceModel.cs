@@ -34,7 +34,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       person.ResetRandom(2);
 
       //JB 20190427 If parking data isn't available we asume person doesn't pay to park
-      IActumParcelWrapper workerUsualParcel_x = (IActumParcelWrapper)person.UsualWorkParcel; 
+      IActumParcelWrapper workerUsualParcel_x = (IActumParcelWrapper)person.UsualWorkParcel;
       if (workerUsualParcel_x.ParkingDataAvailable == 0) {
         person.PaidParkingAtWorkplace = 0;
         return;
@@ -66,7 +66,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       }
     }
 
-    
+
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person_x, int choice = Constants.DEFAULT_VALUE) {
       //MB check for access to new Actum person properties
       //requres a changing name in call, and cast to a new variable called person, and using DaySim.DomainModels.Actum.Wrappers.Interfaces in header
@@ -89,15 +89,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //end check
 
       //JB: 19.3.2019
-      IActumParcelWrapper workerUsualParcel = (IActumParcelWrapper)person.UsualWorkParcel; 
+      IActumParcelWrapper workerUsualParcel = (IActumParcelWrapper)person.UsualWorkParcel;
 
       //JB 20190427
-      int personalIncomeMissingFlag = personalIncome < 0? 1 : 0;
-      int personalIncomeUnder300Flag = (personalIncome >=0 && personalIncome <300000)? 1 : 0;
-      int personalIncomeOver600Flag = personalIncome >= 600000? 1 : 0;
-      double personalIncomeInThousands = personalIncomeMissingFlag == 1 ? 0 : personalIncome/1000;
-      int householdIncomeMissingFlag = household.Income < 0? 1 : 0;
-      double householdIncomeInThousands = householdIncomeMissingFlag == 1 ? 0 : household.Income/1000;
+      int personalIncomeMissingFlag = personalIncome < 0 ? 1 : 0;
+      int personalIncomeUnder300Flag = (personalIncome >= 0 && personalIncome < 300000) ? 1 : 0;
+      int personalIncomeOver600Flag = personalIncome >= 600000 ? 1 : 0;
+      double personalIncomeInThousands = personalIncomeMissingFlag == 1 ? 0 : personalIncome / 1000;
+      int householdIncomeMissingFlag = household.Income < 0 ? 1 : 0;
+      double householdIncomeInThousands = householdIncomeMissingFlag == 1 ? 0 : household.Income / 1000;
 
 
       //GV: 15.3. introducion CPH muni., Frederiksberg Muni. and CPHcity
@@ -106,6 +106,20 @@ namespace DaySim.ChoiceModels.Actum.Models {
       if (workerUsualParcel.LandUseCode == 101) {
         workLocationIsInCPHMuni = true;
       }
+
+      //JB: 20200625
+      bool workLocationIsInCPHMuni1 = false;
+      bool workLocationIsInCPHMuni2 = false;
+      if (workLocationIsInCPHMuni) {
+        if (workerUsualParcel.DistrictID == 1) {
+          workLocationIsInCPHMuni1 = true;
+        } else {
+          workLocationIsInCPHMuni2 = true;
+        }
+      }
+
+
+
 
       //GV: 13.3.2019 - added Frederiksberg Mun.
       bool workLocationIsInFDBMuni = false;
@@ -130,11 +144,15 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //double Bf1NoParking = (Math.Max(1.0, workerUsualParcel.ParkingOffStreetPaidDailySpacesBuffer1));
       double Bf1FreeEmpParkingSpaces = workerUsualParcel.EmployeeOnlyParkingSpacesBuffer1;
       double Bf1FreeEmpParkingSpaces_x = (Math.Max(1.0, workerUsualParcel.EmployeeOnlyParkingSpacesBuffer1));
-      double Bf1FreeEmpParkingRatio = Math.Min( 1.0, Bf1FreeEmpParkingSpaces / Math.Max(workerUsualParcel.EmploymentTotalBuffer1,1.0));
-      double Bf1LogFreeEmpParkingRatio = Math.Log (Bf1FreeEmpParkingRatio + 0.001);
+      double Bf1FreeEmpParkingRatio = Math.Min(1.0, Bf1FreeEmpParkingSpaces / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1.0));
+      double Bf1LogFreeEmpParkingRatio = Math.Log(Bf1FreeEmpParkingRatio + 0.001);
       //GV: 15. mar. 2019 - no. of parkig places in Buffer2 area
       //double Bf2NoParking = (Math.Max(1.0, workerUsualParcel.ParkingOffStreetPaidDailySpacesBuffer2));
       double Bf2NoParking = (Math.Max(1.0, workerUsualParcel.EmployeeOnlyParkingSpacesBuffer2));
+
+      //GV: 13.6.2020 - mail from COH where EmployeeONLY parking places should be without Buffer
+      double FreeEmpParkingSpaces = workerUsualParcel.EmployeeOnlyParkingSpaces;
+
 
       //GV: 15. mar. 2019 - parkig costs in the workplace area
       //double destParkingCost = (Math.Max(1.0, workerUsualParcel.ParkingOffStreetPaidDailyPrice));
@@ -164,7 +182,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       // 0 No paid parking at work
 
-    ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0); 
+      ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
 
       alternative.Choice = 0;
 
@@ -180,14 +198,26 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(2, person.IsPartTimeWorker.ToFlag());
       //GV: 15.3.2019 - FTW instead
       //alternative.AddUtilityTerm(3, person.IsNotFullOrPartTimeWorker.ToFlag());
-      alternative.AddUtilityTerm(3, person.IsFulltimeWorker.ToFlag());
+
+      //JB: 20200625 comment out the following three AddUtilityTerm statements for coefficients 3, 4 and 5
+      //alternative.AddUtilityTerm(3, person.IsFulltimeWorker.ToFlag());
       //GV: 15.3.2019 - self employed person
-      alternative.AddUtilityTerm(4, (person.OccupationCode == 8).ToFlag());
+      //alternative.AddUtilityTerm(4, (person.OccupationCode == 8).ToFlag());
       //GV: 15.3.2019 - male
-      alternative.AddUtilityTerm(5, (person.IsFullOrPartTimeWorker && person.IsMale).ToFlag());
+      //alternative.AddUtilityTerm(5, (person.IsFullOrPartTimeWorker && person.IsMale).ToFlag());
 
+      //JB: 20200625 split KK coef (coef 4) into two (coef 3 and 4)
+      //GV: 16.6.2020 - KK municip.
+      //alternative.AddUtilityTerm(4, (workLocationIsInCPHMuni).ToFlag());
+      alternative.AddUtilityTerm(3, (workLocationIsInCPHMuni1).ToFlag());
+      alternative.AddUtilityTerm(4, (workLocationIsInCPHMuni2).ToFlag());
+      //GV: 16.6.2020 - Frederiksberg municipality
+      alternative.AddUtilityTerm(5, (workLocationIsInFDBMuni).ToFlag());
+      //GV: 12.6.2019 - CPHcity
+      alternative.AddUtilityTerm(6, (workLocationIsInCPHcity).ToFlag());
+      //GV: 13.6.2019 - rest of GCA
+      alternative.AddUtilityTerm(7, (!workLocationIsInCPHcity).ToFlag());
 
-      
       //GV: 15.3.2019 - income
       //JB 20190427 Try the following variations and use the best one:
       //  v1:  10, 11, 12
@@ -236,13 +266,34 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       //GV: 15.3.2019 - parking costs
       //JB 20190427 test separately and use one or the other of the two price terms. beta should be positive
-      alternative.AddUtilityTerm(19, Bf1ParkingPrice);  
+      alternative.AddUtilityTerm(19, Bf1ParkingPrice);
       alternative.AddUtilityTerm(20, Bf1LogParkingPrice);
-      
+
       //JB 20190427 test separately and use one or the other of the three free parking spaces terms. beta should be negative  
       alternative.AddUtilityTerm(21, Bf1FreeEmpParkingSpaces);
-      alternative.AddUtilityTerm(22, Bf1FreeEmpParkingRatio);
-      alternative.AddUtilityTerm(23, Bf1LogFreeEmpParkingRatio); 
+
+      //alternative.AddUtilityTerm(22, Bf1FreeEmpParkingRatio);
+      //alternative.AddUtilityTerm(23, Bf1LogFreeEmpParkingRatio);
+
+      //GV: 13.6.2020 - mail from COH where parking places for Emoloyers should net be Buffered
+      //alternative.AddUtilityTerm(21, (FreeEmpParkingSpaces * workLocationIsInCPHcity.ToFlag()));
+
+
+      //JB: 12.6.20202
+      //The second idea:  Add another term to represent some or all of the spaces not included in the beta 21 term(Bf1FreeEmpParkingSpaces).
+      //I’m not sure whether it should be a linear form like beta21, or perhaps a log form.  
+      //Perhaps if few of these spaces are available the person is more likely to have to pay to park at work.  
+      //(PublicNoResidentialPermitAllowedParkingSpacesBuffer1; PublicWithResidentialPermitAllowedParkingSpacesBuffer1; 
+      //ResidentialPermitOnlyParkingSpacesBuffer1(probably don’t use this); ElectricVehicleOnlyParkingSpacesBuffer1(perhaps don’t use this)
+      //GV: added on 12.6.2020 - see above
+      //alternative.AddUtilityTerm(24, workerUsualParcel.PublicNoResidentialPermitAllowedParkingSpacesBuffer1);
+      //alternative.AddUtilityTerm(25, workerUsualParcel.PublicWithResidentialPermitAllowedParkingSpacesBuffer1); 
+
+      //GV: 13.6.2020 - mail from COH where Public parking places (type 1+2) should be Buffered and in CPH
+      alternative.AddUtilityTerm(24, (Bf1PubNoResSpaces + Bf1PubWithResSpaces) * workLocationIsInCPHcity.ToFlag());
+
+      //GV: 13.6.2020 - mail from COH where Public parking places (type 1+2) should be Buffered and in the rest of GCA
+      alternative.AddUtilityTerm(25, (Bf1PubNoResSpaces + Bf1PubWithResSpaces) * (!workLocationIsInCPHcity).ToFlag());
 
 
       //GV: 18.3.2019 - 
@@ -268,7 +319,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //GV: OBS! CPHcity ONLY
       alternative.AddUtilityTerm(29, (workerUsualParcel.EmploymentGovernmentBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(30, (workerUsualParcel.EmploymentOfficeBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
-      alternative.AddUtilityTerm(31, (workerUsualParcel.EmploymentRetailBuffer1  / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
+      alternative.AddUtilityTerm(31, (workerUsualParcel.EmploymentRetailBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(32, (workerUsualParcel.EmploymentEducationBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(33, (workerUsualParcel.EmploymentIndustrialBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(34, (workerUsualParcel.EmploymentMedicalBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * Bf1FreeEmpParkingSpaces_x * workLocationIsInCPHcity.ToFlag()));
@@ -280,7 +331,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       //JB 20190427 39-47 are an alternative to try instead of 29-37.  Use one set or the other; don't mix and match
       alternative.AddUtilityTerm(39, (workerUsualParcel.EmploymentGovernmentBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(40, (workerUsualParcel.EmploymentOfficeBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));
-      alternative.AddUtilityTerm(41, (workerUsualParcel.EmploymentRetailBuffer1  / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));
+      alternative.AddUtilityTerm(41, (workerUsualParcel.EmploymentRetailBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(42, (workerUsualParcel.EmploymentEducationBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(43, (workerUsualParcel.EmploymentIndustrialBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));
       alternative.AddUtilityTerm(44, (workerUsualParcel.EmploymentMedicalBuffer1 / Math.Max(workerUsualParcel.EmploymentTotalBuffer1, 1) * workLocationIsInCPHcity.ToFlag()));

@@ -248,7 +248,9 @@ namespace DaySim.ChoiceModels.H {
         int departurePeriodAvailableMinutes = timeWindow.TotalAvailableMinutes(departurePeriod.Start, departurePeriod.End);
         int householdCars = constrainedHouseholdCars >= 0 ? constrainedHouseholdCars : tour.Household.VehiclesAvailable;
         //intead of passing persontype for Actum, pass result of PayToParkAtWorplace model, or -1 if runNested 
-        int paidParkingDepartTime = (skipParkingChoice || tour.Person.PaidParkingAtWorkplace != 1) ? -1 : departurePeriod.Middle + 60; //1 hour duration if during same period
+        int paidParkingDepartTime = (skipParkingChoice) ? -1 : departurePeriod.Middle + 60  //1 hour duration if during same period
+         + 10000 * (tour.DestinationPurpose == Global.Settings.Purposes.Work && tour.DestinationParcelId == tour.Person.UsualWorkParcelId
+                   && tour.Person.PaidParkingAtWorkplace == 0).ToFlag(); //plus add 10000 if work tour to usual workplace and free parking
         double transitDiscountFraction = constrainedTransitDiscountFraction >= 0 ? constrainedTransitDiscountFraction : tour.Person.GetTransitFareDiscountFraction();
 
 

@@ -529,6 +529,9 @@ namespace DaySim.PathTypeModels {
         if (Global.Configuration.ShouldRunDestinationParkingLocationModel && destParcel.ParkingDataAvailable > 0
            && Global.Configuration.ShouldUseDestinatonParkingInPathTypeModel) {
 
+          bool freeParkingAtWork = (_parkingDepartTime >= 10000);
+          _parkingDepartTime = _parkingDepartTime - 10000 * freeParkingAtWork.ToFlag();
+
           bool destIsWorkplace = (destPurpose == Global.Settings.Purposes.Work || destPurpose == Global.Settings.Purposes.Business);
 
           int destArriveTime = _outboundTime;
@@ -588,7 +591,7 @@ namespace DaySim.PathTypeModels {
             parkDepartTime = Math.Min(1439, destDepartTime + (int)walkTime);
 
             // set utility
-            double parkPrice = (skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts) ? 0.0 :
+            double parkPrice = (freeParkingAtWork || (skimModeIn == Global.Settings.Modes.HovPassenger && !Global.Configuration.HOVPassengersIncurCosts)) ? 0.0 :
             node.CalculateParkingPrice(parkArriveTime, parkDepartTime, destPurpose) * (1.0 - evParkPriceDiscount);
             double randomNormalTerm = 0;
 
@@ -597,10 +600,11 @@ namespace DaySim.PathTypeModels {
                                        : (node.LocationType == 4) ? Global.Configuration.COMPASS_DestinationParkingOffStreetPrivateTypeConstant
                                      : 0.0;
 
+            double electricChargingBonus = (node.ParkingType == 5) ? Global.Configuration.COMPASS_DestinationParkingElectricVehicleChargingBonus : 0.0;
+
             double searchTime = (Global.Configuration.ShouldUseDestinationParkingShadowPricing && !Global.Configuration.IsInEstimationMode) ? node.ShadowPrice[parkArriveTime] : 0.0;
 
-            double genTime = parkingTypeConstant
-                            + searchTime
+            double genTime = parkingTypeConstant + electricChargingBonus + searchTime
                             + driveGenTime * Global.Configuration.COMPASS_DestinationParkingDriveAccessTimeCoefficient
                             + walkTime * Global.Configuration.COMPASS_DestinationParkingWalkEgressTimeCoefficient
                             + randomNormalTerm * Global.Configuration.COMPASS_DestinationParkingRandomTermCoefficient;
