@@ -21,7 +21,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     private const int FREE_ON_STREET = 2;
     private const int METERED_ON_STREET = 3;
     private const int PUBLIC_OFF_STREET = 4;
-    public const int UNAVAILABLE_PRICE_INDICATOR = -999;
+    public const int UNAVAILABLE_PRICE_INDICATOR = 0;
 
 
     [UsedImplicitly]

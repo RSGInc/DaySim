@@ -316,6 +316,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       double bestLocationParkPrice = -1;
       int parkArriveTime = 0;
       int parkDepartTime = 0;
+      double bestLocationDriveDistance = -1;
+      double bestLocationDriveTime = -1;
 
       for (int index = firstIndex; index <= lastIndex; index++) {
 
@@ -338,8 +340,22 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         int parkParcelId = Global.ParcelToDestinationParkingLocationMicrozoneIds[index];
         ParcelWrapper parkParcel = (ParcelWrapper)ChoiceModelFactory.Parcels[parkParcelId];
 
-        SkimValue autoSkim = ImpedanceRoster.GetValue("lstime", Mode, Global.Settings.PathTypes.FullNetwork, 60, ArrivalTime, origParcel, parkParcel, Constants.DEFAULT_VALUE);
-        double driveGenTime = autoSkim.Variable;
+        double driveDistance = ImpedanceRoster.GetValue("distance", Mode, Global.Settings.PathTypes.FullNetwork, 60, ArrivalTime, origParcel, parkParcel, Constants.DEFAULT_VALUE).Variable;
+        double driveTime = ImpedanceRoster.GetValue("time", Mode, Global.Settings.PathTypes.FullNetwork, 60, ArrivalTime, origParcel, parkParcel, Constants.DEFAULT_VALUE).Variable;
+        double driveGenTime = ImpedanceRoster.GetValue("lstime", Mode, Global.Settings.PathTypes.FullNetwork, 60, ArrivalTime, origParcel, parkParcel, Constants.DEFAULT_VALUE).Variable;
+        if (driveDistance < Constants.EPSILON || driveTime < Constants.EPSILON || driveGenTime < Constants.EPSILON) {
+          double mzDistance = ImpedanceRoster.GetValue("distance-mz", Global.Settings.Modes.Walk, Global.Settings.PathTypes.FullNetwork, 60, destArriveTime, origParcel, parkParcel, Constants.DEFAULT_VALUE).Variable / 1000.0; //in km
+          driveDistance = mzDistance * Global.Configuration.COMPASS_IntrazonalStraightLineDistanceFactor;
+          if (Mode == Global.Settings.Modes.Sov) {
+            driveTime = driveDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_SOV;
+            driveGenTime = driveTime  * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_SOV
+                                      + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_SOV;
+          } else {
+            driveTime = driveDistance * Global.Configuration.COMPASS_IntrazonalMinutesPerKM_HOV;
+            driveGenTime = driveTime  * Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesPerMinute_HOV
+                                      + Global.Configuration.COMPASS_IntrazonalGeneralizedMinutesExtra_HOV;
+          }
+        }
 
         double walkDistance = Global.ParcelToDestinationParkingLocationLength[index] / 1000.0; //convert to km
         double walkTime = walkDistance * Global.Configuration.PathImpedance_WalkMinutesPerDistanceUnit;
@@ -364,7 +380,6 @@ namespace DaySim.DomainModels.Actum.Wrappers {
                        + walkTime * Global.Configuration.COMPASS_DestinationParkingWalkEgressTimeCoefficient
                        + randomNormalTerm * Global.Configuration.COMPASS_DestinationParkingRandomTermCoefficient;
 
-
         double utility = Math.Log(node.Capacity) * Global.Configuration.COMPASS_DestinationParkingLogCapacityCoefficient
                       + timeCost * Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute;
 
@@ -376,6 +391,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           bestLocationWalkDistance = walkDistance;
           bestLocationWalkTime = walkTime;
           bestLocationParkPrice = parkPrice;
+          bestLocationDriveTime = driveTime;
+          bestLocationDriveDistance = driveDistance;
         }
       }
       if (bestLocationId > 0) {
@@ -386,6 +403,10 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         EgressDistance = bestLocationWalkDistance;
         EgressTime = bestLocationWalkTime;
         EgressCost = bestLocationParkPrice;
+        TravelTime = bestLocationDriveTime + bestLocationWalkTime;
+        TravelDistance = bestLocationDriveDistance + bestLocationWalkDistance;
+        TravelCost = TravelCost + bestLocationParkPrice;
+        ArrivalTime = Math.Min(1439, DepartureTime + (int)TravelTime);
         SetDestinationParkingStay(parkArriveTime, parkDepartTime);
       };
     }

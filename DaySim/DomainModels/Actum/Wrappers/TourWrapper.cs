@@ -337,24 +337,31 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         }
         if (Global.Configuration.ShouldRunDestinationParkingLocationModel) { 
           trips[i].RunDestinationParkingLocationModel();
-          // if it found a location, copy egress data onto access record for next trip, if it's a car trip
-          IActumTripWrapper ctrip = (IActumTripWrapper)trips[i];
-          if ((ctrip.Mode == Global.Settings.Modes.Sov || ctrip.Mode == Global.Settings.Modes.HovDriver) && ctrip.EgressParkingNodeID > 0) {
-            int ii = (i==0) ? HalfTourFromOrigin.Trips.Count : (ctrip.IsHalfTourFromOrigin) ? i - 1 : i + 1;
-            if (ii>=0 && ii<trips.Count) { 
-              IActumTripWrapper ntrip = (IActumTripWrapper)trips[ii];
-              if (ntrip != null && (ntrip.Mode == Global.Settings.Modes.Sov || ctrip.Mode == Global.Settings.Modes.HovDriver || ctrip.Mode == Global.Settings.Modes.HovPassenger)) {
-                ntrip.AccessParkingNodeID = ctrip.EgressParkingNodeID;
-                ntrip.AccessTerminalParcelID = ctrip.EgressTerminalParcelID;
-                ntrip.AccessTerminalZoneID = ctrip.EgressTerminalZoneID;
-                ntrip.AccessMode = ctrip.EgressMode;
-                ntrip.AccessDistance = ctrip.EgressDistance;
-                ntrip.AccessTime = ctrip.EgressTime;
-                ntrip.AccessCost = 0;
-              }
-            }
-          }   
         }
+      }
+      for (int i = 0; i < trips.Count; i++) {
+        // if it found a location, copy egress data onto access record for next trip, if it's a car trip
+        IActumTripWrapper ctrip = (IActumTripWrapper)trips[i];
+        if ((ctrip.Mode == Global.Settings.Modes.Sov || ctrip.Mode == Global.Settings.Modes.HovDriver) && ctrip.EgressParkingNodeID > 0) {
+          int ii = (i == 0) ? HalfTourFromOrigin.Trips.Count : (ctrip.IsHalfTourFromOrigin) ? i - 1 : i + 1;
+          if (ii >= 0 && ii < trips.Count) {
+            IActumTripWrapper ntrip = (IActumTripWrapper)trips[ii];
+            if (ntrip != null && (ntrip.Mode == Global.Settings.Modes.Sov || ctrip.Mode == Global.Settings.Modes.HovDriver || ctrip.Mode == Global.Settings.Modes.HovPassenger)) {
+              ntrip.AccessParkingNodeID = ctrip.EgressParkingNodeID;
+              ntrip.AccessTerminalParcelID = ctrip.EgressTerminalParcelID;
+              ntrip.AccessTerminalZoneID = ctrip.EgressTerminalZoneID;
+              ntrip.AccessMode = ctrip.EgressMode;
+              ntrip.AccessDistance = ctrip.EgressDistance;
+              ntrip.AccessTime = ctrip.EgressTime;
+              ntrip.AccessCost = 0;
+              ntrip.TravelTime = ntrip.TravelTime + ntrip.AccessTime;
+              ntrip.TravelCost = ntrip.TravelCost + ntrip.AccessCost;
+              ntrip.TravelDistance = ntrip.TravelDistance + ntrip.AccessDistance;
+              ntrip.DepartureTime = Math.Max(1, ntrip.DepartureTime - (int)ntrip.AccessTime);
+            }
+          }
+        }
+
       }
     }
 

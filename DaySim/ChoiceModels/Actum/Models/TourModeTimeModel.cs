@@ -898,7 +898,16 @@ namespace DaySim.ChoiceModels.Actum.Models {
               modeTimes.GeneralizedTimeFromDestination < Constants.EPSILON ||
               modeTimes.GeneralizedTimeToDestination > Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit ||
               modeTimes.GeneralizedTimeFromDestination > Global.Configuration.PathImpedance_AvailablePathUpperTimeLimit) {
-            available = false;
+              //if (mode >= 3 && mode <= 5) {
+              //   Global.PrintFile.WriteLine("Aper Dper Mode {0} {1} {2} Travel Times {3} {4} GenTimes {5} {6}",
+              //                                             arrivalPeriod.Index, departurePeriod.Index, mode,
+              //                                             modeTimes.ModeAvailableToDestination ? modeTimes.TravelTimeToDestination : -999,
+              //                                             modeTimes.ModeAvailableFromDestination ? modeTimes.TravelTimeFromDestination : -999,
+              //                                             modeTimes.ModeAvailableToDestination ? modeTimes.GeneralizedTimeToDestination : -999,
+              //                                             modeTimes.ModeAvailableFromDestination ? modeTimes.GeneralizedTimeFromDestination : -999);
+              // }
+               available = false;
+
           }
 
           ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(altIndex, available,choice != null && choice.Index == altIndex);
