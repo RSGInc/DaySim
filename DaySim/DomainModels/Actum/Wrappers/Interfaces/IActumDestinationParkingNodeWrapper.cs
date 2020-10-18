@@ -14,5 +14,8 @@ namespace DaySim.DomainModels.Actum.Wrappers.Interfaces {
 
     double CalculateParkingPrice(int minArrive, int minDepart, int destPurpose);
 
+    double CalculateEffectiveCapacity(int minArrive);
+
+
   }
 }

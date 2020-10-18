@@ -1529,7 +1529,7 @@ namespace DaySim.Framework.Core {
 
     //new since 203
     [XmlAttribute]
-    public int InvalidAttemptsBeforeContinue { get; set; }
+    public int InvalidAttemptsBeforeContinue { get; set; } = 1000;
 
 
     //new since 203
@@ -2291,6 +2291,13 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public int MaximumDestinationParkingLocationsToSearchInTourModeChoiceModel { get; set; }
+
+    [XmlAttribute]
+    public double COMPASS_HourToShiftToMorningParkingAvailabilityFraction { get; set; } = 8.0;
+    [XmlAttribute]
+    public double COMPASS_HourToShiftToAfternoonParkingAvailabilityFraction { get; set; } = 12.0;
+    [XmlAttribute]
+    public double COMPASS_HourToShiftToNightParkingAvailabilityFraction { get; set; } = 18.0;
 
 
     //[XmlAttribute]

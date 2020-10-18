@@ -99,7 +99,7 @@ namespace DaySim.ChoiceModels.Actum {
             foreach (PersonDayWrapper personDay in householdDay.PersonDays) {
               personDay.IsValid = true;
             }
-
+            //Console.WriteLine("Simulating household day: ID {0}  Attempt {1}", householdDay.HouseholdId, householdDay.AttemptedSimulations+1);
             //mbtrace
             Global.TraceResults = (Global.Configuration.TraceModelResultValidity && householdDay.AttemptedSimulations >= Global.Configuration.InvalidAttemptsBeforeTrace);
             //mbtrace

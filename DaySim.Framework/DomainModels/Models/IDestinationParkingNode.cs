@@ -83,11 +83,11 @@ namespace DaySim.Framework.DomainModels.Models {
 
     int ClosingTime { get; set; }
 
-    int OccupancyMorning { get; set; }
+    double AvailabilityMorning { get; set; }
 
-    int OccupancyAfternoon { get; set; }
+    double AvailabilityAfternoon { get; set; }
 
-    int OccupancyNight { get; set; }
+    double AvailabilityNight { get; set; }
 
   }
 }

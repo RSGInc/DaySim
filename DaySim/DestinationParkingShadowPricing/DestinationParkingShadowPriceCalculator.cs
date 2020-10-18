@@ -9,6 +9,7 @@
 using System;
 using System.IO;
 using DaySim.ChoiceModels;
+using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.Framework.Core;
 
 namespace DaySim.DestinationParkingShadowPricing {
@@ -28,13 +29,15 @@ namespace DaySim.DestinationParkingShadowPricing {
 
       using (DestinationParkingShadowPriceWriter shadowPriceWriter = new DestinationParkingShadowPriceWriter(new FileInfo(Global.DestinationParkingShadowPricesPath))) {
         foreach (Framework.DomainModels.Wrappers.IDestinationParkingNodeWrapper node in ChoiceModelFactory.DestinationParkingNodeDao.Nodes) {
-          int capacity = node.Capacity;
+          //int capacity = node.Capacity;
+          IActumDestinationParkingNodeWrapper pnode = (IActumDestinationParkingNodeWrapper)node;
           for (int i = 1; i < Global.Settings.Times.MinutesInADay; i++) {
             double maxLoad = 0;
             for (int j = Math.Max(i - (Global.Configuration.DestinationParkingShadowPriceTimeSpread), 1); j < Math.Min(i + (Global.Configuration.DestinationParkingShadowPriceTimeSpread), Global.Settings.Times.MinutesInADay); j++) {
               maxLoad = node.ParkingLoad[i - 1] > maxLoad ? node.ParkingLoad[i - 1] : maxLoad;
             }
-            DetermineShadowPrice(node.ShadowPrice[i - 1], node.ExogenousLoad[i - 1] + maxLoad, capacity, out double shadowPrice);
+            double effectiveCapacity = Math.Max(1.0, pnode.CalculateEffectiveCapacity(i - 1));
+            DetermineShadowPrice(node.ShadowPrice[i - 1], node.ExogenousLoad[i - 1] + maxLoad, effectiveCapacity, out double shadowPrice);
             node.ShadowPriceDifference[i - 1] = shadowPrice - node.ShadowPrice[i - 1];
             node.ShadowPrice[i - 1] = shadowPrice;
           }
@@ -44,17 +47,17 @@ namespace DaySim.DestinationParkingShadowPricing {
       }
     }
 
-    private static void DetermineShadowPrice(double previousShadowPrice, double maxLoad, int capacity, out double shadowPrice) {
+    private static void DetermineShadowPrice(double previousShadowPrice, double maxLoad, double effectiveCapacity, out double shadowPrice) {
       //            shadowPrice = Math.Min(0, previousShadowPrice + Math.Log(Math.Max(capacity, .01) / Math.Max(prediction, .01)));
       //shadowPrice = (capacity > 0 && maxLoad > 0) ?
       //    (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice
       //        + Global.Configuration.DestinationParkingShadowPriceStepSize * Global.Configuration.DestinationParkingShadowPriceMaximumPenalty * alglib.poissondistr.poissoncdistribution(capacity, maxLoad)
       //        : (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice;
-      shadowPrice = (capacity > 0 ) ?
+      shadowPrice = (effectiveCapacity > Constants.EPSILON ) ?
           (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice
              + Global.Configuration.DestinationParkingShadowPriceStepSize * 
                (Global.Configuration.DestinationParkingShadowPriceAlpha * 
-               Math.Exp(Global.Configuration.DestinationParkingShadowPriceBeta * Math.Min(Global.Configuration.DestinationParkingShadowPriceMaximumPenalty,(maxLoad/(1.0*capacity)))))              
+               Math.Exp(Global.Configuration.DestinationParkingShadowPriceBeta * Math.Min(Global.Configuration.DestinationParkingShadowPriceMaximumPenalty,(maxLoad/effectiveCapacity))))              
                : (1 - Global.Configuration.DestinationParkingShadowPriceStepSize) * previousShadowPrice;
     }
   }

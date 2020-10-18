@@ -140,14 +140,14 @@ namespace DaySim.DomainModels.Default.Models {
     [ColumnName("ClosingTime")]
     public int ClosingTime { get; set; }
 
-    [ColumnName("OccupancyMorning")]
-    public int OccupancyMorning { get; set; }
+    [ColumnName("Avail_Morning")]
+    public double AvailabilityMorning { get; set; }
 
-    [ColumnName("OccupancyAfternoon")]
-    public int OccupancyAfternoon { get; set; }
+    [ColumnName("Avail_Afternoon")]
+    public double AvailabilityAfternoon { get; set; }
 
-    [ColumnName("OccupancyNight")]
-    public int OccupancyNight { get; set; }
+    [ColumnName("Avail_Night")]
+    public double AvailabilityNight { get; set; }
 
   }
 }

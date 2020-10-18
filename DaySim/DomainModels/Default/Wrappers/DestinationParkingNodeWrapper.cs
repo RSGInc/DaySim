@@ -233,17 +233,17 @@ namespace DaySim.DomainModels.Default.Wrappers {
       get => _destinationParkingNode.ClosingTime;
       set => _destinationParkingNode.ClosingTime = value;
     }
-    public int OccupancyMorning {
-      get => _destinationParkingNode.OccupancyMorning;
-      set => _destinationParkingNode.OccupancyMorning = value;
+    public double AvailabilityMorning {
+      get => _destinationParkingNode.AvailabilityMorning;
+      set => _destinationParkingNode.AvailabilityMorning = value;
     }
-    public int OccupancyAfternoon {
-      get => _destinationParkingNode.OccupancyAfternoon;
-      set => _destinationParkingNode.OccupancyAfternoon = value;
+    public double AvailabilityAfternoon {
+      get => _destinationParkingNode.AvailabilityAfternoon;
+      set => _destinationParkingNode.AvailabilityAfternoon = value;
     }
-    public int OccupancyNight {
-      get => _destinationParkingNode.OccupancyNight;
-      set => _destinationParkingNode.OccupancyNight = value;
+    public double AvailabilityNight {
+      get => _destinationParkingNode.AvailabilityNight;
+      set => _destinationParkingNode.AvailabilityNight = value;
     }
 
 #endregion

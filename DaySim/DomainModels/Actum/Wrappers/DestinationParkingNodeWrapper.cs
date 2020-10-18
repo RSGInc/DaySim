@@ -233,17 +233,17 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       get => _destinationParkingNode.ClosingTime;
       set => _destinationParkingNode.ClosingTime = value;
     }
-    public int OccupancyMorning {
-      get => _destinationParkingNode.OccupancyMorning;
-      set => _destinationParkingNode.OccupancyMorning = value;
+    public double AvailabilityMorning {
+      get => _destinationParkingNode.AvailabilityMorning;
+      set => _destinationParkingNode.AvailabilityMorning = value;
     }
-    public int OccupancyAfternoon {
-      get => _destinationParkingNode.OccupancyAfternoon;
-      set => _destinationParkingNode.OccupancyAfternoon = value;
+    public double AvailabilityAfternoon {
+      get => _destinationParkingNode.AvailabilityAfternoon;
+      set => _destinationParkingNode.AvailabilityAfternoon = value;
     }
-    public int OccupancyNight {
-      get => _destinationParkingNode.OccupancyNight;
-      set => _destinationParkingNode.OccupancyNight = value;
+    public double AvailabilityNight {
+      get => _destinationParkingNode.AvailabilityNight;
+      set => _destinationParkingNode.AvailabilityNight = value;
     }
 
      #endregion
@@ -266,7 +266,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     public virtual double CalculateParkingPrice(int parkArriveTime, int parkDepartTime, int destPurpose) {
       double parkPrice = UNAVAILABLE_PRICE_INDICATOR;
 
-      if (ParkingType != 2) {  //skip price for free parking
+      if (ParkingType != FREE_ON_STREET) {  //skip price for free parking
         double paidArriveTime = Math.Min(parkArriveTime + 60.0 * FreeDuration, Global.Settings.Times.MinutesInADay);
         double hourPrice = 0
          + (!(parkDepartTime < Global.Settings.Times.ThreeAM || paidArriveTime >= Global.Settings.Times.FourAM)).ToFlag() * Price3AM
@@ -303,6 +303,27 @@ namespace DaySim.DomainModels.Actum.Wrappers {
       }
 
       return parkPrice;
+    }
+
+    public virtual double CalculateEffectiveCapacity(int parkArriveTime) {
+      double effectiveCapacity = Capacity;
+      double parkArriveHoursAfterMidnight = parkArriveTime / 60.0 + 3.0;
+      if (ParkingType == FREE_ON_STREET || ParkingType == METERED_ON_STREET) {  //only for on-street free and metered parking, apply availability fraction after accounting for residents using spaces
+        if (parkArriveHoursAfterMidnight >= Global.Configuration.COMPASS_HourToShiftToMorningParkingAvailabilityFraction
+         && parkArriveHoursAfterMidnight < Global.Configuration.COMPASS_HourToShiftToAfternoonParkingAvailabilityFraction) {
+          effectiveCapacity = effectiveCapacity * AvailabilityMorning;
+        }
+        else if (parkArriveHoursAfterMidnight >= Global.Configuration.COMPASS_HourToShiftToAfternoonParkingAvailabilityFraction
+         && parkArriveHoursAfterMidnight < Global.Configuration.COMPASS_HourToShiftToNightParkingAvailabilityFraction) {
+          effectiveCapacity = effectiveCapacity * AvailabilityAfternoon;
+        }
+        else {
+          effectiveCapacity = effectiveCapacity * AvailabilityNight;
+        }
+        double paidArriveTime = Math.Min(parkArriveTime + 60.0 * FreeDuration, Global.Settings.Times.MinutesInADay);
+      }
+
+        return effectiveCapacity;
     }
 
     public virtual double SetDestinationParkingEffectivePrice(int parkArriveTime, int parkDepartTime, int destPurpose) {

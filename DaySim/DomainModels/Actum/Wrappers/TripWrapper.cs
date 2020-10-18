@@ -380,7 +380,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
                        + walkTime * Global.Configuration.COMPASS_DestinationParkingWalkEgressTimeCoefficient
                        + randomNormalTerm * Global.Configuration.COMPASS_DestinationParkingRandomTermCoefficient;
 
-        double utility = Math.Log(node.Capacity) * Global.Configuration.COMPASS_DestinationParkingLogCapacityCoefficient
+        double effectiveCapacity = Math.Max(1.0, node.CalculateEffectiveCapacity(parkArriveTime));
+        double utility = Math.Log(effectiveCapacity) * Global.Configuration.COMPASS_DestinationParkingLogCapacityCoefficient
                       + timeCost * Global.Configuration.COMPASS_BaseTimeCoefficientPerMinute;
 
         if (utility > maxUtil) {
