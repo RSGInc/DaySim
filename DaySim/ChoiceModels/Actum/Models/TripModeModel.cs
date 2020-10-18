@@ -105,7 +105,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int departureTime = trip.IsHalfTourFromOrigin ? trip.LatestDepartureTime : trip.EarliestDepartureTime;
 
-      if (departureTime <1 || departureTime > Global.Settings.Times.MinutesInADay) {
+      if (departureTime < 1 || departureTime > Global.Settings.Times.MinutesInADay) {
         Global.PrintFile.WriteLine("From origin / latest / earliest  {0} {1} {2}", trip.IsHalfTourFromOrigin,
                                             trip.LatestDepartureTime, trip.EarliestDepartureTime);
         if (!Global.Configuration.IsInEstimationMode) {
@@ -229,14 +229,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       Framework.DomainModels.Models.IHouseholdTotals householdTotals = household.HouseholdTotals;
       IActumPersonWrapper person = (IActumPersonWrapper)trip.Person;
       IActumTourWrapper tour = (IActumTourWrapper)trip.Tour;
-      IActumParcelWrapper destinationParcel = (IActumParcelWrapper) destinationParcel_In;
+      IActumParcelWrapper destinationParcel = (IActumParcelWrapper)destinationParcel_In;
       Framework.DomainModels.Models.IHalfTour halfTour = trip.HalfTour;
       // household inputs
       int onePersonHouseholdFlag = household.IsOnePersonHousehold.ToFlag();
       //int HHwithChildrenFlag = household.HasChildren.ToFlag();
       //int HHwithSmallChildrenFlag = household.HasChildrenUnder5.ToFlag();
       //int childrenAge5Through15 = householdTotals.ChildrenAge5Through15;
-      int childrenAge6Through17 =  household.Persons6to17 > 0? 1: 0;
+      int childrenAge6Through17 = household.Persons6to17 > 0 ? 1 : 0;
       int HHwithLowIncomeFlag = (household.Income >= 300000 && household.Income < 600000).ToFlag();
       int HHwithMiddleIncomeFlag = (household.Income >= 600000 && household.Income < 900000).ToFlag();
       int HHwithHighIncomeFlag = (household.Income >= 900000).ToFlag();
@@ -245,14 +245,14 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int twoPersonHouseholdFlag = household.IsTwoPersonHousehold.ToFlag();
       int noCarsInHouseholdFlag = household.GetFlagForNoCarsInHousehold(household.VehiclesAvailable);
       //int carsLessThanDriversFlag = household.GetFlagForCarsLessThanDrivers(household.VehiclesAvailable);
-      int carsLessThanDriversFlag = household.VehiclesAvailable >= 1 && household.VehiclesAvailable < household.Size - household.KidsBetween0And4 - household.Persons6to17? 1:0;
+      int carsLessThanDriversFlag = household.VehiclesAvailable >= 1 && household.VehiclesAvailable < household.Size - household.KidsBetween0And4 - household.Persons6to17 ? 1 : 0;
 
       // person inputs
       //var drivingAgeStudentFlag = person.IsDrivingAgeStudent.ToFlag();
       int maleFlag = person.IsMale.ToFlag();
       int femaleFlag = person.IsFemale.ToFlag();
 
-      int PTpass = person.TransitPassOwnership >=1? 1:0;
+      int PTpass = person.TransitPassOwnership >= 1 ? 1 : 0;
 
       //var ageLessThan35Flag = person.AgeIsLessThan35.ToFlag();
 
@@ -293,7 +293,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
       int destinationHomeEscortFlag = (trip.IsNoneOrHomePurposeByDestination() && trip.IsEscortPurposeByOrigin()).ToFlag();
       int destinationWorkEscortFlag = (trip.IsWorkPurposeByDestination() && trip.IsEscortPurposeByOrigin()).ToFlag();
-   
+
 
       // origin purpose.
       int WorkOriginPurposeflag = (trip.IsWorkOriginPurpose()).ToFlag();
@@ -303,7 +303,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int PersonalBusinessOriginPurposeflag = (trip.IsPersonalBusinessOriginPurpose()).ToFlag();
       int ShoppingOriginPurposeflag = (trip.IsShoppingOriginPurpose()).ToFlag();
       int SocialOriginPurposeflag = (trip.IsSocialOriginPurpose()).ToFlag();
-      
+
       // destination purpose
       int WorkDestinationPurposeflag = (trip.IsWorkDestinationPurpose()).ToFlag();
       int SchoolDestinationPurposeflag = (trip.IsSchoolDestinationPurpose()).ToFlag();
@@ -319,7 +319,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int triporiginEscortflag = trip.IsHalfTourFromOrigin ? EscortDestinationPurposeflag : EscortOriginPurposeflag;
       int triporiginBusinessflag = trip.IsHalfTourFromOrigin ? BusinessDestinationPurposeflag : BusinessOriginPurposeflag;
       int triporiginPersonalBusinessflag = trip.IsHalfTourFromOrigin ? PersonalBusinessDestinationPurposeflag : PersonalBusinessOriginPurposeflag;
-      int triporiginShoppingflag  = trip.IsHalfTourFromOrigin ? ShoppingDestinationPurposeflag : ShoppingOriginPurposeflag;
+      int triporiginShoppingflag = trip.IsHalfTourFromOrigin ? ShoppingDestinationPurposeflag : ShoppingOriginPurposeflag;
       int triporiginSocialflag = trip.IsHalfTourFromOrigin ? SocialDestinationPurposeflag : SocialOriginPurposeflag;
       int triporiginHomeflag = (trip.IsNoneOrHomePurposeByOrigin()).ToFlag();
 
@@ -365,7 +365,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       double originMixedDensity = originParcel.MixedUse4Index1();
       //double originIntersectionDensity = originParcel.NetIntersectionDensity1();
       //double destinationParkingCost = destinationParcel.ParkingCostBuffer1(2);
-      double destinationParkingCost = destinationParcel.ParkingDataAvailable == 1 ? destinationParcel.PublicParkingHourlyPriceBuffer2:0; 
+      double destinationParkingCost = destinationParcel.ParkingDataAvailable == 1 ? destinationParcel.PublicParkingHourlyPriceBuffer2 : 0;
       int amPeriodFlag = departureTime.IsLeftExclusiveBetween(Global.Settings.Times.SixAM, Global.Settings.Times.NineAM).ToFlag();
       //GV changed to 6-9 am
       int middayPeriodFlag = departureTime.IsLeftExclusiveBetween(Global.Settings.Times.NineAM, Global.Settings.Times.ThreePM).ToFlag();
@@ -396,13 +396,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
         tripModeAvailable[Global.Settings.Modes.Sov] = household.VehiclesAvailable > 0 && person.Age >= 18;
         tripModeAvailable[Global.Settings.Modes.HovDriver] = household.VehiclesAvailable > 0 && person.Age >= 18;
         tripModeAvailable[Global.Settings.Modes.HovPassenger] = !tripModeAvailable[Global.Settings.Modes.Sov];
-      }
-      else if (tour.Mode == Global.Settings.Modes.CarKissRideWalk || tour.Mode == Global.Settings.Modes.CarKissRideBike || tour.Mode == Global.Settings.Modes.CarKissRideShare) {
+      } else if (tour.Mode == Global.Settings.Modes.CarKissRideWalk || tour.Mode == Global.Settings.Modes.CarKissRideBike || tour.Mode == Global.Settings.Modes.CarKissRideShare) {
         tripModeAvailable[Global.Settings.Modes.HovDriver] = household.VehiclesAvailable > 0 && person.Age >= 18;
         tripModeAvailable[Global.Settings.Modes.HovPassenger] = true;
       }
-      //// if the last trip of the tour and tour mode not yet used, only the tour mode is available
-      else if (isLastTripInTour && frequencyPreviousTripModeIsTourMode == 0 && tour.Mode <= Global.Settings.Modes.Transit) {
+        //// if the last trip of the tour and tour mode not yet used, only the tour mode is available
+        else if (isLastTripInTour && frequencyPreviousTripModeIsTourMode == 0 && tour.Mode <= Global.Settings.Modes.Transit) {
         tripModeAvailable[tour.Mode] = true;
       } else {
         // set availability based on tour mode
@@ -493,7 +492,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
           alternative.AddUtilityTerm(100, transitTourFlag);
           // Not transit tour.
-          alternative.AddUtilityTerm(300, 1-transitTourFlag);
+          alternative.AddUtilityTerm(300, 1 - transitTourFlag);
           alternative.AddUtilityTerm(102, (transitTourFlag * onlyTripOnFirstHalfFlag));
           alternative.AddUtilityTerm(103, (transitTourFlag * onlyTripOnSecondHalfFlag));
           alternative.AddUtilityTerm(104, (transitTourFlag * firstTripOnFirstHalfFlag));
@@ -517,12 +516,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
           alternative.AddUtilityTerm(237, tripdestinationPersonalBusinessflag);
           alternative.AddUtilityTerm(238, tripdestinationShoppingflag);
           alternative.AddUtilityTerm(239, tripdestinationSocialflag);
-          alternative.AddUtilityTerm(302, (transitTourFlag * onlyTripOnFirstHalfFlag));
-          alternative.AddUtilityTerm(303, (transitTourFlag * onlyTripOnSecondHalfFlag));
-          alternative.AddUtilityTerm(304, (transitTourFlag * firstTripOnFirstHalfFlag));
-          alternative.AddUtilityTerm(305, (transitTourFlag * firstTripOnSecondHalfFlag));
-          alternative.AddUtilityTerm(306, (transitTourFlag * lastTripOnFirstHalfFlag));
-          alternative.AddUtilityTerm(307, (transitTourFlag * lastTripOnSecondHalfFlag));
+          // alternative.AddUtilityTerm(302, (transitTourFlag * onlyTripOnFirstHalfFlag));
+          // alternative.AddUtilityTerm(303, (transitTourFlag * onlyTripOnSecondHalfFlag));
+          // alternative.AddUtilityTerm(304, (transitTourFlag * firstTripOnFirstHalfFlag));
+          // alternative.AddUtilityTerm(305, (transitTourFlag * firstTripOnSecondHalfFlag));
+          // alternative.AddUtilityTerm(306, (transitTourFlag * lastTripOnFirstHalfFlag));
+          // alternative.AddUtilityTerm(307, (transitTourFlag * lastTripOnSecondHalfFlag));
 
         } else if (mode == Global.Settings.Modes.HovPassenger) {
           alternative.AddUtilityTerm(30, 1);
