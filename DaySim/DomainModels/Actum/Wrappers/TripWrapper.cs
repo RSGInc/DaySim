@@ -407,7 +407,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         TravelTime = bestLocationDriveTime + bestLocationWalkTime;
         TravelDistance = bestLocationDriveDistance + bestLocationWalkDistance;
         TravelCost = TravelCost + bestLocationParkPrice;
-        ArrivalTime = Math.Min(1439, DepartureTime + (int)TravelTime);
+        //ArrivalTime = Math.Min(1439, DepartureTime + (int)TravelTime);
         SetDestinationParkingStay(parkArriveTime, parkDepartTime);
       };
     }
@@ -676,6 +676,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         PathType = Tour.PathType;
 
         TourMode = Tour.Mode;
+        bool parkAndRide = (TourMode == Global.Settings.Modes.CarParkRideWalk || TourMode == Global.Settings.Modes.CarParkRideBike || TourMode == Global.Settings.Modes.CarParkRideShare);
 
         IActumHouseholdWrapper household = (IActumHouseholdWrapper)Household;
 
@@ -692,7 +693,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           AccessTerminalID = Tour.HalfTour1AccessStopAreaKey;
           AccessTerminalParcelID = Tour.HalfTour1AccessStopAreaParcelID;
           AccessTerminalZoneID = Tour.HalfTour1AccessStopAreaZoneID;
-          AccessParkingNodeID = Tour.HalfTour1AccessParkingNodeID;
+          AccessParkingNodeID = parkAndRide ? Tour.HalfTour1AccessParkingNodeID : 0;
           AccessTime = Tour.HalfTour1AccessTime;
           EgressCost = Tour.HalfTour1EgressCost;
           EgressDistance = Tour.HalfTour1EgressDistance;
@@ -701,7 +702,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           EgressTerminalID = Tour.HalfTour1EgressStopAreaKey;
           EgressTerminalParcelID = Tour.HalfTour1EgressStopAreaParcelID;
           EgressTerminalZoneID = Tour.HalfTour1EgressStopAreaZoneID;
-          EgressParkingNodeID = Tour.HalfTour1EgressParkingNodeID;
+          EgressParkingNodeID = parkAndRide ? Tour.HalfTour1EgressParkingNodeID : 0;
           EgressTime = Tour.HalfTour1EgressTime;
 
         } else {
@@ -712,7 +713,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           AccessTerminalID = Tour.HalfTour2AccessStopAreaKey;
           AccessTerminalParcelID = Tour.HalfTour2AccessStopAreaParcelID;
           AccessTerminalZoneID = Tour.HalfTour2AccessStopAreaZoneID;
-          AccessParkingNodeID = Tour.HalfTour2AccessParkingNodeID;
+          AccessParkingNodeID = parkAndRide ? Tour.HalfTour2AccessParkingNodeID : 0;
           AccessTime = Tour.HalfTour2AccessTime;
           EgressCost = Tour.HalfTour2EgressCost;
           EgressDistance = Tour.HalfTour2EgressDistance;
@@ -721,7 +722,7 @@ namespace DaySim.DomainModels.Actum.Wrappers {
           EgressTerminalID = Tour.HalfTour2EgressStopAreaKey;
           EgressTerminalParcelID = Tour.HalfTour2EgressStopAreaParcelID;
           EgressTerminalZoneID = Tour.HalfTour2EgressStopAreaZoneID;
-          EgressParkingNodeID = Tour.HalfTour2EgressParkingNodeID;
+          EgressParkingNodeID = parkAndRide ? Tour.HalfTour2EgressParkingNodeID : 0;
           EgressTime = Tour.HalfTour2EgressTime;
         }
 

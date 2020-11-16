@@ -2300,6 +2300,10 @@ namespace DaySim.Framework.Core {
     public double COMPASS_HourToShiftToNightParkingAvailabilityFraction { get; set; } = 18.0;
 
 
+    [XmlAttribute]
+    public bool ForceSecondCarDriverTripInCarDriverTour { get; set; } = true;
+
+
     //[XmlAttribute]
     //public int OriginZoneToPrintFromOMXSkims { get; set; }
 

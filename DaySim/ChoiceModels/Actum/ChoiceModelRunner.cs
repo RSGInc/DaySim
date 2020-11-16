@@ -1926,12 +1926,12 @@ namespace DaySim.ChoiceModels.Actum {
               tour[i].DestinationArrivalTime = tour[i - 1].DestinationArrivalTime;
               tour[i].DestinationDepartureTime = tour[i - 1].DestinationDepartureTime;
             } else {
-              tour[i].DestinationArrivalTime = tour[i - 1].DestinationArrivalTime
+              tour[i].DestinationArrivalTime = Math.Max(1,tour[i - 1].DestinationArrivalTime
                    - (int)Math.Round(ImpedanceRoster.GetValue(impedanceVariable, mode, pathType, Math.Max(Global.Configuration.VotLowMedium + 1, 10.0), Math.Max(1,tour[i - 1].DestinationArrivalTime - 1), tour[i].DestinationParcel, tour[i - 1].DestinationParcel, circuityDistance).Variable)
-                   - 3;
-              tour[i].DestinationDepartureTime = tour[i - 1].DestinationDepartureTime
+                   - 3);
+              tour[i].DestinationDepartureTime = Math.Min(1440, tour[i - 1].DestinationDepartureTime
                    + (int)Math.Round(ImpedanceRoster.GetValue(impedanceVariable, mode, pathType, Math.Max(Global.Configuration.VotLowMedium + 1, 10.0), Math.Min(1440,tour[i - 1].DestinationDepartureTime + 1), tour[i - 1].DestinationParcel, tour[i].DestinationParcel, circuityDistance).Variable)
-                   + 3;
+                   + 3);
             }
           }
           // Mode and times were already set, but other properties need to be set by SetTourModeAndTime()
@@ -1945,9 +1945,9 @@ namespace DaySim.ChoiceModels.Actum {
             if (halfTourTrips[i] == halfTourTrips[i - 1]) {
               tour[i].DestinationArrivalTime = tour[i - 1].DestinationArrivalTime;
             } else {
-              tour[i].DestinationArrivalTime = tour[i - 1].DestinationArrivalTime
+              tour[i].DestinationArrivalTime = Math.Max(1, tour[i - 1].DestinationArrivalTime
                    - (int)Math.Round(ImpedanceRoster.GetValue(impedanceVariable, mode, pathType, Math.Max(Global.Configuration.VotLowMedium + 1, 10.0), Math.Max(1,tour[i - 1].DestinationArrivalTime) - 1, tour[i].DestinationParcel, tour[i - 1].DestinationParcel, circuityDistance).Variable)
-                   - 3;
+                   - 3);
             }
             //departure time is modeled
             //JLB 20140528 replaced the following line because tour mode is known at this point
@@ -1967,9 +1967,9 @@ namespace DaySim.ChoiceModels.Actum {
             if (halfTourTrips[i] == halfTourTrips[i - 1]) {
               tour[i].DestinationDepartureTime = tour[i - 1].DestinationDepartureTime;
             } else {
-              tour[i].DestinationDepartureTime = tour[i - 1].DestinationDepartureTime
+              tour[i].DestinationDepartureTime = Math.Min(1440,tour[i - 1].DestinationDepartureTime
                    + (int)Math.Round(ImpedanceRoster.GetValue(impedanceVariable, mode, pathType, Math.Max(Global.Configuration.VotLowMedium + 1, 10.0), Math.Min(1440,tour[i - 1].DestinationDepartureTime + 1), tour[i - 1].DestinationParcel, tour[i].DestinationParcel, circuityDistance).Variable)
-                   + 3;
+                   + 3);
             }
             //arrival time is modeled
             //JLB 20140528 replaced the following line because tour mode is known at this point
@@ -2049,14 +2049,14 @@ namespace DaySim.ChoiceModels.Actum {
               tour[1].DestinationArrivalTime = tour[2].DestinationArrivalTime;
               tour[1].DestinationDepartureTime = tour[2].DestinationDepartureTime;
             } else {
-              tour[1].DestinationArrivalTime = tour[2].DestinationArrivalTime
+              tour[1].DestinationArrivalTime = Math.Min(1440, tour[2].DestinationArrivalTime
                    + (int)Math.Round(ImpedanceRoster.GetValue(impedanceVariable, mode, pathType, Math.Max(Global.Configuration.VotLowMedium + 1, 10.0),
                               Math.Min(tour[2].DestinationArrivalTime + 4, 1440), tour[2].DestinationParcel, tour[1].DestinationParcel).Variable)
-                   + 3;
-              tour[1].DestinationDepartureTime = tour[2].DestinationDepartureTime
+                   + 3);
+              tour[1].DestinationDepartureTime = Math.Max(1, tour[2].DestinationDepartureTime
                    - (int)Math.Round(ImpedanceRoster.GetValue(impedanceVariable, mode, pathType, Math.Max(Global.Configuration.VotLowMedium + 1, 10.0),
                               Math.Max(tour[2].DestinationDepartureTime - 4, 1), tour[1].DestinationParcel, tour[2].DestinationParcel).Variable)
-                   - 3;
+                   - 3);
             }
           }
           // Mode and times were already set, but other properties need to be set by SetTourModeAndTime()
@@ -2075,10 +2075,10 @@ namespace DaySim.ChoiceModels.Actum {
               //tour[2].DestinationParcel = tour[2].DestinationParcel;
               //}
 
-              tour[1].DestinationArrivalTime = tour[2].DestinationArrivalTime
+              tour[1].DestinationArrivalTime = Math.Min(1440, tour[2].DestinationArrivalTime
                    + (int)Math.Round(ImpedanceRoster.GetValue(impedanceVariable, mode, pathType, Math.Max(Global.Configuration.VotLowMedium + 1, 10.0), 
                    Math.Min(tour[2].DestinationArrivalTime + 4,1440), tour[2].DestinationParcel, tour[1].DestinationParcel).Variable)
-                   + 3;
+                   + 3);
             }
             //departure time is modeled
             //JLB 20140528 replaced the following line because tour mode is known at this point
@@ -2096,10 +2096,10 @@ namespace DaySim.ChoiceModels.Actum {
             } else {
               if (tour[2].DestinationDepartureTime < 5) {
               }
-              tour[1].DestinationDepartureTime = tour[2].DestinationDepartureTime
+              tour[1].DestinationDepartureTime = Math.Max(1, tour[2].DestinationDepartureTime
                                  - (int)Math.Round(ImpedanceRoster.GetValue(impedanceVariable, mode, pathType, Math.Max(Global.Configuration.VotLowMedium + 1, 10.0), 
                                  Math.Max(tour[2].DestinationDepartureTime - 4,1), tour[1].DestinationParcel, tour[2].DestinationParcel).Variable)
-                                 - 3;
+                                 - 3);
             }
             //arrival time is modeled
           }

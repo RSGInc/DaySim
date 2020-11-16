@@ -403,6 +403,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //// if the last trip of the tour and tour mode not yet used, only the tour mode is available
         else if (isLastTripInTour && frequencyPreviousTripModeIsTourMode == 0 && tour.Mode <= Global.Settings.Modes.Transit) {
         tripModeAvailable[tour.Mode] = true;
+      }
+        //// if a car driver tour and one previous car driver trip and setting to force a second one set that mode available
+        else if (Global.Configuration.ForceSecondCarDriverTripInCarDriverTour && isLastTripInTour && frequencyPreviousTripModeIsTourMode == 1 &&
+         (tour.Mode <= Global.Settings.Modes.Sov || tour.Mode <= Global.Settings.Modes.HovDriver)) {
+        tripModeAvailable[tour.Mode] = true;
       } else {
         // set availability based on tour mode
         for (int mode = Global.Settings.Modes.Walk; mode <= tour.Mode; mode++) {
