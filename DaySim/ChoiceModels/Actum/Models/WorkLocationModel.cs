@@ -24,7 +24,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
     public const string CHOICE_MODEL_NAME = "ActumWorkLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
-    private const int MAX_PARAMETER = 350; 
+    private const int MAX_PARAMETER = 350;
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       int sampleSize = Global.Configuration.WorkLocationModelSampleSize;
@@ -108,11 +108,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
                                                   else { highIncome = true; }
       } else {  //household income is basis
         income = household.Income;
-        if (income < 0) {incomeMissing = true;}
-        else if (income < 300000) {lowIncome = true;}
-        else if (income < 600000) { lowMediumIncome = true; }
-        else if (income < 900000) {mediumHighIncome = true;}
-        else {highIncome = true; }
+        if (income < 0) { incomeMissing = true; } else if (income < 300000) { lowIncome = true; } else if (income < 600000) { lowMediumIncome = true; } else if (income < 900000) { mediumHighIncome = true; } else { highIncome = true; }
 
       }
 
@@ -122,9 +118,9 @@ namespace DaySim.ChoiceModels.Actum.Models {
       int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.WorkTourModeModel);
 
       WorkLocationUtilities workLocationUtilites = new WorkLocationUtilities(person, sampleSize, destinationArrivalTime, destinationDepartureTime);
-      
+
       Dictionary<DestinationSampler.TourSampleItem, int> sampleItems = destinationSampler.SampleAndReturnTourDestinations(workLocationUtilites);
-           
+
       int index = 0;
       foreach (KeyValuePair<DestinationSampler.TourSampleItem, int> sampleItem in sampleItems) {
         bool available = sampleItem.Key.Available;
@@ -190,6 +186,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double distanceLog = Math.Log(1 + distanceFromOrigin);
         double distanceFromSchool = person.IsFullOrPartTimeWorker ? 0 : person.UsualSchoolParcel.DistanceFromSchoolLog(destinationParcel, 1);
 
+        //JB: 20201127
+        double piecewiseDistanceFrom0To5Km = Math.Min(distanceFromOrigin, .50);
+        double piecewiseDistanceFrom5To10Km = Math.Max(0, Math.Min(distanceFromOrigin - .5, 1 - .5));
+        double piecewiseDistanceFrom10To20Km = Math.Max(0, Math.Min(distanceFromOrigin - 1, 2 - 1));
+        double piecewiseDistanceFrom20To40Km = Math.Max(0, Math.Min(distanceFromOrigin - 2, 4 - 2));
+        double piecewiseDistanceFrom40KmToInfinity = Math.Max(0, distanceFromOrigin - 4);
 
         // parcel buffers
         double educationBuffer = Math.Log(destinationParcel.EmploymentEducationBuffer2 + 1);
@@ -231,6 +233,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
         if (destinationParcel.LandUseCode == 101 || destinationParcel.LandUseCode == 147) {
           workLocationIsInCPHcity = true;
         }
+
+        //JB: 20201127  
+        bool residenceIsInCPHcity = false;
+        if (residenceParcel.LandUseCode == 101 || residenceParcel.LandUseCode == 147) {
+          residenceIsInCPHcity = true;
+        }
+
 
         //GV: 13. mar. 2019 - no. of parkig places in the residental area
         double destNoParking = (
@@ -329,6 +338,17 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(29, person.Age * workTourLogsum);
 
         // Distance
+
+        //JB: 20201127 added distance term for CPH calibration
+        alternative.AddUtilityTerm(34, residenceIsInCPHcity.ToFlag() * distanceFromOrigin);
+
+        //JB: 20201127 added piecewise linear distance terms for calibration
+        alternative.AddUtilityTerm(35, piecewiseDistanceFrom0To5Km);
+        alternative.AddUtilityTerm(36, piecewiseDistanceFrom5To10Km);
+        alternative.AddUtilityTerm(37, piecewiseDistanceFrom10To20Km);
+        alternative.AddUtilityTerm(38, piecewiseDistanceFrom20To40Km);
+        alternative.AddUtilityTerm(39, piecewiseDistanceFrom40KmToInfinity);
+
         alternative.AddUtilityTerm(40, distanceLog);  // base distance term
         alternative.AddUtilityTerm(41, (lowIncome).ToFlag() * distanceLog);
         alternative.AddUtilityTerm(42, (lowMediumIncome).ToFlag() * distanceLog);
@@ -370,7 +390,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(152, (!incomeMissing).ToFlag() * person.IsPartTimeWorker.ToFlag() * industrialAgricultureConstructionBuffer);
         alternative.AddUtilityTerm(153, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * foodBuffer);
         alternative.AddUtilityTerm(154, (!incomeMissing).ToFlag() * person.IsNotFullOrPartTimeWorker.ToFlag() * medicalBuffer);
-        
+
         //GV: 22.4.2019 - changes made relative to coeff.101-108, i.e. coeff.101 and 107 are kept in the model
         //accordongly, coeff. 161 and 162 are changed in definition
         alternative.AddUtilityTerm(160, incomeMissing.ToFlag() * employmentTotalBuffer);
@@ -420,12 +440,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         alternative.AddUtilityTerm(230, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentIndustrial);
         alternative.AddUtilityTerm(231, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentService);
-        alternative.AddUtilityTerm(232, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentEducation); 
+        alternative.AddUtilityTerm(232, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentEducation);
         alternative.AddUtilityTerm(233, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentFood);
         alternative.AddUtilityTerm(234, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentGovernment);
         alternative.AddUtilityTerm(235, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentOffice);
-        alternative.AddUtilityTerm(236, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentRetail);  
-        alternative.AddUtilityTerm(237, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentMedical);   
+        alternative.AddUtilityTerm(236, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentRetail);
+        alternative.AddUtilityTerm(237, (lowMediumIncome).ToFlag() * destinationParcel.EmploymentMedical);
         alternative.AddUtilityTerm(238, (lowMediumIncome).ToFlag() * employmentIndustrialAgricultureConstruction);
         alternative.AddUtilityTerm(239, (lowMediumIncome).ToFlag() * destinationParcel.StudentsUniversity);
 
@@ -445,10 +465,10 @@ namespace DaySim.ChoiceModels.Actum.Models {
         alternative.AddUtilityTerm(252, (highIncome).ToFlag() * destinationParcel.EmploymentEducation);
         alternative.AddUtilityTerm(253, (highIncome).ToFlag() * destinationParcel.EmploymentFood);
         alternative.AddUtilityTerm(254, (highIncome).ToFlag() * destinationParcel.EmploymentGovernment);
-        alternative.AddUtilityTerm(255, (highIncome).ToFlag() * destinationParcel.EmploymentOffice); 
+        alternative.AddUtilityTerm(255, (highIncome).ToFlag() * destinationParcel.EmploymentOffice);
         alternative.AddUtilityTerm(256, (highIncome).ToFlag() * destinationParcel.EmploymentRetail);
         alternative.AddUtilityTerm(257, (highIncome).ToFlag() * destinationParcel.EmploymentMedical);
-        alternative.AddUtilityTerm(258, (highIncome).ToFlag() * employmentIndustrialAgricultureConstruction); 
+        alternative.AddUtilityTerm(258, (highIncome).ToFlag() * employmentIndustrialAgricultureConstruction);
         alternative.AddUtilityTerm(259, (highIncome).ToFlag() * destinationParcel.StudentsUniversity);
 
         alternative.AddUtilityTerm(260, (!incomeMissing).ToFlag() * person.IsFulltimeWorker.ToFlag() * destinationParcel.EmploymentGovernment);
@@ -493,7 +513,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       homeAlternative.AddUtilityTerm(184, (person.IsNotFullOrPartTimeWorker).ToFlag());
       homeAlternative.AddUtilityTerm(185, (person.IsPartTimeWorker).ToFlag());
       homeAlternative.AddUtilityTerm(186, (person.IsRetiredAdult).ToFlag());
-      
+
 
       homeAlternative.AddUtilityTerm(340, 1); //Size variable dummy 
 

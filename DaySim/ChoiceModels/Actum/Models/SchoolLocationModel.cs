@@ -8,7 +8,7 @@
 
 using System;
 using System.Collections.Generic;
-using DaySim.DomainModels.Actum.Wrappers; 
+using DaySim.DomainModels.Actum.Wrappers;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
 using DaySim.DomainModels.Extensions;
 using DaySim.Framework.ChoiceModels;
@@ -85,12 +85,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
       IActumHouseholdWrapper household = (IActumHouseholdWrapper)person.Household;
       int numberAdults = household.Size - household.KidsBetween0And4 - household.KidsBetween5And15 - household.Persons6to17;
 
-      bool isAge0to5 = person.PersonType == 8? true:false;
-      bool isPrimaryStudent = person.PersonType == 7? true:false;
-      bool isSecondaryStudent = person.PersonType == 6? true:false;
-      bool isUniversityStudent = person.PersonType == 5? true:false;
+      bool isAge0to5 = person.PersonType == 8 ? true : false;
+      bool isPrimaryStudent = person.PersonType == 7 ? true : false;
+      bool isSecondaryStudent = person.PersonType == 6 ? true : false;
+      bool isUniversityStudent = person.PersonType == 5 ? true : false;
 
-      IActumParcelWrapper residenceParcel = (IActumParcelWrapper) household.ResidenceParcel;
+      IActumParcelWrapper residenceParcel = (IActumParcelWrapper)household.ResidenceParcel;
 
       int segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(Global.Settings.Purposes.School, Global.Settings.TourPriorities.UsualLocation, Global.Settings.Modes.Sov, person.PersonType);
       DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, person.Household.ResidenceParcel);
@@ -133,11 +133,11 @@ namespace DaySim.ChoiceModels.Actum.Models {
         int taSegment =
            destinationParcel.GetDistanceToTransit() >= 0 && destinationParcel.GetDistanceToTransit() <= 0.4
               ? 0
-              : destinationParcel.GetDistanceToTransit() > 0.4 && destinationParcel.GetDistanceToTransit() <= 1.6 
+              : destinationParcel.GetDistanceToTransit() > 0.4 && destinationParcel.GetDistanceToTransit() <= 1.6
                   ? 1
-                  : 2; 
-               
-        
+                  : 2;
+
+
         double aggregateLogsum = Global.AggregateLogsums[destinationParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment];
 
         double distanceFromOrigin = residenceParcel.DistanceFromOrigin(destinationParcel, 1);
@@ -145,7 +145,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
         //GV: 8. 3. 2019 - Distance differt. per Age
         //Kintergarder; 0.2 and 0.5 km
         double distanceCh05_1 = Math.Min(distanceFromOrigin, .2);
-        double distanceCh05_2 = Math.Max(0, Math.Min(distanceFromOrigin - .2, .5 - .2)); 
+        double distanceCh05_2 = Math.Max(0, Math.Min(distanceFromOrigin - .2, .5 - .2));
         double distanceCh05_3 = Math.Max(0, distanceFromOrigin - .5);
 
         //Primary school; 0.25 and 0.8 km 
@@ -162,6 +162,12 @@ namespace DaySim.ChoiceModels.Actum.Models {
         double distanceUni_1 = Math.Min(distanceFromOrigin, 2);
         double distanceUni_2 = Math.Max(0, Math.Min(distanceFromOrigin - 2, 5 - 2));
         double distanceUni_3 = Math.Max(0, distanceFromOrigin - 5);
+
+        //JB: 20201127
+        double piecewiseDistanceFrom0To5Km = Math.Min(distanceFromOrigin, .50);
+        double piecewiseDistanceFrom5To10Km = Math.Max(0, Math.Min(distanceFromOrigin - .5, 1 - .5));
+        double piecewiseDistanceFrom10To20Km = Math.Max(0, Math.Min(distanceFromOrigin - 1, 2 - 1));
+        double piecewiseDistanceFrom20KmToInfinity = Math.Max(0, distanceFromOrigin - 2);
 
         double distanceLog = Math.Log(1 + distanceFromOrigin);
         double distanceFromWork = person.IsFullOrPartTimeWorker ? person.UsualWorkParcel.DistanceFromWorkLog(destinationParcel, 1) : 0;
@@ -190,8 +196,8 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         //GV: 03. december 2019, trying to introduce a dummy for Primary School children whre Origin and Destination are in different municipalities
         int PS_dummy1 = (residenceParcel.LandUseCode == destinationParcel.LandUseCode) ? 0 : 1;
-        
-        alternative.AddUtilityTerm(1, sampleItem.Key.AdjustmentFactor);  
+
+        alternative.AddUtilityTerm(1, sampleItem.Key.AdjustmentFactor);
 
         //GV: 7. mar. 2019 - estimate coeff. 2-5
         alternative.AddUtilityTerm(2, isAge0to5.ToFlag() * schoolTourLogsum);
@@ -235,6 +241,13 @@ namespace DaySim.ChoiceModels.Actum.Models {
 
         //20191212 JLB  add calibration coefficient for distance
         alternative.AddUtilityTerm(96, distanceLog);
+
+        //JB: 20201127 added piecewise linear distance terms for calibration
+        alternative.AddUtilityTerm(91, piecewiseDistanceFrom0To5Km);
+        alternative.AddUtilityTerm(92, piecewiseDistanceFrom5To10Km);
+        alternative.AddUtilityTerm(93, piecewiseDistanceFrom10To20Km);
+        alternative.AddUtilityTerm(94, piecewiseDistanceFrom20KmToInfinity);
+
 
         alternative.AddUtilityTerm(24, isAge0to5.ToFlag() * aggregateLogsum);
         alternative.AddUtilityTerm(25, isPrimaryStudent.ToFlag() * aggregateLogsum);
