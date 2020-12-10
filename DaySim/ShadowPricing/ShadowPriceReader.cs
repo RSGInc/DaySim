@@ -18,7 +18,7 @@ namespace DaySim.ShadowPricing {
       Dictionary<int, IShadowPriceParcel> shadowPrices = new Dictionary<int, IShadowPriceParcel>();
       FileInfo shadowPriceFile = new FileInfo(Global.ShadowPricesPath);
       string shadowPricesReadPath = Global.Configuration.ShouldReadBaseScenarioShadowPriceFile ? Global.Configuration.BaseScenarioShadowPriceFilePath : Global.ShadowPricesPath;
-      FileInfo shadowPriceReadFile = new FileInfo(shadowPricesReadPath);
+      FileInfo shadowPriceReadFile = Global.GetInputPath(shadowPricesReadPath).ToFile();
 
       if (!shadowPriceReadFile.Exists || !Global.Configuration.ShouldUseShadowPricing || (!Global.Configuration.ShouldRunWorkLocationModel && !Global.Configuration.ShouldRunSchoolLocationModel)) {
         return shadowPrices;
