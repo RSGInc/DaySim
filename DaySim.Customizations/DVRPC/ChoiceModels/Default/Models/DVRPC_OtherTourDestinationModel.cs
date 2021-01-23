@@ -7,7 +7,7 @@ using DaySim.DomainModels.Extensions;
 namespace DaySim.ChoiceModels.Default.Models {
   internal class DVRPC_OtherTourDestinationModel : OtherTourDestinationModel {
 
-    protected override void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper _tour, IParcelWrapper destinationParcel) {
+    protected override void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper _tour, IParcelWrapper destinationParcel, IPersonWrapper person) {
 
 
       //areas 

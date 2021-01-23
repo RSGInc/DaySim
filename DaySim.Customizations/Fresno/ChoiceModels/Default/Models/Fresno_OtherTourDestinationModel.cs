@@ -5,7 +5,7 @@ using DaySim.Framework.DomainModels.Wrappers;
 namespace DaySim.ChoiceModels.Default.Models {
   internal class Fresno_OtherTourDestinationModel : OtherTourDestinationModel {
 
-    protected override void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper _tour, IParcelWrapper destinationParcel) {
+    protected override void RegionSpecificOtherTourDistrictCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper _tour, IParcelWrapper destinationParcel, IPersonWrapper person) {
 
 
       //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #

@@ -32,6 +32,12 @@ namespace DaySim.ChoiceModels.Default.Models {
       Initialize(CHOICE_MODEL_NAME, Global.Configuration.WorkTourDestinationModelCoefficients, sampleSize + 1, TOTAL_NESTED_ALTERNATIVES, TOTAL_LEVELS, MAX_PARAMETER);
     }
 
+    protected virtual void RegionSpecificWorkTourCustomCoefficients(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour, IParcelWrapper destinationParcel, IPersonWrapper person)
+    {
+      //see PSRC_OtherTourDestinationModel for example
+      //Global.PrintFile.WriteLine("Generic OtherTourDestinationModel.RegionSpecificOtherTourDistrictCoefficients being called so must not be overridden by CustomizationDll");
+    }
+
     public void Run(ITourWrapper tour, int sampleSize) {
       if (tour == null) {
         throw new ArgumentNullException("tour");
@@ -113,12 +119,13 @@ namespace DaySim.ChoiceModels.Default.Models {
       int segment = Global.ContainerDaySim.GetInstance<SamplingWeightsSettingsFactory>().SamplingWeightsSettings.GetTourDestinationSegment(tour.DestinationPurpose, tour.IsHomeBasedTour ? Global.Settings.TourPriorities.HomeBasedTour : Global.Settings.TourPriorities.WorkBasedTour, Global.Settings.Modes.Sov, person.PersonType);
       IParcelWrapper excludedParcel = person.UsualWorkParcel == null || person.UsualWorkParcelId == household.ResidenceParcelId || tour.DestinationPurpose != Global.Settings.Purposes.Work || tour.GetTourCategory() == Global.Settings.TourCategories.WorkBased ? null : person.UsualWorkParcel;
       DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, tour.OriginParcel, excludedParcel, excludedParcel);
-      TourDestinationUtilities tourDestinationUtilities = new TourDestinationUtilities(tour, sampleSize, primaryFlag, secondaryFlag, fastestAvailableTimeOfDay, maxAvailableMinutes);
+      TourDestinationUtilities tourDestinationUtilities = new TourDestinationUtilities(this, tour, sampleSize, primaryFlag, secondaryFlag, fastestAvailableTimeOfDay, maxAvailableMinutes);
 
       destinationSampler.SampleTourDestinations(tourDestinationUtilities);
     }
 
     private sealed class TourDestinationUtilities : ISamplingUtilities {
+      private readonly WorkTourDestinationModel _parentClass;
       private readonly ITourWrapper _tour;
       private readonly int _sampleSize;
       private readonly int _primaryFlag;
@@ -127,7 +134,8 @@ namespace DaySim.ChoiceModels.Default.Models {
       private readonly int _maxAvailableMinutes;
       private readonly int[] _seedValues;
 
-      public TourDestinationUtilities(ITourWrapper tour, int sampleSize, int primaryFlag, int secondaryFlag, int fastestAvailableTimeOfDay, int maxAvailableMinutes) {
+      public TourDestinationUtilities(WorkTourDestinationModel parentClass, ITourWrapper tour, int sampleSize, int primaryFlag, int secondaryFlag, int fastestAvailableTimeOfDay, int maxAvailableMinutes) {
+        _parentClass = parentClass;
         _tour = tour;
         _sampleSize = sampleSize;
         _primaryFlag = primaryFlag;
@@ -292,8 +300,9 @@ namespace DaySim.ChoiceModels.Default.Models {
         alternative.AddUtilityTerm(47, (!usualWorkParcel).ToFlag() * destinationParcel.EmploymentIndustrial + destinationParcel.EmploymentAgricultureConstruction);
         alternative.AddUtilityTerm(48, (!usualWorkParcel).ToFlag() * destinationParcel.Households);
         alternative.AddUtilityTerm(49, (!usualWorkParcel).ToFlag() * destinationParcel.StudentsUniversity);
-
-
+        
+        _parentClass.RegionSpecificWorkTourCustomCoefficients(alternative, _tour, destinationParcel, person);
+        
         // OD shadow pricing
         if (!usualWorkParcel && Global.Configuration.ShouldUseODShadowPricing) {
           int ori = _tour.OriginParcel.District;
