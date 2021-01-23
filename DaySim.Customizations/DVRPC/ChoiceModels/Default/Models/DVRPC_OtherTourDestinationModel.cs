@@ -2,6 +2,7 @@
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Roster;
+using DaySim.DomainModels.Extensions;
 
 namespace DaySim.ChoiceModels.Default.Models {
   internal class DVRPC_OtherTourDestinationModel : OtherTourDestinationModel {
@@ -27,6 +28,16 @@ namespace DaySim.ChoiceModels.Default.Models {
       int d_ext_snj = (destinationParcel.ZoneKey > 56000 && destinationParcel.ZoneKey <= 58000).ToFlag();
       int d_ext_oth = (destinationParcel.ZoneKey > 58000).ToFlag();
 
+      int cbdDest = destinationParcel.CBD_AreaType_Buffer1();
+      double distanceFromOrigin = _tour.OriginParcel.DistanceFromOrigin(destinationParcel, _tour.DestinationArrivalTime);
+
+      alternative.AddUtilityTerm(121, o_int_nj * distanceFromOrigin);
+      alternative.AddUtilityTerm(122, o_int_paoth * distanceFromOrigin);
+      alternative.AddUtilityTerm(123, cbdDest * distanceFromOrigin);
+      alternative.AddUtilityTerm(124, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.PersonalBusiness).ToFlag());
+      alternative.AddUtilityTerm(125, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.Shopping).ToFlag());
+      alternative.AddUtilityTerm(126, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.Meal).ToFlag());
+      alternative.AddUtilityTerm(127, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.Social).ToFlag());
 
       alternative.AddUtilityTerm(130, (_tour.OriginParcel.Id == destinationParcel.Id).ToFlag());
 
@@ -85,6 +96,8 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(195, o_ext_snj * d_ext_nnj);
       alternative.AddUtilityTerm(196, o_ext_snj * d_ext_oth);
       alternative.AddUtilityTerm(197, o_ext_snj * d_ext_snj);
+
+ 
 
       //add any region-specific new terms in region-specific class, using coefficient numbers 114-120, or other unused variable #
 

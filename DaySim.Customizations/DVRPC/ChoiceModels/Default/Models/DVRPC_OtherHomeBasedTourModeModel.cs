@@ -14,6 +14,9 @@ namespace DaySim.ChoiceModels.Default.Models {
       int originInNJ = ((tour.OriginParcel.ZoneKey >= 18000 && tour.OriginParcel.ZoneKey < 50000) || (tour.OriginParcel.ZoneKey >= 53000 && tour.OriginParcel.ZoneKey < 58000)).ToFlag();
       int destinInNJ = ((destinationParcel.ZoneKey >= 18000 && destinationParcel.ZoneKey < 50000) || (destinationParcel.ZoneKey >= 53000 && destinationParcel.ZoneKey < 58000)).ToFlag();
 
+      int coreCBDOrig = (tour.OriginParcel.HouseholdsBuffer1 + tour.OriginParcel.EmploymentTotalBuffer1 >= 20000).ToFlag();
+      int coreCBDDest = (destinationParcel.HouseholdsBuffer1 + destinationParcel.EmploymentTotalBuffer1 >= 20000).ToFlag();
+
       if (mode == Global.Settings.Modes.ParkAndRide) {
         //alternative.AddUtilityTerm(211, tour.OriginParcel.CBD_AreaType_Buffer1());
         //alternative.AddUtilityTerm(212, tour.OriginParcel.Urban_AreaType_Buffer1());
@@ -47,6 +50,8 @@ namespace DaySim.ChoiceModels.Default.Models {
         alternative.AddUtilityTerm(241, originInNJ);
         alternative.AddUtilityTerm(242, destinInNJ);
         alternative.AddUtilityTerm(243, destinInNJ * originInNJ);
+        alternative.AddUtilityTerm(244, coreCBDOrig);
+        alternative.AddUtilityTerm(245, coreCBDDest);
 
         //  alternative.AddUtilityTerm(221, originParcel.PCA_DensityTerm_Buffer1());
         //  alternative.AddUtilityTerm(222, originParcel.PCA_WalkabilityTerm_Buffer1());
