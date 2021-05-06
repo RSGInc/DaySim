@@ -193,7 +193,7 @@ namespace DaySim.ChoiceModels.Actum.Models {
       alternative.AddUtilityTerm(13, householdDay.PrimaryPriorityTimeFlag);
 
       alternative.AddUtilityTerm(14, personDay.Person.IsPartTimeWorker.ToFlag());
-      alternative.AddUtilityTerm(15, personDay.Person.WorksAtHome.ToFlag());
+      alternative.AddUtilityTerm(15, personDay.Person.WorksAtHome().ToFlag());
       //alternative.AddUtilityTerm(16, personDay.Person.IsFulltimeWorker.ToFlag());
 
       //alternative.AddUtilityTerm(15, (personDay.Person.Gender == 1).ToFlag());

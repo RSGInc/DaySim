@@ -78,8 +78,6 @@ namespace DaySim.Framework.DomainModels.Wrappers {
 
     bool AgeIsLessThan30 { get; set; }
 
-    bool WorksAtHome { get; set; }
-
     bool IsYouth { get; set; }
 
     #endregion
@@ -95,6 +93,8 @@ namespace DaySim.Framework.DomainModels.Wrappers {
     bool IsOnlyFullOrPartTimeWorker();
 
     bool IsOnlyAdult();
+
+    bool WorksAtHome();
 
     int GetCarOwnershipSegment();
 

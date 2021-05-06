@@ -814,7 +814,7 @@ namespace DaySim.Framework.Core {
 
 
     [XmlAttribute]
-    public double PathImpedance_ParkAndRideLotCapacityWeight { get; set; }
+    public double PathImpedance_ParkAndRideLotCapacitySizeWeight { get; set; }
 
     [XmlAttribute]
     public bool PathImpedance_ParkAndRideUseOriginLotChoice { get; set; }
@@ -1583,6 +1583,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool SFCTA { get; set; }
 
+    [XmlAttribute]
+    public bool BKR { get; set; }
+
     //new since 203
     [XmlAttribute]
     public bool AvoidDisaggregateModeChoiceLogsums { get; set; }
@@ -1911,6 +1914,9 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public bool WriteTransitStopAreas { get; set; } = false;
+
+    [XmlAttribute]
+    public bool AvoidUsingOpenSpaceInDestinationSampling { get; set; } = false;
 
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };

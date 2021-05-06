@@ -871,6 +871,96 @@ namespace DaySim.DomainModels.Default.Wrappers {
       return Math.Log(1 + EmploymentFoodBuffer1 + EmploymentRetailBuffer1 + EmploymentServiceBuffer1 + EmploymentMedicalBuffer1);
     }
 
+    // MB tried these factors based on a quick principal components analysis, but they don't work very well in estimation
+    public virtual double PCA_DensityTerm_Buffer1() {
+      return
+        0.682 * HouseholdDensity1() +
+        0.760 * RetailEmploymentDensity1() +
+        0.869 * ServiceEmploymentDensity1() +
+        0.829 * OfficeEmploymentDensity1() +
+        0.626 * NetIntersectionDensity1() +
+        0.334 * StopsTransitBuffer1 +
+        0.377 * OpenSpaceType1Buffer1 +
+        0.825 * ParkingOffStreetPaidHourlySpacesBuffer1 +
+        0.061 * MixedUse2Index1();
+    }
+
+    public virtual double PCA_WalkabilityTerm_Buffer1() {
+      return
+        0.300 * HouseholdDensity1() +
+       -0.331 * RetailEmploymentDensity1() +
+       -0.204 * ServiceEmploymentDensity1() +
+       -0.368 * OfficeEmploymentDensity1() +
+        0.628 * NetIntersectionDensity1() +
+        0.430 * StopsTransitBuffer1 +
+        0.682 * OpenSpaceType1Buffer1 +
+       -0.349 * ParkingOffStreetPaidHourlySpacesBuffer1 +
+        0.380 * MixedUse2Index1();
+    }
+
+    public virtual double PCA_MixedUseTerm_Buffer1() {
+      return
+        0.157 * HouseholdDensity1() +
+        0.113 * RetailEmploymentDensity1() +
+        0.055 * ServiceEmploymentDensity1() +
+       -0.020 * OfficeEmploymentDensity1() +
+       -0.139 * NetIntersectionDensity1() +
+       -0.262 * StopsTransitBuffer1 +
+       -0.224 * OpenSpaceType1Buffer1 +
+       -0.023 * ParkingOffStreetPaidHourlySpacesBuffer1 +
+        0.890 * MixedUse2Index1();
+    }
+
+    public virtual double PCA_TransitAccessTerm_Buffer1() {
+      return
+        0.222 * HouseholdDensity1() +
+        0.000 * RetailEmploymentDensity1() +
+        0.056 * ServiceEmploymentDensity1() +
+       -0.087 * OfficeEmploymentDensity1() +
+       -0.192 * NetIntersectionDensity1() +
+        0.729 * StopsTransitBuffer1 +
+       -0.469 * OpenSpaceType1Buffer1 +
+       -0.092 * ParkingOffStreetPaidHourlySpacesBuffer1 +
+        0.020 * MixedUse2Index1();
+    }
+
+    public virtual int CoreCBD_AreaType_Buffer1() {
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 9000).ToFlag();
+    }
+
+    public virtual int FringCBD_AreaType_Buffer1() {
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 7800
+           && HouseholdsBuffer1 + EmploymentTotalBuffer1 <  9000).ToFlag();
+    }
+
+    public virtual int CBD_AreaType_Buffer1() {
+      return CoreCBD_AreaType_Buffer1() + FringCBD_AreaType_Buffer1();
+    }
+
+    public virtual int Urban_AreaType_Buffer1() {
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 2750
+           && HouseholdsBuffer1 + EmploymentTotalBuffer1 <  7800).ToFlag();
+    }
+
+    public virtual int Suburban_AreaType_Buffer1() {
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 450
+           && HouseholdsBuffer1 + EmploymentTotalBuffer1 < 2750).ToFlag();
+    }
+
+    public virtual int Rural_AreaType_Buffer1() {
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 >= 40
+           && HouseholdsBuffer1 + EmploymentTotalBuffer1 < 450).ToFlag();
+    }
+
+    public virtual int OpenRural_AreaType_Buffer1() {
+      return (HouseholdsBuffer1 + EmploymentTotalBuffer1 < 40).ToFlag();
+    }
+
+
+    public virtual int AllRural_AreaType_Buffer1() {
+      return Rural_AreaType_Buffer1() + OpenRural_AreaType_Buffer1();
+    }
+
     public virtual double K8HighSchoolQtrMileLogBuffer1() {
       return Math.Log(1 + StudentsK8Buffer1 + StudentsHighSchoolBuffer1);
     }
@@ -969,29 +1059,38 @@ namespace DaySim.DomainModels.Default.Wrappers {
       Global.NodeNodePreviousDestinationParcelId[threadAssignedIndex] = destination.Id;
       Global.NodeNodePreviousDistance[threadAssignedIndex] = Constants.DEFAULT_VALUE;
 
+      // get the origin parcel node id and then the index of the node_id
       bool foundOrigin = Global.NodeIndex.TryGetValue(Id, out int oNodeId);
+      foundOrigin = Global.ANodeId.TryGetValue(oNodeId, out int oNodeIdIndex);
+
+      //same logic for destination
       bool foundDestination = Global.NodeIndex.TryGetValue(destination.Id, out int dNodeId);
+      foundDestination = Global.ANodeId.TryGetValue(dNodeId, out int dNodeIdIndex);
 
       if (!foundDestination || !foundOrigin) {
         return Constants.DEFAULT_VALUE;
       }
 
-      if (oNodeId == dNodeId || oNodeId < 1 || dNodeId < 1 || oNodeId > Global.ANodeId.Length || dNodeId > Global.ANodeId.Length) {
+      if (oNodeId == dNodeId || oNodeId < 1 || dNodeId < 1 || oNodeId > Global.ANodeId.Count || dNodeId > Global.ANodeId.Count) {
         return Constants.DEFAULT_VALUE;
       }
 
       int aNodeId = oNodeId;
+      int aNodeIdIndex = oNodeIdIndex;
       int bNodeId = dNodeId;
+      int bNodeIdIndex = dNodeIdIndex;
 
       // if symmetry assumed - use smaller node # as aNode
       if (!Global.Configuration.AllowNodeDistanceAsymmetry) {
-
-        aNodeId = Math.Min(oNodeId, dNodeId);
-        bNodeId = Math.Max(oNodeId, dNodeId);
+        if (oNodeId > dNodeId) {
+          aNodeId = dNodeId;
+          bNodeId = oNodeId;
+          aNodeIdIndex = dNodeIdIndex;
+        }
       }
 
-      int firstRecord = Global.ANodeFirstRecord[aNodeId - 1];
-      int lastRecord = Global.ANodeLastRecord[aNodeId - 1];
+      int firstRecord = Global.ANodeFirstRecord[aNodeIdIndex - 1];
+      int lastRecord = Global.ANodeLastRecord[aNodeIdIndex - 1];
 
       if (firstRecord <= 0 || lastRecord <= 0) {
         return Constants.DEFAULT_VALUE; //there are no b nodes for a node            

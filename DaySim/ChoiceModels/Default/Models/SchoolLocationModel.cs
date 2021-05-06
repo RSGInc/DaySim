@@ -22,7 +22,7 @@ namespace DaySim.ChoiceModels.Default.Models {
     public const string CHOICE_MODEL_NAME = "SchoolLocationModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 2;
     private const int TOTAL_LEVELS = 2;
-    private const int MAX_PARAMETER = 99;
+    private const int MAX_PARAMETER = 199;
 
     public override void RunInitialize(ICoefficientsReader reader = null) {
       int sampleSize = Global.Configuration.SchoolLocationModelSampleSize;
@@ -84,7 +84,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       DestinationSampler destinationSampler = new DestinationSampler(choiceProbabilityCalculator, segment, sampleSize, choice, person.Household.ResidenceParcel);
       int destinationArrivalTime = ChoiceModelUtility.GetDestinationArrivalTime(Global.Settings.Models.SchoolTourModeModel);
       int destinationDepartureTime = ChoiceModelUtility.GetDestinationDepartureTime(Global.Settings.Models.SchoolTourModeModel);
-      SchoolLocationUtilities schoolLocationUtilities = new SchoolLocationUtilities(person, sampleSize, destinationArrivalTime, destinationDepartureTime);
+      SchoolLocationUtilities schoolLocationUtilities = new SchoolLocationUtilities(this, person, sampleSize, destinationArrivalTime, destinationDepartureTime);
 
       destinationSampler.SampleTourDestinations(schoolLocationUtilities);
 
@@ -106,14 +106,21 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddNestedAlternative(sampleSize + 3, 1, 99);
     }
 
+    protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, IPersonWrapper _person, IParcelWrapper destinationParcel) {
+      //PSRC customization dll for example
+      //Global.PrintFile.WriteLine("Generic Default WorkLocationModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
+    }
+
     private sealed class SchoolLocationUtilities : ISamplingUtilities {
+      private readonly SchoolLocationModel _parentClass;
       private readonly IPersonWrapper _person;
       private readonly int _sampleSize;
       private readonly int _destinationArrivalTime;
       private readonly int _destinationDepartureTime;
       private readonly int[] _seedValues;
 
-      public SchoolLocationUtilities(IPersonWrapper person, int sampleSize, int destinationArrivalTime, int destinationDepartureTime) {
+      public SchoolLocationUtilities(SchoolLocationModel parentClass, IPersonWrapper person, int sampleSize, int destinationArrivalTime, int destinationDepartureTime) {
+        _parentClass = parentClass;
         _person = person;
         _sampleSize = sampleSize;
         _destinationArrivalTime = destinationArrivalTime;
@@ -280,6 +287,11 @@ namespace DaySim.ChoiceModels.Default.Models {
         alternative.AddUtilityTerm(82, _person.IsAdult.ToFlag() * destinationParcel.EmploymentTotal);
         alternative.AddUtilityTerm(83, _person.IsAdult.ToFlag() * destinationParcel.StudentsUniversity);
         alternative.AddUtilityTerm(84, _person.IsAdult.ToFlag() * destinationParcel.StudentsHighSchool);
+
+
+        //add any region-specific new terms in region-specific class, using coefficient numbers 91-100 or other unused variable #
+        _parentClass.RegionSpecificCustomizations(alternative, _person, destinationParcel);
+
 
         // set shadow price depending on persontype and add it to utility
         // we are using the sampling adjustment factor assuming that it is 1

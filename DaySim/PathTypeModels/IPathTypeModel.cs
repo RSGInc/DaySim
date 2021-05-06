@@ -25,6 +25,7 @@ namespace DaySim.PathTypeModels {
 
 
     int PathParkAndRideNodeId { get; }
+    int PathParkAndRideNodeCapacity { get; }
 
     double PathParkAndRideTransitTime { get; }
     double PathParkAndRideTransitDistance { get; }
@@ -70,6 +71,5 @@ namespace DaySim.PathTypeModels {
     double PathParkAndRideWalkAccessEgressTime { get; }
 
     double PathTransitWalkAccessEgressTime { get; }
-
   }
 }

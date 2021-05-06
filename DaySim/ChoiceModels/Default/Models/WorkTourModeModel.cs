@@ -13,6 +13,7 @@ using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
 using DaySim.Framework.DomainModels.Creators;
+using DaySim.Framework.DomainModels.Models;
 using DaySim.Framework.DomainModels.Wrappers;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Roster;
@@ -23,7 +24,7 @@ namespace DaySim.ChoiceModels.Default.Models {
     public const string CHOICE_MODEL_NAME = "WorkTourModeModel";
     private const int TOTAL_NESTED_ALTERNATIVES = 5;
     private const int TOTAL_LEVELS = 2;
-    private const int MAX_PARAMETER = 299;
+    private const int MAX_PARAMETER = 333;
     private const int THETA_PARAMETER = 99;
 
     private readonly int[] _nestedAlternativeIds = new[] { 0, 19, 19, 20, 21, 21, 22, 22, 0, 23 };
@@ -256,12 +257,14 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(130, Math.Log(destinationParcel.TotalEmploymentDensity1() + 1) * 2553.0 / Math.Log(2553.0));
           alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
           alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
-          //alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
+          alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
           //alternative.AddUtilityTerm(120, Math.Log(destinationParcel.TotalEmploymentDensity1() + 1) * 2553.0 / Math.Log(2553.0));
           alternative.AddUtilityTerm(118, destinationParcel.TotalEmploymentDensity1());
           //alternative.AddUtilityTerm(117, destinationParcel.NetIntersectionDensity1());
-          //alternative.AddUtilityTerm(113, Math.Log(destinationParcel.StopsTransitBuffer1 + 1));
+          alternative.AddUtilityTerm(113, Math.Log(destinationParcel.StopsTransitBuffer1 + 1));
           alternative.AddUtilityTerm(112, Math.Log(originParcel.StopsTransitBuffer1 + 1));
+          alternative.AddUtilityTerm(115, Math.Log(pathTypeModel.PathParkAndRideNodeCapacity+1));
+
         } else if (mode == Global.Settings.Modes.Transit) {
           alternative.AddUtilityTerm(20, 1);
           alternative.AddUtilityTerm(21, noCarsInHouseholdFlag); //for calibration
@@ -270,19 +273,20 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(130, Math.Log(destinationParcel.TotalEmploymentDensity1() + 1) * 2553.0 / Math.Log(2553.0));
           alternative.AddUtilityTerm(128, destinationParcel.TotalEmploymentDensity1());
           alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
-          //alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
+          alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
           //alternative.AddUtilityTerm(125, originParcel.HouseholdDensity1());
-          alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
-          //alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
-          //alternative.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1+1));
+          //alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
+          alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
+          alternative.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1+1));
           alternative.AddUtilityTerm(180, univStudentFlag);
           alternative.AddUtilityTerm(100, income75kPlusFlag);
+
         } else if (mode == Global.Settings.Modes.Hov3) {
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / Global.Configuration.Coefficients_HOV3CostDivisor_Work));
           alternative.AddUtilityTerm(30, 1);
           alternative.AddUtilityTerm(31, childrenUnder5);
           alternative.AddUtilityTerm(32, childrenAge5Through15);
-          //                        alternative.AddUtility(34, nonworkingAdults + retiredAdults);
+          //                       alternative.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
           alternative.AddUtilityTerm(35, pathTypeModel.PathDistance.AlmostEquals(0) ? 0 : Math.Log(pathTypeModel.PathDistance));
           alternative.AddUtilityTerm(36, noCarsInHouseholdFlag);   // for calibration of hov3 vs hov2
           alternative.AddUtilityTerm(37, carsLessThanDriversFlag); // for calibration of hov3 vs hov2
@@ -296,7 +300,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(1, (destinationParkingCost * tour.CostCoefficient / Global.Configuration.Coefficients_HOV2CostDivisor_Work));
           alternative.AddUtilityTerm(31, childrenUnder5);
           alternative.AddUtilityTerm(32, childrenAge5Through15);
-          //                        alternative.AddUtility(34, nonworkingAdults + retiredAdults);
+          //                        alternative.AddUtilityTerm(34, nonworkingAdults + retiredAdults);
           alternative.AddUtilityTerm(35, pathTypeModel.PathDistance.AlmostEquals(0) ? 0 : Math.Log(pathTypeModel.PathDistance));
           alternative.AddUtilityTerm(40, 1);
           alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
@@ -348,10 +352,25 @@ namespace DaySim.ChoiceModels.Default.Models {
                                                               + 0.001 * originParcel.NetIntersectionDensity1()
                                                               + 0.0002 * originParcel.HouseholdDensity1()
                                                               + 1.0 * originParcel.MixedUse4Index1());
+          
+          //alternative.AddUtilityTerm(261, originParcel.PCA_DensityTerm_Buffer1());
+          //alternative.AddUtilityTerm(262, originParcel.PCA_WalkabilityTerm_Buffer1());
+          //alternative.AddUtilityTerm(263, originParcel.PCA_MixedUseTerm_Buffer1());
+          //alternative.AddUtilityTerm(264, originParcel.PCA_TransitAccessTerm_Buffer1());
+          //alternative.AddUtilityTerm(261, destinationParcel.PCA_DensityTerm_Buffer1());
+          //alternative.AddUtilityTerm(262, destinationParcel.PCA_WalkabilityTerm_Buffer1());
+          //alternative.AddUtilityTerm(263, destinationParcel.PCA_MixedUseTerm_Buffer1());
+          //alternative.AddUtilityTerm(264, destinationParcel.PCA_TransitAccessTerm_Buffer1());
+          //alternative.AddUtilityTerm(265, destinationParcel.PCA_DensityTerm_Buffer1());
+          //alternative.AddUtilityTerm(266, destinationParcel.PCA_WalkabilityTerm_Buffer1());
+          //alternative.AddUtilityTerm(267, destinationParcel.PCA_MixedUseTerm_Buffer1());
+          //alternative.AddUtilityTerm(268, destinationParcel.PCA_TransitAccessTerm_Buffer1());
+          
         } else if (mode == Global.Settings.Modes.Walk) {
           alternative.AddUtilityTerm(70, 1); //for calibration
           alternative.AddUtilityTerm(71, maleFlag);
           alternative.AddUtilityTerm(73, ageBetween51And98Flag);
+          alternative.AddUtilityTerm(75, pathTypeModel.PathDistance * pathTypeModel.PathDistance);
           alternative.AddUtilityTerm(77, noCarsInHouseholdFlag); //for calibration
           alternative.AddUtilityTerm(78, carsLessThanDriversFlag); //for calibration
           alternative.AddUtilityTerm(179, destinationParcel.MixedUse4Index1());
@@ -366,6 +385,20 @@ namespace DaySim.ChoiceModels.Default.Models {
                                                    + 0.001 * originParcel.NetIntersectionDensity1()
                                                    + 0.0001 * originParcel.HouseholdDensity1()
                                                    + 1.0 * originParcel.MixedUse4Index1());
+          
+          //alternative.AddUtilityTerm(271, originParcel.PCA_DensityTerm_Buffer1());
+          //alternative.AddUtilityTerm(272, originParcel.PCA_WalkabilityTerm_Buffer1());
+          //alternative.AddUtilityTerm(273, originParcel.PCA_MixedUseTerm_Buffer1());
+          //alternative.AddUtilityTerm(274, originParcel.PCA_TransitAccessTerm_Buffer1());
+          //alternative.AddUtilityTerm(271, destinationParcel.PCA_DensityTerm_Buffer1());
+          //alternative.AddUtilityTerm(272, destinationParcel.PCA_WalkabilityTerm_Buffer1());
+          //alternative.AddUtilityTerm(273, destinationParcel.PCA_MixedUseTerm_Buffer1());
+          //alternative.AddUtilityTerm(274, destinationParcel.PCA_TransitAccessTerm_Buffer1());
+          //alternative.AddUtilityTerm(275, destinationParcel.PCA_DensityTerm_Buffer1());
+          //alternative.AddUtilityTerm(276, destinationParcel.PCA_WalkabilityTerm_Buffer1());
+          //alternative.AddUtilityTerm(277, destinationParcel.PCA_MixedUseTerm_Buffer1());
+          //alternative.AddUtilityTerm(278, destinationParcel.PCA_TransitAccessTerm_Buffer1());
+
         } else if (mode == Global.Settings.Modes.PaidRideShare) {
           if (Global.Configuration.PaidRideshare_UseEstimatedInsteadOfAssertedCoefficients) {
             alternative.AddUtilityTerm(80, 1.0);

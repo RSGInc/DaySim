@@ -44,6 +44,7 @@ namespace DaySim.PathTypeModels {
     protected readonly double[] _pathDistance = new double[Global.Settings.PathTypes.TotalPathTypes];
     protected readonly double[] _pathCost = new double[Global.Settings.PathTypes.TotalPathTypes];
     protected readonly int[] _pathParkAndRideNodeId = new int[Global.Settings.PathTypes.TotalPathTypes];
+    protected readonly int[] _pathParkAndRideNodeCapacity = new int[Global.Settings.PathTypes.TotalPathTypes];
     protected readonly int[] _pathDestinationParkingNodeId = new int[Global.Settings.PathTypes.TotalPathTypes];
     protected readonly int[] _pathDestinationParkingType = new int[Global.Settings.PathTypes.TotalPathTypes];
     protected readonly double[] _pathDestinationParkingCost = new double[Global.Settings.PathTypes.TotalPathTypes];
@@ -98,6 +99,7 @@ namespace DaySim.PathTypeModels {
     public virtual int PathType { get; protected set; }
 
     public virtual int PathParkAndRideNodeId { get; protected set; }
+    public virtual int PathParkAndRideNodeCapacity { get; protected set; }
     public virtual int PathDestinationParkingNodeId { get; protected set; }
     public virtual int PathDestinationParkingType { get; protected set; }
     public virtual double PathDestinationParkingCost { get; protected set; }
@@ -377,6 +379,7 @@ namespace DaySim.PathTypeModels {
       PathDestinationParkingCost = _pathDestinationParkingCost[_choice];
       PathDestinationParkingWalkTime = _pathDestinationParkingWalkTime[_choice];
       PathParkAndRideNodeId = _pathParkAndRideNodeId[_choice];
+      PathParkAndRideNodeCapacity = _pathParkAndRideNodeCapacity[_choice];
       if (Mode == Global.Settings.Modes.Transit) {
         PathTransitWalkAccessEgressTime = _pathTransitWalkAccessEgressTime[_choice];
       }
@@ -416,6 +419,7 @@ namespace DaySim.PathTypeModels {
       _pathDistance[pathType] = skimDistance;
       _pathCost[pathType] = 0;
       _pathParkAndRideNodeId[pathType] = 0;
+      _pathParkAndRideNodeCapacity[pathType] = 0;
 
       if (skimMode == Global.Settings.Modes.Walk && Global.Configuration.WalkModeMaximumOneWayDistance > Constants.EPSILON && skimDistance > Global.Configuration.WalkModeMaximumOneWayDistance) {
         return;
@@ -608,6 +612,7 @@ namespace DaySim.PathTypeModels {
                 : ImpedanceRoster.GetValue("ivtime", skimMode, pathType, votValue, _outboundTime, _originParcel, _destinationParcel, circuityDistance);
 
       _pathParkAndRideNodeId[pathType] = 0;
+      _pathParkAndRideNodeCapacity[pathType] = 0;
       _pathTime[pathType] = skimValue.Variable;
       _pathDistance[pathType] = skimValue.BlendVariable;
 
@@ -850,6 +855,7 @@ namespace DaySim.PathTypeModels {
 
       //set final values
       _pathParkAndRideNodeId[pathType] = 0;
+      _pathParkAndRideNodeCapacity[pathType] = 0;
       _pathTime[pathType] = transitPath.Time + originWalkTime + destinationWalkTime;
       _pathCost[pathType] = transitPath.Cost;
       _pathTransitWalkAccessEgressTime[pathType] = originWalkTime + destinationWalkTime;
@@ -948,6 +954,7 @@ namespace DaySim.PathTypeModels {
           //}
 
           _pathParkAndRideNodeId[pathType] = 0;
+          _pathParkAndRideNodeCapacity[pathType] = 0;
           _pathOriginStopAreaKey[pathType] = oStopAreaKey;
           _pathDestinationStopAreaKey[pathType] = dStopAreaKey;
           _pathTime[pathType] = fullPathTime;
@@ -1146,6 +1153,7 @@ namespace DaySim.PathTypeModels {
         bestNodeUtility = nodeUtility;
 
         _pathParkAndRideNodeId[pathType] = node.Id;
+        _pathParkAndRideNodeCapacity[pathType] = node.Capacity;
         _pathTime[pathType] = nodePathTime;
         _pathDistance[pathType] = nodePathDistance;
         _pathCost[pathType] = nodePathCost;
@@ -1367,7 +1375,7 @@ namespace DaySim.PathTypeModels {
             double nodePathTime = transitPath.Time + driveTime + destinationWalkTime;
             double nodePathDistance = driveDistance + transitDistance;
             double nodePathCost = transitPath.Cost + parkAndRideCost;
-            double nodeCapacityBenefit = knrPathType ? 0 : node.Capacity * Global.Configuration.PathImpedance_ParkAndRideLotCapacityWeight;
+            double nodeCapacityBenefit = knrPathType ? 0 : Math.Log(Math.Max(node.Capacity,1.0E-30)) * Global.Configuration.PathImpedance_ParkAndRideLotCapacitySizeWeight;
 
             if (nodePathTime > pathTimeLimit) {
               continue;
@@ -1402,6 +1410,7 @@ namespace DaySim.PathTypeModels {
             //}
 
             _pathParkAndRideNodeId[pathType] = node.Id;
+            _pathParkAndRideNodeCapacity[pathType] = node.Capacity;
             _pathOriginStopAreaKey[pathType] = parkAndRideStopAreaKey;
             _pathDestinationStopAreaKey[pathType] = dStopAreaKey;
             _pathTime[pathType] = nodePathTime;
