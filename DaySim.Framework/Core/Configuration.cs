@@ -1918,11 +1918,16 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool AvoidUsingOpenSpaceInDestinationSampling { get; set; } = false;
 
+    
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
 
     [XmlAttribute]
     public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
+
+    [XmlAttribute]
+    public bool AddTollToParkAndRideCost { get; set; }
+
 
     private List<Type> pluginTypes = null;
     private readonly LazyConcurrentDictionary<Type, Type> assignableObjectTypes = new LazyConcurrentDictionary<Type, Type>();
