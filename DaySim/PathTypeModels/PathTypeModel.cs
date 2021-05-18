@@ -1361,7 +1361,7 @@ namespace DaySim.PathTypeModels {
                 : ImpedanceRoster.GetValue("toll", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, parkAndRideZoneId, _originZoneId).Variable +
                  ImpedanceRoster.GetValue("toll", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, parkAndRideParcel, _originParcel, circuityDistance).Variable;
             Global.PrintFile.WriteLine(String.Format("PnR Cost: {0}, driveToll: {1}", parkAndRideCost, driveToll));
-            parkAndRideCost += driveToll;
+            parkAndRideCost += (Global.Configuration.ParkAndRideTollWeight * driveToll);
             Global.PrintFile.WriteLine(String.Format("PnR Cost: {0}", parkAndRideCost));
           }
 

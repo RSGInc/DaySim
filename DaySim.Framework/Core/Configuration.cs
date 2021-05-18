@@ -1928,6 +1928,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool AddTollToParkAndRideCost { get; set; }
 
+    [XmlAttribute]
+    public double ParkAndRideTollWeight { get; set; } = 1.0
+
 
     private List<Type> pluginTypes = null;
     private readonly LazyConcurrentDictionary<Type, Type> assignableObjectTypes = new LazyConcurrentDictionary<Type, Type>();
