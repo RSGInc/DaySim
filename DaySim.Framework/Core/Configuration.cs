@@ -1929,7 +1929,7 @@ namespace DaySim.Framework.Core {
     public bool AddTollToParkAndRideCost { get; set; }
 
     [XmlAttribute]
-    public double ParkAndRideTollWeight { get; set; } = 1.0
+    public double ParkAndRideTollWeight { get; set; } = 1.0;
 
 
     private List<Type> pluginTypes = null;
