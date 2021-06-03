@@ -32,7 +32,7 @@ namespace DVRPC.ChoiceModels.Default.Models {
       int d_ext_snj = (destinationParcel.ZoneKey > 56000 && destinationParcel.ZoneKey <= 58000).ToFlag();
       int d_ext_oth = (destinationParcel.ZoneKey > 58000).ToFlag();
 
-      int cbdDest = destinationParcel.CBD_AreaType_Buffer1();
+      int cbdDest = (destinationParcel.HouseholdsBuffer1 + destinationParcel.EmploymentTotalBuffer1 >= 31000).ToFlag();
       double distanceFromOrigin = _person.Household.ResidenceParcel.DistanceFromOrigin(destinationParcel, Global.Settings.Times.EightAM);
 
       alternative.AddUtilityTerm(121, o_int_nj * distanceFromOrigin);
@@ -41,7 +41,7 @@ namespace DVRPC.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(124, cbdDest);
       alternative.AddUtilityTerm(125, cbdDest * (_person.Household.Income < 50000).ToFlag());
       alternative.AddUtilityTerm(126, cbdDest * (_person.Household.Income >= 100000).ToFlag());
-
+      alternative.AddUtilityTerm(201, o_int_paphi * distanceFromOrigin);
 
       alternative.AddUtilityTerm(131, o_int_paphi * d_int_paphi);
       alternative.AddUtilityTerm(132, o_int_paphi * d_int_paoth);

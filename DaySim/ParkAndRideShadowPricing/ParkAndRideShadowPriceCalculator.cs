@@ -32,7 +32,7 @@ namespace DaySim.ParkAndRideShadowPricing {
           for (int i = 1; i < Global.Settings.Times.MinutesInADay; i++) {
             double maxLoad = 0;
             for (int j = Math.Max(i - (Global.Configuration.ParkAndRideShadowPriceTimeSpread), 1); j < Math.Min(i + (Global.Configuration.ParkAndRideShadowPriceTimeSpread), Global.Settings.Times.MinutesInADay); j++) {
-              maxLoad = node.ParkAndRideLoad[i - 1] > maxLoad ? node.ParkAndRideLoad[i - 1] : maxLoad;
+              maxLoad = node.ParkAndRideLoad[j - 1] > maxLoad ? node.ParkAndRideLoad[j - 1] : maxLoad;
             }
             DetermineShadowPrice(node.ShadowPrice[i - 1], node.ExogenousLoad[i - 1] + maxLoad, capacity, out double shadowPrice);
             node.ShadowPriceDifference[i - 1] = shadowPrice - node.ShadowPrice[i - 1];
