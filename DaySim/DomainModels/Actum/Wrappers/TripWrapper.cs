@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using DaySim.ChoiceModels.H;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.DomainModels.Actum.Wrappers.Interfaces;
@@ -62,6 +63,11 @@ namespace DaySim.DomainModels.Actum.Wrappers {
     public int AutoOccupancy {
       get => _trip.AutoOccupancy;
       set => _trip.AutoOccupancy = value;
+    }
+
+    public long TripId {
+      get => _trip.TripId;
+      set => _trip.TripId = value;
     }
 
     public int TourMode {
@@ -439,6 +445,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         TravelDistance = modeImpedance.PathDistance;
         PathType = modeImpedance.PathType;
 
+        TripId = (long)Id;
+        if (TripId < 0) { TripId += 4294967295L; };
         TourMode = Tour.Mode;
 
         IActumHouseholdWrapper household = (IActumHouseholdWrapper) Household;
@@ -675,6 +683,8 @@ namespace DaySim.DomainModels.Actum.Wrappers {
         TravelDistance = Tour.TravelDistanceForPTBikeTour / 2.0;
         PathType = Tour.PathType;
 
+        TripId = (long)Id;
+        if (TripId < 0) { TripId += 4294967295L; };
         TourMode = Tour.Mode;
         bool parkAndRide = (TourMode == Global.Settings.Modes.CarParkRideWalk || TourMode == Global.Settings.Modes.CarParkRideBike || TourMode == Global.Settings.Modes.CarParkRideShare);
 

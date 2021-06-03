@@ -6,6 +6,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 using System.Runtime.InteropServices;
+using System.IO;
 using DaySim.DomainModels.Actum.Models.Interfaces;
 using DaySim.Framework.Factories;
 using DaySim.Framework.Persistence;
@@ -14,6 +15,9 @@ namespace DaySim.DomainModels.Actum.Models {
   [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
   [Factory(Factory.PersistenceFactory, Category = Category.Model, DataType = DataType.Actum)]
   public sealed class Trip : DomainModels.Default.Models.Trip, IActumTrip {
+
+    [ColumnName("trip_id")]
+    public long TripId { get; set; }
 
     [ColumnName("tourmode")]
     public int TourMode { get; set; }

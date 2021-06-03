@@ -1001,10 +1001,16 @@ namespace DaySim.PathTypeModels {
           accessTerminalParcelID = parkAndRideParcel.Id;
           accessTerminalZoneID = (int)parkAndRideParcel.ZoneKey;
           WalkBikePath accessPath = GetWalkBikePath(accessMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, originParcelUsed, parkAndRideParcel);
-          double parkingCost = node.CostDaily;
+          double parkingCost = node.CostAnnual / Global.Configuration.COMPASS_BikeParkAndRideAccessAnnualCostDivisor;
+          parkCapacitySizeTerm = Math.Log(Math.Max(node.Capacity, 1.0E-30)) * Global.Configuration.COMPASS_BikeParkAndRideAccessCapacitySizeWeight;
           accessTime = accessPath.Time * roundTripFactor;
           accessCost = parkingCost;
+          accessPath.Utility += parkingCost * _tourCostCoefficient;
           accessUtility = accessPath.Utility * roundTripFactor;
+          if (Global.Configuration.COMPASS_IncludeBikeParkAndRideLotCapacityEffectInModeChoice) {
+            accessUtility = accessUtility + parkCapacitySizeTerm;
+            parkCapacitySizeTerm = 0;
+          }
         } else if (sovAccess) {
           int nodeId = Global.ParcelToAutoParkAndRideNodeIds[indexAccess];
           ParkAndRideNodeWrapper node = autoParkAndRideNodes.First(x => x.ZoneId == nodeId);
@@ -1045,7 +1051,12 @@ namespace DaySim.PathTypeModels {
 
           accessTime = accessPath.Time * roundTripFactor;
           accessCost = accessPath.Cost + parkingCost;
+          accessPath.Utility += parkingCost * _tourCostCoefficient;
           accessUtility = accessPath.Utility * roundTripFactor;
+          if (Global.Configuration.COMPASS_IncludeAutoParkAndRideLotCapacityEffectInModeChoice) {
+            accessUtility = accessUtility + parkCapacitySizeTerm;
+            parkCapacitySizeTerm = 0;
+          }
         } else if (hovAccess || shareAccess) {
           accessTerminalKey = Global.ParcelToAutoKissAndRideTerminalKeys[indexAccess];
           accessTerminalIndex = Global.ParcelToAutoKissAndRideTerminalIndices[indexAccess];
@@ -1109,9 +1120,16 @@ namespace DaySim.PathTypeModels {
             egressTerminalParcelID = parkAndRideParcel.Id;
             egressTerminalZoneID = (int)parkAndRideParcel.ZoneKey;
             WalkBikePath egressPath = GetWalkBikePath(egressMode, pathTypeAccEgr, votValue, useZones, _outboundTime, _returnTime, 0, 0, parkAndRideParcel, destinationParcelUsed);
+            double parkingCost = node.CostAnnual / Global.Configuration.COMPASS_BikeParkAndRideEgressAnnualCostDivisor;
+            parkCapacitySizeTerm += Math.Log(Math.Max(node.Capacity, 1.0E-30)) * Global.Configuration.COMPASS_BikeParkAndRideEgressCapacitySizeWeight;
             egressTime = egressPath.Time * roundTripFactor;
-            egressCost = 0;
+            egressCost = parkingCost;
+            egressPath.Utility += parkingCost * _tourCostCoefficient;
             egressUtility = egressPath.Utility * roundTripFactor;
+            if (Global.Configuration.COMPASS_IncludeBikeParkAndRideLotCapacityEffectInModeChoice) {
+              accessUtility = accessUtility + parkCapacitySizeTerm;
+              parkCapacitySizeTerm = 0;
+            }
           } else if (shareEgress) {
             egressTerminalKey = Global.ParcelToAutoKissAndRideTerminalKeys[indexEgress];
             egressTerminalIndex = Global.ParcelToAutoKissAndRideTerminalIndices[indexEgress];
@@ -1582,6 +1600,19 @@ namespace DaySim.PathTypeModels {
             fare = fare * (1 - Global.TransitBaseFare_OffPeakDiscount[fareZones] / 100.0);
           }
           path.Cost += fare;
+        }
+      }
+      //mb code for bike on board fare
+      if (skimMode == Global.Settings.Modes.BikeOnTransit) {
+        varname = commuter ? "bikefare-co" : "bikefare";
+        skimValue =
+             ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId);
+        path.Cost += skimValue.Variable;
+
+        if (_returnTime > 0) {
+          skimValue =
+             ImpedanceRoster.GetValue(varname, skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId);
+          path.Cost += skimValue.Variable;
         }
       }
 

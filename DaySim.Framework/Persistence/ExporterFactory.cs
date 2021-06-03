@@ -73,8 +73,10 @@ namespace DaySim.Framework.Persistence {
           il.Emit(OpCodes.Callvirt, typeof(StreamWriter).GetMethod("Write", new[] { typeof(int) }));
         } else if (properties[i].PropertyType == typeof(bool)) {
           il.Emit(OpCodes.Callvirt, typeof(StreamWriter).GetMethod("Write", new[] { typeof(bool) }));
+        } else if (properties[i].PropertyType == typeof(long)) {
+          il.Emit(OpCodes.Callvirt, typeof(StreamWriter).GetMethod("Write", new[] { typeof(long) }));
         } else {
-          throw new NotSupportedException("Unsupported type. Valid types are double, int, and bool.");
+          throw new NotSupportedException("Unsupported type. Valid types are double, int, long and bool.");
         }
 
         if (i == properties.Length - 1) {

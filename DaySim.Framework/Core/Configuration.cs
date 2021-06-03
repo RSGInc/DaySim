@@ -2200,6 +2200,12 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public double COMPASS_AutoParkAndRideLotCapacitySizeWeight { get; set; } = 1;
+    public double COMPASS_BikeParkAndRideAccessCapacitySizeWeight { get; set; } = 1;
+    public double COMPASS_BikeParkAndRideEgressCapacitySizeWeight { get; set; } = 1;
+    public double COMPASS_BikeParkAndRideAccessAnnualCostDivisor { get; set; } = 200;
+    public double COMPASS_BikeParkAndRideEgressAnnualCostDivisor { get; set; } = 200;
+    public bool COMPASS_IncludeAutoParkAndRideLotCapacityEffectInModeChoice { get; set; } = false;
+    public bool COMPASS_IncludeBikeParkAndRideLotCapacityEffectInModeChoice { get; set; } = false;
 
     [XmlAttribute]
     public int COMPASS_MaximumTerminalsToSearchWalk { get; set; } = 10;

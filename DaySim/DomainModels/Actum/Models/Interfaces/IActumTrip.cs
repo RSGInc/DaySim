@@ -10,6 +10,7 @@ using DaySim.Framework.DomainModels.Models;
 namespace DaySim.DomainModels.Actum.Models.Interfaces {
   public interface IActumTrip : ITrip {
     //JLB20160323
+    long TripId { get; set; }
 
     int TourMode { get; set; }
 
@@ -52,6 +53,5 @@ namespace DaySim.DomainModels.Actum.Models.Interfaces {
     int AutoType { get; set; }
 
     int AutoOccupancy { get; set; }
-
   }
 }
