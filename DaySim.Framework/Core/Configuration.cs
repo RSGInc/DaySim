@@ -1926,10 +1926,7 @@ namespace DaySim.Framework.Core {
     public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
 
     [XmlAttribute]
-    public bool AddTollToParkAndRideCost { get; set; }
-
-    [XmlAttribute]
-    public double ParkAndRideTollWeight { get; set; } = 1.0;
+    public double PathImpedance_ParkAndRideTollWeight { get; set; } = 0.0;
 
 
     private List<Type> pluginTypes = null;

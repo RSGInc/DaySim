@@ -1352,8 +1352,7 @@ namespace DaySim.PathTypeModels {
           driveDistance += skimValue.BlendVariable;
           transitDistance *= 2;
 
-          if (Global.Configuration.AddTollToParkAndRideCost) {
-            
+          if (Global.Configuration.PathImpedance_ParkAndRideTollWeight > 0) {
             double driveToll =
                 useZones
                 ? ImpedanceRoster.GetValue("toll", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originZoneId, parkAndRideZoneId).Variable +
@@ -1361,7 +1360,7 @@ namespace DaySim.PathTypeModels {
                 : ImpedanceRoster.GetValue("toll", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _outboundTime, _originParcel, parkAndRideParcel, circuityDistance).Variable +
                  ImpedanceRoster.GetValue("toll", autoMode, Global.Settings.PathTypes.FullNetwork, votValue, _returnTime, parkAndRideParcel, _originParcel, circuityDistance).Variable;
             Global.PrintFile.WriteLine(String.Format("PnR Cost: {0}, driveToll: {1}", parkAndRideCost, driveToll));
-            parkAndRideCost += (Global.Configuration.ParkAndRideTollWeight * driveToll);
+            parkAndRideCost += (Global.Configuration.PathImpedance_ParkAndRideTollWeight * driveToll);
             Global.PrintFile.WriteLine(String.Format("PnR Cost: {0}", parkAndRideCost));
           }
 
