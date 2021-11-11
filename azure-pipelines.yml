@@ -32,16 +32,16 @@ strategy:
       gitRepo: RSGInc/sacog_daysim_test.git
       config: $(testDir)\daysim\sacog_regress.properties
       targets: $(testDir)\daysim\azure_target_output
-    fresno:
-      testDir: $(Agent.HomeDirectory)\fresno_daysim_test
-      gitRepo: RSGInc/FresnoABM.git
-      config: $(testDir)\Scenarios\FC14_BASE\11_DaySim\Configuration_regress.properties
-      targets: $(testDir)\Scenarios\FC14_BASE\11_DaySim\azure_target_output
-    psrc:
-      testDir: $(Agent.HomeDirectory)\psrc_daysim_test
-      gitRepo: RSGInc/psrc_daysim_test.git
-      config: $(testDir)\configuration_sp_regress.properties
-      targets: $(testDir)\azure_target_output
+    #fresno:
+    #  testDir: $(Agent.HomeDirectory)\fresno_daysim_test
+    #  gitRepo: RSGInc/FresnoABM.git
+    #  config: $(testDir)\Scenarios\FC14_BASE\11_DaySim\Configuration_regress.properties
+    #  targets: $(testDir)\Scenarios\FC14_BASE\11_DaySim\azure_target_output
+    #psrc:
+    #  testDir: $(Agent.HomeDirectory)\psrc_daysim_test
+    #  gitRepo: RSGInc/psrc_daysim_test.git
+    #  config: $(testDir)\configuration_sp_regress.properties
+    #  targets: $(testDir)\azure_target_output
     # chattanooga fails because roster uses the transcad file-type
     # which requires licensed software that is not installed for this machine
     # chattanooga:
@@ -59,11 +59,11 @@ strategy:
     #   gitRepo: RSGInc/sfcta_daysim_test.git
     #   config: $(testDir)\sfcta_apply_default_regress.properties
     #   targets: $(testDir)\sfcta_apply_default_regress_output
-    bkrcast:
-      testDir: $(Agent.HomeDirectory)\bkrcast_daysim
-      gitRepo: RSGInc/bkrcast_daysim.git
-      config: $(testDir)\configuration_regress.properties
-      targets: $(testDir)\azure_target_output
+    #bkrcast:
+    #  testDir: $(Agent.HomeDirectory)\bkrcast_daysim
+    #  gitRepo: RSGInc/bkrcast_daysim.git
+    #  config: $(testDir)\configuration_regress.properties
+    #  targets: $(testDir)\azure_target_output
     # jax:
     #   testDir: $(Agent.HomeDirectory)\jax_daysim_test
     #   gitRepo: RSGInc/jax_daysim_test.git
