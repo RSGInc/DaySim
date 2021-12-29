@@ -417,13 +417,13 @@ namespace DaySim.ChoiceModels.Default.Models {
           //                        excludeReason = 3;
           //                    }
 
-          if (tour.OriginParcelId <= 0) {
+          if (tour.OriginParcel == null) {
             excludeReason = 4;
           }
           //                    else if (tour.DestinationAddressType > _maxParcel) {
           //                        excludeReason = 5;
           //                    }
-          else if (tour.DestinationParcelId <= 0) {
+          else if (tour.DestinationParcel == null) {
             excludeReason = 6;
           }
           //                    else if (tour.OriginParcelId > _maxParcel) {

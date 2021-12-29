@@ -110,7 +110,7 @@ namespace DaySim.ChoiceModels.H.Models {
 
       int ruralFlag = household.ResidenceParcel.RuralFlag();
 
-      double discretionaryIncome = (household.Income / 10000 - (1.2 * Math.Log(household.Size) + 2.0));
+      double discretionaryIncome = (household.Income * Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars / 10000 - (1.2 * Math.Log(household.Size) + 2.0));
 
 
       //home parcel buffer variables

@@ -95,6 +95,9 @@ namespace DaySim.ChoiceModels.Default.Models {
       IParcelWrapper residenceParcel = household.ResidenceParcel;
       IPersonWrapper person = personDay.Person;
 
+      int workAtHome = (Global.Configuration.UseWorkAtHomeModelAndVariables && personDay.WorkAtHomeDuration > Global.Configuration.WorkAtHome_DurationThreshold).ToFlag();
+      int diaryBased = (Global.Configuration.UseDiaryVsSmartphoneBiasVariables && person.PaperDiary > 0).ToFlag();
+      int proxyBased = (Global.Configuration.UseProxyBiasVariables && person.ProxyResponse > 0).ToFlag();
       int carsPerDriver = household.GetCarsPerDriver();
       double mixedDensity = residenceParcel.ParcelHouseholdsPerRetailServiceFoodEmploymentBuffer2();
       double intersectionDensity = residenceParcel.IntersectionDensity34Minus1Buffer2();
@@ -177,6 +180,9 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(100 * purpose + 35, personDay.ShoppingTours);
       alternative.AddUtilityTerm(100 * purpose + 36, personDay.MealTours);
       alternative.AddUtilityTerm(100 * purpose + 37, personDay.SocialTours);
+      alternative.AddUtilityTerm(100 * purpose + 38, workAtHome);
+      alternative.AddUtilityTerm(100 * purpose + 39, diaryBased);
+      alternative.AddUtilityTerm(100 * purpose + 40, proxyBased);
       alternative.AddUtilityTerm(100 * purpose + 41, personDay.WorkStops);
 
       if (purpose <= Global.Settings.Purposes.Escort) {
@@ -231,6 +237,9 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(100 * purpose + 35, personDay.ShoppingTours);
       alternative.AddUtilityTerm(100 * purpose + 36, personDay.MealTours);
       alternative.AddUtilityTerm(100 * purpose + 37, personDay.SocialTours);
+      alternative.AddUtilityTerm(100 * purpose + 38, workAtHome);
+      alternative.AddUtilityTerm(100 * purpose + 39, diaryBased);
+      alternative.AddUtilityTerm(100 * purpose + 40, proxyBased);
       alternative.AddUtilityTerm(100 * purpose + 41, personDay.WorkStops);
 
       if (purpose <= Global.Settings.Purposes.Escort) {

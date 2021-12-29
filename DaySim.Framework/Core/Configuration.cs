@@ -1928,6 +1928,45 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double PathImpedance_ParkAndRideTollWeight { get; set; } = 0.0;
 
+    [XmlAttribute]
+    public double HouseholdIncomeAdjustmentFactorTo2000Dollars { get; set; } = 1.0;
+
+    [XmlAttribute]
+    public bool UseDiaryVsSmartphoneBiasVariables { get; set; } = false;
+
+    [XmlAttribute]
+    public bool UseProxyBiasVariables { get; set; } = false;
+
+    [XmlAttribute]
+    public bool UseWorkAtHomeModelAndVariables { get; set; } = false;
+
+    [XmlAttribute]
+    public double WorkAtHome_DurationThreshold { get; set; } = 2.5;
+    [XmlAttribute]
+    public double WorkAtHome_AlternativeSpecificConstant { get; set; } = -1.300;
+    [XmlAttribute]
+    public double WorkAtHome_PartTimeWorkerCoefficient {get; set; } = -0.363;
+    [XmlAttribute]
+    public double WorkAtHome_Income25to50Coefficient { get; set; } = -0.238;
+    [XmlAttribute]
+    public double WorkAtHome_IncomeOver150Coefficient { get; set; } = 0.241;
+    [XmlAttribute]
+    public double WorkAtHome_NonWorkerAndKidsInHHCoefficient { get; set; } = 0.369;
+    [XmlAttribute]
+    public double WorkAtHome_NoVehiclesInHHCoefficient { get; set; } = 0.394;
+    [XmlAttribute]
+    public double WorkAtHome_FractionEducationJobsCoefficient { get; set; } = -0.490;
+    [XmlAttribute]
+    public double WorkAtHome_FractionFoodServiceJobsCoefficient { get; set; } = -2.416;
+    [XmlAttribute]
+    public double WorkAtHome_FractionGovernmentJobsCoefficient { get; set; } = -0.883;
+    [XmlAttribute]
+    public double WorkAtHome_FractionIndustrialJobsCoefficient { get; set; } = -0.405;
+    [XmlAttribute]
+    public double WorkAtHome_FractionMedicalJobsCoefficient { get; set; } = -0.822;
+    [XmlAttribute]
+    public double WorkAtHome_FractionOfficeJobsCoefficient { get; set; } = -0.380;
+
 
     private List<Type> pluginTypes = null;
     private readonly LazyConcurrentDictionary<Type, Type> assignableObjectTypes = new LazyConcurrentDictionary<Type, Type>();

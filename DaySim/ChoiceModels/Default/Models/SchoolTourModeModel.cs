@@ -57,7 +57,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
       if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
-        if (tour.DestinationParcel == null ||
+        if (tour.OriginParcel == null || tour.DestinationParcel == null ||
             tour.Mode <= Global.Settings.Modes.None ||
            (tour.Mode == Global.Settings.Modes.ParkAndRide && !Global.Configuration.IncludeParkAndRideInSchoolTourModeModel) ||
            (tour.Mode == Global.Settings.Modes.PaidRideShare && !Global.Configuration.PaidRideShareModeIsAvailable) ||

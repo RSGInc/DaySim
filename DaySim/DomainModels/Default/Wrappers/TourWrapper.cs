@@ -906,7 +906,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
     private void SetValueOfTimeCoefficients(int purpose, bool suppressRandomVOT) {
       bool randomVot = !Global.Configuration.IsInEstimationMode && Global.Configuration.UseRandomVotDistribution && !suppressRandomVOT;
 
-      double income =
+      double income = Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars*
                 Household.Income < 0
                     ? Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel
                     : Household.Income; // missing converted to 30K
