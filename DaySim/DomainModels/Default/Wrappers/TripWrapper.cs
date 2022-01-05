@@ -539,6 +539,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       TripModeImpedance modeImpedance = GetTripModeImpedance(DepartureTime, true, -parkTime2);
 
       TravelTime = modeImpedance.TravelTime;
+      TravelCost = modeImpedance.TravelCost;
       TravelDistance = modeImpedance.TravelDistance;
       DestinationParkingNodeId = modeImpedance.DestinationParkingNodeId;
       if (DestinationParkingNodeId > 0) {
