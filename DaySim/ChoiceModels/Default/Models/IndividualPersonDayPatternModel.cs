@@ -394,40 +394,51 @@ namespace DaySim.ChoiceModels.Default.Models {
 
     private void RunWorkAtHomeModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
       
-      // 0 Not work from home
+      // 0 Not work at home 
 
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
       alternative.Choice = 0;
       //utility is 0
 
-      // 1 Work from home
+      // 1 Work at home more than threshold on the day (only available for workers who do not work from home all the time
 
       alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
       alternative.Choice = 1;
-      alternative.Available = (person.IsWorker);
+      alternative.Available = (person.IsWorker && person.UsualWorkParcel!=null && person.UsualWorkParcelId != person.Household.ResidenceParcelId);
 
-      double totEMP = person.UsualWorkParcel == null ? 0 : Math.Max(person.UsualWorkParcel.EmploymentTotal, 1.0);
-      double educEMPFraction = person.UsualWorkParcel == null ? 0 : person.UsualWorkParcel.EmploymentEducation / totEMP;
-      double foodEMPFraction = person.UsualWorkParcel == null ? 0 : person.UsualWorkParcel.EmploymentFood / totEMP;
-      double mediEMPFraction = person.UsualWorkParcel == null ? 0 : person.UsualWorkParcel.EmploymentMedical / totEMP;
-      double offcEMPFraction = person.UsualWorkParcel == null ? 0 : person.UsualWorkParcel.EmploymentOffice / totEMP;
-      double induEMPFraction = person.UsualWorkParcel == null ? 0 : person.UsualWorkParcel.EmploymentIndustrial / totEMP;
-      double govtEMPFraction = person.UsualWorkParcel == null ? 0 : person.UsualWorkParcel.EmploymentGovernment / totEMP;
+      if (person.UsualWorkParcel != null) {
+        double totEMP = Math.Max(person.UsualWorkParcel.EmploymentTotal, 1.0);
+        double retlEMPFraction = person.UsualWorkParcel.EmploymentRetail / totEMP;
+        double srvcEMPFraction = person.UsualWorkParcel.EmploymentService / totEMP;
+        double educEMPFraction = person.UsualWorkParcel.EmploymentEducation / totEMP;
+        double foodEMPFraction = person.UsualWorkParcel.EmploymentFood / totEMP;
+        double mediEMPFraction = person.UsualWorkParcel.EmploymentMedical / totEMP;
+        double offcEMPFraction = person.UsualWorkParcel.EmploymentOffice / totEMP;
+        double induEMPFraction = person.UsualWorkParcel.EmploymentIndustrial / totEMP;
+        double govtEMPFraction = person.UsualWorkParcel.EmploymentGovernment / totEMP;
+        double othrEMPFraction = person.UsualWorkParcel.EmploymentAgricultureConstruction / totEMP;
+        double lowIncome = person.Household.HasIncomeUnder50K.ToFlag();
+        double higherIncome = person.Household.HasIncomeOver50K.ToFlag();
 
-
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_AlternativeSpecificConstant);
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionEducationJobsCoefficient * educEMPFraction);
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionFoodServiceJobsCoefficient * foodEMPFraction);
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionGovernmentJobsCoefficient * govtEMPFraction);
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionIndustrialJobsCoefficient * induEMPFraction);
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionMedicalJobsCoefficient * mediEMPFraction);
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionOfficeJobsCoefficient * mediEMPFraction);
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_PartTimeWorkerCoefficient * person.IsPartTimeWorker.ToFlag());
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_NoVehiclesInHHCoefficient * (person.Household.VehiclesAvailable == 0).ToFlag());
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_Income25to50Coefficient * person.Household.Has25To50KIncome.ToFlag());
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_IncomeOver150Coefficient * (person.Household.Income * Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars >=150000).ToFlag());
-      alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_NonWorkerAndKidsInHHCoefficient * (person.Household.OtherAdults > 0 && (person.Household.KidsBetween0And4+person.Household.KidsBetween5And15 > 0)).ToFlag());
-
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_AlternativeSpecificConstant);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_PartTimeWorkerCoefficient * person.IsPartTimeWorker.ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_Income0to50Coefficient * person.Household.HasIncomeUnder50K.ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_IncomeOver150Coefficient * (person.Household.Income * Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars >= 150000).ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_NonWorkerAndKidsInHHCoefficient * (person.Household.OtherAdults > 0 && (person.Household.KidsBetween0And4 + person.Household.KidsBetween5And15 > 0)).ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_NoVehiclesInHHCoefficient * (person.Household.VehiclesAvailable == 0).ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionEducationJobsCoefficient * educEMPFraction);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionMedicalJobsCoefficient * mediEMPFraction);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionServiceJobsCoefficient * srvcEMPFraction);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionOtherJobsCoefficient * othrEMPFraction);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionRetailFoodJobsLowIncomeCoefficient * (foodEMPFraction + retlEMPFraction) * lowIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionGovernmentJobsLowIncomeCoefficient * govtEMPFraction * lowIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionIndustrialJobsLowIncomeCoefficient * induEMPFraction * lowIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionOfficeJobsLowIncomeCoefficient * offcEMPFraction * lowIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionRetailFoodJobsHigherIncomeCoefficient * (foodEMPFraction + retlEMPFraction) * higherIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionGovernmentJobsHigherIncomeCoefficient * govtEMPFraction * higherIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionIndustrialJobsHigherIncomeCoefficient * induEMPFraction * higherIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionOfficeJobsHigherIncomeCoefficient * offcEMPFraction * higherIncome);
+      }
       // rest not available
       for (int altno = 2; altno < 2080; altno++) {
         alternative = choiceProbabilityCalculator.GetAlternative(altno, false, choice == altno);

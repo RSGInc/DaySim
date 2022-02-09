@@ -1943,29 +1943,41 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public double WorkAtHome_DurationThreshold { get; set; } = 2.5;
     [XmlAttribute]
-    public double WorkAtHome_AlternativeSpecificConstant { get; set; } = -1.300;
+    public double WorkAtHome_AlternativeSpecificConstant { get; set; } = -1.968;
     [XmlAttribute]
-    public double WorkAtHome_PartTimeWorkerCoefficient {get; set; } = -0.363;
+    public double WorkAtHome_PartTimeWorkerCoefficient {get; set; } = -0.264;
     [XmlAttribute]
-    public double WorkAtHome_Income25to50Coefficient { get; set; } = -0.238;
+    public double WorkAtHome_Income0to50Coefficient { get; set; } = 0.349;
     [XmlAttribute]
-    public double WorkAtHome_IncomeOver150Coefficient { get; set; } = 0.241;
+    public double WorkAtHome_IncomeOver150Coefficient { get; set; } = 0.300;
     [XmlAttribute]
-    public double WorkAtHome_NonWorkerAndKidsInHHCoefficient { get; set; } = 0.369;
+    public double WorkAtHome_NonWorkerAndKidsInHHCoefficient { get; set; } = 0.399;
     [XmlAttribute]
-    public double WorkAtHome_NoVehiclesInHHCoefficient { get; set; } = 0.394;
+    public double WorkAtHome_NoVehiclesInHHCoefficient { get; set; } = 0.412;
     [XmlAttribute]
-    public double WorkAtHome_FractionEducationJobsCoefficient { get; set; } = -0.490;
+    public double WorkAtHome_FractionMedicalJobsCoefficient { get; set; } = -0.415;
     [XmlAttribute]
-    public double WorkAtHome_FractionFoodServiceJobsCoefficient { get; set; } = -2.416;
+    public double WorkAtHome_FractionEducationJobsCoefficient { get; set; } = 0.000;
     [XmlAttribute]
-    public double WorkAtHome_FractionGovernmentJobsCoefficient { get; set; } = -0.883;
+    public double WorkAtHome_FractionServiceJobsCoefficient { get; set; } = 0.000;
     [XmlAttribute]
-    public double WorkAtHome_FractionIndustrialJobsCoefficient { get; set; } = -0.405;
+    public double WorkAtHome_FractionOtherJobsCoefficient { get; set; } = 1.396;
     [XmlAttribute]
-    public double WorkAtHome_FractionMedicalJobsCoefficient { get; set; } = -0.822;
+    public double WorkAtHome_FractionGovernmentJobsLowIncomeCoefficient { get; set; } = -0.650;
     [XmlAttribute]
-    public double WorkAtHome_FractionOfficeJobsCoefficient { get; set; } = -0.380;
+    public double WorkAtHome_FractionIndustrialJobsLowIncomeCoefficient { get; set; } = -0.402;
+    [XmlAttribute]
+    public double WorkAtHome_FractionRetailFoodJobsLowIncomeCoefficient { get; set; } = -0.418;
+    [XmlAttribute]
+    public double WorkAtHome_FractionOfficeJobsLowIncomeCoefficient { get; set; } = -0.630;
+    [XmlAttribute]
+    public double WorkAtHome_FractionGovernmentJobsHigherIncomeCoefficient { get; set; } = -0.311;
+    [XmlAttribute]
+    public double WorkAtHome_FractionIndustrialJobsHigherIncomeCoefficient { get; set; } = 0.431;
+    [XmlAttribute]
+    public double WorkAtHome_FractionRetailFoodJobsHigherIncomeCoefficient { get; set; } = -0.385;
+    [XmlAttribute]
+    public double WorkAtHome_FractionOfficeJobsHigherIncomeCoefficient { get; set; } = 0.295;
 
 
     private List<Type> pluginTypes = null;

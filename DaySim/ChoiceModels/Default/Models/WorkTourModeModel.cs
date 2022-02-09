@@ -330,9 +330,10 @@ namespace DaySim.ChoiceModels.Default.Models {
                       Global.Settings.ValueOfTimes.DefaultVot, tour.DestinationArrivalTime, originParcel, destinationParcel).Variable
                   : 0;
 
-          //                  double worstDist = Global.Configuration.PathImpedance_BikeUseTypeSpecificDistanceFractions ?
-          //                         ImpedanceRoster.GetValue("worstdistance", mode, Global.Settings.PathTypes.FullNetwork, 
-          //                            Global.Settings.VotGroups.Medium, tour.DestinationArrivalTime,originParcel, destinationParcel).Variable : 0;
+          double worstDist = Global.Configuration.PathImpedance_BikeUseTypeSpecificDistanceFractions 
+                  ?   ImpedanceRoster.GetValue("worstdistance", mode, Global.Settings.PathTypes.FullNetwork, 
+                      Global.Settings.VotGroups.Medium, tour.DestinationArrivalTime,originParcel, destinationParcel).Variable 
+                     : 0;
 
           alternative.AddUtilityTerm(60, 1);
           alternative.AddUtilityTerm(61, maleFlag);
@@ -345,9 +346,9 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(166, originParcel.NetIntersectionDensity1());
           alternative.AddUtilityTerm(165, originParcel.HouseholdDensity1());
           alternative.AddUtilityTerm(164, originParcel.MixedUse4Index1());
-          alternative.AddUtilityTerm(162, (class1Dist > 0).ToFlag());
+          alternative.AddUtilityTerm(161, (class1Dist > 0).ToFlag());
           alternative.AddUtilityTerm(162, (class2Dist > 0).ToFlag());
-          //                        alternative.AddUtility(163, (worstDist > 0).ToFlag());
+          alternative.AddUtilityTerm(163, (worstDist > 0).ToFlag());
           alternative.AddUtilityTerm(170,                       1.0 * destinationParcel.MixedUse4Index1()
                                                               + 0.00002 * destinationParcel.TotalEmploymentDensity1()
                                                               + 0.001 * destinationParcel.NetIntersectionDensity1()
