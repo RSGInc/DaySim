@@ -439,6 +439,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionIndustrialJobsHigherIncomeCoefficient * induEMPFraction * higherIncome);
         alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionOfficeJobsHigherIncomeCoefficient * offcEMPFraction * higherIncome);
       }
+      
       // rest not available
       for (int altno = 2; altno < 2080; altno++) {
         alternative = choiceProbabilityCalculator.GetAlternative(altno, false, choice == altno);

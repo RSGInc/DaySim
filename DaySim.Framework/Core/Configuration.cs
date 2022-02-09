@@ -1940,6 +1940,7 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool UseWorkAtHomeModelAndVariables { get; set; } = false;
 
+
     [XmlAttribute]
     public double WorkAtHome_DurationThreshold { get; set; } = 2.5;
     [XmlAttribute]

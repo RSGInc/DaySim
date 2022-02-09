@@ -320,7 +320,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 
         //        // usual location size term
-        //        alternative.AddUtilityTerm(50, usualWorkParcelFlag * 1);
+        //        alternative.AddUtilityTerm(50, usualWorkParcelFlag * 1);  //MB- not sure that this should be commented out, it needs to be included in estimation mode but checked that it does not affect results in apply mode 
 
         //        // Comment out these nesting calls when estimating the conditional flat model
         //        // model is NL with oddball alternative
