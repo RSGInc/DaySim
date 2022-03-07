@@ -108,12 +108,23 @@ namespace DaySim.ChoiceModels.Default.Models {
       }
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(sampleSize, true, choseHome);
 
+      int votSegment = person.Household.GetVotALSegment();
+      int taSegment = person.Household.ResidenceParcel.TransitAccessSegment();
+      double resAggregateLogsum = Global.AggregateLogsums[person.Household.ResidenceParcel.ZoneId][Global.Settings.Purposes.HomeBasedComposite][Global.Settings.CarOwnerships.OneOrMoreCarsPerAdult][votSegment][taSegment];
+
       alternative.Choice = person.Household.ResidenceParcel;
 
       alternative.AddUtilityTerm(41, 1);
       alternative.AddUtilityTerm(42, person.IsPartTimeWorker.ToFlag());
       alternative.AddUtilityTerm(43, person.IsStudentAge.ToFlag());
       alternative.AddUtilityTerm(44, person.IsFemale.ToFlag());
+      alternative.AddUtilityTerm(45, person.Household.Has100KPlusIncome.ToFlag());
+      alternative.AddUtilityTerm(46, person.Household.HasMissingIncome.ToFlag());
+      alternative.AddUtilityTerm(47, Math.Log(1.0+person.Household.ResidenceParcel.EmploymentTotalBuffer1));
+      alternative.AddUtilityTerm(48, Math.Log(1.0 + person.Household.ResidenceParcel.HouseholdsBuffer1));
+      alternative.AddUtilityTerm(49, resAggregateLogsum);
+
+
       alternative.AddUtilityTerm(89, 1);  //new dummy size variable for oddball alt
       alternative.AddUtilityTerm(90, 100);  //old dummy size variable for oddball alt
 

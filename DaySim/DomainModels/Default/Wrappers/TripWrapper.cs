@@ -653,7 +653,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                     .ParkingLoad;
 
       for (int minute = arrivalTime; minute < departureTime; minute++) {
-        parkingLoad[minute] += Household.ExpansionFactor / (mode == Global.Settings.Modes.Hov3 ? 3.3 : mode == Global.Settings.Modes.Hov2 ? 2 : 1);
+        parkingLoad[minute] += (Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? Person.ExpansionFactor : Household.ExpansionFactor) / (mode == Global.Settings.Modes.Hov3 ? 3.3 : mode == Global.Settings.Modes.Hov2 ? 2 : 1);
       }
     }
 

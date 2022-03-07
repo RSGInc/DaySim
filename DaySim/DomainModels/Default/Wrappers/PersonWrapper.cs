@@ -408,7 +408,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
 
     public virtual void SetWorkParcelPredictions() {
       if (UsualWorkParcelId != Constants.DEFAULT_VALUE && UsualWorkParcelId != Global.Settings.OutOfRegionParcelId) {
-        UsualWorkParcel.AddEmploymentPrediction(Household.ExpansionFactor);
+        UsualWorkParcel.AddEmploymentPrediction(Global.Configuration.UsePersonExpansionFactorForPersonDayModels? ExpansionFactor : Household.ExpansionFactor);
       }
     }
 
@@ -418,9 +418,9 @@ namespace DaySim.DomainModels.Default.Wrappers {
       }
 
       if (IsAdult) {
-        UsualSchoolParcel.AddStudentsUniversityPrediction(Household.ExpansionFactor);
+        UsualSchoolParcel.AddStudentsUniversityPrediction(Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? ExpansionFactor : Household.ExpansionFactor);
       } else {
-        UsualSchoolParcel.AddStudentsK12Prediction(Household.ExpansionFactor);
+        UsualSchoolParcel.AddStudentsK12Prediction(Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? ExpansionFactor : Household.ExpansionFactor);
       }
     }
 
@@ -481,7 +481,11 @@ namespace DaySim.DomainModels.Default.Wrappers {
     }
 
     private void SetExpansionFactor() {
-      ExpansionFactor = Household.ExpansionFactor * Global.Configuration.HouseholdSamplingRateOneInX;
+      if (Global.Configuration.UsePersonExpansionFactorForPersonDayModels) {
+        ExpansionFactor *= Global.Configuration.HouseholdSamplingRateOneInX;
+      } else {
+        ExpansionFactor = Household.ExpansionFactor * Global.Configuration.HouseholdSamplingRateOneInX;
+      }
     }
 
     #endregion

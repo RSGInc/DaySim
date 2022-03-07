@@ -1749,6 +1749,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool PaidRideshare_UseHOV3Skims { get; set; }
 
+    [XmlAttribute]
+    public bool CountAllIntermediateStopsOnPersonDayRecord { get; set; }
+
 
     [XmlAttribute]
     public bool PaidRideshare_OutputNumberOfPassengersOnTripRecord { get; set; }
@@ -1936,6 +1939,10 @@ namespace DaySim.Framework.Core {
 
     [XmlAttribute]
     public bool UseProxyBiasVariables { get; set; } = false;
+
+    [XmlAttribute]
+    public bool UsePersonExpansionFactorForPersonDayModels { get; set; } = false;
+
 
     [XmlAttribute]
     public bool UseWorkAtHomeModelAndVariables { get; set; } = false;
