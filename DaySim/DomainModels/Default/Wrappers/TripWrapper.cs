@@ -623,6 +623,18 @@ namespace DaySim.DomainModels.Default.Wrappers {
         }
       }
 
+      if (!Global.Configuration.IsInEstimationMode && Global.Configuration.CheckTripDurationAgainstArrivalAndDepartureTimes) {
+
+        int timediff = IsHalfTourFromOrigin ? DepartureTime - ArrivalTime : ArrivalTime - DepartureTime;
+        if (timediff < 0) { timediff = timediff + 1440; }
+        double tcheck = Math.Abs(timediff - TravelTime);
+
+        if (tcheck >= 2.0) {
+          PersonDay.IsValid = false;
+          return;
+        }
+      }
+
       if (Global.Configuration.AllowTripArrivalTimeOverlaps || !timeWindow.IsBusy(ArrivalTime)) {
         return;
       }
@@ -632,6 +644,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
         Global.PrintFile.WriteLine("Arrival time is busy for {0}.", Tour.Id);
       }
 
+ 
       if (!Global.Configuration.IsInEstimationMode) {
         PersonDay.IsValid = false;
       }

@@ -1752,6 +1752,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool CountAllIntermediateStopsOnPersonDayRecord { get; set; }
 
+    [XmlAttribute]
+    public bool CheckTripDurationAgainstArrivalAndDepartureTimes { get; set; }
+
 
     [XmlAttribute]
     public bool PaidRideshare_OutputNumberOfPassengersOnTripRecord { get; set; }
