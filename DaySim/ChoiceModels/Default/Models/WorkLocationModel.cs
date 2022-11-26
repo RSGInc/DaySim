@@ -122,7 +122,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(86, person.Household.HasMissingIncome.ToFlag());
       alternative.AddUtilityTerm(87, Math.Log(1.0+person.Household.ResidenceParcel.EmploymentTotalBuffer1));
       alternative.AddUtilityTerm(88, Math.Log(1.0 + person.Household.ResidenceParcel.HouseholdsBuffer1));
-      alternative.AddUtilityTerm(89, resAggregateLogsum);
+      alternative.AddUtilityTerm(84, resAggregateLogsum);
 
 
       alternative.AddUtilityTerm(89, 1);  //new dummy size variable for oddball alt
