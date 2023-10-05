@@ -320,7 +320,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
 
         //        // usual location size term
-        //        alternative.AddUtilityTerm(50, usualWorkParcelFlag * 1);
+        //        alternative.AddUtilityTerm(50, usualWorkParcelFlag * 1);  //MB- not sure that this should be commented out, it needs to be included in estimation mode but checked that it does not affect results in apply mode 
 
         //        // Comment out these nesting calls when estimating the conditional flat model
         //        // model is NL with oddball alternative
@@ -353,13 +353,13 @@ namespace DaySim.ChoiceModels.Default.Models {
           //                        excludeReason = 3;
           //                    }
 
-          if (tour.OriginParcelId <= 0) {
+          if (tour.OriginParcel == null) {
             excludeReason = 4;
           }
           //                    else if (tour.DestinationAddressType > _maxParcel) {
           //                        excludeReason = 5;
           //                    }
-          else if (tour.DestinationParcelId <= 0) {
+          else if (tour.DestinationParcel == null) {
             excludeReason = 6;
           }
           //                    else if (tour.OriginParcelId > _maxParcel) {

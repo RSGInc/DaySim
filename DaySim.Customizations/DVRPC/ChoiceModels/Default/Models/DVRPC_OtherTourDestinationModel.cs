@@ -28,7 +28,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       int d_ext_snj = (destinationParcel.ZoneKey > 56000 && destinationParcel.ZoneKey <= 58000).ToFlag();
       int d_ext_oth = (destinationParcel.ZoneKey > 58000).ToFlag();
 
-      int cbdDest = destinationParcel.CBD_AreaType_Buffer1();
+      int cbdDest = (destinationParcel.District == 1).ToFlag();// (destinationParcel.HouseholdsBuffer1 + destinationParcel.EmploymentTotalBuffer1 >= 30000).ToFlag();
       double distanceFromOrigin = _tour.OriginParcel.DistanceFromOrigin(destinationParcel, _tour.DestinationArrivalTime);
 
       alternative.AddUtilityTerm(121, o_int_nj * distanceFromOrigin);
@@ -38,6 +38,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(125, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.Shopping).ToFlag());
       alternative.AddUtilityTerm(126, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.Meal).ToFlag());
       alternative.AddUtilityTerm(127, cbdDest * (_tour.DestinationPurpose == Global.Settings.Purposes.Social).ToFlag());
+      alternative.AddUtilityTerm(201, o_int_paphi * distanceFromOrigin);
 
       alternative.AddUtilityTerm(130, (_tour.OriginParcel.Id == destinationParcel.Id).ToFlag());
 

@@ -276,6 +276,7 @@ namespace DaySim.Framework.Roster {
     private static RosterEntry GetEntry(string variable, int mode, int pathType, int votGroup, int minute) {
       int variableIndex = GetVariableIndex(variable);
 
+
       if (!minute.IsBetween(1, Global.Settings.Times.MinutesInADay)) {
         throw new ArgumentOutOfRangeException("minute", string.Format("The value of \"{0}\" used for minute is outside the allowable range. It should be between 1 and {1}.", minute, Global.Settings.Times.MinutesInADay));
       }

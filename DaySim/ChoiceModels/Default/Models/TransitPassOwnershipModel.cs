@@ -212,7 +212,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(6, person.IsNonworkingAdult.ToFlag());
       alternative.AddUtilityTerm(7, person.IsDrivingAgeStudent.ToFlag());
       alternative.AddUtilityTerm(8, person.IsChildUnder16.ToFlag());
-      alternative.AddUtilityTerm(9, Math.Log(Math.Max(1, person.Household.Income)));
+      alternative.AddUtilityTerm(9, Math.Log(Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars* Math.Max(1, person.Household.Income)));
       alternative.AddUtilityTerm(10, person.Household.HasMissingIncome.ToFlag());
       alternative.AddUtilityTerm(11, workParcelMissing.ToFlag());
       alternative.AddUtilityTerm(12, schoolParcelMissing.ToFlag());

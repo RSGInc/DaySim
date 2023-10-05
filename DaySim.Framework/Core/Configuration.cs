@@ -1749,6 +1749,12 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool PaidRideshare_UseHOV3Skims { get; set; }
 
+    [XmlAttribute]
+    public bool CountAllIntermediateStopsOnPersonDayRecord { get; set; }
+
+    [XmlAttribute]
+    public bool CheckTripDurationAgainstArrivalAndDepartureTimes { get; set; }
+
 
     [XmlAttribute]
     public bool PaidRideshare_OutputNumberOfPassengersOnTripRecord { get; set; }
@@ -1918,11 +1924,72 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool AvoidUsingOpenSpaceInDestinationSampling { get; set; } = false;
 
+    
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };
 
     [XmlAttribute]
     public NodeDistanceReaderTypes NodeDistanceReaderType { get; set; } = NodeDistanceReaderTypes.TextOrBinary;
+
+    [XmlAttribute]
+    public double PathImpedance_ParkAndRideTollWeight { get; set; } = 0.0;
+
+    [XmlAttribute]
+    public double HouseholdIncomeAdjustmentFactorTo2000Dollars { get; set; } = 1.0;
+
+    [XmlAttribute]
+    public bool UseDiaryVsSmartphoneBiasVariables { get; set; } = false;
+
+    [XmlAttribute]
+    public bool UseProxyBiasVariables { get; set; } = false;
+
+    [XmlAttribute]
+    public bool UsePersonExpansionFactorForPersonDayModels { get; set; } = false;
+
+
+    [XmlAttribute]
+    public bool UseWorkAtHomeModelAndVariables { get; set; } = false;
+
+
+    [XmlAttribute]
+    public double WorkAtHome_DurationThreshold { get; set; } = 2.5;
+    [XmlAttribute]
+    public double WorkAtHome_AlternativeSpecificConstant { get; set; } = -1.968;
+    [XmlAttribute]
+    public double WorkAtHome_PartTimeWorkerCoefficient {get; set; } = -0.264;
+    [XmlAttribute]
+    public double WorkAtHome_Income0to50Coefficient { get; set; } = 0.349;
+    [XmlAttribute]
+    public double WorkAtHome_IncomeOver150Coefficient { get; set; } = 0.300;
+    [XmlAttribute]
+    public double WorkAtHome_NonWorkerAndKidsInHHCoefficient { get; set; } = 0.399;
+    [XmlAttribute]
+    public double WorkAtHome_NoVehiclesInHHCoefficient { get; set; } = 0.412;
+    [XmlAttribute]
+    public double WorkAtHome_FractionMedicalJobsCoefficient { get; set; } = -0.415;
+    [XmlAttribute]
+    public double WorkAtHome_FractionEducationJobsCoefficient { get; set; } = 0.000;
+    [XmlAttribute]
+    public double WorkAtHome_FractionServiceJobsCoefficient { get; set; } = 0.000;
+    [XmlAttribute]
+    public double WorkAtHome_FractionOtherJobsCoefficient { get; set; } = 1.396;
+    [XmlAttribute]
+    public double WorkAtHome_FractionGovernmentJobsLowIncomeCoefficient { get; set; } = -0.650;
+    [XmlAttribute]
+    public double WorkAtHome_FractionIndustrialJobsLowIncomeCoefficient { get; set; } = -0.402;
+    [XmlAttribute]
+    public double WorkAtHome_FractionRetailFoodJobsLowIncomeCoefficient { get; set; } = -0.418;
+    [XmlAttribute]
+    public double WorkAtHome_FractionOfficeJobsLowIncomeCoefficient { get; set; } = -0.630;
+    [XmlAttribute]
+    public double WorkAtHome_FractionGovernmentJobsHigherIncomeCoefficient { get; set; } = -0.311;
+    [XmlAttribute]
+    public double WorkAtHome_FractionIndustrialJobsHigherIncomeCoefficient { get; set; } = 0.431;
+    [XmlAttribute]
+    public double WorkAtHome_FractionRetailFoodJobsHigherIncomeCoefficient { get; set; } = -0.385;
+    [XmlAttribute]
+    public double WorkAtHome_FractionOfficeJobsHigherIncomeCoefficient { get; set; } = 0.295;
+
 
     private List<Type> pluginTypes = null;
     private readonly LazyConcurrentDictionary<Type, Type> assignableObjectTypes = new LazyConcurrentDictionary<Type, Type>();
