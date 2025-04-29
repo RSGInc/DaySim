@@ -1924,6 +1924,54 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool AvoidUsingOpenSpaceInDestinationSampling { get; set; } = false;
 
+    [XmlAttribute]
+    public int WorkerPricingFirstZoneNumber { get; set; } = 0;
+
+    [XmlAttribute]
+    public int WorkerPricingLastZoneNumber { get; set; } = 0;
+
+    [XmlAttribute]
+    public double WorkerPricingTransitFareDiscountFactor { get; set; } = 0.0;
+
+    [XmlAttribute]
+    public double WorkerPricingDailyParkingCostBeforeCashOut { get; set; } = 0.0;
+
+    [XmlAttribute]
+    public double WorkerPricingHourlyParkingCostBeforeCashOut { get; set; } = 0.0;
+
+    [XmlAttribute]
+    public double WorkerPricingDailyParkingCostAfterCashOut { get; set; } = 0.0;
+
+    [XmlAttribute]
+    public double WorkerPricingHourlyParkingCostAfterCashOut { get; set; } = 0.0;
+    
+    [XmlAttribute]
+    public bool WorkerPricingParkingCashoutAvailable { get; set; } = false;
+    
+    [XmlAttribute]
+    public double WorkerPricingParkingCashoutFractionUnderOneMile { get; set; } = 0.0;
+    
+    [XmlAttribute]
+    public double WorkerPricingParkingCashoutFractionOneToThreeMiles { get; set; } = 0.0;
+    
+    [XmlAttribute]
+    public double WorkerPricingParkingCashoutFractionTransitAvailable { get; set; } = 0.0;
+    
+    [XmlAttribute]
+    public double WorkerPricingParkingCashoutFractionTransitNotAvailable { get; set; } = 0.0;
+    
+    [XmlAttribute]
+    public int WorkerPricingParkingCashoutFractionLowIncomeThreshold { get; set; } = 0;
+    
+    [XmlAttribute]
+    public double WorkerPricingParkingCashoutFractionLowIncomeModifier { get; set; } = 1.0;
+    
+    [XmlAttribute]
+    public int WorkerPricingParkingCashoutFractionHighIncomeThreshold { get; set; } = 0;
+    
+    [XmlAttribute]
+    public double WorkerPricingParkingCashoutFractionHighIncomeModifier { get; set; } = 1.0;
+
     
 
     public enum NodeDistanceReaderTypes { TextOrBinary, HDF5 };

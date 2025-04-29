@@ -1544,8 +1544,16 @@ namespace DaySim.PathTypeModels {
         fare += ImpedanceRoster.GetValue("fare", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
       }
 
-      fare = fare * (1.0 - _transitDiscountFraction); //fare adjustment
-
+      // if work trip to worker pricing zone use special discount fraction if it is better than the discount already received
+      int zoneKey = (_destinationParcel == null) ? -1 : (int) _destinationParcel.ZoneKey;
+      if (zoneKey >= Global.Configuration.WorkerPricingFirstZoneNumber && zoneKey <= Global.Configuration.WorkerPricingLastZoneNumber
+        && Global.Configuration.WorkerPricingTransitFareDiscountFactor > 0
+        && Global.Configuration.WorkerPricingTransitFareDiscountFactor > _transitDiscountFraction
+        && _purpose == Global.Settings.Purposes.Work) {
+        fare = fare * Math.Max(1.0 - Global.Configuration.WorkerPricingTransitFareDiscountFactor, 0);
+      } else {
+        fare = fare * Math.Max(1.0 - _transitDiscountFraction, 0); //fare adjustment
+      }
       // set utility
       path.Time = outboundInVehicleTime + returnInVehicleTime + initialWaitTime + transferWaitTime;
       if (path.Time > pathTimeLimit) {
