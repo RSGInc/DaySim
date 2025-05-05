@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaySim", "Daysim\DaySim.csproj", "{C89E2003-E353-43B8-BF0A-9A821945933A}"
 EndProject
@@ -49,6 +49,7 @@ Global
 		{C89E2003-E353-43B8-BF0A-9A821945933A}.Debug|x64.Build.0 = Debug|x64
 		{C89E2003-E353-43B8-BF0A-9A821945933A}.Debug|x64.Deploy.0 = Debug|x64
 		{C89E2003-E353-43B8-BF0A-9A821945933A}.Release|Any CPU.ActiveCfg = Release|x64
+		{C89E2003-E353-43B8-BF0A-9A821945933A}.Release|Any CPU.Build.0 = Release|x64
 		{C89E2003-E353-43B8-BF0A-9A821945933A}.Release|x64.ActiveCfg = Release|x64
 		{C89E2003-E353-43B8-BF0A-9A821945933A}.Release|x64.Build.0 = Release|x64
 		{C89E2003-E353-43B8-BF0A-9A821945933A}.Release|x64.Deploy.0 = Release|x64
@@ -57,6 +58,7 @@ Global
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Debug|x64.Build.0 = Debug|x64
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Debug|x64.Deploy.0 = Debug|x64
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Release|Any CPU.ActiveCfg = Release|x64
+		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Release|Any CPU.Build.0 = Release|x64
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Release|x64.ActiveCfg = Release|x64
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Release|x64.Build.0 = Release|x64
 		{33842B3A-A2CB-4B61-933B-811CED8CF74B}.Release|x64.Deploy.0 = Release|x64
@@ -65,6 +67,7 @@ Global
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Debug|x64.Build.0 = Debug|x64
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Debug|x64.Deploy.0 = Debug|x64
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Release|Any CPU.ActiveCfg = Release|x64
+		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Release|Any CPU.Build.0 = Release|x64
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Release|x64.ActiveCfg = Release|x64
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Release|x64.Build.0 = Release|x64
 		{FB158352-2310-4E0F-84E2-50EFFF669C55}.Release|x64.Deploy.0 = Release|x64
@@ -135,7 +138,6 @@ Global
 		{BE59DF82-A86D-4712-B28F-8E557218A627}.Debug|x64.ActiveCfg = Debug|x64
 		{BE59DF82-A86D-4712-B28F-8E557218A627}.Debug|x64.Build.0 = Debug|x64
 		{BE59DF82-A86D-4712-B28F-8E557218A627}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE59DF82-A86D-4712-B28F-8E557218A627}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BE59DF82-A86D-4712-B28F-8E557218A627}.Release|x64.ActiveCfg = Release|x64
 		{BE59DF82-A86D-4712-B28F-8E557218A627}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
