@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChoiceModels\Default\Models\PSRC_AutoOwnershipModel.cs" />
     <Compile Include="ChoiceModels\Default\Models\PSRC_OtherHomeBasedTourModeModel.cs" />
     <Compile Include="ChoiceModels\Default\Models\PSRC_OtherTourDestinationModel.cs" />
     <Compile Include="ChoiceModels\Default\Models\PSRC_SchoolTourModeModel.cs" />
