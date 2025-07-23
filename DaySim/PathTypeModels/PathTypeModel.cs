@@ -221,7 +221,7 @@ namespace DaySim.PathTypeModels {
       return list;
     }
 
-    protected virtual void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
+    protected virtual void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int _purpose, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
       //Global.PrintFile.WriteLine("Generic RegionSpecificTransitImpedanceCalculation being called so must not be overridden by CustomizationDll");
       if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime) {
 
@@ -1554,15 +1554,7 @@ namespace DaySim.PathTypeModels {
       } else {
         fare = fare * Math.Max(1.0 - _transitDiscountFraction, 0); //fare adjustment
       }
-      // set utility
-      path.Time = outboundInVehicleTime + returnInVehicleTime + initialWaitTime + transferWaitTime;
-      if (path.Time > pathTimeLimit) {
-        path.Available = false;
-        return path;
-      }
-      path.Cost = fare;
-      path.Boardings1 = numberOfBoards1;
-      path.Boardings2 = numberOfBoards2;
+
       // for sacog, use pathtype-specific time skims and weights
       double pathTypeSpecificTime = 0D;
       double pathTypeSpecificTimeWeight =
@@ -1584,7 +1576,17 @@ namespace DaySim.PathTypeModels {
                         : Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight)
                   : 0;
 
-      RegionSpecificTransitImpedanceCalculation(skimMode, pathType, votValue, outboundTime, returnTime, originZoneId, destinationZoneId, ref outboundInVehicleTime, ref returnInVehicleTime, ref pathTypeSpecificTime, ref pathTypeSpecificTimeWeight);
+      RegionSpecificTransitImpedanceCalculation(skimMode, pathType, votValue, outboundTime, returnTime, originZoneId, destinationZoneId, _purpose, ref outboundInVehicleTime, ref returnInVehicleTime, ref pathTypeSpecificTime, ref pathTypeSpecificTimeWeight);
+
+      // set utility
+      path.Time = outboundInVehicleTime + returnInVehicleTime + initialWaitTime + transferWaitTime;
+      if (path.Time > pathTimeLimit) {
+        path.Available = false;
+        return path;
+      }
+      path.Cost = fare;
+      path.Boardings1 = numberOfBoards1;
+      path.Boardings2 = numberOfBoards2;
 
       double totalInVehicleTime = outboundInVehicleTime + returnInVehicleTime;
 

@@ -3,7 +3,7 @@ using DaySim.Framework.Roster;
 
 namespace DaySim.PathTypeModels {
   internal class Nashville_PathTypeModel : PathTypeModel {
-    protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
+    protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int destinationPurpose, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
       //Global.PrintFile.WriteLine("Nashville_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
       //Nashville BRT coded in Ferry
       //Nashville Commuter Rail coded in Commuter rail

@@ -69,6 +69,12 @@ namespace DaySim.ChoiceModels.Default.Models {
       }
     }
 
+    protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour)
+    {
+      //see PSRC customization dll for example
+      //Global.PrintFile.WriteLine("Generic Default WorkTourTimeeModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
+    }
+
     private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, TourTime choice = null) {
       IHouseholdWrapper household = tour.Household;
       IPersonWrapper person = tour.Person;
@@ -336,6 +342,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
         alternative.AddUtilityTerm(97, Math.Min(0.3, (homeBasedTours - simulatedHomeBasedTours) / (1.0 + arrivalImpedance.TotalMinutesBefore + departureImpedance.TotalMinutesAfter)));
         alternative.AddUtilityTerm(98, Math.Min(0.3, (homeBasedTours - simulatedHomeBasedTours) / (1.0 + Math.Max(arrivalImpedance.MaxMinutesBefore, departureImpedance.MaxMinutesAfter))));
+
+        RegionSpecificCustomizations(alternative, tour);
 
       }
     }
