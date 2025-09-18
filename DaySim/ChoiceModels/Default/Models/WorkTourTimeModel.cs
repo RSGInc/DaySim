@@ -69,7 +69,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       }
     }
 
-    protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Alternative alternative, ITourWrapper tour)
+    protected virtual void RegionSpecificCustomizations(ChoiceProbabilityCalculator.Component arrivalComponent, ChoiceProbabilityCalculator.Component departureComponent, ITourWrapper tour, int arrivalPeriodIndex, int departurePeriodIndex)
     {
       //see PSRC customization dll for example
       //Global.PrintFile.WriteLine("Generic Default WorkTourTimeeModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
@@ -309,6 +309,8 @@ namespace DaySim.ChoiceModels.Default.Models {
         durationComponent.AddUtilityTerm(83, highPriorityDifferentFlag * durationUnder8HoursFlag);
         durationComponent.AddUtilityTerm(84, lowPriorityDifferentFlag * durationUnder4HoursFlag);
 
+        RegionSpecificCustomizations(arrivalComponent, departureComponent, tour, arrivalPeriodIndex, departurePeriodIndex);
+
       }
 
       foreach (TourTime time in TourTime.Times) {
@@ -343,7 +345,7 @@ namespace DaySim.ChoiceModels.Default.Models {
         alternative.AddUtilityTerm(97, Math.Min(0.3, (homeBasedTours - simulatedHomeBasedTours) / (1.0 + arrivalImpedance.TotalMinutesBefore + departureImpedance.TotalMinutesAfter)));
         alternative.AddUtilityTerm(98, Math.Min(0.3, (homeBasedTours - simulatedHomeBasedTours) / (1.0 + Math.Max(arrivalImpedance.MaxMinutesBefore, departureImpedance.MaxMinutesAfter))));
 
-        RegionSpecificCustomizations(alternative, tour);
+        
 
       }
     }
