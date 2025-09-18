@@ -784,6 +784,15 @@ namespace DaySim.Framework.Core {
     // replaced by PathImpedance_AutoOperatingCostPerDistanceUnit.  Retained for backward compatibility.
 
     [XmlAttribute]
+    public double PathImpedance_BaseCaseAutoOperatingCost { get; set; } = -1;
+
+    [XmlAttribute]
+    public double PathImpedance_DampingFactorAutoOperatingCostIncrease { get; set; } = -1;
+
+    [XmlAttribute]
+    public double PathImpedance_DampingFactorAutoOperatingCostDecrease { get; set; } = -1;
+
+    [XmlAttribute]
     public bool PathImpedance_TransitUseFareDiscountFractions { get; set; }
 
     [XmlAttribute]
@@ -1994,6 +2003,9 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool UsePersonExpansionFactorForPersonDayModels { get; set; } = false;
 
+
+    [XmlAttribute]
+    public int SeaTacAirportZoneIndex { get; set; } = -1;
 
     [XmlAttribute]
     public bool UseWorkAtHomeModelAndVariables { get; set; } = false;

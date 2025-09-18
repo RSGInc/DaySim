@@ -3,7 +3,7 @@ using DaySim.Framework.Roster;
 
 namespace DaySim.PathTypeModels {
   internal class Fresno_PathTypeModel : PathTypeModel {
-    protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int destinationPurpose, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
+    protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int destinationPurpose, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight, ref double fare) {
       //Global.PrintFile.WriteLine("Fresno_PathTypeModel.RegionSpecificTransitImpedanceCalculation called");
       //Fresno BRT coded in Ferry
       //Fresno Commuter Rail coded in Commuter rail
