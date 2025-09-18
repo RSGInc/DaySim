@@ -17,41 +17,68 @@ namespace DaySim.ChoiceModels.Default.Models {
       }
 
       if (mode == Global.Settings.Modes.ParkAndRide) {
-        alternative.AddUtilityTerm(250, pathType == 3 ? 1 : 0);
-        alternative.AddUtilityTerm(251, pathType == 4 ? 1 : 0);
-        alternative.AddUtilityTerm(252, pathType == 5 ? 1 : 0);
-        alternative.AddUtilityTerm(253, pathType == 6 ? 1 : 0);
-        alternative.AddUtilityTerm(254, pathType == 7 ? 1 : 0);
+        alternative.AddUtilityTerm(250, pathType == Global.Settings.PathTypes.LocalBus ? 1 : 0);
+        alternative.AddUtilityTerm(251, pathType == Global.Settings.PathTypes.LightRail ? 1 : 0);
+        alternative.AddUtilityTerm(252, pathType == Global.Settings.PathTypes.PremiumBus ? 1 : 0);
+        alternative.AddUtilityTerm(253, pathType == Global.Settings.PathTypes.CommuterRail ? 1 : 0);
+        alternative.AddUtilityTerm(254, pathType == Global.Settings.PathTypes.Ferry ? 1 : 0);
 
         //pierce county specific constant - added for PierceCast
         alternative.AddUtilityTerm(410, originPierceCounty == 1 ? 1 : 0);
         alternative.AddUtilityTerm(510, originSeaTac == 1 ? 1 : 0);
 
+        //sea-tac specific constants for drive to transit 
+        if (Global.Configuration.SeaTacAirportZoneIndex>=0 && destinationParcel.ZoneId == Global.Configuration.SeaTacAirportZoneIndex) {
+          alternative.AddUtilityTerm(261, pathType==Global.Settings.PathTypes.PremiumBus ? 1 : 0);
+          alternative.AddUtilityTerm(262, pathType == Global.Settings.PathTypes.LightRail ? 1 : 0);
+        }
+
       } else if (mode == Global.Settings.Modes.Transit) {
-        alternative.AddUtilityTerm(255, pathType == 3 ? 1 : 0);
-        alternative.AddUtilityTerm(256, pathType == 4 ? 1 : 0);
-        alternative.AddUtilityTerm(257, pathType == 5 ? 1 : 0);
-        alternative.AddUtilityTerm(258, pathType == 6 ? 1 : 0);
-        alternative.AddUtilityTerm(259, pathType == 7 ? 1 : 0);
+        alternative.AddUtilityTerm(255, pathType == Global.Settings.PathTypes.LocalBus ? 1 : 0);
+        alternative.AddUtilityTerm(256, pathType == Global.Settings.PathTypes.LightRail ? 1 : 0);
+        alternative.AddUtilityTerm(257, pathType == Global.Settings.PathTypes.PremiumBus ? 1 : 0);
+        alternative.AddUtilityTerm(258, pathType == Global.Settings.PathTypes.CommuterRail ? 1 : 0);
+        alternative.AddUtilityTerm(259, pathType == Global.Settings.PathTypes.Ferry ? 1 : 0);
 
         //pierce county specific constant - added for PierceCast
         alternative.AddUtilityTerm(420, originPierceCounty == 1 ? 1 : 0);
         alternative.AddUtilityTerm(520, originSeaTac == 1 ? 1 : 0);
+
+        //sea-tac specific constants for walk to transit 
+        if (Global.Configuration.SeaTacAirportZoneIndex >= 0 && destinationParcel.ZoneId == Global.Configuration.SeaTacAirportZoneIndex) {
+          alternative.AddUtilityTerm(263, pathType == Global.Settings.PathTypes.PremiumBus ? 1 : 0);
+          alternative.AddUtilityTerm(264, pathType == Global.Settings.PathTypes.LightRail ? 1 : 0);
+        }
 
       } else if (mode == Global.Settings.Modes.Hov3) {
         //pierce county specific constant - added for PierceCast
         alternative.AddUtilityTerm(430, originPierceCounty == 1 ? 1 : 0);
         alternative.AddUtilityTerm(530, originSeaTac == 1 ? 1 : 0);
 
+        //sea-tac specific constant 
+        if (Global.Configuration.SeaTacAirportZoneIndex >= 0 && destinationParcel.ZoneId == Global.Configuration.SeaTacAirportZoneIndex) {
+          alternative.AddUtilityTerm(265, 1);
+         }
+
       } else if (mode == Global.Settings.Modes.Hov2) {
         //pierce county specific constant - added for PierceCast
         alternative.AddUtilityTerm(440, originPierceCounty == 1 ? 1 : 0);
         alternative.AddUtilityTerm(540, originSeaTac == 1 ? 1 : 0);
 
+        //sea-tac specific constant 
+        if (Global.Configuration.SeaTacAirportZoneIndex >= 0 && destinationParcel.ZoneId == Global.Configuration.SeaTacAirportZoneIndex) {
+          alternative.AddUtilityTerm(266, 1);
+        }
+
       } else if (mode == Global.Settings.Modes.Sov) {
         //pierce county specific constant - added for PierceCast
         alternative.AddUtilityTerm(450, originPierceCounty == 1 ? 1 : 0);
         alternative.AddUtilityTerm(550, originSeaTac == 1 ? 1 : 0);
+        
+        //sea-tac specific constant 
+        if (Global.Configuration.SeaTacAirportZoneIndex >= 0 && destinationParcel.ZoneId == Global.Configuration.SeaTacAirportZoneIndex) {
+          alternative.AddUtilityTerm(267, 1);
+        }
 
       } else if (mode == Global.Settings.Modes.Bike) {
         //pierce county specific constant - added for PierceCast
@@ -67,6 +94,11 @@ namespace DaySim.ChoiceModels.Default.Models {
         //pierce county specific constant - added for PierceCast
         alternative.AddUtilityTerm(480, originPierceCounty == 1 ? 1 : 0);
         alternative.AddUtilityTerm(580, originSeaTac == 1 ? 1 : 0);
+   
+        //sea-tac specific constant 
+        if (Global.Configuration.SeaTacAirportZoneIndex >= 0 && destinationParcel.ZoneId == Global.Configuration.SeaTacAirportZoneIndex) {
+          alternative.AddUtilityTerm(268, 1);
+        }
 
       }
 

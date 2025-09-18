@@ -221,7 +221,7 @@ namespace DaySim.PathTypeModels {
       return list;
     }
 
-    protected virtual void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int _purpose, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
+    protected virtual void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int _purpose, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight, ref double fare) {
       //Global.PrintFile.WriteLine("Generic RegionSpecificTransitImpedanceCalculation being called so must not be overridden by CustomizationDll");
       if (Global.Configuration.PathImpedance_TransitUsePathTypeSpecificTime) {
 
@@ -666,7 +666,17 @@ namespace DaySim.PathTypeModels {
         return;
       }
       if (skimModeIn != Global.Settings.Modes.PaidRideShare) {
-        _pathCost[pathType] += _pathDistance[pathType] * Global.PathImpedance_AutoOperatingCostPerDistanceUnit;
+        //adjustment for perceived change in operating cost
+        double perceivedOperatingCost = (Global.Configuration.PathImpedance_BaseCaseAutoOperatingCost < 0
+          || Global.Configuration.PathImpedance_DampingFactorAutoOperatingCostIncrease < 0
+          || Global.Configuration.PathImpedance_DampingFactorAutoOperatingCostDecrease < 0) ? Global.PathImpedance_AutoOperatingCostPerDistanceUnit
+          : (Global.PathImpedance_AutoOperatingCostPerDistanceUnit >= Global.Configuration.PathImpedance_BaseCaseAutoOperatingCost)
+          ? Global.Configuration.PathImpedance_BaseCaseAutoOperatingCost + Global.Configuration.PathImpedance_DampingFactorAutoOperatingCostIncrease
+            * (Global.PathImpedance_AutoOperatingCostPerDistanceUnit - Global.Configuration.PathImpedance_BaseCaseAutoOperatingCost)
+          : Global.Configuration.PathImpedance_BaseCaseAutoOperatingCost + Global.Configuration.PathImpedance_DampingFactorAutoOperatingCostDecrease
+            * (Global.PathImpedance_AutoOperatingCostPerDistanceUnit - Global.Configuration.PathImpedance_BaseCaseAutoOperatingCost);
+
+        _pathCost[pathType] += _pathDistance[pathType] * perceivedOperatingCost;
       } else {
         double extraCostPerMile = Global.Configuration.AV_PaidRideShareModeUsesAVs ?
                  Global.Configuration.AV_PaidRideShare_ExtraCostPerDistanceUnit : Global.Configuration.PaidRideShare_ExtraCostPerDistanceUnit;
@@ -1067,7 +1077,6 @@ namespace DaySim.PathTypeModels {
         if (node.Capacity < Constants.EPSILON && !knrPathType && !tncPathType) {
           continue;
         }
-
         // use the node rather than the nearest parcel for transit LOS, becuase more accurate, and distance blending is not relevant 
         int parkAndRideZoneId = node.ZoneId;
         //test distance to park and ride against user-set limits
@@ -1543,7 +1552,7 @@ namespace DaySim.PathTypeModels {
         numberOfBoards2 = ImpedanceRoster.GetValue("nboard", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
         fare += ImpedanceRoster.GetValue("fare", skimMode, pathType, votValue, returnTime, destinationZoneId, originZoneId).Variable;
       }
-
+      
       // if work trip to worker pricing zone use special discount fraction if it is better than the discount already received
       int zoneKey = (_destinationParcel == null) ? -1 : (int) _destinationParcel.ZoneKey;
       if (zoneKey >= Global.Configuration.WorkerPricingFirstZoneNumber && zoneKey <= Global.Configuration.WorkerPricingLastZoneNumber
@@ -1576,7 +1585,7 @@ namespace DaySim.PathTypeModels {
                         : Global.Configuration.PathImpedance_TransitFerryTimeAdditiveWeight)
                   : 0;
 
-      RegionSpecificTransitImpedanceCalculation(skimMode, pathType, votValue, outboundTime, returnTime, originZoneId, destinationZoneId, _purpose, ref outboundInVehicleTime, ref returnInVehicleTime, ref pathTypeSpecificTime, ref pathTypeSpecificTimeWeight);
+      RegionSpecificTransitImpedanceCalculation(skimMode, pathType, votValue, outboundTime, returnTime, originZoneId, destinationZoneId, _purpose, ref outboundInVehicleTime, ref returnInVehicleTime, ref pathTypeSpecificTime, ref pathTypeSpecificTimeWeight, ref fare);
 
       // set utility
       path.Time = outboundInVehicleTime + returnInVehicleTime + initialWaitTime + transferWaitTime;
