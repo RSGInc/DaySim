@@ -26,25 +26,23 @@ namespace DaySim.PathTypeModels {
         //if it is to or from the airport and the purpose is not work but the path type is premium bus (airport shuttle), make it a long trip
 
         if (destinationZoneId == Global.Configuration.SeaTacAirportZoneIndex || originZoneId == Global.Configuration.SeaTacAirportZoneIndex) {
-          if (pathType == Global.Settings.PathTypes.PremiumBus) {
+          if (pathType == Global.Configuration.SeaTacAirportEmployeeShuttlePathType) {
             if (destinationPurpose != Global.Settings.Purposes.Work) {
               returnInVehicleTime = 9999.0;
               outboundInVehicleTime = 9999.0;
             } else {
-              fare = 0.0;
+              fare = Global.Configuration.SeaTacAirportEmployeeShuttleFare
+                   + Global.Configuration.SeaTacAirportEmployeeShuttleCalibrationPenaltyInDollars;
             }
           }
         }
 
-        //if either origin or deestination are in the shuttle catchment area but neither the the origin or destination zone is the airport
-        //disable the path - note catchment zone numbers decrease by one to match zoneid, which is zone number minus 1
-        ///List<int> shuttle_catchment = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 11, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 31, 33, 34, 40, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 63, 101, 112, 119, 145, 159 };
-        //if ((shuttle_catchment.Contains(originZoneId) || shuttle_catchment.Contains(destinationZoneId)) && pathType == Global.Settings.PathTypes.PremiumBus) {
-        int catchmentAreaLowestZone = 1;
-        int catchmentAreaHighestZone = 159;
-        bool destinationInCatchmentArea = destinationZoneId >= catchmentAreaLowestZone && destinationZoneId <= catchmentAreaHighestZone;
-        bool originInCatchmentArea = originZoneId >= catchmentAreaLowestZone && originZoneId <= catchmentAreaHighestZone;
-        if (pathType == Global.Settings.PathTypes.PremiumBus && (originInCatchmentArea || destinationInCatchmentArea)) {
+        //if either origin or deestination are in the shuttle catchment area but neither the the origin or destination zone is the airport disable the path 
+        bool destinationInCatchmentArea = destinationZoneId >= Global.Configuration.SeaTacAirportEmployeeShuttleCatchmentAreaLowestZone-1 
+                                       && destinationZoneId <= Global.Configuration.SeaTacAirportEmployeeShuttleCatchmentAreaHighestZone-1;
+        bool originInCatchmentArea = originZoneId >= Global.Configuration.SeaTacAirportEmployeeShuttleCatchmentAreaLowestZone-1
+                                  && originZoneId <= Global.Configuration.SeaTacAirportEmployeeShuttleCatchmentAreaHighestZone-1;
+        if (pathType == Global.Configuration.SeaTacAirportEmployeeShuttlePathType && (originInCatchmentArea || destinationInCatchmentArea)) {
           if (destinationZoneId != Global.Configuration.SeaTacAirportZoneIndex && originZoneId != Global.Configuration.SeaTacAirportZoneIndex) {
             returnInVehicleTime = 9999.0;
             outboundInVehicleTime = 9999.0;

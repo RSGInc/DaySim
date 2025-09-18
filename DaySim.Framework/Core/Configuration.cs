@@ -1432,6 +1432,29 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public int MaximumHouseholdSize { get; set; }
 
+
+    [XmlAttribute]
+    public int SeaTacAirportZoneIndex { get; set; } = -1;
+
+    [XmlAttribute]
+    public double SeaTacAirportEmployeeShuttleFare { get; set; } = 0;
+
+
+    [XmlAttribute]
+    public int SeaTacAirportEmployeeShuttleCalibrationPenaltyInDollars { get; set; } = 0;
+
+
+    [XmlAttribute]
+    public int SeaTacAirportEmployeeShuttlePathType { get; set; } = 5;
+
+    [XmlAttribute]
+    public int SeaTacAirportEmployeeShuttleCatchmentAreaLowestZone { get; set; } = 1;
+
+    [XmlAttribute]
+    public int SeaTacAirportEmployeeShuttleCatchmentAreaHighestZone { get; set; } = 160;
+
+
+
     //new since 203
     [XmlAttribute]
     public bool ImportTransitStopAreas { get; set; }
@@ -2003,9 +2026,6 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public bool UsePersonExpansionFactorForPersonDayModels { get; set; } = false;
 
-
-    [XmlAttribute]
-    public int SeaTacAirportZoneIndex { get; set; } = -1;
 
     [XmlAttribute]
     public bool UseWorkAtHomeModelAndVariables { get; set; } = false;
