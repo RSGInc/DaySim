@@ -1436,6 +1436,18 @@ namespace DaySim.Framework.Core {
     [XmlAttribute]
     public int SeaTacAirportZoneIndex { get; set; } = -1;
 
+
+    [XmlAttribute]
+    public int SeaTacEmpZone1 { get; set; } = -1;
+
+
+    [XmlAttribute]
+    public int SeaTacEmpZone2 { get; set; } = -1;
+
+
+    [XmlAttribute]
+    public int SeaTacEmpZone3 { get; set; } = -1;
+
     [XmlAttribute]
     public double SeaTacAirportEmployeeShuttleFare { get; set; } = 0;
 

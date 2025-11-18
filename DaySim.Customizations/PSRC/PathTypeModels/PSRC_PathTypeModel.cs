@@ -24,8 +24,11 @@ namespace DaySim.PathTypeModels {
       if (Global.Configuration.SeaTacAirportZoneIndex >= 0) {
 
         //if it is to or from the airport and the purpose is not work but the path type is premium bus (airport shuttle), make it a long trip
+        int SeaTacEmpZone1Index = Global.Configuration.SeaTacEmpZone1 - 1;
+        int SeaTacEmpZone2Index = Global.Configuration.SeaTacEmpZone2 - 1;
+        int SeaTacEmpZone3Index = Global.Configuration.SeaTacEmpZone3 - 1;
 
-        if (destinationZoneId == Global.Configuration.SeaTacAirportZoneIndex || originZoneId == Global.Configuration.SeaTacAirportZoneIndex) {
+        if (destinationZoneId == Global.Configuration.SeaTacAirportZoneIndex || originZoneId == Global.Configuration.SeaTacAirportZoneIndex || destinationZoneId == SeaTacEmpZone1Index || originZoneId == SeaTacEmpZone1Index || destinationZoneId == SeaTacEmpZone2Index || originZoneId == SeaTacEmpZone2Index || destinationZoneId == SeaTacEmpZone3Index || originZoneId == SeaTacEmpZone3Index) {
           if (pathType == Global.Configuration.SeaTacAirportEmployeeShuttlePathType) {
             if (destinationPurpose != Global.Settings.Purposes.Work) {
               returnInVehicleTime = 9999.0;
@@ -42,12 +45,77 @@ namespace DaySim.PathTypeModels {
                                        && destinationZoneId <= Global.Configuration.SeaTacAirportEmployeeShuttleCatchmentAreaHighestZone-1;
         bool originInCatchmentArea = originZoneId >= Global.Configuration.SeaTacAirportEmployeeShuttleCatchmentAreaLowestZone-1
                                   && originZoneId <= Global.Configuration.SeaTacAirportEmployeeShuttleCatchmentAreaHighestZone-1;
+        bool validZone1 = Global.Configuration.SeaTacEmpZone1 > 0;
+        bool validZone2 = Global.Configuration.SeaTacEmpZone2 > 0;
+        bool validZone3 = Global.Configuration.SeaTacEmpZone3 > 0;
         if (pathType == Global.Configuration.SeaTacAirportEmployeeShuttlePathType && (originInCatchmentArea || destinationInCatchmentArea)) {
           if (destinationZoneId != Global.Configuration.SeaTacAirportZoneIndex && originZoneId != Global.Configuration.SeaTacAirportZoneIndex) {
-            returnInVehicleTime = 9999.0;
-            outboundInVehicleTime = 9999.0;
+            if (validZone1) {
+              if (destinationZoneId != SeaTacEmpZone1Index && originZoneId != SeaTacEmpZone1Index) {
+                if (validZone2) {
+                  if (destinationZoneId != SeaTacEmpZone2Index && originZoneId != SeaTacEmpZone2Index) {
+                    if (validZone3) {
+                      if (destinationZoneId != SeaTacEmpZone3Index && originZoneId != SeaTacEmpZone3Index) {
+                        returnInVehicleTime = 9999.0;
+                        outboundInVehicleTime = 9999.0;
+                      }
+                    } else {
+                      returnInVehicleTime = 9999.0;
+                      outboundInVehicleTime = 9999.0;
+                    }
+                  }
+                } else {
+                  if (validZone3) {
+                    if (destinationZoneId != SeaTacEmpZone3Index && originZoneId != SeaTacEmpZone3Index) {
+                      returnInVehicleTime = 9999.0;
+                      outboundInVehicleTime = 9999.0;
+                    }
+                  } else {
+                    returnInVehicleTime = 9999.0;
+                    outboundInVehicleTime = 9999.0;
+                  }
+                }
+              }
+            } else if (validZone2) {
+              if (destinationZoneId != SeaTacEmpZone2Index && originZoneId != SeaTacEmpZone2Index) {
+                if (validZone3) {
+                  if (destinationZoneId != SeaTacEmpZone3Index && originZoneId != SeaTacEmpZone3Index) {
+                    returnInVehicleTime = 9999.0;
+                    outboundInVehicleTime = 9999.0;
+                  }
+                } else {
+                  returnInVehicleTime = 9999.0;
+                  outboundInVehicleTime = 9999.0;
+                }
+              }
+            } else {
+              if (validZone3) {
+                if (destinationZoneId != SeaTacEmpZone3Index && originZoneId != SeaTacEmpZone3Index) {
+                  returnInVehicleTime = 9999.0;
+                  outboundInVehicleTime = 9999.0;
+                }
+              } else {
+                returnInVehicleTime = 9999.0;
+                outboundInVehicleTime = 9999.0;
+              }
+            }
           }
-        }
+}
+		//if (destinationPurpose == Global.Settings.Purposes.Work && (destinationZoneId == 672 || originZoneId == 672 || destinationZoneId == 171 || originZoneId == 171 || destinationZoneId == 2916 || originZoneId == 2916)) {
+		//	string printline = $"Origin: {originZoneId+1} Destination: {destinationZoneId+1} PathType: {pathType} PathTypeSpecificTime: {pathTypeSpecificTime}";
+		//	double lrttime = ImpedanceRoster.GetValue("lrttime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+		//	double ferrtime = ImpedanceRoster.GetValue("ferrtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+		//	double comtime = ImpedanceRoster.GetValue("comtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+		//	double premtime = ImpedanceRoster.GetValue("premtime", skimMode, pathType, votValue, outboundTime, originZoneId, destinationZoneId).Variable;
+		//	printline += $" LRTTIME: {lrttime} FERRYTIME: {ferrtime} COMTIME: {comtime} PREMTIME: {premtime} ReturnTime: {returnTime} ReturnIVT: {returnInVehicleTime} OutBoundIVT: {outboundInVehicleTime}";
+		//	printline += $" DestinationPurpose: {destinationPurpose}";
+		//	printline += $" destinationInCatchmentArea: {destinationInCatchmentArea}";
+		//	printline += $" originInCatchmentArea: {originInCatchmentArea}";
+		//	printline += $" Fare: {fare}";
+		//	printline += $" returnInVehicleTime: {returnInVehicleTime}";
+		//	printline += $" outboundInVehicleTime: {outboundInVehicleTime}";
+		//	Global.PrintFile.WriteLine(printline);
+		//}
       }
 
 
