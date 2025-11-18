@@ -12,6 +12,7 @@ namespace DaySim.ChoiceModels.Default.Models
         {
             int homedist = _person.Household.ResidenceParcel.District;
             int zonedist = destinationParcel.District;
+            int destZoneId = destinationParcel.ZoneId;
             bool Has0To25KIncome = _person.Household.Income.IsRightExclusiveBetween(0, 25000);
             bool Has50To100KIncome = _person.Household.Income.IsRightExclusiveBetween(50000, 100000);
             bool Has100To150KIncome = _person.Household.Income.IsRightExclusiveBetween(100000, 150000);
@@ -27,18 +28,18 @@ namespace DaySim.ChoiceModels.Default.Models
             alternative.AddUtilityTerm(113, Has150KPlusIncome.ToFlag() * distanceLog);
 
 
-      //add any region-specific new terms in region-specific class, using coefficient numbers 91-97, 99,100 or other unused variable #
-      //Global.PrintFile.WriteLine("Default PSRC_WorkLocationModel.RegionSpecificCustomizations called");
-      int homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
-            int homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7) ? 1 : 0;
+            //add any region-specific new terms in region-specific class, using coefficient numbers 91-97, 99,100 or other unused variable #
+            //Global.PrintFile.WriteLine("Default PSRC_WorkLocationModel.RegionSpecificCustomizations called");
+            int homeSKitWorkTRP = homedist == 11 && (zonedist == 8 || zonedist == 10 || zonedist == 7 || zonedist == 12) ? 1 : 0; // added seatac district 12
+            int homeKitWorkTRP = homedist == 9 && (zonedist == 8 || zonedist == 10 || zonedist == 7 || zonedist == 12) ? 1 : 0; // added seatac district 12
             int homeEastWorkCBD = homedist == 6 && zonedist == 4 ? 1 : 0;
             int homeKitWorkCBD = (homedist == 9 || homedist == 11) && (zonedist == 4) ? 1 : 0;
             int homeTacWorkKit = homedist == 8 && (zonedist == 9 || zonedist == 11) ? 1 : 0;
             int homeEvWorkEv = homedist == 2 && zonedist == 2 ? 1 : 0;
-            int homeWSWorkEast = homedist == 5 && zonedist == 6 ? 1 : 0;
+            int homeWSWorkEast = (homedist == 5 || homedist == 12) && zonedist == 6 ? 1 : 0; // added seatac district 12
             int homeEastWorkEast = homedist == 6 && zonedist == 6 ? 1 : 0;
             int homeKitWorkNotKit = (homedist == 9 || homedist == 11) && zonedist != 9 && zonedist != 11 ? 1 : 0;
-            int homeSTacWorkCBD = (homedist == 5 || homedist == 8) && zonedist == 9 ? 1 : 0;
+            int homeSTacWorkCBD = (homedist == 5 || homedist == 8 || homedist == 12) && zonedist == 9 ? 1 : 0;
 
             alternative.AddUtilityTerm(91, homeEastWorkEast);
             alternative.AddUtilityTerm(92, homeTacWorkKit);
@@ -70,7 +71,46 @@ namespace DaySim.ChoiceModels.Default.Models
             alternative.AddUtilityTerm(105, _person.IsFulltimeWorker.ToFlag() * distance2 * homeSeaTac);
             alternative.AddUtilityTerm(106, _person.IsFulltimeWorker.ToFlag() * distance3 * homeSeaTac);
 
-        }
+
+            int SeaTacAirportZoneIndex = Global.Configuration.SeaTacAirportZoneIndex;
+            int SeaTacEmpZone1Index = Global.Configuration.SeaTacEmpZone1 - 1;
+            int SeaTacEmpZone2Index = Global.Configuration.SeaTacEmpZone2 - 1;
+            int SeaTacEmpZone3Index = Global.Configuration.SeaTacEmpZone3 - 1;
+            int AirPortZone = (SeaTacAirportZoneIndex == destZoneId || SeaTacEmpZone1Index == destZoneId || SeaTacEmpZone2Index == destZoneId || SeaTacEmpZone3Index == destZoneId) ? 1 : 0;
+
+            //seatac specific constants
+            int homeEvertEdmndssubSnoh = (homedist == 1 || homedist == 2) && AirPortZone == 1 ? 1 : 0;
+            int homeNSeaShore = (homedist == 3) && AirPortZone == 1 ? 1 : 0;
+            int homeSeaCBD = (homedist == 4) && AirPortZone == 1 ? 1 : 0;
+            int homeWestSouthSea = (homedist == 5) && AirPortZone == 1 ? 1 : 0;
+            int homeEastSide = (homedist == 6) && AirPortZone == 1 ? 1 : 0;
+            int homeRenFedKent = (homedist == 7) && AirPortZone == 1 ? 1 : 0;
+            int homeTacoma = (homedist == 8) && AirPortZone == 1 ? 1 : 0;
+            int homeKitsap = (homedist == 9) && AirPortZone == 1 ? 1 : 0;
+            int homeSKitSapSPierce = (homedist == 10 ||  homedist == 11) && AirPortZone == 1 ? 1 : 0;
+            int homeStac = (homedist == 12) && AirPortZone == 1 ? 1 : 0;
+            //int homeEvertEdmndssubSnoh = (homedist == 1 || homedist == 2) && zonedist == 12 ? 1 : 0;
+            //int homeNSeaShore = (homedist == 3) && zonedist == 12 ? 1 : 0;
+            //int homeSeaCBD = (homedist == 4) && zonedist == 12 ? 1 : 0;
+            //int homeWestSouthSea = (homedist == 5) && zonedist == 12 ? 1 : 0;
+            //int homeEastSide = (homedist == 6) && zonedist == 12 ? 1 : 0;
+            //int homeRenFedKent = (homedist == 7) && zonedist == 12 ? 1 : 0;
+            //int homeTacoma = (homedist == 8) && zonedist == 12 ? 1 : 0;
+            //int homeKitsap = (homedist == 9) && zonedist == 12 ? 1 : 0;
+            //int homeSKitSapSPierce = (homedist == 10 || homedist == 11) && zonedist == 12 ? 1 : 0;
+            //int homeStac = (homedist == 12) && zonedist == 12 ? 1 : 0;
+      alternative.AddUtilityTerm(120, homeEvertEdmndssubSnoh);
+            alternative.AddUtilityTerm(121, homeNSeaShore);
+            alternative.AddUtilityTerm(122, homeSeaCBD);
+            alternative.AddUtilityTerm(123, homeWestSouthSea);
+            alternative.AddUtilityTerm(124, homeEastSide);
+            alternative.AddUtilityTerm(125, homeRenFedKent);
+            alternative.AddUtilityTerm(126, homeTacoma);
+            alternative.AddUtilityTerm(127, homeKitsap);
+            alternative.AddUtilityTerm(128, homeSKitSapSPierce);
+            alternative.AddUtilityTerm(129, homeStac);
+
+    }
     }
 }
 
