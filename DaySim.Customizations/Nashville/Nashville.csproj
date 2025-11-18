@@ -73,6 +73,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChoiceModels\Default\Models\Nashville_OtherHomeBasedTourModeModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\Nashville_OtherTourDestinationModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\Nashville_WorkLocationModel.cs" />
+    <Compile Include="ChoiceModels\Default\Models\Nashville_WorkTourModeModel.cs" />
     <Compile Include="PathTypeModels\Nashville_PathTypeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -279,10 +279,11 @@ namespace DaySim.DomainModels.Default.Wrappers {
     #region wrapper methods
 
     public virtual int GetVotALSegment() {
+      int income2000 = (int)(Income * Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars);
       int segment =
-                (Income < Global.Settings.VotALSegments.IncomeLowMedium * Global.Settings.MonetaryUnitsPerDollar)
+                (income2000 < Global.Settings.VotALSegments.IncomeLowMedium * Global.Settings.MonetaryUnitsPerDollar)
                     ? Global.Settings.VotALSegments.Low
-                    : (Income < Global.Settings.VotALSegments.IncomeMediumHigh * Global.Settings.MonetaryUnitsPerDollar)
+                    : (income2000 < Global.Settings.VotALSegments.IncomeMediumHigh * Global.Settings.MonetaryUnitsPerDollar)
                         ? Global.Settings.VotALSegments.Medium
                         : Global.Settings.VotALSegments.High;
 
@@ -362,16 +363,17 @@ namespace DaySim.DomainModels.Default.Wrappers {
       if (Global.Configuration.WriteResidenceBufferDensityToOwnOrRent) { OwnOrRent = ResidenceBuffer2Density; }
       IsOnePersonHousehold = Size == 1;
       IsTwoPersonHousehold = Size == 2;
-      Has0To15KIncome = Income.IsRightExclusiveBetween(0, 15000);
-      Has0To25KIncome = Income.IsRightExclusiveBetween(0, 25000);
-      Has25To45KIncome = Income.IsRightExclusiveBetween(25000, 45000);
-      Has25To50KIncome = Income.IsRightExclusiveBetween(25000, 50000);
-      Has50To75KIncome = Income.IsRightExclusiveBetween(50000, 75000);
-      Has75To100KIncome = Income.IsRightExclusiveBetween(75000, 100000);
-      Has75KPlusIncome = Income >= 75000;
-      Has100KPlusIncome = Income >= 100000;
-      HasIncomeUnder50K = Income.IsRightExclusiveBetween(0, 50000);
-      HasIncomeOver50K = Income >= 50000;
+      int income2000 = (int)(Income * Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars);
+      Has0To15KIncome = income2000.IsRightExclusiveBetween(0, 15000);
+      Has0To25KIncome = income2000.IsRightExclusiveBetween(0, 25000);
+      Has25To45KIncome = income2000.IsRightExclusiveBetween(25000, 45000);
+      Has25To50KIncome = income2000.IsRightExclusiveBetween(25000, 50000);
+      Has50To75KIncome = income2000.IsRightExclusiveBetween(50000, 75000);
+      Has75To100KIncome = income2000.IsRightExclusiveBetween(75000, 100000);
+      Has75KPlusIncome = income2000 >= 75000;
+      Has100KPlusIncome = income2000 >= 100000;
+      HasIncomeUnder50K = income2000.IsRightExclusiveBetween(0, 50000);
+      HasIncomeOver50K = income2000 >= 50000;
       HasValidIncome = Income >= 0;
       HasMissingIncome = Income < 0;
       Has1Driver = HouseholdTotals.DrivingAgeMembers == 1;

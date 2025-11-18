@@ -47,7 +47,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       ChoiceProbabilityCalculator choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(tour.Id);
 
       if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
-        if (tour.DestinationParcel == null ||
+        if (tour.OriginParcel == null || tour.DestinationParcel == null ||
             tour.Mode <= Global.Settings.Modes.None ||
             tour.Mode == Global.Settings.Modes.SchoolBus ||
            (tour.Mode == Global.Settings.Modes.ParkAndRide && !Global.Configuration.IncludeParkAndRideInOtherHomeBasedTourModeModel) ||
@@ -226,6 +226,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       int univStudentFlag = person.IsUniversityStudent.ToFlag();
 
       // tour inputs
+      int escortTourFlag = (tour.DestinationPurpose == Global.Settings.Purposes.Escort).ToFlag();
       int shoppingTourFlag = (tour.DestinationPurpose == Global.Settings.Purposes.Shopping).ToFlag();
       int mealTourFlag = (tour.DestinationPurpose == Global.Settings.Purposes.Meal).ToFlag();
       int socialOrRecreationTourFlag = (tour.DestinationPurpose == Global.Settings.Purposes.Social).ToFlag();
@@ -388,6 +389,7 @@ namespace DaySim.ChoiceModels.Default.Models {
             alternative.AddUtilityTerm(87, incomeOver100Flag);
             alternative.AddUtilityTerm(88, mealTourFlag);
             alternative.AddUtilityTerm(89, shoppingTourFlag);
+            alternative.AddUtilityTerm(91, escortTourFlag);
           } else {
             double modeConstant = Global.Configuration.AV_PaidRideShareModeUsesAVs
                         ? Global.Configuration.AV_PaidRideShare_ModeConstant

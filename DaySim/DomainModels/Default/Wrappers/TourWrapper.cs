@@ -765,7 +765,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       model.DestinationDepartureTime = 180;
       model.OriginArrivalTime = 180;
       model.PathType = 1;
-      model.ExpansionFactor = Household.ExpansionFactor;
+      model.ExpansionFactor = Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? Person.ExpansionFactor : Household.ExpansionFactor;
 
       return _tourCreator.CreateWrapper(model, this, destinationPurpose, false);
     }
@@ -842,7 +842,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
                     .ParkAndRideLoad;
 
       for (int minute = arrivalTime; minute < departureTime; minute++) {
-        parkAndRideLoad[minute] += Household.ExpansionFactor / (mode == Global.Settings.Modes.Hov3 ? 3 : mode == Global.Settings.Modes.Hov2 ? 2 : 1);
+        parkAndRideLoad[minute] += (Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? Person.ExpansionFactor : Household.ExpansionFactor) / (mode == Global.Settings.Modes.Hov3 ? 3 : mode == Global.Settings.Modes.Hov2 ? 2 : 1);
       }
     }
 
@@ -906,7 +906,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
     private void SetValueOfTimeCoefficients(int purpose, bool suppressRandomVOT) {
       bool randomVot = !Global.Configuration.IsInEstimationMode && Global.Configuration.UseRandomVotDistribution && !suppressRandomVOT;
 
-      double income =
+      double income = Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars*
                 Household.Income < 0
                     ? Global.Configuration.Coefficients_BaseCostCoefficientIncomeLevel
                     : Household.Income; // missing converted to 30K

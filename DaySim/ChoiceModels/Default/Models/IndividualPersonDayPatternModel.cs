@@ -38,7 +38,20 @@ namespace DaySim.ChoiceModels.Default.Models {
         if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
           return;
         }
+        //mb added code so that this model is only estimated on full days of data
+        if (personDay.DayBeginsAtHome == 0 || personDay.DayEndsAtHome == 0) {
+          return;
+        }
+
+      } else if (Global.Configuration.UseWorkAtHomeModelAndVariables) {
+        ChoiceProbabilityCalculator WAHchoiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(personDay.Id);
+        RunWorkAtHomeModel(WAHchoiceProbabilityCalculator, personDay.Person);
+        ChoiceProbabilityCalculator.Alternative chosenAlternative = WAHchoiceProbabilityCalculator.SimulateChoice(personDay.Household.RandomUtility);
+        int choice = (int)chosenAlternative.Choice;
+
+        personDay.WorkAtHomeDuration = (choice > 0) ? (int)(Global.Configuration.WorkAtHome_DurationThreshold + 2) : 0;
       }
+
 
       ChoiceProbabilityCalculator choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(personDay.Id);
 
@@ -162,6 +175,12 @@ namespace DaySim.ChoiceModels.Default.Models {
       double mixedDensity = residenceParcel.MixedUse3Index2();
       double intersectionDensity = residenceParcel.IntersectionDensity34Minus1Buffer2();
 
+      int workAtHome = (Global.Configuration.UseWorkAtHomeModelAndVariables && personDay.WorkAtHomeDuration > Global.Configuration.WorkAtHome_DurationThreshold).ToFlag();
+
+      //added code so that these bias variables only apply in estimation mode
+      int diaryBased = (Global.Configuration.IsInEstimationMode && Global.Configuration.UseDiaryVsSmartphoneBiasVariables && person.PaperDiary > 0).ToFlag();
+      int proxyBased = (Global.Configuration.IsInEstimationMode && Global.Configuration.UseProxyBiasVariables && person.ProxyResponse > 0).ToFlag();
+
       double[] purposeLogsums = new double[Global.Settings.Purposes.TotalPurposes];
       double[] atUsualLogsums = new double[3];
       int carOwnership = person.GetCarOwnershipSegment();
@@ -245,6 +264,9 @@ namespace DaySim.ChoiceModels.Default.Models {
         component.AddUtilityTerm(100 * purpose + 26, xMultiplier * intersectionDensity);
         component.AddUtilityTerm(100 * purpose + 27, xMultiplier * purposeLogsums[purpose]);
         component.AddUtilityTerm(100 * purpose + 28, xMultiplier * person.TransitPassOwnership);
+        component.AddUtilityTerm(100 * purpose + 32, xMultiplier * diaryBased);
+        component.AddUtilityTerm(100 * purpose + 33, xMultiplier * proxyBased);
+        component.AddUtilityTerm(100 * purpose + 34, xMultiplier * workAtHome);
       }
 
       // tour utility
@@ -304,8 +326,8 @@ namespace DaySim.ChoiceModels.Default.Models {
               alternative.AddUtilityTerm(100 * purpose + 31, purposeLogsums[purpose]); // stop purpose logsum
             }
             if (Global.Configuration.IsInEstimationMode) {
-              alternative.AddUtilityTerm(100 * purpose + 32, 1 - person.PaperDiary);
-              alternative.AddUtilityTerm(100 * purpose + 33, person.ProxyResponse);
+              alternative.AddUtilityTerm(100 * purpose + 32, diaryBased);
+              alternative.AddUtilityTerm(100 * purpose + 33, proxyBased);
             }
           }
         }
@@ -374,6 +396,61 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityComponent(choiceProbabilityCalculator.GetUtilityComponent(stopComponentIndex));
         }
 
+      }
+    }
+
+    private void RunWorkAtHomeModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, IPersonWrapper person, int choice = Constants.DEFAULT_VALUE) {
+      
+      // 0 Not work at home 
+
+      ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(0, true, choice == 0);
+      alternative.Choice = 0;
+      //utility is 0
+
+      // 1 Work at home more than threshold on the day (only available for workers who do not work from home all the time
+
+      alternative = choiceProbabilityCalculator.GetAlternative(1, true, choice == 1);
+      alternative.Choice = 1;
+      alternative.Available = (person.IsWorker && person.UsualWorkParcel!=null && person.UsualWorkParcelId != person.Household.ResidenceParcelId);
+
+      if (person.UsualWorkParcel != null) {
+        double totEMP = Math.Max(person.UsualWorkParcel.EmploymentTotal, 1.0);
+        double retlEMPFraction = person.UsualWorkParcel.EmploymentRetail / totEMP;
+        double srvcEMPFraction = person.UsualWorkParcel.EmploymentService / totEMP;
+        double educEMPFraction = person.UsualWorkParcel.EmploymentEducation / totEMP;
+        double foodEMPFraction = person.UsualWorkParcel.EmploymentFood / totEMP;
+        double mediEMPFraction = person.UsualWorkParcel.EmploymentMedical / totEMP;
+        double offcEMPFraction = person.UsualWorkParcel.EmploymentOffice / totEMP;
+        double induEMPFraction = person.UsualWorkParcel.EmploymentIndustrial / totEMP;
+        double govtEMPFraction = person.UsualWorkParcel.EmploymentGovernment / totEMP;
+        double othrEMPFraction = person.UsualWorkParcel.EmploymentAgricultureConstruction / totEMP;
+        double lowIncome = person.Household.HasIncomeUnder50K.ToFlag();
+        double higherIncome = person.Household.HasIncomeOver50K.ToFlag();
+
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_AlternativeSpecificConstant);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_PartTimeWorkerCoefficient * person.IsPartTimeWorker.ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_Income0to50Coefficient * person.Household.HasIncomeUnder50K.ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_IncomeOver150Coefficient * (person.Household.Income * Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars >= 150000).ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_NonWorkerAndKidsInHHCoefficient * (person.Household.OtherAdults > 0 && (person.Household.KidsBetween0And4 + person.Household.KidsBetween5And15 > 0)).ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_NoVehiclesInHHCoefficient * (person.Household.VehiclesAvailable == 0).ToFlag());
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionEducationJobsCoefficient * educEMPFraction);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionMedicalJobsCoefficient * mediEMPFraction);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionServiceJobsCoefficient * srvcEMPFraction);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionOtherJobsCoefficient * othrEMPFraction);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionRetailFoodJobsLowIncomeCoefficient * (foodEMPFraction + retlEMPFraction) * lowIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionGovernmentJobsLowIncomeCoefficient * govtEMPFraction * lowIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionIndustrialJobsLowIncomeCoefficient * induEMPFraction * lowIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionOfficeJobsLowIncomeCoefficient * offcEMPFraction * lowIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionRetailFoodJobsHigherIncomeCoefficient * (foodEMPFraction + retlEMPFraction) * higherIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionGovernmentJobsHigherIncomeCoefficient * govtEMPFraction * higherIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionIndustrialJobsHigherIncomeCoefficient * induEMPFraction * higherIncome);
+        alternative.AddUtilityTerm(20, Global.Configuration.WorkAtHome_FractionOfficeJobsHigherIncomeCoefficient * offcEMPFraction * higherIncome);
+      }
+      
+      // rest not available
+      for (int altno = 2; altno < 2080; altno++) {
+        alternative = choiceProbabilityCalculator.GetAlternative(altno, false, choice == altno);
+        alternative.Choice = altno;
       }
     }
 

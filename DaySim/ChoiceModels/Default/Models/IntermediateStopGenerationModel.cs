@@ -39,6 +39,10 @@ namespace DaySim.ChoiceModels.Default.Models {
         if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
           return choice;
         }
+        //mb added code so that this model is only estimated on full days of data
+        if (trip.PersonDay.DayBeginsAtHome == 0 || trip.PersonDay.DayEndsAtHome == 0) {
+          return choice;
+        }
       }
 
       ChoiceProbabilityCalculator choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator(trip.Id);
@@ -55,7 +59,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
         ChoiceProbabilityCalculator.Alternative chosenAlternative = choiceProbabilityCalculator.SimulateChoice(trip.Household.RandomUtility);
         choice = (int)chosenAlternative.Choice;
-      }
+
+       }
 
       return choice;
     }
@@ -160,6 +165,12 @@ namespace DaySim.ChoiceModels.Default.Models {
       // connectivity attributes
       double c34Ratio = trip.OriginParcel.C34RatioBuffer1();
 
+      int workAtHome = (Global.Configuration.UseWorkAtHomeModelAndVariables && personDay.WorkAtHomeDuration > Global.Configuration.WorkAtHome_DurationThreshold).ToFlag();
+
+      //added code so that these bias variables only apply in estimation mode
+      int diaryBased = (Global.Configuration.IsInEstimationMode && Global.Configuration.UseDiaryVsSmartphoneBiasVariables && person.PaperDiary > 0).ToFlag();
+      int proxyBased = (Global.Configuration.IsInEstimationMode && Global.Configuration.UseProxyBiasVariables && person.ProxyResponse > 0).ToFlag();
+
       // 0 - NO MORE STOPS
 
       ChoiceProbabilityCalculator.Alternative alternative = choiceProbabilityCalculator.GetAlternative(Global.Settings.Purposes.NoneOrHome, true, choice == Global.Settings.Purposes.NoneOrHome);
@@ -180,6 +191,9 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(12, beforeMandatoryDestinationFlag);
       alternative.AddUtilityTerm(16, (transitTourFlag + walkTourFlag + bikeTourFlag) * c34Ratio * foodRetailServiceMedicalQtrMileLog);
       alternative.AddUtilityTerm(17, transitTourFlag);
+      alternative.AddUtilityTerm(18, diaryBased);
+      alternative.AddUtilityTerm(19, proxyBased);
+      alternative.AddUtilityTerm(20, workAtHome);
       alternative.AddUtilityTerm(40, schoolTourFlag);
 
       // 1 - WORK STOP
@@ -189,6 +203,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 
         alternative.Choice = Global.Settings.Purposes.Work;
 
+        alternative.AddUtilityTerm(21, diaryBased);
+        alternative.AddUtilityTerm(22, proxyBased);
+        alternative.AddUtilityTerm(23, workAtHome);
         alternative.AddUtilityTerm(33, workTourFlag + schoolTourFlag);
         //                alternative.AddUtility(47, escortTourFlag);
         //                alternative.AddUtility(54, personalBusinessOrMedicalTourFlag);
@@ -265,6 +282,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 
         alternative.Choice = Global.Settings.Purposes.PersonalBusiness;
 
+        alternative.AddUtilityTerm(24, diaryBased);
+        alternative.AddUtilityTerm(25, proxyBased);
+        alternative.AddUtilityTerm(26, workAtHome);
         alternative.AddUtilityTerm(36, workTourFlag + schoolTourFlag);
         alternative.AddUtilityTerm(50, escortTourFlag);
         alternative.AddUtilityTerm(57, personalBusinessOrMedicalTourFlag);
@@ -290,6 +310,9 @@ namespace DaySim.ChoiceModels.Default.Models {
       if (personDay.ShoppingStops > 0) {
         alternative = choiceProbabilityCalculator.GetAlternative(Global.Settings.Purposes.Shopping, true, choice == Global.Settings.Purposes.Shopping);
 
+        alternative.AddUtilityTerm(27, diaryBased);
+        alternative.AddUtilityTerm(28, proxyBased);
+        alternative.AddUtilityTerm(29, workAtHome);
         alternative.Choice = Global.Settings.Purposes.Shopping;
 
         alternative.AddUtilityTerm(37, workTourFlag + schoolTourFlag);
@@ -319,6 +342,9 @@ namespace DaySim.ChoiceModels.Default.Models {
 
         alternative.Choice = Global.Settings.Purposes.Meal;
 
+        alternative.AddUtilityTerm(30, diaryBased);
+        alternative.AddUtilityTerm(31, proxyBased);
+        alternative.AddUtilityTerm(32, workAtHome);
         alternative.AddUtilityTerm(38, workTourFlag);
         alternative.AddUtilityTerm(46, schoolTourFlag);
         alternative.AddUtilityTerm(52, escortTourFlag);
@@ -352,6 +378,9 @@ namespace DaySim.ChoiceModels.Default.Models {
         alternative.Choice = Global.Settings.Purposes.Social;
 
         alternative.AddUtilityTerm(39, workTourFlag + schoolTourFlag);
+        alternative.AddUtilityTerm(41, diaryBased);
+        alternative.AddUtilityTerm(42, proxyBased);
+        alternative.AddUtilityTerm(43, workAtHome);
         alternative.AddUtilityTerm(53, escortTourFlag);
         alternative.AddUtilityTerm(60, personalBusinessOrMedicalTourFlag);
         alternative.AddUtilityTerm(67, shoppingTourFlag);

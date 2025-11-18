@@ -925,21 +925,21 @@ namespace DaySim.ChoiceModels.Default.Models {
             excludeReason = 1;
           } else if (tourMode >= Global.Settings.Modes.Other) {
             excludeReason = 2;
-          } else if (tour.OriginParcelId > _maxParcel) {
+          } else if (tour.OriginParcel == null) {
             excludeReason = 3;
-          } else if (tour.OriginParcelId <= 0) {
+          } else if (tour.DestinationParcel == null) {
             excludeReason = 4;
-          } else if (trip.DestinationParcelId > _maxParcel) {
+          } else if (trip.DestinationParcel == null) {
             excludeReason = 5;
           } else if (trip.DestinationParcelId <= 0) {
             excludeReason = 6;
-          } else if (trip.OriginParcelId > _maxParcel) {
+          } else if (trip.OriginParcel == null ) {
             excludeReason = 7;
           } else if (trip.OriginParcelId <= 0) {
             excludeReason = 8;
           } else if (trip.OriginParcelId == trip.DestinationParcelId) {
             excludeReason = 9;
-          } else if (tour.OriginParcel.ZoneId == -1) {
+          } else if (tour.OriginParcel.ZoneId <= 0) {
             // TODO: Verify this condition... it used to check that the zone was == null. 
             // I'm not sure what the appropriate condition should be though.
 

@@ -14,8 +14,8 @@ namespace DaySim.ChoiceModels.Default.Models {
       int originInNJ = ((tour.OriginParcel.ZoneKey >= 18000 && tour.OriginParcel.ZoneKey < 50000) || (tour.OriginParcel.ZoneKey >= 53000 && tour.OriginParcel.ZoneKey < 58000)).ToFlag();
       int destinInNJ = ((destinationParcel.ZoneKey >= 18000 && destinationParcel.ZoneKey < 50000) || (destinationParcel.ZoneKey >= 53000 && destinationParcel.ZoneKey < 58000)).ToFlag();
 
-      int coreCBDOrig = (tour.OriginParcel.HouseholdsBuffer1 + tour.OriginParcel.EmploymentTotalBuffer1 >= 20000).ToFlag();
-      int coreCBDDest = (destinationParcel.HouseholdsBuffer1 + destinationParcel.EmploymentTotalBuffer1 >= 20000).ToFlag();
+      int coreCBDOrig = (tour.OriginParcel.District == 1).ToFlag();// (tour.OriginParcel.HouseholdsBuffer1 + tour.OriginParcel.EmploymentTotalBuffer1 >= 31000).ToFlag();
+      int coreCBDDest = (destinationParcel.District == 1).ToFlag();// (destinationParcel.HouseholdsBuffer1 + destinationParcel.EmploymentTotalBuffer1 >= 31000).ToFlag();
 
       if (mode == Global.Settings.Modes.ParkAndRide) {
         //alternative.AddUtilityTerm(211, tour.OriginParcel.CBD_AreaType_Buffer1());
@@ -37,14 +37,14 @@ namespace DaySim.ChoiceModels.Default.Models {
         // alternative.AddUtilityTerm(227, destinationParcel.PCA_MixedUseTerm_Buffer1());
         // alternative.AddUtilityTerm(228, destinationParcel.PCA_TransitAccessTerm_Buffer1());
       } else if (mode == Global.Settings.Modes.Transit) {
-        alternative.AddUtilityTerm(231, tour.OriginParcel.CBD_AreaType_Buffer1());
-        alternative.AddUtilityTerm(232, tour.OriginParcel.Urban_AreaType_Buffer1());
-        alternative.AddUtilityTerm(233, tour.OriginParcel.Suburban_AreaType_Buffer1());
-        alternative.AddUtilityTerm(234, tour.OriginParcel.AllRural_AreaType_Buffer1());
-        alternative.AddUtilityTerm(235, destinationParcel.CBD_AreaType_Buffer1());
-        alternative.AddUtilityTerm(236, destinationParcel.Urban_AreaType_Buffer1());
-        alternative.AddUtilityTerm(237, destinationParcel.Suburban_AreaType_Buffer1());
-        alternative.AddUtilityTerm(238, destinationParcel.AllRural_AreaType_Buffer1());
+        alternative.AddUtilityTerm(231, (tour.OriginParcel.District <= 2).ToFlag()); //tour.OriginParcel.CBD_AreaType_Buffer1());
+        alternative.AddUtilityTerm(232, (tour.OriginParcel.District == 3).ToFlag()); //tour.OriginParcel.Urban_AreaType_Buffer1());
+        alternative.AddUtilityTerm(233, (tour.OriginParcel.District == 4).ToFlag()); //tour.OriginParcel.Suburban_AreaType_Buffer1());
+        alternative.AddUtilityTerm(234, (tour.OriginParcel.District >= 5).ToFlag()); //tour.OriginParcel.AllRural_AreaType_Buffer1());
+        alternative.AddUtilityTerm(235, (destinationParcel.District <= 2).ToFlag()); //destinationParcel.CBD_AreaType_Buffer1());
+        alternative.AddUtilityTerm(236, (destinationParcel.District == 3).ToFlag()); //destinationParcel.Urban_AreaType_Buffer1());
+        alternative.AddUtilityTerm(237, (destinationParcel.District == 4).ToFlag()); //destinationParcel.Suburban_AreaType_Buffer1());
+        alternative.AddUtilityTerm(238, (destinationParcel.District >= 5).ToFlag()); //destinationParcel.AllRural_AreaType_Buffer1());
         alternative.AddUtilityTerm(239, (tour.OriginParcel.DistanceToFerry > 0 && tour.OriginParcel.DistanceToFerry <= 0.5).ToFlag());
         alternative.AddUtilityTerm(240, (destinationParcel.DistanceToFerry > 0 && destinationParcel.DistanceToFerry <= 0.5).ToFlag());
         alternative.AddUtilityTerm(241, originInNJ);

@@ -75,7 +75,7 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(1, 1.0);
       alternative.AddUtilityTerm(2, person.IsPartTimeWorker.ToFlag());
       alternative.AddUtilityTerm(3, person.IsNotFullOrPartTimeWorker.ToFlag());
-      alternative.AddUtilityTerm(4, Math.Max(1, person.Household.Income) / 1000.0);
+      alternative.AddUtilityTerm(4, Math.Max(1, person.Household.Income)*Global.Configuration.HouseholdIncomeAdjustmentFactorTo2000Dollars / 1000.0);
       alternative.AddUtilityTerm(5, person.Household.HasMissingIncome.ToFlag());
       alternative.AddUtilityTerm(6, Math.Log(person.UsualWorkParcel.EmploymentTotalBuffer1 + 1.0));
       alternative.AddUtilityTerm(7, Math.Log((person.UsualWorkParcel.ParkingOffStreetPaidDailySpacesBuffer1 + 1.0) / (person.UsualWorkParcel.EmploymentTotalBuffer1 + 1.0)));

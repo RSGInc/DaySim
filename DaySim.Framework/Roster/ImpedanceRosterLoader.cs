@@ -213,6 +213,7 @@ namespace DaySim.Framework.Roster {
       return entries;
     }
 
+  
     public virtual void ProcessEntries(IEnumerable<RosterEntry> entries) {
       VariableKeys = entries.Select(x => x.Variable.GetHashCode()).Distinct().OrderBy(x => x).ToArray();
       MatrixKeys = entries.Select(x => x.MatrixKey).Distinct().OrderBy(x => x).ToArray();

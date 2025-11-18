@@ -8,7 +8,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Reflection;
 using DaySim.Framework.ChoiceModels;
 using DaySim.Framework.Coefficients;
 using DaySim.Framework.Core;
@@ -56,7 +58,7 @@ namespace DaySim.ChoiceModels.Default.Models {
 
       if (_helpers[ParallelUtility.threadLocalAssignedIndex.Value].ModelIsInEstimationMode) {
 
-        if (tour.DestinationParcel == null ||
+        if (tour.DestinationParcel == null || tour.OriginParcel == null ||
         tour.Mode <= Global.Settings.Modes.None ||
         tour.Mode == Global.Settings.Modes.SchoolBus ||
        (tour.Mode == Global.Settings.Modes.PaidRideShare && !Global.Configuration.PaidRideShareModeIsAvailable) ||
@@ -87,7 +89,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           return;
         }
 
-        RunModel(choiceProbabilityCalculator, tour, pathTypeModels, tour.DestinationParcel, tour.Household.VehiclesAvailable, tour.Mode);
+        RunModel(choiceProbabilityCalculator, tour, pathTypeModels, tour.DestinationParcel, tour.Household.VehiclesAvailable, false, tour.Mode);
 
         choiceProbabilityCalculator.WriteObservation();
       } else {
@@ -108,7 +110,7 @@ namespace DaySim.ChoiceModels.Default.Models {
                 tour.Person.GetTransitFareDiscountFraction(),
                 false);
 
-        RunModel(choiceProbabilityCalculator, tour, pathTypeModels, tour.DestinationParcel, tour.Household.VehiclesAvailable);
+        RunModel(choiceProbabilityCalculator, tour, pathTypeModels, tour.DestinationParcel, tour.Household.VehiclesAvailable, true);
 
         ChoiceProbabilityCalculator.Alternative chosenAlternative = choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
 
@@ -184,7 +186,7 @@ namespace DaySim.ChoiceModels.Default.Models {
               transitDiscountFraction,
               false);
 
-      RunModel(choiceProbabilityCalculator, tour, pathTypeModels, destinationParcel, householdCars);
+      RunModel(choiceProbabilityCalculator, tour, pathTypeModels, destinationParcel, householdCars, false);
 
       return choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
     }
@@ -194,7 +196,8 @@ namespace DaySim.ChoiceModels.Default.Models {
       //Global.PrintFile.WriteLine("Generic Default WorkTourModeModel.RegionSpecificCustomizations being called so must not be overridden by CustomizationDll");
     }
 
-    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<IPathTypeModel> pathTypeModels, IParcelWrapper destinationParcel, int householdCars, int choice = Constants.DEFAULT_VALUE) {
+    private void RunModel(ChoiceProbabilityCalculator choiceProbabilityCalculator, ITourWrapper tour, IEnumerable<IPathTypeModel> pathTypeModels, 
+                       IParcelWrapper destinationParcel, int householdCars, bool chooseMode, int choice = Constants.DEFAULT_VALUE) {
       IHouseholdWrapper household = tour.Household;
       Framework.DomainModels.Models.IHouseholdTotals householdTotals = household.HouseholdTotals;
       IPersonDayWrapper personDay = tour.PersonDay;
@@ -221,9 +224,76 @@ namespace DaySim.ChoiceModels.Default.Models {
 
       IParcelWrapper originParcel = tour.OriginParcel;
       int parkingDuration = ChoiceModelUtility.GetParkingDuration(person.IsFulltimeWorker);
-      // parking at work is free if no paid parking at work and tour goes to usual workplace
-      double destinationParkingCost = (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel && tour.Person.UsualWorkParcel != null
+
+
+      double destinationParkingCost = 0;
+      //appy worker parking cashout option in specific zones
+      bool parkingCashoutIsAvailable = Global.Configuration.WorkerPricingParkingCashoutAvailable
+                                    && chooseMode && tour.Sequence > 0
+                                    && destinationParcel.ZoneKey >= Global.Configuration.WorkerPricingFirstZoneNumber
+                                    && destinationParcel.ZoneKey <= Global.Configuration.WorkerPricingLastZoneNumber
+                                    && person.UsualWorkParcel != null
+                                    && destinationParcel.ZoneKey == person.UsualWorkParcel.ZoneKey
+                                    && tour.DestinationPurpose == Global.Settings.Purposes.Work;
+
+      int testcount = 0;
+      if (parkingCashoutIsAvailable) {
+        // set probability based on sov distance and transit availability
+        double parkingCashoutProbability = Global.Configuration.WorkerPricingParkingCashoutFractionTransitAvailable;
+        foreach (IPathTypeModel pathTypeModel in pathTypeModels) {
+          if (pathTypeModel.Mode == Global.Settings.Modes.Sov) {
+            double roadDistance = pathTypeModel.PathDistance;
+            if (roadDistance <= 1.0) {
+              parkingCashoutProbability = Global.Configuration.WorkerPricingParkingCashoutFractionUnderOneMile;
+            } else if (roadDistance <= 3.0) {
+              parkingCashoutProbability = Global.Configuration.WorkerPricingParkingCashoutFractionOneToThreeMiles;
+            }
+          } else if (pathTypeModel.Mode == Global.Settings.Modes.Transit && !pathTypeModel.Available) {
+            parkingCashoutProbability = Global.Configuration.WorkerPricingParkingCashoutFractionTransitNotAvailable;
+          }
+        }
+        //apply income multipliers
+        if (Global.Configuration.WorkerPricingParkingCashoutFractionLowIncomeModifier > 0
+         && Global.Configuration.WorkerPricingParkingCashoutFractionLowIncomeThreshold > 0
+         && Global.Configuration.WorkerPricingParkingCashoutFractionLowIncomeThreshold > household.Income) {
+          parkingCashoutProbability = parkingCashoutProbability * Global.Configuration.WorkerPricingParkingCashoutFractionLowIncomeModifier;
+        } else if (Global.Configuration.WorkerPricingParkingCashoutFractionHighIncomeModifier > 0
+           && Global.Configuration.WorkerPricingParkingCashoutFractionHighIncomeThreshold > 0
+           && Global.Configuration.WorkerPricingParkingCashoutFractionHighIncomeThreshold <= household.Income) {
+          parkingCashoutProbability = parkingCashoutProbability * Global.Configuration.WorkerPricingParkingCashoutFractionHighIncomeModifier;
+        }
+
+        //make a stochastic draw
+        double pseudoRandom = Math.Sqrt(household.Id * 1.0 * person.Sequence);
+        double xrandom01 = pseudoRandom - Math.Floor(pseudoRandom);
+        
+        if (xrandom01 < parkingCashoutProbability) {
+          //set parking price if cashout is chosen
+          if (Global.Configuration.WorkerPricingHourlyParkingCostAfterCashOut <= 0) {
+            destinationParkingCost = Global.Configuration.WorkerPricingDailyParkingCostAfterCashOut;
+          } else {
+            destinationParkingCost = Math.Min(Global.Configuration.WorkerPricingDailyParkingCostAfterCashOut,
+                                              Global.Configuration.WorkerPricingHourlyParkingCostAfterCashOut * parkingDuration);
+          }
+        } else {
+          //set parking price if cashout is chosen
+          if (Global.Configuration.WorkerPricingHourlyParkingCostBeforeCashOut <= 0) {
+            destinationParkingCost = Global.Configuration.WorkerPricingDailyParkingCostBeforeCashOut;
+          } else {
+            destinationParkingCost = Math.Min(Global.Configuration.WorkerPricingDailyParkingCostBeforeCashOut,
+                                              Global.Configuration.WorkerPricingHourlyParkingCostBeforeCashOut * parkingDuration);
+          }
+        }
+       //test print out
+        testcount = testcount + 1;
+        Global.PrintFile.WriteLine("*** Household {0} person {1} tour {2} income {3} probability {4} random {5} park cost {6} loop {7}", 
+          household.Id, person.Sequence, tour.Sequence,household.Income,parkingCashoutProbability,xrandom01,destinationParkingCost,testcount);
+      } else {
+        // no parking cashout available - use standard calcultation
+        // parking at work is free if no paid parking at work and tour goes to usual workplace
+        destinationParkingCost = (Global.Configuration.ShouldRunPayToParkAtWorkplaceModel && tour.Person.UsualWorkParcel != null
                                           && destinationParcel == tour.Person.UsualWorkParcel && person.PaidParkingAtWorkplace == 0) ? 0.0 : destinationParcel.ParkingCostBuffer1(parkingDuration);
+      }
 
       ChoiceModelUtility.SetEscortPercentages(personDay, out double escortPercentage, out double nonEscortPercentage);
 
@@ -275,7 +345,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(127, destinationParcel.NetIntersectionDensity1());
           alternative.AddUtilityTerm(126, originParcel.NetIntersectionDensity1());
           //alternative.AddUtilityTerm(125, originParcel.HouseholdDensity1());
-          //alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
+          alternative.AddUtilityTerm(124, originParcel.MixedUse2Index1());
           alternative.AddUtilityTerm(123, Math.Log(destinationParcel.StopsTransitBuffer1+1));
           alternative.AddUtilityTerm(122, Math.Log(originParcel.StopsTransitBuffer1+1));
           alternative.AddUtilityTerm(180, univStudentFlag);
@@ -294,6 +364,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(39, twoPersonHouseholdFlag);
           alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
           alternative.AddUtilityTerm(42, carsLessThanDriversFlag);
+          alternative.AddUtilityTerm(43, carsLessThanWorkersFlag);
           alternative.AddUtilityTerm(133, escortPercentage);
           alternative.AddUtilityTerm(134, nonEscortPercentage);
         } else if (mode == Global.Settings.Modes.Hov2) {
@@ -305,6 +376,7 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(40, 1);
           alternative.AddUtilityTerm(41, noCarsInHouseholdFlag);
           alternative.AddUtilityTerm(42, carsLessThanDriversFlag);
+          alternative.AddUtilityTerm(43, carsLessThanWorkersFlag);
           alternative.AddUtilityTerm(48, onePersonHouseholdFlag);
           alternative.AddUtilityTerm(133, escortPercentage);
           alternative.AddUtilityTerm(134, nonEscortPercentage);
@@ -328,9 +400,10 @@ namespace DaySim.ChoiceModels.Default.Models {
                       Global.Settings.ValueOfTimes.DefaultVot, tour.DestinationArrivalTime, originParcel, destinationParcel).Variable
                   : 0;
 
-          //                  double worstDist = Global.Configuration.PathImpedance_BikeUseTypeSpecificDistanceFractions ?
-          //                         ImpedanceRoster.GetValue("worstdistance", mode, Global.Settings.PathTypes.FullNetwork, 
-          //                            Global.Settings.VotGroups.Medium, tour.DestinationArrivalTime,originParcel, destinationParcel).Variable : 0;
+          double worstDist = Global.Configuration.PathImpedance_BikeUseTypeSpecificDistanceFractions 
+                  ?   ImpedanceRoster.GetValue("worstdistance", mode, Global.Settings.PathTypes.FullNetwork, 
+                      Global.Settings.VotGroups.Medium, tour.DestinationArrivalTime,originParcel, destinationParcel).Variable 
+                     : 0;
 
           alternative.AddUtilityTerm(60, 1);
           alternative.AddUtilityTerm(61, maleFlag);
@@ -343,28 +416,16 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(166, originParcel.NetIntersectionDensity1());
           alternative.AddUtilityTerm(165, originParcel.HouseholdDensity1());
           alternative.AddUtilityTerm(164, originParcel.MixedUse4Index1());
-          alternative.AddUtilityTerm(162, (class1Dist > 0).ToFlag());
+          alternative.AddUtilityTerm(161, (class1Dist > 0).ToFlag());
           alternative.AddUtilityTerm(162, (class2Dist > 0).ToFlag());
-          //                        alternative.AddUtility(163, (worstDist > 0).ToFlag());
-          alternative.AddUtilityTerm(170, 1.0 * destinationParcel.MixedUse4Index1()
+          alternative.AddUtilityTerm(163, (worstDist > 0).ToFlag());
+          alternative.AddUtilityTerm(170,                       1.0 * destinationParcel.MixedUse4Index1()
                                                               + 0.00002 * destinationParcel.TotalEmploymentDensity1()
                                                               + 0.001 * destinationParcel.NetIntersectionDensity1()
                                                               + 0.001 * originParcel.NetIntersectionDensity1()
                                                               + 0.0002 * originParcel.HouseholdDensity1()
                                                               + 1.0 * originParcel.MixedUse4Index1());
           
-          //alternative.AddUtilityTerm(261, originParcel.PCA_DensityTerm_Buffer1());
-          //alternative.AddUtilityTerm(262, originParcel.PCA_WalkabilityTerm_Buffer1());
-          //alternative.AddUtilityTerm(263, originParcel.PCA_MixedUseTerm_Buffer1());
-          //alternative.AddUtilityTerm(264, originParcel.PCA_TransitAccessTerm_Buffer1());
-          //alternative.AddUtilityTerm(261, destinationParcel.PCA_DensityTerm_Buffer1());
-          //alternative.AddUtilityTerm(262, destinationParcel.PCA_WalkabilityTerm_Buffer1());
-          //alternative.AddUtilityTerm(263, destinationParcel.PCA_MixedUseTerm_Buffer1());
-          //alternative.AddUtilityTerm(264, destinationParcel.PCA_TransitAccessTerm_Buffer1());
-          //alternative.AddUtilityTerm(265, destinationParcel.PCA_DensityTerm_Buffer1());
-          //alternative.AddUtilityTerm(266, destinationParcel.PCA_WalkabilityTerm_Buffer1());
-          //alternative.AddUtilityTerm(267, destinationParcel.PCA_MixedUseTerm_Buffer1());
-          //alternative.AddUtilityTerm(268, destinationParcel.PCA_TransitAccessTerm_Buffer1());
           
         } else if (mode == Global.Settings.Modes.Walk) {
           alternative.AddUtilityTerm(70, 1); //for calibration
@@ -379,25 +440,12 @@ namespace DaySim.ChoiceModels.Default.Models {
           alternative.AddUtilityTerm(176, originParcel.NetIntersectionDensity1());
           alternative.AddUtilityTerm(175, originParcel.HouseholdDensity1());
           alternative.AddUtilityTerm(179, originParcel.MixedUse4Index1());
-          alternative.AddUtilityTerm(181, 1.0 * destinationParcel.MixedUse4Index1()
+          alternative.AddUtilityTerm(181,            1.0 * destinationParcel.MixedUse4Index1()
                                                    + 0.00001 * destinationParcel.TotalEmploymentDensity1()
                                                    + 0.001 * destinationParcel.NetIntersectionDensity1()
                                                    + 0.001 * originParcel.NetIntersectionDensity1()
                                                    + 0.0001 * originParcel.HouseholdDensity1()
                                                    + 1.0 * originParcel.MixedUse4Index1());
-          
-          //alternative.AddUtilityTerm(271, originParcel.PCA_DensityTerm_Buffer1());
-          //alternative.AddUtilityTerm(272, originParcel.PCA_WalkabilityTerm_Buffer1());
-          //alternative.AddUtilityTerm(273, originParcel.PCA_MixedUseTerm_Buffer1());
-          //alternative.AddUtilityTerm(274, originParcel.PCA_TransitAccessTerm_Buffer1());
-          //alternative.AddUtilityTerm(271, destinationParcel.PCA_DensityTerm_Buffer1());
-          //alternative.AddUtilityTerm(272, destinationParcel.PCA_WalkabilityTerm_Buffer1());
-          //alternative.AddUtilityTerm(273, destinationParcel.PCA_MixedUseTerm_Buffer1());
-          //alternative.AddUtilityTerm(274, destinationParcel.PCA_TransitAccessTerm_Buffer1());
-          //alternative.AddUtilityTerm(275, destinationParcel.PCA_DensityTerm_Buffer1());
-          //alternative.AddUtilityTerm(276, destinationParcel.PCA_WalkabilityTerm_Buffer1());
-          //alternative.AddUtilityTerm(277, destinationParcel.PCA_MixedUseTerm_Buffer1());
-          //alternative.AddUtilityTerm(278, destinationParcel.PCA_TransitAccessTerm_Buffer1());
 
         } else if (mode == Global.Settings.Modes.PaidRideShare) {
           if (Global.Configuration.PaidRideshare_UseEstimatedInsteadOfAssertedCoefficients) {

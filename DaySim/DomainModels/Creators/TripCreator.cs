@@ -62,8 +62,7 @@ namespace DaySim.DomainModels.Creators {
         DepartureTime = 180,
         ArrivalTime = 180,
         PathType = 1,
-        ExpansionFactor = tourWrapper.Household.ExpansionFactor,
-      };
+        ExpansionFactor = Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? tourWrapper.Person.ExpansionFactor : tourWrapper.Household.ExpansionFactor     };
 
       Type type = typeof(TWrapper);
       object instance = Activator.CreateInstance(type, t, tourWrapper, halfTour);
@@ -96,8 +95,7 @@ namespace DaySim.DomainModels.Creators {
         DepartureTime = 180,
         ArrivalTime = 180,
         PathType = 1,
-        ExpansionFactor = tourWrapper.Household.ExpansionFactor
-      };
+        ExpansionFactor = Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? tourWrapper.Person.ExpansionFactor : tourWrapper.Household.ExpansionFactor   };
 
       Type type = typeof(TWrapper);
       object instance = Activator.CreateInstance(type, t, tourWrapper, halfTour);

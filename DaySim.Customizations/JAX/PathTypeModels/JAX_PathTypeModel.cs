@@ -4,7 +4,7 @@ using DaySim.Framework.Roster;
 
 namespace DaySim.PathTypeModels {
   internal class JAX_PathTypeModel : PathTypeModel {
-    protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight) {
+    protected override void RegionSpecificTransitImpedanceCalculation(int skimMode, int pathType, double votValue, int outboundTime, int returnTime, int originZoneId, int destinationZoneId, int destinationPurpose, ref double outboundInVehicleTime, ref double returnInVehicleTime, ref double pathTypeSpecificTime, ref double pathTypeSpecificTimeWeight, ref double fare) {
       //this is the outer weight on the sum of all the path specific terms
       //copied from PSRC and adapted to use a different set of skim names and also constant terms - in units of minutes
       pathTypeSpecificTimeWeight = 1.0;

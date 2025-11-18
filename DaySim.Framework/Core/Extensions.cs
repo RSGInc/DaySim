@@ -249,8 +249,10 @@ namespace DaySim.Framework.Core {
       return -1;
     }
 
+    
     public static int ToMinutesAfter3AM(this int minute) {
-      int offset = minute - 179;
+
+         int offset = minute - 179;
 
       if (offset <= 0) {
         return 1440 + offset;
@@ -269,7 +271,8 @@ namespace DaySim.Framework.Core {
     }
 
     public static int ToMinutesAfterMidnight(this int minute) {
-      int offset = 179 + minute;
+
+       int offset = 179 + minute;
 
       if (offset >= 1440) {
         return offset - 1440;

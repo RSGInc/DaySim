@@ -36,6 +36,10 @@ namespace DaySim.ChoiceModels.Default.Models {
         if (Global.Configuration.EstimationModel != CHOICE_MODEL_NAME) {
           return;
         }
+        //mb added code so that this model is only estimated on full days of data
+        if (personDay.DayBeginsAtHome == 0 || personDay.DayEndsAtHome == 0) {
+          return;
+        }
       }
 
       ChoiceProbabilityCalculator choiceProbabilityCalculator = _helpers[ParallelUtility.threadLocalAssignedIndex.Value].GetChoiceProbabilityCalculator((personDay.Id * 397) ^ purpose);
@@ -95,6 +99,12 @@ namespace DaySim.ChoiceModels.Default.Models {
       IParcelWrapper residenceParcel = household.ResidenceParcel;
       IPersonWrapper person = personDay.Person;
 
+      int workAtHome = (Global.Configuration.UseWorkAtHomeModelAndVariables && personDay.WorkAtHomeDuration > Global.Configuration.WorkAtHome_DurationThreshold).ToFlag();
+
+      //added code so that these bias variables only apply in estimation mode
+      int diaryBased = (Global.Configuration.IsInEstimationMode && Global.Configuration.UseDiaryVsSmartphoneBiasVariables && person.PaperDiary > 0).ToFlag();
+      int proxyBased = (Global.Configuration.IsInEstimationMode && Global.Configuration.UseProxyBiasVariables && person.ProxyResponse > 0).ToFlag();
+ 
       int carsPerDriver = household.GetCarsPerDriver();
       double mixedDensity = residenceParcel.ParcelHouseholdsPerRetailServiceFoodEmploymentBuffer2();
       double intersectionDensity = residenceParcel.IntersectionDensity34Minus1Buffer2();
@@ -177,6 +187,9 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(100 * purpose + 35, personDay.ShoppingTours);
       alternative.AddUtilityTerm(100 * purpose + 36, personDay.MealTours);
       alternative.AddUtilityTerm(100 * purpose + 37, personDay.SocialTours);
+      alternative.AddUtilityTerm(100 * purpose + 38, workAtHome);
+      alternative.AddUtilityTerm(100 * purpose + 39, diaryBased);
+      alternative.AddUtilityTerm(100 * purpose + 40, proxyBased);
       alternative.AddUtilityTerm(100 * purpose + 41, personDay.WorkStops);
 
       if (purpose <= Global.Settings.Purposes.Escort) {
@@ -231,6 +244,9 @@ namespace DaySim.ChoiceModels.Default.Models {
       alternative.AddUtilityTerm(100 * purpose + 35, personDay.ShoppingTours);
       alternative.AddUtilityTerm(100 * purpose + 36, personDay.MealTours);
       alternative.AddUtilityTerm(100 * purpose + 37, personDay.SocialTours);
+      alternative.AddUtilityTerm(100 * purpose + 38, workAtHome);
+      alternative.AddUtilityTerm(100 * purpose + 39, diaryBased);
+      alternative.AddUtilityTerm(100 * purpose + 40, proxyBased);
       alternative.AddUtilityTerm(100 * purpose + 41, personDay.WorkStops);
 
       if (purpose <= Global.Settings.Purposes.Escort) {

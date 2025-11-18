@@ -790,7 +790,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
       model.OriginArrivalTime = 180;
       model.DestinationPurpose = purpose;
       model.PathType = 1;
-      model.ExpansionFactor = Household.ExpansionFactor;
+      model.ExpansionFactor = Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? Person.ExpansionFactor : Household.ExpansionFactor;
 
       return _tourCreator.CreateWrapper(model, this, purpose, false);
     }
@@ -853,6 +853,18 @@ namespace DaySim.DomainModels.Default.Wrappers {
     #region init/utility/export methods
 
     public void Export() {
+      if (Global.Configuration.CountAllIntermediateStopsOnPersonDayRecord) {
+        WorkStops = SimulatedWorkStops;
+        SchoolStops = SimulatedSchoolStops;
+        EscortStops = SimulatedEscortStops;
+        PersonalBusinessStops = SimulatedPersonalBusinessStops;
+        ShoppingStops = SimulatedShoppingStops;
+        MealStops = SimulatedMealStops;
+        SocialStops = SimulatedSocialStops;
+        RecreationStops = SimulatedRecreationStops;
+        MedicalStops = SimulatedMedicalStops;
+      }
+      
       _exporter.Export(_personDay);
     }
 
@@ -989,7 +1001,7 @@ namespace DaySim.DomainModels.Default.Wrappers {
     }
 
     private void SetExpansionFactor() {
-      _personDay.ExpansionFactor = Household.ExpansionFactor * Global.Configuration.HouseholdSamplingRateOneInX;
+      _personDay.ExpansionFactor = (Global.Configuration.UsePersonExpansionFactorForPersonDayModels ? Person.ExpansionFactor : Household.ExpansionFactor) * Global.Configuration.HouseholdSamplingRateOneInX;
     }
 
     private ITourWrapper GetNewWrapper(ITour tour, IPersonDayWrapper personDayWrapper) {

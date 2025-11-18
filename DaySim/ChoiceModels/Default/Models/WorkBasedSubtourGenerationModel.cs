@@ -55,7 +55,8 @@ namespace DaySim.ChoiceModels.Default.Models {
 
           ChoiceProbabilityCalculator.Alternative chosenAlternative = choiceProbabilityCalculator.SimulateChoice(tour.Household.RandomUtility);
           choice = (int)chosenAlternative.Choice;
-        } else {
+
+          } else {
           choice = Global.Settings.Purposes.NoneOrHome;
         }
       }
